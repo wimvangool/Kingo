@@ -1,0 +1,55 @@
+﻿using System;
+using System.Threading;
+
+namespace YellowFlare.MessageProcessing
+{    
+    internal sealed class UnitOfWorkStub : IUnitOfWork, IDisposable
+    {
+        private bool _requiresFLush;
+
+        public UnitOfWorkStub()
+        {           
+            Current = this;
+        }
+
+        public bool IsDisposed
+        {
+            get;
+            private set;
+        }
+
+        public bool IsFlushed
+        {
+            get;
+            private set;
+        }
+
+        public void Dispose()
+        {
+            IsDisposed = true;
+        }
+
+        public void SimulateChange()
+        {
+            _requiresFLush = true;
+        }
+
+        public bool RequiresFlush()
+        {
+            return _requiresFLush;
+        }
+
+        public void Flush()
+        {
+            IsFlushed = true;
+        }
+
+        private static readonly ThreadLocal<UnitOfWorkStub> _Current = new ThreadLocal<UnitOfWorkStub>();
+
+        public static UnitOfWorkStub Current
+        {
+            get { return _Current.Value; }
+            set { _Current.Value = value; }
+        }       
+    }
+}
