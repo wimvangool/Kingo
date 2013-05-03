@@ -118,13 +118,13 @@
     <Compile Include="MessageHandlerClassTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\02-MessageProcessing\02-MessageProcessing.csproj">
+    <ProjectReference Include="..\MessageProcessing\MessageProcessing.csproj">
       <Project>{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}</Project>
-      <Name>02-MessageProcessing</Name>
+      <Name>MessageProcessing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\04-MessageProcessing.Unity\04-MessageProcessing.Unity.csproj">
+    <ProjectReference Include="..\MessageProcessing.Unity\MessageProcessing.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
-      <Name>04-MessageProcessing.Unity</Name>
+      <Name>MessageProcessing.Unity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

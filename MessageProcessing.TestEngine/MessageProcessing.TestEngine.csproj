@@ -77,9 +77,9 @@
     <Compile Include="VerificationStatement.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\02-MessageProcessing\02-MessageProcessing.csproj">
+    <ProjectReference Include="..\MessageProcessing\MessageProcessing.csproj">
       <Project>{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}</Project>
-      <Name>02-MessageProcessing</Name>
+      <Name>MessageProcessing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

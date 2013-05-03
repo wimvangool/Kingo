@@ -62,9 +62,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\02-MessageProcessing\02-MessageProcessing.csproj">
+    <ProjectReference Include="..\MessageProcessing\MessageProcessing.csproj">
       <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>
-      <Name>02-MessageProcessing</Name>
+      <Name>MessageProcessing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

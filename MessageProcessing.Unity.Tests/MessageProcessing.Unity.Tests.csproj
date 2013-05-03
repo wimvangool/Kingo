@@ -67,17 +67,17 @@
     <Compile Include="MessageHandlerFactoryForUnityTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\01-MessageProcessing.Tests\01-MessageProcessing.Tests.csproj">
+    <ProjectReference Include="..\MessageProcessing.Tests\MessageProcessing.Tests.csproj">
       <Project>{dde1ca85-7907-4c67-91df-1ad824a44133}</Project>
-      <Name>01-MessageProcessing.Tests</Name>
+      <Name>MessageProcessing.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\02-MessageProcessing\02-MessageProcessing.csproj">
+    <ProjectReference Include="..\MessageProcessing\MessageProcessing.csproj">
       <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>
-      <Name>02-MessageProcessing</Name>
+      <Name>MessageProcessing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\04-MessageProcessing.Unity\04-MessageProcessing.Unity.csproj">
+    <ProjectReference Include="..\MessageProcessing.Unity\MessageProcessing.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
-      <Name>04-MessageProcessing.Unity</Name>
+      <Name>MessageProcessing.Unity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
