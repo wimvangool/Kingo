@@ -117,58 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExceptionExpected" xml:space="preserve">
-    <value>Command did not result in the expected exception. </value>
-  </data>
-  <data name="ExpressionEqual" xml:space="preserve">
-    <value>Objects were equal. Value was '{0}'.</value>
-  </data>
-  <data name="ExpressionHasNoValue" xml:space="preserve">
-    <value>The expression of type '{0}' had no value.</value>
-  </data>
-  <data name="ExpressionHasValue" xml:space="preserve">
-    <value>The expression of type '{0}' has a value: '{1}'.</value>
-  </data>
-  <data name="ExpressionIsNotNull" xml:space="preserve">
-    <value>Instance was not null. Value was: '{0}'.</value>
-  </data>
-  <data name="ExpressionIsNotSameTheInstance" xml:space="preserve">
-    <value>Instances were not the same. Expected '{0}', but value was: '{1}'.</value>
-  </data>
-  <data name="ExpressionIsNull" xml:space="preserve">
-    <value>Instance was null.</value>
-  </data>
-  <data name="ExpressionIsTheSameInstance" xml:space="preserve">
-    <value>Instances were the same. Value was '{0}'.</value>
-  </data>
-  <data name="ExpressionNotEqual" xml:space="preserve">
-    <value>Instances were not equal. Expected '{0}', but value was '{1}'.</value>
-  </data>
-  <data name="ExpressionNotFalse" xml:space="preserve">
-    <value>Expression was not false.</value>
-  </data>
-  <data name="ExpressionNotGreater" xml:space="preserve">
-    <value>Expression was not greater than specified value. Expected a value greater than '{0}', but value was '{1}'.</value>
-  </data>
-  <data name="ExpressionNotGreaterOrEqual" xml:space="preserve">
-    <value>Expression was not greater than or equal to the specified value. Expected a value greater than or equal to '{0}', but value was '{1}'.</value>
-  </data>
-  <data name="ExpressionNotOfCompatibleType" xml:space="preserve">
-    <value>Instance was not of expected type. Expected an instance of '{0}', but instance was of (incompatible) type '{1}'.</value>
-  </data>
-  <data name="ExpressionNotSmaller" xml:space="preserve">
-    <value>Expression was not smaller than specified value. Expected a value smaller than '{0}', but value was '{1}'.</value>
-  </data>
-  <data name="ExpressionNotSmallerOrEqual" xml:space="preserve">
-    <value>Expression was not smaller than or equal to the specified value. Expected a value smaller than or equal to '{0}', but value was '{1}'.</value>
-  </data>
-  <data name="ExpressionNotTrue" xml:space="preserve">
-    <value>Expression was not true.</value>
-  </data>
-  <data name="ExpressionOfCompatibleType" xml:space="preserve">
-    <value>Instance was of unexpected type. Did not expect an instance of '{0}', but instance was of (compatible) type '{1}'.</value>
-  </data>
-  <data name="NullStatement_PreconditionFailed" xml:space="preserve">
-    <value>The conjunction-statement failed because the conjunction precondition failed.</value>
+  <data name="Scenario_IndexNegative" xml:space="preserve">
+    <value>The index cannot be negative: {0}.</value>
   </data>
 </root>

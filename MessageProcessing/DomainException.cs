@@ -50,8 +50,55 @@ namespace YellowFlare.MessageProcessing
                 throw new ArgumentNullException("command");
             }
             var messageFormat = ExceptionMessages.DomainException_CommandFailed;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, command.GetType());
+            var message = Format(messageFormat, command.GetType());
             return new InvalidCommandException(command, message, this);
+        }
+
+        /// <summary>
+        /// Formats the specified message using the current culture.
+        /// </summary>
+        /// <param name="messageFormat">Format-string of the message.</param>
+        /// <param name="a">First argument to use in the format-string.</param>
+        /// <returns>The formatted string.</returns>
+        protected static string Format(string messageFormat, object a)
+        {
+            return string.Format(CultureInfo.CurrentCulture, messageFormat, a);
+        }
+
+        /// <summary>
+        /// Formats the specified message using the current culture.
+        /// </summary>
+        /// <param name="messageFormat">Format-string of the message.</param>
+        /// <param name="a">First argument to use in the format-string.</param>
+        /// <param name="b">Second argument to use in the format-string.</param>
+        /// <returns>The formatted string.</returns>
+        protected static string Format(string messageFormat, object a, object b)
+        {
+            return string.Format(CultureInfo.CurrentCulture, messageFormat, a, b);
+        }
+
+        /// <summary>
+        /// Formats the specified message using the current culture.
+        /// </summary>
+        /// <param name="messageFormat">Format-string of the message.</param>
+        /// <param name="a">First argument to use in the format-string.</param>
+        /// <param name="b">Second argument to use in the format-string.</param>
+        /// <param name="c">Third argument to use in the format-string.</param>
+        /// <returns>The formatted string.</returns>
+        protected static string Format(string messageFormat, object a, object b, object c)
+        {
+            return string.Format(CultureInfo.CurrentCulture, messageFormat, a, b, c);
+        }
+
+        /// <summary>
+        /// Formats the specified message using the current culture.
+        /// </summary>
+        /// <param name="messageFormat">Format-string of the message.</param>
+        /// <param name="parameters">All parameters to use in the format-string.</param>
+        /// <returns>The formatted string.</returns>
+        protected static string Format(string messageFormat, params object[] parameters)
+        {
+            return string.Format(CultureInfo.CurrentCulture, messageFormat, parameters);
         }
     }
 }

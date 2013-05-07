@@ -212,5 +212,14 @@ namespace YellowFlare.MessageProcessing {
                 return ResourceManager.GetString("ExpressionOfCompatibleType", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The conjunction-statement failed because the conjunction precondition failed..
+        /// </summary>
+        internal static string NullStatement_PreconditionFailed {
+            get {
+                return ResourceManager.GetString("NullStatement_PreconditionFailed", resourceCulture);
+            }
+        }
     }
 }

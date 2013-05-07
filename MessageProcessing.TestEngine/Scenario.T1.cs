@@ -178,6 +178,28 @@ namespace YellowFlare.MessageProcessing
         }
 
         /// <summary>
+        /// Returns the domain-event at the specified index as the requested type.
+        /// </summary>
+        /// <typeparam name="TEvent">Expected type of the domain-event.</typeparam>
+        /// <param name="index">Index of the domain-event.</param>
+        /// <returns>
+        /// The domain-event at the specified <paramref name="index"/>, cast to the specified <paramtyperef name="TEvent"/>, or
+        /// <c>null</c> if no domain-event of the specified index of the specified type exists.
+        /// </returns>
+        protected TEvent DomainEventAt<TEvent>(int index) where TEvent : class
+        {
+            if (index < 0)
+            {
+                throw NewIndexOutOfRangeException(index);
+            }
+            if (index < _domainEvents.Count)
+            {
+                return _domainEvents[index] as TEvent;
+            }
+            return null;
+        }        
+
+        /// <summary>
         /// Returns a sequence of messages that are used to put the system into a desired state.
         /// </summary>
         /// <returns>A sequence of messages that are used to put the system into a desired state.</returns>
@@ -195,6 +217,13 @@ namespace YellowFlare.MessageProcessing
         /// </summary>
         /// <returns>A single message of which the effects will be verified in the Then-phase.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1716", MessageId = "When", Justification = "'When' is part of the BDD-style naming convention.")]
-        protected abstract TMessage When();                        
+        protected abstract TMessage When();
+
+        private static Exception NewIndexOutOfRangeException(int index)
+        {
+            var messageFormat = ExceptionMessages.Scenario_IndexNegative;
+            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, index);
+            return new ArgumentOutOfRangeException("index", message);
+        }        
     }
 }

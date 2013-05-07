@@ -54,7 +54,13 @@
     </Compile>
     <Compile Include="BooleanOperandExtensions.cs" />
     <Compile Include="ConjunctionStatement.T1.cs" />
+    <Compile Include="ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
     <Compile Include="NullableOperandExtensions.cs" />
+    <Compile Include="NullStatement.T1.cs" />
     <Compile Include="ScenarioClock.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IConjunctionStatement.T1.cs" />
@@ -83,6 +89,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="FailureMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FailureMessages.Designer.cs</LastGenOutput>

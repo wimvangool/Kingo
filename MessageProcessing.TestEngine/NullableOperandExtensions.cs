@@ -15,7 +15,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentNullException">
         /// <paramref name="operand"/> is <c>null</c>.
         /// </exception>
-        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "By Design")]
         public static IConjunctionStatement<TValue> HasValue<TValue>(this IOperand<TValue?> operand) where TValue : struct
         {
             if (operand == null)
@@ -37,7 +37,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentNullException">
         /// <paramref name="operand"/> is <c>null</c>.
         /// </exception>
-        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "By Design")]
         public static void HasNoValue<TValue>(this IOperand<TValue?> operand) where TValue : struct
         {
             if (operand == null)
