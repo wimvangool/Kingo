@@ -35,7 +35,7 @@ namespace YellowFlare.MessageProcessing
         }
 
         /// <inheritdoc />
-        protected override void HandleWith(IMessageProcessor processor)
+        public override void HandleWith(IMessageProcessor processor)
         {
             if (processor == null)
             {

@@ -7,12 +7,7 @@ namespace YellowFlare.MessageProcessing
     /// a specific sequence of messages.
     /// </summary>
     public interface IScenario : IMessageSequence, IDisposable
-    {
-        /// <summary>
-        /// Executes the scenario.
-        /// </summary>
-        void Execute();
-
+    {        
         /// <summary>
         /// Indicates that verification of the expected state as a result of this scenario has failed.
         /// </summary>

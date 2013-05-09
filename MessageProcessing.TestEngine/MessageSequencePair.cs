@@ -33,7 +33,7 @@ namespace YellowFlare.MessageProcessing
         }
 
         /// <inheritdoc />
-        protected override void HandleWith(IMessageProcessor processor)
+        public override void HandleWith(IMessageProcessor processor)
         {
             _left.HandleWith(processor);
             _right.HandleWith(processor);

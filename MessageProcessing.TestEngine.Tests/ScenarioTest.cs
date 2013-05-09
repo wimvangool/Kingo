@@ -12,9 +12,7 @@ namespace YellowFlare.MessageProcessing
         #region [====== Nested Types ======]
 
         private abstract class ScenarioUnderTest : Scenario<TheCommand>
-        {                   
-            protected ScenarioUnderTest(IMessageProcessor processor) : base(processor) {}
-
+        {                              
             public new bool ExceptionExpected
             {
                 get { return base.ExceptionExpected; }
@@ -41,7 +39,7 @@ namespace YellowFlare.MessageProcessing
         {
             private readonly Exception _exceptionToThrow;
 
-            public ErroneousScenario(IMessageProcessor processor, Exception exceptionToThrow) : base(processor)
+            public ErroneousScenario(Exception exceptionToThrow)
             {
                 _exceptionToThrow = exceptionToThrow;
             }
@@ -61,7 +59,7 @@ namespace YellowFlare.MessageProcessing
         {
             private readonly Exception _exceptionToThrow;
 
-            public ExceptionalFlowScenario(IMessageProcessor processor, Exception exceptionToThrow) : base(processor)
+            public ExceptionalFlowScenario(Exception exceptionToThrow)
             {
                 _exceptionToThrow = exceptionToThrow;
             }
@@ -79,7 +77,7 @@ namespace YellowFlare.MessageProcessing
         {
             private readonly IEnumerable<object> _messagesToPublish;
 
-            public HappyFlowScenario(IMessageProcessor processor, IEnumerable<object> messagesToPublish) : base(processor)
+            public HappyFlowScenario(IEnumerable<object> messagesToPublish)
             {
                 _messagesToPublish = messagesToPublish;
             }
@@ -99,14 +97,14 @@ namespace YellowFlare.MessageProcessing
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Execute_Throws_IfExceptionWasThrownByGiven()
+        public void HandleWith_Throws_IfExceptionWasThrownByGiven()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ErroneousScenario(_Processor, exception);
+            var scenario = new ErroneousScenario(exception);
 
             try
             {
-                scenario.Execute();
+                scenario.HandleWith(_Processor);
             }
             finally
             {
@@ -117,15 +115,15 @@ namespace YellowFlare.MessageProcessing
         }
 
         [TestMethod]        
-        public void Execute_WillSetException_IfExceptionWasThrownByWhenAndWasExpected()
+        public void HandleWith_WillSetException_IfExceptionWasThrownByWhenAndWasExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(_Processor, exception);
+            var scenario = new ExceptionalFlowScenario(exception);
 
             try
             {
                 scenario.ExceptionExpected = true;
-                scenario.Execute();
+                scenario.HandleWith(_Processor);
             }
             finally
             {
@@ -134,15 +132,15 @@ namespace YellowFlare.MessageProcessing
         }
 
         [TestMethod]        
-        public void Execute_WillHaveNoDomainEvents_IfExceptionWasThrownByWhenAndWasExpected()
+        public void HandleWith_WillHaveNoDomainEvents_IfExceptionWasThrownByWhenAndWasExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(_Processor, exception);
+            var scenario = new ExceptionalFlowScenario(exception);
 
             try
             {
                 scenario.ExceptionExpected = true;
-                scenario.Execute();
+                scenario.HandleWith(_Processor);
             }
             finally
             {
@@ -153,15 +151,15 @@ namespace YellowFlare.MessageProcessing
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Execute_ThrowsAndWillSetException_IfExceptionWasThrownByWhenAndWasNotExpected()
+        public void HandleWith_ThrowsAndWillSetException_IfExceptionWasThrownByWhenAndWasNotExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(_Processor, exception);
+            var scenario = new ExceptionalFlowScenario(exception);
 
             try
             {
                 scenario.ExceptionExpected = false;
-                scenario.Execute();
+                scenario.HandleWith(_Processor);
             }
             finally
             {
@@ -171,15 +169,15 @@ namespace YellowFlare.MessageProcessing
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Execute_ThrowsAndWillHaveNoDomainEvents_IfExceptionWasThrownByWhenAndWasNotExpected()
+        public void HandleWith_ThrowsAndWillHaveNoDomainEvents_IfExceptionWasThrownByWhenAndWasNotExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(_Processor, exception);
+            var scenario = new ExceptionalFlowScenario(exception);
 
             try
             {
                 scenario.ExceptionExpected = false;
-                scenario.Execute();
+                scenario.HandleWith(_Processor);
             }
             finally
             {
@@ -189,23 +187,23 @@ namespace YellowFlare.MessageProcessing
         }
 
         [TestMethod]
-        public void Execute_WillSetExceptionToNull_IfNoExceptionWasThrownByWhen()
+        public void HandleWith_WillSetExceptionToNull_IfNoExceptionWasThrownByWhen()
         {
             var messages = new[] { new object(), new object() };
-            var scenario = new HappyFlowScenario(_Processor, messages);
+            var scenario = new HappyFlowScenario(messages);
 
-            scenario.Execute();
+            scenario.HandleWith(_Processor);
 
             Assert.IsNull(scenario.ExceptionThatWasThrown);
         }
 
         [TestMethod]
-        public void Execute_WillHaveDomainEvents_IfNoExceptionWasThrownByWhenAndSomeEventsWerePublished()
+        public void HandleWith_WillHaveDomainEvents_IfNoExceptionWasThrownByWhenAndSomeEventsWerePublished()
         {
             var messages = new[] { new object(), new object() };
-            var scenario = new HappyFlowScenario(_Processor, messages);
+            var scenario = new HappyFlowScenario(messages);
 
-            scenario.Execute();
+            scenario.HandleWith(_Processor);
 
             Assert.IsNotNull(scenario.DomainEventsThatWerePublished);
             Assert.IsTrue(scenario.DomainEventsThatWerePublished.SequenceEqual(messages));
