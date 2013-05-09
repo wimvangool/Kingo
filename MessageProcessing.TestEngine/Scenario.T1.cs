@@ -40,7 +40,7 @@ namespace YellowFlare.MessageProcessing
         /// <summary>
         /// Returns the clock that is used to control the timeline in which the scenario is executed.
         /// </summary>
-        public IClock Clock
+        public virtual IClock Clock
         {
             get { return _clock; }
         }
@@ -235,6 +235,9 @@ namespace YellowFlare.MessageProcessing
         /// The domain-event at the specified <paramref name="index"/>, cast to the specified <paramtyperef name="TEvent"/>, or
         /// <c>null</c> if no domain-event of the specified index of the specified type exists.
         /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is negative.
+        /// </exception>
         protected TEvent DomainEventAt<TEvent>(int index) where TEvent : class
         {
             if (index < 0)
@@ -246,7 +249,23 @@ namespace YellowFlare.MessageProcessing
                 return _domainEvents[index] as TEvent;
             }
             return null;
-        }        
+        }   
+     
+        /// <summary>
+        /// Returns the value of the date and/or time as it was requested at the specified moment.
+        /// </summary>
+        /// <param name="index">Index of the moment the value was requested.</param>
+        /// <returns>
+        /// The value of the date and/or time as it was requested at the specified moment, or <c>null</c>
+        /// if no date and/or time was requested at the specified moment.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is negative.
+        /// </exception>
+        protected DateTime? DateTimeRequestedAt(int index)
+        {
+            return _clock.RequestAt(index);
+        }
 
         /// <summary>
         /// Returns a sequence of messages that are used to put the system into a desired state.

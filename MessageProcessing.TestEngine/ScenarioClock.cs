@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace YellowFlare.MessageProcessing
 {
@@ -39,19 +40,19 @@ namespace YellowFlare.MessageProcessing
         {
             _stopwatch.Stop();
         }
-
-        /// <summary>
-        /// Returns the date and time that were requested at the specified index.
-        /// </summary>
-        /// <param name="index">The index or request-number.</param>
-        /// <returns>The date and time that were requested at the specified <paramref name="index"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// No request exists for the specified <paramref name="index"/>.
-        /// </exception>
-        public DateTime RequestAt(int index)
+        
+        public DateTime? RequestAt(int index)
         {
-            return _requests[index];
-        }
+            if (index < 0)
+            {
+                throw NewIndexOutOfRangeException("index");
+            }
+            if (index < _requests.Count)
+            {
+                return _requests[index];
+            }
+            return null;
+        }        
 
         /// <inheritdoc />
         public DateTime CurrentDate()
@@ -68,20 +69,27 @@ namespace YellowFlare.MessageProcessing
         /// <inheritdoc />
         public DateTime CurrentDateUtc()
         {
-            return RequestDateTime().Date.ToUniversalTime();
+            return RequestDateTime().ToUniversalTime().Date;
         }
 
         /// <inheritdoc />
         public DateTime CurrentDateTimeUtc()
         {
             return RequestDateTime().ToUniversalTime();
-        }
+        }        
 
         private DateTime RequestDateTime()
         {
             var dateTime = _clockOffset.AddMilliseconds(_stopwatch.ElapsedMilliseconds);
             _requests.Add(dateTime);
             return dateTime;
+        }
+
+        private static Exception NewIndexOutOfRangeException(string index)
+        {
+            var messageFormat = ExceptionMessages.Scenario_IndexNegative;
+            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, index);
+            return new ArgumentOutOfRangeException("index", message);
         }
     }
 }
