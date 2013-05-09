@@ -137,8 +137,17 @@ namespace YellowFlare.MessageProcessing
         /// </para>
         /// </remarks>
         public void Execute()
-        {
-            HandleWith(_processor);
+        {            
+            Clock.Start();
+
+            try
+            {
+                HandleWith(_processor);
+            }
+            finally
+            {
+                Clock.Stop();
+            }            
         }
 
         /// <summary>
@@ -163,11 +172,7 @@ namespace YellowFlare.MessageProcessing
         /// Otherwise, only unmanaged resources will be released.
         /// </remarks>
         protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Clock.Stop();
-            }
+        {            
             IsDisposed = true;
         }                
 
