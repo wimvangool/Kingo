@@ -32,7 +32,19 @@ namespace YellowFlare.MessageProcessing
         #endregion
 
         /// <inheritdoc />
-        public abstract void HandleWith(IMessageProcessor handler);
+        void IMessageSequence.HandleWith(IMessageProcessor processor)
+        {
+            HandleWith(processor);
+        }
+
+        /// <summary>
+        /// Handles all messages of this sequence using the specified processor.
+        /// </summary>
+        /// <param name="processor">Processor that will be used to execute this sequence.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="processor"/> is <c>null</c>.
+        /// </exception>
+        protected abstract void HandleWith(IMessageProcessor processor);
 
         /// <inheritdoc />
         public virtual IMessageSequence Append(IMessageSequence sequence)

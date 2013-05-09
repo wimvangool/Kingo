@@ -10,18 +10,24 @@ namespace YellowFlare.MessageProcessing
     /// by the Given-When-Then pattern.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is executed on the When-phase.</typeparam>    
-    public abstract class Scenario<TMessage> : MessageSequence, IScenario
-        where TMessage : class
+    public abstract class Scenario<TMessage> : MessageSequence, IScenario where TMessage : class
     {
+        private readonly IMessageProcessor _processor;
         private readonly ScenarioClock _clock;
         private readonly VerificationStatement _statement;
-        private readonly List<object> _domainEvents;                
-      
+        private readonly List<object> _domainEvents;                        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Scenario{T}" /> class.
         /// </summary>
-        protected Scenario()
+        /// <param name="processor">Processor used to execute this scenario.</param>
+        protected Scenario(IMessageProcessor processor)
         {
+            if (processor == null)
+            {
+                throw new ArgumentNullException("processor");
+            }
+            _processor = processor;
             _clock = new ScenarioClock(DateTime.MinValue);
             _statement = new VerificationStatement(this);
             _domainEvents = new List<object>();            
@@ -31,17 +37,32 @@ namespace YellowFlare.MessageProcessing
         /// Initializes a new instance of the <see cref="Scenario{T}" /> class.
         /// </summary>
         /// <param name="clockOffset">The date and time to which the clock is initialized.</param>
-        protected Scenario(DateTime clockOffset)
+        /// <param name="processor">Processor used to execute this scenario.</param>
+        protected Scenario(IMessageProcessor processor, DateTime clockOffset)
         {
+            if (processor == null)
+            {
+                throw new ArgumentNullException("processor");
+            }
+            _processor = processor;
             _clock = new ScenarioClock(clockOffset);
             _statement = new VerificationStatement(this);
             _domainEvents = new List<object>(); 
         }
 
         /// <summary>
+        /// Indicates whether or not this scenario has been disposed.
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// Returns the clock that is used to control the timeline in which the scenario is executed.
         /// </summary>
-        public ScenarioClock Clock
+        protected ScenarioClock Clock
         {
             get { return _clock; }
         }
@@ -87,10 +108,10 @@ namespace YellowFlare.MessageProcessing
         {
             get;
             private set;
-        }        
+        }
 
         /// <summary>
-        /// Handles the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
+        /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -115,15 +136,54 @@ namespace YellowFlare.MessageProcessing
         /// <para>
         /// </para>
         /// </remarks>
-        public sealed override void HandleWith(IMessageProcessor handler)
+        public void Execute()
         {
+            HandleWith(_processor);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
+        /// (<c>false</c>).
+        /// </param>
+        /// <remarks>
+        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
+        /// Otherwise, only unmanaged resources will be released.
+        /// </remarks>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Clock.Stop();
+            }
+            IsDisposed = true;
+        }                
+
+        protected override void HandleWith(IMessageProcessor processor)
+        {
+            if (IsDisposed)
+            {
+                throw NewScenarioDisposedException();
+            }
             Reset();
-            Given().HandleWith(handler);
+            Given().HandleWith(processor);
             Message = When();
-            
+
             try
             {
-                HandleMessage(handler, Message);
+                HandleMessage(processor, Message);
             }
             catch (Exception exception)
             {
@@ -136,13 +196,21 @@ namespace YellowFlare.MessageProcessing
             }
         }
 
-        private void HandleMessage(IMessageProcessor messageHandler, TMessage message)
+        private void Reset()
         {
-            var messageNode = new MessageSequenceNode<TMessage>(message);
+            Message = null;
+            Exception = null;
+
+            _domainEvents.Clear();
+        }        
+
+        private void HandleMessage(IMessageProcessor processor, TMessage message)
+        {
+            IMessageSequence messageNode = new MessageSequenceNode<TMessage>(message);
 
             using (DomainEventBus.Subscribe<object>(domainEvent => _domainEvents.Add(domainEvent)))
             {
-                messageNode.HandleWith(messageHandler);                
+                messageNode.HandleWith(processor);                
             }
             if (ExceptionExpected)
             {
@@ -158,24 +226,13 @@ namespace YellowFlare.MessageProcessing
         void IScenario.Fail(string message, params object[] parameters)
         {
             Fail(string.Format(CultureInfo.CurrentCulture, message, parameters));
-        }
+        }        
 
         /// <summary>
         /// Fails the scenario with the specified message.
         /// </summary>
         /// <param name="message">A message indicating the cause of failure.</param>
-        protected abstract void Fail(string message);
-
-        /// <summary>
-        /// Resets the scenario's by setting the <see cref="Exception" /> to <c>null</c> and clearing the <see cref="DomainEvents"/>.
-        /// </summary>
-        protected void Reset()
-        {
-            Message = null;
-            Exception = null;
-
-            _domainEvents.Clear();                        
-        }
+        protected abstract void Fail(string message);                
 
         /// <summary>
         /// Returns the domain-event at the specified index as the requested type.
@@ -218,6 +275,17 @@ namespace YellowFlare.MessageProcessing
         /// <returns>A single message of which the effects will be verified in the Then-phase.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1716", MessageId = "When", Justification = "'When' is part of the BDD-style naming convention.")]
         protected abstract TMessage When();
+
+        /// <summary>
+        /// Creates and returns a new <see cref="ObjectDisposedException" /> indicating this scenario has already been disposed.
+        /// </summary>
+        /// <returns>
+        /// A new <see cref="ObjectDisposedException" /> indicating this scenario has already been disposed.
+        /// </returns>
+        protected ObjectDisposedException NewScenarioDisposedException()
+        {
+            return new ObjectDisposedException(GetType().Name);
+        }
 
         private static Exception NewIndexOutOfRangeException(int index)
         {

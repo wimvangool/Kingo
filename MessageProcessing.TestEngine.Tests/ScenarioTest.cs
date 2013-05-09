@@ -13,6 +13,8 @@ namespace YellowFlare.MessageProcessing
 
         private abstract class ScenarioUnderTest : Scenario<TheCommand>
         {                   
+            protected ScenarioUnderTest(IMessageProcessor processor) : base(processor) {}
+
             public new bool ExceptionExpected
             {
                 get { return base.ExceptionExpected; }
@@ -39,7 +41,7 @@ namespace YellowFlare.MessageProcessing
         {
             private readonly Exception _exceptionToThrow;
 
-            public ErroneousScenario(Exception exceptionToThrow)
+            public ErroneousScenario(IMessageProcessor processor, Exception exceptionToThrow) : base(processor)
             {
                 _exceptionToThrow = exceptionToThrow;
             }
@@ -59,7 +61,7 @@ namespace YellowFlare.MessageProcessing
         {
             private readonly Exception _exceptionToThrow;
 
-            public ExceptionalFlowScenario(Exception exceptionToThrow)
+            public ExceptionalFlowScenario(IMessageProcessor processor, Exception exceptionToThrow) : base(processor)
             {
                 _exceptionToThrow = exceptionToThrow;
             }
@@ -77,7 +79,7 @@ namespace YellowFlare.MessageProcessing
         {
             private readonly IEnumerable<object> _messagesToPublish;
 
-            public HappyFlowScenario(IEnumerable<object> messagesToPublish)
+            public HappyFlowScenario(IMessageProcessor processor, IEnumerable<object> messagesToPublish) : base(processor)
             {
                 _messagesToPublish = messagesToPublish;
             }
@@ -100,11 +102,11 @@ namespace YellowFlare.MessageProcessing
         public void Execute_Throws_IfExceptionWasThrownByGiven()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ErroneousScenario(exception);
+            var scenario = new ErroneousScenario(_Processor, exception);
 
             try
             {
-                scenario.HandleWith(_Handler);
+                scenario.Execute();
             }
             finally
             {
@@ -118,12 +120,12 @@ namespace YellowFlare.MessageProcessing
         public void Execute_WillSetException_IfExceptionWasThrownByWhenAndWasExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(exception);
+            var scenario = new ExceptionalFlowScenario(_Processor, exception);
 
             try
             {
                 scenario.ExceptionExpected = true;
-                scenario.HandleWith(_Handler);
+                scenario.Execute();
             }
             finally
             {
@@ -135,12 +137,12 @@ namespace YellowFlare.MessageProcessing
         public void Execute_WillHaveNoDomainEvents_IfExceptionWasThrownByWhenAndWasExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(exception);
+            var scenario = new ExceptionalFlowScenario(_Processor, exception);
 
             try
             {
                 scenario.ExceptionExpected = true;
-                scenario.HandleWith(_Handler);
+                scenario.Execute();
             }
             finally
             {
@@ -154,12 +156,12 @@ namespace YellowFlare.MessageProcessing
         public void Execute_ThrowsAndWillSetException_IfExceptionWasThrownByWhenAndWasNotExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(exception);
+            var scenario = new ExceptionalFlowScenario(_Processor, exception);
 
             try
             {
                 scenario.ExceptionExpected = false;
-                scenario.HandleWith(_Handler);
+                scenario.Execute();
             }
             finally
             {
@@ -172,12 +174,12 @@ namespace YellowFlare.MessageProcessing
         public void Execute_ThrowsAndWillHaveNoDomainEvents_IfExceptionWasThrownByWhenAndWasNotExpected()
         {
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(exception);
+            var scenario = new ExceptionalFlowScenario(_Processor, exception);
 
             try
             {
                 scenario.ExceptionExpected = false;
-                scenario.HandleWith(_Handler);
+                scenario.Execute();
             }
             finally
             {
@@ -190,9 +192,9 @@ namespace YellowFlare.MessageProcessing
         public void Execute_WillSetExceptionToNull_IfNoExceptionWasThrownByWhen()
         {
             var messages = new[] { new object(), new object() };
-            var scenario = new HappyFlowScenario(messages);
+            var scenario = new HappyFlowScenario(_Processor, messages);
 
-            scenario.HandleWith(_Handler);
+            scenario.Execute();
 
             Assert.IsNull(scenario.ExceptionThatWasThrown);
         }
@@ -201,9 +203,9 @@ namespace YellowFlare.MessageProcessing
         public void Execute_WillHaveDomainEvents_IfNoExceptionWasThrownByWhenAndSomeEventsWerePublished()
         {
             var messages = new[] { new object(), new object() };
-            var scenario = new HappyFlowScenario(messages);
+            var scenario = new HappyFlowScenario(_Processor, messages);
 
-            scenario.HandleWith(_Handler);
+            scenario.Execute();
 
             Assert.IsNotNull(scenario.DomainEventsThatWerePublished);
             Assert.IsTrue(scenario.DomainEventsThatWerePublished.SequenceEqual(messages));
@@ -213,19 +215,19 @@ namespace YellowFlare.MessageProcessing
 
         #region [====== Assembly Setup and Teardown ======]
 
-        private static IMessageProcessor _Handler;        
+        private static IMessageProcessor _Processor;        
 
         [ClassInitialize]
         public static void SetupClass(TestContext context)
         {
-            _Handler = BuildHandler();
+            _Processor = BuildProcessor();
         }  
      
-        private static IMessageProcessor BuildHandler()
+        private static IMessageProcessor BuildProcessor()
         {
-            var container = new MessageHandlerFactoryForUnity();
-            container.RegisterMessageHandlers(Assembly.GetExecutingAssembly());
-            return new MessageProcessor(container);
+            var messageHandlerFactory = new MessageHandlerFactoryForUnity();
+            messageHandlerFactory.RegisterMessageHandlers(Assembly.GetExecutingAssembly());
+            return new MessageProcessor(messageHandlerFactory);
         }
 
         #endregion

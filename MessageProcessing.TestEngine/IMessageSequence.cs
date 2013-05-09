@@ -8,13 +8,13 @@ namespace YellowFlare.MessageProcessing
     public interface IMessageSequence
     {
         /// <summary>
-        /// Handles all messages.
+        /// Handles all messages of this sequence using the specified processor.
         /// </summary>
-        /// <param name="handler">Handler that will be used to execute this sequence.</param>
+        /// <param name="processor">Processor that will be used to execute this sequence.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="handler"/> is <c>null</c>.
+        /// <paramref name="processor"/> is <c>null</c>.
         /// </exception>
-        void HandleWith(IMessageProcessor handler);
+        void HandleWith(IMessageProcessor processor);
 
         /// <summary>
         /// Appends the specified sequence to the current sequence and returns the resulting sequence.

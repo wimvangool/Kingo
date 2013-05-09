@@ -6,8 +6,7 @@ namespace YellowFlare.MessageProcessing
     /// Represents a sequence containing just a single message.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message.</typeparam>
-    public class MessageSequenceNode<TMessage> : MessageSequence
-        where TMessage : class
+    public class MessageSequenceNode<TMessage> : MessageSequence where TMessage : class
     {
         private readonly TMessage _message;
 
@@ -36,13 +35,13 @@ namespace YellowFlare.MessageProcessing
         }
 
         /// <inheritdoc />
-        public override void HandleWith(IMessageProcessor handler)
+        protected override void HandleWith(IMessageProcessor processor)
         {
-            if (handler == null)
+            if (processor == null)
             {
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException("processor");
             }
-            handler.Handle(_message);
+            processor.Handle(_message);
         }
     }
 }
