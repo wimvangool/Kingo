@@ -69,14 +69,14 @@ namespace YellowFlare.MessageProcessing
         protected IVerificationStatement Verify
         {
             get { return _statement; }
-        }
-
+        }    
+        
         /// <summary>
-        /// Returns a collection of domain-events that were raised in the When-phase.
+        /// Returns the number of collected domain-events.
         /// </summary>
-        protected IList<object> DomainEvents
+        protected int DomainEventCount
         {
-            get { return _domainEvents; }
+            get { return _domainEvents.Count; }
         }
 
         /// <summary>
@@ -143,8 +143,7 @@ namespace YellowFlare.MessageProcessing
         /// </para>
         /// <para>
         /// During the When-phase, all events that are published on the <see cref="DomainEventBus" /> are stored in a
-        /// collection, ready to be verified using the <see cref="DomainEvents" /> property. This collection will be
-        /// empty if no events were published, or when an exception was raised during the When-phase.
+        /// collection, ready to be verified.
         /// </para>
         /// <para>
         /// </para>
@@ -224,31 +223,42 @@ namespace YellowFlare.MessageProcessing
         /// Fails the scenario with the specified message.
         /// </summary>
         /// <param name="message">A message indicating the cause of failure.</param>
-        protected abstract void Fail(string message);                
+        protected abstract void Fail(string message);
+        
+        /// <summary>
+        /// Returns the domain-event that was published at the specified moment.
+        /// </summary>
+        /// <param name="index">Index that indicates the moment the domain-event should have been published.</param>
+        /// <returns>The domain-event at the specified index.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is negative, or no domain-event was found at the specified index.
+        /// </exception>
+        protected object DomainEventAt(int index)
+        {
+            try
+            {
+                return _domainEvents[index];
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw NewNoDomainEventFoundAtIndexException(index);
+            }
+        }        
 
         /// <summary>
-        /// Returns the domain-event at the specified index as the requested type.
+        /// Returns the domain-event that was published at the specified moment.
         /// </summary>
-        /// <typeparam name="TEvent">Expected type of the domain-event.</typeparam>
-        /// <param name="index">Index of the domain-event.</param>
-        /// <returns>
-        /// The domain-event at the specified <paramref name="index"/>, cast to the specified <paramtyperef name="TEvent"/>, or
-        /// <c>null</c> if no domain-event of the specified index of the specified type exists.
-        /// </returns>
+        /// <param name="index">Index that indicates the moment the domain-event should have been published.</param>
+        /// <returns>The domain-event at the specified index.</returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is negative.
+        /// <paramref name="index"/> is negative, or no domain-event was found at the specified index.
+        /// </exception>
+        /// <exception cref="InvalidCastException">
+        /// The domain-event at the specified index could not be cast to the specified type.
         /// </exception>
         protected TEvent DomainEventAt<TEvent>(int index) where TEvent : class
         {
-            if (index < 0)
-            {
-                throw NewIndexOutOfRangeException(index);
-            }
-            if (index < _domainEvents.Count)
-            {
-                return _domainEvents[index] as TEvent;
-            }
-            return null;
+            return (TEvent) DomainEventAt(index);
         }   
      
         /// <summary>
@@ -262,7 +272,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> is negative.
         /// </exception>
-        protected DateTime? DateTimeRequestedAt(int index)
+        protected DateTime DateTimeRequestedAt(int index)
         {
             return _clock.RequestAt(index);
         }
@@ -296,13 +306,13 @@ namespace YellowFlare.MessageProcessing
         protected ObjectDisposedException NewScenarioDisposedException()
         {
             return new ObjectDisposedException(GetType().Name);
-        }
+        }        
 
-        private static Exception NewIndexOutOfRangeException(int index)
+        private static Exception NewNoDomainEventFoundAtIndexException(int index)
         {
-            var messageFormat = ExceptionMessages.Scenario_IndexNegative;
+            var messageFormat = ExceptionMessages.Scenario_DomainEventNotFound;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, index);
             return new ArgumentOutOfRangeException("index", message);
-        }        
+        }
     }
 }

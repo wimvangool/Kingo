@@ -41,18 +41,17 @@ namespace YellowFlare.MessageProcessing
             _stopwatch.Stop();
         }
         
-        public DateTime? RequestAt(int index)
+        public DateTime RequestAt(int index)
         {
-            if (index < 0)
-            {
-                throw NewIndexOutOfRangeException("index");
-            }
-            if (index < _requests.Count)
+            try
             {
                 return _requests[index];
             }
-            return null;
-        }        
+            catch (ArgumentOutOfRangeException)
+            {
+                throw NewNoRequestMadeAtSpecifiedIndexException(index);
+            }
+        }               
 
         /// <inheritdoc />
         public DateTime CurrentDate()
@@ -83,13 +82,13 @@ namespace YellowFlare.MessageProcessing
             var dateTime = _clockOffset.AddMilliseconds(_stopwatch.ElapsedMilliseconds);
             _requests.Add(dateTime);
             return dateTime;
-        }
+        }        
 
-        private static Exception NewIndexOutOfRangeException(string index)
+        private static Exception NewNoRequestMadeAtSpecifiedIndexException(int index)
         {
-            var messageFormat = ExceptionMessages.Scenario_IndexNegative;
+            var messageFormat = ExceptionMessages.ScenarioClock_RequestNotFound;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, index);
             return new ArgumentOutOfRangeException("index", message);
-        }
+        } 
     }
 }

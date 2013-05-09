@@ -85,49 +85,34 @@ namespace YellowFlare.MessageProcessing
         }
 
         [TestMethod]
-        public void RequestAt_ReturnsNull_IfNoRequestWasMadeAtTheSpecifiedIndex()
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void RequestAt_Throws_IfNoRequestWasMadeAtTheSpecifiedIndex()
         {
-            Assert.IsNull(_clock.RequestAt(0));
+            _clock.RequestAt(0);
         }
 
         [TestMethod]
         public void RequestAt_ReturnsRequestedDate_IfRequestWasMadeAtTheSpecifiedIndex()
         {
-            var date = _clock.CurrentDate();
-            var requestedDate = _clock.RequestAt(0);
-
-            Assert.IsTrue(requestedDate.HasValue);
-            Assert.AreEqual(date, requestedDate.Value.Date);            
+            Assert.AreEqual(_clock.CurrentDate(), _clock.RequestAt(0).Date);           
         }
 
         [TestMethod]
         public void RequestAt_ReturnsRequestedDateTime_IfRequestWasMadeAtTheSpecifiedIndex()
         {
-            var date = _clock.CurrentDateTime();
-            var requestedDate = _clock.RequestAt(0);
-
-            Assert.IsTrue(requestedDate.HasValue);
-            Assert.AreEqual(date, requestedDate.Value);
+            Assert.AreEqual(_clock.CurrentDateTime(), _clock.RequestAt(0));  
         }
 
         [TestMethod]
         public void RequestAt_ReturnsRequestedDateUtc_IfRequestWasMadeAtTheSpecifiedIndex()
         {
-            var date = _clock.CurrentDateUtc();
-            var requestedDate = _clock.RequestAt(0);
-
-            Assert.IsTrue(requestedDate.HasValue);
-            Assert.AreEqual(date, requestedDate.Value.ToUniversalTime().Date);
+            Assert.AreEqual(_clock.CurrentDateUtc(), _clock.RequestAt(0).ToUniversalTime().Date);  
         }
 
         [TestMethod]
         public void RequestAt_ReturnsRequestedDateTimeUtc_IfRequestWasMadeAtTheSpecifiedIndex()
         {
-            var date = _clock.CurrentDateTimeUtc();
-            var requestedDate = _clock.RequestAt(0);
-
-            Assert.IsTrue(requestedDate.HasValue);
-            Assert.AreEqual(date, requestedDate.Value.ToUniversalTime());
+            Assert.AreEqual(_clock.CurrentDateTimeUtc(), _clock.RequestAt(0).ToUniversalTime());  
         }
     }
 }

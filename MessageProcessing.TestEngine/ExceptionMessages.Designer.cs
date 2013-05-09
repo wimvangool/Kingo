@@ -61,11 +61,20 @@ namespace YellowFlare.MessageProcessing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The index cannot be negative: {0}..
+        ///   Looks up a localized string similar to No domain-event was found at the specified index: {0}..
         /// </summary>
-        internal static string Scenario_IndexNegative {
+        internal static string Scenario_DomainEventNotFound {
             get {
-                return ResourceManager.GetString("Scenario_IndexNegative", resourceCulture);
+                return ResourceManager.GetString("Scenario_DomainEventNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No request for a date or time was found at the specified index: {0}..
+        /// </summary>
+        internal static string ScenarioClock_RequestNotFound {
+            get {
+                return ResourceManager.GetString("ScenarioClock_RequestNotFound", resourceCulture);
             }
         }
     }

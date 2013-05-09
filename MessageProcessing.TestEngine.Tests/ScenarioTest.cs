@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -24,9 +23,14 @@ namespace YellowFlare.MessageProcessing
                 get { return Exception; }
             }
 
-            public IEnumerable<object> DomainEventsThatWerePublished
+            public new int DomainEventCount
             {
-                get { return DomainEvents; }
+                get { return base.DomainEventCount; }
+            }
+
+            public new object DomainEventAt(int index)
+            {
+                return base.DomainEventAt(index);
             }
 
             protected override void Fail(string message)
@@ -108,9 +112,8 @@ namespace YellowFlare.MessageProcessing
             }
             finally
             {
-                Assert.IsNull(scenario.ExceptionThatWasThrown);
-                Assert.IsNotNull(scenario.DomainEventsThatWerePublished);
-                Assert.AreEqual(0, scenario.DomainEventsThatWerePublished.Count());
+                Assert.IsNull(scenario.ExceptionThatWasThrown);                
+                Assert.AreEqual(0, scenario.DomainEventCount);
             } 
         }
 
@@ -143,9 +146,8 @@ namespace YellowFlare.MessageProcessing
                 scenario.HandleWith(_Processor);
             }
             finally
-            {
-                Assert.IsNotNull(scenario.DomainEventsThatWerePublished);
-                Assert.AreEqual(0, scenario.DomainEventsThatWerePublished.Count());
+            {               
+                Assert.AreEqual(0, scenario.DomainEventCount);
             }
         }
 
@@ -180,9 +182,8 @@ namespace YellowFlare.MessageProcessing
                 scenario.HandleWith(_Processor);
             }
             finally
-            {
-                Assert.IsNotNull(scenario.DomainEventsThatWerePublished);
-                Assert.AreEqual(0, scenario.DomainEventsThatWerePublished.Count());
+            {                
+                Assert.AreEqual(0, scenario.DomainEventCount);
             }
         }
 
@@ -204,9 +205,10 @@ namespace YellowFlare.MessageProcessing
             var scenario = new HappyFlowScenario(messages);
 
             scenario.HandleWith(_Processor);
-
-            Assert.IsNotNull(scenario.DomainEventsThatWerePublished);
-            Assert.IsTrue(scenario.DomainEventsThatWerePublished.SequenceEqual(messages));
+                 
+            Assert.AreEqual(messages.Length, scenario.DomainEventCount);
+            Assert.AreSame(messages[0], scenario.DomainEventAt(0));
+            Assert.AreSame(messages[1], scenario.DomainEventAt(1));
         }
 
         #endregion
