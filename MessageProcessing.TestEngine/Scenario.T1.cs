@@ -51,21 +51,21 @@ namespace YellowFlare.MessageProcessing
         }
 
         /// <summary>
+        /// Returns the clock that is used to control the timeline in which the scenario is executed.
+        /// </summary>
+        public IClock Clock
+        {
+            get { return _clock; }
+        }
+
+        /// <summary>
         /// Indicates whether or not this scenario has been disposed.
         /// </summary>
         protected bool IsDisposed
         {
             get;
             private set;
-        }
-
-        /// <summary>
-        /// Returns the clock that is used to control the timeline in which the scenario is executed.
-        /// </summary>
-        protected ScenarioClock Clock
-        {
-            get { return _clock; }
-        }
+        }        
 
         /// <summary>
         /// Returns the last message that was handled in the When-phase.
@@ -138,7 +138,7 @@ namespace YellowFlare.MessageProcessing
         /// </remarks>
         public void Execute()
         {            
-            Clock.Start();
+            _clock.Start();
 
             try
             {
@@ -146,7 +146,7 @@ namespace YellowFlare.MessageProcessing
             }
             finally
             {
-                Clock.Stop();
+                _clock.Stop();
             }            
         }
 

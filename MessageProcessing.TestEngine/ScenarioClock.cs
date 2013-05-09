@@ -8,7 +8,7 @@ namespace YellowFlare.MessageProcessing
     /// Represents a clock that is used by each <see cref="Scenario{T}" /> to control the timeline in which the
     /// scenario is executed.
     /// </summary>
-    public sealed class ScenarioClock : IClock
+    internal sealed class ScenarioClock : IClock
     {
         private readonly List<DateTime> _requests;
         private readonly DateTime _clockOffset;
