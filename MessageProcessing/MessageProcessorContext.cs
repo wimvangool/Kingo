@@ -12,7 +12,7 @@ namespace YellowFlare.MessageProcessing
         private readonly MessageProcessor _processor;        
         private readonly Lazy<MessageProcessorContextCache> _cache;        
         private readonly FlushController _flushController;
-        private readonly Stack<IMessageCommand> _commandStack;
+        private readonly Stack<Message> _messageStack;
         private bool _isDisposed;
         
         internal MessageProcessorContext(MessageProcessor processor)
@@ -20,7 +20,7 @@ namespace YellowFlare.MessageProcessing
             _processor = processor;
             _cache = new Lazy<MessageProcessorContextCache>(() => new MessageProcessorContextCache());          
             _flushController = new FlushController();
-            _commandStack = new Stack<IMessageCommand>();
+            _messageStack = new Stack<Message>();
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace YellowFlare.MessageProcessing
         internal MessageProcessor MessageProcessor
         {
             get { return _processor; }
-        }
+        }        
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -52,23 +52,19 @@ namespace YellowFlare.MessageProcessing
             _isDisposed = true;
         } 
 
-        internal void PushCommand(IMessageCommand command)
+        internal void PushMessage(Message message)
         {
-            _commandStack.Push(command);
+            _messageStack.Push(message);
         }
 
-        internal bool HasMessageOnStackOfType(Type messageType)
+        internal Message PeekMessage()
         {
-            if (_commandStack.Count == 0)
-            {
-                return false;
-            }
-            return messageType.IsInstanceOfType(_commandStack.Peek().Message);
+            return _messageStack.Peek();
         }
 
-        internal void PopCommand()
+        internal void PopMessage()
         {
-            _commandStack.Pop();
+            _messageStack.Pop();
         }
 
         void IUnitOfWorkManager.Enlist(IUnitOfWork unitOfWork)

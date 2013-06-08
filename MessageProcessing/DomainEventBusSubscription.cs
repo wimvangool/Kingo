@@ -16,6 +16,8 @@ namespace YellowFlare.MessageProcessing
         public void Dispose()
         {
             _subscriptions.Remove(this);
-        }           
+        }
+
+        public abstract void Handle<TPublished>(MessageProcessor processor, TPublished message);
     }
 }

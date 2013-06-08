@@ -70,6 +70,15 @@ namespace YellowFlare.MessageProcessing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multiple attributes of the specified type were found when only a single was expected: {0}..
+        /// </summary>
+        internal static string MessageHander_MultipleAttributesFound {
+            get {
+                return ResourceManager.GetString("MessageHander_MultipleAttributesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid InstanceLifetime was specified on class &apos;{0}&apos;: {1}. .
         /// </summary>
         internal static string MessageHandlerClass_InvalidInstanceLifetimeMode {

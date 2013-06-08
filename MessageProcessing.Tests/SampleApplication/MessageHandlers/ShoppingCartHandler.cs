@@ -3,8 +3,8 @@ using YellowFlare.MessageProcessing.SampleApplication.Messages;
 
 namespace YellowFlare.MessageProcessing.SampleApplication.MessageHandlers
 {
-    internal sealed class ShoppingCartHandler : IExternalMessageHandler<AddProductToCart>,
-                                                IExternalMessageHandler<CreateShoppingCart>
+    internal sealed class ShoppingCartHandler : IMessageHandler<AddProductToCart>,
+                                                IMessageHandler<CreateShoppingCart>
     {
         private readonly IShoppingCartRepository _shoppingCartRepository;
 

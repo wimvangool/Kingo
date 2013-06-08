@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
 namespace YellowFlare.MessageProcessing
 {
@@ -17,17 +18,7 @@ namespace YellowFlare.MessageProcessing
             _container = container;
             _classType = classType;
             _interfaceTypes = interfaceTypes;
-        }  
-      
-        private IEnumerable<Type> InternalHandlerTypes
-        {
-            get { return _interfaceTypes.Where(type => type.GetGenericTypeDefinition() == _InternalTypeDefinition); }
-        }
-
-        private IEnumerable<Type> ExternalHandlerTypes
-        {
-            get { return _interfaceTypes.Where(type => type.GetGenericTypeDefinition() == _ExternalTypeDefinition); }
-        }
+        }                     
 
         private void Register()
         {
@@ -57,34 +48,52 @@ namespace YellowFlare.MessageProcessing
             }
         }                       
 
-        public IEnumerable<object> ResolveInEveryRoleForInternal(Type messageType)
+        public IEnumerable<IMessageHandlerWithAttributes<TMessage>> ResolveInEveryRoleFor<TMessage>(TMessage message) where TMessage : class
         {
-            return from interfaceType in InternalHandlerTypes
+            // This LINQ construct first selects all message handler interface definitions that are compatible with
+            // the specified message. Then it will dynamically create the correct message handler type for each match
+            // and return it.
+            //
+            // Example:
+            //   When the class implements both IMessageHandler<object> and IMessageHandler<SomeMessage>, then if
+            //   TMessage is of type SomeMessage, two message-handler instances are returned, one for each
+            //   implementation.
+            return from interfaceType in _interfaceTypes
                    let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
-                   where messageTypeOfInterface.IsAssignableFrom(messageType)
-                   let roleTypeDefinition = typeof(InternalMessageHandler<>)
-                   let roleType = roleTypeDefinition.MakeGenericType(messageTypeOfInterface)
-                   select ResolveInRoleFor(roleType);
-        }
-
-        public IEnumerable<object> ResolveInEveryRoleForExternal(Type messageType)
-        {
-            return from interfaceType in ExternalHandlerTypes
-                   let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
-                   where messageTypeOfInterface.IsAssignableFrom(messageType)
-                   let roleTypeDefinition = typeof(ExternalMessageHandler<>)
-                   let roleType = roleTypeDefinition.MakeGenericType(messageTypeOfInterface)
-                   select ResolveInRoleFor(roleType);
-        }
-
-        private object ResolveInRoleFor(Type roleType)
-        {                            
-            return Activator.CreateInstance(roleType, _container.Resolve(_classType));
-        }
+                   where messageTypeOfInterface.IsInstanceOfType(message)
+                   let messageHandlerTypeDefinition = typeof(MessageHandlerWithAttributesForInterface<>)
+                   let messageHandlerType = messageHandlerTypeDefinition.MakeGenericType(messageTypeOfInterface)
+                   let messageHandler = _container.Resolve(_classType)
+                   select CreateMessageHandler<TMessage>(messageHandlerType, messageHandler, interfaceType);
+        }                
 
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
-        private static readonly Type _InternalTypeDefinition = typeof(IInternalMessageHandler<>);
-        private static readonly Type _ExternalTypeDefinition = typeof(IExternalMessageHandler<>);
+        private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>);
+
+        public static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        {
+            var specifiedInterfaceType = typeof(IMessageHandler<TMessage>);
+            var actualInterfaceType = GetFirstInterfaceTypeFor(handler.GetType(), specifiedInterfaceType);
+            return new MessageHandlerWithAttributesForInterface<TMessage>(handler, actualInterfaceType);
+        }
+
+        public static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
+        {
+            return new MessageHandlerWithAttributesForAction<TMessage>(action);
+        }
+
+        private static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(Type messageHandlerType, object handler, Type interfaceType) where TMessage : class
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
+            var constructor = messageHandlerType.GetConstructor(flags, null, new[] { interfaceType, typeof(Type) }, null);
+            var constructorArguments = new [] { handler, interfaceType };
+            return (IMessageHandlerWithAttributes<TMessage>)constructor.Invoke(constructorArguments);
+        }
+
+        private static Type GetFirstInterfaceTypeFor(Type handlerType, Type specifiedInterfaceType)
+        {
+            return GetMessageHandlerInterfaceTypesImplementedByCore(handlerType).First(specifiedInterfaceType.IsAssignableFrom);
+        }
 
         public static bool TryRegisterIn(MessageHandlerFactory container, Type type, Func<Type, bool> predicate, out MessageHandlerClass handler)
         {
@@ -130,12 +139,8 @@ namespace YellowFlare.MessageProcessing
         private static bool IsMessageHandlerInterface(Type interfaceType)
         {
             if (interfaceType.IsGenericType)
-            {
-                Type typeDefinition = interfaceType.GetGenericTypeDefinition();
-
-                return
-                    typeDefinition == _InternalTypeDefinition ||
-                    typeDefinition == _ExternalTypeDefinition;
+            {                
+                return interfaceType.GetGenericTypeDefinition() == _MessageHandlerTypeDefinition;
             }
             return false;    
         }

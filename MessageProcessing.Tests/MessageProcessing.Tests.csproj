@@ -82,9 +82,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="MessageCommandRecorder.cs" />
     <Compile Include="MessageHandlerFactoryStub.cs" />
-    <Compile Include="MessageHandlerFactoryTest.cs" />
     <Compile Include="SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
     <Compile Include="SampleApplication\IShoppingCartRepository.cs" />
     <Compile Include="SampleApplication\MessageHandlers\ShoppingCartHandler.cs" />
@@ -111,9 +109,6 @@
     <Compile Include="SampleHandlers\ForMessageHandlerClassTests\MessageHandlerWithSingleLifetime.cs" />
     <Compile Include="SampleHandlers\ForMessageHandlerClassTests\AbstractMessageHandler.cs" />
     <Compile Include="SampleHandlers\ForMessageHandlerClassTests\GenericMessageHandler.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerFactoryTests\MessageHandlerA.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerFactoryTests\MessageHandlerB.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerFactoryTests\MessageHandlerC.cs" />
     <Compile Include="MessageProcessorContextCacheTest.cs" />
     <Compile Include="MessageHandlerClassTest.cs" />
   </ItemGroup>

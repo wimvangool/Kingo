@@ -14,7 +14,7 @@ namespace YellowFlare.MessageProcessing
     {
         #region [====== Nested Types ======]
 
-        private sealed class ShoppingCartRepositoryFetcher : IExternalMessageHandler<object>
+        private sealed class ShoppingCartRepositoryFetcher : IMessageHandler<object>
         {
             private readonly ShoppingCartRepository _repository;
 
@@ -79,41 +79,39 @@ namespace YellowFlare.MessageProcessing
 
         #region [====== IsCurrentlyHandling Tests ======]
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void IsCurrentlyHandling_Throws_IfMessageTypeIsNull()
+        [TestMethod]        
+        public void CurrentMessage_ReturnsNull_IfNoMessageIsBeingHandled()
         {
-            MessageProcessor.IsCurrentlyHandling(null);
-        }
+            Assert.IsNull(MessageProcessor.CurrentMessage);
+        }        
 
         [TestMethod]
-        public void IsCurrentlyHandling_ReturnsFalse_IfProcessorIsNotHandlingAnyMessage()
-        {
-            Assert.IsFalse(MessageProcessor.IsCurrentlyHandling<object>());
-        }
-
-        [TestMethod]
-        public void IsCurrentlyHandling_ReturnsFalse_IfProcessorIsCurrentlyHandlingDifferentMessageType()
-        {
+        public void CurrentMessage_ReturnsMessage_IfMessageFromEnterpriseServiceBusIsBeingHandled()
+        {           
             _processor.Handle(new object(), message =>
-                Assert.IsFalse(MessageProcessor.IsCurrentlyHandling<string>())
-            );
+            {
+                var currentMessage = MessageProcessor.CurrentMessage;
+
+                Assert.IsNotNull(currentMessage);
+                Assert.AreSame(message, currentMessage.Instance);
+                Assert.AreEqual(MessageSources.EnterpriseServiceBus, currentMessage.Source);
+            });
         }
 
         [TestMethod]
-        public void IsCurrentlyHandling_ReturnsTrue_IfProcessorIsCurrentlyHandlingExactMessageType()
+        public void CurrentMessage_ReturnsMessage_IfMessageFromDomainEventBusIsBeingHandled()
         {
-            _processor.Handle("A message", message =>
-                Assert.IsTrue(MessageProcessor.IsCurrentlyHandling<string>())
-            );
-        }
+            using (DomainEventBus.Subscribe<object>(message =>
+            {
+                var currentMessage = MessageProcessor.CurrentMessage;
 
-        [TestMethod]
-        public void IsCurrentlyHandling_ReturnsTrue_IfProcessorIsCurrentlyHandlingBaseMessageType()
-        {
-            _processor.Handle("A message", message =>
-                Assert.IsTrue(MessageProcessor.IsCurrentlyHandling<object>())
-            );
+                Assert.IsNotNull(currentMessage);
+                Assert.AreSame(message, currentMessage.Instance);
+                Assert.AreEqual(MessageSources.DomainEventBus, currentMessage.Source);
+            }))
+            {
+                DomainEventBus.Publish(new object());
+            }            
         }
 
         #endregion

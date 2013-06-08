@@ -120,6 +120,9 @@
   <data name="DomainException_CommandFailed" xml:space="preserve">
     <value>Command '{0}' failed because it caused a DomainException to occur.</value>
   </data>
+  <data name="MessageHander_MultipleAttributesFound" xml:space="preserve">
+    <value>Multiple attributes of the specified type were found when only a single was expected: {0}.</value>
+  </data>
   <data name="MessageHandlerClass_InvalidInstanceLifetimeMode" xml:space="preserve">
     <value>Invalid InstanceLifetime was specified on class '{0}': {1}. </value>
   </data>

@@ -11,12 +11,12 @@ namespace YellowFlare.MessageProcessing
         private bool _hasCompleted;
         private bool _isDisposed;
                     
-        internal MessageProcessorContextScope(MessageProcessor handler)
+        internal MessageProcessorContextScope(MessageProcessor processor)
         {
             var currentUnitOfWork = MessageProcessorContext.Current;            
             if (currentUnitOfWork == null)
             {
-                MessageProcessorContext.Current = new MessageProcessorContext(handler);
+                MessageProcessorContext.Current = new MessageProcessorContext(processor);
 
                 _isContextOwner = true;
             }                

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace YellowFlare.MessageProcessing
 {
@@ -49,36 +48,36 @@ namespace YellowFlare.MessageProcessing
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message) where TMessage : class
         {
-            Handle(message, false);
+            Handle(message, MessageSources.EnterpriseServiceBus);
         }
 
-        internal void Handle<TMessage>(TMessage message, bool isInternalMessage) where TMessage : class
+        internal void Handle<TMessage>(TMessage message, MessageSources source) where TMessage : class
         {            
-            using (var scope = CreateMessageProcessorContextScope())
+            using (var scope = CreateContextScope())
             {
-                var context = MessageProcessorContext.Current;
-
-                foreach (var handler in CreateMessageHandlersFor(message, isInternalMessage))
+                foreach (var handler in _handlerFactory.CreateHandlersFor(message))
                 {                    
-                    BuildCommand(handler, message, context).Execute();
+                    CreatePipelineFor(handler, source).Handle(message);
                 }
                 scope.Complete();
             }
-        }
-
-        private IEnumerable<IMessageHandler<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message, bool isInternalMessage) where TMessage : class
-        {
-            return isInternalMessage
-                ? _handlerFactory.CreateInternalHandlersFor(message)
-                : _handlerFactory.CreateExternalHandlersFor(message);
-        }
+        }        
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IExternalMessageHandler<TMessage> handler) where TMessage : class
+        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class
+        {            
+            Handle(message, handler, MessageSources.EnterpriseServiceBus);
+        }
+
+        internal void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, MessageSources source) where TMessage : class
         {
-            using (var scope = CreateMessageProcessorContextScope())
-            {                
-                BuildCommand(new ExternalMessageHandler<TMessage>(handler), message, MessageProcessorContext.Current).Execute();
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+            using (var scope = CreateContextScope())
+            {
+                CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(handler), source).Handle(message);
                 scope.Complete();
             }
         }
@@ -86,51 +85,59 @@ namespace YellowFlare.MessageProcessing
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, Action<TMessage> action) where TMessage : class
         {
-            Handle(message, new ActionHandler<TMessage>(action));
+            Handle(message, action, MessageSources.EnterpriseServiceBus);
         }
 
-        private MessageProcessorContextScope CreateMessageProcessorContextScope()
+        internal void Handle<TMessage>(TMessage message, Action<TMessage> action, MessageSources source) where TMessage : class
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+            using (var scope = CreateContextScope())
+            {
+                CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(action), source).Handle(message);
+                scope.Complete();
+            }
+        }
+
+        private MessageProcessorContextScope CreateContextScope()
         {
             return new MessageProcessorContextScope(this);
-        }                    
-
-        private IMessageCommand BuildCommand<TMessage>(IMessageHandler<TMessage> handler, TMessage message, MessageProcessorContext context)
-            where TMessage : class
-        {
-            return _pipelineFactory.CreatePipeline(handler, message, context);
-        }                              
-  
-        /// <summary>
-        /// Indicates whether or not a message of the specified type is currently being handled.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of a message.</typeparam>
-        /// <returns>
-        /// <c>true</c> if a message of the specified type is currently being handled; otherwise <c>false</c>.
-        /// </returns>
-        public static bool IsCurrentlyHandling<TMessage>()
-        {
-            return IsCurrentlyHandling(typeof(TMessage));
         }
 
-        /// <summary>
-        /// Indicates whether or not a message of the specified type is currently being handled.
-        /// </summary>
-        /// <param name="messageType">Type of a message.</param>
-        /// <returns>
-        /// <c>true</c> if a message of the specified type is currently being handled; otherwise <c>false</c>.
-        /// </returns>
-        public static bool IsCurrentlyHandling(Type messageType)
+        private IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerWithAttributes<TMessage> handler, MessageSources source) where TMessage : class
         {
-            if (messageType == null)
+            return _pipelineFactory.CreatePipelineFor(handler, MessageProcessorContext.Current, source);
+        }                                       
+
+        /// <summary>
+        /// Returns the <see cref="Message" /> that is currently being handled by the processor, or <c>null</c> if no message
+        /// is currently being handled by the processor.
+        /// </summary>
+        public static Message CurrentMessage
+        {
+            get
             {
-                throw new ArgumentNullException("messageType");
+                var context = MessageProcessorContext.Current;
+                if (context == null)
+                {
+                    return null;
+                }
+                return context.PeekMessage();
             }
+        }
+
+        internal static bool TryGetCurrent(out MessageProcessor processor)
+        {
             var context = MessageProcessorContext.Current;
             if (context == null)
             {
+                processor = null;
                 return false;
             }
-            return context.HasMessageOnStackOfType(messageType);
+            processor = context.MessageProcessor;
+            return true;
         }
     }
 }

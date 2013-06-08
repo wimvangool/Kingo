@@ -2,27 +2,33 @@
 namespace YellowFlare.MessageProcessing
 {
     /// <summary>
-    /// Represents a factory class that can be used to dynamically create a pipeline of
-    /// <see cref="IMessageHandlerBehavior">behaviors</see> on top of a handler.
+    /// Represents a factory class that can be used to dynamically create a pipeline on top of a handler.
     /// </summary>        
     public class MessageHandlerPipelineFactory
-    {        
-        internal IMessageCommand CreatePipeline<TMessage>(IMessageHandler<TMessage> handler, TMessage message, MessageProcessorContext context)
+    {
+        internal IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerWithAttributes<TMessage> handler, MessageProcessorContext context, MessageSources source)
             where TMessage : class
         {
-            // 1) First, the core-command is created which contains all business logic.
-            // 2) On top op that command, the custom behaviors are applied, if specified.
-            // 3) As a final step, the StackManager-command is put at the front of the pipeline,
-            //    which pushes and pops the command on and off the stack.            
-            IMessageCommand command = new MessageCommand<TMessage>(handler, message);            
-            command = ApplyCustomBehaviorsTo(command);            
-            command = new MessageProcessorStackManagerCommand(command, context);            
-            return command;
+            // On top of the custom pipeline, two infrastructural behaviors are defined:
+            // - The stack-manager pushes the current message on the stack, along with it's source.
+            // - The source-filter then checks if the specified handler accepts messages from this source,
+            //   and if so, uses this pipeline-factory to build the custom pipeline and then handles the message.            
+            IMessageHandler<TMessage> pipeline = new MessageSourceFilter<TMessage>(handler, context, this);
+            pipeline = new MessageStackManager<TMessage>(pipeline, context, source);
+            return pipeline;
         }
-        
-        protected virtual IMessageCommand ApplyCustomBehaviorsTo(IMessageCommand command)
+
+        /// <summary>
+        /// Creates and returns a message-handler pipeline on top of the specified handler.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message handled by the handler/pipeline.</typeparam>
+        /// <param name="handler">The handler containing the actual business logic.</param>
+        /// <param name="context">The context in which the handler handles the message.</param>
+        /// <returns>A message-handler pipeline.</returns>
+        protected internal virtual IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerWithAttributes<TMessage> handler, MessageProcessorContext context)
+            where TMessage : class
         {
-            return command;
-        }     
+            return handler;
+        }           
     }
 }

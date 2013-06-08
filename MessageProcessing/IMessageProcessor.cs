@@ -20,7 +20,7 @@ namespace YellowFlare.MessageProcessing
         /// <typeparam name="TMessage">Type of the message.</typeparam>
         /// <param name="message">Message to handle.</param>
         /// <param name="handler">Handler that will be used to handle the message.</param>
-        void Handle<TMessage>(TMessage message, IExternalMessageHandler<TMessage> handler) where TMessage : class;
+        void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class;
 
         /// <summary>
         /// Handles the specified message by invoking the specified delegate.

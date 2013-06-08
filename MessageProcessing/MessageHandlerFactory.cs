@@ -110,36 +110,17 @@ namespace YellowFlare.MessageProcessing
         protected internal abstract void RegisterSingle(Type type);        
 
         /// <inheritdoc />
-        internal IEnumerable<IMessageHandler<TMessage>> CreateInternalHandlersFor<TMessage>(TMessage message) where TMessage : class
+        internal IEnumerable<IMessageHandlerWithAttributes<TMessage>> CreateHandlersFor<TMessage>(TMessage message) where TMessage : class
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            var matchedHandlers =
-                from handlerClass in _messageHandlers
-                let handlers = handlerClass.ResolveInEveryRoleForInternal(message.GetType())
-                from handler in handlers
-                select handler;
-            
-            return matchedHandlers.Cast<IMessageHandler<TMessage>>();
-        }
-
-        /// <inheritdoc />
-        internal IEnumerable<IMessageHandler<TMessage>> CreateExternalHandlersFor<TMessage>(TMessage message) where TMessage : class
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            var matchedHandlers =
-                from handlerClass in _messageHandlers
-                let handlers = handlerClass.ResolveInEveryRoleForExternal(message.GetType())
-                from handler in handlers
-                select handler;
-
-            return matchedHandlers.Cast<IMessageHandler<TMessage>>();
-        }
+            return from handlerClass in _messageHandlers
+                   let handlers = handlerClass.ResolveInEveryRoleFor(message)
+                   from handler in handlers
+                   select handler;
+        }        
 
         /// <summary>
         /// Resolves an instance of the requested type.
@@ -150,6 +131,16 @@ namespace YellowFlare.MessageProcessing
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>                
         protected internal abstract object Resolve(Type type);
+
+        internal static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        {
+            return MessageHandlerClass.CreateMessageHandler(handler);
+        }
+
+        internal static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
+        {
+            return MessageHandlerClass.CreateMessageHandler(action);
+        }
 
         private static IEnumerable<Assembly> FindAssembliesInCurrentDirectory()
         {

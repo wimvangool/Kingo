@@ -1,7 +1,7 @@
 ﻿
 namespace YellowFlare.MessageProcessing
 {    
-    internal sealed class TheCommandHandler : IExternalMessageHandler<TheCommand>
+    internal sealed class TheCommandHandler : IMessageHandler<TheCommand>
     {
         public void Handle(TheCommand command)
         {

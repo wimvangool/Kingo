@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace YellowFlare.MessageProcessing
@@ -18,54 +17,7 @@ namespace YellowFlare.MessageProcessing
     /// </para>       
     /// </remarks>
     public static class DomainEventBus
-    {
-        #region [====== Nested Types ======]
-        
-        private sealed class CallbackHandler<TMessage> : IInternalMessageHandler<TMessage>
-            where TMessage : class
-        {
-            private readonly Action<TMessage> _callback;
-
-            public CallbackHandler(Action<TMessage> callback)
-            {
-                if (callback == null)
-                {
-                    throw new ArgumentNullException("callback");
-                }
-                _callback = callback;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as CallbackHandler<TMessage>);
-            }
-
-            private bool Equals(CallbackHandler<TMessage> other)
-            {
-                if (ReferenceEquals(other, this))
-                {
-                    return true;
-                }
-                if (ReferenceEquals(other, null))
-                {
-                    return false;
-                }
-                return Equals(_callback, other._callback);
-            }
-
-            public override int GetHashCode()
-            {
-                return _callback.GetHashCode();
-            }
-
-            public void Handle(TMessage message)
-            {
-                _callback(message);
-            }
-        }
-        
-        #endregion
-
+    {        
         private static readonly ThreadLocal<List<DomainEventBusSubscription>> _Subscriptions =
             new ThreadLocal<List<DomainEventBusSubscription>>(() => new List<DomainEventBusSubscription>());                              
 
@@ -73,16 +25,15 @@ namespace YellowFlare.MessageProcessing
         /// Subscribes the specified callback to the bus.
         /// </summary>
         /// <typeparam name="TMessage">Type of event to listen to.</typeparam>
-        /// <param name="callback">
+        /// <param name="action">
         /// Callback that will handle any events of type <paramtyperef name="TMessage"/>.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="callback"/> is <c>null</c>.
+        /// <paramref name="action"/> is <c>null</c>.
         /// </exception>
-        public static IDisposable Subscribe<TMessage>(Action<TMessage> callback)
-            where TMessage : class
-        {                      
-            return Subscribe(new CallbackHandler<TMessage>(callback));
+        public static IDisposable Subscribe<TMessage>(Action<TMessage> action) where TMessage : class
+        {
+            return new DomainEventBusSubscriptionForAction<TMessage>(_Subscriptions.Value, action);
         }
 
         /// <summary>
@@ -95,14 +46,9 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public static IDisposable Subscribe<TMessage>(IInternalMessageHandler<TMessage> handler)
-            where TMessage : class
-        {
-            if (handler == null)
-            {
-                throw new ArgumentNullException("handler");
-            }
-            return new DomainEventBusSubscription<TMessage>(_Subscriptions.Value, handler);
+        public static IDisposable Subscribe<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        {            
+            return new DomainEventBusSubscriptionForInterface<TMessage>(_Subscriptions.Value, handler);
         }
         
         /// <summary>
@@ -119,32 +65,27 @@ namespace YellowFlare.MessageProcessing
         /// </remarks>        
         public static void Publish<TMessage>(TMessage message) where TMessage : class
         {
-            HandleMessageWithProcessor(message);
-            HandleMessageWithSubscribedHandlers(message);                       
-        }
-       
-        private static void HandleMessageWithProcessor<TMessage>(TMessage message) where TMessage : class
-        {
-            var context = MessageProcessorContext.Current;
-            if (context == null)
+            MessageProcessor processor;
+
+            if (MessageProcessor.TryGetCurrent(out processor))
             {
-                return;
-            }
-            var processor = context.MessageProcessor;
-            if (processor == null)
-            {
-                return;
-            }
-            processor.Handle(message, true);
+                HandleMessageWithRegisteredHandlers(processor, message);
+                HandleMessageWithSubscribedHandlers(processor, message);    
+            }            
         }
 
-        private static void HandleMessageWithSubscribedHandlers<TMessage>(TMessage message) where TMessage : class
+        private static void HandleMessageWithRegisteredHandlers<TMessage>(MessageProcessor processor, TMessage message) where TMessage : class
+        {
+            processor.Handle(message, MessageSources.DomainEventBus);
+        }              
+
+        private static void HandleMessageWithSubscribedHandlers<TMessage>(MessageProcessor processor, TMessage message) where TMessage : class
         {
             if (_Subscriptions.IsValueCreated)
             {
-                foreach (var subscription in _Subscriptions.Value.OfType<IInternalMessageHandler<TMessage>>())
+                foreach (var subscription in _Subscriptions.Value)
                 {
-                    subscription.Handle(message);
+                    subscription.Handle(processor, message);
                 }
             } 
         }
