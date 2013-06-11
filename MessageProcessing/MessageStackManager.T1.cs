@@ -1,26 +1,25 @@
 ﻿
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class MessageStackManager<TMessage> : IMessageHandler<TMessage> where TMessage : class
-    {
-        private readonly IMessageHandler<TMessage> _handler;
+    internal sealed class MessageStackManager<TMessage> : MessageHandlerPipelineDecorator<TMessage> where TMessage : class
+    {        
         private readonly MessageProcessorContext _context;
         private readonly MessageSources _source;
 
-        public MessageStackManager(IMessageHandler<TMessage> handler, MessageProcessorContext context, MessageSources source)
-        {            
-            _handler = handler;
+        public MessageStackManager(IMessageHandlerPipeline<TMessage> handler, MessageSources source, MessageProcessorContext context)
+            : base(handler)
+        {                        
             _context = context;
             _source = source;
         }
 
-        public void Handle(TMessage message)
+        public override void Handle(TMessage message)
         {
             _context.PushMessage(new Message(message, _source));
 
             try
             {
-                _handler.Handle(message);
+                Handler.Handle(message);
             }
             finally
             {

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace YellowFlare.MessageProcessing
 {    
-    internal abstract class MessageHandlerWithAttributes<TMessage> : IMessageHandlerWithAttributes<TMessage> where TMessage : class
+    internal abstract class MessageHandlerPipeline<TMessage> : IMessageHandlerPipeline<TMessage> where TMessage : class
     {                
         public abstract void Handle(TMessage message);        
 
@@ -107,7 +107,7 @@ namespace YellowFlare.MessageProcessing
 
         private static Exception NewMultipleAttributesOfSpecifiedTypeException(Type type)
         {
-            var messageFormat = ExceptionMessages.MessageHander_MultipleAttributesFound;
+            var messageFormat = ExceptionMessages.MessageHanderPipeline_MultipleAttributesFound;
             var message = string.Format(CultureInfo.InvariantCulture, messageFormat, type);
             return new InvalidOperationException(message);
         }

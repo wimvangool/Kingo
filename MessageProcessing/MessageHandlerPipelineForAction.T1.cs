@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class MessageHandlerWithAttributesForAction<TMessage> : MessageHandlerWithAttributes<TMessage> where TMessage : class
+    internal sealed class MessageHandlerPipelineForAction<TMessage> : MessageHandlerPipeline<TMessage> where TMessage : class
     {
         private readonly Action<TMessage> _action;
 
-        public MessageHandlerWithAttributesForAction(Action<TMessage> action)
+        public MessageHandlerPipelineForAction(Action<TMessage> action)
         {
             _action = action;
         }

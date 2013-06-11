@@ -150,7 +150,7 @@ namespace YellowFlare.MessageProcessing
             _container.RegisterType(type, new ContainerControlledLifetimeManager());
         }
 
-        protected override object Resolve(Type type)
+        protected override object CreateMessageHandler(Type type)
         {
             return _container.Resolve(type);
         }

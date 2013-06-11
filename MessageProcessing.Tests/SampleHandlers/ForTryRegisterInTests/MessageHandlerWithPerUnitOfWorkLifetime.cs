@@ -1,5 +1,5 @@
 ﻿
-namespace YellowFlare.MessageProcessing.SampleHandlers.ForMessageHandlerClassTests
+namespace YellowFlare.MessageProcessing.SampleHandlers.ForTryRegisterInTests
 {
     [InstanceLifetime(InstanceLifetime.PerUnitOfWork)]
     internal sealed class MessageHandlerWithPerUnitOfWorkLifetime : IMessageHandler<Command>

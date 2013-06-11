@@ -1,46 +1,42 @@
 ﻿
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class MessageSourceFilter<TMessage> : IMessageHandler<TMessage> where TMessage : class
+    internal sealed class MessageSourceFilter<TMessage> : MessageHandlerPipelineDecorator<TMessage> where TMessage : class
     {
-        private readonly IMessageHandlerWithAttributes<TMessage> _handler;
-        private readonly MessageProcessorContext _context;
-        private readonly MessageHandlerPipelineFactory _pipelineFactory;
+        private readonly MessageSources _source;      
 
-        public MessageSourceFilter(IMessageHandlerWithAttributes<TMessage> handler, MessageProcessorContext context, MessageHandlerPipelineFactory pipelineFactory)
+        public MessageSourceFilter(IMessageHandlerPipeline<TMessage> handler, MessageSources source) : base(handler)
         {
-            _handler = handler;          
-            _context = context;
-            _pipelineFactory = pipelineFactory;
+            _source = source;           
         }
 
-        public void Handle(TMessage message)
+        public override void Handle(TMessage message)
         {
-            if (HandlesMessagesFromSource(_handler, _context.PeekMessage().Source))
+            if (HandlerHandlesMessagesFromSource())
             {
-                _pipelineFactory.CreatePipelineFor(_handler, _context).Handle(message);
+                Handler.Handle(message);
             }
         }
 
-        private static bool HandlesMessagesFromSource(IMessageHandlerWithAttributes<TMessage> handler, MessageSources source)
+        private bool HandlerHandlesMessagesFromSource()
         {
             HandlesMessagesFromAttribute attribute;
             const bool includeInherited = true;            
 
-            if (handler.TryGetMethodAttributeOfType(includeInherited, out attribute))
+            if (TryGetMethodAttributeOfType(includeInherited, out attribute))
             {
-                return HandlesMessagesFromSource(attribute.Sources, source);
+                return HandlesMessagesFromSource(attribute.Sources, _source);
             }
-            if (handler.TryGetClassAttributeOfType(includeInherited, out attribute))
+            if (TryGetClassAttributeOfType(includeInherited, out attribute))
             {
-                return HandlesMessagesFromSource(attribute.Sources, source);
+                return HandlesMessagesFromSource(attribute.Sources, _source);
             }
-            return HandlesMessagesFromSource(MessageSources.All, source);
+            return HandlesMessagesFromSource(MessageSources.All, _source);
         }
 
-        private static bool HandlesMessagesFromSource(MessageSources supportedSources, MessageSources source)
+        private static bool HandlesMessagesFromSource(MessageSources acceptedSources, MessageSources currentSource)
         {
-            return (supportedSources & source) == source;
+            return (acceptedSources & currentSource) == currentSource;
         }
     }
 }

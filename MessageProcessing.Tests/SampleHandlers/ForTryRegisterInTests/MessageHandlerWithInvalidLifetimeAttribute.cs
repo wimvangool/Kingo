@@ -1,5 +1,5 @@
 ﻿
-namespace YellowFlare.MessageProcessing.SampleHandlers.ForMessageHandlerClassTests
+namespace YellowFlare.MessageProcessing.SampleHandlers.ForTryRegisterInTests
 {
     [InstanceLifetime((InstanceLifetime) 5)]
     internal sealed class MessageHandlerWithInvalidLifetimeAttribute : IMessageHandler<Command>

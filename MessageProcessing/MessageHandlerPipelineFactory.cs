@@ -6,15 +6,15 @@ namespace YellowFlare.MessageProcessing
     /// </summary>        
     public class MessageHandlerPipelineFactory
     {
-        internal IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerWithAttributes<TMessage> handler, MessageProcessorContext context, MessageSources source)
+        internal IMessageHandler<TMessage> CreatePipeline<TMessage>(IMessageHandlerPipeline<TMessage> handler, MessageProcessorContext context, MessageSources source)
             where TMessage : class
         {
-            // On top of the custom pipeline, two infrastructural behaviors are defined:
-            // - The stack-manager pushes the current message on the stack, along with it's source.
-            // - The source-filter then checks if the specified handler accepts messages from this source,
-            //   and if so, uses this pipeline-factory to build the custom pipeline and then handles the message.            
-            IMessageHandler<TMessage> pipeline = new MessageSourceFilter<TMessage>(handler, context, this);
-            pipeline = new MessageStackManager<TMessage>(pipeline, context, source);
+            // On top of the optional custom pipeline, two infrastructural behaviors are defined that prevent
+            // unnecessary calls to handlers that do not support the current source (MessageSourceFilter) and
+            // manage the message-stack (MessageStackManager).
+            IMessageHandlerPipeline<TMessage> pipeline = new LazyMessageHandlerPipeline<TMessage>(handler, this);
+            pipeline = new MessageStackManager<TMessage>(pipeline, source, context);
+            pipeline = new MessageSourceFilter<TMessage>(pipeline, source);
             return pipeline;
         }
 
@@ -22,13 +22,12 @@ namespace YellowFlare.MessageProcessing
         /// Creates and returns a message-handler pipeline on top of the specified handler.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message handled by the handler/pipeline.</typeparam>
-        /// <param name="handler">The handler containing the actual business logic.</param>
-        /// <param name="context">The context in which the handler handles the message.</param>
+        /// <param name="pipeline">The handler containing the actual business logic.</param>        
         /// <returns>A message-handler pipeline.</returns>
-        protected internal virtual IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerWithAttributes<TMessage> handler, MessageProcessorContext context)
+        protected internal virtual IMessageHandler<TMessage> CreatePipeline<TMessage>(IMessageHandlerPipeline<TMessage> pipeline)
             where TMessage : class
         {
-            return handler;
+            return pipeline;
         }           
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using YellowFlare.MessageProcessing.SampleHandlers.ForMessageHandlerClassTests;
+using YellowFlare.MessageProcessing.SampleHandlers.ForTryRegisterInTests;
 
 namespace YellowFlare.MessageProcessing
 {

@@ -55,7 +55,7 @@ namespace YellowFlare.MessageProcessing
         {            
             using (var scope = CreateContextScope())
             {
-                foreach (var handler in _handlerFactory.CreateHandlersFor(message))
+                foreach (var handler in _handlerFactory.CreateMessageHandlersFor(message))
                 {                    
                     CreatePipelineFor(handler, source).Handle(message);
                 }
@@ -106,9 +106,9 @@ namespace YellowFlare.MessageProcessing
             return new MessageProcessorContextScope(this);
         }
 
-        private IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerWithAttributes<TMessage> handler, MessageSources source) where TMessage : class
+        private IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerPipeline<TMessage> handler, MessageSources source) where TMessage : class
         {
-            return _pipelineFactory.CreatePipelineFor(handler, MessageProcessorContext.Current, source);
+            return _pipelineFactory.CreatePipeline(handler, MessageProcessorContext.Current, source);
         }                                       
 
         /// <summary>

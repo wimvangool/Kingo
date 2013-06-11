@@ -1,5 +1,5 @@
 ﻿
-namespace YellowFlare.MessageProcessing.SampleHandlers.ForMessageHandlerClassTests
+namespace YellowFlare.MessageProcessing.SampleHandlers.ForTryRegisterInTests
 {    
     internal abstract class AbstractMessageHandler : IMessageHandler<Command>
     {

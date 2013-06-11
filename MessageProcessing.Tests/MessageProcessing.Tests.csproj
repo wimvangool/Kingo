@@ -99,16 +99,16 @@
     <Compile Include="UnitOfWorkWrapperItemTest.cs" />
     <Compile Include="UnitOfWorkWithAttributeOneSync.cs" />
     <Compile Include="FlushControllerTest.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerClassTests\MessageHandlerWithInvalidLifetimeAttribute.cs" />
+    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithInvalidLifetimeAttribute.cs" />
     <Compile Include="MessageProcessorTest.cs" />
     <Compile Include="SampleHandlers\DomainEvent.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerClassTests\MessageHandlerWithPerUnitOfWorkLifetime.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerClassTests\MessageHandlerWithPerResolveLifetime.cs" />
+    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithPerUnitOfWorkLifetime.cs" />
+    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithPerResolveLifetime.cs" />
     <Compile Include="SampleHandlers\Command.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerClassTests\MessageHandlerWithSingleLifetime.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerClassTests\AbstractMessageHandler.cs" />
-    <Compile Include="SampleHandlers\ForMessageHandlerClassTests\GenericMessageHandler.cs" />
+    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithSingleLifetime.cs" />
+    <Compile Include="SampleHandlers\ForTryRegisterInTests\AbstractMessageHandler.cs" />
+    <Compile Include="SampleHandlers\ForTryRegisterInTests\GenericMessageHandler.cs" />
     <Compile Include="MessageProcessorContextCacheTest.cs" />
     <Compile Include="MessageHandlerClassTest.cs" />
   </ItemGroup>

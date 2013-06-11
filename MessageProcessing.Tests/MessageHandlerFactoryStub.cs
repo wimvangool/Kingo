@@ -49,7 +49,7 @@ namespace YellowFlare.MessageProcessing
             _singleLifetimeTypes.Add(type);
         }        
 
-        protected internal override object Resolve(Type type)
+        protected internal override object CreateMessageHandler(Type type)
         {
             throw new NotSupportedException("This method is not supported by the stub.");
         }

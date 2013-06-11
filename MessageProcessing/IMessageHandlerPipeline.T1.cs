@@ -8,7 +8,7 @@ namespace YellowFlare.MessageProcessing
     /// access to the attributes declared on it.
     /// </summary>
     /// <typeparam name="TMessage">Type of message to handle.</typeparam>
-    public interface IMessageHandlerWithAttributes<in TMessage> : IMessageHandler<TMessage> where TMessage : class
+    public interface IMessageHandlerPipeline<in TMessage> : IMessageHandler<TMessage> where TMessage : class
     {
         #region [====== Class Attributes ======]
 

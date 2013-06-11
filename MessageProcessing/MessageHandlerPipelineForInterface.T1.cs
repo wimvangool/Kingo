@@ -4,13 +4,13 @@ using System.Reflection;
 
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class MessageHandlerWithAttributesForInterface<TMessage> : MessageHandlerWithAttributes<TMessage> where TMessage : class
+    internal sealed class MessageHandlerPipelineForInterface<TMessage> : MessageHandlerPipeline<TMessage> where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;
         private readonly Type _interfaceType;
         private readonly Lazy<MethodInfo> _handleMethod;
 
-        public MessageHandlerWithAttributesForInterface(IMessageHandler<TMessage> handler, Type interfaceType)
+        public MessageHandlerPipelineForInterface(IMessageHandler<TMessage> handler, Type interfaceType)
         {
             _handler = handler;
             _interfaceType = interfaceType;

@@ -72,9 +72,9 @@ namespace YellowFlare.MessageProcessing {
         /// <summary>
         ///   Looks up a localized string similar to Multiple attributes of the specified type were found when only a single was expected: {0}..
         /// </summary>
-        internal static string MessageHander_MultipleAttributesFound {
+        internal static string MessageHanderPipeline_MultipleAttributesFound {
             get {
-                return ResourceManager.GetString("MessageHander_MultipleAttributesFound", resourceCulture);
+                return ResourceManager.GetString("MessageHanderPipeline_MultipleAttributesFound", resourceCulture);
             }
         }
         

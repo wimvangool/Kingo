@@ -9,13 +9,13 @@ namespace YellowFlare.MessageProcessing
 {
     internal sealed class MessageHandlerClass
     {        
-        private readonly MessageHandlerFactory _container;
+        private readonly MessageHandlerFactory _factory;
         private readonly Type _classType;
         private readonly Type[] _interfaceTypes;
 
-        private MessageHandlerClass(MessageHandlerFactory container, Type classType, Type[] interfaceTypes)
+        private MessageHandlerClass(MessageHandlerFactory factory, Type classType, Type[] interfaceTypes)
         {
-            _container = container;
+            _factory = factory;
             _classType = classType;
             _interfaceTypes = interfaceTypes;
         }                     
@@ -32,15 +32,15 @@ namespace YellowFlare.MessageProcessing
             switch (lifeTime)
             {
                 case InstanceLifetime.PerResolve:                    
-                    _container.RegisterWithPerResolveLifetime(_classType);
+                    _factory.RegisterWithPerResolveLifetime(_classType);
                     return;  
                  
                 case InstanceLifetime.PerUnitOfWork:                    
-                    _container.RegisterWithPerUnitOfWorkLifetime(_classType);
+                    _factory.RegisterWithPerUnitOfWorkLifetime(_classType);
                     return;
                     
                 case InstanceLifetime.Single:                    
-                    _container.RegisterSingle(_classType);
+                    _factory.RegisterSingle(_classType);
                     return;
                     
                 default:                    
@@ -48,7 +48,7 @@ namespace YellowFlare.MessageProcessing
             }
         }                       
 
-        public IEnumerable<IMessageHandlerWithAttributes<TMessage>> ResolveInEveryRoleFor<TMessage>(TMessage message) where TMessage : class
+        public IEnumerable<IMessageHandlerPipeline<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message) where TMessage : class
         {
             // This LINQ construct first selects all message handler interface definitions that are compatible with
             // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -61,33 +61,32 @@ namespace YellowFlare.MessageProcessing
             return from interfaceType in _interfaceTypes
                    let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                    where messageTypeOfInterface.IsInstanceOfType(message)
-                   let messageHandlerTypeDefinition = typeof(MessageHandlerWithAttributesForInterface<>)
-                   let messageHandlerType = messageHandlerTypeDefinition.MakeGenericType(messageTypeOfInterface)
-                   let messageHandler = _container.Resolve(_classType)
-                   select CreateMessageHandler<TMessage>(messageHandlerType, messageHandler, interfaceType);
+                   let messageHandlerTypeDefinition = typeof(MessageHandlerPipelineForClass<>)
+                   let messageHandlerType = messageHandlerTypeDefinition.MakeGenericType(messageTypeOfInterface)                   
+                   select CreateMessageHandler<TMessage>(messageHandlerType, _factory, _classType);
         }                
 
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
         private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>);
 
-        public static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        public static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
         {
             var specifiedInterfaceType = typeof(IMessageHandler<TMessage>);
             var actualInterfaceType = GetFirstInterfaceTypeFor(handler.GetType(), specifiedInterfaceType);
-            return new MessageHandlerWithAttributesForInterface<TMessage>(handler, actualInterfaceType);
+            return new MessageHandlerPipelineForInterface<TMessage>(handler, actualInterfaceType);
         }
 
-        public static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
+        public static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
         {
-            return new MessageHandlerWithAttributesForAction<TMessage>(action);
+            return new MessageHandlerPipelineForAction<TMessage>(action);
         }
 
-        private static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(Type messageHandlerType, object handler, Type interfaceType) where TMessage : class
+        private static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(Type messageHandlerType, MessageHandlerFactory factory, Type classType) where TMessage : class
         {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
-            var constructor = messageHandlerType.GetConstructor(flags, null, new[] { interfaceType, typeof(Type) }, null);
-            var constructorArguments = new [] { handler, interfaceType };
-            return (IMessageHandlerWithAttributes<TMessage>)constructor.Invoke(constructorArguments);
+            var constructor = messageHandlerType.GetConstructor(flags, null, new[] { typeof(MessageHandlerFactory), typeof(Type) }, null);
+            var constructorArguments = new object[] { factory, classType };
+            return (IMessageHandlerPipeline<TMessage>) constructor.Invoke(constructorArguments);
         }
 
         private static Type GetFirstInterfaceTypeFor(Type handlerType, Type specifiedInterfaceType)

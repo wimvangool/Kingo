@@ -110,34 +110,34 @@ namespace YellowFlare.MessageProcessing
         protected internal abstract void RegisterSingle(Type type);        
 
         /// <inheritdoc />
-        internal IEnumerable<IMessageHandlerWithAttributes<TMessage>> CreateHandlersFor<TMessage>(TMessage message) where TMessage : class
+        internal IEnumerable<IMessageHandlerPipeline<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message) where TMessage : class
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
             return from handlerClass in _messageHandlers
-                   let handlers = handlerClass.ResolveInEveryRoleFor(message)
+                   let handlers = handlerClass.CreateInstancesInEveryRoleFor(message)
                    from handler in handlers
                    select handler;
         }        
 
         /// <summary>
-        /// Resolves an instance of the requested type.
+        /// Create an instance of the requested message handler type.
         /// </summary>
-        /// <param name="type">Type to resolve.</param>
-        /// <returns>An instance of the requested type.</returns>
+        /// <param name="type">Type to create.</param>
+        /// <returns>An instance of the requested message handler type.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>                
-        protected internal abstract object Resolve(Type type);
+        protected internal abstract object CreateMessageHandler(Type type);
 
-        internal static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        internal static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
         {
             return MessageHandlerClass.CreateMessageHandler(handler);
         }
 
-        internal static IMessageHandlerWithAttributes<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
+        internal static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
         {
             return MessageHandlerClass.CreateMessageHandler(action);
         }
