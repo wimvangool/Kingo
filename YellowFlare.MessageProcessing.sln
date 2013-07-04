@@ -7,23 +7,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Local.Testsettings = Local.Testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessing.Tests", "MessageProcessing.Tests\MessageProcessing.Tests.csproj", "{DDE1CA85-7907-4C67-91DF-1AD824A44133}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor.Tests", "MessageProcessor.Tests\MessageProcessor.Tests.csproj", "{DDE1CA85-7907-4C67-91DF-1AD824A44133}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessing", "MessageProcessing\MessageProcessing.csproj", "{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor", "MessageProcessor\MessageProcessor.csproj", "{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessing.Unity.Tests", "MessageProcessing.Unity.Tests\MessageProcessing.Unity.Tests.csproj", "{1D19D39A-15C6-4FDE-90C5-93188F2FC644}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor.Unity.Tests", "MessageProcessor.Unity.Tests\MessageProcessor.Unity.Tests.csproj", "{1D19D39A-15C6-4FDE-90C5-93188F2FC644}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessing.Unity", "MessageProcessing.Unity\MessageProcessing.Unity.csproj", "{77F45326-E908-47EB-B924-A3BD26CAD6B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor.Unity", "MessageProcessor.Unity\MessageProcessor.Unity.csproj", "{77F45326-E908-47EB-B924-A3BD26CAD6B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessing.TestEngine.Tests", "MessageProcessing.TestEngine.Tests\MessageProcessing.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor.TestEngine.Tests", "MessageProcessor.TestEngine.Tests\MessageProcessor.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessing.TestEngine", "MessageProcessing.TestEngine\MessageProcessing.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor.TestEngine", "MessageProcessor.TestEngine\MessageProcessor.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01.MessageProcessor", "01.MessageProcessor", "{72205C90-C23B-4086-8580-050201371032}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02.MessageProcessor", "02.MessageProcessor", "{72205C90-C23B-4086-8580-050201371032}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02.MessageProcessor.TestEngine", "02.MessageProcessor.TestEngine", "{4E026445-C24A-4447-B188-12E19680718A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03.MessageProcessor.TestEngine", "03.MessageProcessor.TestEngine", "{4E026445-C24A-4447-B188-12E19680718A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03.MessageProcessor.Unity", "03.MessageProcessor.Unity", "{4B713399-4B91-4E00-AF1F-D103268F40DA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04.MessageProcessor.Unity", "04.MessageProcessor.Unity", "{4B713399-4B91-4E00-AF1F-D103268F40DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01.MessageProcessor.Core", "01.MessageProcessor.Core", "{EDEB9436-BDB6-4AC3-B253-F30FE5385056}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor.Core", "MessageProcessor.Core\MessageProcessor.Core.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageProcessor.Core.Tests", "MessageProcessor.Core.Tests\MessageProcessor.Core.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +61,14 @@ Global
 		{FA31C09F-6319-484B-96EC-88BF3C3FDB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA31C09F-6319-484B-96EC-88BF3C3FDB81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA31C09F-6319-484B-96EC-88BF3C3FDB81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,10 +76,12 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD} = {72205C90-C23B-4086-8580-050201371032}
 		{DDE1CA85-7907-4C67-91DF-1AD824A44133} = {72205C90-C23B-4086-8580-050201371032}
-		{4FE972F0-2046-4039-9461-45D0B7E6229F} = {4E026445-C24A-4447-B188-12E19680718A}
-		{FA31C09F-6319-484B-96EC-88BF3C3FDB81} = {4E026445-C24A-4447-B188-12E19680718A}
-		{1D19D39A-15C6-4FDE-90C5-93188F2FC644} = {4B713399-4B91-4E00-AF1F-D103268F40DA}
 		{77F45326-E908-47EB-B924-A3BD26CAD6B0} = {4B713399-4B91-4E00-AF1F-D103268F40DA}
+		{1D19D39A-15C6-4FDE-90C5-93188F2FC644} = {4B713399-4B91-4E00-AF1F-D103268F40DA}
+		{FA31C09F-6319-484B-96EC-88BF3C3FDB81} = {4E026445-C24A-4447-B188-12E19680718A}
+		{4FE972F0-2046-4039-9461-45D0B7E6229F} = {4E026445-C24A-4447-B188-12E19680718A}
+		{757D77D3-7B32-4F21-9617-88274D50B517} = {EDEB9436-BDB6-4AC3-B253-F30FE5385056}
+		{303380DB-4167-4BB0-8B78-63C959B65C4B} = {EDEB9436-BDB6-4AC3-B253-F30FE5385056}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35

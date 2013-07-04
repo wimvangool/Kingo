@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{757D77D3-7B32-4F21-9617-88274D50B517}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
+    <AssemblyName>YellowFlare.MessageProcessor.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\YellowFlare.MessageProcessor.Core.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="Aggregates\AggregateSet.T2.cs" />
+    <Compile Include="Aggregates\BufferedEvent.T2.cs" />
+    <Compile Include="Aggregates\BufferedEventAggregate.T1.cs" />
+    <Compile Include="Aggregates\IAggregateStore.T2.cs" />
+    <Compile Include="Aggregates\Aggregate.T2.cs" />
+    <Compile Include="Aggregates\DomainEventBusAdapter.T1.cs" />
+    <Compile Include="Aggregates\UnitOfWork.T2.cs" />
+    <Compile Include="Aggregates\AggregateVersion.cs" />
+    <Compile Include="Aggregates\DomainModelException.cs" />
+    <Compile Include="Aggregates\IAggregate.T1.cs" />
+    <Compile Include="Aggregates\EventSourcedAggregate.T1.cs" />
+    <Compile Include="Aggregates\IBufferedEvent.T1.cs" />
+    <Compile Include="Aggregates\IBufferedEventStream.T1.cs" />
+    <Compile Include="Aggregates\IDomainEvent.T1.cs" />
+    <Compile Include="Aggregates\IWritableEventStream.T1.cs" />
+    <Compile Include="Aggregates\MemoryEventStream.T1.cs" />
+    <Compile Include="IDomainEventBus.cs" />
+    <Compile Include="IMessageHandler.T1.cs" />
+    <Compile Include="IMessageProcessor.cs" />
+    <Compile Include="UnitOfWorkController.cs" />
+    <Compile Include="FlushHintAttribute.cs" />
+    <Compile Include="IClock.cs" />
+    <Compile Include="InvalidCommandException.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="IUnitOfWorkController.cs" />
+    <Compile Include="MachineClock.cs" />
+    <Compile Include="UnitOfWorkContext.cs" />
+    <Compile Include="UnitOfWorkContextCache.cs" />
+    <Compile Include="UnitOfWorkScope.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UnitOfWorkWrapper.cs" />
+    <Compile Include="UnitOfWorkWrapperGroup.cs" />
+    <Compile Include="UnitOfWorkWrapperItem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
