@@ -45,6 +45,8 @@ namespace YellowFlare.MessageProcessing.Aggregates
         protected void Write<TDomainEvent>(TDomainEvent domainEvent) where TDomainEvent : class, IDomainEvent<TKey>
         {
             _buffer.Write(domainEvent);
+
+            BufferedEventBus.Publish(domainEvent);
         }        
     }
 }

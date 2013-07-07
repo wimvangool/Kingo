@@ -4,21 +4,21 @@ namespace YellowFlare.MessageProcessing
 {
     internal abstract class UnitOfWorkWrapper
     {
-        public abstract string Group
+        public abstract string FlushGroup
         {
             get;
         }
 
-        public abstract bool ForceSynchronousFlush
+        public abstract bool CanBeFlushedAsynchronously
         {
             get;
         }
 
-        public abstract bool WrapsSameUnitOfWorkAs(UnitOfWorkWrapperItem item);
+        public abstract bool WrapsSameUnitOfWorkAs(UnitOfWorkItem item);
 
-        public bool TryMergeWith(UnitOfWorkWrapperItem item, out UnitOfWorkWrapperGroup group)
+        public bool TryMergeWith(UnitOfWorkItem item, out UnitOfWorkGroup group)
         {
-            if (WrapsSameUnitOfWorkAs(item) || item.Group == null || item.Group != Group)
+            if (WrapsSameUnitOfWorkAs(item) || item.FlushGroup == null || item.FlushGroup != FlushGroup)
             {
                 group = null;
                 return false;
@@ -27,9 +27,9 @@ namespace YellowFlare.MessageProcessing
             return true;
         }
 
-        protected abstract UnitOfWorkWrapperGroup MergeWith(UnitOfWorkWrapperItem wrapper);
+        protected abstract UnitOfWorkGroup MergeWith(UnitOfWorkItem item);
 
-        public abstract void CollectWrappersThatRequireFlush(ICollection<UnitOfWorkWrapper> wrappers);
+        public abstract void CollectUnitsThatRequireFlush(ICollection<UnitOfWorkWrapper> units);
 
         public abstract void Flush();        
     }

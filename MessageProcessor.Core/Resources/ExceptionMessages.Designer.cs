@@ -79,20 +79,29 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The controller failed to enlist the specified UnitOfWork because the MessageProcessor is not handling any message on the current Thread..
+        ///   Looks up a localized string similar to Failed to enlist &apos;{0}&apos; because no context was found..
         /// </summary>
-        internal static string MessageProcessor_FailedToEnlistUnitOfWork {
+        internal static string UnitOfWorkContext_FailedToEnlistUnitOfWork {
             get {
-                return ResourceManager.GetString("MessageProcessor_FailedToEnlistUnitOfWork", resourceCulture);
+                return ResourceManager.GetString("UnitOfWorkContext_FailedToEnlistUnitOfWork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scope was incorrectly nested or was called from a different thread than it was created on..
+        /// </summary>
+        internal static string UnitOfWorkScope_IncorrectNestingOrWrongThread {
+            get {
+                return ResourceManager.GetString("UnitOfWorkScope_IncorrectNestingOrWrongThread", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The scope has already completed..
         /// </summary>
-        internal static string UnitOfWorkContext_ScopeAlreadyCompleted {
+        internal static string UnitOfWorkScope_ScopeAlreadyCompleted {
             get {
-                return ResourceManager.GetString("UnitOfWorkContext_ScopeAlreadyCompleted", resourceCulture);
+                return ResourceManager.GetString("UnitOfWorkScope_ScopeAlreadyCompleted", resourceCulture);
             }
         }
         

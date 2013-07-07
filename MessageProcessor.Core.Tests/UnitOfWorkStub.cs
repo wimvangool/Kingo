@@ -34,6 +34,16 @@ namespace YellowFlare.MessageProcessing
             _requiresFLush = true;
         }
 
+        public string FlushGroup
+        {
+            get { return null; }
+        }
+
+        public bool CanBeFlushedAsynchronously
+        {
+            get { return false; }
+        }
+
         public bool RequiresFlush()
         {
             return _requiresFLush;
@@ -50,6 +60,6 @@ namespace YellowFlare.MessageProcessing
         {
             get { return _Current.Value; }
             set { _Current.Value = value; }
-        }       
+        }        
     }
 }

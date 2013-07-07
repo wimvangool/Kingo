@@ -5,20 +5,12 @@ using YellowFlare.MessageProcessing.Aggregates;
 namespace YellowFlare.MessageProcessing.SampleApplication.Infrastructure
 {
     internal sealed class ShoppingCartRepository : IShoppingCartRepository, IUnitOfWork
-    {
-        private readonly DomainEventBusAdapter<Guid> _domainEventBus;
-        private readonly IUnitOfWorkController _controller;
+    {        
         private readonly Dictionary<Guid, ShoppingCart> _carts;
         private int _flushCount;
 
-        public ShoppingCartRepository(IUnitOfWorkController controller)
-        {
-            if (controller == null)
-            {
-                throw new ArgumentNullException("controller");
-            }
-            _domainEventBus = new DomainEventBusAdapter<Guid>(SampleApplicationProcessor.Instance.Bus);
-            _controller = controller;
+        public ShoppingCartRepository()
+        {            
             _carts = new Dictionary<Guid, ShoppingCart>(4);
         }
 
@@ -27,29 +19,40 @@ namespace YellowFlare.MessageProcessing.SampleApplication.Infrastructure
             get { return _flushCount; }
         }
 
+        public string FlushGroup
+        {
+            get { return null; }
+        }
+
+        public bool CanBeFlushedAsynchronously
+        {
+            get { return false; }
+        }
+
         bool IUnitOfWork.RequiresFlush()
         {
             return true;
         }
 
         void IUnitOfWork.Flush()
-        {
-            _domainEventBus.PublishEvents(_carts.Values);
+        {            
             _flushCount++;
         }        
 
         public void Add(ShoppingCart cart)
-        {
-            _controller.Enlist(this);
-
+        {            
             _carts.Add((cart as IAggregate<Guid>).Key, cart);           
+
+            UnitOfWorkContext.Enlist(this);
         }        
 
         public ShoppingCart GetById(Guid id)
-        {
-            _controller.Enlist(this);
+        {            
+            var cart = _carts[id];
 
-            return _carts[id];
+            UnitOfWorkContext.Enlist(this);
+
+            return cart;
         }        
     }
 }

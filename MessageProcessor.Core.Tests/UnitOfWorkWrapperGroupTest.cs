@@ -10,40 +10,40 @@ namespace YellowFlare.MessageProcessing
         [TestMethod]
         public void ResourceId_ReturnsResourceIdOfFirstItem()
         {
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            Assert.AreEqual("One", group.Group);
+            Assert.AreEqual("One", group.FlushGroup);
         }
 
         [TestMethod]
-        public void ForceSynchronousFlush_ReturnsTrue_IfAnyItemForcesSynchronousFlush()
+        public void CanBeFlushedAsynchronously_ReturnsFalse_IfAnyItemForcesSynchronousFlush()
         {
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneAsync());
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneAsync());
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            Assert.IsTrue(group.ForceSynchronousFlush);
+            Assert.IsFalse(group.CanBeFlushedAsynchronously);
         }
 
         [TestMethod]
-        public void ForceSynchronousFlush_ReturnsFalse_IfNoItemsForceSynchronousFlush()
+        public void CaneBeFlushedAsynchronously_ReturnsTrue_IfAllItemsCanbeFlushedAsynchrously()
         {
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneAsync());
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneAsync());
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneAsync());
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneAsync());
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            Assert.IsFalse(group.ForceSynchronousFlush);
+            Assert.IsTrue(group.CanBeFlushedAsynchronously);
         }
 
         [TestMethod]
         public void WrapsSameUnitOfWorkAs_ReturnsFalse_IfNoItemsWrapSameUnitOfWork()
         {
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemC = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemC = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
             Assert.IsFalse(group.WrapsSameUnitOfWorkAs(resourceItemC));
         }
@@ -52,10 +52,10 @@ namespace YellowFlare.MessageProcessing
         public void WrapsSameUnitOfWorkAs_ReturnsTrue_IfAnyItemWrapsSameUnitOfWork()
         {
             var flushable = CreateUnitOfWorkOneSync();
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(flushable);
-            var resourceItemC = new UnitOfWorkWrapperItem(flushable);
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(flushable);
+            var resourceItemC = new UnitOfWorkItem(flushable);
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
             Assert.IsTrue(group.WrapsSameUnitOfWorkAs(resourceItemC));
         }
@@ -64,12 +64,12 @@ namespace YellowFlare.MessageProcessing
         public void TryMergeWith_ReturnsFalseAndNull_IfNewResourceWrapsSameUnitOfWork()
         {
             var flushable = CreateUnitOfWorkOneSync();
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(flushable);
-            var resourceItemC = new UnitOfWorkWrapperItem(flushable);
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(flushable);
+            var resourceItemC = new UnitOfWorkItem(flushable);
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            UnitOfWorkWrapperGroup mergedGroup;
+            UnitOfWorkGroup mergedGroup;
 
             Assert.IsFalse(group.TryMergeWith(resourceItemC, out mergedGroup));
             Assert.IsNull(mergedGroup);
@@ -78,12 +78,12 @@ namespace YellowFlare.MessageProcessing
         [TestMethod]
         public void TryMergeWith_ReturnsFalseAndNull_IfNewResourceHasResourceIdOfZero()
         {
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemC = new UnitOfWorkWrapperItem(CreateUnitOfWork());
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemC = new UnitOfWorkItem(CreateUnitOfWork());
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            UnitOfWorkWrapperGroup mergedGroup;
+            UnitOfWorkGroup mergedGroup;
 
             Assert.IsFalse(group.TryMergeWith(resourceItemC, out mergedGroup));
             Assert.IsNull(mergedGroup);
@@ -92,12 +92,12 @@ namespace YellowFlare.MessageProcessing
         [TestMethod]
         public void TryMergeWith_ReturnsFalseAndNull_IfResourceIdentifiersAreNonZeroButNotEqual()
         {
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemC = new UnitOfWorkWrapperItem(CreateUnitOfWorkTwoSync());
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemC = new UnitOfWorkItem(CreateUnitOfWorkTwoSync());
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            UnitOfWorkWrapperGroup mergedGroup;
+            UnitOfWorkGroup mergedGroup;
 
             Assert.IsFalse(group.TryMergeWith(resourceItemC, out mergedGroup));
             Assert.IsNull(mergedGroup);
@@ -106,12 +106,12 @@ namespace YellowFlare.MessageProcessing
         [TestMethod]
         public void TryMergeWith_ReturnsTrueAndResult_IfResourceIdentifiersAreNonZeroAndEqual()
         {
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var resourceItemC = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync());
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var resourceItemC = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            UnitOfWorkWrapperGroup mergedGroup;
+            UnitOfWorkGroup mergedGroup;
 
             Assert.IsTrue(group.TryMergeWith(resourceItemC, out mergedGroup));
             Assert.AreSame(group, mergedGroup);
@@ -126,12 +126,12 @@ namespace YellowFlare.MessageProcessing
             var flushableMockB = new Mock<IUnitOfWork>(MockBehavior.Strict);
             flushableMockB.Setup(flushable => flushable.RequiresFlush()).Returns(false);
 
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockA.Object));
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockB.Object));
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockA.Object));
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockB.Object));
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
             var collectedResources = new List<UnitOfWorkWrapper>(2);
-            group.CollectWrappersThatRequireFlush(collectedResources);
+            group.CollectUnitsThatRequireFlush(collectedResources);
             Assert.AreEqual(0, collectedResources.Count);
 
             flushableMockA.Verify(flushable => flushable.RequiresFlush(), Times.Once());
@@ -147,15 +147,15 @@ namespace YellowFlare.MessageProcessing
             var flushableMockB = new Mock<IUnitOfWork>(MockBehavior.Strict);
             flushableMockB.Setup(flushable => flushable.RequiresFlush()).Returns(true);
 
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockA.Object));
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockB.Object));
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockA.Object));
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockB.Object));
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
             var collectedResources = new List<UnitOfWorkWrapper>(1);
-            group.CollectWrappersThatRequireFlush(collectedResources);
+            group.CollectUnitsThatRequireFlush(collectedResources);
 
             Assert.AreEqual(1, collectedResources.Count);
-            Assert.IsInstanceOfType(collectedResources[0], typeof(UnitOfWorkWrapperItem));
+            Assert.IsInstanceOfType(collectedResources[0], typeof(UnitOfWorkItem));
 
             flushableMockA.Verify(flushable => flushable.RequiresFlush(), Times.Once());
             flushableMockB.Verify(flushable => flushable.RequiresFlush(), Times.Once());
@@ -173,18 +173,18 @@ namespace YellowFlare.MessageProcessing
             var flushableMockC = new Mock<IUnitOfWork>(MockBehavior.Strict);
             flushableMockC.Setup(flushable => flushable.RequiresFlush()).Returns(true);
             
-            var group = new UnitOfWorkWrapperGroup(new []
+            var group = new UnitOfWorkGroup(new []
             {
-                 new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockA.Object)),
-                 new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockB.Object)),
-                 new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockC.Object))
+                 new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockA.Object)),
+                 new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockB.Object)),
+                 new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockC.Object))
             });
 
             var collectedResources = new List<UnitOfWorkWrapper>(1);
-            group.CollectWrappersThatRequireFlush(collectedResources);
+            group.CollectUnitsThatRequireFlush(collectedResources);
 
             Assert.AreEqual(1, collectedResources.Count);
-            Assert.IsInstanceOfType(collectedResources[0], typeof(UnitOfWorkWrapperGroup));
+            Assert.IsInstanceOfType(collectedResources[0], typeof(UnitOfWorkGroup));
             Assert.AreNotSame(group, collectedResources[0]);
 
             flushableMockA.Verify(flushable => flushable.RequiresFlush(), Times.Once());
@@ -203,15 +203,15 @@ namespace YellowFlare.MessageProcessing
             var flushableMockC = new Mock<IUnitOfWork>(MockBehavior.Strict);
             flushableMockC.Setup(flushable => flushable.RequiresFlush()).Returns(true);
 
-            var group = new UnitOfWorkWrapperGroup(new[]
+            var group = new UnitOfWorkGroup(new[]
             {
-                 new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockA.Object)),
-                 new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockB.Object)),
-                 new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockC.Object))
+                 new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockA.Object)),
+                 new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockB.Object)),
+                 new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockC.Object))
             });
 
             var collectedResources = new List<UnitOfWorkWrapper>(1);
-            group.CollectWrappersThatRequireFlush(collectedResources);
+            group.CollectUnitsThatRequireFlush(collectedResources);
 
             Assert.AreEqual(1, collectedResources.Count);            
             Assert.AreSame(group, collectedResources[0]);
@@ -229,9 +229,9 @@ namespace YellowFlare.MessageProcessing
             var flushableMockB = new Mock<IUnitOfWork>(MockBehavior.Strict);            
             flushableMockB.Setup(flushable => flushable.Flush());
 
-            var resourceItemA = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockA.Object));
-            var resourceItemB = new UnitOfWorkWrapperItem(CreateUnitOfWorkOneSync(flushableMockB.Object));
-            var group = new UnitOfWorkWrapperGroup(resourceItemA, resourceItemB);
+            var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockA.Object));
+            var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync(flushableMockB.Object));
+            var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
             group.Flush();
 

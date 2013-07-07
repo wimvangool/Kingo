@@ -123,10 +123,13 @@
   <data name="DomainException_CommandFailed" xml:space="preserve">
     <value>Command '{0}' failed because it caused a DomainException to occur.</value>
   </data>
-  <data name="MessageProcessor_FailedToEnlistUnitOfWork" xml:space="preserve">
-    <value>The controller failed to enlist the specified UnitOfWork because the MessageProcessor is not handling any message on the current Thread.</value>
+  <data name="UnitOfWorkContext_FailedToEnlistUnitOfWork" xml:space="preserve">
+    <value>Failed to enlist '{0}' because no context was found.</value>
   </data>
-  <data name="UnitOfWorkContext_ScopeAlreadyCompleted" xml:space="preserve">
+  <data name="UnitOfWorkScope_IncorrectNestingOrWrongThread" xml:space="preserve">
+    <value>The scope was incorrectly nested or was called from a different thread than it was created on.</value>
+  </data>
+  <data name="UnitOfWorkScope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
   </data>
   <data name="Version_InvalidType" xml:space="preserve">

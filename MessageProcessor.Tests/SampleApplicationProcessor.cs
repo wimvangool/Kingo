@@ -6,34 +6,9 @@ using YellowFlare.MessageProcessing.SampleApplication.Infrastructure;
 
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class SampleApplicationProcessor : IMessageProcessor
-    {
-        private readonly MessageProcessor _core;
-
-        private SampleApplicationProcessor(MessageHandlerFactory handlerFactory)
-        {
-            _core = new MessageProcessor(this, handlerFactory);
-        }
-
-        public IMessageProcessorBus Bus
-        {
-            get { return _core.Bus; }
-        }
-
-        public void Handle<TMessage>(TMessage message) where TMessage : class
-        {
-            _core.Handle(message);
-        }
-
-        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class
-        {
-            _core.Handle(message, handler);
-        }
-
-        public void Handle<TMessage>(TMessage message, Action<TMessage> action) where TMessage : class
-        {
-            _core.Handle(message, action);
-        }
+    internal sealed class SampleApplicationProcessor : MessageProcessor
+    {        
+        private SampleApplicationProcessor(MessageHandlerFactory handlerFactory) : base(handlerFactory) { }        
 
         private static readonly Lazy<SampleApplicationProcessor> _Instance = new Lazy<SampleApplicationProcessor>(CreateProcessor, true);        
 
@@ -44,8 +19,7 @@ namespace YellowFlare.MessageProcessing
 
         private static SampleApplicationProcessor CreateProcessor()
         {
-            var messageHandlerFactory = new MessageHandlerFactoryForUnity()
-                .RegisterInstance(typeof(IUnitOfWorkController), UnitOfWorkContext.Controller)
+            var messageHandlerFactory = new MessageHandlerFactoryForUnity()                
                 .RegisterType<IShoppingCartRepository, ShoppingCartRepository>()
                 .RegisterType<ShoppingCartRepository>(new ContainerControlledLifetimeManager())
                 .RegisterMessageHandlers(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class UnitOfWorkController : IUnitOfWorkController
+    internal sealed class UnitOfWorkController
     {
         #region [====== Nested Types =====]
 
@@ -15,9 +14,9 @@ namespace YellowFlare.MessageProcessing
         {
             private readonly Task[] _tasks;
 
-            public AsynchronousFlushTask(IEnumerable<UnitOfWorkWrapper> wrappers)
+            public AsynchronousFlushTask(IEnumerable<UnitOfWorkWrapper> units)
             {
-                _tasks = CreateTasks(wrappers);
+                _tasks = CreateTasks(units);
             }
 
             public void Dispose()
@@ -41,41 +40,41 @@ namespace YellowFlare.MessageProcessing
                 Task.WaitAll(_tasks);
             }
 
-            private static Task[] CreateTasks(IEnumerable<UnitOfWorkWrapper> wrappers)
+            private static Task[] CreateTasks(IEnumerable<UnitOfWorkWrapper> units)
             {
                 var transaction = Transaction.Current;
                 if (transaction == null)
                 {
-                    return CreateTasksWithoutTransaction(wrappers);
+                    return CreateTasksWithoutTransaction(units);
                 }
-                return CreateTasksWithTransaction(wrappers, transaction);
+                return CreateTasksWithTransaction(units, transaction);
             }
 
-            private static Task[] CreateTasksWithoutTransaction(IEnumerable<UnitOfWorkWrapper> wrappers)
+            private static Task[] CreateTasksWithoutTransaction(IEnumerable<UnitOfWorkWrapper> units)
             {
-                return wrappers.Select(CreateTaskWithoutTransaction).ToArray();
+                return units.Select(CreateTaskWithoutTransaction).ToArray();
             }
 
-            private static Task CreateTaskWithoutTransaction(UnitOfWorkWrapper wrapper)
+            private static Task CreateTaskWithoutTransaction(UnitOfWorkWrapper unit)
             {
-                return new Task(wrapper.Flush);
+                return new Task(unit.Flush);
             }
 
-            private static Task[] CreateTasksWithTransaction(IEnumerable<UnitOfWorkWrapper> wrappers, Transaction transaction)
+            private static Task[] CreateTasksWithTransaction(IEnumerable<UnitOfWorkWrapper> units, Transaction transaction)
             {
-                return wrappers.Select(wrapper => CreateTaskWithTransaction(wrapper, transaction)).ToArray();
+                return units.Select(unit => CreateTaskWithTransaction(unit, transaction)).ToArray();
             }
 
-            private static Task CreateTaskWithTransaction(UnitOfWorkWrapper wrapper, Transaction transaction)
+            private static Task CreateTaskWithTransaction(UnitOfWorkWrapper unit, Transaction transaction)
             {
-                return new Task(() => FlushInTransaction(wrapper, transaction.DependentClone(DependentCloneOption.RollbackIfNotComplete)));
+                return new Task(() => FlushInTransaction(unit, transaction.DependentClone(DependentCloneOption.RollbackIfNotComplete)));
             }
 
-            private static void FlushInTransaction(UnitOfWorkWrapper wrapper, DependentTransaction transaction)
+            private static void FlushInTransaction(UnitOfWorkWrapper unit, DependentTransaction transaction)
             {
                 using (var scope = new TransactionScope(transaction))
                 {
-                    wrapper.Flush();
+                    unit.Flush();
                     scope.Complete();
                 }
                 transaction.Complete();
@@ -84,143 +83,146 @@ namespace YellowFlare.MessageProcessing
 
         #endregion
 
-        private readonly List<UnitOfWorkWrapper> _wrappers;        
+        private readonly List<UnitOfWorkWrapper> _unitsOfWork;        
 
         public UnitOfWorkController()
         {
-            _wrappers = new List<UnitOfWorkWrapper>(2);            
-        }
-
-        public bool ForceSynchronousFlush
-        {
-            get;
-            set;
-        }
+            _unitsOfWork = new List<UnitOfWorkWrapper>(2);            
+        }        
 
         public void Enlist(IUnitOfWork unitOfWork)
         {
-            Enlist(new UnitOfWorkWrapperItem(unitOfWork));
+            Enlist(new UnitOfWorkItem(unitOfWork));
         }
 
-        private void Enlist(UnitOfWorkWrapperItem newWrapper)
+        private void Enlist(UnitOfWorkItem newUnit)
         {
-            // New wrappers are first attempted to be merged with any existing wrapper based on group-id,
-            // since wrappers with the same group-id will always be flushed on same thread sequentially (but not
-            // in any particular order). Only if this fails will be wrappers be added as a completely new item.
-            for (int index = 0; index < _wrappers.Count; index++)
+            // New units are first attempted to be merged with any existing unit based on group-id,
+            // since units with the same group-id will always be flushed on same thread sequentially (but not
+            // in any particular order). Only if this fails will be units be added as a completely new item.
+            for (int index = 0; index < _unitsOfWork.Count; index++)
             {
-                UnitOfWorkWrapper wrapper = _wrappers[index];
-                UnitOfWorkWrapperGroup wrapperGroup;
+                UnitOfWorkWrapper unit = _unitsOfWork[index];
+                UnitOfWorkGroup unitGroup;
 
-                if (wrapper.WrapsSameUnitOfWorkAs(newWrapper))
+                if (unit.WrapsSameUnitOfWorkAs(newUnit))
                 {
                     return;
                 }
-                if (wrapper.TryMergeWith(newWrapper, out wrapperGroup))
+                if (unit.TryMergeWith(newUnit, out unitGroup))
                 {
-                    _wrappers[index] = wrapperGroup;
+                    _unitsOfWork[index] = unitGroup;
                     return;
                 }
             }
-            _wrappers.Add(newWrapper);
+            _unitsOfWork.Add(newUnit);
         }
 
         public void Flush()
         {
-            // First, all wrapper-items and groups that actually require a flush are collected.
-            var wrappersThatRequireFlush = new LinkedList<UnitOfWorkWrapper>();
+            LinkedList<UnitOfWorkWrapper> unitsOfWork;
 
-            foreach (var wrapper in _wrappers)
+            while (HasToFlush(out unitsOfWork))
             {
-                wrapper.CollectWrappersThatRequireFlush(wrappersThatRequireFlush);
+                Flush(unitsOfWork);
+            }                        
+        }
+
+        private bool HasToFlush(out LinkedList<UnitOfWorkWrapper> unitsOfWork)
+        {
+            // First, all unit-items and groups that actually require a flush are collected.
+            unitsOfWork = new LinkedList<UnitOfWorkWrapper>();
+
+            foreach (var unit in _unitsOfWork)
+            {
+                unit.CollectUnitsThatRequireFlush(unitsOfWork);
             }
-            // We can simply return if no wrappers need to be flushed.
-            if (wrappersThatRequireFlush.Count == 0)
+            _unitsOfWork.Clear();
+
+            return unitsOfWork.Count > 0;
+        }
+
+        private static void Flush(LinkedList<UnitOfWorkWrapper> units)
+        {
+            // If only a single unit of work must be flushed, then a synchronous flush it will be.
+            // This is because it makes no sense to flush a single
+            // unit on a separate thread while this thread it waiting for it to finish.
+            if (units.Count == 1)
             {
-                return;
-            }
-            // If only a single unit of work must be flushed, or if synchronous flush is forced on the controller,
-            // then a synchronous flush it will be. This is because it makes no sense to flush a single
-            // wrapper on a separate thread while this thread it waiting for it to finish.
-            if (wrappersThatRequireFlush.Count == 1 || ForceSynchronousFlush)
-            {
-                FlushSynchronously(wrappersThatRequireFlush);
+                FlushSynchronously(units);
             }
             else
             {
-                FlushAsynchronouslyWherePossible(wrappersThatRequireFlush);
+                FlushAsynchronouslyWherePossible(units);
             }
         }
 
-        private static void FlushSynchronously(IEnumerable<UnitOfWorkWrapper> wrappers)
+        private static void FlushSynchronously(IEnumerable<UnitOfWorkWrapper> units)
         {
-            foreach (var wrapper in wrappers)
+            foreach (var unitOfWork in units)
             {
-                wrapper.Flush();
+                unitOfWork.Flush();
             }
         }
 
-        private static void FlushAsynchronouslyWherePossible(LinkedList<UnitOfWorkWrapper> wrappers)
-        {
-            Debug.Assert(wrappers.Count > 0);
-
-            // First, we split the collection into wrappers that allow themselves to be flushed asynchronously,
+        private static void FlushAsynchronouslyWherePossible(LinkedList<UnitOfWorkWrapper> units)
+        {            
+            // First, we split the collection into units that allow themselves to be flushed asynchronously,
             // and the ones that force to be flushed on the current thread.
-            LinkedList<UnitOfWorkWrapper> asyncResources = RemoveResourcesThatAllowAsynchronousFlush(wrappers);
-            LinkedList<UnitOfWorkWrapper> syncResources = wrappers;
+            LinkedList<UnitOfWorkWrapper> asyncUnits = RemoveResourcesThatCanBeFlushedAsynchronously(units);            
 
-            // If all wrappers are allowed to be flushed asynchronously, we will still flush one of them on
+            // If all units are allowed to be flushed asynchronously, we will still flush one of them on
             // the current thread for the same reason mentioned above: it makes no sense to stall this thread
             // just waiting for another thread to finish it's work.
-            if (syncResources.Count == 0)
+            if (units.Count == 0)
             {
-                syncResources.AddLast(asyncResources.First.Value);
-                asyncResources.RemoveFirst();
+                units.AddLast(asyncUnits.First.Value);
+                asyncUnits.RemoveFirst();
             }
-            // If no wrappers allow themselves to be flushed on a different thread, then we'll fall back
+            // If no units allow themselves to be flushed on a different thread, then we'll fall back
             // to synchronous mode.
-            if (asyncResources.Count == 0)
+            if (asyncUnits.Count == 0)
             {
-                FlushSynchronously(syncResources);
+                FlushSynchronously(units);
                 return;
             }
-            // In the final case where some wrappers can be flushed on different threads while at least a single
-            // wrapper will be flushed on the current thread, we'll first kick-off the other thread to go ahead,
+            // In the final case where some units can be flushed on different threads while at least a single
+            // unit will be flushed on the current thread, we'll first kick-off the other thread to go ahead,
             // and then start flushing on the current thread. Should the current thread be done sooner than the other
             // ones, then we'll have to wait for them to finish up before returning.
-            using (var task = new AsynchronousFlushTask(asyncResources))
+            using (var task = new AsynchronousFlushTask(asyncUnits))
             {
                 task.Start();
 
-                FlushSynchronously(syncResources);
+                FlushSynchronously(units);
 
                 task.Wait();
             }
         }
 
-        private static LinkedList<UnitOfWorkWrapper> RemoveResourcesThatAllowAsynchronousFlush(LinkedList<UnitOfWorkWrapper> wrappers)
+        private static LinkedList<UnitOfWorkWrapper> RemoveResourcesThatCanBeFlushedAsynchronously(LinkedList<UnitOfWorkWrapper> units)
         {
-            var asyncResources = new LinkedList<UnitOfWorkWrapper>();
+            var asyncUnits = new LinkedList<UnitOfWorkWrapper>();
+            var currentNode = units.First;
 
-            var currentNode = wrappers.First;
             do
             {
-                if (currentNode.Value.ForceSynchronousFlush)
+                if (currentNode.Value.CanBeFlushedAsynchronously)
                 {
-                    currentNode = currentNode.Next;   
+                    asyncUnits.AddLast(currentNode.Value);
+
+                    var nextNode = currentNode.Next;
+                    units.Remove(currentNode);
+                    currentNode = nextNode;                      
                 }
                 else
                 {
-                    asyncResources.AddLast(currentNode.Value);
-
-                    var nextNode = currentNode.Next;
-                    wrappers.Remove(currentNode);
-                    currentNode = nextNode;
+                    currentNode = currentNode.Next; 
                 }
             }
             while (currentNode != null);
 
-            return asyncResources;
+            return asyncUnits;
         }               
     }
 }

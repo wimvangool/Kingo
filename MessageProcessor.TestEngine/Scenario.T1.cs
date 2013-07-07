@@ -201,7 +201,7 @@ namespace YellowFlare.MessageProcessing
         {
             IMessageSequence messageNode = new MessageSequenceNode<TMessage>(message);
 
-            using (processor.Bus.Subscribe<object>(domainEvent => _domainEvents.Add(domainEvent)))
+            using (processor.DomainEventBus.Subscribe<object>(domainEvent => _domainEvents.Add(domainEvent)))
             {
                 messageNode.HandleWith(processor);                
             }

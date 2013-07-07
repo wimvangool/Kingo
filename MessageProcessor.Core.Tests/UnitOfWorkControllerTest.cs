@@ -17,7 +17,17 @@ namespace YellowFlare.MessageProcessing
             {
                 _expectSameThread = expectSameThread;
                 _creationThread = Thread.CurrentThread;
-            }            
+            }
+
+            public string FlushGroup
+            {
+                get { return null; }
+            }
+
+            public bool CanBeFlushedAsynchronously
+            {
+                get { return true; }
+            }
 
             public bool RequiresFlush()
             {
@@ -48,7 +58,7 @@ namespace YellowFlare.MessageProcessing
             public void AssertFlushedOnSameThreadAs(FlushThreadChecker other)
             {
                 Assert.AreSame(_flushThread, other._flushThread, "Resources should have been flushed on the same context.");
-            }
+            }            
         }
 
         private UnitOfWorkController _controller;
@@ -64,30 +74,14 @@ namespace YellowFlare.MessageProcessing
         public void Register_Throws_IfUnitOfWorkIsNull()
         {
             _controller.Enlist(null);
-        }
-
-        [TestMethod]
-        public void Flush_FlushesAllResourcesSynchronously_IfForceSynchronousFlushIsTrue()
-        {
-            var checkerA = new FlushThreadChecker(true);
-            var checkerB = new FlushThreadChecker(true);
-
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerA));
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerB));
-            _controller.ForceSynchronousFlush = true;
-            _controller.Flush();
-
-            checkerA.AssertFlushedOnExpectedThread();
-            checkerB.AssertFlushedOnExpectedThread();
-        }
+        }        
 
         [TestMethod]
         public void Flush_FlushesLastItemAlwaysSynchronously()
         {
             var checker = new FlushThreadChecker(true);
 
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checker));
-            _controller.ForceSynchronousFlush = false;
+            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checker));            
             _controller.Flush();
 
             checker.AssertFlushedOnExpectedThread();
@@ -102,8 +96,7 @@ namespace YellowFlare.MessageProcessing
             // NB: Because checker A and B will end up in one group, and one forces a synchronous flush,
             // both will be flushed synchronously.
             _controller.Enlist(new UnitOfWorkWithAttributeOneSync(checkerA));
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerB));
-            _controller.ForceSynchronousFlush = false;
+            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerB));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnExpectedThread();            
@@ -117,8 +110,7 @@ namespace YellowFlare.MessageProcessing
             var checkerB = new FlushThreadChecker(false);
 
             _controller.Enlist(new UnitOfWorkWithAttributeTwoSync(checkerA));
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerB));
-            _controller.ForceSynchronousFlush = false;
+            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerB));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnExpectedThread();
@@ -134,8 +126,7 @@ namespace YellowFlare.MessageProcessing
 
             _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerA));
             _controller.Enlist(new UnitOfWorkWithAttributeTwoSync(checkerB));
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerC));
-            _controller.ForceSynchronousFlush = false;
+            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerC));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnSameThreadAs(checkerC);

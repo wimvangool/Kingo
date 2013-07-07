@@ -1,7 +1,6 @@
 ﻿
 namespace YellowFlare.MessageProcessing
-{
-    [FlushHint(Group = "Two", ForceSynchronousFlush = true)]
+{    
     internal sealed class UnitOfWorkWithAttributeTwoSync : IUnitOfWork
     {
         private readonly IUnitOfWork _flushable;
@@ -9,6 +8,16 @@ namespace YellowFlare.MessageProcessing
         public UnitOfWorkWithAttributeTwoSync(IUnitOfWork flushable)
         {
             _flushable = flushable;
+        }
+
+        public string FlushGroup
+        {
+            get { return "Two"; }
+        }
+
+        public bool CanBeFlushedAsynchronously
+        {
+            get { return false; }
         }
 
         public bool RequiresFlush()

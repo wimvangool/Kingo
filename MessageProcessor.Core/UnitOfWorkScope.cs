@@ -7,24 +7,30 @@ namespace YellowFlare.MessageProcessing
     /// Represents a scope that controls the lifetime of a <see cref="UnitOfWorkContext" />.
     /// </summary>        
     public sealed class UnitOfWorkScope : IDisposable
-    {        
+    {
+        private readonly BufferedEventBus _bufferedEventBus;
         private readonly bool _isContextOwner;
         private bool _hasCompleted;
-        private bool _isDisposed;
-                    
+        private bool _isDisposed;                            
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWorkScope" /> class.
         /// </summary>
-        public UnitOfWorkScope()
+        /// <param name="domainEventBus">Bus on which all domain-events will be published.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="domainEventBus"/> is <c>null</c>.
+        /// </exception>
+        public UnitOfWorkScope(IDomainEventBus domainEventBus)
         {
-            var currentUnitOfWork = UnitOfWorkContext.Current;            
-            if (currentUnitOfWork == null)
+            if (domainEventBus == null)
             {
-                UnitOfWorkContext.Current = new UnitOfWorkContext();
+                throw new ArgumentNullException("domainEventBus");
+            }
+            UnitOfWorkContext context;
 
-                _isContextOwner = true;
-            }                
-        }              
+            _isContextOwner = StartScope(out context);
+            _bufferedEventBus = context.PushBus(domainEventBus);
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -39,13 +45,10 @@ namespace YellowFlare.MessageProcessing
             {
                 return;
             }            
-            if (_isContextOwner)
-            {                
-                UnitOfWorkContext.Current.Dispose();
-                UnitOfWorkContext.Current = null;
-            }
+            EndScope(this);
+
             _isDisposed = true;                       
-        }
+        }        
 
         /// <summary>
         /// Completes the scope by flushing all registered wrappers.
@@ -66,21 +69,63 @@ namespace YellowFlare.MessageProcessing
             {
                 throw NewScopeAlreadyCompletedException();
             }
+            var context = UnitOfWorkContext.Current;
+            if (context == null)
+            {
+                throw NewIncorrectNestingOrWrongThreadException();
+            }
             if (_isContextOwner)
             {
-                UnitOfWorkContext.Current.Flush();
+                context.Flush();
             }
             _hasCompleted = true;                                       
+        }        
+
+        private static bool StartScope(out UnitOfWorkContext context)
+        {
+            context = UnitOfWorkContext.Current;
+
+            if (context == null)
+            {
+                context = UnitOfWorkContext.Current = new UnitOfWorkContext();
+                return true;
+            }
+            return false;
         }
 
-        private Exception NewScopeAlreadyDisposedException()
+        private static void EndScope(UnitOfWorkScope scope)
         {
-            return new ObjectDisposedException(GetType().Name);
+            var context = UnitOfWorkContext.Current;
+            if (context == null)
+            {
+                throw NewIncorrectNestingOrWrongThreadException();
+            }
+            var bufferedEventBus = context.PopBus();
+            if (bufferedEventBus != scope._bufferedEventBus)
+            {
+                throw NewIncorrectNestingOrWrongThreadException();
+            }
+            if (scope._isContextOwner)
+            {
+                context.Dispose();
+
+                UnitOfWorkContext.Current = null;
+            }
+        }
+
+        private static Exception NewScopeAlreadyDisposedException()
+        {
+            return new ObjectDisposedException(typeof(UnitOfWorkScope).Name);
         }                               
 
         private static Exception NewScopeAlreadyCompletedException()
         {
-            return new InvalidOperationException(ExceptionMessages.UnitOfWorkContext_ScopeAlreadyCompleted);
+            return new InvalidOperationException(ExceptionMessages.UnitOfWorkScope_ScopeAlreadyCompleted);
+        }
+
+        private static Exception NewIncorrectNestingOrWrongThreadException()
+        {
+            return new InvalidOperationException(ExceptionMessages.UnitOfWorkScope_IncorrectNestingOrWrongThread);
         }
     }
 }

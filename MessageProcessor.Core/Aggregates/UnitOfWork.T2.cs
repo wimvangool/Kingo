@@ -12,9 +12,10 @@ namespace YellowFlare.MessageProcessing.Aggregates
     public sealed class UnitOfWork<TKey, TValue> : IUnitOfWork
         where TKey : struct, IEquatable<TKey>
         where TValue : class, IAggregate<TKey>
-    {
-        private readonly IUnitOfWorkController _controller;
+    {        
         private readonly IAggregateStore<TKey, TValue> _store;
+        private readonly string _flushGroup;
+        private readonly bool _canbeFlushedAsynchronously;
 
         private readonly AggregateSet<TKey, TValue> _selectedAggregates;
         private readonly AggregateSet<TKey, TValue> _insertedAggregates;
@@ -22,28 +23,41 @@ namespace YellowFlare.MessageProcessing.Aggregates
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWork{TKey, TValue}" /> class.
-        /// </summary>
-        /// <param name="controller">Controller that is used to enlist this Unit Of Work if it needs to be flushed.</param>
+        /// </summary>        
         /// <param name="store">Reference to the backing store where all aggregates can be read from and written to.</param>
+        /// <param name="flushGroup">Indicates which group this unit of work belongs to.</param>
+        /// <param name="canBeFlushedAsynchronously">
+        /// Indicates whether or not the controller may flush this unit of work on a thread different than it was
+        /// created on.
+        /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="controller"/> or <paramref name="store"/> is <c>null</c>.
+        /// <paramref name="store"/> is <c>null</c>.
         /// </exception>
-        public UnitOfWork(IUnitOfWorkController controller, IAggregateStore<TKey, TValue> store)
-        {
-            if (controller == null)
-            {
-                throw new ArgumentNullException("controller");
-            }
+        public UnitOfWork(IAggregateStore<TKey, TValue> store, string flushGroup = null, bool canBeFlushedAsynchronously = false)
+        {            
             if (store == null)
             {
                 throw new ArgumentNullException("store");
-            }
-            _controller = controller;
+            }           
             _store = store;
+            _flushGroup = flushGroup;
+            _canbeFlushedAsynchronously = canBeFlushedAsynchronously;
 
             _selectedAggregates = new AggregateSet<TKey, TValue>();
             _insertedAggregates = new AggregateSet<TKey, TValue>();
             _deletedAggregates = new AggregateSet<TKey, TValue>();
+        }
+
+        /// <inheritdoc />
+        public string FlushGroup
+        {
+            get { return _flushGroup; }
+        }
+
+        /// <inheritdoc />
+        public bool CanBeFlushedAsynchronously
+        {
+            get { return _canbeFlushedAsynchronously; }
         }
 
         private bool HasAggregatesToDelete
@@ -84,8 +98,8 @@ namespace YellowFlare.MessageProcessing.Aggregates
             if (!_deletedAggregates.Contains(key) && _store.TrySelect(key, out value))
             {
                 _selectedAggregates.Add(value);
-                _controller.Enlist(this);
-                return true;
+
+                UnitOfWorkContext.Enlist(this);
             }
             value = null;
             return false;
@@ -120,7 +134,8 @@ namespace YellowFlare.MessageProcessing.Aggregates
             else
             {
                 _insertedAggregates.Add(value);
-                _controller.Enlist(this);
+
+                UnitOfWorkContext.Enlist(this);
             }
         }
 
@@ -152,9 +167,10 @@ namespace YellowFlare.MessageProcessing.Aggregates
             else
             {
                 _deletedAggregates.Add(value);
-                _controller.Enlist(this);                
+
+                UnitOfWorkContext.Enlist(this);                
             }
-        }
+        }        
 
         /// <inheritdoc />
         public bool RequiresFlush()
@@ -195,6 +211,6 @@ namespace YellowFlare.MessageProcessing.Aggregates
                 _store.Insert(aggregate.Value);
             }
             _insertedAggregates.Clear();
-        }
+        }        
     }
 }
