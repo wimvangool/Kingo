@@ -61,6 +61,15 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The clock-scopes aren&apos;t nested correctly..
+        /// </summary>
+        internal static string ClockScope_IncorrectNesting {
+            get {
+                return ResourceManager.GetString("ClockScope_IncorrectNesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Command &apos;{0}&apos; failed because it caused a DomainException to occur..
         /// </summary>
         internal static string DomainException_CommandFailed {

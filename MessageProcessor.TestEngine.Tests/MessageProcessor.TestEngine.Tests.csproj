@@ -71,8 +71,8 @@
     <Compile Include="NullableOperandExtensionsTest.cs" />
     <Compile Include="OperandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ScenarioClockTest.cs" />
     <Compile Include="ScenarioTest.cs" />
+    <Compile Include="ScenarioTestProcessor.cs" />
     <Compile Include="TheCommand.cs" />
     <Compile Include="TheCommandHandler.cs" />
   </ItemGroup>

@@ -61,7 +61,6 @@
     </Compile>
     <Compile Include="NullableOperandExtensions.cs" />
     <Compile Include="NullStatement.T1.cs" />
-    <Compile Include="ScenarioClock.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IConjunctionStatement.T1.cs" />
     <Compile Include="MessageSequence.cs" />

@@ -11,16 +11,10 @@ namespace YellowFlare.MessageProcessing
         /// The actual message instance.
         /// </summary>
         public readonly object Instance;
-
-        /// <summary>
-        /// The source that provided the message to the processor.
-        /// </summary>
-        public readonly MessageSources Source;
-
-        internal Message(object instance, MessageSources source)
+        
+        internal Message(object instance)
         {
-            Instance = instance;
-            Source = source;
+            Instance = instance;            
         }
 
         /// <summary>

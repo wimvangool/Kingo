@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace YellowFlare.MessageProcessing
@@ -212,24 +211,10 @@ namespace YellowFlare.MessageProcessing
         }
 
         #endregion
-
-        #region [====== Assembly Setup and Teardown ======]
-
-        internal static IMessageProcessor Processor;        
-
-        [ClassInitialize]
-        public static void SetupClass(TestContext context)
+        
+        private static ScenarioTestProcessor Processor
         {
-            Processor = BuildProcessor();
-        }  
-     
-        private static IMessageProcessor BuildProcessor()
-        {
-            var messageHandlerFactory = new MessageHandlerFactoryForUnity();
-            messageHandlerFactory.RegisterMessageHandlers(Assembly.GetExecutingAssembly());
-            return new MessageProcessor(messageHandlerFactory);
+            get { return ScenarioTestProcessor.Instance; }
         }
-
-        #endregion
     }
 }

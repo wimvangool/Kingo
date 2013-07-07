@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using YellowFlare.MessageProcessing.Clocks;
 using YellowFlare.MessageProcessing.Resources;
 
 namespace YellowFlare.MessageProcessing
@@ -13,7 +14,7 @@ namespace YellowFlare.MessageProcessing
     /// <typeparam name="TMessage">Type of the message that is executed on the When-phase.</typeparam>    
     public abstract class Scenario<TMessage> : MessageSequence, IScenario where TMessage : class
     {        
-        private readonly ScenarioClock _clock;
+        private readonly StopwatchClock _stopwatch;
         private readonly VerificationStatement _statement;
         private readonly List<object> _domainEvents;                        
 
@@ -22,7 +23,7 @@ namespace YellowFlare.MessageProcessing
         /// </summary>        
         protected Scenario()
         {            
-            _clock = new ScenarioClock(DateTime.MinValue);
+            _stopwatch = new StopwatchClock(DateTime.Now);
             _statement = new VerificationStatement(this);
             _domainEvents = new List<object>();            
         }
@@ -30,10 +31,10 @@ namespace YellowFlare.MessageProcessing
         /// <summary>
         /// Initializes a new instance of the <see cref="Scenario{T}" /> class.
         /// </summary>
-        /// <param name="clockOffset">The date and time to which the clock is initialized.</param>       
-        protected Scenario(DateTime clockOffset)
+        /// <param name="startTime">The date and time to which the clock is initialized.</param>       
+        protected Scenario(DateTime startTime)
         {            
-            _clock = new ScenarioClock(clockOffset);
+            _stopwatch = new StopwatchClock(startTime);
             _statement = new VerificationStatement(this);
             _domainEvents = new List<object>(); 
         }
@@ -43,7 +44,7 @@ namespace YellowFlare.MessageProcessing
         /// </summary>
         public virtual IClock Clock
         {
-            get { return _clock; }
+            get { return _stopwatch; }
         }
 
         /// <summary>
@@ -143,7 +144,7 @@ namespace YellowFlare.MessageProcessing
         /// expected, any exception is simply rethrown, assuming the scenario will fail automatically as a result.
         /// </para>
         /// <para>
-        /// During the When-phase, all events that are published on the <see cref="DomainEventBus" /> are stored in a
+        /// During the When-phase, all events that are published on the <see cref="MessageProcessorBus" /> are stored in a
         /// collection, ready to be verified.
         /// </para>
         /// <para>
@@ -155,7 +156,7 @@ namespace YellowFlare.MessageProcessing
             {
                 throw NewScenarioDisposedException();
             }
-            _clock.Start();
+            _stopwatch.Start();
 
             try
             {
@@ -163,7 +164,7 @@ namespace YellowFlare.MessageProcessing
             }
             finally
             {
-                _clock.Stop();
+                _stopwatch.Stop();
             }            
         }
 
@@ -200,7 +201,7 @@ namespace YellowFlare.MessageProcessing
         {
             IMessageSequence messageNode = new MessageSequenceNode<TMessage>(message);
 
-            using (processor.DomainEventBus.Subscribe<object>(domainEvent => _domainEvents.Add(domainEvent)))
+            using (processor.Bus.Subscribe<object>(domainEvent => _domainEvents.Add(domainEvent)))
             {
                 messageNode.HandleWith(processor);                
             }
@@ -260,23 +261,7 @@ namespace YellowFlare.MessageProcessing
         protected TEvent DomainEventAt<TEvent>(int index) where TEvent : class
         {
             return (TEvent) DomainEventAt(index);
-        }   
-     
-        /// <summary>
-        /// Returns the value of the date and/or time as it was requested at the specified moment.
-        /// </summary>
-        /// <param name="index">Index of the moment the value was requested.</param>
-        /// <returns>
-        /// The value of the date and/or time as it was requested at the specified moment, or <c>null</c>
-        /// if no date and/or time was requested at the specified moment.
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is negative.
-        /// </exception>
-        protected DateTime DateTimeRequestedAt(int index)
-        {
-            return _clock.RequestAt(index);
-        }
+        }               
 
         /// <summary>
         /// Returns a sequence of messages that are used to put the system into a desired state.

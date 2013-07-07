@@ -64,6 +64,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="PerUnitOfWorkLifetimeManagerTest.cs" />
+    <Compile Include="UnityTestProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.Core.csproj">

@@ -13,7 +13,7 @@ namespace YellowFlare.MessageProcessing
             {
                 foreach (var message in command.DomainEventsToPublish)
                 {
-                    ScenarioTest.Processor.DomainEventBus.Publish(message);
+                    ScenarioTestProcessor.Instance.Bus.Publish(message);
                 }
             }
         }

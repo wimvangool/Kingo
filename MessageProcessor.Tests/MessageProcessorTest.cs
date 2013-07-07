@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Reflection;
-using Microsoft.Practices.Unity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using YellowFlare.MessageProcessing.SampleApplication;
-using YellowFlare.MessageProcessing.SampleApplication.Infrastructure;
 using YellowFlare.MessageProcessing.SampleApplication.Messages;
 
 namespace YellowFlare.MessageProcessing
@@ -32,7 +28,7 @@ namespace YellowFlare.MessageProcessing
             Guid shoppingCartId = Guid.NewGuid();
             ShoppingCartCreated createdEvent = null;
 
-            using (Processor.DomainEventBus.Subscribe<ShoppingCartCreated>(e => createdEvent = e))
+            using (Processor.Bus.Subscribe<ShoppingCartCreated>(e => createdEvent = e))
             {
                 Processor.Handle(new CreateShoppingCart
                 {
@@ -76,7 +72,7 @@ namespace YellowFlare.MessageProcessing
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);
 
-            using (Processor.DomainEventBus.Subscribe<ProductAddedToCart>(e => productAddedEvent = e))
+            using (Processor.Bus.Subscribe<ProductAddedToCart>(e => productAddedEvent = e))
             {                
                 Processor.Handle(new AddProductToCart
                 {
@@ -116,7 +112,7 @@ namespace YellowFlare.MessageProcessing
             ProductAddedToCart productAddedEvent = null;
             int extraQuantity = _random.Next(3, 6);
 
-            using (Processor.DomainEventBus.Subscribe<ProductAddedToCart>(e => productAddedEvent = e))
+            using (Processor.Bus.Subscribe<ProductAddedToCart>(e => productAddedEvent = e))
             {
                 Processor.Handle(new AddProductToCart
                 {
@@ -133,34 +129,11 @@ namespace YellowFlare.MessageProcessing
             Assert.AreEqual(quantity + extraQuantity, productAddedEvent.NewQuantity);            
         }
 
-        #endregion
-
-        #region [====== Class Setup ======]
-
-        internal static MessageProcessor Processor;
-
-        [ClassInitialize]
-        public static void SetupClass(TestContext context)
+        private static SampleApplicationProcessor Processor
         {
-            Processor = CreateMessageProcessor();
+            get { return SampleApplicationProcessor.Instance; }
         }
 
-        private static MessageProcessor CreateMessageProcessor()
-        {
-            var messageHandlerFactory = new MessageHandlerFactoryForUnity()
-                .RegisterInstance(typeof(IUnitOfWorkController), UnitOfWorkContext.Controller)
-                .RegisterType<IShoppingCartRepository, ShoppingCartRepository>()
-                .RegisterType<ShoppingCartRepository>(new ContainerControlledLifetimeManager())
-                .RegisterMessageHandlers(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
-
-            return new MessageProcessor(messageHandlerFactory, new MessageHandlerPipelineFactory());
-        }
-
-        private static bool IsHandlerForMessageProcessorTests(Type type)
-        {
-            return type.Namespace == "YellowFlare.MessageProcessing.SampleApplication.MessageHandlers";                
-        }
-
-        #endregion
+        #endregion        
     }
 }

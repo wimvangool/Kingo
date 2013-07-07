@@ -29,10 +29,9 @@ namespace YellowFlare.MessageProcessing
         [TestMethod]
         public void GetValue_ReturnsNull_IfNoValueHasBeenStored()
         {
-            _Processor.Handle(new object(), message =>
-            {
-                Assert.IsNull(_lifetimeManager.GetValue());               
-            });
+            Processor.Handle(new object(), message =>            
+                Assert.IsNull(_lifetimeManager.GetValue())             
+            );
         }
 
         [TestMethod]
@@ -40,7 +39,7 @@ namespace YellowFlare.MessageProcessing
         {
             var instance = new object();
 
-            _Processor.Handle(instance, message =>
+            Processor.Handle(instance, message =>
             {
                 _lifetimeManager.SetValue(instance);
 
@@ -61,7 +60,7 @@ namespace YellowFlare.MessageProcessing
         {
             var instance = new object();
 
-            _Processor.Handle(instance, message =>
+            Processor.Handle(instance, message =>
             {
                 _lifetimeManager.SetValue(instance);
                 _lifetimeManager.RemoveValue();
@@ -80,16 +79,9 @@ namespace YellowFlare.MessageProcessing
 
         #endregion
 
-        #region [====== Class Setup and Teardown ======]        
-
-        private static MessageProcessor _Processor;
-
-        [ClassInitialize]
-        public static void SetupClass(TestContext context)
+        private static UnityTestProcessor Processor
         {
-            _Processor = new MessageProcessor(new MessageHandlerFactoryForUnity());
-        }        
-
-        #endregion
+            get { return UnityTestProcessor.Instance; }
+        }
     }
 }

@@ -69,25 +69,24 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="DomainEventBusSubscriptionForAction.T1.cs" />
-    <Compile Include="HandlesMessagesFromAttribute.cs" />
+    <Compile Include="IMessageHandlerPipelineFactory.cs" />
+    <Compile Include="MessageProcessorBusSubscriptionForAction.T1.cs" />
+    <Compile Include="IMessageHandler.T1.cs" />
     <Compile Include="IMessageHandlerPipeline.T1.cs" />
-    <Compile Include="LazyMessageHandlerPipeline.T1.cs" />
-    <Compile Include="DomainEventBusSubscriptionForInterface.T1.cs" />
+    <Compile Include="IMessageProcessor.cs" />
+    <Compile Include="IMessageProcessorBus.cs" />
+    <Compile Include="MessageProcessorBusSubscriptionForInterface.T1.cs" />
     <Compile Include="InstanceLifetimeAttribute.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageHandlerPipeline.T1.cs" />
     <Compile Include="MessageHandlerClass.cs" />
     <Compile Include="MessageHandlerPipelineDecorator.T1.cs" />
-    <Compile Include="MessageHandlerPipelineFactory.cs" />
     <Compile Include="MessageHandlerPipelineForAction.T1.cs" />
     <Compile Include="MessageHandlerPipelineForClass.T1.cs" />
     <Compile Include="MessageHandlerPipelineForInterface.T1.cs" />
     <Compile Include="MessageProcessor.cs" />
-    <Compile Include="DomainEventBusSubscription.cs" />
+    <Compile Include="MessageProcessorBusSubscription.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="MessageSourceFilter.T1.cs" />
-    <Compile Include="MessageSources.cs" />
     <Compile Include="MessageHandlerFactory.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -95,7 +94,7 @@
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="InstanceLifetime.cs" />
-    <Compile Include="DomainEventBus.cs" />
+    <Compile Include="MessageProcessorBus.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
   </ItemGroup>
   <ItemGroup>

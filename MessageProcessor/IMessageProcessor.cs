@@ -10,7 +10,7 @@ namespace YellowFlare.MessageProcessing
         /// <summary>
         /// Returns the domain-event bus of this processor.
         /// </summary>
-        IDomainEventBus DomainEventBus
+        IMessageProcessorBus Bus
         {
             get;
         }

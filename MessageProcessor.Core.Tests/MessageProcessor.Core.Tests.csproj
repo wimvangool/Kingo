@@ -57,6 +57,9 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Clocks\ClockTest.cs" />
+    <Compile Include="Clocks\StopwatchClockTest.cs" />
+    <Compile Include="Clocks\SystemClockTest.cs" />
     <Compile Include="UnitOfWorkControllerTest.cs" />
     <Compile Include="UnitOfWorkContextCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />

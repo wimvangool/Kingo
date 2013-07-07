@@ -83,6 +83,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="MessageHandlerFactoryStub.cs" />
+    <Compile Include="SampleApplicationProcessor.cs" />
     <Compile Include="SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
     <Compile Include="SampleApplication\IShoppingCartRepository.cs" />
     <Compile Include="SampleApplication\MessageHandlers\ShoppingCartHandler.cs" />

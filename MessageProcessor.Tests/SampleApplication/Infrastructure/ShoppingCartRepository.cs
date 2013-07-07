@@ -17,7 +17,7 @@ namespace YellowFlare.MessageProcessing.SampleApplication.Infrastructure
             {
                 throw new ArgumentNullException("controller");
             }
-            _domainEventBus = new DomainEventBusAdapter<Guid>(MessageProcessorTest.Processor.DomainEventBus);
+            _domainEventBus = new DomainEventBusAdapter<Guid>(SampleApplicationProcessor.Instance.Bus);
             _controller = controller;
             _carts = new Dictionary<Guid, ShoppingCart>(4);
         }

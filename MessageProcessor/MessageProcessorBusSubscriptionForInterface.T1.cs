@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class DomainEventBusSubscriptionForInterface<TMessage> : DomainEventBusSubscription
+    internal sealed class MessageProcessorBusSubscriptionForInterface<TMessage> : MessageProcessorBusSubscription
         where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;
 
-        public DomainEventBusSubscriptionForInterface(ICollection<DomainEventBusSubscription> subscriptions, IMessageHandler<TMessage> handler)
+        public MessageProcessorBusSubscriptionForInterface(ICollection<MessageProcessorBusSubscription> subscriptions, IMessageHandler<TMessage> handler)
             : base(subscriptions)
         {
             if (handler == null)
@@ -18,14 +18,14 @@ namespace YellowFlare.MessageProcessing
             _handler = handler;
         }
 
-        public override void Handle<TPublished>(MessageProcessor processor, TPublished message)
+        public override void Handle<TPublished>(IMessageProcessor processor, TPublished message)
         {
             var messageToHandle = message as TMessage;
             if (messageToHandle == null)
             {
                 return;
             }
-            processor.Handle(messageToHandle, _handler, MessageSources.DomainEventBus);
+            processor.Handle(messageToHandle, _handler);
         }
     }
 }
