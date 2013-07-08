@@ -61,7 +61,7 @@
     <Compile Include="Clocks\StopwatchClockTest.cs" />
     <Compile Include="Clocks\SystemClockTest.cs" />
     <Compile Include="UnitOfWorkControllerTest.cs" />
-    <Compile Include="UnitOfWorkContextCacheTest.cs" />
+    <Compile Include="UnitOfWorkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="UnitOfWorkStub.cs" />
     <Compile Include="UnitOfWorkWithAttributeOneAsync.cs" />

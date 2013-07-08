@@ -61,6 +61,7 @@
     <Compile Include="Aggregates\IWritableEventStream.T1.cs" />
     <Compile Include="Aggregates\MemoryEventStream.T1.cs" />
     <Compile Include="BufferedEvent.T1.cs" />
+    <Compile Include="CachedItem.T1.cs" />
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ClockWithOffset.cs" />
@@ -70,6 +71,8 @@
     <Compile Include="Clocks\ThreadStaticClockContext.cs" />
     <Compile Include="BufferedEventBus.cs" />
     <Compile Include="IBufferedEvent.cs" />
+    <Compile Include="ICache.cs" />
+    <Compile Include="ICachedItem.T1.cs" />
     <Compile Include="IDomainEventBus.cs" />
     <Compile Include="UnitOfWorkController.cs" />
     <Compile Include="Clocks\IClock.cs" />
@@ -77,7 +80,7 @@
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Clocks\SystemClock.cs" />
     <Compile Include="UnitOfWorkContext.cs" />
-    <Compile Include="UnitOfWorkContextCache.cs" />
+    <Compile Include="UnitOfWorkCache.cs" />
     <Compile Include="UnitOfWorkScope.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">

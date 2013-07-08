@@ -9,28 +9,16 @@ namespace YellowFlare.MessageProcessing
     /// </summary>
     public sealed class PerUnitOfWorkLifetimeManager : LifetimeManager
     {
-        private readonly Guid _key;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PerUnitOfWorkLifetimeManager" /> class.
-        /// </summary>
-        public PerUnitOfWorkLifetimeManager()
-        {
-            _key = Guid.NewGuid();
-        }
+        private ICachedItem<object> _item;        
 
         /// <inheritdoc />
         public override object GetValue()
         {
-            var context = UnitOfWorkContext.Current;            
-            if (context != null)
-            {
-                object value;
+            object value;
 
-                if (context.Cache.TryGetValue(_key, out value))
-                {
-                    return value;
-                }
+            if (_item != null && _item.TryGetValue(out value))
+            {
+                return value;
             }
             return null;
         }
@@ -38,12 +26,7 @@ namespace YellowFlare.MessageProcessing
         /// <inheritdoc />
         public override void RemoveValue()
         {
-            var context = UnitOfWorkContext.Current;
-            if (context == null)
-            {
-                throw NewOutOfContextException();
-            }
-            context.Cache.Remove(_key);
+            _item = null;
         }
 
         /// <inheritdoc />
@@ -54,7 +37,16 @@ namespace YellowFlare.MessageProcessing
             {
                 throw NewOutOfContextException();
             }
-            context.Cache.Add(_key, newValue);
+            _item = context.Cache.Add(newValue, HandleValueRemoved);
+        }
+
+        private static void HandleValueRemoved(object value)
+        {
+            var disposable = value as IDisposable;
+            if (disposable != null)
+            {
+                disposable.Dispose();
+            }
         }
 
         private static Exception NewOutOfContextException()

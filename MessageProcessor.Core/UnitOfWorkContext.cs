@@ -12,23 +12,23 @@ namespace YellowFlare.MessageProcessing
     public sealed class UnitOfWorkContext : IDisposable
     {
         private readonly Stack<BufferedEventBus> _bufferedEventBuses;
-        private readonly Lazy<UnitOfWorkContextCache> _cache;        
+        private readonly UnitOfWorkCache _cache;        
         private readonly UnitOfWorkController _flushController;        
         private bool _isDisposed;
         
         internal UnitOfWorkContext()
         {                                    
             _bufferedEventBuses = new Stack<BufferedEventBus>(2);            
-            _cache = new Lazy<UnitOfWorkContextCache>(() => new UnitOfWorkContextCache());          
+            _cache = new UnitOfWorkCache();         
             _flushController = new UnitOfWorkController();            
         }        
 
         /// <summary>
         /// Returns a cache that can be used to store items that have a lifecycle of single command execution.
         /// </summary>
-        public IDictionary<Guid, object> Cache
+        public ICache Cache
         {
-            get { return _cache.Value; }
+            get { return _cache; }
         }                       
 
         /// <summary>
@@ -40,10 +40,7 @@ namespace YellowFlare.MessageProcessing
             {
                 return;
             }
-            if (_cache.IsValueCreated)
-            {
-                _cache.Value.Dispose();
-            }            
+            _cache.Dispose();           
             _isDisposed = true;
         }
 
