@@ -16,6 +16,14 @@ namespace YellowFlare.MessageProcessing
         }
 
         /// <summary>
+        /// Returns the message that is currently being handled by the processor.
+        /// </summary>
+        Message CurrentMessage
+        {
+            get;
+        }
+
+        /// <summary>
         /// Handles the specified message by invoking all registered external message handlers.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message.</typeparam>

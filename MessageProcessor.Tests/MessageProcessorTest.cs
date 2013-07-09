@@ -7,7 +7,6 @@ namespace YellowFlare.MessageProcessing
     [TestClass]    
     public sealed class MessageProcessorTest
     {        
-
         #region [====== Setup and Teardown ======]
                 
         private Random _random;
@@ -19,6 +18,45 @@ namespace YellowFlare.MessageProcessing
         }                      
 
         #endregion        
+
+        #region [====== CurrentMessage Tests ======]
+
+        [TestMethod]
+        public void CurrentMessage_IsNull_WhenNoMessageIsBeingHandled()
+        {
+            Assert.IsNull(Processor.CurrentMessage);
+        }
+
+        [TestMethod]
+        public void CurrentMessage_TakesValueOfTheMessageThatIsBeingHandled()
+        {
+            object messageA = new object();
+            object messageB = null;
+
+            Processor.Handle(messageA, message => messageB = Processor.CurrentMessage.Instance);
+
+            Assert.AreSame(messageA, messageB);
+            Assert.IsNull(Processor.CurrentMessage);
+        }
+
+        [TestMethod]
+        public void CurrentMessage_ReturnsEntireHistoryOfMessages_IfMessagesAreHandledInANestedFashion()
+        {
+            object messageA = new object();
+            object messageB = new object();
+            Message message = null;
+
+            Processor.Handle(messageA, a =>            
+                Processor.Handle(messageB, b => message = Processor.CurrentMessage)
+            );
+
+            Assert.IsNotNull(message);
+            Assert.AreSame(messageB, message.Instance);
+            Assert.AreSame(messageA, message.PreviousMessage.Instance);
+            Assert.IsNull(Processor.CurrentMessage);
+        }
+
+        #endregion
 
         #region [====== SampleApplication Tests ======]
 

@@ -11,10 +11,30 @@ namespace YellowFlare.MessageProcessing
         /// The actual message instance.
         /// </summary>
         public readonly object Instance;
+
+        /// <summary>
+        /// The message of the outer scope.
+        /// </summary>
+        public readonly Message PreviousMessage;
         
         internal Message(object instance)
         {
             Instance = instance;            
+        }
+
+        private Message(object instance, Message previousMessage)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+            Instance = instance;
+            PreviousMessage = previousMessage;
+        }
+
+        internal Message NextMessage(object instance)
+        {
+            return new Message(instance, this);
         }
 
         /// <summary>

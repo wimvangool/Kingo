@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace YellowFlare.MessageProcessing
 {
@@ -10,6 +11,7 @@ namespace YellowFlare.MessageProcessing
         private readonly MessageProcessorBus _domainEventBus;        
         private readonly MessageHandlerFactory _handlerFactory;
         private readonly IMessageHandlerPipelineFactory _pipelineFactory;
+        private readonly ThreadLocal<Message> _currentMessage;
              
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
@@ -40,14 +42,22 @@ namespace YellowFlare.MessageProcessing
         {            
             _domainEventBus = new MessageProcessorBus(this);              
             _handlerFactory = handlerFactory;
-            _pipelineFactory = pipelineFactory;        
+            _pipelineFactory = pipelineFactory;  
+            _currentMessage = new ThreadLocal<Message>();
         }
 
         /// <inheritdoc />
         public virtual IMessageProcessorBus DomainEventBus
         {
             get { return _domainEventBus; }
-        }        
+        }
+
+        /// <inheritdoc />
+        public Message CurrentMessage
+        {
+            get { return _currentMessage.Value; }
+            private set { _currentMessage.Value = value; }
+        }
 
         /// <inheritdoc />
         public virtual void Handle<TMessage>(TMessage message) where TMessage : class
@@ -56,14 +66,23 @@ namespace YellowFlare.MessageProcessing
             {
                 return;
             }
-            using (var scope = new UnitOfWorkScope(DomainEventBus))
+            BeginMessage(message);
+
+            try
             {
-                foreach (var handler in _handlerFactory.CreateMessageHandlersFor(message))
+                using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
-                    CreatePipelineFor(handler).Handle(message);
+                    foreach (var handler in _handlerFactory.CreateMessageHandlersFor(message))
+                    {
+                        CreatePipelineFor(handler).Handle(message);
+                    }
+                    scope.Complete();
                 }
-                scope.Complete();
             }
+            finally
+            {
+                EndMessage();
+            }            
         }               
 
         /// <inheritdoc />
@@ -73,11 +92,20 @@ namespace YellowFlare.MessageProcessing
             {
                 throw new ArgumentNullException("handler");
             }
-            using (var scope = new UnitOfWorkScope(DomainEventBus))
+            BeginMessage(message);
+
+            try
             {
-                CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(handler)).Handle(message);
-                scope.Complete();
+                using (var scope = new UnitOfWorkScope(DomainEventBus))
+                {
+                    CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(handler)).Handle(message);
+                    scope.Complete();
+                }
             }
+            finally
+            {
+                EndMessage();
+            }            
         }        
 
         /// <inheritdoc />
@@ -87,12 +115,31 @@ namespace YellowFlare.MessageProcessing
             {
                 throw new ArgumentNullException("action");
             }
-            using (var scope = new UnitOfWorkScope(DomainEventBus))
+            BeginMessage(message);
+
+            try
             {
-                CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(action)).Handle(message);
-                scope.Complete();
+                using (var scope = new UnitOfWorkScope(DomainEventBus))
+                {
+                    CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(action)).Handle(message);
+                    scope.Complete();
+                }
             }
-        }               
+            finally
+            {
+                EndMessage();
+            }            
+        }
+        
+        private void BeginMessage(object message)
+        {
+            CurrentMessage = CurrentMessage == null ? new Message(message) : CurrentMessage.NextMessage(message);            
+        }
+
+        private void EndMessage()
+        {
+            CurrentMessage = CurrentMessage.PreviousMessage;
+        }
 
         private IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerPipeline<TMessage> handler) where TMessage : class
         {
