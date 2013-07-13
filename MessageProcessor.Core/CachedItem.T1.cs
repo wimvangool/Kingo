@@ -5,7 +5,8 @@ namespace YellowFlare.MessageProcessing
     internal sealed class CachedItem<T> : ICachedItem<T>, IDisposable
     {
         private readonly T _value;
-        private readonly Action<T> _valueRemovedCallback;
+        private readonly Action<T> _valueInvalidatedCallback;
+        private bool _hasBeenInvalidated;
         private bool _isDisposed;
 
         public CachedItem(T value)
@@ -13,10 +14,10 @@ namespace YellowFlare.MessageProcessing
             _value = value;            
         }
 
-        public CachedItem(T value, Action<T> valueRemovedCallback)
+        public CachedItem(T value, Action<T> valueInvalidatedCallback)
         {
             _value = value;
-            _valueRemovedCallback = valueRemovedCallback;
+            _valueInvalidatedCallback = valueInvalidatedCallback;
         }
 
         public void Dispose()
@@ -25,22 +26,33 @@ namespace YellowFlare.MessageProcessing
             {
                 return;
             }
-            if (_valueRemovedCallback != null)
-            {
-                _valueRemovedCallback.Invoke(_value);
-            }
+            Invalidate();
+
             _isDisposed = true;
         }
 
         public bool TryGetValue(out T value)
         {
-            if (_isDisposed)
+            if (_hasBeenInvalidated)
             {
                 value = default(T);
                 return false;
             }
             value = _value;
             return true;
+        }
+
+        public void Invalidate()
+        {
+            if (_hasBeenInvalidated)
+            {
+                return;
+            }
+            if (_valueInvalidatedCallback != null)
+            {
+                _valueInvalidatedCallback.Invoke(_value);
+            }
+            _hasBeenInvalidated = true;
         }
     }
 }

@@ -39,13 +39,13 @@ namespace YellowFlare.MessageProcessing
             return cachedItem;
         }
 
-        public ICachedItem<T> Add<T>(T value, Action<T> valueRemovedCallback)
+        public ICachedItem<T> Add<T>(T value, Action<T> valueInvalidatedCallback)
         {
             if (_isDisposed)
             {
                 throw NewCacheDisposedException();
             }
-            var cachedItem = new CachedItem<T>(value, valueRemovedCallback);
+            var cachedItem = new CachedItem<T>(value, valueInvalidatedCallback);
 
             _values.Add(cachedItem);
 

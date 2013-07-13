@@ -26,6 +26,11 @@ namespace YellowFlare.MessageProcessing
         /// <inheritdoc />
         public override void RemoveValue()
         {
+            if (_item == null)
+            {
+                return;
+            }
+            _item.Invalidate();
             _item = null;
         }
 
@@ -37,10 +42,10 @@ namespace YellowFlare.MessageProcessing
             {
                 throw NewOutOfContextException();
             }
-            _item = context.Cache.Add(newValue, HandleValueRemoved);
+            _item = context.Cache.Add(newValue, HandleValueInvalidated);
         }
 
-        private static void HandleValueRemoved(object value)
+        private static void HandleValueInvalidated(object value)
         {
             var disposable = value as IDisposable;
             if (disposable != null)
