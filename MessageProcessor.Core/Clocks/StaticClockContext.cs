@@ -46,6 +46,16 @@ namespace YellowFlare.MessageProcessing.Clocks
             return CurrentClock.LocalDateAndTime();
         }
 
+        public IClock Add(TimeSpan offset)
+        {
+            return ClockWithOffset.AddOffset(this, offset);
+        }
+
+        public IClock Subtract(TimeSpan offset)
+        {
+            return ClockWithOffset.SubtractOffset(this, offset);
+        }
+
         public static readonly StaticClockContext Instance = new StaticClockContext();        
     }
 }

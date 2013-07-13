@@ -58,15 +58,16 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Clocks\ClockTest.cs" />
+    <Compile Include="Clocks\ClockWithOffsetTest.cs" />
     <Compile Include="Clocks\StopwatchClockTest.cs" />
     <Compile Include="Clocks\SystemClockTest.cs" />
     <Compile Include="UnitOfWorkControllerTest.cs" />
     <Compile Include="UnitOfWorkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="UnitOfWorkStub.cs" />
-    <Compile Include="UnitOfWorkWithAttributeOneAsync.cs" />
-    <Compile Include="UnitOfWorkWithAttributeOneSync.cs" />
-    <Compile Include="UnitOfWorkWithAttributeTwoSync.cs" />
+    <Compile Include="UnitOfWorkOneAsyncTest.cs" />
+    <Compile Include="UnitOfWorkOneSyncTest.cs" />
+    <Compile Include="UnitOfWorkTwoSyncTest.cs" />
     <Compile Include="UnitOfWorkWrapperGroupTest.cs" />
     <Compile Include="UnitOfWorkWrapperItemTest.cs" />
   </ItemGroup>

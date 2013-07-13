@@ -241,17 +241,17 @@ namespace YellowFlare.MessageProcessing
 
         private static IUnitOfWork CreateUnitOfWorkOneSync(IUnitOfWork flushable = null)
         {
-            return new UnitOfWorkWithAttributeOneSync(flushable ?? CreateUnitOfWork());
+            return new UnitOfWorkOneSyncTest(flushable ?? CreateUnitOfWork());
         }
 
         private static IUnitOfWork CreateUnitOfWorkOneAsync(IUnitOfWork flushable = null)
         {
-            return new UnitOfWorkWithAttributeOneAsync(flushable ?? CreateUnitOfWork());
+            return new UnitOfWorkOneAsyncTest(flushable ?? CreateUnitOfWork());
         }
 
         private static IUnitOfWork CreateUnitOfWorkTwoSync(IUnitOfWork flushable = null)
         {
-            return new UnitOfWorkWithAttributeTwoSync(flushable ?? CreateUnitOfWork());
+            return new UnitOfWorkTwoSyncTest(flushable ?? CreateUnitOfWork());
         }
 
         private static IUnitOfWork CreateUnitOfWork()

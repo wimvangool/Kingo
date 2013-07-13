@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("YellowFlare")]
 [assembly: AssemblyProduct("YellowFlare MessageProcessing")]
 [assembly: AssemblyCopyright("Copyright © Wim van Gool 2013")]
-[assembly: AssemblyVersion("1.2.7.0")]
-[assembly: AssemblyFileVersion("1.2.7.0")]
-[assembly: AssemblyInformationalVersion("1.2.7.0")]
+[assembly: AssemblyVersion("1.2.8.0")]
+[assembly: AssemblyFileVersion("1.2.8.0")]
+[assembly: AssemblyInformationalVersion("1.2.8.0")]
 
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]

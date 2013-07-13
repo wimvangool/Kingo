@@ -45,9 +45,21 @@ namespace YellowFlare.MessageProcessing.Clocks
             return DateTime.Now;
         }
 
+        /// <inheritdoc />
+        public IClock Add(TimeSpan offset)
+        {
+            return ClockWithOffset.AddOffset(this, offset);
+        }
+
+        /// <inheritdoc />
+        public IClock Subtract(TimeSpan offset)
+        {
+            return ClockWithOffset.SubtractOffset(this, offset);
+        }
+
         /// <summary>
         /// The system-clock of the current system.
         /// </summary>
-        public static readonly SystemClock Instance = new SystemClock();
+        public static readonly SystemClock Instance = new SystemClock();        
     }
 }

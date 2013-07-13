@@ -1,11 +1,11 @@
 ﻿
 namespace YellowFlare.MessageProcessing
 {    
-    internal sealed class UnitOfWorkWithAttributeOneAsync : IUnitOfWork
+    internal sealed class UnitOfWorkOneSyncTest : IUnitOfWork
     {
         private readonly IUnitOfWork _flushable;
 
-        public UnitOfWorkWithAttributeOneAsync(IUnitOfWork flushable)
+        public UnitOfWorkOneSyncTest(IUnitOfWork flushable)
         {
             _flushable = flushable;
         }
@@ -17,7 +17,7 @@ namespace YellowFlare.MessageProcessing
 
         public bool CanBeFlushedAsynchronously
         {
-            get { return true; }
+            get { return false; }
         }
 
         public bool RequiresFlush()

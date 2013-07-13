@@ -81,7 +81,7 @@ namespace YellowFlare.MessageProcessing
         {
             var checker = new FlushThreadChecker(true);
 
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checker));            
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checker));            
             _controller.Flush();
 
             checker.AssertFlushedOnExpectedThread();
@@ -95,8 +95,8 @@ namespace YellowFlare.MessageProcessing
 
             // NB: Because checker A and B will end up in one group, and one forces a synchronous flush,
             // both will be flushed synchronously.
-            _controller.Enlist(new UnitOfWorkWithAttributeOneSync(checkerA));
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerB));            
+            _controller.Enlist(new UnitOfWorkOneSyncTest(checkerA));
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerB));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnExpectedThread();            
@@ -109,8 +109,8 @@ namespace YellowFlare.MessageProcessing
             var checkerA = new FlushThreadChecker(true);
             var checkerB = new FlushThreadChecker(false);
 
-            _controller.Enlist(new UnitOfWorkWithAttributeTwoSync(checkerA));
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerB));            
+            _controller.Enlist(new UnitOfWorkTwoSyncTest(checkerA));
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerB));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnExpectedThread();
@@ -124,9 +124,9 @@ namespace YellowFlare.MessageProcessing
             var checkerB = new FlushThreadChecker(true);
             var checkerC = new FlushThreadChecker(false);
 
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerA));
-            _controller.Enlist(new UnitOfWorkWithAttributeTwoSync(checkerB));
-            _controller.Enlist(new UnitOfWorkWithAttributeOneAsync(checkerC));            
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerA));
+            _controller.Enlist(new UnitOfWorkTwoSyncTest(checkerB));
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerC));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnSameThreadAs(checkerC);

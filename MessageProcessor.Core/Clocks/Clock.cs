@@ -31,6 +31,16 @@ namespace YellowFlare.MessageProcessing.Clocks
 
         public abstract DateTime LocalDateAndTime();
 
+        public IClock Add(TimeSpan offset)
+        {
+            return ClockWithOffset.AddOffset(this, offset);
+        }
+
+        public IClock Subtract(TimeSpan offset)
+        {
+            return ClockWithOffset.SubtractOffset(this, offset);
+        }
+
         public static IClock Current
         {
             get { return ThreadStaticClockContext.Instance.CurrentClock; }

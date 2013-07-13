@@ -42,5 +42,19 @@ namespace YellowFlare.MessageProcessing.Clocks
         /// </summary>
         /// <returns>The date and time in local time.</returns>
         DateTime LocalDateAndTime();
+
+        /// <summary>
+        /// Returns a clock that shows the time of the current clock, plus the given offset.
+        /// </summary>
+        /// <param name="offset">The offset to add to the time of the current clock.</param>
+        /// <returns>A clock that shows the time of the current clock, plus the given offset.</returns>
+        IClock Add(TimeSpan offset);
+
+        /// <summary>
+        /// Returns a clock that shows the time of the current clock, minus the given offset.
+        /// </summary>
+        /// <param name="offset">The offset to subtract from the time of the current clock.</param>
+        /// <returns>A clock that shows the time of the current clock, minus the given offset.</returns>
+        IClock Subtract(TimeSpan offset);
     }
 }

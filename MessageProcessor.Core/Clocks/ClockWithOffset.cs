@@ -2,7 +2,7 @@
 
 namespace YellowFlare.MessageProcessing.Clocks
 {
-    public sealed class ClockWithOffset : Clock
+    internal sealed class ClockWithOffset : Clock
     {
         private readonly IClock _clock;
         private readonly TimeSpan _offset;
@@ -21,11 +21,7 @@ namespace YellowFlare.MessageProcessing.Clocks
         }
 
         public static ClockWithOffset AddOffset(IClock clock, TimeSpan offset)
-        {
-            if (clock == null)
-            {
-                throw new ArgumentNullException("clock");
-            }
+        {            
             return new ClockWithOffset(clock, offset, AddOffset);
         }
 
@@ -35,18 +31,13 @@ namespace YellowFlare.MessageProcessing.Clocks
         }
 
         public static ClockWithOffset SubtractOffset(IClock clock, TimeSpan offset)
-        {
-            if (clock == null)
-            {
-                throw new ArgumentNullException("clock");
-            }
+        {            
             return new ClockWithOffset(clock, offset, SubtractOffset);
         }
 
         private static DateTime SubtractOffset(DateTime value, TimeSpan offset)
         {
             return value.Subtract(offset);
-        }
-        
+        }        
     }
 }

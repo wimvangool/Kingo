@@ -1,11 +1,11 @@
 ﻿
 namespace YellowFlare.MessageProcessing
 {    
-    internal sealed class UnitOfWorkWithAttributeTwoSync : IUnitOfWork
+    internal sealed class UnitOfWorkTwoSyncTest : IUnitOfWork
     {
         private readonly IUnitOfWork _flushable;
 
-        public UnitOfWorkWithAttributeTwoSync(IUnitOfWork flushable)
+        public UnitOfWorkTwoSyncTest(IUnitOfWork flushable)
         {
             _flushable = flushable;
         }

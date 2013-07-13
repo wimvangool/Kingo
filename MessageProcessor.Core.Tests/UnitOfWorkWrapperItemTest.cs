@@ -127,12 +127,12 @@ namespace YellowFlare.MessageProcessing
 
         private static IUnitOfWork CreateUnitOfWorkWithAttributeOneSync()
         {
-            return new UnitOfWorkWithAttributeOneSync(CreateUnitOfWork());
+            return new UnitOfWorkOneSyncTest(CreateUnitOfWork());
         }
 
         private static IUnitOfWork CreateUnitOfWorkWithAttributeTwoSync()
         {
-            return new UnitOfWorkWithAttributeTwoSync(CreateUnitOfWork());
+            return new UnitOfWorkTwoSyncTest(CreateUnitOfWork());
         }
     }
 }
