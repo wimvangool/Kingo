@@ -19,7 +19,12 @@ namespace YellowFlare.MessageProcessing
             {
                 return;
             }
-            foreach (var disposable in _values)
+            // We create a copy here since every Dispose()-action may result
+            // in a call to Remove(), eventually resulting in the values-collection
+            // being changed while iterating over it.
+            var valuesCopy = new List<IDisposable>(_values);
+
+            foreach (var disposable in valuesCopy)
             {
                 disposable.Dispose();
             }
@@ -27,16 +32,8 @@ namespace YellowFlare.MessageProcessing
         }
 
         public ICachedItem<T> Add<T>(T value)
-        {
-            if (_isDisposed)
-            {
-                throw NewCacheDisposedException();
-            }
-            var cachedItem = new CachedItem<T>(value);
-
-            _values.Add(cachedItem);
-
-            return cachedItem;
+        {            
+            return Add(value, null);
         }
 
         public ICachedItem<T> Add<T>(T value, Action<T> valueInvalidatedCallback)
@@ -45,12 +42,17 @@ namespace YellowFlare.MessageProcessing
             {
                 throw NewCacheDisposedException();
             }
-            var cachedItem = new CachedItem<T>(value, valueInvalidatedCallback);
+            var cachedItem = new CachedItem<T>(this, value, valueInvalidatedCallback);
 
             _values.Add(cachedItem);
 
             return cachedItem;
-        }      
+        }   
+   
+        internal void Remove(IDisposable cachedItem)
+        {
+            _values.Remove(cachedItem);
+        }
 
         private static Exception NewCacheDisposedException()
         {

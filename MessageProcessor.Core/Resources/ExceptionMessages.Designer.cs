@@ -88,11 +88,11 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command &apos;{0}&apos; failed because it caused a DomainException to occur..
+        ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
         /// </summary>
-        internal static string DomainException_CommandFailed {
+        internal static string DomainModelException_CommandFailed {
             get {
-                return ResourceManager.GetString("DomainException_CommandFailed", resourceCulture);
+                return ResourceManager.GetString("DomainModelException_CommandFailed", resourceCulture);
             }
         }
         

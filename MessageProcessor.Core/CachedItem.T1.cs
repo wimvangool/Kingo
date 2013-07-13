@@ -4,18 +4,15 @@ namespace YellowFlare.MessageProcessing
 {
     internal sealed class CachedItem<T> : ICachedItem<T>, IDisposable
     {
+        private readonly UnitOfWorkCache _cache;
         private readonly T _value;
         private readonly Action<T> _valueInvalidatedCallback;
         private bool _hasBeenInvalidated;
-        private bool _isDisposed;
+        private bool _isDisposed;        
 
-        public CachedItem(T value)
-        {
-            _value = value;            
-        }
-
-        public CachedItem(T value, Action<T> valueInvalidatedCallback)
-        {
+        public CachedItem(UnitOfWorkCache cache, T value, Action<T> valueInvalidatedCallback)
+        {            
+            _cache = cache;
             _value = value;
             _valueInvalidatedCallback = valueInvalidatedCallback;
         }
@@ -52,6 +49,7 @@ namespace YellowFlare.MessageProcessing
             {
                 _valueInvalidatedCallback.Invoke(_value);
             }
+            _cache.Remove(this);
             _hasBeenInvalidated = true;
         }
     }

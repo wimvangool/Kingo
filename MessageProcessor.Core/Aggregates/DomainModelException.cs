@@ -9,32 +9,32 @@ namespace YellowFlare.MessageProcessing.Aggregates
     /// This type of exception is thrown when something goes wrong in the domain of an application.
     /// </summary>    
     [Serializable]
-    public abstract class AggregatesException : Exception
+    public abstract class DomainModelException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregatesException" /> class.
+        /// Initializes a new instance of the <see cref="DomainModelException" /> class.
         /// </summary>
-        protected AggregatesException() {}
+        protected DomainModelException() {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregatesException" /> class.
+        /// Initializes a new instance of the <see cref="DomainModelException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
-        protected AggregatesException(string message) : base(message) {}
+        protected DomainModelException(string message) : base(message) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregatesException" /> class.
+        /// Initializes a new instance of the <see cref="DomainModelException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
         /// <param name="inner">Cause of the exception.</param>
-        protected AggregatesException(string message, Exception inner) : base(message, inner) {}
+        protected DomainModelException(string message, Exception inner) : base(message, inner) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregatesException" /> class.
+        /// Initializes a new instance of the <see cref="DomainModelException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected AggregatesException(SerializationInfo info, StreamingContext context) : base(info, context) {}
+        protected DomainModelException(SerializationInfo info, StreamingContext context) : base(info, context) {}
 
         /// <summary>
         /// Converts this instance into an instance of <see cref="InvalidCommandException" />.
@@ -50,7 +50,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
             {
                 throw new ArgumentNullException("command");
             }
-            var messageFormat = ExceptionMessages.DomainException_CommandFailed;
+            var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
             var message = Format(messageFormat, command.GetType());
             return new InvalidCommandException(command, message, this);
         }
