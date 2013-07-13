@@ -97,6 +97,15 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A handler for event &apos;{0}&apos; has already been registered..
+        /// </summary>
+        internal static string EventSourcedAggregate_HandlerAlreadyRegistered {
+            get {
+                return ResourceManager.GetString("EventSourcedAggregate_HandlerAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to enlist &apos;{0}&apos; because no context was found..
         /// </summary>
         internal static string UnitOfWorkContext_FailedToEnlistUnitOfWork {

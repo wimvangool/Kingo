@@ -8,6 +8,7 @@ namespace YellowFlare.MessageProcessing
     /// </summary>        
     public sealed class UnitOfWorkScope : IDisposable
     {
+        private readonly UnitOfWorkContext _context;
         private readonly BufferedEventBus _bufferedEventBus;
         private readonly bool _isContextOwner;
         private bool _hasCompleted;
@@ -25,16 +26,17 @@ namespace YellowFlare.MessageProcessing
             if (domainEventBus == null)
             {
                 throw new ArgumentNullException("domainEventBus");
-            }
-            UnitOfWorkContext context;
-
-            _isContextOwner = StartScope(out context);
-            _bufferedEventBus = context.PushBus(domainEventBus);
+            }            
+            _isContextOwner = StartScope(out _context);
+            _bufferedEventBus = _context.PushBus(domainEventBus);
         }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>        
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// This scope was incorrectly nested with another scope.
+        /// </exception>
         /// <remarks>
         /// The Dispose()-method marks the end of the current scope's lifetime and will set
         /// <see cref="UnitOfWorkContext.Current" /> back to <c>null</c> after disposing it.
@@ -57,7 +59,7 @@ namespace YellowFlare.MessageProcessing
         /// The scope has already been disposed.
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        /// The scope has already been completed.
+        /// The scope has already been completed
         /// </exception>
         public void Complete()
         {
@@ -68,15 +70,10 @@ namespace YellowFlare.MessageProcessing
             if (_hasCompleted)
             {
                 throw NewScopeAlreadyCompletedException();
-            }
-            var context = UnitOfWorkContext.Current;
-            if (context == null)
-            {
-                throw NewIncorrectNestingOrWrongThreadException();
-            }
+            }            
             if (_isContextOwner)
             {
-                context.Flush();
+                _context.Flush();
             }
             _hasCompleted = true;                                       
         }        
@@ -94,20 +91,15 @@ namespace YellowFlare.MessageProcessing
         }
 
         private static void EndScope(UnitOfWorkScope scope)
-        {
-            var context = UnitOfWorkContext.Current;
-            if (context == null)
-            {
-                throw NewIncorrectNestingOrWrongThreadException();
-            }
-            var bufferedEventBus = context.PopBus();
+        {            
+            var bufferedEventBus = scope._context.PopBus();
             if (bufferedEventBus != scope._bufferedEventBus)
             {
                 throw NewIncorrectNestingOrWrongThreadException();
             }
             if (scope._isContextOwner)
             {
-                context.Dispose();
+                scope._context.Dispose();
 
                 UnitOfWorkContext.Current = null;
             }

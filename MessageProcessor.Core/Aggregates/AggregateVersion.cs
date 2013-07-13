@@ -4,10 +4,20 @@ using YellowFlare.MessageProcessing.Resources;
 
 namespace YellowFlare.MessageProcessing.Aggregates
 {
+    /// <summary>
+    /// Represents the version of a certain <see cref="IAggregate{T}">aggregate</see>.
+    /// </summary>
     public struct AggregateVersion : IEquatable<AggregateVersion>, IComparable<AggregateVersion>, IComparable
     {
         private readonly int _value;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateVersion" /> class.
+        /// </summary>
+        /// <param name="value">The value of this version.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="value"/> is negative.
+        /// </exception>
         public AggregateVersion(int value)
         {
             if (value < 0)
@@ -53,6 +63,10 @@ namespace YellowFlare.MessageProcessing.Aggregates
             return _value.CompareTo(other._value);
         }        
 
+        /// <summary>
+        /// Returns the value of this version as a 32-bit integer value.
+        /// </summary>
+        /// <returns>The value of this version as a 32-bit integer value.</returns>
         public int ToInt32()
         {
             return _value;
@@ -63,6 +77,13 @@ namespace YellowFlare.MessageProcessing.Aggregates
             return _value.ToString(CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// Returns the incremented version of this aggregate.
+        /// </summary>
+        /// <returns>The incremented version of this aggregate.</returns>
+        /// <exception cref="OverflowException">
+        /// The value of this instance is equal to <see cref="Int32.MaxValue" />.
+        /// </exception>
         public AggregateVersion Increment()
         {
             checked
@@ -71,8 +92,19 @@ namespace YellowFlare.MessageProcessing.Aggregates
             }
         }
 
+        /// <summary>
+        /// The initial version of every aggregate.
+        /// </summary>
         public static readonly AggregateVersion Zero = new AggregateVersion(0);
 
+        /// <summary>
+        /// Increments the specified version and returns the result.
+        /// </summary>
+        /// <param name="version">The version to increment.</param>
+        /// <returns>The incremented version.</returns>
+        /// <exception cref="OverflowException">
+        /// The value of this instance is equal to <see cref="Int32.MaxValue" />.
+        /// </exception>
         public static AggregateVersion Increment(ref AggregateVersion version)
         {
             return version = version.Increment();
@@ -94,31 +126,79 @@ namespace YellowFlare.MessageProcessing.Aggregates
 
         #region [====== Operator Overloads ======]
 
+        /// <summary>
+        /// Determines whether two versions are equal.
+        /// </summary>
+        /// <param name="left">The left version.</param>
+        /// <param name="right">The right version.</param>
+        /// <returns>
+        /// <c>true</c> if both versions are equal; otherwise <c>false</c>.
+        /// </returns>
         public static bool operator ==(AggregateVersion left, AggregateVersion right)
         {
             return left.Equals(right);
         }
 
+        /// <summary>
+        /// Determines whether two versions are unequal.
+        /// </summary>
+        /// <param name="left">The left version.</param>
+        /// <param name="right">The right version.</param>
+        /// <returns>
+        /// <c>true</c> if both versions are unequal; otherwise <c>false</c>.
+        /// </returns>
         public static bool operator !=(AggregateVersion left, AggregateVersion right)
         {
             return !left.Equals(right);
         }
 
+        /// <summary>
+        /// Determines whether one version is greater than the other.
+        /// </summary>
+        /// <param name="left">The left version.</param>
+        /// <param name="right">The right version.</param>
+        /// <returns>
+        /// <c>true</c> if the left version is greater than the right; otherwise <c>false</c>.
+        /// </returns>
         public static bool operator >(AggregateVersion left, AggregateVersion right)
         {
             return left._value > right._value;
         }
 
+        /// <summary>
+        /// Determines whether one version is less than the other.
+        /// </summary>
+        /// <param name="left">The left version.</param>
+        /// <param name="right">The right version.</param>
+        /// <returns>
+        /// <c>true</c> if the left version is less than the right; otherwise <c>false</c>.
+        /// </returns>
         public static bool operator <(AggregateVersion left, AggregateVersion right)
         {
             return left._value < right._value;
         }
 
+        /// <summary>
+        /// Determines whether one version is greater than or equal to the other.
+        /// </summary>
+        /// <param name="left">The left version.</param>
+        /// <param name="right">The right version.</param>
+        /// <returns>
+        /// <c>true</c> if the left version is greater than or equal to the right; otherwise <c>false</c>.
+        /// </returns>
         public static bool operator >=(AggregateVersion left, AggregateVersion right)
         {
             return left._value >= right._value;
         }
 
+        /// <summary>
+        /// Determines whether one version is less than or equal to the other.
+        /// </summary>
+        /// <param name="left">The left version.</param>
+        /// <param name="right">The right version.</param>
+        /// <returns>
+        /// <c>true</c> if the left version is less than or equal to the right; otherwise <c>false</c>.
+        /// </returns>
         public static bool operator <=(AggregateVersion left, AggregateVersion right)
         {
             return left._value <= right._value;

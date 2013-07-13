@@ -5,6 +5,9 @@ using YellowFlare.MessageProcessing.Resources;
 
 namespace YellowFlare.MessageProcessing
 {
+    /// <summary>
+    /// Represents an in-memory event-bus that is flushed when the <see cref="UnitOfWorkScope" /> completes.
+    /// </summary>
     public sealed class BufferedEventBus : IDomainEventBus, IUnitOfWork
     {        
         private readonly List<IBufferedEvent> _buffer;
@@ -51,6 +54,17 @@ namespace YellowFlare.MessageProcessing
             _buffer.Clear();            
         }
 
+        /// <summary>
+        /// Publishes the specified event on the bus that is currently in scope.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message to publish.</typeparam>
+        /// <param name="message">The message to publish.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No instance is currrently in scope on which the message can be published.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message" /> is <c>null</c>.
+        /// </exception>
         public static void Publish<TMessage>(TMessage message) where TMessage : class
         {
             var context = UnitOfWorkContext.Current;

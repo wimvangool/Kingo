@@ -7,7 +7,7 @@ using YellowFlare.MessageProcessing.Resources;
 namespace YellowFlare.MessageProcessing
 {
     /// <summary>
-    /// Represents the context in which a certain command is being executed.
+    /// Represents the context in which a certain message is being handled.
     /// </summary>
     public sealed class UnitOfWorkContext : IDisposable
     {

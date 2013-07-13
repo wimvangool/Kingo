@@ -30,7 +30,7 @@ namespace YellowFlare.MessageProcessing
             {
                 return;
             }
-            _item.Invalidate();
+            _item.Dispose();
             _item = null;
         }
 

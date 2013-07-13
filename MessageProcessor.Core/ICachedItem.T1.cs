@@ -1,10 +1,23 @@
-﻿
+﻿using System;
+
 namespace YellowFlare.MessageProcessing
 {
-    public interface ICachedItem<T>
+    /// <summary>
+    /// Represents a handle to an item in cache.
+    /// </summary>
+    /// <typeparam name="T">Type of the item in cache.</typeparam>
+    public interface ICachedItem<T> : IDisposable
     {
-        bool TryGetValue(out T value);
-
-        void Invalidate();
+        /// <summary>
+        /// Attempts to retrieve the value from cache.
+        /// </summary>
+        /// <param name="value">
+        /// When this method returns <c>true</c>, contains the value that was retrieved from cache;
+        /// otherwise, contains the default value of <typeparamref name="T"/>.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> when the item was still in cache; otherwise <c>false</c>.
+        /// </returns>
+        bool TryGetValue(out T value);        
     }
 }
