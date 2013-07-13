@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using YellowFlare.MessageProcessing.Resources;
 
 namespace YellowFlare.MessageProcessing
 {
@@ -6,6 +9,7 @@ namespace YellowFlare.MessageProcessing
     {        
         private readonly List<IBufferedEvent> _buffer;
         private readonly IDomainEventBus _domainEventBus;
+        private bool _hasBeenFlushed;
 
         internal BufferedEventBus(IDomainEventBus domainEventBus)
         {                        
@@ -25,12 +29,16 @@ namespace YellowFlare.MessageProcessing
 
         void IDomainEventBus.Publish<TMessage>(TMessage message)
         {
+            if (_hasBeenFlushed)
+            {
+                throw NewBufferHasAlreadyBeenFlushedException(typeof(TMessage));
+            }
             _buffer.Add(new BufferedEvent<TMessage>(message));
         }
 
         bool IUnitOfWork.RequiresFlush()
         {
-            return _buffer.Count > 0;
+            return !_hasBeenFlushed && _buffer.Count > 0;
         }
 
         void IUnitOfWork.Flush()
@@ -39,18 +47,32 @@ namespace YellowFlare.MessageProcessing
             {
                 bufferedEvent.Publish(_domainEventBus);
             }
-            _buffer.Clear();
+            _hasBeenFlushed = true;
+            _buffer.Clear();            
         }
 
-        public static bool Publish<TMessage>(TMessage message) where TMessage : class
+        public static void Publish<TMessage>(TMessage message) where TMessage : class
         {
             var context = UnitOfWorkContext.Current;
             if (context == null)
             {
-                return false;
+                throw NewNoBusAvailableException(typeof(TMessage));
             }
-            context.PeekBus().Publish(message);
-            return true;
-        }        
+            context.PeekBus().Publish(message);            
+        }
+
+        private static Exception NewNoBusAvailableException(Type messageType)
+        {
+            var messageFormat = ExceptionMessages.BufferedEventBus_NoBusAvailable;
+            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, messageType.Name);
+            return new InvalidOperationException(message);
+        }
+
+        private static Exception NewBufferHasAlreadyBeenFlushedException(Type messageType)
+        {
+            var messageFormat = ExceptionMessages.BufferedEventBus_BusAlreadyFlushed;
+            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, messageType.Name);
+            return new InvalidOperationException(message);
+        }
     }
 }

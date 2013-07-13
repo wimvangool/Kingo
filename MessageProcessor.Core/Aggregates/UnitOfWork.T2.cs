@@ -15,7 +15,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
     {        
         private readonly IAggregateStore<TKey, TValue> _store;
         private readonly string _flushGroup;
-        private readonly bool _canbeFlushedAsynchronously;
+        private readonly bool _canBeFlushedAsynchronously;
 
         private readonly AggregateSet<TKey, TValue> _selectedAggregates;
         private readonly AggregateSet<TKey, TValue> _insertedAggregates;
@@ -41,7 +41,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
             }           
             _store = store;
             _flushGroup = flushGroup;
-            _canbeFlushedAsynchronously = canBeFlushedAsynchronously;
+            _canBeFlushedAsynchronously = canBeFlushedAsynchronously;
 
             _selectedAggregates = new AggregateSet<TKey, TValue>();
             _insertedAggregates = new AggregateSet<TKey, TValue>();
@@ -57,7 +57,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <inheritdoc />
         public bool CanBeFlushedAsynchronously
         {
-            get { return _canbeFlushedAsynchronously; }
+            get { return _canBeFlushedAsynchronously; }
         }
 
         private bool HasAggregatesToDelete

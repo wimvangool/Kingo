@@ -61,6 +61,24 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot publish event of type &apos;{0}&apos; because the bus has already been flushed..
+        /// </summary>
+        internal static string BufferedEventBus_BusAlreadyFlushed {
+            get {
+                return ResourceManager.GetString("BufferedEventBus_BusAlreadyFlushed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot publish event of type &apos;{0}&apos; because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope..
+        /// </summary>
+        internal static string BufferedEventBus_NoBusAvailable {
+            get {
+                return ResourceManager.GetString("BufferedEventBus_NoBusAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The clock-scopes aren&apos;t nested correctly..
         /// </summary>
         internal static string ClockScope_IncorrectNesting {

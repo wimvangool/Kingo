@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BufferedEventBus_BusAlreadyFlushed" xml:space="preserve">
+    <value>Cannot publish event of type '{0}' because the bus has already been flushed.</value>
+  </data>
+  <data name="BufferedEventBus_NoBusAvailable" xml:space="preserve">
+    <value>Cannot publish event of type '{0}' because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope.</value>
+  </data>
   <data name="ClockScope_IncorrectNesting" xml:space="preserve">
     <value>The clock-scopes aren't nested correctly.</value>
   </data>
