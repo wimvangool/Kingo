@@ -4,7 +4,17 @@ namespace YellowFlare.MessageProcessing
 {
     internal sealed class UnityTestProcessor : MessageProcessor
     {        
-        private UnityTestProcessor(MessageHandlerFactory handlerFactory) : base(handlerFactory) { }        
+        private readonly MessageHandlerFactory _messageHandlerFactory;
+
+        private UnityTestProcessor(MessageHandlerFactory messageHandlerFactory)
+        {
+            _messageHandlerFactory = messageHandlerFactory;
+        }
+
+        protected override MessageHandlerFactory MessageHandlerFactory
+        {
+            get { return _messageHandlerFactory; }
+        }
 
         private static readonly Lazy<UnityTestProcessor> _Instance = new Lazy<UnityTestProcessor>(CreateProcessor, true);
 

@@ -8,7 +8,17 @@ namespace YellowFlare.MessageProcessing
 {
     internal sealed class SampleApplicationProcessor : MessageProcessor
     {        
-        private SampleApplicationProcessor(MessageHandlerFactory handlerFactory) : base(handlerFactory) { }        
+        private readonly MessageHandlerFactory _messageHandlerFactory;
+
+        private SampleApplicationProcessor(MessageHandlerFactory messageHandlerFactory)
+        {
+            _messageHandlerFactory = messageHandlerFactory;
+        }
+
+        protected override MessageHandlerFactory MessageHandlerFactory
+        {
+            get { return _messageHandlerFactory; }
+        }
 
         private static readonly Lazy<SampleApplicationProcessor> _Instance = new Lazy<SampleApplicationProcessor>(CreateProcessor, true);        
 

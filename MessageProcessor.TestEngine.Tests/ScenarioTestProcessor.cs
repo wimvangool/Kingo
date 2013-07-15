@@ -5,7 +5,17 @@ namespace YellowFlare.MessageProcessing
 {
     internal sealed class ScenarioTestProcessor : MessageProcessor
     {        
-        private ScenarioTestProcessor(MessageHandlerFactory handlerFactory) : base(handlerFactory) { }
+        private readonly MessageHandlerFactory _messageHandlerFactory;
+
+        private ScenarioTestProcessor(MessageHandlerFactory messageHandlerFactory)
+        {
+            _messageHandlerFactory = messageHandlerFactory;
+        }
+
+        protected override MessageHandlerFactory MessageHandlerFactory
+        {
+            get { return _messageHandlerFactory; }
+        }
 
         private static readonly Lazy<ScenarioTestProcessor> _Instance = new Lazy<ScenarioTestProcessor>(CreateProcessor, true);
 
