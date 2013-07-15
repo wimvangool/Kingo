@@ -27,7 +27,7 @@ namespace YellowFlare.MessageProcessing
         private static ScenarioTestProcessor CreateProcessor()
         {
             var messageHandlerFactory = new MessageHandlerFactoryForUnity();
-            messageHandlerFactory.RegisterMessageHandlers(Assembly.GetExecutingAssembly());
+            messageHandlerFactory.RegisterMessageHandlersFrom(Assembly.GetExecutingAssembly());
             return new ScenarioTestProcessor(messageHandlerFactory);
         }
     }

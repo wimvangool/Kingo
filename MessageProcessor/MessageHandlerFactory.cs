@@ -23,15 +23,94 @@ namespace YellowFlare.MessageProcessing
         }
 
         /// <summary>
+        /// Registers all message-handler types that are found in the assemblies deployed to the directory
+        /// of the calling assembly.
+        /// </summary>
+        /// <returns>The current instance.</returns>
+        public MessageHandlerFactory RegisterMessageHandlers()
+        {
+            return RegisterMessageHandlers(Assembly.GetCallingAssembly().Location, null);
+        }
+
+        /// <summary>
+        /// Registers all message-handler types that are found in the assemblies deployed to the directory
+        /// of the calling assembly and also satisfy the specified predicate.
+        /// </summary>
+        /// <param name="predicate">A predicate that filters the requires message-handlers to register (optional).</param>
+        /// <returns>The current instance.</returns>
+        public MessageHandlerFactory RegisterMessageHandlers(Func<Type, bool> predicate)
+        {
+            return RegisterMessageHandlers(Assembly.GetCallingAssembly().Location, predicate);
+        }   
+     
+        /// <summary>
+        /// Registers all message-handler types that are found in the assemblies deployed to the specified
+        /// directory.
+        /// </summary>
+        /// <param name="directory">The directory to scan.</param>
+        /// <returns>The current instance.</returns>
+        public MessageHandlerFactory RegisterMessageHandlers(string directory)
+        {
+            return RegisterMessageHandlers(directory, null);
+        }
+
+        /// <summary>
+        /// Registers all message-handler types that are found in the assemblies deployed to the specified
+        /// directory and also satisfy the specified predicate.
+        /// </summary>
+        /// <param name="directory">The directory to scan.</param>
+        /// <param name="predicate">A predicate that filters the requires message-handlers to register (optional).</param>
+        /// <returns>The current instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="directory"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="directory"/> is not a valid directory.
+        /// </exception>
+        public MessageHandlerFactory RegisterMessageHandlers(string directory, Func<Type, bool> predicate)
+        {            
+            foreach (var assembly in FindAssembliesIn(directory))
+            {
+                RegisterMessageHandlersFrom(assembly, predicate);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Registers all message-handler types that are found in the assembly with the specified <paramref name="assemblyName"/>.
+        /// </summary>
+        /// <param name="assemblyName">Name of the assembly to scan for message-handlers.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="assemblyName"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="assemblyName"/> is not a valid path to an existing assembly.
+        /// </exception>
+        public MessageHandlerFactory RegisterMessageHandlersFrom(string assemblyName)
+        {
+            if (assemblyName == null)
+            {
+                throw new ArgumentNullException("assemblyName");
+            }
+            if (Path.IsPathRooted(assemblyName))
+            {
+                return RegisterMessageHandlersFrom(Assembly.LoadFrom(assemblyName));
+            }
+            string relativeRoot = Assembly.GetCallingAssembly().Location;
+            string assemblyLocation = Path.Combine(relativeRoot, assemblyName);
+            return RegisterMessageHandlersFrom(Assembly.LoadFrom(assemblyLocation));
+        }
+
+        /// <summary>
         /// Registers all message-handler types that are found in the specified <paramref name="assembly"/>.
         /// </summary>
         /// <param name="assembly">The assembly to scan for message-handlers.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assembly"/> is <c>null</c>.
         /// </exception>
-        public MessageHandlerFactory RegisterMessageHandlers(Assembly assembly)
+        public MessageHandlerFactory RegisterMessageHandlersFrom(Assembly assembly)
         {
-            return RegisterMessageHandlers(assembly, null);
+            return RegisterMessageHandlersFrom(assembly, null);
         }
 
         /// <summary>
@@ -43,7 +122,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assembly"/> is <c>null</c>.
         /// </exception>
-        public MessageHandlerFactory RegisterMessageHandlers(Assembly assembly, Func<Type, bool> predicate)
+        public MessageHandlerFactory RegisterMessageHandlersFrom(Assembly assembly, Func<Type, bool> predicate)
         {
             if (assembly == null)
             {
@@ -57,27 +136,6 @@ namespace YellowFlare.MessageProcessing
                 {
                     _messageHandlers.Add(handler);
                 }
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Registers all message-handler types that are found in the assemblies deployed to the current directory.
-        /// </summary>
-        public MessageHandlerFactory RegisterMessageHandlersInCurrentDirectory()
-        {
-            return RegisterMessageHandlersInCurrentDirectory(null);
-        }
-
-        /// <summary>
-        /// Registers all message-handler types that are found in the assemblies deployed to the current directory
-        /// and satisfy the specified <paramref name="predicate"/>.
-        /// </summary>
-        public MessageHandlerFactory RegisterMessageHandlersInCurrentDirectory(Func<Type, bool> predicate)
-        {
-            foreach (var assembly in FindAssembliesInCurrentDirectory())
-            {
-                RegisterMessageHandlers(assembly, predicate);
             }
             return this;
         }        
@@ -142,9 +200,9 @@ namespace YellowFlare.MessageProcessing
             return MessageHandlerClass.CreateMessageHandler(action);
         }
 
-        private static IEnumerable<Assembly> FindAssembliesInCurrentDirectory()
+        private static IEnumerable<Assembly> FindAssembliesIn(string directory)
         {
-            return from assemblyFileName in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.dll", SearchOption.TopDirectoryOnly)
+            return from assemblyFileName in Directory.EnumerateFiles(directory, "*.dll", SearchOption.TopDirectoryOnly)
                    select Assembly.LoadFile(assemblyFileName);
         }
     }

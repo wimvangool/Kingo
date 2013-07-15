@@ -32,7 +32,7 @@ namespace YellowFlare.MessageProcessing
             var messageHandlerFactory = new MessageHandlerFactoryForUnity()                
                 .RegisterType<IShoppingCartRepository, ShoppingCartRepository>()
                 .RegisterType<ShoppingCartRepository>(new ContainerControlledLifetimeManager())
-                .RegisterMessageHandlers(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
+                .RegisterMessageHandlersFrom(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
 
             return new SampleApplicationProcessor(messageHandlerFactory);
         }
