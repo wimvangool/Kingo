@@ -67,9 +67,9 @@
     <Compile Include="UnityTestProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.Core.csproj">
+    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>MessageProcessor.Core</Name>
+      <Name>MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
     <ProjectReference Include="..\MessageProcessor.Tests\MessageProcessor.Tests.csproj">
       <Project>{dde1ca85-7907-4c67-91df-1ad824a44133}</Project>

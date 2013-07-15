@@ -62,9 +62,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.Core.csproj">
+    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>MessageProcessor.Core</Name>
+      <Name>MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
     <ProjectReference Include="..\MessageProcessor\MessageProcessor.csproj">
       <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>

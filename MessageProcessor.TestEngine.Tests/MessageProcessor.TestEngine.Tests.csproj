@@ -77,9 +77,9 @@
     <Compile Include="TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.Core.csproj">
+    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>MessageProcessor.Core</Name>
+      <Name>MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
     <ProjectReference Include="..\MessageProcessor.Unity\MessageProcessor.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>

@@ -82,9 +82,9 @@
     <Compile Include="VerificationStatement.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.Core.csproj">
+    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>MessageProcessor.Core</Name>
+      <Name>MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
     <ProjectReference Include="..\MessageProcessor\MessageProcessor.csproj">
       <Project>{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}</Project>

@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
-    <AssemblyName>YellowFlare.MessageProcessor.Core</AssemblyName>
+    <AssemblyName>YellowFlare.MessageProcessor.UnitOfWork</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\YellowFlare.MessageProcessor.Core.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\YellowFlare.MessageProcessor.UnitOfWork.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
