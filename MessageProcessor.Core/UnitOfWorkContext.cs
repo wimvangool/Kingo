@@ -98,7 +98,9 @@ namespace YellowFlare.MessageProcessing
         /// Enlist the specified unit of work with the current context, if present.
         /// </summary>
         /// <param name="unitOfWork">Unit of work to enlist.</param>
-        /// <returns><c>true</c> if the unit of work was enlisted; otherwise <c>false</c>.</returns>        
+        /// <exception cref="InvalidOperationException">
+        /// <see cref="Current"/> has not been set to an instance of an object.
+        /// </exception>   
         public static void Enlist(IUnitOfWork unitOfWork)
         {
             if (unitOfWork == null)

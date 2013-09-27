@@ -21,7 +21,7 @@ namespace YellowFlare.MessageProcessing.SampleApplication
             _items = new List<ShoppingCartItem>(2);
         }
 
-        protected override Guid Key
+        public override Guid Key
         {
             get { return _id; }
         }

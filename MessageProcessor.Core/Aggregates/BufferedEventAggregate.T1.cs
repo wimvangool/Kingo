@@ -44,7 +44,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <summary>
         /// Returns the key of this aggregate.
         /// </summary>
-        protected abstract TKey Key
+        public abstract TKey Key
         {
             get;
         }
