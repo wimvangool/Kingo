@@ -45,16 +45,19 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Aggregates\AggregateSet.T2.cs" />
+    <Compile Include="Aggregates\AggregateSet.T3.cs" />
     <Compile Include="Aggregates\BufferedEvent.T2.cs" />
-    <Compile Include="Aggregates\BufferedEventAggregate.T1.cs" />
+    <Compile Include="Aggregates\BufferedEventAggregate.T2.cs" />
     <Compile Include="Aggregates\IAggregateStore.T2.cs" />
-    <Compile Include="Aggregates\Aggregate.T2.cs" />
-    <Compile Include="Aggregates\UnitOfWork.T2.cs" />
-    <Compile Include="Aggregates\AggregateVersion.cs" />
+    <Compile Include="Aggregates\Aggregate.T3.cs" />
+    <Compile Include="Aggregates\IAggregateVersion.T1.cs" />
+    <Compile Include="Aggregates\DateTimeVersion.cs" />
+    <Compile Include="Aggregates\Int64Version.cs" />
+    <Compile Include="Aggregates\UnitOfWork.T3.cs" />
+    <Compile Include="Aggregates\Int32Version.cs" />
     <Compile Include="Aggregates\DomainModelException.cs" />
-    <Compile Include="Aggregates\IAggregate.T1.cs" />
-    <Compile Include="Aggregates\EventSourcedAggregate.T1.cs" />
+    <Compile Include="Aggregates\IAggregate.T2.cs" />
+    <Compile Include="Aggregates\EventSourcedAggregate.T2.cs" />
     <Compile Include="Aggregates\IBufferedEvent.T1.cs" />
     <Compile Include="Aggregates\IBufferedEventStream.T1.cs" />
     <Compile Include="Aggregates\IDomainEvent.T1.cs" />
@@ -76,7 +79,7 @@
     <Compile Include="IDomainEventBus.cs" />
     <Compile Include="UnitOfWorkController.cs" />
     <Compile Include="Clocks\IClock.cs" />
-    <Compile Include="InvalidCommandException.cs" />
+    <Compile Include="CommandExecutionException.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Clocks\SystemClock.cs" />
     <Compile Include="UnitOfWorkContext.cs" />

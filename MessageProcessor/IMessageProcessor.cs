@@ -3,7 +3,7 @@
 namespace YellowFlare.MessageProcessing
 {
     /// <summary>
-    /// When implemented by a class, represents a handler of any command.
+    /// When implemented by a class, represents a handler of any message.
     /// </summary>
     public interface IMessageProcessor
     {

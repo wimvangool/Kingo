@@ -21,8 +21,7 @@ namespace YellowFlare.MessageProcessing.Clocks
             }
             var dateOutsideScope = Clock.Current.LocalDate();
 
-            Assert.IsTrue(dateOutsideScope.Year >= 2013);
-            Assert.IsTrue(dateOutsideScope.Month >= 7);
+            Assert.IsTrue(dateOutsideScope.Year != 2000);            
         }
     }
 }

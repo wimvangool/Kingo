@@ -6,13 +6,15 @@ namespace YellowFlare.MessageProcessing.Aggregates
     /// Represents an aggregate that is modeled as a stream of events.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
-    public abstract class BufferedEventAggregate<TKey> : IBufferedEventStream<TKey>, IAggregate<TKey>
+    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
+    public abstract class BufferedEventAggregate<TKey, TVersion> : IBufferedEventStream<TKey>, IAggregate<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
+        where TVersion : struct, IAggregateVersion<TVersion>
     {
         private readonly MemoryEventStream<TKey> _buffer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BufferedEventAggregate{T}" /> class.
+        /// Initializes a new instance of the <see cref="BufferedEventAggregate{TKey, TVersion}" /> class.
         /// </summary>
         protected BufferedEventAggregate()
         {
@@ -20,7 +22,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BufferedEventAggregate{T}" /> class.
+        /// Initializes a new instance of the <see cref="BufferedEventAggregate{TKey, TVersion}" /> class.
         /// </summary>
         /// <param name="capacity">The initial capacity of the event-buffer.</param>
         /// <exception cref="ArgumentOutOfRangeException">
@@ -31,12 +33,12 @@ namespace YellowFlare.MessageProcessing.Aggregates
             _buffer = new MemoryEventStream<TKey>(capacity);
         }
 
-        TKey IAggregate<TKey>.Key
+        TKey IAggregate<TKey, TVersion>.Key
         {
             get { return Key; }
         }
 
-        AggregateVersion IAggregate<TKey>.Version
+        TVersion IAggregate<TKey, TVersion>.Version
         {
             get { return Version; }
         }
@@ -52,7 +54,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <summary>
         /// Returns the version of this aggregate.
         /// </summary>
-        protected abstract AggregateVersion Version
+        protected abstract TVersion Version
         {
             get;
         }

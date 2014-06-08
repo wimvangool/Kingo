@@ -6,17 +6,17 @@ using YellowFlare.MessageProcessing.SampleApplication.Messages;
 
 namespace YellowFlare.MessageProcessing.SampleApplication
 {
-    internal sealed class ShoppingCart : BufferedEventAggregate<Guid>
+    internal sealed class ShoppingCart : BufferedEventAggregate<Guid, Int32Version>
     {
         private readonly Guid _id;
-        private AggregateVersion _version;
+        private Int32Version _version;
 
         private readonly List<ShoppingCartItem> _items;
 
         private ShoppingCart(Guid id)
         {
             _id = id;
-            _version = AggregateVersion.Zero;
+            _version = Int32Version.Zero;
 
             _items = new List<ShoppingCartItem>(2);
         }
@@ -26,7 +26,7 @@ namespace YellowFlare.MessageProcessing.SampleApplication
             get { return _id; }
         }
 
-        protected override AggregateVersion Version
+        protected override Int32Version Version
         {
             get { return _version; }
         }
@@ -46,7 +46,7 @@ namespace YellowFlare.MessageProcessing.SampleApplication
             Write(new ProductAddedToCart
             {
                 ShoppingCartId = _id,
-                ShoppingCartVersion = AggregateVersion.Increment(ref _version).ToInt32(),
+                ShoppingCartVersion = Int32Version.Increment(ref _version).ToInt32(),
                 ProductId = productId,
                 OldQuantity = oldQuantity,
                 NewQuantity = item.Quantity
@@ -65,7 +65,7 @@ namespace YellowFlare.MessageProcessing.SampleApplication
             cart.Write(new ShoppingCartCreated
             {
                 ShoppingCartId = shoppingCartId,
-                ShoppingCartVersion = AggregateVersion.Increment(ref cart._version).ToInt32()
+                ShoppingCartVersion = Int32Version.Increment(ref cart._version).ToInt32()
             });
             return cart;
         }

@@ -2,11 +2,12 @@
 
 namespace YellowFlare.MessageProcessing.Aggregates
 {
-    internal sealed class Aggregate<TKey, TValue>
+    internal sealed class Aggregate<TKey, TVersion, TValue>
         where TKey : struct, IEquatable<TKey>
-        where TValue : class, IAggregate<TKey>
+        where TVersion : struct, IAggregateVersion<TVersion>
+        where TValue : class, IAggregate<TKey, TVersion>
     {
-        private readonly AggregateVersion _originalVersion;
+        private readonly TVersion _originalVersion;
         private readonly TValue _value;
 
         public Aggregate(TValue value)
@@ -15,7 +16,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
             _value = value;
         }
 
-        public AggregateVersion OriginalVersion
+        public TVersion OriginalVersion
         {
             get { return _originalVersion; }
         }
@@ -27,7 +28,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
 
         public bool HasBeenUpdated
         {
-            get { return _value.Version != _originalVersion; }
+            get { return !_value.Version.Equals(_originalVersion); }
         }
     }
 }

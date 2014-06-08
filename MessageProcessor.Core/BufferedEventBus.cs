@@ -16,7 +16,7 @@ namespace YellowFlare.MessageProcessing
 
         internal BufferedEventBus(IDomainEventBus domainEventBus)
         {                        
-            _buffer = new List<IBufferedEvent>(4);
+            _buffer = new List<IBufferedEvent>();
             _domainEventBus = domainEventBus;
         }
 
@@ -68,11 +68,12 @@ namespace YellowFlare.MessageProcessing
         public static void Publish<TMessage>(TMessage message) where TMessage : class
         {
             var context = UnitOfWorkContext.Current;
-            if (context == null)
+            if (context != null)
             {
-                throw NewNoBusAvailableException(typeof(TMessage));
+                context.PeekBus().Publish(message);
+                return;
             }
-            context.PeekBus().Publish(message);            
+            throw NewNoBusAvailableException(typeof(TMessage));            
         }
 
         private static Exception NewNoBusAvailableException(Type messageType)

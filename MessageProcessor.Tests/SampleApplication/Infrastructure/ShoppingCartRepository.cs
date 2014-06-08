@@ -41,7 +41,7 @@ namespace YellowFlare.MessageProcessing.SampleApplication.Infrastructure
 
         public void Add(ShoppingCart cart)
         {            
-            _carts.Add((cart as IAggregate<Guid>).Key, cart);           
+            _carts.Add((cart as IAggregate<Guid, Int32Version>).Key, cart);           
 
             UnitOfWorkContext.Enlist(this);
         }        

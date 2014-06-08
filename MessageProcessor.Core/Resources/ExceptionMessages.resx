@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AggregateVersion_InvalidType" xml:space="preserve">
+    <value>Invalid type specified for comparison. Expected '{0}' but was '{1}'.</value>
+  </data>
   <data name="BufferedEventBus_BusAlreadyFlushed" xml:space="preserve">
     <value>Cannot publish event of type '{0}' because the bus has already been flushed.</value>
   </data>
@@ -126,11 +129,17 @@
   <data name="ClockScope_IncorrectNesting" xml:space="preserve">
     <value>The clock-scopes aren't nested correctly.</value>
   </data>
+  <data name="DateTimeVersion_Overflow" xml:space="preserve">
+    <value>The timestamp could not be incremented because it already has the maximum allowed value.</value>
+  </data>
   <data name="DomainModelException_CommandFailed" xml:space="preserve">
     <value>Command '{0}' failed.</value>
   </data>
   <data name="EventSourcedAggregate_HandlerAlreadyRegistered" xml:space="preserve">
     <value>A handler for event '{0}' has already been registered.</value>
+  </data>
+  <data name="IntXXVersion_NegativeValue" xml:space="preserve">
+    <value>Version cannot be negative: {0}.</value>
   </data>
   <data name="UnitOfWorkContext_FailedToEnlistUnitOfWork" xml:space="preserve">
     <value>Failed to enlist '{0}' because no context was found.</value>
@@ -140,12 +149,6 @@
   </data>
   <data name="UnitOfWorkScope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
-  </data>
-  <data name="Version_InvalidType" xml:space="preserve">
-    <value>Invalid type specified for comparison. Expected '{0}' but was '{1}'.</value>
-  </data>
-  <data name="Version_NegativeValue" xml:space="preserve">
-    <value>Version cannot be negative: {0}.</value>
   </data>
   <data name="WritableEventStream_MissingEventHandler" xml:space="preserve">
     <value>No event-handler was specified for domain-event of type '{0}'.</value>

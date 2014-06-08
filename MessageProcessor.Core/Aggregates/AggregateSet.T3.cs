@@ -4,15 +4,16 @@ using System.Collections.Generic;
 
 namespace YellowFlare.MessageProcessing.Aggregates
 {
-    internal sealed class AggregateSet<TKey, TValue> : IEnumerable<Aggregate<TKey, TValue>>
+    internal sealed class AggregateSet<TKey, TVersion, TValue> : IEnumerable<Aggregate<TKey, TVersion, TValue>>
         where TKey : struct, IEquatable<TKey>
-        where TValue : class, IAggregate<TKey>
+        where TVersion : struct, IAggregateVersion<TVersion>
+        where TValue : class, IAggregate<TKey, TVersion>
     {
-        private readonly Dictionary<TKey, Aggregate<TKey, TValue>> _aggregates;
+        private readonly Dictionary<TKey, Aggregate<TKey, TVersion, TValue>> _aggregates;
 
         public AggregateSet()
         {
-            _aggregates = new Dictionary<TKey, Aggregate<TKey, TValue>>(4);
+            _aggregates = new Dictionary<TKey, Aggregate<TKey, TVersion, TValue>>(4);
         }
 
         public int Count
@@ -27,7 +28,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            Aggregate<TKey, TValue> aggregate;
+            Aggregate<TKey, TVersion, TValue> aggregate;
 
             if (_aggregates.TryGetValue(key, out aggregate))
             {
@@ -40,7 +41,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
 
         public void Add(TValue value)
         {
-            _aggregates.Add(value.Key, new Aggregate<TKey, TValue>(value));
+            _aggregates.Add(value.Key, new Aggregate<TKey, TVersion, TValue>(value));
         }
 
         public void Remove(TKey key)
@@ -48,7 +49,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
             _aggregates.Remove(key);
         }
 
-        public void MoveAggregateTo(TKey key, AggregateSet<TKey, TValue> set)
+        public void MoveAggregateTo(TKey key, AggregateSet<TKey, TVersion, TValue> set)
         {            
             var source = _aggregates;
             var target = set._aggregates;
@@ -63,7 +64,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
             _aggregates.Clear();
         }
 
-        public IEnumerator<Aggregate<TKey, TValue>> GetEnumerator()
+        public IEnumerator<Aggregate<TKey, TVersion, TValue>> GetEnumerator()
         {
             return _aggregates.Values.GetEnumerator();
         }

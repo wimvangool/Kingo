@@ -187,7 +187,7 @@ namespace YellowFlare.MessageProcessing
                 return;
             }
             // In the final case where some units can be flushed on different threads while at least a single
-            // unit will be flushed on the current thread, we'll first kick-off the other thread to go ahead,
+            // unit will be flushed on the current thread, we'll first kick-off the other threads to go ahead,
             // and then start flushing on the current thread. Should the current thread be done sooner than the other
             // ones, then we'll have to wait for them to finish up before returning.
             using (var task = new AsynchronousFlushTask(asyncUnits))

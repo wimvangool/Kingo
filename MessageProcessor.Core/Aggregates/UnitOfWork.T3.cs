@@ -4,25 +4,27 @@ using System.Linq;
 namespace YellowFlare.MessageProcessing.Aggregates
 {
     /// <summary>
-    /// Represents a Unit-Of-Work that can be flushed/comitted to a backing store. This class is a so-called
+    /// Represents a UnitOfWork that can be flushed and comitted to a backing store. This class is a so-called
     /// read- and write-through implementation, and also implements a basic Identity Map.
     /// </summary>
     /// <typeparam name="TKey">Type of the key that identifies an aggregate.</typeparam>
+    /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TValue">Type of aggregates that are managed.</typeparam>
-    public sealed class UnitOfWork<TKey, TValue> : IUnitOfWork
+    public sealed class UnitOfWork<TKey, TVersion, TValue> : IUnitOfWork
         where TKey : struct, IEquatable<TKey>
-        where TValue : class, IAggregate<TKey>
+        where TVersion : struct, IAggregateVersion<TVersion>
+        where TValue : class, IAggregate<TKey, TVersion>
     {        
-        private readonly IAggregateStore<TKey, TValue> _store;
+        private readonly IAggregateStore<TKey, TVersion, TValue> _store;
         private readonly string _flushGroup;
         private readonly bool _canBeFlushedAsynchronously;
 
-        private readonly AggregateSet<TKey, TValue> _selectedAggregates;
-        private readonly AggregateSet<TKey, TValue> _insertedAggregates;
-        private readonly AggregateSet<TKey, TValue> _deletedAggregates;
+        private readonly AggregateSet<TKey, TVersion, TValue> _selectedAggregates;
+        private readonly AggregateSet<TKey, TVersion, TValue> _insertedAggregates;
+        private readonly AggregateSet<TKey, TVersion, TValue> _deletedAggregates;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWork{TKey, TValue}" /> class.
+        /// Initializes a new instance of the <see cref="UnitOfWork{TKey, TVersion, TValue}" /> class.
         /// </summary>        
         /// <param name="store">Reference to the backing store where all aggregates can be read from and written to.</param>
         /// <param name="flushGroup">Indicates which group this unit of work belongs to.</param>
@@ -33,7 +35,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <exception cref="ArgumentNullException">
         /// <paramref name="store"/> is <c>null</c>.
         /// </exception>
-        public UnitOfWork(IAggregateStore<TKey, TValue> store, string flushGroup = null, bool canBeFlushedAsynchronously = false)
+        public UnitOfWork(IAggregateStore<TKey, TVersion, TValue> store, string flushGroup = null, bool canBeFlushedAsynchronously = false)
         {            
             if (store == null)
             {
@@ -43,9 +45,9 @@ namespace YellowFlare.MessageProcessing.Aggregates
             _flushGroup = flushGroup;
             _canBeFlushedAsynchronously = canBeFlushedAsynchronously;
 
-            _selectedAggregates = new AggregateSet<TKey, TValue>();
-            _insertedAggregates = new AggregateSet<TKey, TValue>();
-            _deletedAggregates = new AggregateSet<TKey, TValue>();
+            _selectedAggregates = new AggregateSet<TKey, TVersion, TValue>();
+            _insertedAggregates = new AggregateSet<TKey, TVersion, TValue>();
+            _deletedAggregates = new AggregateSet<TKey, TVersion, TValue>();
         }
 
         /// <inheritdoc />

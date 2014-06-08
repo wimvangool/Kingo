@@ -5,20 +5,20 @@ using YellowFlare.MessageProcessing.Resources;
 namespace YellowFlare.MessageProcessing.Aggregates
 {
     /// <summary>
-    /// Represents the version of a certain <see cref="IAggregate{T}">aggregate</see>.
+    /// Represents the version of a certain <see cref="IAggregate{TKey, TVersion}">aggregate</see>.
     /// </summary>
-    public struct AggregateVersion : IEquatable<AggregateVersion>, IComparable<AggregateVersion>, IComparable
+    public struct Int64Version : IAggregateVersion<Int64Version>, IComparable
     {
-        private readonly int _value;
+        private readonly long _value;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateVersion" /> class.
+        /// Initializes a new instance of the <see cref="Int64Version" /> structure.
         /// </summary>
         /// <param name="value">The value of this version.</param>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="value"/> is negative.
         /// </exception>
-        public AggregateVersion(int value)
+        public Int64Version(long value)
         {
             if (value < 0)
             {
@@ -29,14 +29,14 @@ namespace YellowFlare.MessageProcessing.Aggregates
 
         public override bool Equals(object obj)
         {
-            if (obj is AggregateVersion)
+            if (obj is Int64Version)
             {
-                return Equals((AggregateVersion) obj);
+                return Equals((Int64Version) obj);
             }
             return false;
         }
 
-        public bool Equals(AggregateVersion other)
+        public bool Equals(Int64Version other)
         {
             return _value.Equals(other._value);
         }
@@ -50,7 +50,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         {
             try
             {
-                return _value.CompareTo(((AggregateVersion) obj)._value);
+                return _value.CompareTo(((Int64Version) obj)._value);
             }
             catch (InvalidCastException)
             {
@@ -58,16 +58,16 @@ namespace YellowFlare.MessageProcessing.Aggregates
             }
         }
 
-        public int CompareTo(AggregateVersion other)
+        public int CompareTo(Int64Version other)
         {
             return _value.CompareTo(other._value);
         }        
 
         /// <summary>
-        /// Returns the value of this version as a 32-bit integer value.
+        /// Returns the value of this version as a 64-bit integer value.
         /// </summary>
-        /// <returns>The value of this version as a 32-bit integer value.</returns>
-        public int ToInt32()
+        /// <returns>The value of this version as a 64-bit integer value.</returns>
+        public long ToInt64()
         {
             return _value;
         }
@@ -82,20 +82,20 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// </summary>
         /// <returns>The incremented version of this aggregate.</returns>
         /// <exception cref="OverflowException">
-        /// The value of this instance is equal to <see cref="Int32.MaxValue" />.
+        /// The value of this instance is equal to <see cref="Int64.MaxValue" />.
         /// </exception>
-        public AggregateVersion Increment()
+        public Int64Version Increment()
         {
             checked
             {
-                return new AggregateVersion(_value + 1);
+                return new Int64Version(_value + 1);
             }
         }
 
         /// <summary>
         /// The initial version of every aggregate.
         /// </summary>
-        public static readonly AggregateVersion Zero = new AggregateVersion(0);
+        public static readonly Int64Version Zero = new Int64Version(0);
 
         /// <summary>
         /// Increments the specified version and returns the result.
@@ -103,24 +103,24 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <param name="version">The version to increment.</param>
         /// <returns>The incremented version.</returns>
         /// <exception cref="OverflowException">
-        /// The value of this instance is equal to <see cref="Int32.MaxValue" />.
+        /// The value of this instance is equal to <see cref="Int64.MaxValue" />.
         /// </exception>
-        public static AggregateVersion Increment(ref AggregateVersion version)
+        public static Int64Version Increment(ref Int64Version version)
         {
             return version = version.Increment();
         }
 
-        private static Exception NewInvalidVersionException(int value)
+        private static Exception NewInvalidVersionException(long value)
         {
-            var messageFormat = ExceptionMessages.Version_NegativeValue;
+            var messageFormat = ExceptionMessages.IntXXVersion_NegativeValue;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, value);
             return new ArgumentOutOfRangeException("value", message);
         }
 
         private static Exception NewInvalidInstanceException(object obj)
         {
-            var messageFormat = ExceptionMessages.Version_InvalidType;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, typeof(AggregateVersion), obj.GetType());
+            var messageFormat = ExceptionMessages.AggregateVersion_InvalidType;
+            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, typeof(Int64Version), obj.GetType());
             return new ArgumentException(message, "obj");
         }
 
@@ -134,7 +134,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <returns>
         /// <c>true</c> if both versions are equal; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator ==(AggregateVersion left, AggregateVersion right)
+        public static bool operator ==(Int64Version left, Int64Version right)
         {
             return left.Equals(right);
         }
@@ -147,7 +147,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <returns>
         /// <c>true</c> if both versions are unequal; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator !=(AggregateVersion left, AggregateVersion right)
+        public static bool operator !=(Int64Version left, Int64Version right)
         {
             return !left.Equals(right);
         }
@@ -160,7 +160,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <returns>
         /// <c>true</c> if the left version is greater than the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator >(AggregateVersion left, AggregateVersion right)
+        public static bool operator >(Int64Version left, Int64Version right)
         {
             return left._value > right._value;
         }
@@ -173,7 +173,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <returns>
         /// <c>true</c> if the left version is less than the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator <(AggregateVersion left, AggregateVersion right)
+        public static bool operator <(Int64Version left, Int64Version right)
         {
             return left._value < right._value;
         }
@@ -186,7 +186,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <returns>
         /// <c>true</c> if the left version is greater than or equal to the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator >=(AggregateVersion left, AggregateVersion right)
+        public static bool operator >=(Int64Version left, Int64Version right)
         {
             return left._value >= right._value;
         }
@@ -199,7 +199,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         /// <returns>
         /// <c>true</c> if the left version is less than or equal to the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator <=(AggregateVersion left, AggregateVersion right)
+        public static bool operator <=(Int64Version left, Int64Version right)
         {
             return left._value <= right._value;
         }

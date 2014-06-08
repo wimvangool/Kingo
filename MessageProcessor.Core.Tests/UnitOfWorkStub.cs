@@ -5,7 +5,7 @@ namespace YellowFlare.MessageProcessing
 {    
     internal sealed class UnitOfWorkStub : IUnitOfWork, IDisposable
     {
-        private bool _requiresFLush;
+        private bool _requiresFlush;
 
         public UnitOfWorkStub()
         {           
@@ -31,7 +31,7 @@ namespace YellowFlare.MessageProcessing
 
         public void SimulateChange()
         {
-            _requiresFLush = true;
+            _requiresFlush = true;
         }
 
         public string FlushGroup
@@ -46,7 +46,7 @@ namespace YellowFlare.MessageProcessing
 
         public bool RequiresFlush()
         {
-            return _requiresFLush;
+            return _requiresFlush;
         }
 
         public void Flush()

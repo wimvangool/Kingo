@@ -9,13 +9,15 @@ namespace YellowFlare.MessageProcessing.Aggregates
     /// Represents an aggregate that is modeled as a stream of events and can also be restored as such.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
-    public abstract class EventSourcedAggregate<TKey> : BufferedEventAggregate<TKey>, IWritableEventStream<TKey>
+    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
+    public abstract class EventSourcedAggregate<TKey, TVersion> : BufferedEventAggregate<TKey, TVersion>, IWritableEventStream<TKey>
         where TKey : struct, IEquatable<TKey>
+        where TVersion : struct, IAggregateVersion<TVersion>
     {
         private readonly Dictionary<Type, Action<IDomainEvent<TKey>>> _eventHandlers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventSourcedAggregate{T}" /> class.
+        /// Initializes a new instance of the <see cref="EventSourcedAggregate{TKey, TVersion}" /> class.
         /// </summary>
         protected EventSourcedAggregate()
         {
@@ -23,7 +25,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventSourcedAggregate{T}" /> class.
+        /// Initializes a new instance of the <see cref="EventSourcedAggregate{TKey, TVersion}" /> class.
         /// </summary>
         /// <param name="capacity">The initial capacity of the buffer.</param>
         /// <exception cref="ArgumentOutOfRangeException">
