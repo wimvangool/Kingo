@@ -25,9 +25,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.MessageProcessor", "A.Mes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.MessageProcessor.Containers", "B.MessageProcessor.Containers", "{4B713399-4B91-4E00-AF1F-D103268F40DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.MessageProcessor.UnitOfWork", "MessageProcessor.Core\06.MessageProcessor.UnitOfWork.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.MessageProcessor.UnitOfWork", "MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.MessageProcessor.UnitOfWork.Tests", "MessageProcessor.Core.Tests\05.MessageProcessor.UnitOfWork.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.MessageProcessor.UnitOfWork.Tests", "MessageProcessor.UnitOfWork.Tests\05.MessageProcessor.UnitOfWork.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

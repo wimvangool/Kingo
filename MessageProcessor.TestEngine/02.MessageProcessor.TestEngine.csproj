@@ -85,7 +85,7 @@
     <Compile Include="VerificationStatement.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\06.MessageProcessor.UnitOfWork.csproj">
+    <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
       <Name>06.MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
