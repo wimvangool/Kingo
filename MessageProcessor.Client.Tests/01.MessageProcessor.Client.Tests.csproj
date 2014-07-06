@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{303380DB-4167-4BB0-8B78-63C959B65C4B}</ProjectGuid>
+    <ProjectGuid>{3302FE9B-30BE-4D1C-BDA8-FFA82C621858}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
-    <AssemblyName>YellowFlare.MessageProcessor.UnitOfWork.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AssemblyName>YellowFlare.MessageProcessor.Client.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -36,9 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -57,28 +54,21 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Clocks\ClockTest.cs" />
-    <Compile Include="Clocks\ClockWithOffsetTest.cs" />
-    <Compile Include="Clocks\StopwatchClockTest.cs" />
-    <Compile Include="Clocks\SystemClockTest.cs" />
-    <Compile Include="UnitOfWorkControllerTest.cs" />
-    <Compile Include="UnitOfWorkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="UnitOfWorkStub.cs" />
-    <Compile Include="UnitOfWorkOneAsyncTest.cs" />
-    <Compile Include="UnitOfWorkOneSyncTest.cs" />
-    <Compile Include="UnitOfWorkTwoSyncTest.cs" />
-    <Compile Include="UnitOfWorkWrapperGroupTest.cs" />
-    <Compile Include="UnitOfWorkWrapperItemTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.UnitOfWork.csproj">
-      <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>MessageProcessor.UnitOfWork</Name>
+    <ProjectReference Include="..\MessageProcessor.Client\02.MessageProcessor.Client.csproj">
+      <Project>{92729c3b-32b4-440a-8bed-b210a525ad72}</Project>
+      <Name>02.MessageProcessor.Client</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\MessageProcessor.Core\06.MessageProcessor.UnitOfWork.csproj">
+      <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
+      <Name>06.MessageProcessor.UnitOfWork</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
+      <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>
+      <Name>04.MessageProcessor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -44,7 +44,7 @@ namespace YellowFlare.MessageProcessing
         {
             object messageA = new object();
             object messageB = new object();
-            Message message = null;
+            MessageStack message = null;
 
             Processor.Handle(messageA, a =>            
                 Processor.Handle(messageB, b => message = Processor.CurrentMessage)

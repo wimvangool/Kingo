@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
     <AssemblyName>YellowFlare.MessageProcessor</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -31,6 +31,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,6 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -53,6 +55,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <DocumentationFile>bin\Release\YellowFlare.MessageProcessor.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -62,13 +65,52 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="CancellationTokenExtensions.cs" />
+    <Compile Include="Requests\ClientCommand.cs" />
+    <Compile Include="Requests\ClientCommand.T1.cs" />
+    <Compile Include="Requests\ClientQuery.T1.cs" />
+    <Compile Include="Requests\ClientQuery.T2.cs" />
+    <Compile Include="Requests\ClientRequest.T2.cs" />
+    <Compile Include="Requests\ClientRequestExecutionOptions.cs" />
+    <Compile Include="Requests\Command.cs" />
+    <Compile Include="Requests\CommandBase.cs" />
+    <Compile Include="Requests\CompositeHasChangesIndicator.cs" />
+    <Compile Include="Requests\CompositeIsBusyIndicator.cs" />
+    <Compile Include="Requests\CompositeIsValidIndicator.cs" />
+    <Compile Include="Requests\CompositeMessage.cs" />
+    <Compile Include="Requests\ExecutionCancelledEventArgs.cs" />
+    <Compile Include="Requests\ExecutionCompletedEventArgs.cs" />
+    <Compile Include="Requests\ExecutionFailedEventArgs.cs" />
+    <Compile Include="Requests\ExecutionStartedEventArgs.cs" />
+    <Compile Include="Requests\ExecutionSucceededEventArgs.cs" />
+    <Compile Include="Requests\ExecutionSucceededEventArgs.T1.cs" />
+    <Compile Include="Requests\FixedLifetime.cs" />
+    <Compile Include="Requests\IClientRequest.cs" />
+    <Compile Include="Requests\ICommand.cs" />
+    <Compile Include="Requests\IHasChangesIndicator.cs" />
+    <Compile Include="Requests\IIsBusyIndicator.cs" />
+    <Compile Include="Requests\IIsValidIndicator.cs" />
+    <Compile Include="Requests\IQuery.T1.cs" />
+    <Compile Include="Requests\IRequest.cs" />
+    <Compile Include="Requests\MessageProcessorCommand.cs" />
+    <Compile Include="Requests\MessageProcessorCommand.T1.cs" />
+    <Compile Include="Requests\MessageStateTracker.cs" />
+    <Compile Include="Requests\NullMessage.cs" />
+    <Compile Include="Requests\Query.T1.cs" />
+    <Compile Include="Requests\QueryBase.T1.cs" />
+    <Compile Include="Requests\QueryCacheValueLifetime.cs" />
+    <Compile Include="Requests\Request.cs" />
+    <Compile Include="Requests\SlidingWindowLifetime.cs" />
+    <Compile Include="Requests\TimerBasedLifetime.cs" />
     <Compile Include="IMessageHandlerPipelineFactory.cs" />
     <Compile Include="MessageProcessorBusSubscriptionForAction.T1.cs" />
     <Compile Include="IMessageHandler.T1.cs" />
@@ -77,7 +119,7 @@
     <Compile Include="IMessageProcessorBus.cs" />
     <Compile Include="MessageProcessorBusSubscriptionForInterface.T1.cs" />
     <Compile Include="InstanceLifetimeAttribute.cs" />
-    <Compile Include="Message.cs" />
+    <Compile Include="MessageStack.cs" />
     <Compile Include="MessageHandlerPipeline.T1.cs" />
     <Compile Include="MessageHandlerClass.cs" />
     <Compile Include="MessageHandlerPipelineDecorator.T1.cs" />
@@ -88,6 +130,22 @@
     <Compile Include="MessageProcessorBusSubscription.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MessageHandlerFactory.cs" />
+    <Compile Include="EventHandlerExtensions.cs" />
+    <Compile Include="Requests\QueryCacheValueExpiredEventArgs.cs" />
+    <Compile Include="Requests\Command.T1.cs" />
+    <Compile Include="Requests\IDispatcher.cs" />
+    <Compile Include="Requests\IMessage.cs" />
+    <Compile Include="Requests\Query.T2.cs" />
+    <Compile Include="Requests\IMessage.T1.cs" />
+    <Compile Include="Requests\IQueryCache.cs" />
+    <Compile Include="Requests\IQueryCacheValueLifetime.cs" />
+    <Compile Include="Requests\Message.cs" />
+    <Compile Include="Requests\Message.T1.cs" />
+    <Compile Include="Requests\MessageErrorInfo.cs" />
+    <Compile Include="Requests\PropertyChangedNotifier.cs" />
+    <Compile Include="Requests\MessageChangedOptions.cs" />
+    <Compile Include="Requests\QueryCache.cs" />
+    <Compile Include="Requests\QueryCacheValue.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -126,11 +184,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.UnitOfWork.csproj">
+    <ProjectReference Include="..\MessageProcessor.Core\06.MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>MessageProcessor.UnitOfWork</Name>
+      <Name>06.MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

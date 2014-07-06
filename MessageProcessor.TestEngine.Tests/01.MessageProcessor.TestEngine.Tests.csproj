@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -11,13 +11,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
     <AssemblyName>YellowFlare.MessageProcessor.TestEngine.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,6 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>S:\SupportFiles\RuleSets\UnitTestProjects.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -77,21 +80,21 @@
     <Compile Include="TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageProcessor.Core\MessageProcessor.UnitOfWork.csproj">
+    <ProjectReference Include="..\MessageProcessor.Core\06.MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>MessageProcessor.UnitOfWork</Name>
+      <Name>06.MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor.Unity\MessageProcessor.Unity.csproj">
+    <ProjectReference Include="..\MessageProcessor.Unity\02.MessageProcessor.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
-      <Name>MessageProcessor.Unity</Name>
+      <Name>02.MessageProcessor.Unity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor.TestEngine\MessageProcessor.TestEngine.csproj">
+    <ProjectReference Include="..\MessageProcessor.TestEngine\02.MessageProcessor.TestEngine.csproj">
       <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>
-      <Name>MessageProcessor.TestEngine</Name>
+      <Name>02.MessageProcessor.TestEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor\MessageProcessor.csproj">
+    <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
       <Project>{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}</Project>
-      <Name>MessageProcessor</Name>
+      <Name>04.MessageProcessor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
