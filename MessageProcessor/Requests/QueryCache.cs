@@ -5,96 +5,35 @@ using System.Collections.Generic;
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// Represents an in-memory, thread-safe implementation of the <see cref="IQueryCache" />-interface.
+    /// Represents the base-class for every cache that is used to store the results of <see cref="IQuery{T}">queries</see>.
     /// </summary>
-    public class QueryCache : IQueryCache
+    /// <remarks>
+    /// Note to implementers: since the <see cref="QueryCache" /> is to be used in a concurrent environment,
+    /// all instance methods of this class must be thread-safe.
+    /// </remarks>
+    public abstract class QueryCache
     {
-        private readonly ConcurrentDictionary<object, QueryCacheValue> _cachedValues;
-        private readonly IDispatcher _dispatcher;
+        private readonly RequestContext _requestContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryCache" /> class.
         /// </summary>
-        /// <param name="dispatcher">
-        /// Dispatcher required to raise the <see cref="CacheValueExpired" />-event.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dispatcher"/> is <c>null</c>.
-        /// </exception>
-        public QueryCache(IDispatcher dispatcher)
-            : this(dispatcher, new ConcurrentDictionary<object, QueryCacheValue>()) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="QueryCache" /> class.
-        /// </summary>
-        /// <param name="dispatcher">
-        /// Dispatcher required to raise the <see cref="CacheValueExpired" />-event.
-        /// </param>
-        /// <param name="comparer">
-        /// The equality comparison implementation to use when comparing keys.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dispatcher"/> or <paramref name="comparer"/> is <c>null</c>.
-        /// </exception>
-        public QueryCache(IDispatcher dispatcher, IEqualityComparer<object> comparer)
-            : this(dispatcher, new ConcurrentDictionary<object, QueryCacheValue>(comparer)) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="QueryCache" /> class.
-        /// </summary>
-        /// <param name="dispatcher">
-        /// Dispatcher required to raise the <see cref="CacheValueExpired" />-event.
-        /// </param>
-        /// <param name="concurrencyLevel">
-        /// The estimated number of threads that will update the <see cref="QueryCache" /> concurrently.
-        /// </param>
-        /// <param name="capacity">
-        /// The initial number of elements that the <see cref="QueryCache" /> can contain.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dispatcher"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="concurrencyLevel"/> is less than 1 or <paramref name="capacity"/> is less than 0.
-        /// </exception>
-        public QueryCache(IDispatcher dispatcher, int concurrencyLevel, int capacity)
-            : this(dispatcher, new ConcurrentDictionary<object, QueryCacheValue>(concurrencyLevel, capacity)) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="QueryCache" /> class.
-        /// </summary>
-        /// <param name="dispatcher">
-        /// Dispatcher required to raise the <see cref="CacheValueExpired" />-event.
-        /// </param>
-        /// <param name="concurrencyLevel">
-        /// The estimated number of threads that will update the <see cref="QueryCache" /> concurrently.
-        /// </param>
-        /// <param name="capacity">
-        /// The initial number of elements that the <see cref="QueryCache" /> can contain.
-        /// </param>
-        /// <param name="comparer">
-        /// The equality comparison implementation to use when comparing keys.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dispatcher"/> or <paramref name="comparer"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="concurrencyLevel"/> is less than 1 or <paramref name="capacity"/> is less than 0.
-        /// </exception>
-        public QueryCache(IDispatcher dispatcher, int concurrencyLevel, int capacity, IEqualityComparer<object> comparer)
-            : this(dispatcher, new ConcurrentDictionary<object, QueryCacheValue>(concurrencyLevel, capacity, comparer)) { }
-
-        private QueryCache(IDispatcher dispatcher, ConcurrentDictionary<object, QueryCacheValue> cachedValues)
+        protected QueryCache()
         {
-            if (dispatcher == null)
-            {
-                throw new ArgumentNullException("dispatcher");
-            }
-            _cachedValues = cachedValues;
-            _dispatcher = dispatcher;
+            _requestContext = RequestContext.NewContext();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns the context that is used to publish all events on.
+        /// </summary>
+        protected RequestContext RequestContext
+        {
+            get { return _requestContext; }
+        }
+  
+        /// <summary>
+        /// Occurs when a cache value expired and was removed from cache.
+        /// </summary>
         public event EventHandler<QueryCacheValueExpiredEventArgs> CacheValueExpired;
 
         /// <summary>
@@ -106,48 +45,107 @@ namespace YellowFlare.MessageProcessing.Requests
             CacheValueExpired.Raise(this, e);
         }
 
-        /// <inheritdoc />
-        public virtual bool TryGetValue(object messageIn, out QueryCacheValue value)
+        private void OnCachedValueExpired(object key)
         {
-            return _cachedValues.TryGetValue(messageIn, out value);
-        }
+            QueryCacheValue cacheValue;
 
-        /// <inheritdoc />
-        public virtual QueryCacheValue GetOrAdd<TMessageIn>(TMessageIn messageIn, Func<TMessageIn, QueryCacheValue> valueFactory)
-        {
-            return _cachedValues.GetOrAdd(messageIn, key =>
+            if (TryRemove(key, out cacheValue))
             {
-                var cachedValue = valueFactory.Invoke(messageIn);
+                var value = cacheValue.Access<object>();
+                
+                cacheValue.Dispose();
 
-                cachedValue.Expired += (s, e) =>
-                {
-                    QueryCacheValue removedValue;
-
-                    if (_cachedValues.TryRemove(messageIn, out removedValue))
-                    {
-                        var value = removedValue.Access<object>();
-
-                        _dispatcher.Invoke(() => OnCachedValueExpired(new QueryCacheValueExpiredEventArgs(messageIn, value)));
-
-                        removedValue.Dispose();
-                    }
-                };
-                return cachedValue;
-            });
-        }
-
-        /// <inheritdoc />
-        public virtual void Clear()
-        {
-            foreach (var key in _cachedValues.Keys)
-            {
-                QueryCacheValue removedValue;
-
-                if (_cachedValues.TryRemove(key, out removedValue))
-                {
-                    removedValue.Dispose();
-                }
+                RequestContext.InvokeAsync(() => OnCachedValueExpired(new QueryCacheValueExpiredEventArgs(key, value)));
             }
-        }                
+        }
+
+        /// <summary>
+        /// When overriden, attempts to retrieve a value from the cache using the specified key.
+        /// </summary>
+        /// <param name="key">The key that is used to retrieve the value.</param>
+        /// <param name="value">
+        /// If the cache contains a value associated with the specified <paramref name="key"/>, this parameter will
+        /// refer to this value after the method completed. Will be <c>null</c> otherwise.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the cache found an entry using the specified <paramref name="key"/>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Note that values may expire <i>while</i> they are retrieved. This race-condition is unaviodable and may cause this method
+        /// to return a value that has actually (just) expired when used.
+        /// </remarks>
+        public abstract bool TryGetValue(object key, out QueryCacheValue value);
+
+        /// <summary>
+        /// Attempts to retrieve a value from cache, but if not found, creates and stores it before it is returned.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <param name="key">The key that is used to retrieve or store the value.</param>
+        /// <param name="valueFactory">
+        /// Factory method that is used to create the value if it is not already present in the cache.
+        /// </param>
+        /// <returns>
+        /// The value that was either stored or created.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="valueFactory"/> is <c>null</c>.
+        /// </exception>
+        /// <remarks>
+        /// Note that values may expire <i>while</i> they are retrieved. This race-condition is unaviodable and may cause this method
+        /// to return a value that has actually (just) expired when used.
+        /// </remarks>
+        public QueryCacheValue GetOrAdd<TKey>(TKey key, Func<TKey, QueryCacheValue> valueFactory)
+        {
+            if (valueFactory == null)
+            {
+                throw new ArgumentNullException("valueFactory");
+            }
+            // If the value was retrieved from cache, it can immediately be returned.
+            QueryCacheValue value;
+
+            if (TryGetOrAdd(key, valueFactory, out value))
+            {
+                return value;
+            }
+            // If the value was created and stored, its Expired-event is hooked onto a handler that will
+            // remove the value as soon as it expires.
+            value.Lifetime.Expired += (s, e) => OnCachedValueExpired(key);
+            value.Lifetime.Start();
+           
+            return value;
+        }        
+
+        /// <summary>
+        /// Attempts to retrieve a value from cache, but if not found, creates and stores it before it is returned.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key.</typeparam>
+        /// <param name="key">The key that is used to retrieve or store the value.</param>
+        /// <param name="valueFactory">
+        /// Factory method that is used to create the value if it is not already present in the cache.
+        /// </param>
+        /// <param name="value">
+        /// After the method completes, will contain the value that was either retrieved or created.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the value was retrieved from cache; <c>false</c> if it was created and stored.
+        /// </returns>
+        protected abstract bool TryGetOrAdd<TKey>(TKey key, Func<TKey, QueryCacheValue> valueFactory, out QueryCacheValue value);
+
+        /// <summary>
+        /// When overridden, attempts to remove a value from the cache using the specified <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key">
+        /// The key that is used to remove the value.
+        /// </param>
+        /// <param name="value">
+        /// If the value was removed, this parameter will contain the removed value; will otherwise be <c>null</c>.
+        /// </param>
+        /// <returns><c>true</c> if the value was removed; otherwise <c>false</c>.</returns>
+        public abstract bool TryRemove(object key, out QueryCacheValue value);
+
+        /// <summary>
+        /// When overriden, removes all values from the cache.
+        /// </summary>        
+        public abstract void Clear();                       
     }
 }

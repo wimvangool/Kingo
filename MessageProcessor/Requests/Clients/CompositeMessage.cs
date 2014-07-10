@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YellowFlare.MessageProcessing.Requests
+namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
     /// Represents a <see cref="IMessage" /> that is composed of other messages.

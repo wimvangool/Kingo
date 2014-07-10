@@ -37,14 +37,14 @@ namespace YellowFlare.MessageProcessing.Aggregates
         protected DomainModelException(SerializationInfo info, StreamingContext context) : base(info, context) {}
 
         /// <summary>
-        /// Converts this instance into an instance of <see cref="CommandExecutionException" />.
+        /// Converts this instance into an instance of <see cref="RequestExecutionException" />.
         /// </summary>
         /// <param name="command">The command that caused the exception.</param>
         /// <returns>
-        /// An instance of <see cref="CommandExecutionException" /> that wraps this exception and the inner
+        /// An instance of <see cref="RequestExecutionException" /> that wraps this exception and the inner
         /// exception.
         /// </returns>
-        public virtual CommandExecutionException AsCommandExecutionException(object command)
+        public virtual RequestExecutionException AsRequestExecutionException(object command)
         {
             if (command == null)
             {
@@ -52,7 +52,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
             }
             var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
             var message = Format(messageFormat, command.GetType());
-            return new CommandExecutionException(command, message, this);
+            return new RequestExecutionException(message, this, command);
         }
 
         /// <summary>

@@ -104,5 +104,41 @@ namespace YellowFlare.MessageProcessing.Resources {
                 return ResourceManager.GetString("MessageProcessor_FactoryNotSet", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot start this lifetime because it has been already started once..
+        /// </summary>
+        internal static string QueryCacheValueLifetime_AlreadyStarted {
+            get {
+                return ResourceManager.GetString("QueryCacheValueLifetime_AlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot combine this lifetime with the other because the other has already started..
+        /// </summary>
+        internal static string QueryCacheValueLifetime_OtherAlreadyStarted {
+            get {
+                return ResourceManager.GetString("QueryCacheValueLifetime_OtherAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot combine this lifetime with another because it has already started..
+        /// </summary>
+        internal static string QueryCacheValueLifetime_ThisAlreadyStarted {
+            get {
+                return ResourceManager.GetString("QueryCacheValueLifetime_ThisAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The length of a lifetime cannot be zero..
+        /// </summary>
+        internal static string TimerBasedLifetime_ZeroLifetime {
+            get {
+                return ResourceManager.GetString("TimerBasedLifetime_ZeroLifetime", resourceCulture);
+            }
+        }
     }
 }

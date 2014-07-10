@@ -132,4 +132,16 @@
   <data name="Message_IsReadOnly" xml:space="preserve">
     <value>Cannot mark message '{0}' as changed because it is marked readonly.</value>
   </data>
+  <data name="QueryCacheValueLifetime_AlreadyStarted" xml:space="preserve">
+    <value>Cannot start this lifetime because it has been already started once.</value>
+  </data>
+  <data name="QueryCacheValueLifetime_OtherAlreadyStarted" xml:space="preserve">
+    <value>Cannot combine this lifetime with the other because the other has already started.</value>
+  </data>
+  <data name="QueryCacheValueLifetime_ThisAlreadyStarted" xml:space="preserve">
+    <value>Cannot combine this lifetime with another because it has already started.</value>
+  </data>
+  <data name="TimerBasedLifetime_ZeroLifetime" xml:space="preserve">
+    <value>The length of a lifetime cannot be zero.</value>
+  </data>
 </root>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YellowFlare.MessageProcessing.Requests
+namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
     /// Represents a set of options that defines the behavior of a <see cref="ClientRequest{T, S}" />.

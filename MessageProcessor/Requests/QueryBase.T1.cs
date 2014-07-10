@@ -54,28 +54,28 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <inheritdoc />
-        public abstract TResult Execute(IQueryCache cache);
+        public abstract TResult Execute(QueryCache cache);
 
         /// <inheritdoc />
-        public async Task<TResult> ExecuteAsync(IDispatcher dispatcher)
+        public async Task<TResult> ExecuteAsync()
         {
-            return await ExecuteAsync(dispatcher, null, null);
+            return await ExecuteAsync(null, null);
         }
 
         /// <inheritdoc />
-        public async Task<TResult> ExecuteAsync(IDispatcher dispatcher, CancellationToken? token)
+        public async Task<TResult> ExecuteAsync(CancellationToken? token)
         {
-            return await ExecuteAsync(dispatcher, null, token);
+            return await ExecuteAsync(null, token);
         }
 
         /// <inheritdoc />
-        public async Task<TResult> ExecuteAsync(IDispatcher dispatcher, IQueryCache cache)
+        public async Task<TResult> ExecuteAsync(QueryCache cache)
         {
-            return await ExecuteAsync(dispatcher, cache, null);
+            return await ExecuteAsync(cache, null);
         }
 
         /// <inheritdoc />
-        public abstract Task<TResult> ExecuteAsync(IDispatcher dispatcher, IQueryCache cache, CancellationToken? token);
+        public abstract Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token);
 
         /// <summary>
         /// Wraps the specified result into a new <see cref="QueryCacheValue" />.
@@ -89,7 +89,7 @@ namespace YellowFlare.MessageProcessing.Requests
         /// </remarks>
         protected virtual QueryCacheValue CreateCacheValue(object key, TResult result)
         {
-            return QueryCacheValue.WithInfiniteLifetime(result);
+            return new QueryCacheValue(result);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace YellowFlare.MessageProcessing.Requests
         /// <returns>
         /// <c>true</c> if the value was succesfully read from the cache; otherwise <c>false</c>.
         /// </returns>
-        protected static bool TryGetFromCache(IQueryCache cache, object key, out TResult result)
+        protected static bool TryGetFromCache(QueryCache cache, object key, out TResult result)
         {
             QueryCacheValue value;
 

@@ -88,12 +88,8 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <inheritdoc />
-        public override async Task ExecuteAsync(IDispatcher dispatcher, CancellationToken? token)
-        {
-            if (dispatcher == null)
-            {
-                throw new ArgumentNullException("dispatcher");
-            }
+        public override async Task ExecuteAsync(CancellationToken? token)
+        {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
 
@@ -109,15 +105,15 @@ namespace YellowFlare.MessageProcessing.Requests
                 }
                 catch (OperationCanceledException exception)
                 {
-                    dispatcher.Invoke(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, message, exception)));
+                    RequestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, message, exception)));
                     throw;
                 }
                 catch (Exception exception)
                 {
-                    dispatcher.Invoke(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
+                    RequestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
                     throw;
                 }
-                dispatcher.Invoke(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message)));
+                RequestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message)));
             });
         }
 
@@ -143,7 +139,7 @@ namespace YellowFlare.MessageProcessing.Requests
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this command.
         /// </param> 
-        /// <exception cref="CommandExecutionException">
+        /// <exception cref="RequestExecutionException">
         /// The command failed for (somewhat) predictable reasons, like insufficient rights, invalid parameters or
         /// because the system's state/business rules wouldn't allow this command to be executed.
         /// </exception> 

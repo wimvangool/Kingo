@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YellowFlare.MessageProcessing.Requests
+namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
     /// Represents a <see cref="IIsBusyIndicator" /> that is composed of other indicators.

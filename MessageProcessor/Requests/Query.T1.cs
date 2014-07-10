@@ -13,7 +13,7 @@ namespace YellowFlare.MessageProcessing.Requests
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResult Execute(IQueryCache cache)
+        public override TResult Execute(QueryCache cache)
         {
             var executionId = Guid.NewGuid();            
 
@@ -35,12 +35,8 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <inheritdoc />
-        public override async Task<TResult> ExecuteAsync(IDispatcher dispatcher, IQueryCache cache, CancellationToken? token)
-        {
-            if (dispatcher == null)
-            {
-                throw new ArgumentNullException("dispatcher");
-            }
+        public override async Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
+        {           
             var executionId = Guid.NewGuid();           
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
@@ -64,15 +60,15 @@ namespace YellowFlare.MessageProcessing.Requests
                 }
                 catch (OperationCanceledException exception)
                 {
-                    dispatcher.Invoke(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
+                    RequestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
                     throw;
                 }
                 catch (Exception exception)
                 {
-                    dispatcher.Invoke(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
+                    RequestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
                     throw;
                 }
-                dispatcher.Invoke(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result)));
+                RequestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result)));
 
                 return result;
             });
@@ -93,7 +89,7 @@ namespace YellowFlare.MessageProcessing.Requests
             return Task<TResult>.Factory.StartNew(query);
         }
 
-        private TResult ExecuteQuery(IQueryCache cache, CancellationToken? token)
+        private TResult ExecuteQuery(QueryCache cache, CancellationToken? token)
         {
             return cache == null
                 ? Execute(token)

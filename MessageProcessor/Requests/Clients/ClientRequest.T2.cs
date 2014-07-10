@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YellowFlare.MessageProcessing.Requests
+namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IClientRequest" /> interface.

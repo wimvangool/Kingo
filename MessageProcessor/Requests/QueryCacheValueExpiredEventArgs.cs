@@ -3,7 +3,7 @@
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// The event-arguments associated with the <see cref="IQueryCache.CacheValueExpired" /> event.
+    /// The event-arguments associated with the <see cref="QueryCache.CacheValueExpired" /> event.
     /// </summary>
     public class QueryCacheValueExpiredEventArgs : EventArgs
     {

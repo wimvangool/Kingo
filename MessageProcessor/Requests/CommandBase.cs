@@ -51,13 +51,13 @@ namespace YellowFlare.MessageProcessing.Requests
         public abstract void Execute();
 
         /// <inheritdoc />
-        public async Task ExecuteAsync(IDispatcher dispatcher)
+        public async Task ExecuteAsync()
         {
-            await ExecuteAsync(dispatcher, null);
+            await ExecuteAsync(null);
         }
 
         /// <inheritdoc />
-        public abstract Task ExecuteAsync(IDispatcher dispatcher, CancellationToken? token);
+        public abstract Task ExecuteAsync(CancellationToken? token);
 
         #endregion
     }

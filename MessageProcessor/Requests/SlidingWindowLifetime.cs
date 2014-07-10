@@ -8,13 +8,13 @@ namespace YellowFlare.MessageProcessing.Requests
     public class SlidingWindowLifetime : TimerBasedLifetime
     {        
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedLifetime" /> class.
+        /// Initializes a new instance of the <see cref="SlidingWindowLifetime" /> class.
         /// </summary>        
         /// <param name="timeout">The length of the window.</param>       
         public SlidingWindowLifetime(TimeSpan timeout) : base(timeout) { }    
 
         /// <summary>
-        /// Starts or restarts the timer.
+        /// Restarts the timer.
         /// </summary>
         public override void NotifyValueAccessed()
         {
@@ -23,6 +23,15 @@ namespace YellowFlare.MessageProcessing.Requests
                 Timer.Stop();
             }
             Timer.Start();
-        }                 
+        }
+
+        /// <summary>
+        /// Returns a lifetime of one minute.
+        /// </summary>
+        /// <returns>A lifetime of one minute.</returns>
+        public static SlidingWindowLifetime DefaultTimeLifetime()
+        {
+            return new SlidingWindowLifetime(TimeSpan.FromMinutes(1));
+        }
     }
 }

@@ -3,39 +3,45 @@
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// Represents the result of query that is stored in a <see cref="IQueryCache" />.
+    /// Represents the result of query that is stored in a <see cref="QueryCache" />.
     /// </summary>
     /// <remarks>
     /// <see cref="QueryCacheValue">QueryCacheValues</see> are values or results that are associated with a
-    /// certain <see cref="IQueryCacheValueLifetime">lifetime</see> when they are added to the cache. When
+    /// certain <see cref="QueryCacheValueLifetime">lifetime</see> when they are added to the cache. When
     /// this lifetime expires, the value is automatically removed from the cache.
     /// </remarks>
     public sealed class QueryCacheValue : IDisposable
     {        
         private readonly object _value;
-        private readonly IQueryCacheValueLifetime _lifetime;
+        private readonly QueryCacheValueLifetime _lifetime;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryCacheValue" /> class.
+        /// </summary>
+        /// <param name="value">The result of the query.</param>
+        public QueryCacheValue(object value)
+            : this(value, null) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryCacheValue" /> class.
         /// </summary>
         /// <param name="value">The result of the query.</param>
         /// <param name="lifetime">The lifetime of this cached result.</param>
-        /// <remarks>
-        /// If <paramref name="lifetime"/> is <c>null</c>, this value will remain in cache
-        /// indefinitely.
-        /// </remarks>
-        public QueryCacheValue(object value, IQueryCacheValueLifetime lifetime)
-        {
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="lifetime"/> is <c>null</c>.
+        /// </exception>
+        public QueryCacheValue(object value, QueryCacheValueLifetime lifetime)
+        {            
             _value = value;
-            _lifetime = lifetime;
+            _lifetime = lifetime ?? new InfiniteLifetime();
         }
 
         /// <summary>
-        /// Indicates whether or not thisvalue has expired.
+        /// The lifetime of this value.
         /// </summary>
-        public bool IsExpired
+        public QueryCacheValueLifetime Lifetime
         {
-            get { return _lifetime != null && _lifetime.IsExpired; }
+            get { return _lifetime; }
         }
 
         /// <summary>
@@ -49,11 +55,9 @@ namespace YellowFlare.MessageProcessing.Requests
         /// </exception>
         public TValue Access<TValue>()
         {
-            if (_lifetime != null)
-            {
-                _lifetime.NotifyValueAccessed();
-            }
-            return (TValue)_value;
+            _lifetime.NotifyValueAccessed();
+
+            return (TValue) _value;
         }
 
         #region [====== Dispose ======]
@@ -63,51 +67,9 @@ namespace YellowFlare.MessageProcessing.Requests
         /// </summary>
         public void Dispose()
         {
-            if (_lifetime != null)
-            {
-                _lifetime.Dispose();
-            }
+            _lifetime.Dispose();
         }
 
-        #endregion
-
-        #region [====== Lifetime Management ======]
-
-        /// <summary>
-        /// Occurs when the lifetime of this value has expired.
-        /// </summary>
-        public event EventHandler Expired
-        {
-            add
-            {
-                if (_lifetime != null)
-                {
-                    _lifetime.Expired += value;
-                }
-            }
-            remove
-            {
-                if (_lifetime != null)
-                {
-                    _lifetime.Expired -= value;
-                }
-            }
-        }
-
-        #endregion
-
-        #region [====== InfiniteLifetime ======]
-
-        /// <summary>
-        /// Creates and returns a new <see cref="QueryCacheValue" /> that has an infinite lifetime.
-        /// </summary>
-        /// <param name="value">The value to store in cache.</param>
-        /// <returns>A new <see cref="QueryCacheValue" /> that has an infinite lifetime</returns>
-        public static QueryCacheValue WithInfiniteLifetime(object value)
-        {
-            return new QueryCacheValue(value, null);
-        }
-
-        #endregion
+        #endregion           
     }
 }

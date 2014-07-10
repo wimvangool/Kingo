@@ -1,26 +1,35 @@
 ﻿using System;
 using System.Timers;
+using YellowFlare.MessageProcessing.Resources;
 
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
     /// Represents a lifetime that is based on a <see cref="Timer" />.
     /// </summary>
-    public abstract class TimerBasedLifetime : QueryCacheValueLifetime
+    public class TimerBasedLifetime : QueryCacheValueLifetime
     {       
         private readonly Lazy<Timer> _timer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TimerBasedLifetime" /> class.
         /// </summary>        
-        /// <param name="timeout">The length of the lifetime.</param>        
-        protected TimerBasedLifetime(TimeSpan timeout)
+        /// <param name="timeout">The length of the lifetime.</param>    
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="timeout"/> is <see cref="TimeSpan.Zero"/>.
+        /// </exception>    
+        public TimerBasedLifetime(TimeSpan timeout)
         {            
+            if (timeout.Equals(TimeSpan.Zero))
+            {
+                throw NewZeroLengthLifetimeException("timeout");
+            }
             _timer = new Lazy<Timer>(() => CreateTimer(timeout));
         }
 
         #region [====== Dispose ======]
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing && _timer.IsValueCreated)
@@ -33,7 +42,7 @@ namespace YellowFlare.MessageProcessing.Requests
         #endregion        
 
         /// <summary>
-        /// The timer used to raise the <see cref="IQueryCacheValueLifetime.Expired" /> event.
+        /// The timer used to raise the <see cref="QueryCacheValueLifetime.Expired" /> event.
         /// </summary>
         protected Timer Timer
         {
@@ -53,7 +62,13 @@ namespace YellowFlare.MessageProcessing.Requests
             timer.Elapsed += HandleTimerElapsed;
             timer.AutoReset = false;
             return timer;
-        }        
+        }
+
+        /// <inheritdoc />
+        protected override void Run()
+        {
+            Timer.Start();
+        }
 
         /// <summary>
         /// Handles the <see cref="System.Timers.Timer.Elapsed" /> event.
@@ -65,7 +80,21 @@ namespace YellowFlare.MessageProcessing.Requests
             Timer.Elapsed -= HandleTimerElapsed;
             Timer.Stop();    
                    
-            OnIsExpired();
-        }  
+            OnExpired();
+        }
+
+        /// <summary>
+        /// Returns a lifetime of one minute.
+        /// </summary>
+        /// <returns>A lifetime of one minute.</returns>
+        public static TimerBasedLifetime DefaultLifetime()
+        {
+            return new TimerBasedLifetime(TimeSpan.FromMinutes(1));
+        }
+
+        private static Exception NewZeroLengthLifetimeException(string paramName)
+        {
+            return new ArgumentOutOfRangeException(paramName, ExceptionMessages.TimerBasedLifetime_ZeroLifetime);
+        }
     }
 }

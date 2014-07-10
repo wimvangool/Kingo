@@ -32,7 +32,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        /// <exception cref="CommandExecutionException">
+        /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
@@ -53,7 +53,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception> 
-        /// <exception cref="CommandExecutionException">
+        /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
@@ -69,7 +69,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        /// <exception cref="CommandExecutionException">
+        /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
@@ -91,7 +91,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception> 
-        /// <exception cref="CommandExecutionException">
+        /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
@@ -107,7 +107,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="action"/> is <c>null</c>.
         /// </exception>
-        /// <exception cref="CommandExecutionException">
+        /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
@@ -129,7 +129,7 @@ namespace YellowFlare.MessageProcessing
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception> 
-        /// <exception cref="CommandExecutionException">
+        /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.

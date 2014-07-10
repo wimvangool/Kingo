@@ -8,7 +8,20 @@ namespace YellowFlare.MessageProcessing.Requests
     /// </summary>
     public abstract class Request : IRequest
     {
-        internal Request() { }
+        private readonly RequestContext _requestContext;
+        
+        internal Request()
+        {
+            _requestContext = RequestContext.NewContext();
+        }
+
+        /// <summary>
+        /// Returns the context that is used to publish all events on.
+        /// </summary>
+        protected RequestContext RequestContext
+        {
+            get { return _requestContext; }
+        }
 
         #region [====== ExecutionStarted ======]
 
@@ -131,19 +144,15 @@ namespace YellowFlare.MessageProcessing.Requests
 
         private void IncrementExecutionCount()
         {
-            if (++_executionCount == 1)
+            if (Interlocked.Increment(ref _executionCount) == 1)
             {
                 OnIsExecutingChanged();
             }
         }
 
         private void DecrementExecutionCount()
-        {
-            if (_executionCount == 0)
-            {
-                return;
-            }
-            if (--_executionCount == 0)
+        {            
+            if (Interlocked.Decrement(ref _executionCount) == 0)
             {
                 OnIsExecutingChanged();
             }

@@ -81,7 +81,7 @@
     <Compile Include="IDomainEventBus.cs" />
     <Compile Include="UnitOfWorkController.cs" />
     <Compile Include="Clocks\IClock.cs" />
-    <Compile Include="CommandExecutionException.cs" />
+    <Compile Include="RequestExecutionException.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Clocks\SystemClock.cs" />
     <Compile Include="UnitOfWorkContext.cs" />

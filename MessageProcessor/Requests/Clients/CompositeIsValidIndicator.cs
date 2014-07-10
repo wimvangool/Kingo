@@ -4,28 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YellowFlare.MessageProcessing.Requests
+namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
-    /// Represents a <see cref="IHasChangesIndicator" /> that is composed of other indicators.
+    /// Represents a <see cref="IIsValidIndicator" /> that is composed of other indicators.
     /// </summary>
-    public class CompositeHasChangesIndicator : PropertyChangedNotifier, IHasChangesIndicator
+    public class CompositeIsValidIndicator : PropertyChangedNotifier, IIsValidIndicator
     {
-        private readonly List<IHasChangesIndicator> _indicators;
+        private readonly List<IIsValidIndicator> _indicators;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeHasChangesIndicator" /> class.
+        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class.
         /// </summary>
-        public CompositeHasChangesIndicator()
+        public CompositeIsValidIndicator()
         {
-            _indicators = new List<IHasChangesIndicator>();
+            _indicators = new List<IIsValidIndicator>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeHasChangesIndicator" /> class and adds the two
+        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds the two
         /// specified indicators to this instance.
         /// </summary>        
-        public CompositeHasChangesIndicator(IHasChangesIndicator a, IHasChangesIndicator b)
+        public CompositeIsValidIndicator(IIsValidIndicator a, IIsValidIndicator b)
             : this()
         {
             Add(a);
@@ -33,10 +33,10 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeHasChangesIndicator" /> class and adds the three
+        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds the three
         /// specified indicators to this instance.
         /// </summary>        
-        public CompositeHasChangesIndicator(IHasChangesIndicator a, IHasChangesIndicator b, IHasChangesIndicator c)
+        public CompositeIsValidIndicator(IIsValidIndicator a, IIsValidIndicator b, IIsValidIndicator c)
             : this()
         {
             Add(a);
@@ -45,46 +45,46 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeHasChangesIndicator" /> class and adds all
+        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds all
         /// specified indicators to this instance.
         /// </summary>
         /// <param name="indicators">The list of indicators to add to this instance.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public CompositeHasChangesIndicator(params IHasChangesIndicator[] indicators)
-            : this(indicators as IEnumerable<IHasChangesIndicator>) { }
+        public CompositeIsValidIndicator(params IIsValidIndicator[] indicators)
+            : this(indicators as IEnumerable<IIsValidIndicator>) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeHasChangesIndicator" /> class and adds all
+        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds all
         /// specified indicators to this instance.
         /// </summary>
         /// <param name="indicators">The list of indicators to add to this instance.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public CompositeHasChangesIndicator(IEnumerable<IHasChangesIndicator> indicators)
+        public CompositeIsValidIndicator(IEnumerable<IIsValidIndicator> indicators)
             : this()
         {
             Add(indicators);
         }
 
-        #region [====== HasChangesIndicator ======]
+        #region [====== IsValidIndicator ======]
 
         /// <inheritdoc />
-        public event EventHandler HasChangesChanged;
+        public event EventHandler IsValidChanged;
 
-        private void HandleHasChangesChanged(object sender, EventArgs e)
+        private void HandleIsValidChanged(object sender, EventArgs e)
         {
-            HasChangesChanged.Raise(sender, e);
+            IsValidChanged.Raise(sender, e);
 
-            OnPropertyChanged(() => HasChanges);
+            OnPropertyChanged(() => IsValid);
         }
 
         /// <inheritdoc />
-        public bool HasChanges
+        public bool IsValid
         {
-            get { return _indicators.Any(indicator => indicator.HasChanges); }
+            get { return _indicators.Any(indicator => indicator.IsValid); }
         }
 
         #endregion
@@ -98,9 +98,9 @@ namespace YellowFlare.MessageProcessing.Requests
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(params IHasChangesIndicator[] indicators)
+        public void Add(params IIsValidIndicator[] indicators)
         {
-            Add(indicators as IEnumerable<IHasChangesIndicator>);
+            Add(indicators as IEnumerable<IIsValidIndicator>);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace YellowFlare.MessageProcessing.Requests
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(IEnumerable<IHasChangesIndicator> indicators)
+        public void Add(IEnumerable<IIsValidIndicator> indicators)
         {
             if (indicators == null)
             {
@@ -129,7 +129,7 @@ namespace YellowFlare.MessageProcessing.Requests
         /// <remarks>
         /// <paramref name="indicator"/> is only added if it not <c>null</c> and not already present.
         /// </remarks>
-        public void Add(IHasChangesIndicator indicator)
+        public void Add(IIsValidIndicator indicator)
         {
             if (indicator == null || _indicators.Contains(indicator))
             {
@@ -137,20 +137,20 @@ namespace YellowFlare.MessageProcessing.Requests
             }
             _indicators.Add(indicator);
 
-            indicator.HasChangesChanged += HandleHasChangesChanged;
+            indicator.IsValidChanged += HandleIsValidChanged;
         }
 
         /// <summary>
         /// Removes the specified <paramref name="indicator"/> from this indicator.
         /// </summary>
         /// <param name="indicator">The indicator to remove.</param>
-        public void Remove(IHasChangesIndicator indicator)
+        public void Remove(IIsValidIndicator indicator)
         {
             if (_indicators.Contains(indicator))
             {
                 _indicators.Remove(indicator);
 
-                indicator.HasChangesChanged -= HandleHasChangesChanged;
+                indicator.IsValidChanged -= HandleIsValidChanged;
             }
         }
 
@@ -159,7 +159,7 @@ namespace YellowFlare.MessageProcessing.Requests
         /// </summary>
         public void Clear()
         {
-            var indicators = new List<IHasChangesIndicator>(_indicators);
+            var indicators = new List<IIsValidIndicator>(_indicators);
 
             foreach (var indicator in indicators)
             {
