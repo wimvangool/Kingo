@@ -7,22 +7,7 @@ namespace YellowFlare.MessageProcessing.Requests
     /// Basic implementation of the <see cref="IRequest" /> interface, serving as a base class for all request-types.
     /// </summary>
     public abstract class Request : IRequest
-    {
-        private readonly RequestContext _requestContext;
-        
-        internal Request()
-        {
-            _requestContext = RequestContext.NewContext();
-        }
-
-        /// <summary>
-        /// Returns the context that is used to publish all events on.
-        /// </summary>
-        protected RequestContext RequestContext
-        {
-            get { return _requestContext; }
-        }
-
+    {        
         #region [====== ExecutionStarted ======]
 
         /// <inheritdoc />

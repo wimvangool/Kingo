@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -66,9 +67,28 @@ namespace YellowFlare.MessageProcessing.Requests
             }           
         }
 
-        internal static RequestContext NewContext()
+        private static readonly RequestContext _NullContext = new RequestContext(null);
+        private static readonly ConcurrentDictionary<SynchronizationContext, RequestContext> _Contexts;
+
+        static RequestContext()
         {
-            return new RequestContext(SynchronizationContext.Current);
+            _Contexts = new ConcurrentDictionary<SynchronizationContext, RequestContext>();
+        }
+
+        /// <summary>
+        /// Returns the current context which is based on the <see cref="SynchronizationContext.Current">current SynchronizationContext</see>.
+        /// </summary>
+        public static RequestContext Current
+        {
+            get
+            {
+                var currentContext = SynchronizationContext.Current;
+                if (currentContext == null)
+                {
+                    return _NullContext;
+                }
+                return _Contexts.GetOrAdd(SynchronizationContext.Current, context => new RequestContext(context));
+            }
         }
     }
 }

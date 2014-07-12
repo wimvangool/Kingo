@@ -92,6 +92,7 @@ namespace YellowFlare.MessageProcessing.Requests
         {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
+            var requestContext = RequestContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
 
@@ -105,15 +106,15 @@ namespace YellowFlare.MessageProcessing.Requests
                 }
                 catch (OperationCanceledException exception)
                 {
-                    RequestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, message, exception)));
+                    requestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, message, exception)));
                     throw;
                 }
                 catch (Exception exception)
                 {
-                    RequestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
+                    requestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
                     throw;
                 }
-                RequestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message)));
+                requestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message)));
             });
         }
 

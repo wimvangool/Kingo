@@ -33,7 +33,8 @@ namespace YellowFlare.MessageProcessing.Requests
         /// <inheritdoc />
         public override async Task ExecuteAsync(CancellationToken? token)
         {            
-            var executionId = Guid.NewGuid();            
+            var executionId = Guid.NewGuid();
+            var requestContext = RequestContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
 
@@ -47,15 +48,15 @@ namespace YellowFlare.MessageProcessing.Requests
                 }
                 catch (OperationCanceledException exception)
                 {
-                    RequestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
+                    requestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
                     throw;
                 }
                 catch (Exception exception)
                 {
-                    RequestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
+                    requestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
                     throw;
                 }
-                RequestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId)));
+                requestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId)));
             });
         }
 

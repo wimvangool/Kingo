@@ -20,7 +20,7 @@ namespace YellowFlare.MessageProcessing.Requests
         /// </summary>
         protected QueryCache()
         {
-            _requestContext = RequestContext.NewContext();
+            _requestContext = RequestContext.Current;
         }
 
         /// <summary>
