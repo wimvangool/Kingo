@@ -125,6 +125,11 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
                 parameterOut = (TParameter) parameterIn;
                 return true;
             }
+            catch (NullReferenceException)
+            {
+                parameterOut = default(TParameter);
+                return false;
+            }
             catch (InvalidCastException)
             {
                 parameterOut = default(TParameter);

@@ -86,6 +86,8 @@
     <Compile Include="Requests\Clients\Connection.cs" />
     <Compile Include="Requests\Clients\ICompositeCommand.cs" />
     <Compile Include="Requests\Clients\IConnection.cs" />
+    <Compile Include="Requests\Clients\OneToManyCommand.cs" />
+    <Compile Include="Requests\Clients\OneToManyCommandConnection.cs" />
     <Compile Include="Requests\Clients\OneToOneCommand.cs" />
     <Compile Include="Requests\Clients\OneToOneCommandConnection.cs" />
     <Compile Include="Requests\Clients\RelayCommand.cs" />

@@ -9,7 +9,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
     /// </summary>
     public sealed class OneToOneCommand : ICompositeCommand
     {        
-        private IInputCommand _connectedCommand;
+        private IInputCommand _activeCommand;
 
         /// <inheritdoc />
         public IConnection Connect(IInputCommand command)
@@ -23,25 +23,25 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
 
         internal bool IsConnectedTo(IInputCommand command)
         {
-            return _connectedCommand != null && _connectedCommand == command;
+            return _activeCommand != null && _activeCommand == command;
         }
 
         internal void OpenConnection(IInputCommand command)
         {
-            if (_connectedCommand != null)
+            if (_activeCommand != null)
             {
                 throw NewOtherCommandAlreadyConnectedException();
             }
-            _connectedCommand = command;
-            _connectedCommand.CanExecuteChanged += OnCanExecuteChanged;
+            _activeCommand = command;
+            _activeCommand.CanExecuteChanged += OnCanExecuteChanged;
 
             OnCanExecuteChanged(this, EventArgs.Empty);
         }
 
         internal void CloseConnection()
         {
-            _connectedCommand.CanExecuteChanged -= OnCanExecuteChanged;
-            _connectedCommand = null;
+            _activeCommand.CanExecuteChanged -= OnCanExecuteChanged;
+            _activeCommand = null;
 
             OnCanExecuteChanged(this, EventArgs.Empty);
         }
@@ -57,7 +57,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </returns>
         public bool CanExecute(object parameter)
         {
-            return _connectedCommand != null && _connectedCommand.CanExecute(parameter);
+            return _activeCommand != null && _activeCommand.CanExecute(parameter);
         }
 
         /// <summary>
@@ -76,9 +76,9 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <param name="parameter">A parameter.</param>
         public void Execute(object parameter)
         {
-            if (_connectedCommand != null)
+            if (_activeCommand != null)
             {
-                _connectedCommand.Execute(parameter);
+                _activeCommand.Execute(parameter);
             }
         }
 

@@ -5,17 +5,17 @@ using IInputCommand = System.Windows.Input.ICommand;
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
-    /// Summary description for OneToOneCommandTest
+    /// Summary description for OneToManyCommandTest
     /// </summary>
     [TestClass]
-    public sealed class OneToOneCommandTest
+    public sealed class OneToManyCommandTest
     {
-        private OneToOneCommand _command;
+        private OneToManyCommand _command;
 
         [TestInitialize]
         public void Setup()
         {
-            _command = new OneToOneCommand();
+            _command = new OneToManyCommand();
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         public void Connect_Throws_IfCommandIsNull()
         {
             _command.Connect(null);
-        }        
+        }
 
         [TestMethod]
         public void Connect_ReturnsClosedConnection()
@@ -62,18 +62,21 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         [TestMethod]
         public void ConnectionOpen_ActivatesConnectedCommand()
         {
-            bool actionWasExecuted = false;
+            int executionCount = 0;
 
-            var inputCommand = new RelayCommand(() => actionWasExecuted = true);
-            var connection = _command.Connect(inputCommand);
+            var inputCommandA = new RelayCommand(() => executionCount++);
+            var inputCommandB = new RelayCommand(() => executionCount++);
+            var connectionA = _command.Connect(inputCommandA);
+            var connectionB = _command.Connect(inputCommandB);
 
-            connection.Open();
+            connectionA.Open();
+            connectionB.Open();
 
             Assert.IsTrue(_command.CanExecute(null));
 
             _command.Execute(null);
             
-            Assert.IsTrue(actionWasExecuted);
+            Assert.AreEqual(2, executionCount);
         }
         
         [TestMethod]
@@ -96,20 +99,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
 
             connection.Dispose();
             connection.Open();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ConnectionOpen_Throws_IfOtherConnectionIsAlreadyOpen()
-        {
-            var inputCommandA = new RelayCommand(() => { });
-            var inputCommandB = new RelayCommand(() => { });
-            var connectionA = _command.Connect(inputCommandA);
-            var connectionB = _command.Connect(inputCommandB);
-
-            connectionA.Open();
-            connectionB.Open();
-        }
+        }        
 
         [TestMethod]
         public void ConnectionClose_DeactivatesConnectedCommand()
@@ -225,6 +215,21 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
 
             Assert.IsTrue(_command.CanExecute(9));
             Assert.IsFalse(_command.CanExecute(10));
+        }
+
+        [TestMethod]
+        public void CanExecute_ReturnsTrue_IfAnyActiveCommandCanBeExecuted()
+        {
+            var inputCommandA = new RelayCommand(parameter => { });
+            var inputCommandB = new RelayCommand(parameter => { }, parameter => false);
+
+            var connectionA = _command.Connect(inputCommandA);
+            var connectionB = _command.Connect(inputCommandB);
+
+            connectionA.Open();
+            connectionB.Open();
+
+            Assert.IsTrue(_command.CanExecute(null));            
         }
     }
 }
