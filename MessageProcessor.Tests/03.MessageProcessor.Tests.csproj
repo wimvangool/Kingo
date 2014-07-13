@@ -87,6 +87,11 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="MessageHandlerFactoryStub.cs" />
+    <Compile Include="NullEventBus.cs" />
+    <Compile Include="Requests\Clients\ClientEventBusStub.cs" />
+    <Compile Include="Requests\Clients\ClientEventBusTest.cs" />
+    <Compile Include="Requests\Clients\OneToOneCommandTest.cs" />
+    <Compile Include="Requests\Clients\RelayCommandOfT1.Test.cs" />
     <Compile Include="Requests\OrLifetimeTest.cs" />
     <Compile Include="Requests\SlidingWindowLifetimeTest.cs" />
     <Compile Include="Requests\TimerBasedLifetimeTest.cs" />
@@ -153,9 +158,7 @@
   <ItemGroup>
     <None Include="Properties\packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Requests\Clients\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

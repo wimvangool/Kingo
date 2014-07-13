@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
@@ -60,7 +56,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <param name="parameterOut">
         /// When this method has executed, refers to the same object as <paramref name="parameterIn"/>.
         /// </param>
-        /// <returns><c>true</c></returns>
+        /// <returns><c>true</c>.</returns>
         protected override bool TryConvertParameter(object parameterIn, out object parameterOut)
         {
             parameterOut = parameterIn;

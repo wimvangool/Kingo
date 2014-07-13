@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Connection_AlreadyClosed" xml:space="preserve">
+    <value>The connection is already closed.</value>
+  </data>
+  <data name="Connection_AlreadyOpen" xml:space="preserve">
+    <value>The connection is already open.</value>
+  </data>
   <data name="MessageHanderPipeline_MultipleAttributesFound" xml:space="preserve">
     <value>Multiple attributes of the specified type were found when only a single was expected: {0}.</value>
   </data>
@@ -131,6 +137,9 @@
   </data>
   <data name="Message_IsReadOnly" xml:space="preserve">
     <value>Cannot mark message '{0}' as changed because it is marked readonly.</value>
+  </data>
+  <data name="OneToOneCommand_OtherAlreadyConnected" xml:space="preserve">
+    <value>Cannot open connection because another command has already opened its connection.</value>
   </data>
   <data name="QueryCacheValueLifetime_AlreadyStarted" xml:space="preserve">
     <value>Cannot start this lifetime because it has been already started once.</value>

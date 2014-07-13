@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace YellowFlare.MessageProcessing.Requests
+﻿namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
     /// Represents a lifetime that never expires.
