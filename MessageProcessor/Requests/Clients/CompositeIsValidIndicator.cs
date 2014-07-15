@@ -64,7 +64,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         public CompositeIsValidIndicator(IEnumerable<IIsValidIndicator> indicators)
             : this()
         {
-            Add(indicators);
+            AddRange(indicators);
         }
 
         #region [====== IsValidIndicator ======]
@@ -72,7 +72,12 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <inheritdoc />
         public event EventHandler IsValidChanged;
 
-        private void HandleIsValidChanged(object sender, EventArgs e)
+        private void OnIsValidChanged()
+        {
+            OnIsValidChanged(this, EventArgs.Empty);
+        }
+
+        private void OnIsValidChanged(object sender, EventArgs e)
         {
             IsValidChanged.Raise(sender, e);
 
@@ -82,7 +87,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <inheritdoc />
         public bool IsValid
         {
-            get { return _indicators.Any(indicator => indicator.IsValid); }
+            get { return _indicators.All(indicator => indicator.IsValid); }
         }
 
         #endregion
@@ -96,9 +101,9 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(params IIsValidIndicator[] indicators)
+        public void AddRange(params IIsValidIndicator[] indicators)
         {
-            Add(indicators as IEnumerable<IIsValidIndicator>);
+            AddRange(indicators as IEnumerable<IIsValidIndicator>);
         }
 
         /// <summary>
@@ -108,7 +113,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(IEnumerable<IIsValidIndicator> indicators)
+        public void AddRange(IEnumerable<IIsValidIndicator> indicators)
         {
             if (indicators == null)
             {
@@ -116,8 +121,9 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             }
             foreach (var indicator in indicators)
             {
-                Add(indicator);
+                Add(indicator, false);
             }
+            OnIsValidChanged();
         }
 
         /// <summary>
@@ -129,13 +135,23 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </remarks>
         public void Add(IIsValidIndicator indicator)
         {
+            Add(indicator, true);
+        }
+
+        private void Add(IIsValidIndicator indicator, bool raiseIsValidChanged)
+        {
             if (indicator == null || _indicators.Contains(indicator))
             {
                 return;
             }
             _indicators.Add(indicator);
 
-            indicator.IsValidChanged += HandleIsValidChanged;
+            indicator.IsValidChanged += OnIsValidChanged;
+    
+            if (raiseIsValidChanged)
+            {
+                OnIsValidChanged();
+            }
         }
 
         /// <summary>
@@ -144,11 +160,21 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <param name="indicator">The indicator to remove.</param>
         public void Remove(IIsValidIndicator indicator)
         {
+            Remove(indicator, true);
+        }
+
+        private void Remove(IIsValidIndicator indicator, bool raiseIsValidChanged)
+        {
             if (_indicators.Contains(indicator))
             {
                 _indicators.Remove(indicator);
 
-                indicator.IsValidChanged -= HandleIsValidChanged;
+                indicator.IsValidChanged -= OnIsValidChanged;
+
+                if (raiseIsValidChanged)
+                {
+                    OnIsValidChanged();
+                }
             }
         }
 
@@ -157,12 +183,17 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </summary>
         public void Clear()
         {
+            if (_indicators.Count == 0)
+            {
+                return;
+            }
             var indicators = new List<IIsValidIndicator>(_indicators);
-
+            
             foreach (var indicator in indicators)
             {
-                Remove(indicator);
+                Remove(indicator, false);
             }
+            OnIsValidChanged();
         }
 
         #endregion

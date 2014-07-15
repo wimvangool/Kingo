@@ -64,7 +64,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         public CompositeHasChangesIndicator(IEnumerable<IHasChangesIndicator> indicators)
             : this()
         {
-            Add(indicators);
+            AddRange(indicators);
         }
 
         #region [====== HasChangesIndicator ======]
@@ -72,7 +72,12 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <inheritdoc />
         public event EventHandler HasChangesChanged;
 
-        private void HandleHasChangesChanged(object sender, EventArgs e)
+        private void OnHasChangesChanged()
+        {
+            OnHasChangesChanged(this,EventArgs.Empty);
+        }
+
+        private void OnHasChangesChanged(object sender, EventArgs e)
         {
             HasChangesChanged.Raise(sender, e);
 
@@ -96,9 +101,9 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(params IHasChangesIndicator[] indicators)
+        public void AddRange(params IHasChangesIndicator[] indicators)
         {
-            Add(indicators as IEnumerable<IHasChangesIndicator>);
+            AddRange(indicators as IEnumerable<IHasChangesIndicator>);
         }
 
         /// <summary>
@@ -108,7 +113,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(IEnumerable<IHasChangesIndicator> indicators)
+        public void AddRange(IEnumerable<IHasChangesIndicator> indicators)
         {
             if (indicators == null)
             {
@@ -116,8 +121,9 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             }
             foreach (var indicator in indicators)
             {
-                Add(indicator);
+                Add(indicator, false);
             }
+            OnHasChangesChanged();
         }
 
         /// <summary>
@@ -129,13 +135,23 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </remarks>
         public void Add(IHasChangesIndicator indicator)
         {
+            Add(indicator, true);
+        }
+
+        private void Add(IHasChangesIndicator indicator, bool raiseHasChangesChanged)
+        {
             if (indicator == null || _indicators.Contains(indicator))
             {
                 return;
             }
             _indicators.Add(indicator);
 
-            indicator.HasChangesChanged += HandleHasChangesChanged;
+            indicator.HasChangesChanged += OnHasChangesChanged;
+
+            if (raiseHasChangesChanged)
+            {
+                OnHasChangesChanged();
+            }
         }
 
         /// <summary>
@@ -144,11 +160,19 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <param name="indicator">The indicator to remove.</param>
         public void Remove(IHasChangesIndicator indicator)
         {
-            if (_indicators.Contains(indicator))
-            {
-                _indicators.Remove(indicator);
+            Remove(indicator, true);
+        }
 
-                indicator.HasChangesChanged -= HandleHasChangesChanged;
+        private void Remove(IHasChangesIndicator indicator, bool raiseHasChangesChanged)
+        {
+            if (_indicators.Remove(indicator))
+            {
+                indicator.HasChangesChanged -= OnHasChangesChanged;
+
+                if (raiseHasChangesChanged)
+                {
+                    OnHasChangesChanged();
+                }
             }
         }
 
@@ -157,12 +181,17 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </summary>
         public void Clear()
         {
+            if (_indicators.Count == 0)
+            {
+                return;
+            }
             var indicators = new List<IHasChangesIndicator>(_indicators);
-
+                       
             foreach (var indicator in indicators)
             {
-                Remove(indicator);
+                Remove(indicator, false);
             }
+            OnHasChangesChanged();
         }
 
         #endregion

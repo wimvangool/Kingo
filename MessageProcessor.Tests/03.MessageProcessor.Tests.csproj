@@ -90,6 +90,12 @@
     <Compile Include="NullEventBus.cs" />
     <Compile Include="Requests\Clients\ClientEventBusStub.cs" />
     <Compile Include="Requests\Clients\ClientEventBusTest.cs" />
+    <Compile Include="Requests\Clients\CompositeIsBusyIndicatorTest.cs" />
+    <Compile Include="Requests\Clients\CompositeIsValidIndicatorTest.cs" />
+    <Compile Include="Requests\Clients\CompositeHasChangesIndicatorTest.cs" />
+    <Compile Include="Requests\Clients\HasChangesIndicatorStub.cs" />
+    <Compile Include="Requests\Clients\IsBusyIndicatorStub.cs" />
+    <Compile Include="Requests\Clients\IsValidIndicatorStub.cs" />
     <Compile Include="Requests\Clients\OneToManyCommandTest.cs" />
     <Compile Include="Requests\Clients\OneToOneCommandTest.cs" />
     <Compile Include="Requests\Clients\RelayCommandOfT1.Test.cs" />

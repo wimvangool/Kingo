@@ -61,7 +61,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </exception>
         public CompositeIsBusyIndicator(IEnumerable<IIsBusyIndicator> indicators) : this()
         {
-            Add(indicators);
+            AddRange(indicators);
         }
 
         #region [====== IsBusyIndicator ======]
@@ -69,7 +69,12 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <inheritdoc />
         public event EventHandler IsBusyChanged;
 
-        private void HandleIsBusyChanged(object sender, EventArgs e)
+        private void OnIsBusyChanged()
+        {
+            OnIsBusyChanged(this, EventArgs.Empty);
+        }
+
+        private void OnIsBusyChanged(object sender, EventArgs e)
         {
             IsBusyChanged.Raise(sender, e);
 
@@ -93,9 +98,9 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(params IIsBusyIndicator[] indicators)
+        public void AddRange(params IIsBusyIndicator[] indicators)
         {
-            Add(indicators as IEnumerable<IIsBusyIndicator>);
+            AddRange(indicators as IEnumerable<IIsBusyIndicator>);
         }
 
         /// <summary>
@@ -105,7 +110,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void Add(IEnumerable<IIsBusyIndicator> indicators)
+        public void AddRange(IEnumerable<IIsBusyIndicator> indicators)
         {
             if (indicators == null)
             {
@@ -113,8 +118,9 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             }
             foreach (var indicator in indicators)
             {
-                Add(indicator);              
+                Add(indicator, false);              
             }
+            OnIsBusyChanged();
         }
 
         /// <summary>
@@ -126,13 +132,23 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </remarks>
         public void Add(IIsBusyIndicator indicator)
         {
+            Add(indicator, true);
+        }
+
+        private void Add(IIsBusyIndicator indicator, bool raiseIsBusyChanged)
+        {
             if (indicator == null || _indicators.Contains(indicator))
             {
                 return;
-            }            
+            }
             _indicators.Add(indicator);
 
-            indicator.IsBusyChanged += HandleIsBusyChanged;
+            indicator.IsBusyChanged += OnIsBusyChanged;
+
+            if (raiseIsBusyChanged)
+            {
+                OnIsBusyChanged();
+            }
         }
 
         /// <summary>
@@ -141,11 +157,21 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <param name="indicator">The indicator to remove.</param>
         public void Remove(IIsBusyIndicator indicator)
         {
+            Remove(indicator, true);
+        }
+
+        private void Remove(IIsBusyIndicator indicator, bool raiseIsBusyChanged)
+        {
             if (_indicators.Contains(indicator))
             {
                 _indicators.Remove(indicator);
 
-                indicator.IsBusyChanged -= HandleIsBusyChanged;
+                indicator.IsBusyChanged -= OnIsBusyChanged;
+
+                if (raiseIsBusyChanged)
+                {
+                    OnIsBusyChanged();
+                }
             }
         }
 
@@ -154,12 +180,17 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// </summary>
         public void Clear()
         {
+            if (_indicators.Count == 0)
+            {
+                return;
+            }
             var indicators = new List<IIsBusyIndicator>(_indicators);
-
+            
             foreach (var indicator in indicators)
             {
-                Remove(indicator);
+                Remove(indicator, false);
             }
+            OnIsBusyChanged();
         }
 
         #endregion
