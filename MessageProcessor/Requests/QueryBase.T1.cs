@@ -57,21 +57,21 @@ namespace YellowFlare.MessageProcessing.Requests
         public abstract TResult Execute(QueryCache cache);
 
         /// <inheritdoc />
-        public async Task<TResult> ExecuteAsync()
+        public Task<TResult> ExecuteAsync()
         {
-            return await ExecuteAsync(null, null);
+            return ExecuteAsync(null, null);
         }
 
         /// <inheritdoc />
-        public async Task<TResult> ExecuteAsync(CancellationToken? token)
+        public Task<TResult> ExecuteAsync(CancellationToken? token)
         {
-            return await ExecuteAsync(null, token);
+            return ExecuteAsync(null, token);
         }
 
         /// <inheritdoc />
-        public async Task<TResult> ExecuteAsync(QueryCache cache)
+        public Task<TResult> ExecuteAsync(QueryCache cache)
         {
-            return await ExecuteAsync(cache, null);
+            return ExecuteAsync(cache, null);
         }
 
         /// <inheritdoc />
@@ -116,6 +116,18 @@ namespace YellowFlare.MessageProcessing.Requests
             }
             result = default(TResult);
             return false;
+        }
+
+        /// <summary>
+        /// Creates and returns a task that is marked completed and returns the specified <paramref name="result"/>.
+        /// </summary>
+        /// <param name="result">The result is this query.</param>
+        /// <returns>A new and completed <see cref="Task{T}"/>.</returns>
+        protected static Task<TResult> CreateCompletedTask(TResult result)
+        {
+            var taskCompletionSource = new TaskCompletionSource<TResult>();
+            taskCompletionSource.SetResult(result);
+            return taskCompletionSource.Task;
         }
 
         #endregion

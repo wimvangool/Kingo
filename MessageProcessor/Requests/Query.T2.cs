@@ -93,7 +93,7 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <inheritdoc />
-        public override async Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
+        public override Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
         {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
@@ -105,10 +105,10 @@ namespace YellowFlare.MessageProcessing.Requests
             if (TryGetFromCache(cache, message, out result))
             {
                 OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result));
-                
-                return result;
+
+                return CreateCompletedTask(result);
             }
-            return await Start(() =>
+            return Start(() =>
             {
                 try
                 {

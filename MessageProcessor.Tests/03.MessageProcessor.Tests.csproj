@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
     <AssemblyName>YellowFlare.MessageProcessor.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>SAK</SccProjectName>
@@ -87,18 +87,6 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="MessageHandlerFactoryStub.cs" />
-    <Compile Include="NullEventBus.cs" />
-    <Compile Include="Requests\Clients\ClientEventBusStub.cs" />
-    <Compile Include="Requests\Clients\ClientEventBusTest.cs" />
-    <Compile Include="Requests\Clients\CompositeIsBusyIndicatorTest.cs" />
-    <Compile Include="Requests\Clients\CompositeIsValidIndicatorTest.cs" />
-    <Compile Include="Requests\Clients\CompositeHasChangesIndicatorTest.cs" />
-    <Compile Include="Requests\Clients\HasChangesIndicatorStub.cs" />
-    <Compile Include="Requests\Clients\IsBusyIndicatorStub.cs" />
-    <Compile Include="Requests\Clients\IsValidIndicatorStub.cs" />
-    <Compile Include="Requests\Clients\OneToManyCommandTest.cs" />
-    <Compile Include="Requests\Clients\OneToOneCommandTest.cs" />
-    <Compile Include="Requests\Clients\RelayCommandOfT1.Test.cs" />
     <Compile Include="Requests\OrLifetimeTest.cs" />
     <Compile Include="Requests\SlidingWindowLifetimeTest.cs" />
     <Compile Include="Requests\TimerBasedLifetimeTest.cs" />

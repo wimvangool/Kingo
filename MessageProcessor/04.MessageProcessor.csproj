@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
     <AssemblyName>YellowFlare.MessageProcessor</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -75,39 +75,16 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="CancellationTokenExtensions.cs" />
-    <Compile Include="Requests\Clients\ClientCommand.cs" />
-    <Compile Include="Requests\Clients\ClientCommand.T1.cs" />
-    <Compile Include="Requests\Clients\ClientEventBus.cs" />
-    <Compile Include="Requests\Clients\ClientEventBusConnection.cs" />
-    <Compile Include="Requests\Clients\ClientQuery.T1.cs" />
-    <Compile Include="Requests\Clients\ClientQuery.T2.cs" />
-    <Compile Include="Requests\Clients\ClientRequest.T2.cs" />
-    <Compile Include="Requests\Clients\ClientRequestExecutionOptions.cs" />
-    <Compile Include="Requests\Clients\Connection.cs" />
-    <Compile Include="Requests\Clients\ICompositeCommand.cs" />
-    <Compile Include="Requests\Clients\IConnection.cs" />
-    <Compile Include="Requests\Clients\OneToManyCommand.cs" />
-    <Compile Include="Requests\Clients\OneToManyCommandConnection.cs" />
-    <Compile Include="Requests\Clients\OneToOneCommand.cs" />
-    <Compile Include="Requests\Clients\OneToOneCommandConnection.cs" />
-    <Compile Include="Requests\Clients\RelayCommand.cs" />
-    <Compile Include="Requests\Clients\RelayCommand.T1.cs" />
     <Compile Include="Requests\Command.cs" />
     <Compile Include="Requests\CommandBase.cs" />
-    <Compile Include="Requests\Clients\CompositeHasChangesIndicator.cs" />
-    <Compile Include="Requests\Clients\CompositeIsBusyIndicator.cs" />
-    <Compile Include="Requests\Clients\CompositeIsValidIndicator.cs" />
-    <Compile Include="Requests\Clients\CompositeMessage.cs" />
     <Compile Include="Requests\ExecutionCancelledEventArgs.cs" />
     <Compile Include="Requests\ExecutionCompletedEventArgs.cs" />
     <Compile Include="Requests\ExecutionFailedEventArgs.cs" />
     <Compile Include="Requests\ExecutionStartedEventArgs.cs" />
     <Compile Include="Requests\ExecutionSucceededEventArgs.cs" />
     <Compile Include="Requests\ExecutionSucceededEventArgs.T1.cs" />
-    <Compile Include="Requests\Clients\IClientRequest.cs" />
     <Compile Include="Requests\ICommand.cs" />
     <Compile Include="Requests\IHasChangesIndicator.cs" />
-    <Compile Include="Requests\Clients\IIsBusyIndicator.cs" />
     <Compile Include="Requests\IIsValidIndicator.cs" />
     <Compile Include="Requests\InfiniteLifetime.cs" />
     <Compile Include="Requests\IQuery.T1.cs" />

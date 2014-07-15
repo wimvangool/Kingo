@@ -31,14 +31,14 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <inheritdoc />
-        public override async Task ExecuteAsync(CancellationToken? token)
+        public override Task ExecuteAsync(CancellationToken? token)
         {            
             var executionId = Guid.NewGuid();
             var requestContext = RequestContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
 
-            await Start(() =>
+            return Start(() =>
             {
                 try
                 {

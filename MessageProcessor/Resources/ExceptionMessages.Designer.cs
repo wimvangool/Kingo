@@ -61,24 +61,6 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The connection is already closed..
-        /// </summary>
-        internal static string Connection_AlreadyClosed {
-            get {
-                return ResourceManager.GetString("Connection_AlreadyClosed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The connection is already open..
-        /// </summary>
-        internal static string Connection_AlreadyOpen {
-            get {
-                return ResourceManager.GetString("Connection_AlreadyOpen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unknown value of type &apos;{0}&apos; specified: {1}..
         /// </summary>
         internal static string Message_InvalidOption {
@@ -120,15 +102,6 @@ namespace YellowFlare.MessageProcessing.Resources {
         internal static string MessageProcessor_FactoryNotSet {
             get {
                 return ResourceManager.GetString("MessageProcessor_FactoryNotSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot open connection because another command has already opened its connection..
-        /// </summary>
-        internal static string OneToOneCommand_OtherAlreadyConnected {
-            get {
-                return ResourceManager.GetString("OneToOneCommand_OtherAlreadyConnected", resourceCulture);
             }
         }
         

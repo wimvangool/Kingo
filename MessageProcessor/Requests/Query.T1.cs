@@ -35,7 +35,7 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <inheritdoc />
-        public override async Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
+        public override Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
         {           
             var executionId = Guid.NewGuid();
             var requestContext = RequestContext.Current;
@@ -47,9 +47,9 @@ namespace YellowFlare.MessageProcessing.Requests
             {
                 OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result));
 
-                return result;
+                return CreateCompletedTask(result);
             }
-            return await Start(() =>
+            return Start(() =>
             {
                 try
                 {
@@ -106,6 +106,6 @@ namespace YellowFlare.MessageProcessing.Requests
         /// </remarks>
         protected abstract TResult Execute(CancellationToken? token);
 
-        #endregion
+        #endregion        
     }
 }

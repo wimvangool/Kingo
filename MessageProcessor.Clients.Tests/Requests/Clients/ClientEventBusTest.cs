@@ -11,7 +11,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         [TestInitialize]
         public void Setup()
         {
-            _eventBus = new ClientEventBusStub(new NullEventBus());
+            _eventBus = new ClientEventBusStub(new NotSupportedBus());
         }
 
         [TestMethod]

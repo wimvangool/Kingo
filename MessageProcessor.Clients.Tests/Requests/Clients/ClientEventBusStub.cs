@@ -28,12 +28,12 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             get { return _eventBus; }
         }
 
-        protected internal override void Subscribe(object subscriber)
+        protected override void Subscribe(object subscriber)
         {
             _subscribers.Add(subscriber);
         }
 
-        protected internal override void Unsubscribe(object subscriber)
+        protected override void Unsubscribe(object subscriber)
         {
             _subscribers.Remove(subscriber);
         }

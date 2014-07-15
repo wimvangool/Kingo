@@ -1,21 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</ProjectGuid>
+    <ProjectGuid>{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YellowFlare.MessageProcessing</RootNamespace>
-    <AssemblyName>YellowFlare.MessageProcessor.TestEngine</AssemblyName>
+    <AssemblyName>YellowFlare.MessageProcessor.Clients</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -26,8 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,53 +29,51 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\YellowFlare.MessageProcessor.TestEngine.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>S:\SupportFiles\StrongName\YellowFlare.snk</AssemblyOriginatorKeyFile>
+    <DocumentationFile>bin\Release\YellowFlare.MessageProcessor.Clients.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="BooleanOperandExtensions.cs" />
-    <Compile Include="ConjunctionStatement.T1.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Requests\Clients\ClientCommand.cs" />
+    <Compile Include="Requests\Clients\ClientCommand.T1.cs" />
+    <Compile Include="Requests\Clients\ClientEventBus.cs" />
+    <Compile Include="Requests\Clients\ClientEventBusConnection.cs" />
+    <Compile Include="Requests\Clients\ClientQuery.T1.cs" />
+    <Compile Include="Requests\Clients\ClientQuery.T2.cs" />
+    <Compile Include="Requests\Clients\ClientRequest.T2.cs" />
+    <Compile Include="Requests\Clients\ClientRequestExecutionOptions.cs" />
+    <Compile Include="Requests\Clients\CompositeHasChangesIndicator.cs" />
+    <Compile Include="Requests\Clients\CompositeIsBusyIndicator.cs" />
+    <Compile Include="Requests\Clients\CompositeIsValidIndicator.cs" />
+    <Compile Include="Requests\Clients\CompositeMessage.cs" />
+    <Compile Include="Requests\Clients\Connection.cs" />
+    <Compile Include="Requests\Clients\IClientRequest.cs" />
+    <Compile Include="Requests\Clients\ICompositeCommand.cs" />
+    <Compile Include="Requests\Clients\IConnection.cs" />
+    <Compile Include="Requests\Clients\IIsBusyIndicator.cs" />
+    <Compile Include="Requests\Clients\OneToManyCommand.cs" />
+    <Compile Include="Requests\Clients\OneToManyCommandConnection.cs" />
+    <Compile Include="Requests\Clients\OneToOneCommand.cs" />
+    <Compile Include="Requests\Clients\OneToOneCommandConnection.cs" />
+    <Compile Include="Requests\Clients\RelayCommand.cs" />
+    <Compile Include="Requests\Clients\RelayCommand.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="NullableOperandExtensions.cs" />
-    <Compile Include="NullStatement.T1.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IConjunctionStatement.T1.cs" />
-    <Compile Include="MessageSequence.cs" />
-    <Compile Include="MessageSequenceNode.T1.cs" />
-    <Compile Include="MessageSequencePair.cs" />
-    <Compile Include="ComparableOperandExtensions.cs" />
-    <Compile Include="IVerificationStatement.cs" />
-    <Compile Include="IMessageSequence.cs" />
-    <Compile Include="IOperand.T1.cs" />
-    <Compile Include="IScenario.cs" />
-    <Compile Include="Operand.T1.cs" />
-    <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Scenario.T1.cs" />
-    <Compile Include="Resources\FailureMessages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FailureMessages.resx</DependentUpon>
-    </Compile>
-    <Compile Include="VerificationStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">
@@ -90,7 +81,7 @@
       <Name>06.MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
     <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
-      <Project>{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}</Project>
+      <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>
       <Name>04.MessageProcessor</Name>
     </ProjectReference>
   </ItemGroup>
@@ -99,12 +90,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\FailureMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>FailureMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

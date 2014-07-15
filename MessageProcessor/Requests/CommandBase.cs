@@ -51,9 +51,9 @@ namespace YellowFlare.MessageProcessing.Requests
         public abstract void Execute();
 
         /// <inheritdoc />
-        public async Task ExecuteAsync()
+        public Task ExecuteAsync()
         {
-            await ExecuteAsync(null);
+            return ExecuteAsync(null);
         }
 
         /// <inheritdoc />

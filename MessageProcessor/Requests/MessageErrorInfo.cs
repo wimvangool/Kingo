@@ -114,8 +114,20 @@ namespace YellowFlare.MessageProcessing.Requests
             }
         }
 
-        internal static string Concatenate(IEnumerable<string> errorMessages)
+        /// <summary>
+        /// Concatenates all specified messages by placing each message on a new line.
+        /// </summary>
+        /// <param name="errorMessages">The messages to concatenate.</param>
+        /// <returns>The concatenated string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="errorMessages"/> is <c>null</c>.
+        /// </exception>
+        public static string Concatenate(IEnumerable<string> errorMessages)
         {
+            if (errorMessages == null)
+            {
+                throw new ArgumentNullException("errorMessages");
+            }
             return string.Join(Environment.NewLine, errorMessages);
         }         
     }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.Requests.Clients
 {
-    internal sealed class NullEventBus : IMessageProcessorBus
+    internal sealed class NotSupportedBus : IMessageProcessorBus
     {
         public void Publish<TMessage>(TMessage message) where TMessage : class
         {

@@ -88,7 +88,7 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <inheritdoc />
-        public override async Task ExecuteAsync(CancellationToken? token)
+        public override Task ExecuteAsync(CancellationToken? token)
         {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
@@ -96,7 +96,7 @@ namespace YellowFlare.MessageProcessing.Requests
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
 
-            await Start(() =>
+            return Start(() =>
             {                
                 try
                 {
