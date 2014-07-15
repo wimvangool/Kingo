@@ -29,12 +29,14 @@ namespace YellowFlare.MessageProcessing
 
         private static SampleApplicationProcessor CreateProcessor()
         {
-            var messageHandlerFactory = new MessageHandlerFactoryForUnity()                
-                .RegisterType<IShoppingCartRepository, ShoppingCartRepository>()
-                .RegisterType<ShoppingCartRepository>(new ContainerControlledLifetimeManager())
-                .RegisterMessageHandlersFrom(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
+            var factory = new MessageHandlerFactoryForUnity();
 
-            return new SampleApplicationProcessor(messageHandlerFactory);
+            factory.RegisterMessageHandlersFrom(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
+            factory.Container
+                .RegisterType<IShoppingCartRepository, ShoppingCartRepository>()
+                .RegisterType<ShoppingCartRepository>(new ContainerControlledLifetimeManager());                
+
+            return new SampleApplicationProcessor(factory);
         }
 
         private static bool IsHandlerForMessageProcessorTests(Type type)

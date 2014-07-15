@@ -50,7 +50,6 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="MessageHandlerFactoryForUnityExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="PerUnitOfWorkLifetimeManager.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">

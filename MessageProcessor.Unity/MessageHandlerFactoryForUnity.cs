@@ -7,7 +7,7 @@ namespace YellowFlare.MessageProcessing
     /// <summary>
     /// Implements a <see cref="MessageHandlerFactory"/> by using a <see cref="IUnityContainer" />.
     /// </summary>
-    public class MessageHandlerFactoryForUnity : MessageHandlerFactory, IUnityContainer
+    public class MessageHandlerFactoryForUnity : MessageHandlerFactory
     {
         private readonly IUnityContainer _container;
 
@@ -21,117 +21,17 @@ namespace YellowFlare.MessageProcessing
             {
                 container = new UnityContainer();
             }
-            _container = container;            
+            _container = container;             
         }        
-
-        #region [====== UnityContainer Members ======]
-
-        /// <inheritdoc />
-        public IUnityContainer Parent
-        {
-            get { return _container.Parent; }
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<ContainerRegistration> Registrations
-        {
-            get { return _container.Registrations; }
-        }
-
-        /// <inheritdoc />
-        public IUnityContainer AddExtension(UnityContainerExtension extension)
-        {
-            return _container.AddExtension(extension);
-        }
-
-        /// <inheritdoc />
-        public object BuildUp(Type t, object existing, string name, params ResolverOverride[] resolverOverrides)
-        {
-            return _container.BuildUp(t, existing, name, resolverOverrides);
-        }
-
-        /// <inheritdoc />
-        public object Configure(Type configurationInterface)
-        {
-            return _container.Configure(configurationInterface);
-        }
-
-        /// <inheritdoc />
-        IUnityContainer IUnityContainer.CreateChildContainer()
-        {
-            return _container.CreateChildContainer();
-        }
-
-        /// <inheritdoc />
-        IUnityContainer IUnityContainer.RegisterInstance(Type t, string name, object instance, LifetimeManager lifetime)
-        {
-            return RegisterInstance(t, name, instance, lifetime);
-        }
-
+        
         /// <summary>
-        /// 
+        /// Returns the container that is used to store all <see cref="IMessageHandler{T}">MessageHandlers</see>
+        /// and other dependencies.
         /// </summary>
-        /// <param name="t"></param>
-        /// <param name="name"></param>
-        /// <param name="instance"></param>
-        /// <param name="lifetime"></param>
-        /// <returns></returns>
-        public MessageHandlerFactoryForUnity RegisterInstance(Type t, string name, object instance, LifetimeManager lifetime)
+        public IUnityContainer Container
         {
-            return new MessageHandlerFactoryForUnity(_container.RegisterInstance(t, name, instance, lifetime));
+            get { return _container; }
         }
-
-        /// <inheritdoc />
-        IUnityContainer IUnityContainer.RegisterType(Type from, Type to, string name, LifetimeManager lifetimeManager, params InjectionMember[] injectionMembers)
-        {
-            return RegisterType(from, to, name, lifetimeManager, injectionMembers);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <param name="name"></param>
-        /// <param name="lifetimeManager"></param>
-        /// <param name="injectionMembers"></param>
-        /// <returns></returns>
-        public MessageHandlerFactoryForUnity RegisterType(Type from, Type to, string name, LifetimeManager lifetimeManager, params InjectionMember[] injectionMembers)
-        {
-            return new MessageHandlerFactoryForUnity(_container.RegisterType(from, to, name, lifetimeManager, injectionMembers));
-        }
-
-        /// <inheritdoc />
-        IUnityContainer IUnityContainer.RemoveAllExtensions()
-        {
-            return _container.RemoveAllExtensions();
-        }
-
-        /// <inheritdoc />
-        public object Resolve(Type t, string name, params ResolverOverride[] resolverOverrides)
-        {
-            return _container.Resolve(t, name, resolverOverrides);
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<object> ResolveAll(Type t, params ResolverOverride[] resolverOverrides)
-        {
-            return _container.ResolveAll(t, resolverOverrides);
-        }
-
-        /// <inheritdoc />
-        public void Teardown(object o)
-        {
-            _container.Teardown(o);
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            _container.Dispose();
-        }
-
-        #endregion
 
         #region [====== Members of MessageHandlerFactory ======]
 
