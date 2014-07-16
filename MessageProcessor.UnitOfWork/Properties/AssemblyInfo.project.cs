@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 [assembly: Guid("4669F913-79B7-4581-921A-78F32A0946C6")]
 [assembly: AssemblyTitle("YellowFlare.MessageProcessor.UnitOfWork")]
 [assembly: AssemblyDescription("Contains components to implement a domain model with using the unit of work pattern.")]
-[assembly: AssemblyVersion("1.4.5.0")]
-[assembly: AssemblyFileVersion("1.4.5.0")]
-[assembly: AssemblyInformationalVersion("1.4.5.0")]
+[assembly: AssemblyVersion("1.4.6.0")]
+[assembly: AssemblyFileVersion("1.4.6.0")]
+[assembly: AssemblyInformationalVersion("1.4.6.0")]
 
 [assembly: InternalsVisibleTo("YellowFlare.MessageProcessor.UnitOfWork.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +
