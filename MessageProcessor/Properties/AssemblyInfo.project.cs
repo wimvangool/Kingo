@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 [assembly: Guid("70237cc9-e0c5-4c75-9ddc-7ad7013b4965")]
 [assembly: AssemblyTitle("YellowFlare.MessageProcessor")]
 [assembly: AssemblyDescription("Contains the MessageHandling components.")]
+[assembly: AssemblyVersion("1.4.5.0")]
+[assembly: AssemblyFileVersion("1.4.5.0")]
+[assembly: AssemblyInformationalVersion("1.4.5.0")]
 
 [assembly: InternalsVisibleTo("YellowFlare.MessageProcessor.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +

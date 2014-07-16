@@ -170,21 +170,24 @@ namespace YellowFlare.MessageProcessing
 
         private void HandleWithProcessor(IMessageProcessor processor)
         {
-            Reset();
-            Given().HandleWith(processor);
-            Message = When();
-
-            try
+            using (var scope = new UnitOfWorkScope(processor.DomainEventBus))
             {
-                HandleMessage(processor, Message);
-            }
-            catch (Exception exception)
-            {
-                Exception = exception;
+                Reset();
+                Given().HandleWith(processor);
+                Message = When();
 
-                if (!ExceptionExpected)
+                try
                 {
-                    throw;
+                    HandleMessage(processor, Message, scope);
+                }
+                catch (Exception exception)
+                {
+                    Exception = exception;
+
+                    if (!ExceptionExpected)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -197,13 +200,14 @@ namespace YellowFlare.MessageProcessing
             _domainEvents.Clear();
         }        
 
-        private void HandleMessage(IMessageProcessor processor, TMessage message)
+        private void HandleMessage(IMessageProcessor processor, TMessage message, UnitOfWorkScope scope)
         {
             IMessageSequence messageNode = new MessageSequenceNode<TMessage>(message);
 
             using (processor.DomainEventBus.Subscribe<object>(domainEvent => _domainEvents.Add(domainEvent)))
             {
-                messageNode.HandleWith(processor);                
+                messageNode.HandleWith(processor);
+                scope.Complete();
             }
             if (ExceptionExpected)
             {
