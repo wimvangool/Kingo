@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// Serves as the base-class for the <see cref="Command" /> and <see cref="Command{T}"/> classes,
-    /// implementing the <see cref="ICommand" /> interface.
+    /// Serves as the base-class for the <see cref="CommandDispatcher" /> and <see cref="CommandDispatcher{T}"/> classes,
+    /// implementing the <see cref="ICommandDispatcher" /> interface.
     /// </summary>
-    public abstract class CommandBase : Request, ICommand
+    public abstract class CommandDispatcherBase : RequestDispatcher, ICommandDispatcher
     {
-        internal CommandBase() { }
+        internal CommandDispatcherBase() { }
 
         #region [====== ExecutionSucceeded ======]
 
         /// <summary>
-        /// Occurs when an execution of this <see cref="ICommand" /> has succeeded.
+        /// Occurs when an execution of this <see cref="ICommandDispatcher" /> has succeeded.
         /// </summary>
         public event EventHandler<ExecutionSucceededEventArgs> ExecutionSucceeded;
 
@@ -30,7 +30,7 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <summary>
-        /// Raises the <see cref="IRequest.ExecutionSucceeded" /> and <see cref="Request.ExecutionCompleted"/> events.
+        /// Raises the <see cref="IRequestDispatcher.ExecutionSucceeded" /> and <see cref="RequestDispatcher.ExecutionCompleted"/> events.
         /// </summary>
         /// <param name="e">The arguments of the event.</param>
         /// <exception cref="ArgumentNullException">

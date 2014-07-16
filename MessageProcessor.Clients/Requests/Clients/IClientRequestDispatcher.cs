@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Windows.Input;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
-    /// Represents a request made from a client that lies on top of a regular <see cref="IRequest">Request</see>.
+    /// Represents a request made from a client that lies on top of a regular <see cref="IRequestDispatcher">Request</see>.
     /// </summary>
-    public interface IClientRequest : System.Windows.Input.ICommand, IIsBusyIndicator, IIsValidIndicator
+    public interface IClientRequestDispatcher : ICommand, IIsBusyIndicator, IIsValidIndicator
     {
         /// <summary>
         /// Indicates that <see cref="IsExecuting" /> has changed.
@@ -13,7 +14,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         event EventHandler IsExecutingChanged;
 
         /// <summary>
-        /// Indicates whether or not one or more executions for this <see cref="IRequest" /> are running.
+        /// Indicates whether or not one or more executions for this <see cref="IRequestDispatcher" /> are running.
         /// </summary>
 	    bool IsExecuting
 	    {

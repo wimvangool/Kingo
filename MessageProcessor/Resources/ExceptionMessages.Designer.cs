@@ -61,6 +61,42 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The connection is already closed..
+        /// </summary>
+        internal static string Connection_AlreadyClosed {
+            get {
+                return ResourceManager.GetString("Connection_AlreadyClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The connection is already open..
+        /// </summary>
+        internal static string Connection_AlreadyOpen {
+            get {
+                return ResourceManager.GetString("Connection_AlreadyOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command &apos;{0}&apos; could not be executed because it was invalid..
+        /// </summary>
+        internal static string InvalidCommandException_Message {
+            get {
+                return ResourceManager.GetString("InvalidCommandException_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command &apos;{0}&apos; could not be executed because it was invalid. Errors: {1}..
+        /// </summary>
+        internal static string InvalidCommandException_MessageWithErrors {
+            get {
+                return ResourceManager.GetString("InvalidCommandException_MessageWithErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown value of type &apos;{0}&apos; specified: {1}..
         /// </summary>
         internal static string Message_InvalidOption {

@@ -3,12 +3,12 @@
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// EventArgs for the <see cref="IRequest.ExecutionFailed" /> event.
+    /// EventArgs for the <see cref="IRequestDispatcher.ExecutionFailed" /> event.
     /// </summary>
     public class ExecutionFailedEventArgs : EventArgs
     {
         /// <summary>
-        /// Identifier of the execution of the <see cref="IRequest" />.
+        /// Identifier of the execution of the <see cref="IRequestDispatcher" />.
         /// </summary>
         public readonly Guid ExecutionId;
 
@@ -18,15 +18,15 @@ namespace YellowFlare.MessageProcessing.Requests
         public readonly object Message;
 
         /// <summary>
-        /// The exception that was thrown while executing the <see cref="IRequest" />.
+        /// The exception that was thrown while executing the <see cref="IRequestDispatcher" />.
         /// </summary>
         public readonly Exception Exception;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionFailedEventArgs" /> class.
         /// </summary>
-        /// <param name="executionId">Identifier of the execution of the <see cref="IRequest" />.</param>        
-        /// <param name="exception">The exception that was thrown while executing the <see cref="IRequest" />.</param>
+        /// <param name="executionId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>        
+        /// <param name="exception">The exception that was thrown while executing the <see cref="IRequestDispatcher" />.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="exception"/> is <c>null</c>.
         /// </exception>
@@ -36,9 +36,9 @@ namespace YellowFlare.MessageProcessing.Requests
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionFailedEventArgs" /> class.
         /// </summary>
-        /// <param name="executionId">Identifier of the execution of the <see cref="IRequest" />.</param>
+        /// <param name="executionId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>
         /// <param name="message">If specified, refers to the message that was sent for the request.</param>
-        /// <param name="exception">The exception that was thrown while executing the <see cref="IRequest" />.</param>
+        /// <param name="exception">The exception that was thrown while executing the <see cref="IRequestDispatcher" />.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="exception"/> is <c>null</c>.
         /// </exception>

@@ -7,7 +7,7 @@ namespace YellowFlare.MessageProcessing.Requests
     /// <summary>
     /// Represents a command that has no execution-parameter(s).
     /// </summary>
-    public abstract class Command : CommandBase
+    public abstract class CommandDispatcher : CommandDispatcherBase
     {                       
         #region [====== Execution ======]
 

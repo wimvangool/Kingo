@@ -4,9 +4,9 @@ using System.Threading;
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// Basic implementation of the <see cref="IRequest" /> interface, serving as a base class for all request-types.
+    /// Basic implementation of the <see cref="IRequestDispatcher" /> interface, serving as a base class for all request-types.
     /// </summary>
-    public abstract class Request : IRequest
+    public abstract class RequestDispatcher : IRequestDispatcher
     {        
         #region [====== ExecutionStarted ======]
 
@@ -73,7 +73,7 @@ namespace YellowFlare.MessageProcessing.Requests
 
         #region [====== ExecutionSucceeded ======]
 
-        event EventHandler<ExecutionSucceededEventArgs> IRequest.ExecutionSucceeded
+        event EventHandler<ExecutionSucceededEventArgs> IRequestDispatcher.ExecutionSucceeded
         {
             add { Add(value); }
             remove { Remove(value); }

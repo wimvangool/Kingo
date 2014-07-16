@@ -61,24 +61,6 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The connection is already closed..
-        /// </summary>
-        internal static string Connection_AlreadyClosed {
-            get {
-                return ResourceManager.GetString("Connection_AlreadyClosed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The connection is already open..
-        /// </summary>
-        internal static string Connection_AlreadyOpen {
-            get {
-                return ResourceManager.GetString("Connection_AlreadyOpen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot open connection because another command has already opened its connection..
         /// </summary>
         internal static string OneToOneCommand_OtherAlreadyConnected {

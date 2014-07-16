@@ -1,5 +1,5 @@
 ﻿using System;
-using IInputCommand = System.Windows.Input.ICommand;
+using System.Windows.Input;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
@@ -7,7 +7,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
     /// Represents a command that is composed of other commands that are connected and disconnected
     /// through <see cref="IConnection">connection instances</see>.
     /// </summary>
-    public interface ICompositeCommand : IInputCommand
+    public interface ICompositeCommand : ICommand
     {
         /// <summary>
         /// Creates and returns a new connection from this instance to the specified <paramref name="command"/>.
@@ -17,6 +17,6 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="command"/> is <c>null</c>.
         /// </exception>
-        IConnection Connect(IInputCommand command);
+        IConnection Connect(ICommand command);
     }
 }

@@ -9,12 +9,12 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             throw new NotSupportedException();
         }
 
-        public IDisposable Subscribe<TMessage>(Action<TMessage> action) where TMessage : class
+        public IConnection Connect<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class
         {
             throw new NotSupportedException();
         }
 
-        public IDisposable Subscribe<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        public IConnection Connect<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class
         {
             throw new NotSupportedException();
         }

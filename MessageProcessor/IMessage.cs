@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace YellowFlare.MessageProcessing.Requests
+namespace YellowFlare.MessageProcessing
 {
     /// <summary>
     /// Represents a message that supports change tracking and self-validation.

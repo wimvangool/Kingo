@@ -1,13 +1,13 @@
-﻿using IInputCommand = System.Windows.Input.ICommand;
+﻿using System.Windows.Input;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     internal sealed class OneToOneCommandConnection : Connection
     {
         private readonly OneToOneCommand _command;
-        private readonly IInputCommand _inputCommand;
+        private readonly ICommand _inputCommand;
 
-        public OneToOneCommandConnection(OneToOneCommand command, IInputCommand inputCommand)
+        public OneToOneCommandConnection(OneToOneCommand command, ICommand inputCommand)
         {
             _command = command;
             _inputCommand = inputCommand;

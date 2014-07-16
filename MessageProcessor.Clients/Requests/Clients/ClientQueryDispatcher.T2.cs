@@ -3,36 +3,37 @@
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
-    /// Represents a query executed from a client that lies on top of a regular <see cref="IQuery{T}">Query</see>.
-    /// </summary>    
+    /// Represents a query executed from a client that lies on top of a regular <see cref="IQueryDispatcher{T}">Query</see>.
+    /// </summary>
+    /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
     /// <typeparam name="TResult">Type of the result of the associated query.</typeparam>
-    public abstract class ClientQuery<TResult> : ClientQuery<object, TResult>
+    public abstract class ClientQueryDispatcher<TParameter, TResult> : ClientRequestDispatcher<IQueryDispatcher<TResult>, TParameter>       
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQuery{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T, S}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated query.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQuery(IQuery<TResult> request)
+        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request)
             : this(request, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQuery{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T, S}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated query.</param>
         /// <param name="isValidIndicator">
         /// The indicator used to indicate whether or not the associated <paramref name="request"/> is valid (optional).
-        /// </param>       
+        /// </param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQuery(IQuery<TResult> request, IIsValidIndicator isValidIndicator)
+        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator)
             : this(request, isValidIndicator, ClientRequestExecutionOptions.None) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQuery{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T, S}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated query.</param>
         /// <param name="isValidIndicator">
@@ -44,21 +45,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQuery(IQuery<TResult> request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
+        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
             : base(request, isValidIndicator, options) { }
-
-        /// <summary>
-        /// Simply assigns <paramref name="parameterIn"/> to <paramref name="parameterOut"/> and returns <c>true</c>.
-        /// </summary>
-        /// <param name="parameterIn">The incoming parameter.</param>
-        /// <param name="parameterOut">
-        /// When this method has executed, refers to the same object as <paramref name="parameterIn"/>.
-        /// </param>
-        /// <returns><c>true</c></returns>
-        protected override bool TryConvertParameter(object parameterIn, out object parameterOut)
-        {
-            parameterOut = parameterIn;
-            return true;
-        }
     }
 }

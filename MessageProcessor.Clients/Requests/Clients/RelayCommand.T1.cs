@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
@@ -6,7 +7,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
     /// Represents a command that delegates it's work to some specified functions.
     /// </summary>
     /// <typeparam name="TParameter">Type of the parameter of this command.</typeparam>
-    public class RelayCommand<TParameter> : System.Windows.Input.ICommand
+    public class RelayCommand<TParameter> : ICommand
     {
         private readonly Func<TParameter, bool> _canExecute;
         private readonly Action<TParameter> _execute;
@@ -44,7 +45,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
 
         #region [====== CanExecute ======]
 
-        bool System.Windows.Input.ICommand.CanExecute(object parameter)
+        bool ICommand.CanExecute(object parameter)
         {
             TParameter parameterOut;
 
@@ -84,7 +85,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
 
         #region [====== Execute ======]
 
-        void System.Windows.Input.ICommand.Execute(object parameter)
+        void ICommand.Execute(object parameter)
         {
             TParameter parameterOut;
 

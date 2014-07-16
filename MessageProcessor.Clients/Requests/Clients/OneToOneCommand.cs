@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Windows.Input;
 using YellowFlare.MessageProcessing.Resources;
-using IInputCommand = System.Windows.Input.ICommand;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
@@ -9,10 +9,10 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
     /// </summary>
     public sealed class OneToOneCommand : ICompositeCommand
     {        
-        private IInputCommand _activeCommand;
+        private ICommand _activeCommand;
 
         /// <inheritdoc />
-        public IConnection Connect(IInputCommand command)
+        public IConnection Connect(ICommand command)
         {
             if (command == null)
             {
@@ -21,12 +21,12 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             return new OneToOneCommandConnection(this, command);
         }                
 
-        internal bool IsConnectedTo(IInputCommand command)
+        internal bool IsConnectedTo(ICommand command)
         {
             return _activeCommand != null && _activeCommand == command;
         }
 
-        internal void OpenConnection(IInputCommand command)
+        internal void OpenConnection(ICommand command)
         {
             if (_activeCommand != null)
             {

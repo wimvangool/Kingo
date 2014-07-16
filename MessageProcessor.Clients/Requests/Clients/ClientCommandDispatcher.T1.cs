@@ -3,23 +3,23 @@
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
-    /// Represents a command sent from a client that lies on top of a regular <see cref="ICommand">Command</see>.
+    /// Represents a command sent from a client that lies on top of a regular <see cref="ICommandDispatcher">Command</see>.
     /// </summary>
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
-    public abstract class ClientCommand<TParameter> : ClientRequest<ICommand, TParameter>        
+    public abstract class ClientCommandDispatcher<TParameter> : ClientRequestDispatcher<ICommandDispatcher, TParameter>        
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommandDispatcher{T}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated command.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientCommand(ICommand request)
+        protected ClientCommandDispatcher(ICommandDispatcher request)
             : this(request, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommandDispatcher{T}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated command.</param>
         /// <param name="isValidIndicator">
@@ -28,11 +28,11 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientCommand(ICommand request, IIsValidIndicator isValidIndicator)
+        protected ClientCommandDispatcher(ICommandDispatcher request, IIsValidIndicator isValidIndicator)
             : this(request, isValidIndicator, ClientRequestExecutionOptions.None) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommandDispatcher{T}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated command.</param>
         /// <param name="isValidIndicator">
@@ -44,7 +44,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientCommand(ICommand request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
+        protected ClientCommandDispatcher(ICommandDispatcher request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
             : base(request, isValidIndicator, options) { }        
     }
 }

@@ -3,7 +3,7 @@
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// Represents the base-class for every cache that is used to store the results of <see cref="IQuery{T}">queries</see>.
+    /// Represents the base-class for every cache that is used to store the results of <see cref="IQueryDispatcher{T}">queries</see>.
     /// </summary>
     /// <remarks>
     /// Note to implementers: since the <see cref="QueryCache" /> is to be used in a concurrent environment,

@@ -8,7 +8,7 @@ namespace YellowFlare.MessageProcessing.Requests
     /// Represents a command that has no execution-parameter(s).
     /// </summary>
     /// <typeparam name="TResult">Type of the result of this query.</typeparam>
-    public abstract class Query<TResult> : QueryBase<TResult>        
+    public abstract class QueryDispatcher<TResult> : QueryBaseDispatcher<TResult>        
     {        
         #region [====== Execution ======]
 

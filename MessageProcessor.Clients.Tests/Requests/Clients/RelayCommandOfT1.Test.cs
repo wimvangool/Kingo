@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Windows.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using InputCommand = System.Windows.Input.ICommand;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
@@ -26,7 +26,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         {
             int value = 1;
             var command = new RelayCommand<int>(parameter => value += parameter);
-            var inputCommand = command as InputCommand;
+            var inputCommand = command as ICommand;
 
             command.Execute(2);
             inputCommand.Execute(5);
@@ -39,7 +39,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         {
             int value = 1;
             var command = new RelayCommand<int>(parameter => value += parameter, parameter => true);
-            var inputCommand = command as InputCommand;
+            var inputCommand = command as ICommand;
 
             command.Execute(2);
             inputCommand.Execute(5);
@@ -52,7 +52,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         {
             int value = 1;
             var command = new RelayCommand<int>(parameter => value += parameter);
-            var inputCommand = command as InputCommand;
+            var inputCommand = command as ICommand;
             
             inputCommand.Execute("5");
 
@@ -64,7 +64,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         {
             int value = 1;
             var command = new RelayCommand<int>(parameter => value += parameter, parameter => false);
-            var inputCommand = command as InputCommand;
+            var inputCommand = command as ICommand;
 
             command.Execute(2);
             inputCommand.Execute(5);
@@ -77,7 +77,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         {
             int value = 1;
             var command = new RelayCommand<int>(parameter => value += parameter);
-            var inputCommand = command as InputCommand;
+            var inputCommand = command as ICommand;
 
             Assert.IsFalse(inputCommand.CanExecute("5"));
         }
@@ -87,7 +87,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
         {
             int value = 1;
             var command = new RelayCommand<int>(parameter => value += parameter, parameter => parameter < 10);
-            var inputCommand = command as InputCommand;
+            var inputCommand = command as ICommand;
 
             Assert.IsTrue(command.CanExecute(9));
             Assert.IsTrue(inputCommand.CanExecute(9));

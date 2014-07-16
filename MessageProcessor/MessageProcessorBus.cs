@@ -6,7 +6,7 @@ namespace YellowFlare.MessageProcessing
 {       
     internal sealed class MessageProcessorBus : IMessageProcessorBus
     {                
-        private readonly ThreadLocal<List<MessageProcessorBusSubscription>> _subscriptions;
+        private readonly ThreadLocal<List<MessageProcessorBusConnection>> _subscriptions;
         private readonly IMessageProcessor _processor;  
         
         public MessageProcessorBus(IMessageProcessor processor)
@@ -15,18 +15,30 @@ namespace YellowFlare.MessageProcessing
             {
                 throw new ArgumentNullException("processor");
             }
-            _subscriptions = new ThreadLocal<List<MessageProcessorBusSubscription>>(() => new List<MessageProcessorBusSubscription>());  
+            _subscriptions = new ThreadLocal<List<MessageProcessorBusConnection>>(() => new List<MessageProcessorBusConnection>());  
             _processor = processor;                
         }
         
-        public IDisposable Subscribe<TMessage>(Action<TMessage> action) where TMessage : class
+        public IConnection Connect<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class
         {
-            return new MessageProcessorBusSubscriptionForAction<TMessage>(_subscriptions.Value, action);
+            var connection = new MessageProcessorBusConnectionForAction<TMessage>(_subscriptions.Value, action);
+
+            if (openConnection)
+            {
+                connection.Open();
+            }
+            return connection;
         }
         
-        public IDisposable Subscribe<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        public IConnection Connect<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class
         {            
-            return new MessageProcessorBusSubscriptionForInterface<TMessage>(_subscriptions.Value, handler);
+            var connection = new MessageProcessorBusConnectionForInterface<TMessage>(_subscriptions.Value, handler);
+
+            if (openConnection)
+            {
+                connection.Open();
+            }
+            return connection;
         }        
                        
         public void Publish<TMessage>(TMessage message) where TMessage : class

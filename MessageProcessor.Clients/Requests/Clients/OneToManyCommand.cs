@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IInputCommand = System.Windows.Input.ICommand;
+using System.Windows.Input;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
@@ -10,18 +10,18 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
     /// </summary>
     public sealed class OneToManyCommand : ICompositeCommand
     {
-        private readonly List<IInputCommand> _activeCommands;
+        private readonly List<ICommand> _activeCommands;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OneToManyCommand" /> class.
         /// </summary>
         public OneToManyCommand()
         {
-            _activeCommands = new List<IInputCommand>();
+            _activeCommands = new List<ICommand>();
         }
 
         /// <inheritdoc />
-        public IConnection Connect(IInputCommand command)
+        public IConnection Connect(ICommand command)
         {
             if (command == null)
             {
@@ -30,7 +30,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             return new OneToManyCommandConnection(this, command);
         }
 
-        internal void OpenConnection(IInputCommand command)
+        internal void OpenConnection(ICommand command)
         {            
             _activeCommands.Add(command);
 
@@ -39,7 +39,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             OnCanExecuteChanged(this, EventArgs.Empty);
         }
 
-        internal void CloseConnection(IInputCommand command)
+        internal void CloseConnection(ICommand command)
         {
             if (_activeCommands.Remove(command))
             {

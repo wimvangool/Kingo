@@ -45,16 +45,7 @@ namespace YellowFlare.MessageProcessing
         public virtual IClock Clock
         {
             get { return _stopwatch; }
-        }
-
-        /// <summary>
-        /// Indicates whether or not this scenario has been disposed.
-        /// </summary>
-        protected bool IsDisposed
-        {
-            get;
-            private set;
-        }        
+        }              
 
         /// <summary>
         /// Returns the last message that was handled in the When-phase.
@@ -97,33 +88,7 @@ namespace YellowFlare.MessageProcessing
         {
             get;
             private set;
-        }
-                
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        /// <param name="disposing">
-        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
-        /// (<c>false</c>).
-        /// </param>
-        /// <remarks>
-        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
-        /// Otherwise, only unmanaged resources will be released.
-        /// </remarks>
-        protected virtual void Dispose(bool disposing)
-        {            
-            IsDisposed = true;
-        }
+        }                               
 
         /// <summary>
         /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
@@ -150,13 +115,9 @@ namespace YellowFlare.MessageProcessing
         /// <para>
         /// </para>
         /// </remarks>
-        public sealed override void HandleWith(IMessageProcessor processor)
-        {
-            if (IsDisposed)
-            {
-                throw NewScenarioDisposedException();
-            }
-            _stopwatch.Start();
+        public override void HandleWith(IMessageProcessor processor)
+        {            
+            _stopwatch.Start();            
 
             try
             {
@@ -204,7 +165,7 @@ namespace YellowFlare.MessageProcessing
         {
             IMessageSequence messageNode = new MessageSequenceNode<TMessage>(message);
 
-            using (processor.DomainEventBus.Subscribe<object>(domainEvent => _domainEvents.Add(domainEvent)))
+            using (processor.DomainEventBus.Connect<object>(domainEvent => _domainEvents.Add(domainEvent), true))
             {
                 messageNode.HandleWith(processor);
                 scope.Complete();
@@ -285,18 +246,7 @@ namespace YellowFlare.MessageProcessing
         /// </summary>
         /// <returns>A single message of which the effects will be verified in the Then-phase.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1716", MessageId = "When", Justification = "'When' is part of the BDD-style naming convention.")]
-        protected abstract TMessage When();
-
-        /// <summary>
-        /// Creates and returns a new <see cref="ObjectDisposedException" /> indicating this scenario has already been disposed.
-        /// </summary>
-        /// <returns>
-        /// A new <see cref="ObjectDisposedException" /> indicating this scenario has already been disposed.
-        /// </returns>
-        protected ObjectDisposedException NewScenarioDisposedException()
-        {
-            return new ObjectDisposedException(GetType().Name);
-        }        
+        protected abstract TMessage When();                
 
         private static Exception NewNoDomainEventFoundAtIndexException(int index)
         {

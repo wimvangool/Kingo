@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Connection_AlreadyClosed" xml:space="preserve">
-    <value>The connection is already closed.</value>
-  </data>
-  <data name="Connection_AlreadyOpen" xml:space="preserve">
-    <value>The connection is already open.</value>
-  </data>
   <data name="OneToOneCommand_OtherAlreadyConnected" xml:space="preserve">
     <value>Cannot open connection because another command has already opened its connection.</value>
   </data>

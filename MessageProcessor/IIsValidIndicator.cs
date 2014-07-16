@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace YellowFlare.MessageProcessing.Requests
+namespace YellowFlare.MessageProcessing
 {
     /// <summary>
     /// Represents a component that can indicate whether or not it is valid.

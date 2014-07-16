@@ -52,7 +52,7 @@ namespace YellowFlare.MessageProcessing.Aggregates
             }
             var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
             var message = Format(messageFormat, command.GetType());
-            return new RequestExecutionException(message, this, command);
+            return new RequestExecutionException(command, message, this);
         }
 
         /// <summary>

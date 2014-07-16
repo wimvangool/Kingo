@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// Serves as the base-class for the <see cref="Query{T}" /> and <see cref="Query{T, S}"/> classes,
-    /// implementing the <see cref="IQuery{T}" /> interface.
+    /// Serves as the base-class for the <see cref="QueryDispatcher{T}" /> and <see cref="QueryDispatcher{T, S}"/> classes,
+    /// implementing the <see cref="IQueryDispatcher{T}" /> interface.
     /// </summary>
-    public abstract class QueryBase<TResult> : Request, IQuery<TResult>
+    public abstract class QueryBaseDispatcher<TResult> : RequestDispatcher, IQueryDispatcher<TResult>
     {
-        internal QueryBase() { }
+        internal QueryBaseDispatcher() { }
 
         #region [====== ExecutionSucceeded ======]
 
         /// <summary>
-        /// Occurs when an execution of this <see cref="ICommand" /> has succeeded.
+        /// Occurs when an execution of this <see cref="ICommandDispatcher" /> has succeeded.
         /// </summary>
         public event EventHandler<ExecutionSucceededEventArgs<TResult>> ExecutionSucceeded;
 
@@ -30,7 +30,7 @@ namespace YellowFlare.MessageProcessing.Requests
         }
 
         /// <summary>
-        /// Raises the <see cref="IRequest.ExecutionSucceeded" /> and <see cref="Request.ExecutionCompleted"/> events.
+        /// Raises the <see cref="IRequestDispatcher.ExecutionSucceeded" /> and <see cref="RequestDispatcher.ExecutionCompleted"/> events.
         /// </summary>
         /// <param name="e">The arguments of the event.</param>
         /// <exception cref="ArgumentNullException">

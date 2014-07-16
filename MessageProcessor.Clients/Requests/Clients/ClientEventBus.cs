@@ -41,14 +41,14 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             EventBus.Publish(message);
         }
 
-        IDisposable IMessageProcessorBus.Subscribe<TMessage>(Action<TMessage> action)
+        IConnection IMessageProcessorBus.Connect<TMessage>(Action<TMessage> action, bool openConnection)
         {
-            return EventBus.Subscribe(action);
+            return EventBus.Connect(action, openConnection);
         }
 
-        IDisposable IMessageProcessorBus.Subscribe<TMessage>(IMessageHandler<TMessage> handler)
+        IConnection IMessageProcessorBus.Connect<TMessage>(IMessageHandler<TMessage> handler, bool openConnection)
         {
-            return EventBus.Subscribe(handler);
+            return EventBus.Connect(handler, openConnection);
         }
 
         /// <summary>

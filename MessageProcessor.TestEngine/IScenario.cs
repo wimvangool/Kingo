@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace YellowFlare.MessageProcessing
+﻿namespace YellowFlare.MessageProcessing
 {
     /// <summary>
     /// When implemented by a class, represents a scenario where a system is brought into a desired state by executing
     /// a specific sequence of messages.
     /// </summary>
-    public interface IScenario : IMessageSequence, IDisposable
+    public interface IScenario : IMessageSequence
     {        
         /// <summary>
         /// Indicates that verification of the expected state as a result of this scenario has failed.

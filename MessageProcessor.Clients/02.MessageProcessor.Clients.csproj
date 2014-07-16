@@ -46,22 +46,20 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Requests\Clients\ClientCommand.cs" />
-    <Compile Include="Requests\Clients\ClientCommand.T1.cs" />
+    <Compile Include="Requests\Clients\ClientCommandDispatcher.cs" />
+    <Compile Include="Requests\Clients\ClientCommandDispatcher.T1.cs" />
     <Compile Include="Requests\Clients\ClientEventBus.cs" />
     <Compile Include="Requests\Clients\ClientEventBusConnection.cs" />
-    <Compile Include="Requests\Clients\ClientQuery.T1.cs" />
-    <Compile Include="Requests\Clients\ClientQuery.T2.cs" />
-    <Compile Include="Requests\Clients\ClientRequest.T2.cs" />
+    <Compile Include="Requests\Clients\ClientQueryDispatcher.T1.cs" />
+    <Compile Include="Requests\Clients\ClientQueryDispatcher.T2.cs" />
+    <Compile Include="Requests\Clients\ClientRequestDispatcher.T2.cs" />
     <Compile Include="Requests\Clients\ClientRequestExecutionOptions.cs" />
     <Compile Include="Requests\Clients\CompositeHasChangesIndicator.cs" />
     <Compile Include="Requests\Clients\CompositeIsBusyIndicator.cs" />
     <Compile Include="Requests\Clients\CompositeIsValidIndicator.cs" />
     <Compile Include="Requests\Clients\CompositeMessage.cs" />
-    <Compile Include="Requests\Clients\Connection.cs" />
-    <Compile Include="Requests\Clients\IClientRequest.cs" />
+    <Compile Include="Requests\Clients\IClientRequestDispatcher.cs" />
     <Compile Include="Requests\Clients\ICompositeCommand.cs" />
-    <Compile Include="Requests\Clients\IConnection.cs" />
     <Compile Include="Requests\Clients\IIsBusyIndicator.cs" />
     <Compile Include="Requests\Clients\OneToManyCommand.cs" />
     <Compile Include="Requests\Clients\OneToManyCommandConnection.cs" />

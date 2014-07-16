@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class MessageProcessorBusSubscriptionForInterface<TMessage> : MessageProcessorBusSubscription
+    internal sealed class MessageProcessorBusConnectionForInterface<TMessage> : MessageProcessorBusConnection
         where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;
 
-        public MessageProcessorBusSubscriptionForInterface(ICollection<MessageProcessorBusSubscription> subscriptions, IMessageHandler<TMessage> handler)
-            : base(subscriptions)
+        public MessageProcessorBusConnectionForInterface(ICollection<MessageProcessorBusConnection> subscriptions, IMessageHandler<TMessage> handler) : base(subscriptions)
         {
             if (handler == null)
             {

@@ -5,30 +5,28 @@ using System.Threading.Tasks;
 namespace YellowFlare.MessageProcessing.Requests
 {
     /// <summary>
-    /// Represents a query that contains a <see cref="IMessage{T}">message</see> that serves
+    /// Represents a command that contains a <see cref="IMessage{T}">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that serves as the execution-parameter.</typeparam>
-    /// <typeparam name="TResult">Type of the result of this query.</typeparam>
-    public abstract class Query<TMessage, TResult> : QueryBase<TResult>
-        where TMessage : class, IMessage<TMessage>
-    {
+    public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IMessage<TMessage>
+    {        
         private readonly TMessage _message;
         private readonly MessageStateTracker _messageStateTracker;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Query{T1, T2}" /> class.
+        /// Initializes a new instance of the <see cref="CommandDispatcher{T}" /> class.
         /// </summary>
-        /// <param name="message">Message that serves as the execution-parameter of this query.</param>
+        /// <param name="message">The message that serves as the execution-parameter of this command.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        protected Query(TMessage message)
+        protected CommandDispatcher(TMessage message)
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            }
+            }            
             _message = message;
             _messageStateTracker = new MessageStateTracker(message);
         }
@@ -54,7 +52,7 @@ namespace YellowFlare.MessageProcessing.Requests
         {
             _messageStateTracker.NotifyExecutionEndedPrematurely(e.ExecutionId);
 
-            base.OnExecutionCanceled(e);
+            base.OnExecutionCanceled(e);            
         }
 
         /// <inheritdoc />
@@ -62,7 +60,7 @@ namespace YellowFlare.MessageProcessing.Requests
         {
             _messageStateTracker.NotifyExecutionEndedPrematurely(e.ExecutionId);
 
-            base.OnExecutionFailed(e);
+            base.OnExecutionFailed(e);            
         }
 
         #endregion
@@ -70,53 +68,41 @@ namespace YellowFlare.MessageProcessing.Requests
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResult Execute(QueryCache cache)
+        public override void Execute()
         {
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
-            TResult result;
 
             try
             {
-                result = ExecuteQuery(message, cache, null);
+                Execute(message, null);
             }
             catch (Exception exception)
             {
                 OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception));
                 throw;
             }
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result));
-
-            return result;
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message));
         }
 
         /// <inheritdoc />
-        public override Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
+        public override Task ExecuteAsync(CancellationToken? token)
         {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
             var requestContext = RequestContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
-            TResult result;
 
-            if (TryGetFromCache(cache, message, out result))
-            {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result));
-
-                return CreateCompletedTask(result);
-            }
             return Start(() =>
-            {
+            {                
                 try
                 {
                     token.ThrowIfCancellationRequested();
 
-                    result = ExecuteQuery(message, cache, token);
-
-                    token.ThrowIfCancellationRequested();
+                    Execute(message, token);                    
                 }
                 catch (OperationCanceledException exception)
                 {
@@ -128,48 +114,43 @@ namespace YellowFlare.MessageProcessing.Requests
                     requestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
                     throw;
                 }
-                requestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result)));
-
-                return result;
+                requestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message)));
             });
         }
 
         /// <summary>
-        /// Creates, starts and returns a new <see cref="Task{T}" /> that is used to execute this query.
+        /// Creates, starts and returns a new <see cref="Task" /> that is used to execute this command.
         /// </summary>
-        /// <param name="query">The action that will be invoked on the background thread.</param>
+        /// <param name="command">The action that will be invoked on the background thread.</param>
         /// <returns>The newly created task.</returns>
         /// <remarks>
-        /// The default implementation uses the <see cref="TaskFactory{T}.StartNew(Func{T})">StartNew</see>-method
-        /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
+        /// The default implementation uses the <see cref="TaskFactory.StartNew(Action)">StartNew</see>-method
+        /// to start and return a new <see cref="Task" />. You may want to override this method to specify
         /// more options when creating this task.
         /// </remarks>
-        protected virtual Task<TResult> Start(Func<TResult> query)
+        protected virtual Task Start(Action command)
         {
-            return Task<TResult>.Factory.StartNew(query);
-        }
-
-        private TResult ExecuteQuery(TMessage message, QueryCache cache, CancellationToken? token)
-        {
-            return cache == null
-                ? Execute(message, token)
-                : cache.GetOrAdd(message, key => CreateCacheValue(key, Execute(key, token))).Access<TResult>();
+            return Task.Factory.StartNew(command);
         }
 
         /// <summary>
-        /// Executes the query.
+        /// Executes the command.
         /// </summary>        
         /// <param name="message">The execution-parameter.</param>
         /// <param name="token">
-        /// Optional token that can be used to cancel the execution of this query.
-        /// </param>         
+        /// Optional token that can be used to cancel the execution of this command.
+        /// </param> 
+        /// <exception cref="RequestExecutionException">
+        /// The command failed for (somewhat) predictable reasons, like insufficient rights, invalid parameters or
+        /// because the system's state/business rules wouldn't allow this command to be executed.
+        /// </exception> 
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>        
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResult Execute(TMessage message, CancellationToken? token);                        
+        protected abstract void Execute(TMessage message, CancellationToken? token);                
 
         #endregion
     }

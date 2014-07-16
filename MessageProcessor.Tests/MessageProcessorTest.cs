@@ -66,7 +66,7 @@ namespace YellowFlare.MessageProcessing
             Guid shoppingCartId = Guid.NewGuid();
             ShoppingCartCreated createdEvent = null;
 
-            using (Processor.DomainEventBus.Subscribe<ShoppingCartCreated>(e => createdEvent = e))
+            using (Processor.DomainEventBus.Connect<ShoppingCartCreated>(e => createdEvent = e, true))
             {
                 Processor.Handle(new CreateShoppingCart
                 {
@@ -110,7 +110,7 @@ namespace YellowFlare.MessageProcessing
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);
 
-            using (Processor.DomainEventBus.Subscribe<ProductAddedToCart>(e => productAddedEvent = e))
+            using (Processor.DomainEventBus.Connect<ProductAddedToCart>(e => productAddedEvent = e, true))
             {                
                 Processor.Handle(new AddProductToCart
                 {
@@ -150,7 +150,7 @@ namespace YellowFlare.MessageProcessing
             ProductAddedToCart productAddedEvent = null;
             int extraQuantity = _random.Next(3, 6);
 
-            using (Processor.DomainEventBus.Subscribe<ProductAddedToCart>(e => productAddedEvent = e))
+            using (Processor.DomainEventBus.Connect<ProductAddedToCart>(e => productAddedEvent = e, true))
             {
                 Processor.Handle(new AddProductToCart
                 {

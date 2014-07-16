@@ -1,9 +1,13 @@
 ﻿using System;
 using YellowFlare.MessageProcessing.Resources;
 
-namespace YellowFlare.MessageProcessing.Requests.Clients
+namespace YellowFlare.MessageProcessing
 {
-    internal abstract class Connection : IConnection
+    /// <summary>
+    /// Provides a basic implementation of the <see cref="IConnection" /> interface and can be used
+    /// as a base-class for concrete implementations.
+    /// </summary>
+    public abstract class Connection : IConnection
     {
         #region [====== Dispose ======]
 

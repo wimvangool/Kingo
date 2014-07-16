@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using IInputCommand = System.Windows.Input.ICommand;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {

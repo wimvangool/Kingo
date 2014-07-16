@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace YellowFlare.MessageProcessing.Requests.Clients
 {
     /// <summary>
-    /// Provides a basic implementation of the <see cref="IClientRequest" /> interface.
+    /// Provides a basic implementation of the <see cref="IClientRequestDispatcher" /> interface.
     /// </summary>    
-    /// <typeparam name="TRequest">Type of the encapsulated request.</typeparam>
+    /// <typeparam name="TRequest">Type of the encapsulated <see cref="IRequestDispatcher" />.</typeparam>
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
-    public abstract class ClientRequest<TRequest, TParameter> : PropertyChangedNotifier, IClientRequest
-        where TRequest : class, IRequest
+    public abstract class ClientRequestDispatcher<TRequest, TParameter> : PropertyChangedNotifier, IClientRequestDispatcher
+        where TRequest : class, IRequestDispatcher
     {
         private readonly TRequest _request;
         private readonly IIsValidIndicator _isValidIndicator;
         private readonly Stack<TParameter> _parameterStack;
         private readonly ClientRequestExecutionOptions _options;
 
-        internal ClientRequest(TRequest request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
+        internal ClientRequestDispatcher(TRequest request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
         {
             if (request == null)
             {
@@ -90,7 +91,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             CanExecuteChanged.Raise(this);
         }
 
-        bool System.Windows.Input.ICommand.CanExecute(object parameter)
+        bool ICommand.CanExecute(object parameter)
         {
             TParameter parameterOut;
 
@@ -101,7 +102,7 @@ namespace YellowFlare.MessageProcessing.Requests.Clients
             return false;
         }
 
-        void System.Windows.Input.ICommand.Execute(object parameter)
+        void ICommand.Execute(object parameter)
         {
             TParameter parameterOut;
 
