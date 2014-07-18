@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
@@ -75,10 +76,23 @@
     <Compile Include="Clocks\StopwatchClock.cs" />
     <Compile Include="Clocks\ThreadStaticClockContext.cs" />
     <Compile Include="BufferedEventBus.cs" />
+    <Compile Include="EventHandlerExtensions.cs" />
     <Compile Include="IBufferedEvent.cs" />
     <Compile Include="ICache.cs" />
     <Compile Include="ICachedItem.T1.cs" />
     <Compile Include="IDomainEventBus.cs" />
+    <Compile Include="Messages\IHasChangesIndicator.cs" />
+    <Compile Include="Messages\IIsValidIndicator.cs" />
+    <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="Messages\IMessage.T1.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\Message.T1.cs" />
+    <Compile Include="Messages\MessageChangedOptions.cs" />
+    <Compile Include="Messages\MessageErrorInfo.cs" />
+    <Compile Include="Messages\MessageValidationAttribute.cs" />
+    <Compile Include="Messages\MessagePropertyLabelCollection.cs" />
+    <Compile Include="Messages\NullMessage.cs" />
+    <Compile Include="Messages\PropertyChangedNotifier.cs" />
     <Compile Include="UnitOfWorkController.cs" />
     <Compile Include="Clocks\IClock.cs" />
     <Compile Include="RequestExecutionException.cs" />

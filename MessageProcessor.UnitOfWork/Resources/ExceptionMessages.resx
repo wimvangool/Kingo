@@ -141,6 +141,12 @@
   <data name="IntXXVersion_NegativeValue" xml:space="preserve">
     <value>Version cannot be negative: {0}.</value>
   </data>
+  <data name="Message_InvalidOption" xml:space="preserve">
+    <value>Unknown value of type '{0}' specified: {1}.</value>
+  </data>
+  <data name="Message_IsReadOnly" xml:space="preserve">
+    <value>Cannot mark message '{0}' as changed because it is marked readonly.</value>
+  </data>
   <data name="UnitOfWorkContext_FailedToEnlistUnitOfWork" xml:space="preserve">
     <value>Failed to enlist '{0}' because no context was found.</value>
   </data>

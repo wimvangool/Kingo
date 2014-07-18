@@ -87,10 +87,10 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="MessageHandlerFactoryStub.cs" />
-    <Compile Include="Requests\OrLifetimeTest.cs" />
-    <Compile Include="Requests\SlidingWindowLifetimeTest.cs" />
-    <Compile Include="Requests\TimerBasedLifetimeTest.cs" />
-    <Compile Include="Requests\MemoryCacheTest.cs" />
+    <Compile Include="Messages\OrLifetimeTest.cs" />
+    <Compile Include="Messages\SlidingWindowLifetimeTest.cs" />
+    <Compile Include="Messages\TimerBasedLifetimeTest.cs" />
+    <Compile Include="Messages\MemoryCacheTest.cs" />
     <Compile Include="SampleApplicationProcessor.cs" />
     <Compile Include="SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
     <Compile Include="SampleApplication\IShoppingCartRepository.cs" />
@@ -112,7 +112,6 @@
     <Compile Include="SampleHandlers\ForTryRegisterInTests\AbstractMessageHandler.cs" />
     <Compile Include="SampleHandlers\ForTryRegisterInTests\GenericMessageHandler.cs" />
     <Compile Include="MessageHandlerClassTest.cs" />
-    <Compile Include="Requests\MessageWithValidationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">

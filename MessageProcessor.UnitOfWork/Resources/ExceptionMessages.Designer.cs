@@ -133,6 +133,24 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown value of type &apos;{0}&apos; specified: {1}..
+        /// </summary>
+        internal static string Message_InvalidOption {
+            get {
+                return ResourceManager.GetString("Message_InvalidOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot mark message &apos;{0}&apos; as changed because it is marked readonly..
+        /// </summary>
+        internal static string Message_IsReadOnly {
+            get {
+                return ResourceManager.GetString("Message_IsReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to enlist &apos;{0}&apos; because no context was found..
         /// </summary>
         internal static string UnitOfWorkContext_FailedToEnlistUnitOfWork {

@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,27 +47,27 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Requests\Clients\ClientCommandDispatcher.cs" />
-    <Compile Include="Requests\Clients\ClientCommandDispatcher.T1.cs" />
-    <Compile Include="Requests\Clients\ClientEventBus.cs" />
-    <Compile Include="Requests\Clients\ClientEventBusConnection.cs" />
-    <Compile Include="Requests\Clients\ClientQueryDispatcher.T1.cs" />
-    <Compile Include="Requests\Clients\ClientQueryDispatcher.T2.cs" />
-    <Compile Include="Requests\Clients\ClientRequestDispatcher.T2.cs" />
-    <Compile Include="Requests\Clients\ClientRequestExecutionOptions.cs" />
-    <Compile Include="Requests\Clients\CompositeHasChangesIndicator.cs" />
-    <Compile Include="Requests\Clients\CompositeIsBusyIndicator.cs" />
-    <Compile Include="Requests\Clients\CompositeIsValidIndicator.cs" />
-    <Compile Include="Requests\Clients\CompositeMessage.cs" />
-    <Compile Include="Requests\Clients\IClientRequestDispatcher.cs" />
-    <Compile Include="Requests\Clients\ICompositeCommand.cs" />
-    <Compile Include="Requests\Clients\IIsBusyIndicator.cs" />
-    <Compile Include="Requests\Clients\OneToManyCommand.cs" />
-    <Compile Include="Requests\Clients\OneToManyCommandConnection.cs" />
-    <Compile Include="Requests\Clients\OneToOneCommand.cs" />
-    <Compile Include="Requests\Clients\OneToOneCommandConnection.cs" />
-    <Compile Include="Requests\Clients\RelayCommand.cs" />
-    <Compile Include="Requests\Clients\RelayCommand.T1.cs" />
+    <Compile Include="Messages\Clients\ClientCommandDispatcher.cs" />
+    <Compile Include="Messages\Clients\ClientCommandDispatcher.T1.cs" />
+    <Compile Include="Messages\Clients\ClientEventBus.cs" />
+    <Compile Include="Messages\Clients\ClientEventBusConnection.cs" />
+    <Compile Include="Messages\Clients\ClientQueryDispatcher.T1.cs" />
+    <Compile Include="Messages\Clients\ClientQueryDispatcher.T2.cs" />
+    <Compile Include="Messages\Clients\ClientRequestDispatcher.T2.cs" />
+    <Compile Include="Messages\Clients\ClientRequestExecutionOptions.cs" />
+    <Compile Include="Messages\Clients\CompositeHasChangesIndicator.cs" />
+    <Compile Include="Messages\Clients\CompositeIsBusyIndicator.cs" />
+    <Compile Include="Messages\Clients\CompositeIsValidIndicator.cs" />
+    <Compile Include="Messages\Clients\CompositeMessage.cs" />
+    <Compile Include="Messages\Clients\IClientRequestDispatcher.cs" />
+    <Compile Include="Messages\Clients\ICompositeCommand.cs" />
+    <Compile Include="Messages\Clients\IIsBusyIndicator.cs" />
+    <Compile Include="Messages\Clients\OneToManyCommand.cs" />
+    <Compile Include="Messages\Clients\OneToManyCommandConnection.cs" />
+    <Compile Include="Messages\Clients\OneToOneCommand.cs" />
+    <Compile Include="Messages\Clients\OneToOneCommandConnection.cs" />
+    <Compile Include="Messages\Clients\RelayCommand.cs" />
+    <Compile Include="Messages\Clients\RelayCommand.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace YellowFlare.MessageProcessing.Requests.Clients
+namespace YellowFlare.MessageProcessing.Messages.Clients
 {
     [TestClass]
     public sealed class ClientEventBusTest

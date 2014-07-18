@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YellowFlare.MessageProcessing.Requests.Clients
+namespace YellowFlare.MessageProcessing.Messages.Clients
 {
     internal sealed class IsBusyIndicatorStub : PropertyChangedNotifier, IIsBusyIndicator
     {

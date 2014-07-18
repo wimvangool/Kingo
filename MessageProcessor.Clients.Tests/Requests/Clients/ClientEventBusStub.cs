@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace YellowFlare.MessageProcessing.Requests.Clients
+namespace YellowFlare.MessageProcessing.Messages.Clients
 {
     internal sealed class ClientEventBusStub : ClientEventBus
     {

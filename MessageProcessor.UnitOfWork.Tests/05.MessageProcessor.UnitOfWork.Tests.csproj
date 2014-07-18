@@ -42,6 +42,7 @@
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -63,6 +64,7 @@
     <Compile Include="Clocks\ClockWithOffsetTest.cs" />
     <Compile Include="Clocks\StopwatchClockTest.cs" />
     <Compile Include="Clocks\SystemClockTest.cs" />
+    <Compile Include="Messages\MessageWithValidationTest.cs" />
     <Compile Include="UnitOfWorkControllerTest.cs" />
     <Compile Include="UnitOfWorkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
