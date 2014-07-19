@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Runtime.Remoting.Services;
 using YellowFlare.MessageProcessing.Resources;
 
 namespace YellowFlare.MessageProcessing.Messages
@@ -10,8 +12,9 @@ namespace YellowFlare.MessageProcessing.Messages
     /// Represents a basic implementation of the <see cref="IMessage" /> interface, in which
     /// change tracking and validation are supported.
     /// </summary>
-    public abstract class Message : PropertyChangedNotifier, IMessage
+    public abstract class Message : PropertyChangedNotifier, IMessage, IServiceProvider
     {
+        private readonly Dictionary<Type, object> _services;
         private readonly bool _isReadOnly;
         private MessageErrorInfo _errorInfo;                       
         private bool _hasChanges;
@@ -21,6 +24,7 @@ namespace YellowFlare.MessageProcessing.Messages
         /// </summary>
         protected Message()
         {
+            _services = new Dictionary<Type, object>();
             _isReadOnly = false;
             _errorInfo = MessageErrorInfo.NotYetValidated;
             _hasChanges = false;
@@ -40,10 +44,74 @@ namespace YellowFlare.MessageProcessing.Messages
             {
                 throw new ArgumentNullException("message");
             }
+            _services = new Dictionary<Type, object>(message._services);
             _isReadOnly = makeReadOnly;
-            _errorInfo = message._errorInfo;
+            _errorInfo = message._errorInfo == null ? null : new MessageErrorInfo(message._errorInfo);
             _hasChanges = false;
-        }        
+        }
+
+        #region [====== Service Provider ======]
+
+        /// <summary>
+        /// Registers the specified service with the <see cref="IServiceProvider" /> that is used for validation.
+        /// </summary>
+        /// <typeparam name="TService">Type of the service to register.</typeparam>
+        /// <param name="service">The service to register.</param>
+        /// <exception cref="ArgumentException">
+        /// A service of type <typeparamref name="TService"/> has already been registered for this message.
+        /// </exception>
+        protected void RegisterService<TService>(TService service) where TService : class
+        {
+            TryRegisterService(service);
+        }
+
+        /// <summary>
+        /// Registers the specified service with the <see cref="IServiceProvider" /> that is used for validation
+        /// and wires up the service's <see cref="IAsyncValidationService.RequiresValidation" /> event to
+        /// (re)validate this message when required.
+        /// </summary>
+        /// <typeparam name="TService">Type of the service to register.</typeparam>
+        /// <param name="service">The service to register.</param>
+        /// <exception cref="ArgumentException">
+        /// A service of type <typeparamref name="TService"/> has already been registered for this message.
+        /// </exception>
+        protected void RegisterAsyncService<TService>(TService service) where TService : class, IAsyncValidationService
+        {
+            if (TryRegisterService(service))
+            {
+                service.RequiresValidation += (s, e) => Validate();
+            }
+        }
+
+        private bool TryRegisterService<TService>(TService service) where TService : class
+        {
+            if (service == null)
+            {
+                return false;
+            }
+            try
+            {
+                _services.Add(typeof(TService), service);
+            }
+            catch (ArgumentException)
+            {
+                throw NewServiceAlreadyRegisteredException("service", typeof(TService));
+            }
+            return true;
+        }
+
+        object IServiceProvider.GetService(Type serviceType)
+        {
+            object service;
+
+            if (_services.TryGetValue(serviceType, out service))
+            {
+                return service;
+            }
+            return null;
+        }
+
+        #endregion
 
         #region [====== Change Tracking ======]
 
@@ -210,7 +278,8 @@ namespace YellowFlare.MessageProcessing.Messages
         /// Creates and returns a <see cref="ValidationContext" /> that is used during validation of this message.
         /// </summary>
         /// <returns>
-        /// A default <see cref="ValidationContext" /> with no <see cref="IServiceProvider" /> or items.
+        /// A <see cref="ValidationContext" /> pointing to the current message and contains all services that were
+        /// registered through one the message's <see cref="RegisterService{T}" /> methods.
         /// </returns>
         /// <remarks>
         /// A subclass can override this method to return a more specific <see cref="ValidationContext" /> is required.
@@ -219,7 +288,7 @@ namespace YellowFlare.MessageProcessing.Messages
         /// </remarks>
         protected virtual ValidationContext CreateValidationContext()
         {
-            return new ValidationContext(this, null, null);
+            return new ValidationContext(this, this, null);            
         }
 
         #endregion
@@ -238,6 +307,13 @@ namespace YellowFlare.MessageProcessing.Messages
             var messageFormat = ExceptionMessages.Message_IsReadOnly;
             var message = string.Format(messageFormat, readonlyMessage);
             return new InvalidOperationException(message);
+        }
+
+        private static Exception NewServiceAlreadyRegisteredException(string paramName, Type type)
+        {
+            var messageFormat = ExceptionMessages.Message_ServiceAlreadyRegistered;
+            var message = string.Format(messageFormat, type.Name);
+            return new ArgumentException(message, paramName);
         }
 
         #endregion

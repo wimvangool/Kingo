@@ -20,6 +20,12 @@ namespace YellowFlare.MessageProcessing.Messages
             _errorMessagesPerMember = errorMessagesPerMember;
         }
 
+        internal MessageErrorInfo(MessageErrorInfo errorInfo)
+        {
+            _validationResults = new List<ValidationResult>(errorInfo._validationResults);
+            _errorMessagesPerMember = new Dictionary<string, string>(errorInfo._errorMessagesPerMember);
+        }
+
         /// <inheritdoc />
         public string this[string columnName]
         {

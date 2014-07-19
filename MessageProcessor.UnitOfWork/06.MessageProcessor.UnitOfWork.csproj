@@ -81,6 +81,7 @@
     <Compile Include="ICache.cs" />
     <Compile Include="ICachedItem.T1.cs" />
     <Compile Include="IDomainEventBus.cs" />
+    <Compile Include="Messages\IAsyncValidationService.cs" />
     <Compile Include="Messages\IHasChangesIndicator.cs" />
     <Compile Include="Messages\IIsValidIndicator.cs" />
     <Compile Include="Messages\IMessage.cs" />
