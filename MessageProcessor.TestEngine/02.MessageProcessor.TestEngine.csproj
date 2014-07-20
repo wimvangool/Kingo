@@ -55,34 +55,36 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="BooleanOperandExtensions.cs" />
-    <Compile Include="ConjunctionStatement.T1.cs" />
+    <Compile Include="TestEngine\BooleanOperandExtensions.cs" />
+    <Compile Include="TestEngine\ConjunctionStatement.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="NullableOperandExtensions.cs" />
-    <Compile Include="NullStatement.T1.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IConjunctionStatement.T1.cs" />
-    <Compile Include="MessageSequence.cs" />
-    <Compile Include="MessageSequenceNode.T1.cs" />
-    <Compile Include="MessageSequencePair.cs" />
-    <Compile Include="ComparableOperandExtensions.cs" />
-    <Compile Include="IVerificationStatement.cs" />
-    <Compile Include="IMessageSequence.cs" />
-    <Compile Include="IOperand.T1.cs" />
-    <Compile Include="IScenario.cs" />
-    <Compile Include="Operand.T1.cs" />
+    <Compile Include="TestEngine\NullableOperandExtensions.cs" />
+    <Compile Include="TestEngine\NullStatement.T1.cs" />
+    <Compile Include="TestEngine\GlobalSuppressions.cs" />
+    <Compile Include="TestEngine\IConjunctionStatement.T1.cs" />
+    <Compile Include="TestEngine\MessageSequence.cs" />
+    <Compile Include="TestEngine\MessageSequenceNode.T1.cs" />
+    <Compile Include="TestEngine\MessageSequencePair.cs" />
+    <Compile Include="TestEngine\ComparableOperandExtensions.cs" />
+    <Compile Include="TestEngine\IVerificationStatement.cs" />
+    <Compile Include="TestEngine\IMessageSequence.cs" />
+    <Compile Include="TestEngine\IOperand.T1.cs" />
+    <Compile Include="TestEngine\IScenario.cs" />
+    <Compile Include="TestEngine\Operand.T1.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Scenario.T1.cs" />
+    <Compile Include="TestEngine\Scenario.cs" />
+    <Compile Include="TestEngine\Scenario.T1.cs" />
     <Compile Include="Resources\FailureMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FailureMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="VerificationStatement.cs" />
+    <Compile Include="TestEngine\ScenarioCache.cs" />
+    <Compile Include="TestEngine\VerificationStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">

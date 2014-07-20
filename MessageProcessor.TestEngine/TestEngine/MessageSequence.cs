@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// Represents a sequence of messages, ready to be executed.

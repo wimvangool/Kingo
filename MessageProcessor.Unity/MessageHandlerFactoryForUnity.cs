@@ -41,7 +41,7 @@ namespace YellowFlare.MessageProcessing
 
         protected override void RegisterWithPerUnitOfWorkLifetime(Type type)
         {
-            _container.RegisterType(type, new PerUnitOfWorkLifetimeManager());
+            _container.RegisterType(type, new CacheBasedLifetimeManager(UnitOfWorkContext.Cache));
         }
 
         protected override void RegisterSingle(Type type)

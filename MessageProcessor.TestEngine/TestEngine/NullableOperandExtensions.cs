@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using YellowFlare.MessageProcessing.Resources;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// Provides some extra verification method for nullable operands.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// Represents a statement that allows one to drill down into nested verification when required.

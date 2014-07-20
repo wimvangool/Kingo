@@ -1,4 +1,4 @@
-﻿namespace YellowFlare.MessageProcessing
+﻿namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// When implemented by a class, represents a scenario where a system is brought into a desired state by executing

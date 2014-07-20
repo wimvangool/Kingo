@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using System.Runtime.Remoting.Services;
 using YellowFlare.MessageProcessing.Resources;
 
 namespace YellowFlare.MessageProcessing.Messages
@@ -67,7 +66,7 @@ namespace YellowFlare.MessageProcessing.Messages
 
         /// <summary>
         /// Registers the specified service with the <see cref="IServiceProvider" /> that is used for validation
-        /// and wires up the service's <see cref="IAsyncValidationService.RequiresValidation" /> event to
+        /// and wires up the service's <see cref="IAsyncValidationService.ValidationRequired" /> event to
         /// (re)validate this message when required.
         /// </summary>
         /// <typeparam name="TService">Type of the service to register.</typeparam>
@@ -79,7 +78,7 @@ namespace YellowFlare.MessageProcessing.Messages
         {
             if (TryRegisterService(service))
             {
-                service.RequiresValidation += (s, e) => Validate();
+                service.ValidationRequired += (s, e) => Validate();
             }
         }
 

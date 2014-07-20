@@ -1,7 +1,7 @@
 ﻿using System;
 using YellowFlare.MessageProcessing.Resources;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// Provides some extra verification methods for values that implement the <see cref="IComparable{T}" /> interface.

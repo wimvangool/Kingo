@@ -8,12 +8,12 @@ namespace YellowFlare.MessageProcessing
     {
         #region [====== Setup and Teardown ======]
 
-        private PerUnitOfWorkLifetimeManager _lifetimeManager;
+        private CacheBasedLifetimeManager _lifetimeManager;
 
         [TestInitialize]
         public void Setup()
         {
-            _lifetimeManager = new PerUnitOfWorkLifetimeManager();
+            _lifetimeManager = new CacheBasedLifetimeManager(UnitOfWorkContext.Cache);
         }
 
         #endregion

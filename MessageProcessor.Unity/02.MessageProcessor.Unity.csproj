@@ -51,7 +51,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="PerUnitOfWorkLifetimeManager.cs" />
+    <Compile Include="CacheBasedLifetimeManager.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

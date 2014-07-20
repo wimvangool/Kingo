@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// Represents a sequence containing just a single message.

@@ -69,15 +69,15 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="BooleanOperandExtensionsTest.cs" />
-    <Compile Include="ComparableOperandExtensionsTest.cs" />
-    <Compile Include="NullableOperandExtensionsTest.cs" />
-    <Compile Include="OperandTest.cs" />
+    <Compile Include="TestEngine\BooleanOperandExtensionsTest.cs" />
+    <Compile Include="TestEngine\ComparableOperandExtensionsTest.cs" />
+    <Compile Include="TestEngine\NullableOperandExtensionsTest.cs" />
+    <Compile Include="TestEngine\OperandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ScenarioTest.cs" />
-    <Compile Include="ScenarioTestProcessor.cs" />
-    <Compile Include="TheCommand.cs" />
-    <Compile Include="TheCommandHandler.cs" />
+    <Compile Include="TestEngine\ScenarioTest.cs" />
+    <Compile Include="TestEngine\ScenarioTestProcessor.cs" />
+    <Compile Include="TestEngine\TheCommand.cs" />
+    <Compile Include="TestEngine\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">

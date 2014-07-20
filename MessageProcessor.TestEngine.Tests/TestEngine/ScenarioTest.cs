@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     [TestClass]   
     public sealed class ScenarioTest
@@ -25,6 +25,11 @@ namespace YellowFlare.MessageProcessing
             public new int DomainEventCount
             {
                 get { return base.DomainEventCount; }
+            }
+
+            protected override IMessageProcessor MessageProcessor
+            {
+                get { return null; }
             }
 
             public new object DomainEventAt(int index)

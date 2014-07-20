@@ -11,25 +11,22 @@ namespace YellowFlare.MessageProcessing
     /// </summary>
     public sealed class UnitOfWorkContext : IDisposable
     {
-        private readonly Stack<BufferedEventBus> _bufferedEventBuses;
-        private readonly UnitOfWorkCache _cache;        
-        private readonly UnitOfWorkController _flushController;        
+        private readonly Stack<BufferedEventBus> _bufferedEventBuses;             
+        private readonly UnitOfWorkController _flushController;
+        private readonly Cache _cache;   
         private bool _isDisposed;
         
         internal UnitOfWorkContext()
         {                                    
-            _bufferedEventBuses = new Stack<BufferedEventBus>(2);            
-            _cache = new UnitOfWorkCache();         
-            _flushController = new UnitOfWorkController();            
-        }        
-
-        /// <summary>
-        /// Returns a cache that can be used to store items that have a lifecycle of single command execution.
-        /// </summary>
-        public ICache Cache
+            _bufferedEventBuses = new Stack<BufferedEventBus>(3);                                
+            _flushController = new UnitOfWorkController();
+            _cache = new Cache(); 
+        }          
+        
+        internal ICache InternalCache
         {
             get { return _cache; }
-        }                       
+        } 
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -82,6 +79,11 @@ namespace YellowFlare.MessageProcessing
         {
             return new ObjectDisposedException(GetType().FullName);
         }        
+
+        /// <summary>
+        /// Represents the cache that is associated to the current <see cref="UnitOfWorkContext" />.
+        /// </summary>
+        public static readonly ICache Cache = new UnitOfWorkCache();
 
         private static readonly ThreadLocal<UnitOfWorkContext> _Current = new ThreadLocal<UnitOfWorkContext>();
 

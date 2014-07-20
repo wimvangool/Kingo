@@ -14,7 +14,7 @@ namespace YellowFlare.MessageProcessing
         /// <typeparam name="T">Type of the value to add.</typeparam>
         /// <param name="value">The value to add.</param>
         /// <returns>A handle with which the item can be retrieved or removed again.</returns>
-        ICachedItem<T> Add<T>(T value);
+        ICacheEntry<T> Add<T>(T value);
 
         /// <summary>
         /// Add the specified value to the cache and returns a handle with which the item can be retrieved
@@ -26,6 +26,6 @@ namespace YellowFlare.MessageProcessing
         /// The callback that is called as soon as the item is removed from the cache.
         /// </param>
         /// <returns>A handle with which the item can be retrieved or removed again.</returns>
-        ICachedItem<T> Add<T>(T value, Action<T> valueRemovedCallback);
+        ICacheEntry<T> Add<T>(T value, Action<T> valueRemovedCallback);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using YellowFlare.MessageProcessing.Resources;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// Represents a <see cref="IConjunctionStatement{TValue}" /> that always fails.

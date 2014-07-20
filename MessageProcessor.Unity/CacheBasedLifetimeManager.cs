@@ -7,16 +7,30 @@ namespace YellowFlare.MessageProcessing
     /// <summary>
     /// A LifetimeManager for Unity that registers it's dependencies at the current <see cref="UnitOfWorkContext" />.
     /// </summary>
-    public sealed class PerUnitOfWorkLifetimeManager : LifetimeManager
+    public sealed class CacheBasedLifetimeManager : LifetimeManager
     {
-        private ICachedItem<object> _item;        
+        private readonly ICache _cache;
+        private ICacheEntry<object> _entry;    
+    
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CacheBasedLifetimeManager" /> class.
+        /// </summary>
+        /// <param name="cache">The cache that is used to store all values.</param>
+        public CacheBasedLifetimeManager(ICache cache)
+        {
+            if (cache == null)
+            {
+                throw new ArgumentNullException("cache");
+            }
+            _cache = cache;
+        }
 
         /// <inheritdoc />
         public override object GetValue()
         {
             object value;
 
-            if (_item != null && _item.TryGetValue(out value))
+            if (_entry != null && _entry.TryGetValue(out value))
             {
                 return value;
             }
@@ -26,23 +40,18 @@ namespace YellowFlare.MessageProcessing
         /// <inheritdoc />
         public override void RemoveValue()
         {
-            if (_item == null)
+            if (_entry == null)
             {
                 return;
             }
-            _item.Dispose();
-            _item = null;
+            _entry.Dispose();
+            _entry = null;
         }
 
         /// <inheritdoc />
         public override void SetValue(object newValue)
-        {
-            var context = UnitOfWorkContext.Current;
-            if (context == null)
-            {
-                throw NewOutOfContextException();
-            }
-            _item = context.Cache.Add(newValue, HandleValueInvalidated);
+        {            
+            _entry = _cache.Add(newValue, HandleValueInvalidated);
         }
 
         private static void HandleValueInvalidated(object value)
@@ -52,11 +61,6 @@ namespace YellowFlare.MessageProcessing
             {
                 disposable.Dispose();
             }
-        }
-
-        private static Exception NewOutOfContextException()
-        {            
-            return new InvalidOperationException(ExceptionMessages.PerUnitOfWorkLifetimeManager_OutOfContext);
-        }
+        }        
     }
 }

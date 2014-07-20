@@ -1,5 +1,5 @@
 ﻿
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// When implemented by a class, represents a single verification-statement for a specific scenario.

@@ -1,5 +1,5 @@
 ﻿
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {    
     internal sealed class TheCommandHandler : IMessageHandler<TheCommand>
     {        

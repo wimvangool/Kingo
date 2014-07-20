@@ -126,6 +126,9 @@
   <data name="BufferedEventBus_NoBusAvailable" xml:space="preserve">
     <value>Cannot publish event of type '{0}' because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope.</value>
   </data>
+  <data name="CacheRelay_NotAvailable" xml:space="preserve">
+    <value>Cannot perform the operation because the cache is currently not available.</value>
+  </data>
   <data name="ClockScope_IncorrectNesting" xml:space="preserve">
     <value>The clock-scopes aren't nested correctly.</value>
   </data>

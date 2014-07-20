@@ -88,6 +88,15 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot perform the operation because the cache is currently not available..
+        /// </summary>
+        internal static string CacheRelay_NotAvailable {
+            get {
+                return ResourceManager.GetString("CacheRelay_NotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The clock-scopes aren&apos;t nested correctly..
         /// </summary>
         internal static string ClockScope_IncorrectNesting {

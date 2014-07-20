@@ -2,14 +2,14 @@
 
 namespace YellowFlare.MessageProcessing
 {
-    internal sealed class CachedItem<T> : ICachedItem<T>
+    internal sealed class CacheEntry<T> : ICacheEntry<T>
     {
-        private readonly UnitOfWorkCache _cache;
+        private readonly Cache _cache;
         private readonly T _value;
         private readonly Action<T> _valueInvalidatedCallback;        
         private bool _isDisposed;        
 
-        public CachedItem(UnitOfWorkCache cache, T value, Action<T> valueInvalidatedCallback)
+        public CacheEntry(Cache cache, T value, Action<T> valueInvalidatedCallback)
         {            
             _cache = cache;
             _value = value;

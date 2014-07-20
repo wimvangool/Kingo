@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     internal sealed class VerificationStatement : IVerificationStatement
     {

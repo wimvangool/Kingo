@@ -7,12 +7,12 @@ namespace YellowFlare.MessageProcessing
     {
         #region [====== Setup and Teardown ======]
 
-        private UnitOfWorkCache _cache;
+        private Cache _cache;
 
         [TestInitialize]
         public void Setup()
         {
-            _cache = new UnitOfWorkCache();
+            _cache = new Cache();
         }
 
         [TestCleanup]
@@ -28,7 +28,7 @@ namespace YellowFlare.MessageProcessing
         [TestMethod]
         public void Add_AddsTheValueAndReturnsValidItem()
         {
-            ICachedItem<int> cachedItem = _cache.Add(10);
+            ICacheEntry<int> cachedItem = _cache.Add(10);
             int value;
 
             Assert.IsNotNull(cachedItem);
@@ -39,7 +39,7 @@ namespace YellowFlare.MessageProcessing
         [TestMethod]
         public void Dispose_InvalidatesReturnedItem()
         {
-            ICachedItem<int> cachedItem = _cache.Add(10);
+            ICacheEntry<int> cachedItem = _cache.Add(10);
             int value;
 
             _cache.Dispose();

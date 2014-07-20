@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     /// <summary>
     /// When implemented by a class, represents a sequence of messages, ready to be executed.

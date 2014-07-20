@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
-    internal sealed class UnitOfWorkCache : CacheRelay
+    internal sealed class ScenarioCache : CacheRelay
     {
         protected override bool TryGetCache(out ICache cache)
         {
-            var context = UnitOfWorkContext.Current;
-            if (context == null)
+            var scenario = Scenario.Current;
+            if (scenario == null)
             {
                 cache = null;
                 return false;
             }
-            cache = context.InternalCache;
+            cache = scenario.InternalCache;
             return true;
         }
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using YellowFlare.MessageProcessing.Resources;
 
-namespace YellowFlare.MessageProcessing
+namespace YellowFlare.MessageProcessing.TestEngine
 {
     internal class Operand<T> : IOperand<T>
     {
