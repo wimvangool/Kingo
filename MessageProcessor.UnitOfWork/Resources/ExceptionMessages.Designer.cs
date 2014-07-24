@@ -106,6 +106,24 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The connection is already closed..
+        /// </summary>
+        internal static string Connection_AlreadyClosed {
+            get {
+                return ResourceManager.GetString("Connection_AlreadyClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The connection is already open..
+        /// </summary>
+        internal static string Connection_AlreadyOpen {
+            get {
+                return ResourceManager.GetString("Connection_AlreadyOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The timestamp could not be incremented because it already has the maximum allowed value..
         /// </summary>
         internal static string DateTimeVersion_Overflow {
@@ -142,6 +160,24 @@ namespace YellowFlare.MessageProcessing.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command &apos;{0}&apos; could not be executed because it was invalid..
+        /// </summary>
+        internal static string InvalidCommandException_Message {
+            get {
+                return ResourceManager.GetString("InvalidCommandException_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command &apos;{0}&apos; could not be executed because it was invalid. Errors: {1}..
+        /// </summary>
+        internal static string InvalidCommandException_MessageWithErrors {
+            get {
+                return ResourceManager.GetString("InvalidCommandException_MessageWithErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown value of type &apos;{0}&apos; specified: {1}..
         /// </summary>
         internal static string Message_InvalidOption {
@@ -165,6 +201,69 @@ namespace YellowFlare.MessageProcessing.Resources {
         internal static string Message_ServiceAlreadyRegistered {
             get {
                 return ResourceManager.GetString("Message_ServiceAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple attributes of the specified type were found when only a single was expected: {0}..
+        /// </summary>
+        internal static string MessageHanderPipeline_MultipleAttributesFound {
+            get {
+                return ResourceManager.GetString("MessageHanderPipeline_MultipleAttributesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid InstanceLifetime was specified on class &apos;{0}&apos;: {1}. .
+        /// </summary>
+        internal static string MessageHandlerClass_InvalidInstanceLifetimeMode {
+            get {
+                return ResourceManager.GetString("MessageHandlerClass_InvalidInstanceLifetimeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This method is not supported because the factory required to instantiate the appropriate MessageHandlers was not set..
+        /// </summary>
+        internal static string MessageProcessor_FactoryNotSet {
+            get {
+                return ResourceManager.GetString("MessageProcessor_FactoryNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot start this lifetime because it has been already started once..
+        /// </summary>
+        internal static string QueryCacheValueLifetime_AlreadyStarted {
+            get {
+                return ResourceManager.GetString("QueryCacheValueLifetime_AlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot combine this lifetime with the other because the other has already started..
+        /// </summary>
+        internal static string QueryCacheValueLifetime_OtherAlreadyStarted {
+            get {
+                return ResourceManager.GetString("QueryCacheValueLifetime_OtherAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot combine this lifetime with another because it has already started..
+        /// </summary>
+        internal static string QueryCacheValueLifetime_ThisAlreadyStarted {
+            get {
+                return ResourceManager.GetString("QueryCacheValueLifetime_ThisAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The length of a lifetime cannot be zero..
+        /// </summary>
+        internal static string TimerBasedLifetime_ZeroLifetime {
+            get {
+                return ResourceManager.GetString("TimerBasedLifetime_ZeroLifetime", resourceCulture);
             }
         }
         

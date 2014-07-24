@@ -86,41 +86,12 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="MessageHandlerFactoryStub.cs" />
-    <Compile Include="Messages\OrLifetimeTest.cs" />
-    <Compile Include="Messages\SlidingWindowLifetimeTest.cs" />
-    <Compile Include="Messages\TimerBasedLifetimeTest.cs" />
-    <Compile Include="Messages\MemoryCacheTest.cs" />
-    <Compile Include="SampleApplicationProcessor.cs" />
-    <Compile Include="SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
-    <Compile Include="SampleApplication\IShoppingCartRepository.cs" />
-    <Compile Include="SampleApplication\MessageHandlers\ShoppingCartHandler.cs" />
-    <Compile Include="SampleApplication\Messages\AddProductToCart.cs" />
-    <Compile Include="SampleApplication\Messages\CreateShoppingCart.cs" />
-    <Compile Include="SampleApplication\Messages\ShoppingCartCreated.cs" />
-    <Compile Include="SampleApplication\Messages\ProductAddedToCart.cs" />
-    <Compile Include="SampleApplication\ShoppingCart.cs" />
-    <Compile Include="SampleApplication\ShoppingCartItem.cs" />
-    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithInvalidLifetimeAttribute.cs" />
-    <Compile Include="MessageProcessorTest.cs" />
-    <Compile Include="SampleHandlers\DomainEvent.cs" />
-    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithPerUnitOfWorkLifetime.cs" />
-    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithPerResolveLifetime.cs" />
-    <Compile Include="SampleHandlers\Command.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="SampleHandlers\ForTryRegisterInTests\MessageHandlerWithSingleLifetime.cs" />
-    <Compile Include="SampleHandlers\ForTryRegisterInTests\AbstractMessageHandler.cs" />
-    <Compile Include="SampleHandlers\ForTryRegisterInTests\GenericMessageHandler.cs" />
-    <Compile Include="MessageHandlerClassTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
       <Name>06.MessageProcessor.UnitOfWork</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
-      <Project>{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}</Project>
-      <Name>04.MessageProcessor</Name>
     </ProjectReference>
     <ProjectReference Include="..\MessageProcessor.Unity\02.MessageProcessor.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>

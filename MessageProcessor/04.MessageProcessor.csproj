@@ -74,64 +74,11 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="CancellationTokenExtensions.cs" />
-    <Compile Include="Messages\CommandHandler.T1.cs" />
-    <Compile Include="Connection.cs" />
-    <Compile Include="IConnection.cs" />
-    <Compile Include="Messages\InvalidCommandException.cs" />
-    <Compile Include="Messages\CommandDispatcher.cs" />
-    <Compile Include="Messages\CommandDispatcherBase.cs" />
-    <Compile Include="Messages\ExecutionCancelledEventArgs.cs" />
-    <Compile Include="Messages\ExecutionCompletedEventArgs.cs" />
-    <Compile Include="Messages\ExecutionFailedEventArgs.cs" />
-    <Compile Include="Messages\ExecutionStartedEventArgs.cs" />
-    <Compile Include="Messages\ExecutionSucceededEventArgs.cs" />
-    <Compile Include="Messages\ExecutionSucceededEventArgs.T1.cs" />
-    <Compile Include="Messages\ICommandDispatcher.cs" />
-    <Compile Include="Messages\InfiniteLifetime.cs" />
-    <Compile Include="Messages\IQueryDispatcher.T1.cs" />
-    <Compile Include="Messages\IRequestDispatcher.cs" />
-    <Compile Include="Messages\MemoryCache.cs" />
-    <Compile Include="Messages\MessageStateTracker.cs" />
-    <Compile Include="Messages\OrLifetime.cs" />
-    <Compile Include="Messages\QueryDispatcher.T1.cs" />
-    <Compile Include="Messages\QueryDispatcherBase.T1.cs" />
-    <Compile Include="Messages\QueryCacheValueLifetime.cs" />
-    <Compile Include="Messages\RequestDispatcher.cs" />
-    <Compile Include="Messages\SlidingWindowLifetime.cs" />
-    <Compile Include="Messages\RequestContext.cs" />
-    <Compile Include="Messages\TimerBasedLifetime.cs" />
-    <Compile Include="IMessageHandlerPipelineFactory.cs" />
-    <Compile Include="MessageProcessorBusConnectionForAction.T1.cs" />
-    <Compile Include="IMessageHandler.T1.cs" />
-    <Compile Include="IMessageHandlerPipeline.T1.cs" />
-    <Compile Include="IMessageProcessor.cs" />
-    <Compile Include="IMessageProcessorBus.cs" />
-    <Compile Include="MessageProcessorBusConnectionForInterface.T1.cs" />
-    <Compile Include="InstanceLifetimeAttribute.cs" />
-    <Compile Include="MessageStack.cs" />
-    <Compile Include="MessageHandlerPipeline.T1.cs" />
-    <Compile Include="MessageHandlerClass.cs" />
-    <Compile Include="MessageHandlerPipelineDecorator.T1.cs" />
-    <Compile Include="MessageHandlerPipelineForAction.T1.cs" />
-    <Compile Include="MessageHandlerPipelineForClass.T1.cs" />
-    <Compile Include="MessageHandlerPipelineForInterface.T1.cs" />
-    <Compile Include="MessageProcessor.cs" />
-    <Compile Include="MessageProcessorBusConnection.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="MessageHandlerFactory.cs" />
-    <Compile Include="Messages\QueryCacheValueExpiredEventArgs.cs" />
-    <Compile Include="Messages\CommandDispatcher.T1.cs" />
-    <Compile Include="Messages\QueryDispatcher.T2.cs" />
-    <Compile Include="Messages\QueryCache.cs" />
-    <Compile Include="Messages\QueryCacheValue.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="InstanceLifetime.cs" />
-    <Compile Include="MessageProcessorBus.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +115,9 @@
       <Name>06.MessageProcessor.UnitOfWork</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Messages\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -47,6 +47,7 @@
       <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -65,21 +66,13 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="PerUnitOfWorkLifetimeManagerTest.cs" />
-    <Compile Include="UnityTestProcessor.cs" />
+    <Compile Include="Server\PerUnitOfWorkLifetimeManagerTest.cs" />
+    <Compile Include="Server\UnityTestProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
       <Name>06.MessageProcessor.UnitOfWork</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor.Tests\03.MessageProcessor.Tests.csproj">
-      <Project>{dde1ca85-7907-4c67-91df-1ad824a44133}</Project>
-      <Name>03.MessageProcessor.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
-      <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>
-      <Name>04.MessageProcessor</Name>
     </ProjectReference>
     <ProjectReference Include="..\MessageProcessor.Unity\02.MessageProcessor.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>

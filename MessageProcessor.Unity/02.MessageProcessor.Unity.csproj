@@ -44,6 +44,7 @@
       <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
@@ -51,13 +52,13 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="CacheBasedLifetimeManager.cs" />
+    <Compile Include="Server\CacheBasedLifetimeManager.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="MessageHandlerFactoryForUnity.cs" />
+    <Compile Include="Server\MessageHandlerFactoryForUnity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -66,10 +67,6 @@
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
       <Name>06.MessageProcessor.UnitOfWork</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
-      <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>
-      <Name>04.MessageProcessor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

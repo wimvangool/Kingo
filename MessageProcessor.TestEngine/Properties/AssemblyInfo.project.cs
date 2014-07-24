@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 [assembly: Guid("c6102b0a-4d14-4f2b-9ef5-0e645cc438ba")]
 [assembly: AssemblyTitle("YellowFlare.MessageProcessor.TestEngine")]
 [assembly: AssemblyDescription("Represents a test-engine for projects that make use of the MessageProcessing core library.")]
+[assembly: AssemblyVersion("1.5.0.0")]
+[assembly: AssemblyFileVersion("1.5.0.0")]
+[assembly: AssemblyInformationalVersion("1.5.0.0")]
 
 [assembly: InternalsVisibleTo("YellowFlare.MessageProcessor.TestEngine.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +

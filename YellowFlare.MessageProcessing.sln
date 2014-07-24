@@ -8,10 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		AssemblyInfo.solution.cs = AssemblyInfo.solution.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.MessageProcessor.Tests", "MessageProcessor.Tests\03.MessageProcessor.Tests.csproj", "{DDE1CA85-7907-4C67-91DF-1AD824A44133}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.MessageProcessor", "MessageProcessor\04.MessageProcessor.csproj", "{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.MessageProcessor.Unity.Tests", "MessageProcessor.Unity.Tests\01.MessageProcessor.Unity.Tests.csproj", "{1D19D39A-15C6-4FDE-90C5-93188F2FC644}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.MessageProcessor.Unity", "MessageProcessor.Unity\02.MessageProcessor.Unity.csproj", "{77F45326-E908-47EB-B924-A3BD26CAD6B0}"
@@ -40,14 +36,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DDE1CA85-7907-4C67-91DF-1AD824A44133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDE1CA85-7907-4C67-91DF-1AD824A44133}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDE1CA85-7907-4C67-91DF-1AD824A44133}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDE1CA85-7907-4C67-91DF-1AD824A44133}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D19D39A-15C6-4FDE-90C5-93188F2FC644}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1D19D39A-15C6-4FDE-90C5-93188F2FC644}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D19D39A-15C6-4FDE-90C5-93188F2FC644}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -85,8 +73,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD} = {72205C90-C23B-4086-8580-050201371032}
-		{DDE1CA85-7907-4C67-91DF-1AD824A44133} = {72205C90-C23B-4086-8580-050201371032}
 		{757D77D3-7B32-4F21-9617-88274D50B517} = {72205C90-C23B-4086-8580-050201371032}
 		{303380DB-4167-4BB0-8B78-63C959B65C4B} = {72205C90-C23B-4086-8580-050201371032}
 		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286} = {72205C90-C23B-4086-8580-050201371032}
@@ -97,7 +83,7 @@ Global
 		{4FE972F0-2046-4039-9461-45D0B7E6229F} = {C3F19C5E-9EAD-4324-9B07-129C32CFA05B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 	GlobalSection(TestsCaseManagementSettings) = postSolution
 		CategoryFile = YellowFlare.Cqrs.vsmdi

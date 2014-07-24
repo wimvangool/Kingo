@@ -132,6 +132,12 @@
   <data name="ClockScope_IncorrectNesting" xml:space="preserve">
     <value>The clock-scopes aren't nested correctly.</value>
   </data>
+  <data name="Connection_AlreadyClosed" xml:space="preserve">
+    <value>The connection is already closed.</value>
+  </data>
+  <data name="Connection_AlreadyOpen" xml:space="preserve">
+    <value>The connection is already open.</value>
+  </data>
   <data name="DateTimeVersion_Overflow" xml:space="preserve">
     <value>The timestamp could not be incremented because it already has the maximum allowed value.</value>
   </data>
@@ -144,6 +150,21 @@
   <data name="IntXXVersion_NegativeValue" xml:space="preserve">
     <value>Version cannot be negative: {0}.</value>
   </data>
+  <data name="InvalidCommandException_Message" xml:space="preserve">
+    <value>Command '{0}' could not be executed because it was invalid.</value>
+  </data>
+  <data name="InvalidCommandException_MessageWithErrors" xml:space="preserve">
+    <value>Command '{0}' could not be executed because it was invalid. Errors: {1}.</value>
+  </data>
+  <data name="MessageHanderPipeline_MultipleAttributesFound" xml:space="preserve">
+    <value>Multiple attributes of the specified type were found when only a single was expected: {0}.</value>
+  </data>
+  <data name="MessageHandlerClass_InvalidInstanceLifetimeMode" xml:space="preserve">
+    <value>Invalid InstanceLifetime was specified on class '{0}': {1}. </value>
+  </data>
+  <data name="MessageProcessor_FactoryNotSet" xml:space="preserve">
+    <value>This method is not supported because the factory required to instantiate the appropriate MessageHandlers was not set.</value>
+  </data>
   <data name="Message_InvalidOption" xml:space="preserve">
     <value>Unknown value of type '{0}' specified: {1}.</value>
   </data>
@@ -152,6 +173,18 @@
   </data>
   <data name="Message_ServiceAlreadyRegistered" xml:space="preserve">
     <value>A service of type '{0}' was already registered.</value>
+  </data>
+  <data name="QueryCacheValueLifetime_AlreadyStarted" xml:space="preserve">
+    <value>Cannot start this lifetime because it has been already started once.</value>
+  </data>
+  <data name="QueryCacheValueLifetime_OtherAlreadyStarted" xml:space="preserve">
+    <value>Cannot combine this lifetime with the other because the other has already started.</value>
+  </data>
+  <data name="QueryCacheValueLifetime_ThisAlreadyStarted" xml:space="preserve">
+    <value>Cannot combine this lifetime with another because it has already started.</value>
+  </data>
+  <data name="TimerBasedLifetime_ZeroLifetime" xml:space="preserve">
+    <value>The length of a lifetime cannot be zero.</value>
   </data>
   <data name="UnitOfWorkContext_FailedToEnlistUnitOfWork" xml:space="preserve">
     <value>Failed to enlist '{0}' because no context was found.</value>

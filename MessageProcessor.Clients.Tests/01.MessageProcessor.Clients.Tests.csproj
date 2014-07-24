@@ -57,18 +57,17 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Requests\Clients\ClientEventBusStub.cs" />
-    <Compile Include="Requests\Clients\ClientEventBusTest.cs" />
-    <Compile Include="Requests\Clients\CompositeHasChangesIndicatorTest.cs" />
-    <Compile Include="Requests\Clients\CompositeIsBusyIndicatorTest.cs" />
-    <Compile Include="Requests\Clients\CompositeIsValidIndicatorTest.cs" />
-    <Compile Include="Requests\Clients\HasChangesIndicatorStub.cs" />
-    <Compile Include="Requests\Clients\IsBusyIndicatorStub.cs" />
-    <Compile Include="Requests\Clients\IsValidIndicatorStub.cs" />
-    <Compile Include="Requests\Clients\NotSupportedBus.cs" />
-    <Compile Include="Requests\Clients\OneToManyCommandTest.cs" />
-    <Compile Include="Requests\Clients\OneToOneCommandTest.cs" />
-    <Compile Include="Requests\Clients\RelayCommandOfT1.Test.cs" />
+    <Compile Include="Client\ClientEventBusStub.cs" />
+    <Compile Include="Client\ClientEventBusTest.cs" />
+    <Compile Include="Client\CompositeHasChangesIndicatorTest.cs" />
+    <Compile Include="Client\CompositeIsBusyIndicatorTest.cs" />
+    <Compile Include="Client\CompositeIsValidIndicatorTest.cs" />
+    <Compile Include="Client\HasChangesIndicatorStub.cs" />
+    <Compile Include="Client\IsBusyIndicatorStub.cs" />
+    <Compile Include="Client\IsValidIndicatorStub.cs" />
+    <Compile Include="Client\OneToManyCommandTest.cs" />
+    <Compile Include="Client\OneToOneCommandTest.cs" />
+    <Compile Include="Client\RelayCommandOfT1.Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.Clients\02.MessageProcessor.Clients.csproj">
@@ -78,10 +77,6 @@
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
       <Name>06.MessageProcessor.UnitOfWork</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
-      <Project>{ac14a5ec-bac2-44cf-b1ac-3942b25d92fd}</Project>
-      <Name>04.MessageProcessor</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

@@ -56,6 +56,7 @@
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -69,15 +70,15 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="TestEngine\BooleanOperandExtensionsTest.cs" />
-    <Compile Include="TestEngine\ComparableOperandExtensionsTest.cs" />
-    <Compile Include="TestEngine\NullableOperandExtensionsTest.cs" />
-    <Compile Include="TestEngine\OperandTest.cs" />
+    <Compile Include="Server\BooleanOperandExtensionsTest.cs" />
+    <Compile Include="Server\ComparableOperandExtensionsTest.cs" />
+    <Compile Include="Server\NullableOperandExtensionsTest.cs" />
+    <Compile Include="Server\OperandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="TestEngine\ScenarioTest.cs" />
-    <Compile Include="TestEngine\ScenarioTestProcessor.cs" />
-    <Compile Include="TestEngine\TheCommand.cs" />
-    <Compile Include="TestEngine\TheCommandHandler.cs" />
+    <Compile Include="Server\ScenarioTest.cs" />
+    <Compile Include="Server\ScenarioTestProcessor.cs" />
+    <Compile Include="Server\TheCommand.cs" />
+    <Compile Include="Server\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageProcessor.UnitOfWork\06.MessageProcessor.UnitOfWork.csproj">
@@ -91,10 +92,6 @@
     <ProjectReference Include="..\MessageProcessor.TestEngine\02.MessageProcessor.TestEngine.csproj">
       <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>
       <Name>02.MessageProcessor.TestEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MessageProcessor\04.MessageProcessor.csproj">
-      <Project>{AC14A5EC-BAC2-44CF-B1AC-3942B25D92FD}</Project>
-      <Name>04.MessageProcessor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
