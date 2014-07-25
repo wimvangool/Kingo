@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{757D77D3-7B32-4F21-9617-88274D50B517}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.ComponentModel.Messaging</RootNamespace>
+    <AssemblyName>System.ComponentModel.Messaging</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\System.ComponentModel.Messaging.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="Client\CommandDispatcher.cs" />
+    <Compile Include="Client\CommandDispatcher.T1.cs" />
+    <Compile Include="Client\CommandDispatcherBase.cs" />
+    <Compile Include="Server\CommandHandler.T1.cs" />
+    <Compile Include="Client\ExecutionCancelledEventArgs.cs" />
+    <Compile Include="Client\ExecutionCompletedEventArgs.cs" />
+    <Compile Include="Client\ExecutionFailedEventArgs.cs" />
+    <Compile Include="Client\ExecutionStartedEventArgs.cs" />
+    <Compile Include="Client\ExecutionSucceededEventArgs.cs" />
+    <Compile Include="Client\ExecutionSucceededEventArgs.T1.cs" />
+    <Compile Include="Client\ICommandDispatcher.cs" />
+    <Compile Include="Client\InfiniteLifetime.cs" />
+    <Compile Include="InvalidCommandException.cs" />
+    <Compile Include="Client\IQueryDispatcher.T1.cs" />
+    <Compile Include="Client\IRequestDispatcher.cs" />
+    <Compile Include="Client\MemoryCache.cs" />
+    <Compile Include="Client\MessageStateTracker.cs" />
+    <Compile Include="Client\OrLifetime.cs" />
+    <Compile Include="Client\Query.T2.cs" />
+    <Compile Include="Client\QueryCache.cs" />
+    <Compile Include="Client\QueryCacheValue.cs" />
+    <Compile Include="Client\QueryCacheValueExpiredEventArgs.cs" />
+    <Compile Include="Client\QueryCacheValueLifetime.cs" />
+    <Compile Include="Client\QueryDispatcher.T1.cs" />
+    <Compile Include="Client\QueryDispatcher.T2.cs" />
+    <Compile Include="Client\QueryDispatcherBase.T1.cs" />
+    <Compile Include="Client\QueryDispatcherRelay.T2.cs" />
+    <Compile Include="Client\RequestContext.cs" />
+    <Compile Include="Client\RequestDispatcher.cs" />
+    <Compile Include="Client\SlidingWindowLifetime.cs" />
+    <Compile Include="Client\TimerBasedLifetime.cs" />
+    <Compile Include="Server\AggregateSet.T3.cs" />
+    <Compile Include="Server\BufferedEvent.T2.cs" />
+    <Compile Include="Server\BufferedEventAggregate.T2.cs" />
+    <Compile Include="Server\IAggregateStore.T2.cs" />
+    <Compile Include="Server\Aggregate.T3.cs" />
+    <Compile Include="Server\IAggregateVersion.T1.cs" />
+    <Compile Include="Server\DateTimeVersion.cs" />
+    <Compile Include="Server\Int64Version.cs" />
+    <Compile Include="Server\UnitOfWork.T3.cs" />
+    <Compile Include="Server\Int32Version.cs" />
+    <Compile Include="Server\DomainModelException.cs" />
+    <Compile Include="Server\IAggregate.T2.cs" />
+    <Compile Include="Server\EventSourcedAggregate.T2.cs" />
+    <Compile Include="Server\IBufferedEvent.T1.cs" />
+    <Compile Include="Server\IBufferedEventStream.T1.cs" />
+    <Compile Include="Server\IDomainEvent.T1.cs" />
+    <Compile Include="Server\IWritableEventStream.T1.cs" />
+    <Compile Include="Server\MemoryEventStream.T1.cs" />
+    <Compile Include="Server\BufferedEvent.T1.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="IConnection.cs" />
+    <Compile Include="CancellationTokenExtensions.cs" />
+    <Compile Include="Server\IMessageHandler.T1.cs" />
+    <Compile Include="Server\IMessageHandlerPipeline.T1.cs" />
+    <Compile Include="Server\IMessageHandlerPipelineFactory.cs" />
+    <Compile Include="Server\IMessageProcessor.cs" />
+    <Compile Include="Server\IMessageProcessorBus.cs" />
+    <Compile Include="Server\InstanceLifetime.cs" />
+    <Compile Include="Server\InstanceLifetimeAttribute.cs" />
+    <Compile Include="Server\MessageHandlerClass.cs" />
+    <Compile Include="Server\MessageHandlerFactory.cs" />
+    <Compile Include="Server\MessageHandlerPipeline.T1.cs" />
+    <Compile Include="Server\MessageHandlerPipelineDecorator.T1.cs" />
+    <Compile Include="Server\MessageHandlerPipelineForAction.T1.cs" />
+    <Compile Include="Server\MessageHandlerPipelineForClass.T1.cs" />
+    <Compile Include="Server\MessageHandlerPipelineForInterface.T1.cs" />
+    <Compile Include="Server\MessageProcessor.cs" />
+    <Compile Include="Server\MessageProcessorBus.cs" />
+    <Compile Include="Server\MessageProcessorBusConnection.cs" />
+    <Compile Include="Server\MessageProcessorBusConnectionForAction.T1.cs" />
+    <Compile Include="Server\MessageProcessorBusConnectionForInterface.T1.cs" />
+    <Compile Include="Server\MessageProcessorBusRelay.cs" />
+    <Compile Include="Server\MessageStack.cs" />
+    <Compile Include="Server\ScopeSpecificCacheEntry.T1.cs" />
+    <Compile Include="Server\ScopeSpecificCacheRelay.cs" />
+    <Compile Include="Clock.cs" />
+    <Compile Include="ClockScope.cs" />
+    <Compile Include="ClockWithOffset.cs" />
+    <Compile Include="IClockContext.cs" />
+    <Compile Include="StaticClockContext.cs" />
+    <Compile Include="StopwatchClock.cs" />
+    <Compile Include="ThreadStaticClockContext.cs" />
+    <Compile Include="Server\BufferedEventBus.cs" />
+    <Compile Include="EventHandlerExtensions.cs" />
+    <Compile Include="Server\IBufferedEvent.cs" />
+    <Compile Include="Server\IScopeSpecificCache.cs" />
+    <Compile Include="Server\IScopeSpecificCacheEntry.T1.cs" />
+    <Compile Include="Server\IDomainEventBus.cs" />
+    <Compile Include="IAsyncValidationService.cs" />
+    <Compile Include="IHasChangesIndicator.cs" />
+    <Compile Include="IIsValidIndicator.cs" />
+    <Compile Include="IMessage.cs" />
+    <Compile Include="IMessage.T1.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="Message.T1.cs" />
+    <Compile Include="MessageChangedOptions.cs" />
+    <Compile Include="MessageErrorInfo.cs" />
+    <Compile Include="MessageValidationAttribute.cs" />
+    <Compile Include="MessagePropertyLabelCollection.cs" />
+    <Compile Include="NullMessage.cs" />
+    <Compile Include="PropertyChangedNotifier.cs" />
+    <Compile Include="Server\UnitOfWorkCache.cs" />
+    <Compile Include="Server\UnitOfWorkController.cs" />
+    <Compile Include="IClock.cs" />
+    <Compile Include="RequestExecutionException.cs" />
+    <Compile Include="Server\IUnitOfWork.cs" />
+    <Compile Include="SystemClock.cs" />
+    <Compile Include="Server\UnitOfWorkContext.cs" />
+    <Compile Include="Server\ScopeSpecificCache.cs" />
+    <Compile Include="Server\UnitOfWorkScope.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Server\UnitOfWorkWrapper.cs" />
+    <Compile Include="Server\UnitOfWorkGroup.cs" />
+    <Compile Include="Server\UnitOfWorkItem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
