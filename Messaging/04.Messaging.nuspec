@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>    	
+	<id>System.ComponentModel.Messaging</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>Wim van Gool</owners>
+    <licenseUrl>http://opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>https://github.com/wimvangool/MessageProcessor</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+      With the rise of messaging-patterns in enterprise application development, we gathered some best
+      practices and put them into a set of libraries.
+
+      This library is the primary one, containing all basic components for creating, validating, dispatching
+      and processing messages. It also contains a bunch of IClock-implementations so that it is easy to
+      control time in your Unit Tests.
+
+      Source code and general guidance on how to use this framework can be found here:
+      https://github.com/wimvangool/MessageProcessor/wiki
+    </description>
+    <summary>Contains components to build applications based on messaging patterns.</summary>
+    <releaseNotes />
+    <copyright>Wim van Gool, 2014</copyright>
+    <language>en-US</language>
+    <tags>CQRS DDD Domain Driven Design BDD Event-Driven Architecture</tags>
+  </metadata>  
+</package>
