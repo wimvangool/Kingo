@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("YellowFlare MessageProcessing")]
 [assembly: AssemblyCopyright("Copyright © Wim van Gool 2014")]
 
-
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
 [assembly: NeutralResourcesLanguage("en-US")]
