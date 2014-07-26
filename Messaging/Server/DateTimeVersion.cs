@@ -19,6 +19,7 @@ namespace System.ComponentModel.Messaging.Server
             _value = value;
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (obj is DateTimeVersion)
@@ -28,11 +29,13 @@ namespace System.ComponentModel.Messaging.Server
             return false;
         }
 
+        /// <inheritdoc />
         public bool Equals(DateTimeVersion other)
         {
             return _value.Equals(other._value);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return _value.GetHashCode();
@@ -50,6 +53,7 @@ namespace System.ComponentModel.Messaging.Server
             }
         }
 
+        /// <inheritdoc />
         public int CompareTo(DateTimeVersion other)
         {
             return _value.CompareTo(other._value);
@@ -64,6 +68,7 @@ namespace System.ComponentModel.Messaging.Server
             return _value;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return _value.ToString(CultureInfo.InvariantCulture);
@@ -78,7 +83,7 @@ namespace System.ComponentModel.Messaging.Server
         /// </exception>
         /// <remarks>
         /// By default, this method returns the current date and time as the new timestamp.
-        /// Whether this timestamp is based on local time or UTC time depends on the timezone of
+        /// Whether this timestamp is based on local time or UTC time depends on the <see cref="DateTimeKind" /> of
         /// this instance. However, if the current timestamp is larger than the new timestamp (in
         /// other words, it has a value from the future), the smallest possible increment is applied,
         /// which is one tick.

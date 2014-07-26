@@ -1,7 +1,7 @@
 ﻿namespace System.ComponentModel.Messaging.Server
 {
     /// <summary>
-    /// Represents a handler that specialies in handling command.
+    /// Represents a handler that specializes in handling a specific type of command.
     /// </summary>
     /// <typeparam name="TCommand">Type of the command to handle.</typeparam>
     /// <remarks>

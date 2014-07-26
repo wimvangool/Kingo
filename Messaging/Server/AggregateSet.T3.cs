@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace System.ComponentModel.Messaging.Server
 {
-    internal sealed class AggregateSet<TKey, TVersion, TValue> : IEnumerable<Aggregate<TKey, TVersion, TValue>>
+    internal sealed class AggregateSet<TKey, TVersion, TValue> : IEnumerable<AggregateVersionTracker<TKey, TVersion, TValue>>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IAggregateVersion<TVersion>
         where TValue : class, IAggregate<TKey, TVersion>
     {
-        private readonly Dictionary<TKey, Aggregate<TKey, TVersion, TValue>> _aggregates;
+        private readonly Dictionary<TKey, AggregateVersionTracker<TKey, TVersion, TValue>> _aggregates;
 
         public AggregateSet()
         {
-            _aggregates = new Dictionary<TKey, Aggregate<TKey, TVersion, TValue>>(4);
+            _aggregates = new Dictionary<TKey, AggregateVersionTracker<TKey, TVersion, TValue>>(4);
         }
 
         public int Count
@@ -27,11 +27,11 @@ namespace System.ComponentModel.Messaging.Server
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            Aggregate<TKey, TVersion, TValue> aggregate;
+            AggregateVersionTracker<TKey, TVersion, TValue> aggregate;
 
             if (_aggregates.TryGetValue(key, out aggregate))
             {
-                value = aggregate.Value;
+                value = aggregate.Aggregate;
                 return true;
             }
             value = null;
@@ -40,7 +40,7 @@ namespace System.ComponentModel.Messaging.Server
 
         public void Add(TValue value)
         {
-            _aggregates.Add(value.Key, new Aggregate<TKey, TVersion, TValue>(value));
+            _aggregates.Add(value.Key, new AggregateVersionTracker<TKey, TVersion, TValue>(value));
         }
 
         public void Remove(TKey key)
@@ -63,7 +63,7 @@ namespace System.ComponentModel.Messaging.Server
             _aggregates.Clear();
         }
 
-        public IEnumerator<Aggregate<TKey, TVersion, TValue>> GetEnumerator()
+        public IEnumerator<AggregateVersionTracker<TKey, TVersion, TValue>> GetEnumerator()
         {
             return _aggregates.Values.GetEnumerator();
         }
@@ -71,6 +71,6 @@ namespace System.ComponentModel.Messaging.Server
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
+        }        
     }
 }

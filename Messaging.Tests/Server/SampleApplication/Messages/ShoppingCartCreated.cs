@@ -1,18 +1,18 @@
 ﻿namespace System.ComponentModel.Messaging.Server.SampleApplication.Messages
 {
-    internal sealed class ShoppingCartCreated : IDomainEvent<Guid>
+    internal sealed class ShoppingCartCreated : IAggregateEvent<Guid, Int32Version>
     {
-        Guid IDomainEvent<Guid>.AggregateKey
+        Guid IAggregateEvent<Guid, Int32Version>.AggregateKey
         {
             get { return ShoppingCartId; }
         }
 
-        int IDomainEvent<Guid>.AggregateVersion
+        Int32Version IAggregateEvent<Guid, Int32Version>.AggregateVersion
         {
             get { return ShoppingCartVersion; }
         }
 
         public Guid ShoppingCartId;
-        public int ShoppingCartVersion;              
+        public Int32Version ShoppingCartVersion;              
     }
 }

@@ -12,6 +12,9 @@ namespace System.ComponentModel.Messaging
 
         private bool _isDisposed;
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             if (_isDisposed)
@@ -29,11 +32,15 @@ namespace System.ComponentModel.Messaging
 
         #region [====== Opening and Closing ======]
 
+        /// <summary>
+        /// Indicates whether or not this connected has been opened.
+        /// </summary>
         protected abstract bool IsOpen
         {
             get;
         }
 
+        /// <inheritdoc />
         public void Open()
         {
             if (_isDisposed)
@@ -47,8 +54,12 @@ namespace System.ComponentModel.Messaging
             OpenConnection();
         }
 
-        protected abstract void OpenConnection();        
-        
+        /// <summary>
+        /// Opens this connections.
+        /// </summary>
+        protected abstract void OpenConnection();
+
+        /// <inheritdoc />
         public void Close()
         {
             if (_isDisposed)
@@ -63,6 +74,9 @@ namespace System.ComponentModel.Messaging
             throw NewConnectionAlreadyClosedException();
         }        
 
+        /// <summary>
+        /// Closes this connection.
+        /// </summary>
         protected abstract void CloseConnection();
 
         #endregion

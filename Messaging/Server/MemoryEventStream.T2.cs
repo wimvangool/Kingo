@@ -3,24 +3,26 @@
 namespace System.ComponentModel.Messaging.Server
 {
     /// <summary>
-    /// Represents an in-memory stream of <see cref="IDomainEvent{T}">domain events</see>.
+    /// Represents an in-memory stream of <see cref="IAggregateEvent{T, S}">aggregate events</see>.
     /// </summary>
-    /// <typeparam name="TKey">Type of aggregate=key.</typeparam>
-    public sealed class MemoryEventStream<TKey> : IBufferedEventStream<TKey>, IWritableEventStream<TKey>
+    /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
+    /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
+    public sealed class MemoryEventStream<TKey, TVersion> : IBufferedEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
+        where TVersion : struct, IAggregateVersion<TVersion>
     {
-        private readonly List<IBufferedEvent<TKey>> _buffer;
+        private readonly List<IBufferedEvent<TKey, TVersion>> _buffer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryEventStream{T}" /> class.
+        /// Initializes a new instance of the <see cref="MemoryEventStream{T, S}" /> class.
         /// </summary>
         public MemoryEventStream()
         {
-            _buffer = new List<IBufferedEvent<TKey>>();
+            _buffer = new List<IBufferedEvent<TKey, TVersion>>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryEventStream{T}" /> class.
+        /// Initializes a new instance of the <see cref="MemoryEventStream{T, S}" /> class.
         /// </summary>
         /// <param name="capacity">The initial capacity of this buffer.</param>
         /// <exception cref="ArgumentOutOfRangeException">
@@ -28,24 +30,24 @@ namespace System.ComponentModel.Messaging.Server
         /// </exception>
         public MemoryEventStream(int capacity)
         {
-            _buffer = new List<IBufferedEvent<TKey>>(capacity);
+            _buffer = new List<IBufferedEvent<TKey, TVersion>>(capacity);
         }
 
         /// <summary>
         /// Appends the specified event to this stream.
         /// </summary>
-        /// <typeparam name="TDomainEvent">Type of event to append.</typeparam>
-        /// <param name="domainEvent">Event to append.</param>
+        /// <typeparam name="TEvent">Type of event to append.</typeparam>
+        /// <param name="event">Event to append.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="domainEvent"/> is <c>null</c>.
+        /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        public void Write<TDomainEvent>(TDomainEvent domainEvent) where TDomainEvent : class, IDomainEvent<TKey>
+        public void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
         {
-            if (domainEvent == null)
+            if (@event == null)
             {
-                throw new ArgumentNullException("domainEvent");
+                throw new ArgumentNullException("event");
             }
-            _buffer.Add(new BufferedEvent<TKey, TDomainEvent>(domainEvent));
+            _buffer.Add(new BufferedEvent<TKey, TVersion, TEvent>(@event));
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="stream"/> is <c>null</c>.
         /// </exception>
-        public void FlushTo(IWritableEventStream<TKey> stream)
+        public void FlushTo(IWritableEventStream<TKey, TVersion> stream)
         {
             if (stream == null)
             {

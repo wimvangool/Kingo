@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Messaging.Client
 {
@@ -10,6 +11,11 @@ namespace System.ComponentModel.Messaging.Client
         public QueryDispatcherRelay(TQuery query) : base(query)
         {
             _query = query;
+        }
+
+        protected override Task<TResult> Start(Func<TResult> query)
+        {
+            return _query.Start(query);
         }
 
         protected override TResult Execute(TQuery message, CancellationToken? token)

@@ -99,13 +99,25 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public event EventHandler<ExecutionStartedEventArgs> ExecutionStarted;
+        public event EventHandler<ExecutionStartedEventArgs> ExecutionStarted
+        {
+            add { Dispatcher.ExecutionStarted += value; }
+            remove { Dispatcher.ExecutionStarted -= value; }
+        }
 
         /// <inheritdoc />
-        public event EventHandler<ExecutionCanceledEventArgs> ExecutionCanceled;
+        public event EventHandler<ExecutionCanceledEventArgs> ExecutionCanceled
+        {
+            add { Dispatcher.ExecutionCanceled += value; }
+            remove { Dispatcher.ExecutionCanceled -= value; }
+        }
 
         /// <inheritdoc />
-        public event EventHandler<ExecutionFailedEventArgs> ExecutionFailed;
+        public event EventHandler<ExecutionFailedEventArgs> ExecutionFailed
+        {
+            add { Dispatcher.ExecutionFailed += value; }
+            remove { Dispatcher.ExecutionFailed -= value; }
+        }
 
         /// <inheritdoc />
         event EventHandler<ExecutionSucceededEventArgs> IRequestDispatcher.ExecutionSucceeded
@@ -115,10 +127,18 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public event EventHandler<ExecutionCompletedEventArgs> ExecutionCompleted;
+        public event EventHandler<ExecutionCompletedEventArgs> ExecutionCompleted
+        {
+            add { Dispatcher.ExecutionCompleted += value; }
+            remove { Dispatcher.ExecutionCompleted -= value; }
+        }
 
         /// <inheritdoc />
-        public event EventHandler IsExecutingChanged;
+        public event EventHandler IsExecutingChanged
+        {
+            add { Dispatcher.IsExecutingChanged += value; }
+            remove { Dispatcher.IsExecutingChanged -= value; }
+        }
 
         /// <inheritdoc />
         public bool IsExecuting
@@ -156,8 +176,46 @@ namespace System.ComponentModel.Messaging.Client
 
         #region [====== Implementation ======]
 
+        /// <summary>
+        /// Creates, starts and returns a new <see cref="Task{T}" /> that is used to execute this query.
+        /// </summary>
+        /// <param name="query">The action that will be invoked on the background thread.</param>
+        /// <returns>The newly created task.</returns>
+        /// <remarks>
+        /// The default implementation uses the <see cref="TaskFactory{T}.StartNew(Func{T})">StartNew</see>-method
+        /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
+        /// more options when creating this task.
+        /// </remarks>
+        protected internal virtual Task<TResult> Start(Func<TResult> query)
+        {
+            return Task<TResult>.Factory.StartNew(query);
+        }
+
+        /// <summary>
+        /// Executes the query.
+        /// </summary>        
+        /// <param name="query">The execution-parameter.</param>
+        /// <param name="token">
+        /// Optional token that can be used to cancel the execution of this query.
+        /// </param>         
+        /// <exception cref="OperationCanceledException">
+        /// <paramref name="token"/> was specified and used to cancel the execution.
+        /// </exception>        
+        /// <remarks>
+        /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
+        /// </remarks>
         protected internal abstract TResult Execute(TQuery query, CancellationToken? token);
 
+        /// <summary>
+        /// Wraps the specified result into a new <see cref="QueryCacheValue" />.
+        /// </summary>
+        /// <param name="key">The key that will be used to store this value.</param>
+        /// <param name="result">The result returned by this query.</param>
+        /// <returns>A new <see cref="QueryCacheValue" />.</returns>
+        /// <remarks>
+        /// By default, this method returns a value with an infinite lifetime. You may want to override this method
+        /// to specify another lifetime for the cached value.
+        /// </remarks>
         protected internal virtual QueryCacheValue CreateCacheValue(object key, TResult result)
         {
             return new QueryCacheValue(result);

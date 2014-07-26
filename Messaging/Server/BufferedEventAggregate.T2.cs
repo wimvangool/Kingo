@@ -5,18 +5,18 @@
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
-    public abstract class BufferedEventAggregate<TKey, TVersion> : IBufferedEventStream<TKey>, IAggregate<TKey, TVersion>
+    public abstract class BufferedEventAggregate<TKey, TVersion> : IBufferedEventStream<TKey, TVersion>, IAggregate<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IAggregateVersion<TVersion>
     {
-        private readonly MemoryEventStream<TKey> _buffer;
+        private readonly MemoryEventStream<TKey, TVersion> _buffer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BufferedEventAggregate{TKey, TVersion}" /> class.
         /// </summary>
         protected BufferedEventAggregate()
         {
-            _buffer = new MemoryEventStream<TKey>();
+            _buffer = new MemoryEventStream<TKey, TVersion>();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@
         /// </exception>
         protected BufferedEventAggregate(int capacity)
         {
-            _buffer = new MemoryEventStream<TKey>(capacity);
+            _buffer = new MemoryEventStream<TKey, TVersion>(capacity);
         }
 
         TKey IAggregate<TKey, TVersion>.Key
@@ -57,7 +57,7 @@
             get;
         }
 
-        void IBufferedEventStream<TKey>.FlushTo(IWritableEventStream<TKey> stream)
+        void IBufferedEventStream<TKey, TVersion>.FlushTo(IWritableEventStream<TKey, TVersion> stream)
         {
             _buffer.FlushTo(stream);
         }
@@ -65,16 +65,16 @@
         /// <summary>
         /// Appends the specified event to this buffer.
         /// </summary>
-        /// <typeparam name="TDomainEvent">Type of the event to append.</typeparam>
-        /// <param name="domainEvent">The event to append.</param>
+        /// <typeparam name="TEvent">Type of the event to append.</typeparam>
+        /// <param name="event">The event to append.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="domainEvent"/> is <c>null</c>.
+        /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        protected void Write<TDomainEvent>(TDomainEvent domainEvent) where TDomainEvent : class, IDomainEvent<TKey>
+        protected void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
         {
-            _buffer.Write(domainEvent);
+            _buffer.Write(@event);
 
-            BufferedEventBus.Publish(domainEvent);
+            BufferedEventBus.Publish(@event);
         }        
     }
 }

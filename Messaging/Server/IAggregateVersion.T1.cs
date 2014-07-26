@@ -8,9 +8,9 @@
         where TVersion : struct, IAggregateVersion<TVersion>
     {
         /// <summary>
-        /// Increments the current version to a new version.
+        /// Returns an incremented version of this version.
         /// </summary>
-        /// <returns>The incremented value.</returns>
+        /// <returns>The incremented version.</returns>
         TVersion Increment();
     }
 }

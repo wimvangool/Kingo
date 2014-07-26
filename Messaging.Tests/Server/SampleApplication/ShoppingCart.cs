@@ -44,7 +44,7 @@ namespace System.ComponentModel.Messaging.Server.SampleApplication
             Write(new ProductAddedToCart
             {
                 ShoppingCartId = _id,
-                ShoppingCartVersion = Int32Version.Increment(ref _version).ToInt32(),
+                ShoppingCartVersion = Int32Version.Increment(ref _version),
                 ProductId = productId,
                 OldQuantity = oldQuantity,
                 NewQuantity = item.Quantity
@@ -63,7 +63,7 @@ namespace System.ComponentModel.Messaging.Server.SampleApplication
             cart.Write(new ShoppingCartCreated
             {
                 ShoppingCartId = shoppingCartId,
-                ShoppingCartVersion = Int32Version.Increment(ref cart._version).ToInt32()
+                ShoppingCartVersion = Int32Version.Increment(ref cart._version)
             });
             return cart;
         }

@@ -33,6 +33,13 @@
             Message = message;
         }
 
+        /// <summary>
+        /// Creates and returns a new <see cref="ExecutionCompletedEventArgs" /> based on this instance.
+        /// </summary>
+        /// <returns>
+        /// A new <see cref="ExecutionCompletedEventArgs" /> with the same <see cref="ExecutionId" />
+        /// and <see cref="Message" /> as this instance.
+        /// </returns>
         public virtual ExecutionCompletedEventArgs ToExecutionCompletedEventArgs()
         {
             return new ExecutionCompletedEventArgs(ExecutionId, Message);

@@ -61,6 +61,15 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No aggregate of type &apos;{0}&apos; with the specified key ({1}) was found..
+        /// </summary>
+        internal static string AggregateNotFoundException_Message {
+            get {
+                return ResourceManager.GetString("AggregateNotFoundException_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid type specified for comparison. Expected &apos;{0}&apos; but was &apos;{1}&apos;..
         /// </summary>
         internal static string AggregateVersion_InvalidType {

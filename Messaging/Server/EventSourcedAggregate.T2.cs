@@ -9,18 +9,18 @@ namespace System.ComponentModel.Messaging.Server
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
-    public abstract class EventSourcedAggregate<TKey, TVersion> : BufferedEventAggregate<TKey, TVersion>, IWritableEventStream<TKey>
+    public abstract class EventSourcedAggregate<TKey, TVersion> : BufferedEventAggregate<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IAggregateVersion<TVersion>
     {
-        private readonly Dictionary<Type, Action<IDomainEvent<TKey>>> _eventHandlers;
+        private readonly Dictionary<Type, Action<IAggregateEvent<TKey, TVersion>>> _eventHandlers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventSourcedAggregate{TKey, TVersion}" /> class.
         /// </summary>
         protected EventSourcedAggregate()
         {
-            _eventHandlers = new Dictionary<Type, Action<IDomainEvent<TKey>>>();
+            _eventHandlers = new Dictionary<Type, Action<IAggregateEvent<TKey, TVersion>>>();
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace System.ComponentModel.Messaging.Server
         /// </exception>
         protected EventSourcedAggregate(int capacity) : base(capacity)
         {
-            _eventHandlers = new Dictionary<Type, Action<IDomainEvent<TKey>>>();
+            _eventHandlers = new Dictionary<Type, Action<IAggregateEvent<TKey, TVersion>>>();
         }
 
         /// <summary>
@@ -62,48 +62,48 @@ namespace System.ComponentModel.Messaging.Server
             }            
         }
 
-        void IWritableEventStream<TKey>.Write<TDomainEvent>(TDomainEvent domainEvent)
+        void IWritableEventStream<TKey, TVersion>.Write<TEvent>(TEvent @event)
         {
-            if (domainEvent == null)
+            if (@event == null)
             {
-                throw new ArgumentNullException("domainEvent");
+                throw new ArgumentNullException("event");
             }
-            Handle(domainEvent);
+            Handle(@event);
         }
 
         /// <summary>
         /// Applies the specified event to this aggregate.
         /// </summary>
-        /// <typeparam name="TDomainEvent">Type of the event to apply.</typeparam>
-        /// <param name="domainEvent">The event to apply.</param>
+        /// <typeparam name="TEvent">Type of the event to apply.</typeparam>
+        /// <param name="event">The event to apply.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="domainEvent"/> is <c>null</c>.
+        /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// No handler for an event of the specified type has been registered.
         /// </exception>
-        protected void Apply<TDomainEvent>(TDomainEvent domainEvent)
-            where TDomainEvent : class, IDomainEvent<TKey>
+        protected void Apply<TEvent>(TEvent @event)
+            where TEvent : class, IAggregateEvent<TKey, TVersion>
         {
-            if (domainEvent == null)
+            if (@event == null)
             {
-                throw new ArgumentNullException("domainEvent");
+                throw new ArgumentNullException("event");
             }
-            Handle(domainEvent);
-            Write(domainEvent);
+            Handle(@event);
+            Write(@event);
         }
 
-        private void Handle<TDomainEvent>(TDomainEvent domainEvent) where TDomainEvent : class, IDomainEvent<TKey>
+        private void Handle<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
         {
-            Type domainEventType = typeof(TDomainEvent);
+            Type eventType = typeof(TEvent);
 
             try
             {
-                _eventHandlers[domainEventType].Invoke(domainEvent);
+                _eventHandlers[eventType].Invoke(@event);
             }
             catch (KeyNotFoundException)
             {
-                throw NewMissingEventHandlerException(domainEventType);
+                throw NewMissingEventHandlerException(eventType);
             }
         }
 

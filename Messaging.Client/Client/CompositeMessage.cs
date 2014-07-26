@@ -65,6 +65,7 @@ namespace System.ComponentModel.Messaging.Client
 
         #region [====== Change Tracking ======]
 
+        /// <inheritdoc />
         public event EventHandler HasChangesChanged;
 
         private void HandleHasChangesChanged(object sender, EventArgs e)
@@ -74,6 +75,7 @@ namespace System.ComponentModel.Messaging.Client
             OnPropertyChanged(() => HasChanges);
         }
 
+        /// <inheritdoc />
         public bool HasChanges
         {
             get { return _messages.Any(message => message.HasChanges); }
@@ -143,11 +145,13 @@ namespace System.ComponentModel.Messaging.Client
             OnPropertyChanged(() => IsValid);
         }
 
+        /// <inheritdoc />
         public bool IsValid
         {
             get { return _messages.All(message => message.IsValid); }
         }
 
+        /// <inheritdoc />
         public void Validate()
         {
             foreach (var message in _messages)

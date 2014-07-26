@@ -26,6 +26,7 @@ namespace System.ComponentModel.Messaging.Server
             _value = value;
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (obj is Int32Version)
@@ -35,11 +36,13 @@ namespace System.ComponentModel.Messaging.Server
             return false;
         }
 
+        /// <inheritdoc />
         public bool Equals(Int32Version other)
         {
             return _value.Equals(other._value);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return _value.GetHashCode();
@@ -57,6 +60,7 @@ namespace System.ComponentModel.Messaging.Server
             }
         }
 
+        /// <inheritdoc />
         public int CompareTo(Int32Version other)
         {
             return _value.CompareTo(other._value);
@@ -71,6 +75,7 @@ namespace System.ComponentModel.Messaging.Server
             return _value;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return _value.ToString(CultureInfo.InvariantCulture);
