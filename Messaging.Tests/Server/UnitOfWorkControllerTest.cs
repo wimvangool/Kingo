@@ -18,9 +18,9 @@ namespace System.ComponentModel.Messaging.Server
                 _creationThread = Thread.CurrentThread;
             }
 
-            public string FlushGroup
+            public Guid FlushGroupId
             {
-                get { return null; }
+                get { return Guid.Empty; }
             }
 
             public bool CanBeFlushedAsynchronously
@@ -80,7 +80,7 @@ namespace System.ComponentModel.Messaging.Server
         {
             var checker = new FlushThreadChecker(true);
 
-            _controller.Enlist(new UnitOfWorkOneAsyncTest(checker));            
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checker, FlushIdOne));            
             _controller.Flush();
 
             checker.AssertFlushedOnExpectedThread();
@@ -94,8 +94,8 @@ namespace System.ComponentModel.Messaging.Server
 
             // NB: Because checker A and B will end up in one group, and one forces a synchronous flush,
             // both will be flushed synchronously.
-            _controller.Enlist(new UnitOfWorkOneSyncTest(checkerA));
-            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerB));            
+            _controller.Enlist(new UnitOfWorkOneSyncTest(checkerA, FlushIdOne));
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerB, FlushIdOne));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnExpectedThread();            
@@ -108,8 +108,8 @@ namespace System.ComponentModel.Messaging.Server
             var checkerA = new FlushThreadChecker(true);
             var checkerB = new FlushThreadChecker(false);
 
-            _controller.Enlist(new UnitOfWorkTwoSyncTest(checkerA));
-            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerB));            
+            _controller.Enlist(new UnitOfWorkTwoSyncTest(checkerA, FlushIdTwo));
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerB, FlushIdOne));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnExpectedThread();
@@ -123,13 +123,23 @@ namespace System.ComponentModel.Messaging.Server
             var checkerB = new FlushThreadChecker(true);
             var checkerC = new FlushThreadChecker(false);
 
-            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerA));
-            _controller.Enlist(new UnitOfWorkTwoSyncTest(checkerB));
-            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerC));            
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerA, FlushIdOne));
+            _controller.Enlist(new UnitOfWorkTwoSyncTest(checkerB, FlushIdTwo));
+            _controller.Enlist(new UnitOfWorkOneAsyncTest(checkerC, FlushIdOne));            
             _controller.Flush();
 
             checkerA.AssertFlushedOnSameThreadAs(checkerC);
             checkerB.AssertFlushedOnExpectedThread();          
-        }             
+        }
+
+        private static Guid FlushIdOne
+        {
+            get { return UnitOfWorkWrapperItemTest.FlushIdOne; }
+        }
+
+        private static Guid FlushIdTwo
+        {
+            get { return UnitOfWorkWrapperItemTest.FlushIdTwo; }
+        }
     }
 }

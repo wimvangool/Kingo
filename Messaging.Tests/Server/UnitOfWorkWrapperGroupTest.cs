@@ -8,13 +8,13 @@ namespace System.ComponentModel.Messaging.Server
     public sealed class UnitOfWorkWrapperGroupTest
     {       
         [TestMethod]
-        public void ResourceId_ReturnsResourceIdOfFirstItem()
+        public void FlushGroupId_ReturnsFlushGroupIdOfFirstItem()
         {
             var resourceItemA = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
             var resourceItemB = new UnitOfWorkItem(CreateUnitOfWorkOneSync());
             var group = new UnitOfWorkGroup(resourceItemA, resourceItemB);
 
-            Assert.AreEqual("One", group.FlushGroup);
+            Assert.AreEqual(FlushIdOne, group.FlushGroupId);
         }
 
         [TestMethod]
@@ -239,19 +239,29 @@ namespace System.ComponentModel.Messaging.Server
             flushableMockB.Verify(flushable => flushable.Flush(), Times.Once());
         }
 
+        private static Guid FlushIdOne
+        {
+            get { return UnitOfWorkWrapperItemTest.FlushIdOne; }
+        }
+
+        private static Guid FlushIdTwo
+        {
+            get { return UnitOfWorkWrapperItemTest.FlushIdTwo; }
+        }
+
         private static IUnitOfWork CreateUnitOfWorkOneSync(IUnitOfWork flushable = null)
         {
-            return new UnitOfWorkOneSyncTest(flushable ?? CreateUnitOfWork());
+            return new UnitOfWorkOneSyncTest(flushable ?? CreateUnitOfWork(), FlushIdOne);
         }
 
         private static IUnitOfWork CreateUnitOfWorkOneAsync(IUnitOfWork flushable = null)
         {
-            return new UnitOfWorkOneAsyncTest(flushable ?? CreateUnitOfWork());
+            return new UnitOfWorkOneAsyncTest(flushable ?? CreateUnitOfWork(), FlushIdOne);
         }
 
         private static IUnitOfWork CreateUnitOfWorkTwoSync(IUnitOfWork flushable = null)
         {
-            return new UnitOfWorkTwoSyncTest(flushable ?? CreateUnitOfWork());
+            return new UnitOfWorkTwoSyncTest(flushable ?? CreateUnitOfWork(), FlushIdTwo);
         }
 
         private static IUnitOfWork CreateUnitOfWork()

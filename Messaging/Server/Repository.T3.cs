@@ -30,17 +30,22 @@ namespace System.ComponentModel.Messaging.Server
 
         #region [====== IUnitOfWork Implementation ======]
 
-        string IUnitOfWork.FlushGroup
+        Guid IUnitOfWork.FlushGroupId
         {
-            get { return FlushGroup; }
+            get { return FlushGroupId; }
         }
 
         /// <summary>
         /// Indicates which group this unit of work belongs to.
         /// </summary>
-        protected virtual string FlushGroup
+        /// <remarks>
+        /// The default implementation returns the <see cref="Guid.Empty">empty Guid</see>, which
+        /// prevents this <see cref="Repository{S, T, U}" /> from grouping with other
+        /// <see cref="IUnitOfWork">units of work</see>.
+        /// </remarks>
+        protected virtual Guid FlushGroupId
         {
-            get { return null; }
+            get { return Guid.Empty; }
         }
 
         bool IUnitOfWork.CanBeFlushedAsynchronously
@@ -52,9 +57,12 @@ namespace System.ComponentModel.Messaging.Server
         /// Indicates whether or not the controller may flush this unit of work on a thread different than it was
         /// created on.
         /// </summary>
+        /// <remarks>
+        /// The default implementation returns <c>false</c>.
+        /// </remarks>
         protected virtual bool CanBeFlushedAsynchronously
         {
-            get { return true; }
+            get { return false; }
         }
 
         bool IUnitOfWork.RequiresFlush()

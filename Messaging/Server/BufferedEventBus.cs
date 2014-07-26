@@ -19,9 +19,9 @@ namespace System.ComponentModel.Messaging.Server
             _domainEventBus = domainEventBus;
         }
 
-        string IUnitOfWork.FlushGroup
+        Guid IUnitOfWork.FlushGroupId
         {
-            get { return typeof(BufferedEventBus).FullName; }
+            get { return Guid.Empty; }
         }
 
         bool IUnitOfWork.CanBeFlushedAsynchronously

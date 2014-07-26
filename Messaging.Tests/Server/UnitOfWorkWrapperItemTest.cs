@@ -119,6 +119,9 @@ namespace System.ComponentModel.Messaging.Server
             flushableMock.Verify(flushable => flushable.Flush(), Times.Once());
         }
 
+        internal static readonly Guid FlushIdOne = Guid.NewGuid();
+        internal static readonly Guid FlushIdTwo = Guid.NewGuid();
+
         private static IUnitOfWork CreateUnitOfWork()
         {
             return new Mock<IUnitOfWork>().Object;
@@ -126,12 +129,12 @@ namespace System.ComponentModel.Messaging.Server
 
         private static IUnitOfWork CreateUnitOfWorkWithAttributeOneSync()
         {
-            return new UnitOfWorkOneSyncTest(CreateUnitOfWork());
+            return new UnitOfWorkOneSyncTest(CreateUnitOfWork(), FlushIdOne);
         }
 
         private static IUnitOfWork CreateUnitOfWorkWithAttributeTwoSync()
         {
-            return new UnitOfWorkTwoSyncTest(CreateUnitOfWork());
+            return new UnitOfWorkTwoSyncTest(CreateUnitOfWork(), FlushIdTwo);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <summary>
         /// Registers a handler that is invoked when the aggregate writes an event of the specified type.
         /// </summary>
-        /// <typeparam name="TDomainEvent">Type of the event to handle.</typeparam>
+        /// <typeparam name="TEvent">Type of the event to handle.</typeparam>
         /// <param name="eventHandler">The handler of the event.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="eventHandler"/> is <c>null</c>.
@@ -46,7 +46,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <exception cref="ArgumentException">
         /// A handler for the specified event-type <paramtyperef name="TDomainEvent"/> has already been registered.
         /// </exception>
-        protected void RegisterEventHandler<TDomainEvent>(Action<TDomainEvent> eventHandler)
+        protected void RegisterEventHandler<TEvent>(Action<TEvent> eventHandler)
         {
             if (eventHandler == null)
             {
@@ -54,11 +54,11 @@ namespace System.ComponentModel.Messaging.Server
             }
             try
             {
-                _eventHandlers.Add(typeof(TDomainEvent), domainEvent => eventHandler.Invoke((TDomainEvent)domainEvent));
+                _eventHandlers.Add(typeof(TEvent), @event => eventHandler.Invoke((TEvent) @event));
             }
             catch (ArgumentException)
             {
-                throw NewHandlerForTypeAlreadyRegisteredException(typeof(TDomainEvent));
+                throw NewHandlerForTypeAlreadyRegisteredException(typeof(TEvent));
             }            
         }
 

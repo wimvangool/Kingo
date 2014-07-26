@@ -4,15 +4,17 @@ namespace System.ComponentModel.Messaging.Server
     internal sealed class UnitOfWorkOneAsyncTest : IUnitOfWork
     {
         private readonly IUnitOfWork _flushable;
+        private readonly Guid _flushGroupId;
 
-        public UnitOfWorkOneAsyncTest(IUnitOfWork flushable)
+        public UnitOfWorkOneAsyncTest(IUnitOfWork flushable, Guid flushGroupId)
         {
             _flushable = flushable;
+            _flushGroupId = flushGroupId;
         }
 
-        public string FlushGroup
+        public Guid FlushGroupId
         {
-            get { return "One"; }
+            get { return _flushGroupId; }
         }
 
         public bool CanBeFlushedAsynchronously

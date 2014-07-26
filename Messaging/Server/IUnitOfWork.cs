@@ -7,9 +7,15 @@ namespace System.ComponentModel.Messaging.Server
     public interface IUnitOfWork
     {
         /// <summary>
-        /// Indicates which group this unit of work belongs to.
+        /// Indicates which group this <see cref="IUnitOfWork" /> belongs to when <see cref="UnitOfWorkScope.Complete()" />
+        /// is called, so that can be determined on which thread this instance's <see cref="Flush()" /> will be called.
         /// </summary>
-        string FlushGroup
+        /// <remarks>
+        /// When this property returns <see cref="Guid.Empty" />, this <see cref="IUnitOfWork" /> will never be grouped
+        /// with other instances. For all other values, this id can be used to ensure that all <see cref="IUnitOfWork" />
+        /// instances with the same id are flushed on the same thread.
+        /// </remarks>
+        Guid FlushGroupId
         {
             get;
         }

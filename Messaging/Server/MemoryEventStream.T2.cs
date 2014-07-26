@@ -9,7 +9,7 @@ namespace System.ComponentModel.Messaging.Server
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
     public sealed class MemoryEventStream<TKey, TVersion> : IBufferedEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IAggregateVersion<TVersion>
+        where TVersion : struct, IEquatable<TVersion>
     {
         private readonly List<IBufferedEvent<TKey, TVersion>> _buffer;
 
