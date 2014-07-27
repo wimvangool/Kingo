@@ -52,6 +52,7 @@
     <Compile Include="Client\CommandDispatcher.cs" />
     <Compile Include="Client\CommandDispatcher.T1.cs" />
     <Compile Include="Client\CommandDispatcherBase.cs" />
+    <Compile Include="Client\MessageBasedLifetime.cs" />
     <Compile Include="Server\AggregateNotFoundException.cs" />
     <Compile Include="Server\CommandHandler.T1.cs" />
     <Compile Include="Client\ExecutionCancelledEventArgs.cs" />
