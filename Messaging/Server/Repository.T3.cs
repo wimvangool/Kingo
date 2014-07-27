@@ -11,7 +11,7 @@ namespace System.ComponentModel.Messaging.Server
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
     public abstract class Repository<TKey, TVersion, TAggregate> : IUnitOfWork
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IAggregateVersion<TVersion>
+        where TVersion : struct, IEquatable<TVersion>
         where TAggregate : class, IAggregate<TKey, TVersion>
     {                
         private readonly AggregateSet<TKey, TVersion, TAggregate> _selectedAggregates;
