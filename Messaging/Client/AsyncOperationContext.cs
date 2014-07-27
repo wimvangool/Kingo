@@ -6,11 +6,15 @@ namespace System.ComponentModel.Messaging.Client
     /// <summary>
     /// Represents a context that is used to sends or posts messages to the appropriate thread(s) using a <see cref="SynchronizationContext" />.
     /// </summary>
-    public sealed class RequestContext
+    public sealed class AsyncOperationContext
     {
         private readonly SynchronizationContext _context;        
         
-        private RequestContext(SynchronizationContext context)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncOperationContext" /> class.
+        /// </summary>
+        /// <param name="context">The context that is wrapped by this context.</param>
+        public AsyncOperationContext(SynchronizationContext context)
         {
             _context = context;
         }     
@@ -19,7 +23,7 @@ namespace System.ComponentModel.Messaging.Client
         /// Indicates whether or not this context is associated to a <see cref="SynchronizationContext" /> such that
         /// it can send or post any messages to it.
         /// </summary>
-        public bool IsAssociatedToSynchronizationContext
+        public bool CanInvoke
         {
             get { return _context != null; }
         }
@@ -60,30 +64,16 @@ namespace System.ComponentModel.Messaging.Client
             {
                 _context.Post(state => action.Invoke(), null);
             }           
-        }
-
-        private static readonly RequestContext _NullContext = new RequestContext(null);
-        private static readonly ConcurrentDictionary<SynchronizationContext, RequestContext> _Contexts;
-
-        static RequestContext()
-        {
-            _Contexts = new ConcurrentDictionary<SynchronizationContext, RequestContext>();
-        }
-
+        } 
+       
         /// <summary>
-        /// Returns the current context which is based on the <see cref="SynchronizationContext.Current">current SynchronizationContext</see>.
+        /// Returns a new instance of the <see cref="AsyncOperationContext" /> class that wraps the
+        /// <see cref="SynchronizationContext.Current">current SynchronizationContext</see>.
         /// </summary>
-        public static RequestContext Current
+        /// <returns>A new instance of the <see cref="AsyncOperationContext" /> class.</returns>
+        public static AsyncOperationContext ForCurrentSynchronizationContext()
         {
-            get
-            {
-                var currentContext = SynchronizationContext.Current;
-                if (currentContext == null)
-                {
-                    return _NullContext;
-                }
-                return _Contexts.GetOrAdd(SynchronizationContext.Current, context => new RequestContext(context));
-            }
+            return new AsyncOperationContext(SynchronizationContext.Current);
         }
     }
 }

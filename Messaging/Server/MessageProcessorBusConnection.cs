@@ -4,26 +4,26 @@ namespace System.ComponentModel.Messaging.Server
 {
     internal abstract class MessageProcessorBusConnection : Connection
     {       
-        private readonly ICollection<MessageProcessorBusConnection> _subscriptions;        
+        private readonly ICollection<MessageProcessorBusConnection> _connections;        
 
-        protected MessageProcessorBusConnection(ICollection<MessageProcessorBusConnection> subscriptions)
+        protected MessageProcessorBusConnection(ICollection<MessageProcessorBusConnection> connections)
         {            
-            _subscriptions = subscriptions;                      
+            _connections = connections;                      
         }
 
         protected override bool IsOpen
         {
-            get { return _subscriptions.Contains(this); }
+            get { return _connections.Contains(this); }
         }
 
         protected override void OpenConnection()
         {
-            _subscriptions.Add(this);
+            _connections.Add(this);
         }
 
         protected override void CloseConnection()
         {
-            _subscriptions.Remove(this);
+            _connections.Remove(this);
         }
 
         public abstract void Handle<TPublished>(IMessageProcessor processor, TPublished message);

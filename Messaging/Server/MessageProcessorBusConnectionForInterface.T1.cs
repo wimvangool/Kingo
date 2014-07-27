@@ -7,7 +7,7 @@ namespace System.ComponentModel.Messaging.Server
     {
         private readonly IMessageHandler<TMessage> _handler;
 
-        public MessageProcessorBusConnectionForInterface(ICollection<MessageProcessorBusConnection> subscriptions, IMessageHandler<TMessage> handler) : base(subscriptions)
+        public MessageProcessorBusConnectionForInterface(ICollection<MessageProcessorBusConnection> connection, IMessageHandler<TMessage> handler) : base(connection)
         {
             if (handler == null)
             {

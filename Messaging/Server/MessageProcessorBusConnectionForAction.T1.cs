@@ -6,7 +6,7 @@ namespace System.ComponentModel.Messaging.Server
     {
         private readonly Action<TMessage> _action;
 
-        public MessageProcessorBusConnectionForAction(ICollection<MessageProcessorBusConnection> subscriptions, Action<TMessage> action) : base(subscriptions)
+        public MessageProcessorBusConnectionForAction(ICollection<MessageProcessorBusConnection> connections, Action<TMessage> action) : base(connections)
         {
             if (action == null)
             {

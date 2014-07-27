@@ -37,7 +37,7 @@ namespace System.ComponentModel.Messaging.Client
         public override Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
         {           
             var executionId = Guid.NewGuid();
-            var requestContext = RequestContext.Current;
+            var requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
             TResult result;

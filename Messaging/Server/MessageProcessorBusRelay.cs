@@ -11,6 +11,16 @@
             _domainEventBus = domainEventBus;
         }
 
+        public IConnection ConnectThreadLocal<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class
+        {
+            return _messageProcessorBus.ConnectThreadLocal(action, openConnection);
+        }
+
+        public IConnection ConnectThreadLocal<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class
+        {
+            return _messageProcessorBus.ConnectThreadLocal(handler, openConnection);
+        }
+
         public IConnection Connect<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class
         {
             return _messageProcessorBus.Connect(action, openConnection);
@@ -25,6 +35,6 @@
         {
             _messageProcessorBus.Publish(message);
             _domainEventBus.Publish(message);
-        }
+        }        
     }
 }

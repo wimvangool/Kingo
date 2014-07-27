@@ -9,20 +9,20 @@
     /// </remarks>
     public abstract class QueryCache
     {
-        private readonly RequestContext _requestContext;
+        private readonly AsyncOperationContext _requestContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryCache" /> class.
         /// </summary>
         protected QueryCache()
         {
-            _requestContext = RequestContext.Current;
+            _requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
         }
 
         /// <summary>
         /// Returns the context that is used to publish all events on.
         /// </summary>
-        protected RequestContext RequestContext
+        protected AsyncOperationContext RequestContext
         {
             get { return _requestContext; }
         }

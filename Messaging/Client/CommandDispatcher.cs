@@ -33,7 +33,7 @@ namespace System.ComponentModel.Messaging.Client
         public override Task ExecuteAsync(CancellationToken? token)
         {            
             var executionId = Guid.NewGuid();
-            var requestContext = RequestContext.Current;
+            var requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
 

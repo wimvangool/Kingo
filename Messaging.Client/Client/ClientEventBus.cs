@@ -8,21 +8,21 @@ namespace System.ComponentModel.Messaging.Client
     /// </summary>
     public abstract class ClientEventBus : IDomainEventBus
     {
-        private readonly RequestContext _requestContext;        
+        private readonly AsyncOperationContext _requestContext;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientEventBus" /> class.
         /// </summary>
         protected ClientEventBus()
-        {            
-            _requestContext = RequestContext.Current;
+        {
+            _requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
         }
 
         /// <summary>
         /// Returns the associated <see cref="RequestContext" /> that is used to publish messages
         /// from the <see cref="MessageProcessor" /> to the appropriate client-thread.
         /// </summary>
-        protected RequestContext RequestContext
+        protected AsyncOperationContext RequestContext
         {
             get { return _requestContext; }
         }        

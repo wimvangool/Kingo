@@ -91,7 +91,7 @@ namespace System.ComponentModel.Messaging.Client
         {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
-            var requestContext = RequestContext.Current;
+            var requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
 
