@@ -106,15 +106,6 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The clock-scopes aren&apos;t nested correctly..
-        /// </summary>
-        internal static string ClockScope_IncorrectNesting {
-            get {
-                return ResourceManager.GetString("ClockScope_IncorrectNesting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The connection is already closed..
         /// </summary>
         internal static string Connection_AlreadyClosed {
@@ -264,6 +255,24 @@ namespace System.ComponentModel.Messaging.Resources {
         internal static string QueryCacheValueLifetime_ThisAlreadyStarted {
             get {
                 return ResourceManager.GetString("QueryCacheValueLifetime_ThisAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scopes were not nested correctly..
+        /// </summary>
+        internal static string Scope_IncorrectNesting {
+            get {
+                return ResourceManager.GetString("Scope_IncorrectNesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot execute this method because the current SynchronizationContext is null..
+        /// </summary>
+        internal static string SynchronizationContextScope_ContextNotSet {
+            get {
+                return ResourceManager.GetString("SynchronizationContextScope_ContextNotSet", resourceCulture);
             }
         }
         

@@ -98,7 +98,7 @@ namespace System.ComponentModel.Messaging.Server
         {
             // New units are first attempted to be merged with any existing unit based on group-id,
             // since units with the same group-id will always be flushed on same thread sequentially (but not
-            // in any particular order). Only if this fails will be units be added as a completely new item.
+            // in any particular order). Only if this fails will units be added as a completely new item.
             for (int index = 0; index < _unitsOfWork.Count; index++)
             {
                 UnitOfWorkWrapper unit = _unitsOfWork[index];

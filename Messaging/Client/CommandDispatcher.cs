@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace System.ComponentModel.Messaging.Client
 {    
@@ -13,18 +14,30 @@ namespace System.ComponentModel.Messaging.Client
         /// <inheritdoc />
         public override void Execute()
         {
+            TransactionScope transactionScope = null;
             var executionId = Guid.NewGuid();            
 
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
+            OnExecutionStarted(new ExecutionStartedEventArgs(executionId));            
 
             try
             {
+                transactionScope = CreateTransactionScope();
+
                 Execute(null);
+
+                transactionScope.Complete();
             }
             catch (Exception exception)
             {
                 OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception));
                 throw;
+            }
+            finally
+            {
+                if (transactionScope != null)
+                {
+                    transactionScope.Dispose();
+                }
             }
             OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId));
         }
@@ -33,29 +46,45 @@ namespace System.ComponentModel.Messaging.Client
         public override Task ExecuteAsync(CancellationToken? token)
         {            
             var executionId = Guid.NewGuid();
-            var requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
+            var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
 
             return Start(() =>
             {
-                try
+                using (var scope = new SynchronizationContextScope(context))
                 {
-                    token.ThrowIfCancellationRequested();
+                    TransactionScope transactionScope = null;
 
-                    Execute(token);                    
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        transactionScope = CreateTransactionScope();                        
+
+                        Execute(token);
+
+                        transactionScope.Complete();
+                    }
+                    catch (OperationCanceledException exception)
+                    {
+                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
+                        throw;
+                    }
+                    catch (Exception exception)
+                    {
+                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
+                        throw;
+                    }
+                    finally
+                    {
+                        if (transactionScope != null)
+                        {
+                            transactionScope.Dispose();
+                        }
+                    }
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId)));
                 }
-                catch (OperationCanceledException exception)
-                {
-                    requestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
-                    throw;
-                }
-                catch (Exception exception)
-                {
-                    requestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
-                    throw;
-                }
-                requestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId)));
             });
         }
 

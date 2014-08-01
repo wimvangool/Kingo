@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Messaging.Client
+﻿using System.Threading;
+
+namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
     /// Represents the base-class for every cache that is used to store the results of <see cref="IQueryDispatcher{T}">queries</see>.
@@ -9,22 +11,22 @@
     /// </remarks>
     public abstract class QueryCache
     {
-        private readonly AsyncOperationContext _requestContext;
+        private readonly SynchronizationContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryCache" /> class.
         /// </summary>
         protected QueryCache()
         {
-            _requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
+            _context = SynchronizationContext.Current;
         }
 
         /// <summary>
         /// Returns the context that is used to publish all events on.
         /// </summary>
-        protected AsyncOperationContext RequestContext
+        protected SynchronizationContext SynchronizationContext
         {
-            get { return _requestContext; }
+            get { return _context; }
         }
   
         /// <summary>
@@ -51,7 +53,10 @@
                 
                 cacheValue.Dispose();
 
-                RequestContext.InvokeAsync(() => OnCachedValueExpired(new QueryCacheValueExpiredEventArgs(key, value)));
+                using (var scope = new SynchronizationContextScope(_context))
+                {
+                    scope.Post(() => OnCachedValueExpired(new QueryCacheValueExpiredEventArgs(key, value)));
+                }
             }
         }
 

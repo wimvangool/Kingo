@@ -78,7 +78,7 @@
     <Compile Include="Client\QueryDispatcher.T2.cs" />
     <Compile Include="Client\QueryDispatcherBase.T1.cs" />
     <Compile Include="Client\QueryDispatcherRelay.T2.cs" />
-    <Compile Include="Client\AsyncOperationContext.cs" />
+    <Compile Include="Client\SynchronizationContextScope.cs" />
     <Compile Include="Client\RequestDispatcher.cs" />
     <Compile Include="Client\SlidingWindowLifetime.cs" />
     <Compile Include="Client\TimerBasedLifetime.cs" />

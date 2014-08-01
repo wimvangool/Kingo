@@ -38,7 +38,7 @@ namespace System.ComponentModel.Messaging
 
         private static Exception NewIncorrectNestingOfScopesException()
         {
-            return new InvalidOperationException(ExceptionMessages.ClockScope_IncorrectNesting);
+            return new InvalidOperationException(ExceptionMessages.Scope_IncorrectNesting);
         }
     }
 }

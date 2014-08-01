@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Transactions;
 
 namespace System.ComponentModel.Messaging.Client
 {
@@ -6,7 +7,9 @@ namespace System.ComponentModel.Messaging.Client
     /// Basic implementation of the <see cref="IRequestDispatcher" /> interface, serving as a base class for all request-types.
     /// </summary>
     public abstract class RequestDispatcher : IRequestDispatcher
-    {        
+    {
+        internal RequestDispatcher() { }
+
         #region [====== ExecutionStarted ======]
 
         /// <inheritdoc />
@@ -143,5 +146,18 @@ namespace System.ComponentModel.Messaging.Client
         }       
 
         #endregion        
+
+        #region [====== Transaction Management ======]
+
+        /// <summary>
+        /// Creates and returns a new <see cref="TransactionScope" /> in which the request is executed.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual TransactionScope CreateTransactionScope()
+        {
+            return new TransactionScope();
+        }
+
+        #endregion
     }
 }

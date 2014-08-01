@@ -132,9 +132,6 @@
   <data name="CacheRelay_NotAvailable" xml:space="preserve">
     <value>Cannot perform the operation because the cache is currently not available.</value>
   </data>
-  <data name="ClockScope_IncorrectNesting" xml:space="preserve">
-    <value>The clock-scopes aren't nested correctly.</value>
-  </data>
   <data name="Connection_AlreadyClosed" xml:space="preserve">
     <value>The connection is already closed.</value>
   </data>
@@ -185,6 +182,12 @@
   </data>
   <data name="QueryCacheValueLifetime_ThisAlreadyStarted" xml:space="preserve">
     <value>Cannot combine this lifetime with another because it has already started.</value>
+  </data>
+  <data name="Scope_IncorrectNesting" xml:space="preserve">
+    <value>The scopes were not nested correctly.</value>
+  </data>
+  <data name="SynchronizationContextScope_ContextNotSet" xml:space="preserve">
+    <value>Cannot execute this method because the current SynchronizationContext is null.</value>
   </data>
   <data name="TimerBasedLifetime_ZeroLifetime" xml:space="preserve">
     <value>The length of a lifetime cannot be zero.</value>

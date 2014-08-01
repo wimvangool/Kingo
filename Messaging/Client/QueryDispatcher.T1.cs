@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace System.ComponentModel.Messaging.Client
 {    
@@ -14,6 +15,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <inheritdoc />
         public override TResult Execute(QueryCache cache)
         {
+            TransactionScope transactionScope = null;
             var executionId = Guid.NewGuid();            
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
@@ -21,12 +23,23 @@ namespace System.ComponentModel.Messaging.Client
 
             try
             {
+                transactionScope = CreateTransactionScope();
+
                 result = ExecuteQuery(cache, null);
+
+                transactionScope.Complete();
             }
             catch (Exception exception)
             {
                 OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception));
                 throw;
+            }
+            finally
+            {
+                if (transactionScope != null)
+                {
+                    transactionScope.Dispose();
+                }
             }
             OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result));
 
@@ -37,7 +50,7 @@ namespace System.ComponentModel.Messaging.Client
         public override Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
         {           
             var executionId = Guid.NewGuid();
-            var requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
+            var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
             TResult result;
@@ -50,27 +63,41 @@ namespace System.ComponentModel.Messaging.Client
             }
             return Start(() =>
             {
-                try
+                using (var scope = new SynchronizationContextScope(context))
                 {
-                    token.ThrowIfCancellationRequested();
+                    TransactionScope transactionScope = null;
 
-                    result = ExecuteQuery(cache, token);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
 
-                    token.ThrowIfCancellationRequested();
-                }
-                catch (OperationCanceledException exception)
-                {
-                    requestContext.InvokeAsync(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
-                    throw;
-                }
-                catch (Exception exception)
-                {
-                    requestContext.InvokeAsync(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
-                    throw;
-                }
-                requestContext.InvokeAsync(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result)));
+                        transactionScope = CreateTransactionScope();
 
-                return result;
+                        result = ExecuteQuery(cache, token);                        
+
+                        transactionScope.Complete();
+                    }
+                    catch (OperationCanceledException exception)
+                    {
+                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
+                        throw;
+                    }
+                    catch (Exception exception)
+                    {
+                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
+                        throw;
+                    }
+                    finally
+                    {
+                        if (transactionScope != null)
+                        {
+                            transactionScope.Dispose();
+                        }
+                    }
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result)));
+
+                    return result;
+                }
             });
         }
 

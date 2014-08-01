@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.Messaging.Server;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Messaging.Server;
+using System.Threading;
+using System.Transactions;
 
 namespace System.ComponentModel.Messaging.Client
 {
@@ -8,29 +11,35 @@ namespace System.ComponentModel.Messaging.Client
     /// </summary>
     public abstract class ClientEventBus : IDomainEventBus
     {
-        private readonly AsyncOperationContext _requestContext;        
+        private readonly SynchronizationContext _context;
+        private readonly ThreadLocal<ClientEventBusMessageBuffer> _messageBuffer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientEventBus" /> class.
         /// </summary>
         protected ClientEventBus()
         {
-            _requestContext = AsyncOperationContext.ForCurrentSynchronizationContext();
+            _context = SynchronizationContext.Current;
+            _messageBuffer = new ThreadLocal<ClientEventBusMessageBuffer>();
         }
 
         /// <summary>
-        /// Returns the associated <see cref="RequestContext" /> that is used to publish messages
-        /// from the <see cref="MessageProcessor" /> to the appropriate client-thread.
+        /// Returns the context that is used to publish all events on.
         /// </summary>
-        protected AsyncOperationContext RequestContext
+        protected internal SynchronizationContext SynchronizationContext
         {
-            get { return _requestContext; }
-        }        
+            get { return _context; }
+        }       
 
         void IDomainEventBus.Publish<TMessage>(TMessage message)
         {
-            RequestContext.InvokeAsync(() => Publish(message));            
-        }       
+            if (_messageBuffer.Value == null)
+            {
+                _messageBuffer.Value = new ClientEventBusMessageBuffer(this, Transaction.Current);
+                _messageBuffer.Value.FlushCompleted += (s, e) => _messageBuffer.Value = null;
+            }
+            _messageBuffer.Value.Write(message);
+        }        
 
         /// <summary>
         /// Creates and returns a new <see cref="IConnection " /> to this bus.
