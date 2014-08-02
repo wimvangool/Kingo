@@ -13,32 +13,20 @@ namespace System.ComponentModel.Messaging.Client
 
         /// <inheritdoc />
         public override void Execute()
-        {
-            TransactionScope transactionScope = null;
+        {            
             var executionId = Guid.NewGuid();            
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId));            
 
             try
             {
-                transactionScope = CreateTransactionScope();
-
-                Execute(null);
-
-                transactionScope.Complete();
+                ExecuteInTransactionScope(null);
             }
             catch (Exception exception)
             {
                 OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception));
                 throw;
-            }
-            finally
-            {
-                if (transactionScope != null)
-                {
-                    transactionScope.Dispose();
-                }
-            }
+            }            
             OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId));
         }
 
@@ -53,18 +41,10 @@ namespace System.ComponentModel.Messaging.Client
             return Start(() =>
             {
                 using (var scope = new SynchronizationContextScope(context))
-                {
-                    TransactionScope transactionScope = null;
-
+                {                   
                     try
-                    {
-                        token.ThrowIfCancellationRequested();
-
-                        transactionScope = CreateTransactionScope();                        
-
-                        Execute(token);
-
-                        transactionScope.Complete();
+                    {                                                
+                        ExecuteInTransactionScope(token);                        
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -75,14 +55,7 @@ namespace System.ComponentModel.Messaging.Client
                     {
                         scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
                         throw;
-                    }
-                    finally
-                    {
-                        if (transactionScope != null)
-                        {
-                            transactionScope.Dispose();
-                        }
-                    }
+                    }                    
                     scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId)));
                 }
             });
@@ -101,6 +74,18 @@ namespace System.ComponentModel.Messaging.Client
         protected virtual Task Start(Action command)
         {
             return Task.Factory.StartNew(command);
+        }
+
+        private void ExecuteInTransactionScope(CancellationToken? token)
+        {
+            token.ThrowIfCancellationRequested();
+
+            using (var scope = CreateTransactionScope())
+            {
+                Execute(token);
+
+                scope.Complete();
+            }
         }
 
         /// <summary>

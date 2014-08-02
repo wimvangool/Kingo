@@ -7,18 +7,18 @@ namespace System.ComponentModel.Messaging.Server
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
-    public sealed class MemoryEventStream<TKey, TVersion> : IBufferedEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
+    public sealed class MemoryEventStream<TKey, TVersion> : IEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>
     {
-        private readonly List<IBufferedEvent<TKey, TVersion>> _buffer;
+        private readonly List<IEventBuffer<TKey, TVersion>> _buffer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryEventStream{T, S}" /> class.
         /// </summary>
         public MemoryEventStream()
         {
-            _buffer = new List<IBufferedEvent<TKey, TVersion>>();
+            _buffer = new List<IEventBuffer<TKey, TVersion>>();
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace System.ComponentModel.Messaging.Server
         /// </exception>
         public MemoryEventStream(int capacity)
         {
-            _buffer = new List<IBufferedEvent<TKey, TVersion>>(capacity);
+            _buffer = new List<IEventBuffer<TKey, TVersion>>(capacity);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace System.ComponentModel.Messaging.Server
             {
                 throw new ArgumentNullException("event");
             }
-            _buffer.Add(new BufferedEvent<TKey, TVersion, TEvent>(@event));
+            _buffer.Add(new EventBuffer<TKey, TVersion, TEvent>(@event));
         }
 
         /// <summary>

@@ -9,13 +9,13 @@ namespace System.ComponentModel.Messaging.Server
     /// </summary>
     public sealed class BufferedEventBus : IDomainEventBus, IUnitOfWork
     {        
-        private readonly List<IBufferedEvent> _buffer;
+        private readonly List<IEventBuffer> _buffer;
         private readonly IDomainEventBus _domainEventBus;
         private bool _hasBeenFlushed;
 
         internal BufferedEventBus(IDomainEventBus domainEventBus)
         {                        
-            _buffer = new List<IBufferedEvent>();
+            _buffer = new List<IEventBuffer>();
             _domainEventBus = domainEventBus;
         }
 
@@ -35,7 +35,7 @@ namespace System.ComponentModel.Messaging.Server
             {
                 throw NewBufferHasAlreadyBeenFlushedException(typeof(TMessage));
             }
-            _buffer.Add(new BufferedEvent<TMessage>(message));
+            _buffer.Add(new EventBuffer<TMessage>(_domainEventBus, message));
         }
 
         bool IUnitOfWork.RequiresFlush()
@@ -47,7 +47,7 @@ namespace System.ComponentModel.Messaging.Server
         {
             foreach (var bufferedEvent in _buffer)
             {
-                bufferedEvent.Publish(_domainEventBus);
+                bufferedEvent.Flush();
             }
             _hasBeenFlushed = true;
             _buffer.Clear();            

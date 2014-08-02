@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel.Messaging.Server;
+using System.Linq;
 using System.Threading;
 using System.Transactions;
 
@@ -11,36 +13,40 @@ namespace System.ComponentModel.Messaging.Client
     /// </summary>
     public abstract class ClientEventBus : IDomainEventBus
     {
-        private readonly SynchronizationContext _context;
-        private readonly ThreadLocal<ClientEventBusMessageBuffer> _messageBuffer;
+        #region [====== Relay ======]
+
+        private sealed class Relay : IDomainEventBus
+        {
+            private readonly ClientEventBus _eventBus;
+            private readonly SynchronizationContext _synchronizationContext; 
+
+            public Relay(ClientEventBus eventBus, SynchronizationContext synchronizationContext)
+            {
+                _eventBus = eventBus;
+                _synchronizationContext = synchronizationContext;
+            }
+
+            void IDomainEventBus.Publish<TMessage>(TMessage message)
+            {
+                using (var scope = new SynchronizationContextScope(_synchronizationContext))
+                {
+                    scope.Post(() => _eventBus.Publish(message));
+                }
+            }
+        }
+
+        #endregion
+
+        private readonly Relay _relay;       
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientEventBus" /> class.
         /// </summary>
         protected ClientEventBus()
         {
-            _context = SynchronizationContext.Current;
-            _messageBuffer = new ThreadLocal<ClientEventBusMessageBuffer>();
-        }
-
-        /// <summary>
-        /// Returns the context that is used to publish all events on.
-        /// </summary>
-        protected internal SynchronizationContext SynchronizationContext
-        {
-            get { return _context; }
-        }       
-
-        void IDomainEventBus.Publish<TMessage>(TMessage message)
-        {
-            if (_messageBuffer.Value == null)
-            {
-                _messageBuffer.Value = new ClientEventBusMessageBuffer(this, Transaction.Current);
-                _messageBuffer.Value.FlushCompleted += (s, e) => _messageBuffer.Value = null;
-            }
-            _messageBuffer.Value.Write(message);
-        }        
-
+            _relay = new Relay(this, SynchronizationContext.Current);          
+        }                       
+       
         /// <summary>
         /// Creates and returns a new <see cref="IConnection " /> to this bus.
         /// </summary>
@@ -101,6 +107,16 @@ namespace System.ComponentModel.Messaging.Client
         /// <param name="subscriber">The subscriber to unsubscribe.</param>
         protected internal abstract void Unsubscribe(object subscriber);
 
+        void IDomainEventBus.Publish<TMessage>(TMessage message)
+        {           
+            using (var scope = new TransactionScope())
+            {
+                Transaction.Current.EnlistVolatile(new TransactionalMessageBuffer<TMessage>(_relay, message), EnlistmentOptions.None);
+
+                scope.Complete();
+            }
+        }       
+
         /// <summary>
         /// Publishes the specified message on this bus.
         /// </summary>
@@ -108,6 +124,6 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public abstract void Publish(object message);        
+        public abstract void Publish<TMessage>(TMessage message) where TMessage : class;        
     }
 }

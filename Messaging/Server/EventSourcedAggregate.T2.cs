@@ -9,7 +9,7 @@ namespace System.ComponentModel.Messaging.Server
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
-    public abstract class EventSourcedAggregate<TKey, TVersion> : BufferedEventAggregate<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
+    public abstract class EventSourcedAggregate<TKey, TVersion> : Aggregate<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IAggregateVersion<TVersion>
     {

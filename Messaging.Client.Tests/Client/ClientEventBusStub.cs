@@ -5,6 +5,7 @@ namespace System.ComponentModel.Messaging.Client
     internal sealed class ClientEventBusStub : ClientEventBus
     {        
         private readonly List<object> _subscribers;
+        private int _messageCount;
 
         public ClientEventBusStub()
         {            
@@ -14,6 +15,11 @@ namespace System.ComponentModel.Messaging.Client
         public int SubscriberCount
         {
             get { return _subscribers.Count; }
+        }
+
+        public int MessageCount
+        {
+            get { return _messageCount; }
         }
         
         protected override void Subscribe(object subscriber)
@@ -26,7 +32,10 @@ namespace System.ComponentModel.Messaging.Client
             _subscribers.Remove(subscriber);
         }
 
-        public override void Publish(object message) { }
+        public override void Publish<TMessage>(TMessage message)
+        {
+            _messageCount++;
+        }
 
         public bool Contains(object subscriber)
         {

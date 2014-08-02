@@ -155,7 +155,11 @@ namespace System.ComponentModel.Messaging.Client
         /// <returns></returns>
         protected virtual TransactionScope CreateTransactionScope()
         {
-            return new TransactionScope();
+            return new TransactionScope(TransactionScopeOption.Required, new TransactionOptions()
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted,
+                Timeout = TransactionManager.DefaultTimeout
+            });
         }
 
         #endregion

@@ -123,18 +123,10 @@ namespace System.ComponentModel.Messaging.Client
             return Start(() =>
             {
                 using (var scope = new SynchronizationContextScope(context))
-                {
-                    TransactionScope transactionScope = null;
-
+                {                   
                     try
-                    {
-                        token.ThrowIfCancellationRequested();
-
-                        transactionScope = CreateTransactionScope();
-
-                        result = ExecuteQuery(message, cache, token);
-
-                        transactionScope.Complete();
+                    {                        
+                        result = ExecuteQuery(message, cache, token);                        
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -145,14 +137,7 @@ namespace System.ComponentModel.Messaging.Client
                     {
                         scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
                         throw;
-                    }
-                    finally
-                    {
-                        if (transactionScope != null)
-                        {
-                            transactionScope.Dispose();
-                        }
-                    }
+                    }                    
                     scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result)));
 
                     return result;
@@ -178,8 +163,23 @@ namespace System.ComponentModel.Messaging.Client
         private TResult ExecuteQuery(TMessage message, QueryCache cache, CancellationToken? token)
         {
             return cache == null
-                ? Execute(message, token)
-                : cache.GetOrAdd(message, key => CreateCacheValue(key, Execute(key, token))).Access<TResult>();
+                ? ExecuteInTransactionScope(message, token)
+                : cache.GetOrAdd(message, key => CreateCacheValue(key, ExecuteInTransactionScope(key, token))).Access<TResult>();
+        }
+
+        private TResult ExecuteInTransactionScope(TMessage message, CancellationToken? token)
+        {
+            TResult result;
+
+            token.ThrowIfCancellationRequested();
+
+            using (var scope = CreateTransactionScope())
+            {
+                result = Execute(message, token);
+
+                scope.Complete();
+            }
+            return result;
         }
 
         /// <summary>

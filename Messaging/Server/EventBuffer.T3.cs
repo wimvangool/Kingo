@@ -1,13 +1,13 @@
 ﻿namespace System.ComponentModel.Messaging.Server
 {
-    internal sealed class BufferedEvent<TKey, TVersion, TEvent> : IBufferedEvent<TKey, TVersion>
+    internal sealed class EventBuffer<TKey, TVersion, TEvent> : IEventBuffer<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>
         where TEvent : class, IAggregateEvent<TKey, TVersion>
     {
         private readonly TEvent _domainEvent;
 
-        public BufferedEvent(TEvent domainEvent)
+        public EventBuffer(TEvent domainEvent)
         {            
             _domainEvent = domainEvent;
         }

@@ -1,16 +1,31 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.ComponentModel.Messaging.Server;
+using System.Transactions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Messaging.Client
 {
     [TestClass]
     public sealed class ClientEventBusTest
     {
+        private SynchronizationContextScope _scope;
         private ClientEventBusStub _eventBus;
 
         [TestInitialize]
         public void Setup()
         {
+            _scope = new SynchronizationContextScope(new SynchronousContext());
             _eventBus = new ClientEventBusStub();
+        }
+
+        [TestCleanup]
+        public void Teardown()
+        {
+            _scope.Dispose();
+        }
+
+        private IDomainEventBus DomainEventBus
+        {
+            get { return _eventBus; }
         }
 
         [TestMethod]
@@ -30,6 +45,8 @@ namespace System.ComponentModel.Messaging.Client
             Assert.AreEqual(0, _eventBus.SubscriberCount);
             Assert.IsFalse(_eventBus.Contains(subscriber));
         }
+
+        #region [====== Connection.Open ======]
 
         [TestMethod]
         public void ConnectionOpen_SubscribesSubscriber_IfConnectionIsClosed()
@@ -65,6 +82,10 @@ namespace System.ComponentModel.Messaging.Client
             connection.Dispose();
             connection.Open();
         }
+
+        #endregion
+
+        #region [====== Connection.Close ======]
 
         [TestMethod]
         public void ConnectionClose_UnsubscribesSubscriber_IfConnectionIsOpen()
@@ -104,6 +125,10 @@ namespace System.ComponentModel.Messaging.Client
             connection.Close();
         }
 
+        #endregion
+
+        #region [====== Connection.Dispose ======]
+
         [TestMethod]
         public void ConnectionDispose_UnsubscribesSubscriber_IfConnectionWasOpen()
         {
@@ -128,5 +153,35 @@ namespace System.ComponentModel.Messaging.Client
             connection.Dispose();
             connection.Dispose();
         }
+
+        #endregion
+
+        #region [====== Publish =====]
+
+        [TestMethod]
+        public void Publish_ImmediatelyPublishesMessage_IfNoTransactionIsActive()
+        {
+            DomainEventBus.Publish(new object());
+
+            Assert.AreEqual(1, _eventBus.MessageCount);
+        }
+
+        [TestMethod]
+        public void Publish_BuffersAllMessagesUntilTransactionCommits_IfTransactionIsActive()
+        {
+            using (var transactionScope = new TransactionScope())
+            {
+                DomainEventBus.Publish(new object());
+                DomainEventBus.Publish(new object());
+                DomainEventBus.Publish(new object());
+
+                Assert.AreEqual(0, _eventBus.MessageCount);
+
+                transactionScope.Complete();
+            }
+            Assert.AreEqual(3, _eventBus.MessageCount);
+        }
+
+        #endregion
     }
 }
