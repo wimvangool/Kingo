@@ -5,20 +5,20 @@
     /// </summary>
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
     /// <typeparam name="TResult">Type of the result of the associated query.</typeparam>
-    public abstract class ClientQueryDispatcher<TParameter, TResult> : ClientRequestDispatcher<IQueryDispatcher<TResult>, TParameter>       
+    public abstract class QueryDispatcherCommand<TParameter, TResult> : RequestDispatcherCommand<IQueryDispatcher<TResult>, TParameter>       
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="QueryDispatcherCommand{T, S}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated query.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request)
+        protected QueryDispatcherCommand(IQueryDispatcher<TResult> request)
             : this(request, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="QueryDispatcherCommand{T, S}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated query.</param>
         /// <param name="isValidIndicator">
@@ -27,11 +27,11 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator)
-            : this(request, isValidIndicator, ClientRequestExecutionOptions.None) { }
+        protected QueryDispatcherCommand(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator)
+            : this(request, isValidIndicator, CommandExecutionOptions.None) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="QueryDispatcherCommand{T, S}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated query.</param>
         /// <param name="isValidIndicator">
@@ -43,7 +43,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
+        protected QueryDispatcherCommand(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator, CommandExecutionOptions options)
             : base(request, isValidIndicator, options) { }
     }
 }

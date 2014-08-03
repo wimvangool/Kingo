@@ -4,20 +4,20 @@
     /// Represents a command sent from a client that lies on top of a regular <see cref="ICommandDispatcher">Command</see>.
     /// </summary>
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
-    public abstract class ClientCommandDispatcher<TParameter> : ClientRequestDispatcher<ICommandDispatcher, TParameter>        
+    public abstract class CommandDispatcherCommand<TParameter> : RequestDispatcherCommand<ICommandDispatcher, TParameter>        
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientCommandDispatcher{T}" /> class.
+        /// Initializes a new instance of the <see cref="CommandDispatcherCommand{T}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated command.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientCommandDispatcher(ICommandDispatcher request)
+        protected CommandDispatcherCommand(ICommandDispatcher request)
             : this(request, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientCommandDispatcher{T}" /> class.
+        /// Initializes a new instance of the <see cref="CommandDispatcherCommand{T}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated command.</param>
         /// <param name="isValidIndicator">
@@ -26,11 +26,11 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientCommandDispatcher(ICommandDispatcher request, IIsValidIndicator isValidIndicator)
-            : this(request, isValidIndicator, ClientRequestExecutionOptions.None) { }
+        protected CommandDispatcherCommand(ICommandDispatcher request, IIsValidIndicator isValidIndicator)
+            : this(request, isValidIndicator, CommandExecutionOptions.None) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientCommandDispatcher{T}" /> class.
+        /// Initializes a new instance of the <see cref="CommandDispatcherCommand{T}" /> class.
         /// </summary>
         /// <param name="request">The encapsulated command.</param>
         /// <param name="isValidIndicator">
@@ -42,7 +42,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientCommandDispatcher(ICommandDispatcher request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
+        protected CommandDispatcherCommand(ICommandDispatcher request, IIsValidIndicator isValidIndicator, CommandExecutionOptions options)
             : base(request, isValidIndicator, options) { }        
     }
 }

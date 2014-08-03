@@ -1,10 +1,10 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a set of options that defines the behavior of a <see cref="ClientRequestDispatcher{T, S}" />.
+    /// Represents a set of options that defines the behavior of a <see cref="RequestDispatcherCommand{T, S}" />.
     /// </summary>
     [Flags]
-    public enum ClientRequestExecutionOptions
+    public enum CommandExecutionOptions
     {
         /// <summary>
         /// No options.

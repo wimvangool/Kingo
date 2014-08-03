@@ -4,19 +4,19 @@ using System.Windows.Input;
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Provides a basic implementation of the <see cref="IClientRequestDispatcher" /> interface.
+    /// Provides a basic implementation of the <see cref="IRequestDispatcherCommand" /> interface.
     /// </summary>    
     /// <typeparam name="TRequest">Type of the encapsulated <see cref="IRequestDispatcher" />.</typeparam>
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
-    public abstract class ClientRequestDispatcher<TRequest, TParameter> : PropertyChangedNotifier, IClientRequestDispatcher
+    public abstract class RequestDispatcherCommand<TRequest, TParameter> : PropertyChangedNotifier, IRequestDispatcherCommand
         where TRequest : class, IRequestDispatcher
     {
         private readonly TRequest _request;
         private readonly IIsValidIndicator _isValidIndicator;
         private readonly Stack<TParameter> _parameterStack;
-        private readonly ClientRequestExecutionOptions _options;
+        private readonly CommandExecutionOptions _options;
 
-        internal ClientRequestDispatcher(TRequest request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
+        internal RequestDispatcherCommand(TRequest request, IIsValidIndicator isValidIndicator, CommandExecutionOptions options)
         {
             if (request == null)
             {
@@ -60,7 +60,7 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         protected bool AllowMultipleExecutions
         {
-            get { return IsSet(ClientRequestExecutionOptions.AllowMultipleExecutions); }
+            get { return IsSet(CommandExecutionOptions.AllowMultipleExecutions); }
         }
 
         /// <summary>
@@ -69,10 +69,10 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         protected bool ExecuteSynchronously
         {
-            get { return IsSet(ClientRequestExecutionOptions.ExecuteSynchronously); }
+            get { return IsSet(CommandExecutionOptions.ExecuteSynchronously); }
         }
 
-        private bool IsSet(ClientRequestExecutionOptions options)
+        private bool IsSet(CommandExecutionOptions options)
         {
             return (_options & options) == options;
         }

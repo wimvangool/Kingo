@@ -1,38 +1,40 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a query executed from a client that lies on top of a regular <see cref="IQueryDispatcher{T}">Query</see>.
-    /// </summary>    
-    /// <typeparam name="TResult">Type of the result of the associated query.</typeparam>
-    public abstract class ClientQueryDispatcher<TResult> : ClientQueryDispatcher<object, TResult>
+    /// Represents a command sent from a client that lies on top of a regular <see cref="ICommandDispatcher">Command</see>.
+    /// </summary>
+    /// <remarks>
+    /// Use this class as a base-class for your commands if you don't use any extra execution-parameter.
+    /// </remarks>
+    public abstract class CommandDispatcherCommand : CommandDispatcherCommand<object>        
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T}" /> class.
+        /// Initializes a new instance of the <see cref="CommandDispatcherCommand" /> class.
         /// </summary>
-        /// <param name="request">The encapsulated query.</param>        
+        /// <param name="request">The encapsulated command.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request)
-            : this(request, null) { }
+        protected CommandDispatcherCommand(ICommandDispatcher request)
+            : base(request) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T}" /> class.
+        /// Initializes a new instance of the <see cref="CommandDispatcherCommand" /> class.
         /// </summary>
-        /// <param name="request">The encapsulated query.</param>
+        /// <param name="request">The encapsulated command.</param>
         /// <param name="isValidIndicator">
         /// The indicator used to indicate whether or not the associated <paramref name="request"/> is valid (optional).
-        /// </param>       
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator)
-            : this(request, isValidIndicator, ClientRequestExecutionOptions.None) { }
+        protected CommandDispatcherCommand(ICommandDispatcher request, IIsValidIndicator isValidIndicator)
+            : base(request, isValidIndicator) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientQueryDispatcher{T}" /> class.
+        /// Initializes a new instance of the <see cref="CommandDispatcherCommand" /> class.
         /// </summary>
-        /// <param name="request">The encapsulated query.</param>
+        /// <param name="request">The encapsulated command.</param>
         /// <param name="isValidIndicator">
         /// The indicator used to indicate whether or not the associated <paramref name="request"/> is valid (optional).
         /// </param>
@@ -42,7 +44,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception>
-        protected ClientQueryDispatcher(IQueryDispatcher<TResult> request, IIsValidIndicator isValidIndicator, ClientRequestExecutionOptions options)
+        protected CommandDispatcherCommand(ICommandDispatcher request, IIsValidIndicator isValidIndicator, CommandExecutionOptions options)
             : base(request, isValidIndicator, options) { }
 
         /// <summary>
@@ -52,7 +54,7 @@
         /// <param name="parameterOut">
         /// When this method has executed, refers to the same object as <paramref name="parameterIn"/>.
         /// </param>
-        /// <returns><c>true</c></returns>
+        /// <returns><c>true</c>.</returns>
         protected override bool TryConvertParameter(object parameterIn, out object parameterOut)
         {
             parameterOut = parameterIn;
