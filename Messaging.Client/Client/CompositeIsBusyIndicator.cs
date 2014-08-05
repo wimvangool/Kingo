@@ -6,7 +6,7 @@ namespace System.ComponentModel.Messaging.Client
     /// <summary>
     /// Represents a <see cref="IIsBusyIndicator" /> that is composed of other indicators.
     /// </summary>
-    public class CompositeIsBusyIndicator : PropertyChangedNotifier, IIsBusyIndicator
+    public class CompositeIsBusyIndicator : PropertyChangedBase, IIsBusyIndicator
     {
         private readonly List<IIsBusyIndicator> _indicators;
 

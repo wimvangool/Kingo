@@ -49,13 +49,23 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Client\AsyncExecutionTask.T1.cs" />
     <Compile Include="Client\CommandDispatcher.cs" />
     <Compile Include="Client\CommandDispatcher.T1.cs" />
     <Compile Include="Client\CommandDispatcherBase.cs" />
+    <Compile Include="Client\CommandExecutionTask.cs" />
+    <Compile Include="Client\IAsyncExecutionTask.cs" />
+    <Compile Include="Client\IIsBusyIndicator.cs" />
+    <Compile Include="Server\IProgressReporter.cs" />
     <Compile Include="Client\MessageBasedLifetime.cs" />
+    <Compile Include="Server\Progress.cs" />
+    <Compile Include="Server\ProgressChangedEventArgs.cs" />
+    <Compile Include="Client\ProgressReporter.cs" />
+    <Compile Include="Client\QueryExecutionTask.cs" />
+    <Compile Include="Client\AsyncExecutionTaskStatus.cs" />
     <Compile Include="Server\AggregateNotFoundException.cs" />
     <Compile Include="Server\CommandHandler.T1.cs" />
-    <Compile Include="Client\ExecutionCancelledEventArgs.cs" />
+    <Compile Include="Client\ExecutionCanceledEventArgs.cs" />
     <Compile Include="Client\ExecutionCompletedEventArgs.cs" />
     <Compile Include="Client\ExecutionFailedEventArgs.cs" />
     <Compile Include="Client\ExecutionStartedEventArgs.cs" />
@@ -121,7 +131,7 @@
     <Compile Include="Server\MessageProcessorBusConnectionForAction.T1.cs" />
     <Compile Include="Server\MessageProcessorBusConnectionForInterface.T1.cs" />
     <Compile Include="Server\MessageProcessorBusRelay.cs" />
-    <Compile Include="Server\MessageStack.cs" />
+    <Compile Include="Server\UseCase.cs" />
     <Compile Include="Server\ScopeSpecificCacheEntry.T1.cs" />
     <Compile Include="Server\ScopeSpecificCacheRelay.cs" />
     <Compile Include="Clock.cs" />
@@ -149,7 +159,7 @@
     <Compile Include="MessageValidationAttribute.cs" />
     <Compile Include="MessagePropertyLabelCollection.cs" />
     <Compile Include="NullMessage.cs" />
-    <Compile Include="PropertyChangedNotifier.cs" />
+    <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="Server\UnitOfWorkCache.cs" />
     <Compile Include="Server\UnitOfWorkController.cs" />
     <Compile Include="IClock.cs" />

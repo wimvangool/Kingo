@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
-    internal sealed class IsBusyIndicatorStub : PropertyChangedNotifier, IIsBusyIndicator
+    internal sealed class IsBusyIndicatorStub : PropertyChangedBase, IIsBusyIndicator
     {
         private bool _isBusy;
 

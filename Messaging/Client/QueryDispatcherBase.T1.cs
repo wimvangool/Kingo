@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Messaging.Server;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Messaging.Client
@@ -53,28 +54,28 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public abstract TResult Execute(QueryCache cache);
+        public abstract TResult Execute(QueryCache cache);        
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync()
+        public Task<TResult> ExecuteAsync(Guid executionId)
         {
-            return ExecuteAsync(null, null);
+            return ExecuteAsync(executionId, null, null, null);
+        }        
+
+        /// <inheritdoc />
+        public Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache)
+        {
+            return ExecuteAsync(executionId, cache, null, null);
         }
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync(CancellationToken? token)
-        {
-            return ExecuteAsync(null, token);
-        }
+        public abstract Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache, CancellationToken? token, IProgressReporter reporter);
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync(QueryCache cache)
+        public override IAsyncExecutionTask CreateAsyncExecutionTask()
         {
-            return ExecuteAsync(cache, null);
+            return new QueryExecutionTask<TResult>(this, null);
         }
-
-        /// <inheritdoc />
-        public abstract Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token);
 
         /// <summary>
         /// Wraps the specified result into a new <see cref="QueryCacheValue" />.

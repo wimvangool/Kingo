@@ -1,6 +1,6 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Messaging.Server;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace System.ComponentModel.Messaging.Client
 {
@@ -71,8 +71,7 @@ namespace System.ComponentModel.Messaging.Client
 
         /// <inheritdoc />
         public override TResult Execute(QueryCache cache)
-        {
-            TransactionScope transactionScope = null;
+        {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
 
@@ -80,34 +79,22 @@ namespace System.ComponentModel.Messaging.Client
             TResult result;
 
             try
-            {
-                transactionScope = CreateTransactionScope();
-
-                result = ExecuteQuery(message, cache, null);
-
-                transactionScope.Complete();
+            {                
+                result = ExecuteQuery(message, cache, null, null);                
             }
             catch (Exception exception)
             {
                 OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception));
                 throw;
-            }
-            finally
-            {
-                if (transactionScope != null)
-                {
-                    transactionScope.Dispose();
-                }
-            }
+            }            
             OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result));
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token)
-        {            
-            var executionId = Guid.NewGuid();
+        public override Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache, CancellationToken? token, IProgressReporter reporter)
+        {                        
             var message = Message.Copy(true);
             var context = SynchronizationContext.Current;
 
@@ -126,7 +113,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                   
                     try
                     {                        
-                        result = ExecuteQuery(message, cache, token);                        
+                        result = ExecuteQuery(message, cache, token, reporter);                        
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -160,14 +147,14 @@ namespace System.ComponentModel.Messaging.Client
             return Task<TResult>.Factory.StartNew(query);
         }
 
-        private TResult ExecuteQuery(TMessage message, QueryCache cache, CancellationToken? token)
+        private TResult ExecuteQuery(TMessage message, QueryCache cache, CancellationToken? token, IProgressReporter reporter)
         {
             return cache == null
-                ? ExecuteInTransactionScope(message, token)
-                : cache.GetOrAdd(message, key => CreateCacheValue(key, ExecuteInTransactionScope(key, token))).Access<TResult>();
+                ? ExecuteInTransactionScope(message, token, reporter)
+                : cache.GetOrAdd(message, key => CreateCacheValue(key, ExecuteInTransactionScope(key, token, reporter))).Access<TResult>();
         }
 
-        private TResult ExecuteInTransactionScope(TMessage message, CancellationToken? token)
+        private TResult ExecuteInTransactionScope(TMessage message, CancellationToken? token, IProgressReporter reporter)
         {
             TResult result;
 
@@ -175,7 +162,7 @@ namespace System.ComponentModel.Messaging.Client
 
             using (var scope = CreateTransactionScope())
             {
-                result = Execute(message, token);
+                result = Execute(message, token, reporter);
 
                 scope.Complete();
             }
@@ -188,14 +175,17 @@ namespace System.ComponentModel.Messaging.Client
         /// <param name="message">The execution-parameter.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this query.
-        /// </param>         
+        /// </param>              
+        /// <param name="reporter">
+        /// Reporter that can be used to report the progress.
+        /// </param>  
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>        
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResult Execute(TMessage message, CancellationToken? token);                        
+        protected abstract TResult Execute(TMessage message, CancellationToken? token, IProgressReporter reporter);                        
 
         #endregion
     }

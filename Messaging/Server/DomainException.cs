@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Messaging.Resources;
-using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace System.ComponentModel.Messaging.Server

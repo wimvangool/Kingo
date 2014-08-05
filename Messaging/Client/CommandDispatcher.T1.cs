@@ -1,6 +1,6 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Messaging.Server;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace System.ComponentModel.Messaging.Client
 {
@@ -77,7 +77,7 @@ namespace System.ComponentModel.Messaging.Client
 
             try
             {
-                ExecuteInTransactionScope(message, null);
+                ExecuteInTransactionScope(message, null, null);
             }
             catch (Exception exception)
             {
@@ -88,9 +88,8 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public override Task ExecuteAsync(CancellationToken? token)
-        {            
-            var executionId = Guid.NewGuid();
+        public override Task ExecuteAsync(Guid executionId, CancellationToken? token, IProgressReporter reporter)
+        {                        
             var message = Message.Copy(true);
             var context = SynchronizationContext.Current;
 
@@ -102,7 +101,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                    
                     try
                     {
-                        ExecuteInTransactionScope(message, token);
+                        ExecuteInTransactionScope(message, token, reporter);
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -134,13 +133,13 @@ namespace System.ComponentModel.Messaging.Client
             return Task.Factory.StartNew(command);
         }
 
-        private void ExecuteInTransactionScope(TMessage message, CancellationToken? token)
+        private void ExecuteInTransactionScope(TMessage message, CancellationToken? token, IProgressReporter reporter)
         {
             token.ThrowIfCancellationRequested();
 
             using (var scope = CreateTransactionScope())
             {
-                Execute(message, token);
+                Execute(message, token, reporter);
 
                 scope.Complete();
             }
@@ -152,7 +151,10 @@ namespace System.ComponentModel.Messaging.Client
         /// <param name="message">The execution-parameter.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this command.
-        /// </param> 
+        /// </param>         
+        /// <param name="reporter">
+        /// Reporter that can be used to report the progress.
+        /// </param>
         /// <exception cref="RequestExecutionException">
         /// The command failed for (somewhat) predictable reasons, like insufficient rights, invalid parameters or
         /// because the system's state/business rules wouldn't allow this command to be executed.
@@ -163,7 +165,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract void Execute(TMessage message, CancellationToken? token);                
+        protected abstract void Execute(TMessage message, CancellationToken? token, IProgressReporter reporter);                
 
         #endregion
     }

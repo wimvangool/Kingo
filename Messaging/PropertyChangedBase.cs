@@ -5,7 +5,7 @@ namespace System.ComponentModel.Messaging
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyPropertyChanged" /> interface.
     /// </summary>
-    public abstract class PropertyChangedNotifier : INotifyPropertyChanged
+    public abstract class PropertyChangedBase : INotifyPropertyChanged
     {
         /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;                

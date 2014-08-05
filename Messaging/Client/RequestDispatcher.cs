@@ -145,9 +145,12 @@ namespace System.ComponentModel.Messaging.Client
             }
         }       
 
-        #endregion        
+        #endregion                        
 
-        #region [====== Transaction Management ======]
+        #region [====== Execution ======]
+
+        /// <inheritdoc />
+        public abstract IAsyncExecutionTask CreateAsyncExecutionTask();
 
         /// <summary>
         /// Creates and returns a new <see cref="TransactionScope" /> in which the request is executed.

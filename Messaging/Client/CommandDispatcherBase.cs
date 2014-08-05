@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Messaging.Server;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Messaging.Client
@@ -44,19 +45,25 @@ namespace System.ComponentModel.Messaging.Client
 
         #endregion
 
-        #region [====== Execution ======]
+        #region [====== Execution ======]        
 
         /// <inheritdoc />
         public abstract void Execute();
 
         /// <inheritdoc />
-        public Task ExecuteAsync()
+        public Task ExecuteAsync(Guid executionId)
         {
-            return ExecuteAsync(null);
+            return ExecuteAsync(executionId, null, null);
         }
 
         /// <inheritdoc />
-        public abstract Task ExecuteAsync(CancellationToken? token);
+        public abstract Task ExecuteAsync(Guid executionId, CancellationToken? token, IProgressReporter reporter);
+
+        /// <inheritdoc />
+        public override IAsyncExecutionTask CreateAsyncExecutionTask()
+        {
+            return new CommandExecutionTask(this);
+        }
 
         #endregion
     }

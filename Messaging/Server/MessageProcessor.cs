@@ -9,7 +9,7 @@ namespace System.ComponentModel.Messaging.Server
     public abstract class MessageProcessor : IMessageProcessor
     {
         private readonly IMessageProcessorBus _domainEventBus;                
-        private readonly ThreadLocal<MessageStack> _currentMessage;                    
+        private readonly ThreadLocal<UseCase> _currentUseCase;                    
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
@@ -26,7 +26,7 @@ namespace System.ComponentModel.Messaging.Server
         protected MessageProcessor(IDomainEventBus domainEventBus)
         {
             _domainEventBus = InitializeMessageProcessorBus(domainEventBus);
-            _currentMessage = new ThreadLocal<MessageStack>();
+            _currentUseCase = new ThreadLocal<UseCase>();
         }
 
         private IMessageProcessorBus InitializeMessageProcessorBus(IDomainEventBus domainEventBus)
@@ -47,10 +47,10 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         /// <inheritdoc />
-        public MessageStack CurrentMessage
+        public UseCase CurrentUseCase
         {
-            get { return _currentMessage.Value; }
-            private set { _currentMessage.Value = value; }
+            get { return _currentUseCase.Value; }
+            private set { _currentUseCase.Value = value; }
         }
 
         /// <summary>
@@ -72,13 +72,13 @@ namespace System.ComponentModel.Messaging.Server
         /// <inheritdoc />
         public void Process<TMessage>(TMessage message) where TMessage : class
         {
-            Process(message, (CancellationToken?) null);
+            Process(message, null, null);
         }
 
         /// <inheritdoc />
-        public virtual void Process<TMessage>(TMessage message, CancellationToken? token) where TMessage : class
+        public virtual void Process<TMessage>(TMessage message, CancellationToken? token, IProgressReporter reporter) where TMessage : class
         {            
-            BeginMessage(message, token);
+            BeginUseCase(message, token, reporter);
 
             try
             {
@@ -86,7 +86,7 @@ namespace System.ComponentModel.Messaging.Server
                 {
                     throw NewMessageHandlerFactoryNotSetException();
                 }
-                CurrentMessage.ThrowIfCancellationRequested();
+                CurrentUseCase.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
@@ -94,7 +94,7 @@ namespace System.ComponentModel.Messaging.Server
                     {
                         CreatePipelineFor(handler).Handle(message);
 
-                        CurrentMessage.ThrowIfCancellationRequested();
+                        CurrentUseCase.ThrowIfCancellationRequested();
                     }
                     scope.Complete();
                 }
@@ -108,27 +108,27 @@ namespace System.ComponentModel.Messaging.Server
         /// <inheritdoc />
         public void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class
         {
-            Process(message, handler, null);
+            Process(message, handler, null, null);
         }
 
         /// <inheritdoc />
-        public virtual void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class
+        public virtual void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token, IProgressReporter reporter) where TMessage : class
         {
             if (handler == null)
             {
                 throw new ArgumentNullException("handler");
             }
-            BeginMessage(message, token);
+            BeginUseCase(message, token, reporter);
 
             try
             {
-                CurrentMessage.ThrowIfCancellationRequested();
+                CurrentUseCase.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
                     CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(handler)).Handle(message);
 
-                    CurrentMessage.ThrowIfCancellationRequested();
+                    CurrentUseCase.ThrowIfCancellationRequested();
                     scope.Complete();
                 }
             }
@@ -141,27 +141,27 @@ namespace System.ComponentModel.Messaging.Server
         /// <inheritdoc />
         public void Process<TMessage>(TMessage message, Action<TMessage> action) where TMessage : class
         {
-            Process(message, action, null);
+            Process(message, action, null, null);
         }
 
         /// <inheritdoc />
-        public virtual void Process<TMessage>(TMessage message, Action<TMessage> action, CancellationToken? token) where TMessage : class
+        public virtual void Process<TMessage>(TMessage message, Action<TMessage> action, CancellationToken? token, IProgressReporter reporter) where TMessage : class
         {
             if (action == null)
             {
                 throw new ArgumentNullException("action");
             }
-            BeginMessage(message, token);
+            BeginUseCase(message, token, reporter);
 
             try
             {
-                CurrentMessage.ThrowIfCancellationRequested();
+                CurrentUseCase.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
                     CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(action)).Handle(message);
 
-                    CurrentMessage.ThrowIfCancellationRequested();
+                    CurrentUseCase.ThrowIfCancellationRequested();
                     scope.Complete();
                 }
             }
@@ -170,15 +170,15 @@ namespace System.ComponentModel.Messaging.Server
                 EndMessage();
             }            
         }
-        
-        private void BeginMessage(object message, CancellationToken? token)
+
+        private void BeginUseCase(object message, CancellationToken? token, IProgressReporter reporter)
         {
-            CurrentMessage = CurrentMessage == null ? new MessageStack(message, token) : CurrentMessage.NextMessage(message, token);            
+            CurrentUseCase = CurrentUseCase == null ? new UseCase(message, token, reporter) : CurrentUseCase.CreateChildUseCase(message, token, reporter);            
         }
 
         private void EndMessage()
         {
-            CurrentMessage = CurrentMessage.PreviousMessage;
+            CurrentUseCase = CurrentUseCase.ParentUseCase;
         }
 
         private IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerPipeline<TMessage> handler) where TMessage : class

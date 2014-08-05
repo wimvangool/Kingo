@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Messaging.Server;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Messaging.Client
@@ -19,17 +20,22 @@ namespace System.ComponentModel.Messaging.Client
 
         /// <summary>
         /// Executes the command asynchronously.
-        /// </summary>        
+        /// </summary>   
+        /// <param name="executionId">Identifier of the asynchronous task.</param>     
         /// <returns>The task that is responsible for executing this command.</returns>        
-        Task ExecuteAsync();
+        Task ExecuteAsync(Guid executionId);
 
         /// <summary>
         /// Executes the command asynchronously.
-        /// </summary>        
+        /// </summary>  
+        /// <param name="executionId">Identifier of the asynchronous task.</param>         
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this command.
         /// </param>
+        /// <param name="reporter">
+        /// Optional reporter that can be used to report back the progress the task has made.
+        /// </param>
         /// <returns>The task that is responsible for executing this command.</returns>        
-        Task ExecuteAsync(CancellationToken? token);
+        Task ExecuteAsync(Guid executionId, CancellationToken? token, IProgressReporter reporter);
     }
 }

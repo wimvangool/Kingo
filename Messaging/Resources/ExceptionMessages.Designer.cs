@@ -79,6 +79,15 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot execute this task because it was already executed or canceled..
+        /// </summary>
+        internal static string AsyncExecutionTask_TaskAlreadyStarted {
+            get {
+                return ResourceManager.GetString("AsyncExecutionTask_TaskAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot publish event of type &apos;{0}&apos; because the bus has already been flushed..
         /// </summary>
         internal static string BufferedEventBus_BusAlreadyFlushed {
@@ -102,6 +111,15 @@ namespace System.ComponentModel.Messaging.Resources {
         internal static string CacheRelay_NotAvailable {
             get {
                 return ResourceManager.GetString("CacheRelay_NotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;.&quot;.
+        /// </summary>
+        internal static string Comparable_IncompatbileType {
+            get {
+                return ResourceManager.GetString("Comparable_IncompatbileType", resourceCulture);
             }
         }
         
@@ -228,6 +246,24 @@ namespace System.ComponentModel.Messaging.Resources {
         internal static string MessageProcessor_FactoryNotSet {
             get {
                 return ResourceManager.GetString("MessageProcessor_FactoryNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; cannot be negative: {1}..
+        /// </summary>
+        internal static string Progress_NegativeValue {
+            get {
+                return ResourceManager.GetString("Progress_NegativeValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value specified: {0}. Value must be within range of [{1}, {2}]..
+        /// </summary>
+        internal static string Progress_ValueOutOfRange {
+            get {
+                return ResourceManager.GetString("Progress_ValueOutOfRange", resourceCulture);
             }
         }
         

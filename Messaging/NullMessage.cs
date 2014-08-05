@@ -4,7 +4,7 @@
     /// Represents a message-stub for scenario's where a <see cref="IMessage" /> or <see cref="IMessage{T}" />
     /// instance is required but none is available.
     /// </summary>
-    public sealed class NullMessage : PropertyChangedNotifier, IMessage<NullMessage>
+    public sealed class NullMessage : PropertyChangedBase, IMessage<NullMessage>
     {
         private readonly bool _isReadOnly;
         private bool _hasChanges;

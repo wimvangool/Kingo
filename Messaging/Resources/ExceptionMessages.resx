@@ -123,6 +123,9 @@
   <data name="AggregateVersion_InvalidType" xml:space="preserve">
     <value>Invalid type specified for comparison. Expected '{0}' but was '{1}'.</value>
   </data>
+  <data name="AsyncExecutionTask_TaskAlreadyStarted" xml:space="preserve">
+    <value>Cannot execute this task because it was already executed or canceled.</value>
+  </data>
   <data name="BufferedEventBus_BusAlreadyFlushed" xml:space="preserve">
     <value>Cannot publish event of type '{0}' because the bus has already been flushed.</value>
   </data>
@@ -131,6 +134,9 @@
   </data>
   <data name="CacheRelay_NotAvailable" xml:space="preserve">
     <value>Cannot perform the operation because the cache is currently not available.</value>
+  </data>
+  <data name="Comparable_IncompatbileType" xml:space="preserve">
+    <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'."</value>
   </data>
   <data name="Connection_AlreadyClosed" xml:space="preserve">
     <value>The connection is already closed.</value>
@@ -173,6 +179,12 @@
   </data>
   <data name="Message_ServiceAlreadyRegistered" xml:space="preserve">
     <value>A service of type '{0}' was already registered.</value>
+  </data>
+  <data name="Progress_NegativeValue" xml:space="preserve">
+    <value>Parameter '{0}' cannot be negative: {1}.</value>
+  </data>
+  <data name="Progress_ValueOutOfRange" xml:space="preserve">
+    <value>Invalid value specified: {0}. Value must be within range of [{1}, {2}].</value>
   </data>
   <data name="QueryCacheValueLifetime_AlreadyStarted" xml:space="preserve">
     <value>Cannot start this lifetime because it has been already started once.</value>

@@ -6,7 +6,7 @@ namespace System.ComponentModel.Messaging.Client
     /// <summary>
     /// Represents a <see cref="IIsValidIndicator" /> that is composed of other indicators.
     /// </summary>
-    public class CompositeIsValidIndicator : PropertyChangedNotifier, IIsValidIndicator
+    public class CompositeIsValidIndicator : PropertyChangedBase, IIsValidIndicator
     {
         private readonly List<IIsValidIndicator> _indicators;
 

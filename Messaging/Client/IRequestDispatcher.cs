@@ -43,5 +43,11 @@
         {
             get;
         }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="IAsyncExecutionTask" /> that may execute this request asynchronously.
+        /// </summary>
+        /// <returns>A new <see cref="IAsyncExecutionTask" />.</returns>
+        IAsyncExecutionTask CreateAsyncExecutionTask();
     }
 }

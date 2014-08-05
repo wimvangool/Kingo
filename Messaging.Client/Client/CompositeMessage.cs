@@ -6,7 +6,7 @@ namespace System.ComponentModel.Messaging.Client
     /// <summary>
     /// Represents a <see cref="IMessage" /> that is composed of other messages.
     /// </summary>
-    public class CompositeMessage : PropertyChangedNotifier, IMessage
+    public class CompositeMessage : PropertyChangedBase, IMessage
     {        
         private readonly List<IMessage> _messages;
 

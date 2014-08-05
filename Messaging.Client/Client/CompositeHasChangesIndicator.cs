@@ -6,7 +6,7 @@ namespace System.ComponentModel.Messaging.Client
     /// <summary>
     /// Represents a <see cref="IHasChangesIndicator" /> that is composed of other indicators.
     /// </summary>
-    public class CompositeHasChangesIndicator : PropertyChangedNotifier, IHasChangesIndicator
+    public class CompositeHasChangesIndicator : PropertyChangedBase, IHasChangesIndicator
     {
         private readonly List<IHasChangesIndicator> _indicators;
 

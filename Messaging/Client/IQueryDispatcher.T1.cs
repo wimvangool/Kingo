@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Messaging.Server;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Messaging.Client
@@ -31,32 +32,26 @@ namespace System.ComponentModel.Messaging.Client
 
         /// <summary>
         /// Executes the query asynchronously.
-        /// </summary>        
+        /// </summary>      
+        /// <param name="executionId">Identifier of the asynchronous task.</param>     
         /// <returns>The task that is responsible for executing this query.</returns>        
-        Task<TResult> ExecuteAsync();
+        Task<TResult> ExecuteAsync(Guid executionId);        
 
         /// <summary>
         /// Executes the query asynchronously.
-        /// </summary>        
-        /// <param name="token">
-        /// Optional token that can be used to cancel the execution of this query.
-        /// </param>
-        /// <returns>The task that is responsible for executing this query.</returns>        
-        Task<TResult> ExecuteAsync(CancellationToken? token);
-
-        /// <summary>
-        /// Executes the query asynchronously.
-        /// </summary>        
+        /// </summary>   
+        /// <param name="executionId">Identifier of the asynchronous task.</param>        
         /// <param name="cache">
         /// When specified, the query will first consult the cache for a cached result, and if not found, will
         /// store the result before the task is completed.
         /// </param>
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TResult> ExecuteAsync(QueryCache cache);
+        Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache);
 
         /// <summary>
         /// Executes the query asynchronously.
         /// </summary>  
+        /// <param name="executionId">Identifier of the asynchronous task.</param>   
         /// <param name="cache">
         /// When specified, the query will first consult the cache for a cached result, and if not found, will
         /// store the result before the task is completed.
@@ -64,7 +59,10 @@ namespace System.ComponentModel.Messaging.Client
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this query.
         /// </param>
+        /// <param name="reporter">
+        /// Optional reporter that can be used to report back the progress the task has made.
+        /// </param>
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TResult> ExecuteAsync(QueryCache cache, CancellationToken? token);
+        Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache, CancellationToken? token, IProgressReporter reporter);
     }
 }

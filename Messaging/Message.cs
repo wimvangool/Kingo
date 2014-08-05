@@ -9,7 +9,7 @@ namespace System.ComponentModel.Messaging
     /// Represents a basic implementation of the <see cref="IMessage" /> interface, in which
     /// change tracking and validation are supported.
     /// </summary>
-    public abstract class Message : PropertyChangedNotifier, IMessage, IServiceProvider
+    public abstract class Message : PropertyChangedBase, IMessage, IServiceProvider
     {
         private readonly Dictionary<Type, object> _services;
         private readonly bool _isReadOnly;

@@ -5,37 +5,71 @@ namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IRequestDispatcherCommand" /> interface.
-    /// </summary>    
-    /// <typeparam name="TRequest">Type of the encapsulated <see cref="IRequestDispatcher" />.</typeparam>
+    /// </summary>       
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
-    public abstract class RequestDispatcherCommand<TRequest, TParameter> : PropertyChangedNotifier, IRequestDispatcherCommand
-        where TRequest : class, IRequestDispatcher
+    public class AsyncCommand<TParameter> : PropertyChangedBase, IRequestDispatcherCommand       
     {
-        private readonly TRequest _request;
-        private readonly IIsValidIndicator _isValidIndicator;
-        private readonly Stack<TParameter> _parameterStack;
-        private readonly CommandExecutionOptions _options;
+        private readonly IRequestDispatcher _dispatcher;
+        private readonly IIsValidIndicator _isValidIndicator;        
+        private readonly AsyncCommandOptions _options;
+        private readonly List<IAsyncExecutionTask> _runningTasks;
 
-        internal RequestDispatcherCommand(TRequest request, IIsValidIndicator isValidIndicator, CommandExecutionOptions options)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// </summary>
+        /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>             
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dispatcher"/> is <c>null</c>.
+        /// </exception>
+        public AsyncCommand(IRequestDispatcher dispatcher)
+            : this(dispatcher, null, AsyncCommandOptions.None) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// </summary>
+        /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
+        /// <param name="isValidIndicator">
+        /// The indicator that is used to determine whether the command can be executed.
+        /// </param>        
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dispatcher"/> is <c>null</c>.
+        /// </exception>
+        public AsyncCommand(IRequestDispatcher dispatcher, IIsValidIndicator isValidIndicator)
+            : this(dispatcher, isValidIndicator, AsyncCommandOptions.None) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// </summary>
+        /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
+        /// <param name="isValidIndicator">
+        /// The indicator that is used to determine whether the command can be executed.
+        /// </param>
+        /// <param name="options">
+        /// The opions that determine the exact behavior of this command.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dispatcher"/> is <c>null</c>.
+        /// </exception>
+        public AsyncCommand(IRequestDispatcher dispatcher, IIsValidIndicator isValidIndicator, AsyncCommandOptions options)
         {
-            if (request == null)
+            if (dispatcher == null)
             {
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException("dispatcher");
             }
-            _request = request;
-            _request.IsExecutingChanged += (s, e) => OnIsExecutingChanged();
+            _dispatcher = dispatcher;
+            _dispatcher.IsExecutingChanged += (s, e) => OnIsExecutingChanged();
             _isValidIndicator = isValidIndicator ?? new NullMessage(true, true);
-            _isValidIndicator.IsValidChanged += (s, e) => OnIsValidChanged();
-            _parameterStack = new Stack<TParameter>(3);
+            _isValidIndicator.IsValidChanged += (s, e) => OnIsValidChanged();           
             _options = options;
+            _runningTasks = new List<IAsyncExecutionTask>();
         }
 
         /// <summary>
-        /// Returns the encapsulated request.
+        /// Returns the encapsulated dispatcher.
         /// </summary>
-        protected TRequest Request
+        protected IRequestDispatcher Dispatcher
         {
-            get { return _request; }
+            get { return _dispatcher; }
         }
 
         /// <summary>
@@ -44,40 +78,31 @@ namespace System.ComponentModel.Messaging.Client
         protected IIsValidIndicator IsValidIndicator
         {
             get { return _isValidIndicator; }
-        }
+        }       
 
         /// <summary>
-        /// Contains the parameter that is currently being used for execution of this request.
+        /// Indicates whether or not the request is allowed to have parrallel executions.
         /// </summary>
-        protected TParameter Parameter
+        protected bool AllowParrallelExecutions
         {
-            get { return _parameterStack.Count == 0 ? default(TParameter) : _parameterStack.Peek(); }            
+            get { return IsSet(AsyncCommandOptions.AllowParrallelExecutions); }
         }
 
         /// <summary>
-        /// Indicates whether or not the request is allowed to have nested (in case of synchronous) or
-        /// parrallel (in case of asynchronous) executions.
-        /// </summary>
-        protected bool AllowMultipleExecutions
-        {
-            get { return IsSet(CommandExecutionOptions.AllowMultipleExecutions); }
-        }
-
-        /// <summary>
-        /// Indicates whether or not the encapsulated <see cref="Request" /> should be
+        /// Indicates whether or not the encapsulated <see cref="Dispatcher" /> should be
         /// executed synchronously.
         /// </summary>
-        protected bool ExecuteSynchronously
+        protected bool CancelPreviousOnExecution
         {
-            get { return IsSet(CommandExecutionOptions.ExecuteSynchronously); }
+            get { return IsSet(AsyncCommandOptions.CancelPreviousOnExecution); }
         }
 
-        private bool IsSet(CommandExecutionOptions options)
+        private bool IsSet(AsyncCommandOptions options)
         {
             return (_options & options) == options;
         }
 
-        #region [====== ICommand ======]
+        #region [====== ICommand - CanExecute ======]
 
         /// <inheritdoc />
         public event EventHandler CanExecuteChanged;
@@ -99,6 +124,29 @@ namespace System.ComponentModel.Messaging.Client
                 return CanExecute(parameterOut);
             }
             return false;
+        }
+
+        #endregion
+
+        #region [====== ICommand - Execute ======]
+
+        /// <summary>
+        /// Occurs when this command is executed and a new <see cref="IAsyncExecutionTask" /> is started.
+        /// </summary>
+        public event EventHandler<AsyncExecutionTaskStartedEventArgs> TaskStarted;
+
+        /// <summary>
+        /// Raises the <see cref="TaskStarted" /> event.
+        /// </summary>
+        /// <param name="task">The task that has been started.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="task"/> is <c>null</c>.
+        /// </exception>
+        protected virtual void OnTaskStarted(IAsyncExecutionTask task)
+        {
+            TaskStarted.Raise(this, new AsyncExecutionTaskStartedEventArgs(task));
+            
+            OnIsExecutingChanged();
         }
 
         void ICommand.Execute(object parameter)
@@ -157,12 +205,12 @@ namespace System.ComponentModel.Messaging.Client
         /// </returns>
         /// <remarks>
         /// The default implementation will ignore <paramref name="parameter"/> and return <c>true</c> if and only if
-        /// <see cref="IsValidIndicator" /> is valid and the request is not already executing or <see cref="AllowMultipleExecutions" />
+        /// <see cref="IsValidIndicator" /> is valid and the request is not already executing or <see cref="AllowParrallelExecutions" />
         /// is <c>true</c>.
         /// </remarks>
         public virtual bool CanExecute(TParameter parameter)
 	    {
-		    return IsValidIndicator.IsValid && (AllowMultipleExecutions || !IsExecuting);
+		    return IsValidIndicator.IsValid && (AllowParrallelExecutions || !IsExecuting);
 	    }
 
         /// <summary>
@@ -173,40 +221,55 @@ namespace System.ComponentModel.Messaging.Client
         {
             if (CanExecute(parameter))
             {
-                _parameterStack.Push(parameter);
-
-                try
-                {
-                    ExecuteRequest();
-                }
-                finally
-                {
-                    _parameterStack.Pop();
-                }
+                Execute(CreateExecutionTask(parameter));
             }                       
-        }
+        }  
 
-        private void ExecuteRequest()
+        private void Execute(IAsyncExecutionTask task)
         {
-            if (ExecuteSynchronously)
+            if (CancelPreviousOnExecution)
             {
-                Execute();
+                foreach (var runningTask in _runningTasks)
+                {
+                    runningTask.Cancel();
+                }
             }
-            else
+
+            // When a task has ended (canceled, failed or done), it should be removed again.
+            task.StatusChanged += (s, e) =>
             {
-                ExecuteAsync();
-            } 
+                if (task.Status == AsyncExecutionTaskStatus.Running)
+                {
+                    return;
+                }
+                Finish(task);
+            };
+            task.Execute();
+
+            _runningTasks.Add(task);
+
+            OnTaskStarted(task);
         }
 
+        private void Finish(IAsyncExecutionTask task)
+        {
+            if (_runningTasks.Remove(task))
+            {
+                OnIsExecutingChanged();
+            }
+        }
+        
         /// <summary>
-        /// Executes the associated <see cref="Request" /> synchronously..
+        /// Creates and returns a new <see cref="IAsyncExecutionTask" /> that will be executed.
         /// </summary>
-        protected abstract void Execute();
-
-        /// <summary>
-        /// Executes the associtaed <see cref="Request" /> asynchronously.
-        /// </summary>
-        protected abstract void ExecuteAsync();
+        /// <param name="parameter">
+        /// Parameter that can be used to initialize the request.
+        /// </param>
+        /// <returns>A new <see cref="IAsyncExecutionTask" />.</returns>
+        protected virtual IAsyncExecutionTask CreateExecutionTask(TParameter parameter)
+        {
+            return Dispatcher.CreateAsyncExecutionTask();
+        }
 
         #endregion
 
@@ -255,8 +318,8 @@ namespace System.ComponentModel.Messaging.Client
         public event EventHandler IsExecutingChanged;
 
         /// <summary>
-        /// Raises the <see cref="IsExecutingChanged" />, <see cref="PropertyChangedNotifier.PropertyChanged" /> and
-        /// possibly the <see cref="CanExecuteChanged" /> events, depending on whether or not <see cref="AllowMultipleExecutions"/>
+        /// Raises the <see cref="IsExecutingChanged" />, <see cref="PropertyChangedBase.PropertyChanged" /> and
+        /// possibly the <see cref="CanExecuteChanged" /> events, depending on whether or not <see cref="AllowParrallelExecutions"/>
         /// is <c>true</c>.
         /// </summary>
         protected virtual void OnIsExecutingChanged()
@@ -266,7 +329,7 @@ namespace System.ComponentModel.Messaging.Client
             OnPropertyChanged(() => IsExecuting);
             OnPropertyChanged("IsBusy");
 
-            if (AllowMultipleExecutions)
+            if (AllowParrallelExecutions)
             {
                 return;
             }
@@ -276,7 +339,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <inheritdoc />
         public bool IsExecuting
         {
-            get { return Request.IsExecuting; }
+            get { return _runningTasks.Count > 0; }
         }
 
         #endregion
