@@ -49,6 +49,7 @@ namespace System.ComponentModel.Messaging.Client
         public AsyncCommand(IRequestDispatcher dispatcher, IIsValidIndicator isValidIndicator, AsyncCommandOptions options)
             : base(dispatcher, isValidIndicator, options) { }
 
+        /// <inheritdoc />
         protected override bool TryConvertParameter(object parameterIn, out object parameterOut)
         {
             parameterOut = parameterIn;

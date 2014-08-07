@@ -49,6 +49,17 @@
     </Compile>
     <Compile Include="Client\AsyncCommand.cs" />
     <Compile Include="Client\AsyncExecutionTaskStartedEventArgs.cs" />
+    <Compile Include="Client\DataVirtualization\CountLoadedEventArgs.cs" />
+    <Compile Include="Client\DataVirtualization\IndexSet.cs" />
+    <Compile Include="Client\DataVirtualization\IndexRange.cs" />
+    <Compile Include="Client\DataVirtualization\ItemLoadedEventArgs.T1.cs" />
+    <Compile Include="Client\DataVirtualization\ItemFailedToLoadEventArgs.cs" />
+    <Compile Include="Client\DataVirtualization\IVirtualCollectionImplementation.cs" />
+    <Compile Include="Client\DataVirtualization\ReadOnlyCollection.T1.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollection.T1.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionImplementation.T1.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionItemStatus.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionPage.T1.cs" />
     <Compile Include="Client\TransactionalEventBuffer.T1.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Client\ClientEventBus.cs" />
@@ -87,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="02.Messaging.Client.nuspec" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionItem.T1.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

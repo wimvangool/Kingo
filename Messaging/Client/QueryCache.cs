@@ -1,33 +1,27 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents the base-class for every cache that is used to store the results of <see cref="IQueryDispatcher{T}">queries</see>.
+    /// Represents the base-class for every cache that is used to store the results of queries.
     /// </summary>
     /// <remarks>
     /// Note to implementers: since the <see cref="QueryCache" /> is to be used in a concurrent environment,
     /// all instance methods of this class must be thread-safe.
     /// </remarks>
-    public abstract class QueryCache
-    {
-        private readonly SynchronizationContext _context;
+    public abstract class QueryCache : AsyncObject
+    {        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryCache" /> class.
+        /// </summary>
+        protected QueryCache() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryCache" /> class.
         /// </summary>
-        protected QueryCache()
-        {
-            _context = SynchronizationContext.Current;
-        }
-
-        /// <summary>
-        /// Returns the context that is used to publish all events on.
-        /// </summary>
-        protected SynchronizationContext SynchronizationContext
-        {
-            get { return _context; }
-        }
+        /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>
+        protected QueryCache(SynchronizationContext synchronizationContext) : base(synchronizationContext) { }
   
         /// <summary>
         /// Occurs when a cache value expired and was removed from cache.
@@ -53,7 +47,7 @@ namespace System.ComponentModel.Messaging.Client
                 
                 cacheValue.Dispose();
 
-                using (var scope = new SynchronizationContextScope(_context))
+                using (var scope = CreateSynchronizationContextScope())
                 {
                     scope.Post(() => OnCachedValueExpired(new QueryCacheValueExpiredEventArgs(key, value)));
                 }
@@ -61,7 +55,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <summary>
-        /// When overriden, attempts to retrieve a value from the cache using the specified key.
+        /// When overridden, attempts to retrieve a value from the cache using the specified key.
         /// </summary>
         /// <param name="key">The key that is used to retrieve the value.</param>
         /// <param name="value">
@@ -71,11 +65,54 @@ namespace System.ComponentModel.Messaging.Client
         /// <returns>
         /// <c>true</c> if the cache found an entry using the specified <paramref name="key"/>; otherwise <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="key"/> is <c>null</c>.
+        /// </exception>
         /// <remarks>
         /// Note that values may expire <i>while</i> they are retrieved. This race-condition is unaviodable and may cause this method
         /// to return a value that has actually (just) expired when used.
         /// </remarks>
         public abstract bool TryGetValue(object key, out QueryCacheValue value);
+
+        /// <summary>
+        /// Attempts to add a new entry into the cache. If an entry with the specified key already exists in the cache,
+        /// it is replaced by <paramref name="value"/>.
+        /// </summary>
+        /// <param name="key">The key that is used to store the value.</param>
+        /// <param name="value">The value to store.</param>            
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="key"/> or <paramref name="value"/> is <c>null</c>.
+        /// </exception>
+        public void AddOrUpdate<TKey>(TKey key, QueryCacheValue value)
+        {
+            if (ReferenceEquals(key, null))
+            {
+                throw new ArgumentNullException("key");
+            }            
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+            AddOrUpdate(key, value, (k, oldValue) =>
+            {
+                oldValue.Dispose();
+
+                return value;
+            });
+            RegisterNew(key, value);
+        }
+
+        /// <summary>
+        /// When overridden, attempts to add a new entry into the cache. If an entry with the specified key already exists in the cache,
+        /// <paramref name="updateValueFactory"/> is used to update the value.
+        /// </summary>
+        /// <param name="key">The key that is used to store the value.</param>
+        /// <param name="value">The value to store.</param>
+        /// <param name="updateValueFactory">
+        /// The factory used to update a value in the cache, if another entry with the specified <paramref name="key"/> was already present in
+        /// the cache.
+        /// </param>                        
+        protected abstract void AddOrUpdate(object key, QueryCacheValue value, Func<object, QueryCacheValue, QueryCacheValue> updateValueFactory);
 
         /// <summary>
         /// Attempts to retrieve a value from cache, but if not found, creates and stores it before it is returned.
@@ -89,7 +126,7 @@ namespace System.ComponentModel.Messaging.Client
         /// The value that was either stored or created.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="valueFactory"/> is <c>null</c>.
+        /// <paramref name="key"/> or <paramref name="valueFactory"/> is <c>null</c>.
         /// </exception>
         /// <remarks>
         /// Note that values may expire <i>while</i> they are retrieved. This race-condition is unaviodable and may cause this method
@@ -97,6 +134,10 @@ namespace System.ComponentModel.Messaging.Client
         /// </remarks>
         public QueryCacheValue GetOrAdd<TKey>(TKey key, Func<TKey, QueryCacheValue> valueFactory)
         {
+            if (ReferenceEquals(key, null))
+            {
+                throw new ArgumentNullException("key");
+            }
             if (valueFactory == null)
             {
                 throw new ArgumentNullException("valueFactory");
@@ -108,13 +149,18 @@ namespace System.ComponentModel.Messaging.Client
             {
                 return value;
             }
+            RegisterNew(key, value);
+           
+            return value;
+        }  
+      
+        private void RegisterNew(object key, QueryCacheValue value)
+        {
             // If the value was created and stored, its Expired-event is hooked onto a handler that will
             // remove the value as soon as it expires.
             value.Lifetime.Expired += (s, e) => OnCachedValueExpired(key);
-            value.Lifetime.Start();
-           
-            return value;
-        }        
+            value.Lifetime.Start();            
+        }
 
         /// <summary>
         /// Attempts to retrieve a value from cache, but if not found, creates and stores it before it is returned.
@@ -130,6 +176,9 @@ namespace System.ComponentModel.Messaging.Client
         /// <returns>
         /// <c>true</c> if the value was retrieved from cache; <c>false</c> if it was created and stored.
         /// </returns>
+        /// <exception cref="ArgumentException">
+        /// The value returned by <paramref name="valueFactory"/> was <c>null</c>.
+        /// </exception>
         protected abstract bool TryGetOrAdd<TKey>(TKey key, Func<TKey, QueryCacheValue> valueFactory, out QueryCacheValue value);
 
         /// <summary>
@@ -161,7 +210,7 @@ namespace System.ComponentModel.Messaging.Client
         /// the stored result.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the value was succesfully read from the cache; otherwise <c>false</c>.
+        /// <c>true</c> if the value was successfully read from the cache; otherwise <c>false</c>.
         /// </returns>
         public static bool TryGetFromCache<TResult>(QueryCache cache, object key, out TResult result)
         {

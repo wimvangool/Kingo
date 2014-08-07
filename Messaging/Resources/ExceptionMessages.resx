@@ -162,6 +162,9 @@
   <data name="InvalidCommandException_MessageWithErrors" xml:space="preserve">
     <value>Command '{0}' could not be executed because it was invalid. Errors: {1}.</value>
   </data>
+  <data name="MemoryCache_NullValueCreated" xml:space="preserve">
+    <value>The value factory returned a null-value.</value>
+  </data>
   <data name="MessageHanderPipeline_MultipleAttributesFound" xml:space="preserve">
     <value>Multiple attributes of the specified type were found when only a single was expected: {0}.</value>
   </data>

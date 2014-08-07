@@ -7,26 +7,25 @@ namespace System.ComponentModel.Messaging.Client
     /// Provides a basic implementation of the <see cref="IProgressReporter" /> interface, where
     /// progress is reported back through an associated <see cref="SynchronizationContext" />.
     /// </summary>
-    public class ProgressReporter : IProgressReporter
-    {
-        private readonly SynchronizationContext _synchronizationContext;
+    public class ProgressReporter : AsyncObject, IProgressReporter
+    {        
         private Progress _progress;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProgressReporter" /> class.
         /// </summary>
         public ProgressReporter()
-        {
-            _synchronizationContext = SynchronizationContext.Current;
+        {            
             _progress = Progress.MinValue;
-        }
+        }        
 
         /// <summary>
-        /// Returns the associated <see cref="SynchronizationContext" /> that is used to report back the progress.
+        /// Initializes a new instance of the <see cref="ProgressReporter" /> class. 
         /// </summary>
-        protected SynchronizationContext SynchronizationContext
+        /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>
+        public ProgressReporter(SynchronizationContext synchronizationContext) : base(synchronizationContext)
         {
-            get { return _synchronizationContext; }
+            _progress = Progress.MinValue;
         }
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace System.ComponentModel.Messaging.Client
             }
         }
 
-        #region [====== IProgressReporter ======]       
+        #region [====== IProgressReporter ======]
 
         void IProgressReporter.Report(int total, int progress)
         {
@@ -78,7 +77,7 @@ namespace System.ComponentModel.Messaging.Client
 
         private void Report(Progress progress)
         {
-            using (var scope = new SynchronizationContextScope(_synchronizationContext))
+            using (var scope = CreateSynchronizationContextScope())
             {
                 scope.Post(() => Progress = progress);
             }

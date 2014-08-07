@@ -8,7 +8,7 @@ namespace System.ComponentModel.Messaging.Client
     /// Represents an event-bus for client or front-end components that can be used within a <see cref="MessageProcessor" />
     /// to listen to published events and them publish them on a UI-event bus.
     /// </summary>
-    public abstract class ClientEventBus : IDomainEventBus
+    public abstract class ClientEventBus : AsyncObject, IDomainEventBus
     {
         #region [====== Relay ======]
 
@@ -41,8 +41,17 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         protected ClientEventBus()
         {
-            _relay = new Relay(this, SynchronizationContext.Current);          
-        }                       
+            _relay = new Relay(this, SynchronizationContext);          
+        }         
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientEventBus" /> class.
+        /// </summary>
+        /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>
+        protected ClientEventBus(SynchronizationContext synchronizationContext) : base(synchronizationContext)
+        {
+            _relay = new Relay(this, SynchronizationContext); 
+        }
        
         /// <summary>
         /// Creates and returns a new <see cref="IConnection " /> to this bus.

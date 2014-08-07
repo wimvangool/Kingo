@@ -50,6 +50,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Client\AsyncExecutionTask.T1.cs" />
+    <Compile Include="Client\AsyncObject.cs" />
     <Compile Include="Client\CommandDispatcher.cs" />
     <Compile Include="Client\CommandDispatcher.T1.cs" />
     <Compile Include="Client\CommandDispatcherBase.cs" />

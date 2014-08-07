@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.Messaging.Resources;
+using System.Threading;
 
 namespace System.ComponentModel.Messaging.Client
 {
@@ -20,19 +22,30 @@ namespace System.ComponentModel.Messaging.Client
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryCache" /> class.
-        /// </summary>        
+        /// </summary>
+        /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>
+        public MemoryCache(SynchronizationContext synchronizationContext) : base(synchronizationContext)
+        {
+            _cachedValues = new ConcurrentDictionary<object, QueryCacheValue>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoryCache" /> class.
+        /// </summary>   
+        /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>     
         /// <param name="comparer">
         /// The equality comparison implementation to use when comparing keys. Uses the default comparer if this
         /// parameter is <c>null</c>.
         /// </param>        
-        public MemoryCache(IEqualityComparer<object> comparer)
+        public MemoryCache(SynchronizationContext synchronizationContext, IEqualityComparer<object> comparer) : base(synchronizationContext)
         {
             _cachedValues = new ConcurrentDictionary<object, QueryCacheValue>(comparer ?? EqualityComparer<object>.Default);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryCache" /> class.
-        /// </summary>        
+        /// </summary> 
+        /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>       
         /// <param name="concurrencyLevel">
         /// The estimated number of threads that will update the <see cref="MemoryCache" /> concurrently.
         /// </param>
@@ -42,7 +55,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="concurrencyLevel"/> is less than 1 or <paramref name="capacity"/> is less than 0.
         /// </exception>
-        public MemoryCache(int concurrencyLevel, int capacity)
+        public MemoryCache(SynchronizationContext synchronizationContext, int concurrencyLevel, int capacity) : base(synchronizationContext)
         {
             _cachedValues = new ConcurrentDictionary<object, QueryCacheValue>(concurrencyLevel, capacity);
         }
@@ -50,6 +63,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryCache" /> class.
         /// </summary>        
+        /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>
         /// <param name="concurrencyLevel">
         /// The estimated number of threads that will update the <see cref="MemoryCache" /> concurrently.
         /// </param>
@@ -62,7 +76,8 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="concurrencyLevel"/> is less than 1 or <paramref name="capacity"/> is less than 0.
         /// </exception>
-        public MemoryCache(int concurrencyLevel, int capacity, IEqualityComparer<object> comparer)
+        public MemoryCache(SynchronizationContext synchronizationContext, int concurrencyLevel, int capacity, IEqualityComparer<object> comparer)
+            : base(synchronizationContext)
         {
             _cachedValues = new ConcurrentDictionary<object, QueryCacheValue>(concurrencyLevel, capacity, comparer ?? EqualityComparer<object>.Default);
         }        
@@ -74,6 +89,12 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
+        protected override void AddOrUpdate(object key, QueryCacheValue value, Func<object, QueryCacheValue, QueryCacheValue> updateValueFactory)
+        {
+            _cachedValues.AddOrUpdate(key, value, updateValueFactory);
+        }
+
+        /// <inheritdoc />
         protected override bool TryGetOrAdd<TKey>(TKey key, Func<TKey, QueryCacheValue> valueFactory, out QueryCacheValue value)
         {
             bool wasRetrievedFromCache = true;
@@ -82,9 +103,19 @@ namespace System.ComponentModel.Messaging.Client
             {
                 wasRetrievedFromCache = false;
 
-                return valueFactory.Invoke(key);
+                var newValue = valueFactory.Invoke(key);
+                if (newValue == null)
+                {
+                    throw NewNullValueCreatedException("valueFactory");
+                }
+                return newValue;
             });
             return wasRetrievedFromCache;
+        }
+
+        private static Exception NewNullValueCreatedException(string paramName)
+        {
+            return new ArgumentException(ExceptionMessages.MemoryCache_NullValueCreated, paramName);
         }
 
         /// <inheritdoc />

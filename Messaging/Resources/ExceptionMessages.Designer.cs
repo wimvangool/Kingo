@@ -196,6 +196,15 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value factory returned a null-value..
+        /// </summary>
+        internal static string MemoryCache_NullValueCreated {
+            get {
+                return ResourceManager.GetString("MemoryCache_NullValueCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown value of type &apos;{0}&apos; specified: {1}..
         /// </summary>
         internal static string Message_InvalidOption {

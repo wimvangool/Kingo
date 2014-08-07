@@ -61,11 +61,65 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid count specified: {0}. Value cannot be negative..
+        /// </summary>
+        internal static string CountLoadedEventArgs_InvalidCount {
+            get {
+                return ResourceManager.GetString("CountLoadedEventArgs_InvalidCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid count specified: {0}. Value cannot be less than or equal to zero..
+        /// </summary>
+        internal static string ErrorItemRange_InvalidCount {
+            get {
+                return ResourceManager.GetString("ErrorItemRange_InvalidCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified index was out of range of valid values: {0}..
+        /// </summary>
+        internal static string Object_IndexOutOfRange {
+            get {
+                return ResourceManager.GetString("Object_IndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot open connection because another command has already opened its connection..
         /// </summary>
         internal static string OneToOneCommand_OtherAlreadyConnected {
             get {
                 return ResourceManager.GetString("OneToOneCommand_OtherAlreadyConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method or property &apos;{0}&apos; is not supported because the collection is read-only..
+        /// </summary>
+        internal static string ReadOnlyCollection_MethodNotSupported {
+            get {
+                return ResourceManager.GetString("ReadOnlyCollection_MethodNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot load the item because the size of the collection has not yet been determined..
+        /// </summary>
+        internal static string VirtualCollectionImplementation_CountNotLoaded {
+            get {
+                return ResourceManager.GetString("VirtualCollectionImplementation_CountNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid page size specified: {0}. Value must be greater than zero..
+        /// </summary>
+        internal static string VirtualCollectionImplementation_InvalidPageSize {
+            get {
+                return ResourceManager.GetString("VirtualCollectionImplementation_InvalidPageSize", resourceCulture);
             }
         }
     }

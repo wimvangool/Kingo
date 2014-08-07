@@ -117,7 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CountLoadedEventArgs_InvalidCount" xml:space="preserve">
+    <value>Invalid count specified: {0}. Value cannot be negative.</value>
+  </data>
+  <data name="ErrorItemRange_InvalidCount" xml:space="preserve">
+    <value>Invalid count specified: {0}. Value cannot be less than or equal to zero.</value>
+  </data>
+  <data name="Object_IndexOutOfRange" xml:space="preserve">
+    <value>The specified index was out of range of valid values: {0}.</value>
+  </data>
   <data name="OneToOneCommand_OtherAlreadyConnected" xml:space="preserve">
     <value>Cannot open connection because another command has already opened its connection.</value>
+  </data>
+  <data name="ReadOnlyCollection_MethodNotSupported" xml:space="preserve">
+    <value>Method or property '{0}' is not supported because the collection is read-only.</value>
+  </data>
+  <data name="VirtualCollectionImplementation_CountNotLoaded" xml:space="preserve">
+    <value>Cannot load the item because the size of the collection has not yet been determined.</value>
+  </data>
+  <data name="VirtualCollectionImplementation_InvalidPageSize" xml:space="preserve">
+    <value>Invalid page size specified: {0}. Value must be greater than zero.</value>
   </data>
 </root>

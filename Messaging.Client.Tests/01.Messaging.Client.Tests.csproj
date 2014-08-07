@@ -57,6 +57,9 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Client\DataVirtualization\VirtualCollectionImplementationSpy.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionImplementationTest.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionTest.cs" />
     <Compile Include="Client\SynchronousContext.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Client\ClientEventBusStub.cs" />
