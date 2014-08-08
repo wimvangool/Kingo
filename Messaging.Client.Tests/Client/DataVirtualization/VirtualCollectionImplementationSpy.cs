@@ -137,10 +137,10 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             {
                 return CreateFailedTask();
             }           
-            return CreateCompletedTask(LoadPage(pageIndex));
+            return CreateCompletedTask(LoadPageCore(pageIndex));
         }
 
-        private VirtualCollectionPage<int> LoadPage(int pageIndex)
+        private VirtualCollectionPage<int> LoadPageCore(int pageIndex)
         {
             var page = new List<int>(PageSize);
             var firstIndex = pageIndex * PageSize;

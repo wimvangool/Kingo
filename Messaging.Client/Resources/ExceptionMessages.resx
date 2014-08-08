@@ -123,6 +123,18 @@
   <data name="ErrorItemRange_InvalidCount" xml:space="preserve">
     <value>Invalid count specified: {0}. Value cannot be less than or equal to zero.</value>
   </data>
+  <data name="IndexRange_CountAlreadyAtMinimum" xml:space="preserve">
+    <value>Cannot remove any values from this because it's size is already at it's minimum (1).</value>
+  </data>
+  <data name="IndexRange_MaxValueAlreadyAtMaximum" xml:space="preserve">
+    <value>Cannot add index to the right of this range because MaxValue is already at it's maximum (Int32.MaxValue).</value>
+  </data>
+  <data name="IndexRange_MaxValueOverflow" xml:space="preserve">
+    <value>The value of '{0}' ({1}) is invalid because it would cause MaxValue to exceed Int32.MaxValue.</value>
+  </data>
+  <data name="IndexRange_MinValueAlreadyAtMinimum" xml:space="preserve">
+    <value>Cannot add index to the left of this range because MinValue is already at it's minimum (0).</value>
+  </data>
   <data name="Object_IndexOutOfRange" xml:space="preserve">
     <value>The specified index was out of range of valid values: {0}.</value>
   </data>

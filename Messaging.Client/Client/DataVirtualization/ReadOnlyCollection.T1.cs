@@ -11,9 +11,9 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// Represents a list of items that only allows read-operations.
     /// </summary>
     /// <typeparam name="T">Type of the items of this collection.</typeparam>
-    public abstract class ReadOnlyCollection<T> : PropertyChangedBase, IList<T>
+    public abstract class ReadOnlyCollection<T> : PropertyChangedBase, IList<T>, IList
     {
-        #region [====== Count ======]        
+        #region [====== Count ======]
 
         /// <inheritdoc />
         public abstract int Count
@@ -24,6 +24,12 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         #endregion
 
         #region [====== Indexer ======]
+
+        object IList.this[int index]
+        {
+            get { return this[index]; }
+            set { throw NewNotSupportedException("set_Item"); }
+        }
 
         T IList<T>.this[int index]
         {
@@ -48,9 +54,38 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
         #region [====== List - Explicit Read Methods ======]
 
+        bool IList.IsFixedSize
+        {
+            get { return false; }
+        }
+
+        bool ICollection.IsSynchronized
+        {
+            get { return false; }
+        }
+
+        object ICollection.SyncRoot
+        {
+            get { return this; }
+        }
+
+        bool IList.IsReadOnly
+        {
+            get { return true; }
+        }
+
         bool ICollection<T>.IsReadOnly
         {
             get { return true; }
+        }
+
+        int IList.IndexOf(object value)
+        {
+            if (value is T)
+            {
+                return IndexOf((T)value);
+            }
+            return -1;
         }
 
         int IList<T>.IndexOf(T item)
@@ -65,6 +100,15 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <returns>The index of <paramref name="item"/> if found in the list; otherwise, <c>-1.</c></returns>
         protected abstract int IndexOf(T item);
 
+        bool IList.Contains(object value)
+        {
+            if (value is T)
+            {
+                return Contains((T)value);
+            }
+            return false;
+        }
+
         bool ICollection<T>.Contains(T item)
         {
             return Contains(item);
@@ -76,6 +120,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <param name="item">The item to locate in the collection.</param>
         /// <returns><c>true</c> if item is found in the collection; otherwise, <c>false</c>.</returns>
         protected abstract bool Contains(T item);
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            CopyTo((T[])array, index);
+        }
 
         void ICollection<T>.CopyTo(T[] array, int arrayIndex)
         {
@@ -118,20 +167,25 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>A <see cref="IEnumerator{T}" /> that can be used to iterate through the collection.</returns>
-        protected abstract IEnumerator<T> GetEnumerator();               
+        protected abstract IEnumerator<T> GetEnumerator();
 
-        #endregion       
+        #endregion
 
         #region [====== List - Explicit Write Methods ======]
+
+        void IList.Insert(int index, object value)
+        {
+            throw NewNotSupportedException("Index");
+        }
 
         void IList<T>.Insert(int index, T item)
         {
             throw NewNotSupportedException("Index");
         }
 
-        void IList<T>.RemoveAt(int index)
+        int IList.Add(object value)
         {
-            throw NewNotSupportedException("RemoveAt");
+            throw NewNotSupportedException("Add");
         }
 
         void ICollection<T>.Add(T item)
@@ -139,14 +193,34 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             throw NewNotSupportedException("Add");
         }
 
+        void IList.Clear()
+        {
+            throw NewNotSupportedException("Clear");
+        }
+
         void ICollection<T>.Clear()
         {
             throw NewNotSupportedException("Clear");
         }
 
+        void IList.Remove(object value)
+        {
+            throw NewNotSupportedException("Remove");
+        }
+
         bool ICollection<T>.Remove(T item)
         {
             throw NewNotSupportedException("Remove");
+        }
+
+        void IList.RemoveAt(int index)
+        {
+            throw NewNotSupportedException("RemoveAt");
+        }
+
+        void IList<T>.RemoveAt(int index)
+        {
+            throw NewNotSupportedException("RemoveAt");
         }
 
         private static Exception NewNotSupportedException(string methodName)

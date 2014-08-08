@@ -19,7 +19,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
         private readonly int _pageSize;               
         private readonly IndexSet _pagesThatAreLoading;
-        private bool _isLoadingCount;
+        private Task<int> _loadCountTask;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualCollectionImplementation{T}" /> class.
@@ -106,18 +106,15 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
                 count = Count.Value;
                 return true;
             }
-            if (_isLoadingCount)
+            if (_loadCountTask != null && !_loadCountTask.IsCompleted)
             {
                 return CountNotYetLoaded(out count);
-            }
-            _isLoadingCount = true;
-
-            StartLoadCountTask().ContinueWith(task =>
+            }            
+            _loadCountTask = StartLoadCountTask();
+            _loadCountTask.ContinueWith(task =>
             {
                 using (var scope = CreateSynchronizationContextScope())
-                {
-                    scope.Send(() => _isLoadingCount = false);
-
+                {                    
                     if (task.IsCanceled || task.IsFaulted)
                     {
                         return;
@@ -146,33 +143,33 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         #region [====== Page Loading ======]
 
         /// <inheritdoc />
-        public event EventHandler<ItemFailedToLoadEventArgs> ItemFailedToLoad;
+        public event EventHandler<PageFailedToLoadEventArgs> PageFailedToLoad;
 
         /// <summary>
-        /// Raises the <see cref="ItemFailedToLoad" /> event.
+        /// Raises the <see cref="PageFailedToLoad" /> event.
         /// </summary>
         /// <param name="e">Argument of the event.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="e"/> is <c>null</c>.
         /// </exception>
-        protected virtual void OnItemFailedToLoad(ItemFailedToLoadEventArgs e)
+        protected virtual void OnPageFailedToLoad(PageFailedToLoadEventArgs e)
         {
-            ItemFailedToLoad.Raise(this, e);
+            PageFailedToLoad.Raise(this, e);
         }
 
         /// <inheritdoc />
-        public event EventHandler<ItemLoadedEventArgs<T>> ItemLoaded;
+        public event EventHandler<PageLoadedEventArgs<T>> PageLoaded;
 
         /// <summary>
-        /// Raises the <see cref="ItemLoaded" /> event.
+        /// Raises the <see cref="PageLoaded" /> event.
         /// </summary>
         /// <param name="e">Argument of the event.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="e"/> is <c>null</c>.
         /// </exception>
-        protected virtual void OnItemLoaded(ItemLoadedEventArgs<T> e)
+        protected virtual void OnPageLoaded(PageLoadedEventArgs<T> e)
         {
-            ItemLoaded.Raise(this, e);
+            PageLoaded.Raise(this, e);
         }
 
         /// <inheritdoc />
@@ -214,10 +211,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
             StartLoadPageTask(pageIndex).ContinueWith(task =>
             {
-                using (var scope = CreateSynchronizationContextScope())
-                {
-                    scope.Send(() => _pagesThatAreLoading.Remove(pageIndex));
-
+                using (CreateSynchronizationContextScope())
+                {                    
+                    // NB: We intentionally ignore thae IsCanceled-status here,
+                    // since if anyone cancelled loading this page, it's as if
+                    // nothing ever happened.
                     if (task.IsFaulted)
                     {
                         OnPageFailedToLoad(pageIndex);
@@ -245,48 +243,17 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
         private void OnPageFailedToLoad(int pageIndex)
         {
-            SynchronizationContextScope.Current.Post(() =>
-            {
-                var firstIndexOfPage = FirstIndexOf(pageIndex);
-                var lastIndexOfPage = LastIndexOf(pageIndex);
-
-                for (int index = firstIndexOfPage; index <= lastIndexOfPage; index++)
-                {
-                    OnItemFailedToLoad(new ItemFailedToLoadEventArgs(index));
-                }
-            });            
+            SynchronizationContextScope.Current.Post(() => OnPageFailedToLoad(new PageFailedToLoadEventArgs(pageIndex)));            
         }
 
         private void OnPageLoaded(int pageIndex, VirtualCollectionPage<T> page)
         {
-            SynchronizationContextScope.Current.Post(() =>
-            {
-                AddPageToCache(pageIndex, page);
+            AddPageToCache(pageIndex, page);
 
-                var firstIndexOfPage = FirstIndexOf(pageIndex);
+            _pagesThatAreLoading.Remove(pageIndex);
 
-                for (int index = 0; index < page.Count; index++)
-                {
-                    var itemIndex = firstIndexOfPage + index;
-                    var item = page[index, false];
-
-                    OnItemLoaded(new ItemLoadedEventArgs<T>(itemIndex, item));
-                }
-            });
-        }
-
-        private int FirstIndexOf(int pageIndex)
-        {
-            return pageIndex * PageSize;
-        }
-
-        private int LastIndexOf(int pageIndex)
-        {
-            var lastIndexOfCollection = Count.Value - 1;
-            var index = (pageIndex + 1) * PageSize - 1;
-
-            return Math.Min(lastIndexOfCollection, index);
-        }
+            SynchronizationContextScope.Current.Post(() => OnPageLoaded(new PageLoadedEventArgs<T>(page)));
+        }        
 
         private void AddPageToCache(int pageIndex, IList<T> page)
         {

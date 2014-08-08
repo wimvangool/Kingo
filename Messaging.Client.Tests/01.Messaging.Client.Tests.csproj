@@ -57,6 +57,8 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Client\DataVirtualization\IndexRangeTest.cs" />
+    <Compile Include="Client\DataVirtualization\IndexSetTest.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionImplementationSpy.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionImplementationTest.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionTest.cs" />

@@ -22,12 +22,12 @@ namespace System.ComponentModel.Messaging.Client
             get { return _messageCount; }
         }
         
-        protected override void Subscribe(object subscriber)
+        protected internal override void Subscribe(object subscriber)
         {
             _subscribers.Add(subscriber);
         }
 
-        protected override void Unsubscribe(object subscriber)
+        protected internal override void Unsubscribe(object subscriber)
         {
             _subscribers.Remove(subscriber);
         }

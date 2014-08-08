@@ -108,13 +108,13 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         }
 
         [TestMethod]
-        public void TryGetItem_RaisesTheItemLoadedEvent_IfItemHasNotBeenLoaded()
-        {
-            var eventArguments = new List<ItemLoadedEventArgs<int>>();
+        public void TryGetItem_RaisesThePageLoadedEvent_IfPageHasNotBeenLoaded()
+        {            
             int count;            
             int item;
+            VirtualCollectionPage<int> page = null;
 
-            _implementation.ItemLoaded += (s, e) => eventArguments.Add(e);
+            _implementation.PageLoaded += (s, e) => page = e.Page;
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(29, out item));
@@ -122,83 +122,83 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             Assert.AreEqual(1, _implementation.GetFromCacheInvocations);
             Assert.AreEqual(1, _implementation.LoadPageInvocations);
 
-            Assert.AreEqual(10, eventArguments.Count);
-            Assert.AreEqual(20, eventArguments[0].Index);
-            Assert.AreEqual(21, eventArguments[1].Index);
-            Assert.AreEqual(22, eventArguments[2].Index);
-            Assert.AreEqual(23, eventArguments[3].Index);
-            Assert.AreEqual(24, eventArguments[4].Index);
-            Assert.AreEqual(25, eventArguments[5].Index);
-            Assert.AreEqual(26, eventArguments[6].Index);
-            Assert.AreEqual(27, eventArguments[7].Index);
-            Assert.AreEqual(28, eventArguments[8].Index);
-            Assert.AreEqual(29, eventArguments[9].Index);                      
+            Assert.IsNotNull(page);     
+            Assert.AreEqual(2, page.PageIndex);
+            Assert.IsTrue(page.HasPreviousPage);
+            Assert.IsTrue(page.HasNextPage);
         }
 
         [TestMethod]
         public void TryGetItem_RetrievesItemFromCache_IfSamePageIsRequestedMultipleTimes()
         {
+            var pages = new List<VirtualCollectionPage<int>>();
             int count;
             int item;
+
+            _implementation.PageLoaded += (s, e) => pages.Add(e.Page);
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(30, out item));
             Assert.IsTrue(_implementation.TryGetItem(33, out item));
             Assert.IsTrue(_implementation.TryGetItem(35, out item));
+
             Assert.AreEqual(3, _implementation.GetFromCacheInvocations);
-            Assert.AreEqual(1, _implementation.LoadPageInvocations);
+            Assert.AreEqual(3, _implementation.LoadPageInvocations);
+            Assert.AreEqual(3, pages.Count);
+            
+            Assert.AreEqual(3, pages[0].PageIndex);
+            Assert.IsTrue(pages[0].HasPreviousPage);
+            Assert.IsTrue(pages[0].HasNextPage);
+
+            Assert.AreEqual(2, pages[1].PageIndex);
+            Assert.IsTrue(pages[1].HasPreviousPage);
+            Assert.IsTrue(pages[1].HasNextPage);
+
+            Assert.AreEqual(4, pages[2].PageIndex);
+            Assert.IsTrue(pages[2].HasPreviousPage);
+            Assert.IsTrue(pages[2].HasNextPage);
         }
 
         [TestMethod]
         public void TryGetItem_RaisesTheItemLoadedEventTheRightAmountOfTimes_IfLastPageIsLoaded()
-        {
-            var eventArguments = new List<ItemLoadedEventArgs<int>>();
+        {            
             int count;
             int item;
+            VirtualCollectionPage<int> page = null;
 
-            _implementation.ItemLoaded += (s, e) => eventArguments.Add(e);
+            _implementation.PageLoaded += (s, e) => page = e.Page;
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(62, out item));
             Assert.IsTrue(_implementation.TryGetItem(66, out item));
 
-            Assert.AreEqual(7, eventArguments.Count);
-            Assert.AreEqual(60, eventArguments[0].Index);
-            Assert.AreEqual(61, eventArguments[1].Index);
-            Assert.AreEqual(62, eventArguments[2].Index);
-            Assert.AreEqual(63, eventArguments[3].Index);
-            Assert.AreEqual(64, eventArguments[4].Index);
-            Assert.AreEqual(65, eventArguments[5].Index);
-            Assert.AreEqual(66, eventArguments[6].Index);
+            Assert.AreEqual(2, _implementation.GetFromCacheInvocations);
+            Assert.AreEqual(1, _implementation.LoadPageInvocations);
+
+            Assert.IsNotNull(page);
+            Assert.AreEqual(6, page.PageIndex);
+            Assert.IsTrue(page.HasPreviousPage);
+            Assert.IsFalse(page.HasNextPage);
         }
 
         [TestMethod]
         public void TryGetItem_RaisesTheItemFailedToLoadEvent_IfPageFailsToLoad()
-        {
-            var eventArguments = new List<ItemFailedToLoadEventArgs>();
+        {            
             int count;
             int item;
+            int? pageIndex = null;
 
             _implementation.FailNextPageLoad = true;
-            _implementation.ItemFailedToLoad += (s, e) => eventArguments.Add(e);
+            _implementation.PageFailedToLoad += (s, e) => pageIndex = e.PageIndex;
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(46, out item));
 
             Assert.AreEqual(1, _implementation.GetFromCacheInvocations);
-            Assert.AreEqual(1, _implementation.LoadPageInvocations);
-
-            Assert.AreEqual(10, eventArguments.Count);
-            Assert.AreEqual(40, eventArguments[0].Index);
-            Assert.AreEqual(41, eventArguments[1].Index);
-            Assert.AreEqual(42, eventArguments[2].Index);
-            Assert.AreEqual(43, eventArguments[3].Index);
-            Assert.AreEqual(44, eventArguments[4].Index);
-            Assert.AreEqual(45, eventArguments[5].Index);
-            Assert.AreEqual(46, eventArguments[6].Index);
-            Assert.AreEqual(47, eventArguments[7].Index);
-            Assert.AreEqual(48, eventArguments[8].Index);
-            Assert.AreEqual(49, eventArguments[9].Index);
+            Assert.AreEqual(1, _implementation.LoadPageInvocations);     
+       
+            Assert.IsTrue(pageIndex.HasValue);
+            Assert.AreEqual(4, pageIndex.Value);
         }
 
         [TestMethod]

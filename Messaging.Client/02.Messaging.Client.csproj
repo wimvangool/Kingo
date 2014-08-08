@@ -52,8 +52,8 @@
     <Compile Include="Client\DataVirtualization\CountLoadedEventArgs.cs" />
     <Compile Include="Client\DataVirtualization\IndexSet.cs" />
     <Compile Include="Client\DataVirtualization\IndexRange.cs" />
-    <Compile Include="Client\DataVirtualization\ItemLoadedEventArgs.T1.cs" />
-    <Compile Include="Client\DataVirtualization\ItemFailedToLoadEventArgs.cs" />
+    <Compile Include="Client\DataVirtualization\PageLoadedEventArgs.T1.cs" />
+    <Compile Include="Client\DataVirtualization\PageFailedToLoadEventArgs.cs" />
     <Compile Include="Client\DataVirtualization\IVirtualCollectionImplementation.cs" />
     <Compile Include="Client\DataVirtualization\ReadOnlyCollection.T1.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollection.T1.cs" />

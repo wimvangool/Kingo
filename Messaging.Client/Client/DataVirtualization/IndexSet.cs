@@ -15,21 +15,39 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             _ranges = new LinkedList<IndexRange>();
         }
 
-        public void Add(int index)
-        {                        
-            var node = _ranges.First;
-            if (node != null)
+        public int Count
+        {
+            get
             {
-                do
-                {                    
-                    if (TryAdd(index, node))
-                    {
-                        return;
-                    }
+                lock (_ranges)
+                {
+                    return _ranges.Sum(range => range.Count);
                 }
-                while ((node = node.Next) != null);
             }
-            _ranges.AddLast(new IndexRange(index));
+        }
+
+        public void Add(int index)
+        {             
+            if (index < 0)
+            {
+                throw IndexRange.NewIndexOutOfRangeException(index);
+            }
+            lock (_ranges)
+            {
+                var node = _ranges.First;
+                if (node != null)
+                {
+                    do
+                    {
+                        if (TryAdd(index, node))
+                        {
+                            return;
+                        }
+                    }
+                    while ((node = node.Next) != null);
+                }
+                _ranges.AddLast(new IndexRange(index));
+            }
         }
 
         private bool TryAdd(int index, LinkedListNode<IndexRange> node)
@@ -73,19 +91,26 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
         public void Remove(int index)
         {
-            var node = _ranges.First;
-            if (node == null)
+            if (index < 0)
             {
                 return;
             }
-            do
+            lock (_ranges)
             {
-                if (TryRemove(index, node))
+                var node = _ranges.First;
+                if (node == null)
                 {
                     return;
                 }
+                do
+                {
+                    if (TryRemove(index, node))
+                    {
+                        return;
+                    }
+                }
+                while ((node = node.Next) != null);
             }
-            while ((node = node.Next) != null);
         }
 
         private bool TryRemove(int index, LinkedListNode<IndexRange> node)
@@ -115,7 +140,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
                 // If the index falls in the middle of an existing range, we have to split up
                 // the existing range by a left (lower) and right (higher) range.
                 var leftRange = new IndexRange(range.MinValue, index - range.MinValue);
-                var rightRange = new IndexRange(index + 1, range.MaxValue - index - 1);
+                var rightRange = new IndexRange(index + 1, range.MaxValue - index);
 
                 node.Value = leftRange;
 
@@ -128,23 +153,32 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
        
         public void Clear()
         {
-            _ranges.Clear();
+            lock (_ranges)
+            {
+                _ranges.Clear();    
+            }            
         }
 
         public bool Contains(int index)
         {
-            return _ranges.Any(range => range.Contains(index));
+            lock (_ranges)
+            {
+                return _ranges.Any(range => range.Contains(index));
+            }
         }
 
         public override string ToString()
         {
-            var set = new StringBuilder(_ranges.Count * 4);
-
-            foreach (var range in _ranges)
+            lock (_ranges)
             {
-                set.Append(range);
+                var set = new StringBuilder(_ranges.Count * 4);
+
+                foreach (var range in _ranges)
+                {
+                    set.Append(range);
+                }
+                return set.ToString();
             }
-            return set.ToString();
         }
     }
 }

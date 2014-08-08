@@ -79,6 +79,42 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot remove any values from this because it&apos;s size is already at it&apos;s minimum (1)..
+        /// </summary>
+        internal static string IndexRange_CountAlreadyAtMinimum {
+            get {
+                return ResourceManager.GetString("IndexRange_CountAlreadyAtMinimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add index to the right of this range because MaxValue is already at it&apos;s maximum (Int32.MaxValue)..
+        /// </summary>
+        internal static string IndexRange_MaxValueAlreadyAtMaximum {
+            get {
+                return ResourceManager.GetString("IndexRange_MaxValueAlreadyAtMaximum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of &apos;{0}&apos; ({1}) is invalid because it would cause MaxValue to exceed Int32.MaxValue..
+        /// </summary>
+        internal static string IndexRange_MaxValueOverflow {
+            get {
+                return ResourceManager.GetString("IndexRange_MaxValueOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add index to the left of this range because MinValue is already at it&apos;s minimum (0)..
+        /// </summary>
+        internal static string IndexRange_MinValueAlreadyAtMinimum {
+            get {
+                return ResourceManager.GetString("IndexRange_MinValueAlreadyAtMinimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified index was out of range of valid values: {0}..
         /// </summary>
         internal static string Object_IndexOutOfRange {

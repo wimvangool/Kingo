@@ -15,7 +15,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     public class VirtualCollection<T> : ReadOnlyCollection<VirtualCollectionItem<T>>, INotifyCollectionChanged
     {               
         private readonly IVirtualCollectionImplementation<T> _implementation;
-        private readonly IndexSet _errorItemCollection;               
+        private readonly IndexSet _errorPageCollection;               
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
@@ -32,10 +32,10 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             }
             _implementation = implementation;
             _implementation.CountLoaded += HandleCountLoaded;
-            _implementation.ItemFailedToLoad += HandleItemFailedToLoad;
-            _implementation.ItemLoaded += HandleItemLoaded;
+            _implementation.PageFailedToLoad += HandleItemFailedToLoad;
+            _implementation.PageLoaded += HandleItemLoaded;
 
-            _errorItemCollection = new IndexSet();
+            _errorPageCollection = new IndexSet();
         }
 
         #region [====== List - Count ======]
@@ -96,7 +96,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
                 {
                     throw NewIndexOutOfRangeException(index);
                 }
-                if (_errorItemCollection.Contains(index))
+                if (_errorPageCollection.Contains(index))
                 {
                     return VirtualCollectionItem<T>.ErrorItem;
                 }
@@ -116,11 +116,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <param name="sender">The sender of the event.</param>
         /// <param name="e">Argument that contains the index of the item that failed to load.</param>
         /// <remarks>This method is invoked when an item has failed to load.</remarks>
-        protected virtual void HandleItemFailedToLoad(object sender, ItemFailedToLoadEventArgs e)
+        protected virtual void HandleItemFailedToLoad(object sender, PageFailedToLoadEventArgs e)
         {
-            _errorItemCollection.Add(e.Index);
+            _errorPageCollection.Add(e.PageIndex);
 
-            OnCollectionItemsReplaced();
+            OnPageLoaded();
         }
 
         /// <summary>
@@ -129,11 +129,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <param name="sender">The sender of the event.</param>
         /// <param name="e">Argument that contains the loaded item.</param>
         /// <remarks>This method is invoked when an item has been loaded.</remarks>
-        protected virtual void HandleItemLoaded(object sender, ItemLoadedEventArgs<T> e)
+        protected virtual void HandleItemLoaded(object sender, PageLoadedEventArgs<T> e)
         {
-            _errorItemCollection.Remove(e.Index);
+            _errorPageCollection.Remove(e.Page.PageIndex);
 
-            OnCollectionItemsReplaced();
+            OnPageLoaded();
         }
 
         /// <summary>
@@ -147,9 +147,9 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// </remarks>
         public virtual void ReloadErrorItems()
         {
-            _errorItemCollection.Clear();
+            _errorPageCollection.Clear();
 
-            OnCollectionItemsReplaced();
+            OnPageLoaded();
         }
 
         #endregion
@@ -194,7 +194,15 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <inheritdoc />
         protected override IEnumerator<VirtualCollectionItem<T>> GetEnumerator()
         {
-            return _implementation.Select(item => new VirtualCollectionItem<T>(item)).GetEnumerator();
+            int count;
+
+            if (_implementation.TryGetCount(out count))
+            {
+                for (int index = 0; index < count; index++)
+                {
+                    yield return this[index];
+                }
+            }
         }
 
         #endregion
@@ -207,9 +215,10 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <summary>
         /// Notifies that one or more items of the collection were replaced.
         /// </summary>
-        protected virtual void OnCollectionItemsReplaced()
+        protected virtual void OnPageLoaded()
         {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace));
+            // NB: We would to use 'Replace' but constructor currently only supports 'Reset'.
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         /// <summary>

@@ -39,14 +39,14 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         #region [====== Item Loading ======]
 
         /// <summary>
-        /// Occurs when there was a problem loading a specific item of the collection.
+        /// Occurs when there was a problem loading a specific page.
         /// </summary>
-        event EventHandler<ItemFailedToLoadEventArgs> ItemFailedToLoad;
+        event EventHandler<PageFailedToLoadEventArgs> PageFailedToLoad;
 
         /// <summary>
-        /// Occurs when an item has been loaded.
+        /// Occurs when a page has been loaded.
         /// </summary>
-        event EventHandler<ItemLoadedEventArgs<T>> ItemLoaded;        
+        event EventHandler<PageLoadedEventArgs<T>> PageLoaded;        
 
         /// <summary>
         /// Retrieves the item at the specified index of an associated <see cref="VirtualCollection{T}" />, or triggers to load it asynchronously.
@@ -63,7 +63,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <remarks>
         /// If the item has been cached, this method will simply assign the cached value to <paramref name="item"/> and return <c>true</c>.
         /// If not, this method will return <c>false</c> and then trigger an action that loads the item asynchronously. When item has
-        /// been loaded, the <see cref="ItemLoaded" /> event is raised, such that the collection can update it's collection.        
+        /// been loaded, the <see cref="PageLoaded" /> event is raised, such that the collection can update it's collection.        
         /// </remarks>
         bool TryGetItem(int index, out T item);        
 

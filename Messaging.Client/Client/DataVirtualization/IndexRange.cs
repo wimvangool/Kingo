@@ -39,7 +39,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             }
             if (count <= 0)
             {
-                throw NewCountOutOfRangException(count);
+                throw NewCountOutOfRangeException(count);
+            }
+            if (count - 1 > int.MaxValue - index)
+            {
+                throw NewMaxValueOverflowException(count);
             }
             _index = index;
             _countMinusOne = count - 1;
@@ -82,31 +86,63 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
         public IndexRange AddToLeft()
         {
-            return new IndexRange(_index - 1, _countMinusOne + 1);
+            try
+            {
+                return new IndexRange(_index - 1, Count + 1);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw NewMinValueAlreadyAtMinimumException();
+            }            
         }
 
         public IndexRange AddToRight()
         {
-            return new IndexRange(_index, _countMinusOne + 1);
+            try
+            {
+                return new IndexRange(_index, Count + 1); 
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw NewMaxValueAlreadyAtMaximumException();
+            }                            
         }
 
         public IndexRange AddToRight(int count)
         {
-            if (count <= 0)
+            if (count < 0)
             {
-                throw NewCountOutOfRangException(count);
+                throw NewCountOutOfRangeException(count);
             }
-            return new IndexRange(_index, _countMinusOne + count);
+            try
+            {
+                checked
+                {
+                    return new IndexRange(_index, Count + count);
+                }
+            }
+            catch (OverflowException)
+            {
+                throw NewMaxValueOverflowException(count);
+            }            
         }
 
         public IndexRange RemoveFromLeft()
         {
-            return new IndexRange(_index + 1, _countMinusOne - 1);
+            if (Count == 1)
+            {
+                throw NewCountAtMinimumException();
+            }
+            return new IndexRange(_index + 1, Count - 1);
         }
 
         public IndexRange RemoveFromRight()
         {
-            return new IndexRange(_index, _countMinusOne - 1);
+            if (Count == 1)
+            {
+                throw NewCountAtMinimumException();
+            }
+            return new IndexRange(_index, Count - 1);
         }
 
         #region [====== Object Identity ======]
@@ -166,18 +202,40 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
         #region [====== Exception Factory Methods ======]
 
-        private static Exception NewIndexOutOfRangeException(int index)
+        internal static Exception NewIndexOutOfRangeException(int index)
         {
             var messageFormat = ExceptionMessages.Object_IndexOutOfRange;
             var message = string.Format(messageFormat, index);
             return new ArgumentOutOfRangeException("index", message);
         }
 
-        private static Exception NewCountOutOfRangException(int count)
+        private static Exception NewCountOutOfRangeException(int count)
         {
             var messageFormat = ExceptionMessages.ErrorItemRange_InvalidCount;
             var message = string.Format(messageFormat, count);
             return new ArgumentOutOfRangeException("count", message);
+        }
+
+        private static Exception NewMinValueAlreadyAtMinimumException()
+        {
+            return new InvalidOperationException(ExceptionMessages.IndexRange_MinValueAlreadyAtMinimum);
+        }
+
+        private static Exception NewMaxValueAlreadyAtMaximumException()
+        {
+            return new InvalidOperationException(ExceptionMessages.IndexRange_MaxValueAlreadyAtMaximum);
+        }
+
+        private static Exception NewMaxValueOverflowException(int count)
+        {
+            var messageFormat = ExceptionMessages.IndexRange_MaxValueOverflow;
+            var message = string.Format(messageFormat, "count", count);
+            return new ArgumentOutOfRangeException("count", message);
+        }
+
+        private static Exception NewCountAtMinimumException()
+        {
+            return new InvalidOperationException(ExceptionMessages.IndexRange_CountAlreadyAtMinimum);
         }
 
         #endregion
@@ -202,11 +260,6 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             return !left.Equals(right);
         }
 
-        #endregion        
-    
-        internal bool TryAdd(int index, out IndexRange extendedRange)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion                  
     }
 }
