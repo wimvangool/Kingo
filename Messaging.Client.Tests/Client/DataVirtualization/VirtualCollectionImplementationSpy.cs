@@ -1,42 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
-    internal sealed class VirtualCollectionImplementationSpy : VirtualCollectionImplementation<int>
+    internal sealed class VirtualCollectionImplementationSpy : VirtualCollectionImplementation<int>, IDisposable
     {
         #region [====== PageLifetime ======]
 
-        private sealed class PageLifetime : SlidingWindowLifetime
+        private sealed class CachedPagePolicy : CacheItemPolicy
         {
             private readonly ManualResetEventSlim _removedFromCacheLock;
 
-            public PageLifetime(TimeSpan timeout) : base(timeout)
+            public CachedPagePolicy(TimeSpan timeout)
             {
                 _removedFromCacheLock = new ManualResetEventSlim();
-            }
 
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
-                    _removedFromCacheLock.Dispose();
-                }
-                base.Dispose(disposing);
-            }
+                AbsoluteExpiration = new DateTimeOffset(Clock.Current.LocalDateAndTime().Add(timeout));
+                RemovedCallback = NotifyRemovedFromCache;                
+            }            
 
-            public void NotifyRemovedFromCache()
-            {
+            private void NotifyRemovedFromCache(CacheEntryRemovedArguments arguments)
+            {                
                 _removedFromCacheLock.Set();
             }
 
             public bool WaitUntilRemovedFromCache(TimeSpan timeout)
             {
-                return _removedFromCacheLock.Wait(timeout);
+                if (_removedFromCacheLock.Wait(timeout))
+                {
+                    _removedFromCacheLock.Dispose();
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -44,17 +44,30 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
         private readonly List<int> _items;
         private readonly MemoryCache _pageCache;
-        private readonly Dictionary<int, PageLifetime> _pageLifetimes;
+        private readonly Dictionary<int, CachedPagePolicy> _cachedPagePolicies;
+        private readonly AutoResetEvent _pageLoadWaitEvent;
+        private bool _isDisposed;
 
-        public VirtualCollectionImplementationSpy(IEnumerable<int> items, int pageSize) : base(pageSize)
+        public VirtualCollectionImplementationSpy(IEnumerable<int> items, int pageSize) : base(Guid.NewGuid(), pageSize)
         {
             _items = new List<int>(items);
-            _pageCache = new MemoryCache(SynchronizationContext);
-            _pageCache.CacheValueExpired += HandleCacheValueRemovedFromCache;
-            _pageLifetimes = new Dictionary<int, PageLifetime>();
-        }        
+            _pageCache = new MemoryCache("VirtualCollectionCache");
+            _cachedPagePolicies = new Dictionary<int, CachedPagePolicy>();
+            _pageLoadWaitEvent = new AutoResetEvent(false);
+        }
 
-        protected override QueryCache PageCache
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+            _pageCache.Dispose();
+            _pageLoadWaitEvent.Dispose();
+            _isDisposed = true;
+        }
+
+        protected override ObjectCache PageCache
         {
             get { return _pageCache; }
         }
@@ -65,17 +78,28 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             set;
         }
 
+        public bool WaitForPageLoadSignal
+        {
+            get;
+            set;
+        }
+
+        public void SignalPageLoadToContinue()
+        {
+            _pageLoadWaitEvent.Set();
+        }
+
+        public bool UseInfiniteCacheLifetime
+        {
+            get;
+            set;
+        }
+
         public int LoadCountInvocations
         {
             get;
             private set;
-        }
-
-        public int GetFromCacheInvocations
-        {
-            get;
-            private set;
-        }
+        }       
 
         public int LoadPageInvocations
         {
@@ -93,43 +117,29 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         public bool WaitUntilRemovedFromCache(int index, TimeSpan timeout)
         {
             int pageIndex = index / PageSize;
-            PageLifetime lifetime;
+            CachedPagePolicy lifetime;
 
-            if (_pageLifetimes.TryGetValue(pageIndex, out lifetime))
+            if (_cachedPagePolicies.TryGetValue(pageIndex, out lifetime))
             {
                 return lifetime.WaitUntilRemovedFromCache(timeout);
             }
             return false;
-        }
+        }        
 
-        private void HandleCacheValueRemovedFromCache(object sender, QueryCacheValueExpiredEventArgs e)
+        protected override CacheItemPolicy CreatePageCachePolicy(int pageIndex)
         {
-            int pageIndex = (int) e.Key;
-            PageLifetime lifetime;
-
-            if (_pageLifetimes.TryGetValue(pageIndex, out lifetime))
+            if (UseInfiniteCacheLifetime)
             {
-                lifetime.NotifyRemovedFromCache();
+                return null;
             }
-        }
+            var policy = new CachedPagePolicy(TimeSpan.FromMilliseconds(100));
 
-        protected override QueryCacheValueLifetime CreatePageLifetime(int pageIndex, IList<int> page)
-        {
-            var lifetime = new PageLifetime(TimeSpan.FromMilliseconds(100));
+            _cachedPagePolicies[pageIndex] = policy;
 
-            _pageLifetimes[pageIndex] = lifetime;
+            return policy;
+        }        
 
-            return lifetime;
-        }
-
-        protected override bool TryGetPageFromCache(int pageIndex, out IList<int> page)
-        {
-            GetFromCacheInvocations++;
-
-            return base.TryGetPageFromCache(pageIndex, out page);
-        }
-
-        protected override Task<VirtualCollectionPage<int>> StartLoadPageTask(int pageIndex)
+        protected override Task<IList<int>> StartLoadPageTask(int pageIndex)
         {
             LoadPageInvocations++;
 
@@ -137,10 +147,21 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             {
                 return CreateFailedTask();
             }           
+            if (WaitForPageLoadSignal)
+            {
+                return Task<IList<int>>.Factory.StartNew(() =>
+                {
+                    if (_pageLoadWaitEvent.WaitOne(TimeSpan.FromSeconds(10)))
+                    {
+                        return LoadPageCore(pageIndex);
+                    }
+                    return Fail();
+                });
+            }
             return CreateCompletedTask(LoadPageCore(pageIndex));
         }
 
-        private VirtualCollectionPage<int> LoadPageCore(int pageIndex)
+        private IList<int> LoadPageCore(int pageIndex)
         {
             var page = new List<int>(PageSize);
             var firstIndex = pageIndex * PageSize;
@@ -160,11 +181,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             return taskCompletionSource.Task;
         }
 
-        private static Task<VirtualCollectionPage<int>> CreateFailedTask()
+        private static Task<IList<int>> CreateFailedTask()
         {
             using (var handle = new ManualResetEventSlim(false, 1000))
             {
-                var task = Task<VirtualCollectionPage<int>>.Factory.StartNew(Fail);
+                var task = Task<IList<int>>.Factory.StartNew(Fail);
 
                 task.ContinueWith(t => handle.Set(), TaskContinuationOptions.ExecuteSynchronously);
 
@@ -174,7 +195,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             }
         }
 
-        private static VirtualCollectionPage<int> Fail()
+        private static IList<int> Fail()
         {
             throw new Exception("Failed to load page.");
         }

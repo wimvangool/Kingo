@@ -23,14 +23,14 @@ namespace System.ComponentModel.Messaging.Client
             _scope.Dispose();
         }
 
-        private IDomainEventBus DomainEventBus
+        private IMessageHandler<object> MessageHandler
         {
             get { return _eventBus; }
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Connect_Throws_IfSubscriberisNull()
+        public void Connect_Throws_IfSubscriberIsNull()
         {
             _eventBus.Connect(null);
         }
@@ -161,7 +161,7 @@ namespace System.ComponentModel.Messaging.Client
         [TestMethod]
         public void Publish_ImmediatelyPublishesMessage_IfNoTransactionIsActive()
         {
-            DomainEventBus.Publish(new object());
+            MessageHandler.Handle(new object());
 
             Assert.AreEqual(1, _eventBus.MessageCount);
         }
@@ -171,9 +171,9 @@ namespace System.ComponentModel.Messaging.Client
         {
             using (var transactionScope = new TransactionScope())
             {
-                DomainEventBus.Publish(new object());
-                DomainEventBus.Publish(new object());
-                DomainEventBus.Publish(new object());
+                MessageHandler.Handle(new object());
+                MessageHandler.Handle(new object());
+                MessageHandler.Handle(new object());
 
                 Assert.AreEqual(0, _eventBus.MessageCount);
 

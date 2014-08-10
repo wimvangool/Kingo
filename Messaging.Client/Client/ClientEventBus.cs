@@ -8,50 +8,18 @@ namespace System.ComponentModel.Messaging.Client
     /// Represents an event-bus for client or front-end components that can be used within a <see cref="MessageProcessor" />
     /// to listen to published events and them publish them on a UI-event bus.
     /// </summary>
-    public abstract class ClientEventBus : AsyncObject, IDomainEventBus
+    public abstract class ClientEventBus : AsyncObject, IMessageHandler<object>
     {
-        #region [====== Relay ======]
-
-        private sealed class Relay : IDomainEventBus
-        {
-            private readonly ClientEventBus _eventBus;
-            private readonly SynchronizationContext _synchronizationContext; 
-
-            public Relay(ClientEventBus eventBus, SynchronizationContext synchronizationContext)
-            {
-                _eventBus = eventBus;
-                _synchronizationContext = synchronizationContext;
-            }
-
-            void IDomainEventBus.Publish<TMessage>(TMessage message)
-            {
-                using (var scope = new SynchronizationContextScope(_synchronizationContext))
-                {
-                    scope.Post(() => _eventBus.Publish(message));
-                }
-            }
-        }
-
-        #endregion
-
-        private readonly Relay _relay;       
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientEventBus" /> class.
         /// </summary>
-        protected ClientEventBus()
-        {
-            _relay = new Relay(this, SynchronizationContext);          
-        }         
+        protected ClientEventBus() { }      
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientEventBus" /> class.
         /// </summary>
         /// <param name="synchronizationContext">The context to use to send messages to the appropriate thread.</param>
-        protected ClientEventBus(SynchronizationContext synchronizationContext) : base(synchronizationContext)
-        {
-            _relay = new Relay(this, SynchronizationContext); 
-        }
+        protected ClientEventBus(SynchronizationContext synchronizationContext) : base(synchronizationContext) { }
        
         /// <summary>
         /// Creates and returns a new <see cref="IConnection " /> to this bus.
@@ -113,15 +81,18 @@ namespace System.ComponentModel.Messaging.Client
         /// <param name="subscriber">The subscriber to unsubscribe.</param>
         protected internal abstract void Unsubscribe(object subscriber);
 
-        void IDomainEventBus.Publish<TMessage>(TMessage message)
+        void IMessageHandler<object>.Handle(object message)
         {           
-            using (var scope = new TransactionScope())
+            TransactionalMessageBuffer.Write(this, message);
+        }
+       
+        internal void Commit(object message)
+        {
+            using (var scope = CreateSynchronizationContextScope())
             {
-                Transaction.Current.EnlistVolatile(new TransactionalMessageBuffer<TMessage>(_relay, message), EnlistmentOptions.None);
-
-                scope.Complete();
+                scope.Post(() => Publish(message));
             }
-        }       
+        }
 
         /// <summary>
         /// Publishes the specified message on this bus.
@@ -130,6 +101,6 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public abstract void Publish<TMessage>(TMessage message) where TMessage : class;        
+        public abstract void Publish(object message);      
     }
 }

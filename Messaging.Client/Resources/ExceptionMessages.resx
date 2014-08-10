@@ -147,7 +147,13 @@
   <data name="VirtualCollectionImplementation_CountNotLoaded" xml:space="preserve">
     <value>Cannot load the item because the size of the collection has not yet been determined.</value>
   </data>
+  <data name="VirtualCollectionImplementation_InvalidPageIndex" xml:space="preserve">
+    <value>The specified page-index is not valid: {0}.</value>
+  </data>
   <data name="VirtualCollectionImplementation_InvalidPageSize" xml:space="preserve">
     <value>Invalid page size specified: {0}. Value must be greater than zero.</value>
+  </data>
+  <data name="VirtualCollectionImplementation_PageAlreadyInCache" xml:space="preserve">
+    <value>Internal error: page '{0}' was already cached.</value>
   </data>
 </root>

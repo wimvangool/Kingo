@@ -15,7 +15,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 		/// <summary>
 		/// Returns the item that indicates there was a problem loading the item.
 		/// </summary>
-		public static readonly VirtualCollectionItem<T> ErrorItem = new VirtualCollectionItem<T>(VirtualCollectionItemStatus.Error);
+		public static readonly VirtualCollectionItem<T> ErrorItem = new VirtualCollectionItem<T>(VirtualCollectionItemStatus.FailedToLoad);
 
         private readonly VirtualCollectionItemStatus _status;
 		private readonly T _value;        
@@ -55,9 +55,9 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 		/// <summary>
 		/// Indicates whether or not there was a problem loading this item.
 		/// </summary>
-	    public bool CouldNotBeLoaded
+	    public bool FailedToLoad
 	    {
-            get { return _status == VirtualCollectionItemStatus.Error; }
+            get { return _status == VirtualCollectionItemStatus.FailedToLoad; }
 	    }
 
 		/// <summary>

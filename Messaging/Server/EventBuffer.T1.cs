@@ -5,7 +5,7 @@
     /// a single event until it is flushed to a <see cref="IDomainEventBus" />.
     /// </summary>
     /// <typeparam name="TMessage">Type of the event that is buffered.</typeparam>
-    public class EventBuffer<TMessage> : IEventBuffer where TMessage : class
+    internal class EventBuffer<TMessage> : IEventBuffer where TMessage : class
     {
         private readonly IDomainEventBus _eventBus;
         private readonly TMessage _domainEvent;

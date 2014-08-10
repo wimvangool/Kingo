@@ -23,6 +23,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         [TestCleanup]
         public void Teardown()
         {
+            _implementation.Dispose();
             _scope.Dispose();
         }
 
@@ -118,14 +119,18 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(29, out item));
-
-            Assert.AreEqual(1, _implementation.GetFromCacheInvocations);
+            
             Assert.AreEqual(1, _implementation.LoadPageInvocations);
 
             Assert.IsNotNull(page);     
             Assert.AreEqual(2, page.PageIndex);
             Assert.IsTrue(page.HasPreviousPage);
             Assert.IsTrue(page.HasNextPage);
+
+            Assert.IsTrue(_implementation.HasLoadedItem(29));
+            Assert.IsTrue(_implementation.HasLoadedPage(2));
+            Assert.IsFalse(_implementation.HasFailedToLoadItem(29));
+            Assert.IsFalse(_implementation.HasFailedToLoadPage(2));
         }
 
         [TestMethod]
@@ -141,8 +146,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             Assert.IsFalse(_implementation.TryGetItem(30, out item));
             Assert.IsTrue(_implementation.TryGetItem(33, out item));
             Assert.IsTrue(_implementation.TryGetItem(35, out item));
-
-            Assert.AreEqual(3, _implementation.GetFromCacheInvocations);
+            
             Assert.AreEqual(3, _implementation.LoadPageInvocations);
             Assert.AreEqual(3, pages.Count);
             
@@ -157,6 +161,21 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             Assert.AreEqual(4, pages[2].PageIndex);
             Assert.IsTrue(pages[2].HasPreviousPage);
             Assert.IsTrue(pages[2].HasNextPage);
+
+            Assert.IsTrue(_implementation.HasLoadedItem(30));
+            Assert.IsTrue(_implementation.HasLoadedItem(33));
+            Assert.IsTrue(_implementation.HasLoadedItem(35));            
+
+            Assert.IsFalse(_implementation.HasFailedToLoadItem(30));
+            Assert.IsFalse(_implementation.HasFailedToLoadItem(33));
+            Assert.IsFalse(_implementation.HasFailedToLoadItem(35));            
+
+            Assert.IsFalse(_implementation.HasLoadedPage(0));
+            Assert.IsFalse(_implementation.HasLoadedPage(1));
+            Assert.IsTrue(_implementation.HasLoadedPage(2));
+            Assert.IsTrue(_implementation.HasLoadedPage(3));
+            Assert.IsTrue(_implementation.HasLoadedPage(4));
+            Assert.IsFalse(_implementation.HasLoadedPage(5));
         }
 
         [TestMethod]
@@ -171,14 +190,17 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(62, out item));
             Assert.IsTrue(_implementation.TryGetItem(66, out item));
-
-            Assert.AreEqual(2, _implementation.GetFromCacheInvocations);
+            
             Assert.AreEqual(1, _implementation.LoadPageInvocations);
 
             Assert.IsNotNull(page);
             Assert.AreEqual(6, page.PageIndex);
             Assert.IsTrue(page.HasPreviousPage);
             Assert.IsFalse(page.HasNextPage);
+
+            Assert.IsFalse(_implementation.HasLoadedPage(5));
+            Assert.IsTrue(_implementation.HasLoadedPage(6));
+            Assert.IsFalse(_implementation.HasLoadedPage(7));
         }
 
         [TestMethod]
@@ -193,12 +215,14 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(46, out item));
-
-            Assert.AreEqual(1, _implementation.GetFromCacheInvocations);
+            
             Assert.AreEqual(1, _implementation.LoadPageInvocations);     
        
             Assert.IsTrue(pageIndex.HasValue);
             Assert.AreEqual(4, pageIndex.Value);
+
+            Assert.IsFalse(_implementation.HasLoadedPage(4));
+            Assert.IsTrue(_implementation.HasFailedToLoadPage(4));
         }
 
         [TestMethod]
@@ -209,7 +233,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(11, out item));
-            Assert.IsTrue(_implementation.WaitUntilRemovedFromCache(11, TimeSpan.FromSeconds(1)), "Page was not cached or did not expire.");
+            Assert.IsTrue(_implementation.WaitUntilRemovedFromCache(11, TimeSpan.FromSeconds(20)), "Page was not cached or did not expire.");
         }
 
         [TestMethod]
@@ -220,7 +244,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
 
             Assert.IsFalse(_implementation.TryGetCount(out count));
             Assert.IsFalse(_implementation.TryGetItem(55, out item));
-            Assert.IsTrue(_implementation.WaitUntilRemovedFromCache(55, TimeSpan.FromSeconds(1)), "Page was not cached or did not expire.");
+            Assert.IsTrue(_implementation.WaitUntilRemovedFromCache(55, TimeSpan.FromSeconds(30)), "Page was not cached or did not expire.");
             Assert.IsFalse(_implementation.TryGetItem(55, out item), "Page should no longer be in cache.");
         }
 

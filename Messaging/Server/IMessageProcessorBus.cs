@@ -5,6 +5,21 @@
     /// </summary>
     public interface IMessageProcessorBus : IDomainEventBus
     {
+        #region [====== Connect ======]
+
+        /// <summary>
+        /// Connects the specified handler to the bus.
+        /// </summary>
+        /// <param name="handler">The handler to connect.</param>
+        /// <param name="openConnection">
+        /// Indicates whether or not the returned <see cref="IConnection" /> must be immediately opened.
+        /// </param>
+        /// <returns>The created connection.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="handler"/> is <c>null</c>.
+        /// </exception>        
+        IConnection Connect(object handler, bool openConnection);
+
         /// <summary>
         /// Connects the specified callback to the bus.
         /// </summary>
@@ -15,6 +30,7 @@
         /// <param name="openConnection">
         /// Indicates whether or not the returned <see cref="IConnection" /> must be immediately opened.
         /// </param>
+        /// <returns>The created connection.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="action"/> is <c>null</c>.
         /// </exception>
@@ -25,15 +41,34 @@
         /// </summary>
         /// <typeparam name="TMessage">Type of event to listen to.</typeparam>
         /// <param name="handler">
-        /// Handler that will handle any events of type <paramtyperef name="TDomainEvent"/>.
+        /// Handler that will handle any events of type <paramtyperef name="TMessage"/>.
         /// </param>
         /// <param name="openConnection">
         /// Indicates whether or not the returned <see cref="IConnection" /> must be immediately opened.
         /// </param>
+        /// <returns>The created connection.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
         IConnection Connect<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class;
+
+        #endregion
+
+        #region [====== ConnectThreadLocal ======]
+
+        /// <summary>
+        /// Connects the specified handler to the bus, which will only receive those events that are
+        /// published on the current thread.
+        /// </summary>
+        /// <param name="handler">The handler to connect.</param>
+        /// <param name="openConnection">
+        /// Indicates whether or not the returned <see cref="IConnection" /> must be immediately opened.
+        /// </param>
+        /// <returns>The created connection.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="handler"/> is <c>null</c>.
+        /// </exception>        
+        IConnection ConnectThreadLocal(object handler, bool openConnection);
 
         /// <summary>
         /// Connects the specified callback to the bus, which will only receive those events that are
@@ -46,6 +81,7 @@
         /// <param name="openConnection">
         /// Indicates whether or not the returned <see cref="IConnection" /> must be immediately opened.
         /// </param>
+        /// <returns>The created connection.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="action"/> is <c>null</c>.
         /// </exception>
@@ -57,14 +93,17 @@
         /// </summary>
         /// <typeparam name="TMessage">Type of event to listen to.</typeparam>
         /// <param name="handler">
-        /// Handler that will handle any events of type <paramtyperef name="TDomainEvent"/>.
+        /// Handler that will handle any events of type <paramtyperef name="TMessage"/>.
         /// </param>
         /// <param name="openConnection">
         /// Indicates whether or not the returned <see cref="IConnection" /> must be immediately opened.
         /// </param>
+        /// <returns>The created connection.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        IConnection ConnectThreadLocal<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class;        
+        IConnection ConnectThreadLocal<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class;
+
+        #endregion
     }
 }

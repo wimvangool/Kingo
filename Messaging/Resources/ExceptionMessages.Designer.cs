@@ -250,11 +250,29 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This method is not supported because the factory required to instantiate the appropriate MessageHandlers was not set..
+        ///   Looks up a localized string similar to Cannot start this lifetime because it has been already started once..
         /// </summary>
-        internal static string MessageProcessor_FactoryNotSet {
+        internal static string ObjectCacheValueLifetime_AlreadyStarted {
             get {
-                return ResourceManager.GetString("MessageProcessor_FactoryNotSet", resourceCulture);
+                return ResourceManager.GetString("ObjectCacheValueLifetime_AlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot combine this lifetime with the other because the other has already started..
+        /// </summary>
+        internal static string ObjectCacheValueLifetime_OtherAlreadyStarted {
+            get {
+                return ResourceManager.GetString("ObjectCacheValueLifetime_OtherAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot combine this lifetime with another because it has already started..
+        /// </summary>
+        internal static string ObjectCacheValueLifetime_ThisAlreadyStarted {
+            get {
+                return ResourceManager.GetString("ObjectCacheValueLifetime_ThisAlreadyStarted", resourceCulture);
             }
         }
         
@@ -273,33 +291,6 @@ namespace System.ComponentModel.Messaging.Resources {
         internal static string Progress_ValueOutOfRange {
             get {
                 return ResourceManager.GetString("Progress_ValueOutOfRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot start this lifetime because it has been already started once..
-        /// </summary>
-        internal static string QueryCacheValueLifetime_AlreadyStarted {
-            get {
-                return ResourceManager.GetString("QueryCacheValueLifetime_AlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot combine this lifetime with the other because the other has already started..
-        /// </summary>
-        internal static string QueryCacheValueLifetime_OtherAlreadyStarted {
-            get {
-                return ResourceManager.GetString("QueryCacheValueLifetime_OtherAlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot combine this lifetime with another because it has already started..
-        /// </summary>
-        internal static string QueryCacheValueLifetime_ThisAlreadyStarted {
-            get {
-                return ResourceManager.GetString("QueryCacheValueLifetime_ThisAlreadyStarted", resourceCulture);
             }
         }
         

@@ -9,36 +9,16 @@ namespace System.ComponentModel.Messaging.Server
     public abstract class MessageProcessor : IMessageProcessor
     {
         private readonly IMessageProcessorBus _domainEventBus;                
-        private readonly ThreadLocal<UseCase> _currentUseCase;                    
+        private readonly ThreadLocal<UseCase> _currentUseCase;                            
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
-        /// </summary>                      
+        /// </summary>        
         protected MessageProcessor()
-            : this(null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
-        /// </summary>
-        /// <param name="domainEventBus">
-        /// A custom <see cref="IDomainEventBus" /> that will received all messages published by this processor's handlers.
-        /// </param>
-        protected MessageProcessor(IDomainEventBus domainEventBus)
         {
-            _domainEventBus = InitializeMessageProcessorBus(domainEventBus);
+            _domainEventBus = new MessageProcessorBus(this);
             _currentUseCase = new ThreadLocal<UseCase>();
-        }
-
-        private IMessageProcessorBus InitializeMessageProcessorBus(IDomainEventBus domainEventBus)
-        {
-            var messageProcessorBus = new MessageProcessorBus(this);
-
-            if (domainEventBus == null)
-            {
-                return messageProcessorBus;
-            }
-            return new MessageProcessorBusRelay(messageProcessorBus, domainEventBus);
-        }
+        }        
 
         /// <inheritdoc />
         public IMessageProcessorBus DomainEventBus
@@ -81,11 +61,7 @@ namespace System.ComponentModel.Messaging.Server
             BeginUseCase(message, token, reporter);
 
             try
-            {
-                if (MessageHandlerFactory == null)
-                {
-                    throw NewMessageHandlerFactoryNotSetException();
-                }
+            {                
                 CurrentUseCase.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
@@ -184,11 +160,6 @@ namespace System.ComponentModel.Messaging.Server
         private IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerPipeline<TMessage> handler) where TMessage : class
         {
             return PipelineFactory == null ? handler : PipelineFactory.CreatePipeline(handler, UnitOfWorkContext.Current);
-        }
-
-        private static Exception NewMessageHandlerFactoryNotSetException()
-        {
-            return new NotSupportedException(ExceptionMessages.MessageProcessor_FactoryNotSet);
-        }
+        }        
     }
 }

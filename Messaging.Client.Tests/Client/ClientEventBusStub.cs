@@ -32,7 +32,7 @@ namespace System.ComponentModel.Messaging.Client
             _subscribers.Remove(subscriber);
         }
 
-        public override void Publish<TMessage>(TMessage message)
+        public override void Publish(object message)
         {
             _messageCount++;
         }

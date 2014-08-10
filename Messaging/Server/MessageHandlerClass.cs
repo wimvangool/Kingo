@@ -83,7 +83,7 @@ namespace System.ComponentModel.Messaging.Server
 
         private static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(Type messageHandlerType, MessageHandlerFactory factory, Type classType) where TMessage : class
         {
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
             var constructor = messageHandlerType.GetConstructor(flags, null, new[] { typeof(MessageHandlerFactory), typeof(Type) }, null);
             var constructorArguments = new object[] { factory, classType };
             return (IMessageHandlerPipeline<TMessage>) constructor.Invoke(constructorArguments);

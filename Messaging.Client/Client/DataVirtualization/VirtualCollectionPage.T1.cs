@@ -12,7 +12,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// <typeparam name="T">Type of the items of this collection.</typeparam>
     public class VirtualCollectionPage<T> : ReadOnlyCollection<T>
     {
-        private readonly VirtualCollectionImplementation<T> _collection;
+        private readonly IVirtualCollectionImplementation<T> _collection;
         private readonly int _pageIndex;
         private readonly List<T> _items;
 
@@ -28,7 +28,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="pageIndex"/> is less than <c>0</c>.
         /// </exception>
-        public VirtualCollectionPage(VirtualCollectionImplementation<T> collection, int pageIndex, IEnumerable<T> items)
+        public VirtualCollectionPage(IVirtualCollectionImplementation<T> collection, int pageIndex, IEnumerable<T> items)
         {
             if (collection == null)
             {
@@ -51,7 +51,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <summary>
         /// The collection this page belongs to.
         /// </summary>
-        protected VirtualCollectionImplementation<T> Collection
+        protected IVirtualCollectionImplementation<T> Collection
         {
             get { return _collection; }
         }

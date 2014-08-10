@@ -171,9 +171,6 @@
   <data name="MessageHandlerClass_InvalidInstanceLifetimeMode" xml:space="preserve">
     <value>Invalid InstanceLifetime was specified on class '{0}': {1}. </value>
   </data>
-  <data name="MessageProcessor_FactoryNotSet" xml:space="preserve">
-    <value>This method is not supported because the factory required to instantiate the appropriate MessageHandlers was not set.</value>
-  </data>
   <data name="Message_InvalidOption" xml:space="preserve">
     <value>Unknown value of type '{0}' specified: {1}.</value>
   </data>
@@ -189,13 +186,13 @@
   <data name="Progress_ValueOutOfRange" xml:space="preserve">
     <value>Invalid value specified: {0}. Value must be within range of [{1}, {2}].</value>
   </data>
-  <data name="QueryCacheValueLifetime_AlreadyStarted" xml:space="preserve">
+  <data name="ObjectCacheValueLifetime_AlreadyStarted" xml:space="preserve">
     <value>Cannot start this lifetime because it has been already started once.</value>
   </data>
-  <data name="QueryCacheValueLifetime_OtherAlreadyStarted" xml:space="preserve">
+  <data name="ObjectCacheValueLifetime_OtherAlreadyStarted" xml:space="preserve">
     <value>Cannot combine this lifetime with the other because the other has already started.</value>
   </data>
-  <data name="QueryCacheValueLifetime_ThisAlreadyStarted" xml:space="preserve">
+  <data name="ObjectCacheValueLifetime_ThisAlreadyStarted" xml:space="preserve">
     <value>Cannot combine this lifetime with another because it has already started.</value>
   </data>
   <data name="Scope_IncorrectNesting" xml:space="preserve">

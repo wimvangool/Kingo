@@ -151,11 +151,29 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified page-index is not valid: {0}..
+        /// </summary>
+        internal static string VirtualCollectionImplementation_InvalidPageIndex {
+            get {
+                return ResourceManager.GetString("VirtualCollectionImplementation_InvalidPageIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid page size specified: {0}. Value must be greater than zero..
         /// </summary>
         internal static string VirtualCollectionImplementation_InvalidPageSize {
             get {
                 return ResourceManager.GetString("VirtualCollectionImplementation_InvalidPageSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal error: page &apos;{0}&apos; was already cached..
+        /// </summary>
+        internal static string VirtualCollectionImplementation_PageAlreadyInCache {
+            get {
+                return ResourceManager.GetString("VirtualCollectionImplementation_PageAlreadyInCache", resourceCulture);
             }
         }
     }

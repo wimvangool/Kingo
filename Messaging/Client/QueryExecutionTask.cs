@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Messaging.Server;
+using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace System.ComponentModel.Messaging.Client
     public class QueryExecutionTask<TResult> : AsyncExecutionTask<IQueryDispatcher<TResult>>
     {
         private readonly IQueryDispatcher<TResult> _dispatcher;
-        private readonly QueryCache _cache;
+        private readonly ObjectCache _cache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryExecutionTask{T}" /> class.
@@ -22,7 +23,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public QueryExecutionTask(IQueryDispatcher<TResult> dispatcher, QueryCache cache)
+        public QueryExecutionTask(IQueryDispatcher<TResult> dispatcher, ObjectCache cache)
         {
             if (dispatcher == null)
             {

@@ -14,8 +14,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// <typeparam name="T">Type of the items in this collection.</typeparam>
     public class VirtualCollection<T> : ReadOnlyCollection<VirtualCollectionItem<T>>, INotifyCollectionChanged
     {               
-        private readonly IVirtualCollectionImplementation<T> _implementation;
-        private readonly IndexSet _errorPageCollection;               
+        private readonly IVirtualCollectionImplementation<T> _implementation;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
@@ -32,10 +31,8 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             }
             _implementation = implementation;
             _implementation.CountLoaded += HandleCountLoaded;
-            _implementation.PageFailedToLoad += HandleItemFailedToLoad;
-            _implementation.PageLoaded += HandleItemLoaded;
-
-            _errorPageCollection = new IndexSet();
+            _implementation.PageFailedToLoad += HandlePageFailedToLoad;
+            _implementation.PageLoaded += HandlePageLoaded;            
         }
 
         #region [====== List - Count ======]
@@ -96,7 +93,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
                 {
                     throw NewIndexOutOfRangeException(index);
                 }
-                if (_errorPageCollection.Contains(index))
+                if (_implementation.HasFailedToLoadItem(index))
                 {
                     return VirtualCollectionItem<T>.ErrorItem;
                 }
@@ -111,46 +108,26 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         }
 
         /// <summary>
-        /// Notifies a specific item of the collection was replaced (from NotLoaded to Error).
+        /// Notifies a specific page of the collection failed to load (item go from NotLoaded to Error).
         /// </summary>
         /// <param name="sender">The sender of the event.</param>
         /// <param name="e">Argument that contains the index of the item that failed to load.</param>
         /// <remarks>This method is invoked when an item has failed to load.</remarks>
-        protected virtual void HandleItemFailedToLoad(object sender, PageFailedToLoadEventArgs e)
-        {
-            _errorPageCollection.Add(e.PageIndex);
-
-            OnPageLoaded();
+        protected virtual void HandlePageFailedToLoad(object sender, PageFailedToLoadEventArgs e)
+        {            
+            OnCollectionChanged();
         }
 
         /// <summary>
-        /// Notifies a specific item of the collection was replaced (from NotLoaded to Loaded).
+        /// Notifies a specific page of the collection was loaded (items go from NotLoaded to Loaded).
         /// </summary>
         /// <param name="sender">The sender of the event.</param>
         /// <param name="e">Argument that contains the loaded item.</param>
         /// <remarks>This method is invoked when an item has been loaded.</remarks>
-        protected virtual void HandleItemLoaded(object sender, PageLoadedEventArgs<T> e)
-        {
-            _errorPageCollection.Remove(e.Page.PageIndex);
-
-            OnPageLoaded();
-        }
-
-        /// <summary>
-        /// Forces a reload of all items that failed to load earlier. As such, this method notifies
-        /// that one or more items of the collection were replaced (from Error to NotLoaded).
-        /// </summary>
-        /// <remarks>
-        /// Note that this method does not cause an immediate reload of all items that failed to load earlier.
-        /// Rather, it simply marks all error-items as not loaded, causing them to be reloaded once the UI
-        /// requests them.
-        /// </remarks>
-        public virtual void ReloadErrorItems()
-        {
-            _errorPageCollection.Clear();
-
-            OnPageLoaded();
-        }
+        protected virtual void HandlePageLoaded(object sender, PageLoadedEventArgs<T> e)
+        {           
+            OnCollectionChanged();
+        }       
 
         #endregion
 
@@ -215,7 +192,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <summary>
         /// Notifies that one or more items of the collection were replaced.
         /// </summary>
-        protected virtual void OnPageLoaded()
+        protected virtual void OnCollectionChanged()
         {
             // NB: We would to use 'Replace' but constructor currently only supports 'Reset'.
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));

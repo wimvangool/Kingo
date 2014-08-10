@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,7 +61,7 @@
     <Compile Include="Client\DataVirtualization\VirtualCollectionImplementation.T1.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionItemStatus.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionPage.T1.cs" />
-    <Compile Include="Client\TransactionalEventBuffer.T1.cs" />
+    <Compile Include="Client\TransactionalEventBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Client\ClientEventBus.cs" />
     <Compile Include="Client\ClientEventBusConnection.cs" />

@@ -10,22 +10,46 @@ namespace System.ComponentModel.Messaging
     {
         #region [====== Dispose ======]
 
-        private bool _isDisposed;
+        /// <summary>
+        /// Indicates whether or not this instance has been disposed.
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            if (_isDisposed)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
+        /// (<c>false</c>).
+        /// </param>
+        /// <remarks>
+        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
+        /// Otherwise, only unmanaged resources will be released.
+        /// </remarks>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (IsDisposed)
             {
                 return;
             }
-            if (IsOpen)
+            if (disposing && IsOpen)
             {
                 Close();
             }
-            _isDisposed = true;
+            IsDisposed = true;
         }
 
         #endregion
@@ -43,7 +67,7 @@ namespace System.ComponentModel.Messaging
         /// <inheritdoc />
         public void Open()
         {
-            if (_isDisposed)
+            if (IsDisposed)
             {
                 throw NewConnectionAlreadyDisposedException(this);
             }
@@ -62,7 +86,7 @@ namespace System.ComponentModel.Messaging
         /// <inheritdoc />
         public void Close()
         {
-            if (_isDisposed)
+            if (IsDisposed)
             {
                 throw NewConnectionAlreadyDisposedException(this);
             }

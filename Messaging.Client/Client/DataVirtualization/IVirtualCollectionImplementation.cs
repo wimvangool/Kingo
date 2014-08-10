@@ -14,6 +14,14 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// <typeparam name="T">Type of the items that are loaded.</typeparam>
     public interface IVirtualCollectionImplementation<T> : IEnumerable<T>
     {
+        /// <summary>
+        /// Returns the size of the chunks of items that are loaded at once.
+        /// </summary>
+        int PageSize
+        {
+            get;
+        }
+
         #region [====== Count ======]
 
         /// <summary>
@@ -61,12 +69,62 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <paramref name="index"/> is negative or greater than the (current) count of the collection.
         /// </exception>
         /// <remarks>
-        /// If the item has been cached, this method will simply assign the cached value to <paramref name="item"/> and return <c>true</c>.
+        /// If the item has been loaded, this method will simply assign the cached value to <paramref name="item"/> and return <c>true</c>.
         /// If not, this method will return <c>false</c> and then trigger an action that loads the item asynchronously. When item has
         /// been loaded, the <see cref="PageLoaded" /> event is raised, such that the collection can update it's collection.        
         /// </remarks>
-        bool TryGetItem(int index, out T item);        
+        bool TryGetItem(int index, out T item);
+
+        /// <summary>
+        /// Forces the page the specified item belongs to to be loaded, if it hasn't already been loaded.
+        /// </summary>
+        /// <param name="index">The index of the item to load.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is less than 0 or larger than the largest index of this collection.
+        /// </exception>
+        void LoadItem(int index);
+
+        /// <summary>
+        /// Forces the page with index <paramref name="pageIndex"/> to be loaded, if it hasn't already been loaded.
+        /// </summary>
+        /// <param name="pageIndex">The index of the page to load.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="pageIndex"/> is less than 0 or larger than the largest page-index of this collection.
+        /// </exception>
+        void LoadPage(int pageIndex);        
 
         #endregion               
+
+        #region [====== Probe Methods ======]
+
+        /// <summary>
+        /// Determines whether the item at the specified <paramref name="index"/> has been loaded.
+        /// </summary>
+        /// <param name="index">The index of the item (relative to the whole collection).</param>
+        /// <returns><c>true</c> if the page to which the specified item belongs to was loaded; otherwise <c>false</c>.</returns>        
+        bool HasLoadedItem(int index);
+
+        /// <summary>
+        /// Determines whether the item at the specified <paramref name="index"/> has failed to load.
+        /// </summary>
+        /// <param name="index">The index of the item (relative to the whole collection).</param>
+        /// <returns><c>true</c> if the page to which the specified item belongs to has failed to load; otherwise <c>false</c>.</returns>  
+        bool HasFailedToLoadItem(int index);
+
+        /// <summary>
+        /// Determines whether the item at the specified <paramref name="pageIndex"/> has been loaded.
+        /// </summary>
+        /// <param name="pageIndex">The index of the page.</param>
+        /// <returns><c>true</c> if the page was loaded; otherwise <c>false</c>.</returns> 
+        bool HasLoadedPage(int pageIndex);
+
+        /// <summary>
+        /// Determines whether the item at the specified <paramref name="pageIndex"/> has failed to load.
+        /// </summary>
+        /// <param name="pageIndex">The index of the page.</param>
+        /// <returns><c>true</c> if the page has failed to load; otherwise <c>false</c>.</returns> 
+        bool HasFailedToLoadPage(int pageIndex);
+
+        #endregion
     }
 }

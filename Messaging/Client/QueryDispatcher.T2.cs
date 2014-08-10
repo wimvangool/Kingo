@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Messaging.Server;
+using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,7 +71,7 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResult Execute(QueryCache cache)
+        public override TResult Execute(ObjectCache cache)
         {            
             var executionId = Guid.NewGuid();
             var message = Message.Copy(true);
@@ -93,15 +94,15 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public override Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {                        
             var message = Message.Copy(true);
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
             TResult result;
-
-            if (QueryCache.TryGetFromCache(cache, message, out result))
+            
+            if (TryGetFromCache(cache, message, out result))
             {
                 OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result));
 
@@ -147,11 +148,15 @@ namespace System.ComponentModel.Messaging.Client
             return Task<TResult>.Factory.StartNew(query);
         }
 
-        private TResult ExecuteQuery(TMessage message, QueryCache cache, CancellationToken? token, IProgressReporter reporter)
+        private TResult ExecuteQuery(TMessage message, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {
-            return cache == null
-                ? ExecuteInTransactionScope(message, token, reporter)
-                : cache.GetOrAdd(message, key => CreateCacheValue(key, ExecuteInTransactionScope(key, token, reporter))).Access<TResult>();
+            CacheItemPolicy policy;
+
+            if (cache == null || !TryCreateCacheItemPolicy(out policy))
+            {
+                return ExecuteInTransactionScope(message, token, reporter);
+            }
+            return cache.GetOrAdd(message, () => ExecuteInTransactionScope(message, token, reporter), policy);
         }
 
         private TResult ExecuteInTransactionScope(TMessage message, CancellationToken? token, IProgressReporter reporter)

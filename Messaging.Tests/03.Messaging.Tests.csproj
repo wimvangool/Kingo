@@ -52,6 +52,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Runtime.Caching" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -69,18 +70,19 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="MessageOne.cs" />
+    <Compile Include="MessageTwo.cs" />
     <Compile Include="ClockTest.cs" />
     <Compile Include="ClockWithOffsetTest.cs" />
+    <Compile Include="Server\MessageHandlerSpy.cs" />
+    <Compile Include="Server\MessageProcessorBusTest.cs" />
+    <Compile Include="Server\MessageProcessorStub.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
     <Compile Include="MessageWithValidationTest.cs" />
     <Compile Include="Server\MessageHandlerClassTest.cs" />
     <Compile Include="Server\MessageHandlerFactoryStub.cs" />
     <Compile Include="Server\MessageProcessorTest.cs" />
-    <Compile Include="Client\MemoryCacheTest.cs" />
-    <Compile Include="Client\OrLifetimeTest.cs" />
-    <Compile Include="Client\SlidingWindowLifetimeTest.cs" />
-    <Compile Include="Client\TimerBasedLifetimeTest.cs" />
     <Compile Include="Server\SampleApplicationProcessor.cs" />
     <Compile Include="Server\SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
     <Compile Include="Server\SampleApplication\IShoppingCartRepository.cs" />

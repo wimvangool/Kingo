@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Messaging.Server;
+using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace System.ComponentModel.Messaging.Client
         /// Optional cache-parameter that can be used by this query to get it's result from cache.
         /// </param>
         /// <returns>The result of this query.</returns>
-        TResult Execute(QueryCache cache);
+        TResult Execute(ObjectCache cache);
 
         /// <summary>
         /// Executes the query asynchronously.
@@ -46,7 +47,7 @@ namespace System.ComponentModel.Messaging.Client
         /// store the result before the task is completed.
         /// </param>
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache);
+        Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache);
 
         /// <summary>
         /// Executes the query asynchronously.
@@ -63,6 +64,6 @@ namespace System.ComponentModel.Messaging.Client
         /// Optional reporter that can be used to report back the progress the task has made.
         /// </param>
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache, CancellationToken? token, IProgressReporter reporter);
+        Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
     }
 }

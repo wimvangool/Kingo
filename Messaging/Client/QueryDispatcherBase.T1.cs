@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Messaging.Server;
+using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,7 +55,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public abstract TResult Execute(QueryCache cache);        
+        public abstract TResult Execute(ObjectCache cache);        
 
         /// <inheritdoc />
         public Task<TResult> ExecuteAsync(Guid executionId)
@@ -63,13 +64,13 @@ namespace System.ComponentModel.Messaging.Client
         }        
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache)
+        public Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache)
         {
             return ExecuteAsync(executionId, cache, null, null);
         }
 
         /// <inheritdoc />
-        public abstract Task<TResult> ExecuteAsync(Guid executionId, QueryCache cache, CancellationToken? token, IProgressReporter reporter);
+        public abstract Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()
@@ -78,19 +79,56 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <summary>
-        /// Wraps the specified result into a new <see cref="QueryCacheValue" />.
+        /// Attempts to create a <see cref="CacheItemPolicy" /> for a new result to store in cache.
         /// </summary>
-        /// <param name="key">The key that will be used to store this value.</param>
-        /// <param name="result">The result returned by this query.</param>
-        /// <returns>A new <see cref="QueryCacheValue" />.</returns>
+        /// <param name="policy">
+        /// When this method returns <c>true</c>, this paremeter will contain the newly created policy;
+        /// otherwise it will be <c>null</c>.
+        /// </param>
+        /// <returns><c>true</c> if the policy was created; otherwise <c>false</c>.</returns>
         /// <remarks>
-        /// By default, this method returns a value with an infinite lifetime. You may want to override this method
-        /// to specify another lifetime for the cached value.
+        /// The default implementation creates a <see cref="CacheItemPolicy" /> with a sliding window expiration
+        /// of 1 minute. Implementers can change this behavior by overridding this method to create another
+        /// policy, or return <c>false</c> if they do not want the result to be cached at all.
         /// </remarks>
-        protected virtual QueryCacheValue CreateCacheValue(object key, TResult result)
+        protected virtual bool TryCreateCacheItemPolicy(out CacheItemPolicy policy)
         {
-            return new QueryCacheValue(result);
-        }        
+            policy = new CacheItemPolicy()
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(1)
+            };
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to retrieve a cached value from the cache, if <paramref name="cache"/> is not <c>null</c>.
+        /// </summary>        
+        /// <param name="cache">The cache to retrieve the value from.</param>
+        /// <param name="key">The key of the cached value.</param>        
+        /// <param name="result">
+        /// If the method returns <c>true</c>, this parameter will contain the cached value after the method completes;
+        /// will have the default value if this method returns <c>false</c>.
+        /// </param>
+        /// <returns><c>true</c> if the value was successfully retrieved from the cache; otherwise <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="key"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidCastException">
+        /// The value retrieved from the cache could not be cast to <typeparamref name="TResult"/>.
+        /// </exception>
+        protected static bool TryGetFromCache(ObjectCache cache, object key, out TResult result)
+        {
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+            if (cache == null)
+            {
+                result = default(TResult);
+                return false;
+            }
+            return cache.TryGetValue(key, out result);
+        }
 
         /// <summary>
         /// Creates and returns a task that is marked completed and returns the specified <paramref name="result"/>.

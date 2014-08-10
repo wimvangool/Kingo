@@ -23,6 +23,6 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <summary>
         /// Indicates that an error occurred while loading the item.
         /// </summary>
-        Error
+        FailedToLoad
     }
 }
