@@ -12,11 +12,9 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override void Execute()
-        {            
-            var executionId = Guid.NewGuid();            
-
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId));            
+        public override void Execute(Guid requestId)
+        {                        
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId));            
 
             try
             {
@@ -24,18 +22,18 @@ namespace System.ComponentModel.Messaging.Client
             }
             catch (Exception exception)
             {
-                OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception));
+                OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId));
         }
 
         /// <inheritdoc />
-        public override Task ExecuteAsync(Guid executionId, CancellationToken? token, IProgressReporter reporter)
+        public override Task ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter)
         {                        
             var context = SynchronizationContext.Current;
 
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
 
             return Start(() =>
             {
@@ -47,15 +45,15 @@ namespace System.ComponentModel.Messaging.Client
                     }
                     catch (OperationCanceledException exception)
                     {
-                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
+                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, exception)));
                         throw;
                     }
                     catch (Exception exception)
                     {
-                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
+                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId)));
                 }
             });
         }

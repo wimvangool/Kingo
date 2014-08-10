@@ -3,7 +3,7 @@
     internal sealed class MessageStateTracker
     {
         private readonly IMessage _message;
-        private Guid _executionId;
+        private Guid _requestId;
         private bool _messageHadChanges;
 
         public MessageStateTracker(IMessage message)
@@ -11,18 +11,18 @@
             _message = message;
         }
 
-        public void NotifyExecutionStarted(Guid executionId)
+        public void NotifyExecutionStarted(Guid requestId)
         {
-            _executionId = executionId;
+            _requestId = requestId;
             _messageHadChanges = _message.HasChanges;
         }
 
-        public void NotifyExecutionEndedPrematurely(Guid executionId)
+        public void NotifyExecutionEndedPrematurely(Guid requestId)
         {
-            if (_executionId.Equals(executionId))
+            if (_requestId.Equals(requestId))
             {
                 _message.HasChanges = _message.HasChanges || _messageHadChanges;
-                _executionId = Guid.Empty;
+                _requestId = Guid.Empty;
             }
         }
     }

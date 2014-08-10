@@ -68,7 +68,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {
@@ -88,7 +88,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {
@@ -107,7 +107,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {
@@ -125,7 +125,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {
@@ -149,7 +149,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TResult, TParameter>(QueryDispatcher<TMessage, TResult> dispatcher) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand<TParameter> CreateCommand<TMessage, TResult, TParameter>(QueryDispatcher<TMessage, TResult> dispatcher) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {
@@ -170,7 +170,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TResult, TParameter>(QueryDispatcher<TMessage, TResult> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand<TParameter> CreateCommand<TMessage, TResult, TParameter>(QueryDispatcher<TMessage, TResult> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {
@@ -190,7 +190,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage, TResult>(QueryDispatcher<TMessage, TResult> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand CreateCommand<TMessage, TResult>(QueryDispatcher<TMessage, TResult> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {
@@ -209,7 +209,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage, TResult>(QueryDispatcher<TMessage, TResult> dispatcher) where TMessage : class, IMessage<TMessage>
+        public static AsyncCommand CreateCommand<TMessage, TResult>(QueryDispatcher<TMessage, TResult> dispatcher) where TMessage : class, IMessage
         {
             if (dispatcher == null)
             {

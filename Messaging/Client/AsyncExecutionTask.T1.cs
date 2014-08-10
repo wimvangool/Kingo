@@ -10,7 +10,7 @@ namespace System.ComponentModel.Messaging.Client
     /// <typeparam name="TDispatcher">Type of the encapsulated <see cref="IRequestDispatcher" />.</typeparam>
     public abstract class AsyncExecutionTask<TDispatcher> : PropertyChangedBase, IAsyncExecutionTask where TDispatcher : class, IRequestDispatcher
     {
-        private readonly Guid _executionId;
+        private readonly Guid _requestId;
         private readonly Lazy<CancellationTokenSource> _cancellationTokenSource;
         private readonly ProgressReporter _progressReporter;
         private Progress _progress;
@@ -19,16 +19,16 @@ namespace System.ComponentModel.Messaging.Client
 
         internal AsyncExecutionTask()
         {
-            _executionId = Guid.NewGuid();
+            _requestId = Guid.NewGuid();
             _cancellationTokenSource = new Lazy<CancellationTokenSource>(() => new CancellationTokenSource());
             _progressReporter = new ProgressReporter();
             _progressReporter.ProgressChanged += HandleProgressChanged;
         }
 
         /// <inheritdoc />
-        public Guid ExecutionId
+        public Guid RequestId
         {
-            get { return _executionId; }
+            get { return _requestId; }
         }
 
         #region [====== Dispatcher ======]
@@ -50,7 +50,7 @@ namespace System.ComponentModel.Messaging.Client
 
         private void HandleRequestCanceled(object sender, ExecutionCanceledEventArgs e)
         {
-            if (e.ExecutionId.Equals(ExecutionId))
+            if (e.RequestId.Equals(RequestId))
             {
                 Status = AsyncExecutionTaskStatus.Canceled;
 
@@ -60,7 +60,7 @@ namespace System.ComponentModel.Messaging.Client
 
         private void HandleExecutionFailed(object sender, ExecutionFailedEventArgs e)
         {
-            if (e.ExecutionId.Equals(ExecutionId))
+            if (e.RequestId.Equals(RequestId))
             {
                 Status = AsyncExecutionTaskStatus.Faulted;
 
@@ -70,7 +70,7 @@ namespace System.ComponentModel.Messaging.Client
 
         private void HandleExecutionSucceeded(object sender, ExecutionSucceededEventArgs e)
         {
-            if (e.ExecutionId.Equals(ExecutionId))
+            if (e.RequestId.Equals(RequestId))
             {
                 Status = AsyncExecutionTaskStatus.Done;
                 Progress = Progress.MaxValue;

@@ -14,11 +14,9 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResult Execute(ObjectCache cache)
-        {            
-            var executionId = Guid.NewGuid();            
-
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
+        public override TResult Execute(Guid requestId, ObjectCache cache)
+        {                        
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
             TResult result;
 
             try
@@ -27,25 +25,25 @@ namespace System.ComponentModel.Messaging.Client
             }
             catch (Exception exception)
             {
-                OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception));
+                OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, result));
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {                       
             var context = SynchronizationContext.Current;
 
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId));
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
             TResult result;
 
             if (TryGetFromCache(cache, GetType(), out result))
             {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result));
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, result));
 
                 return CreateCompletedTask(result);
             }
@@ -59,15 +57,15 @@ namespace System.ComponentModel.Messaging.Client
                     }
                     catch (OperationCanceledException exception)
                     {
-                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, exception)));
+                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, exception)));
                         throw;
                     }
                     catch (Exception exception)
                     {
-                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, exception)));
+                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, result)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, result)));
 
                     return result;
                 }

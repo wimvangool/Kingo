@@ -8,7 +8,7 @@
         /// <summary>
         /// Identifier of the execution of the <see cref="IRequestDispatcher" />.
         /// </summary>
-        public readonly Guid ExecutionId;
+        public readonly Guid RequestId;
 
         /// <summary>
         /// If specified, refers to the message that was sent for the request.
@@ -18,18 +18,18 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionCompletedEventArgs" /> class.
         /// </summary>
-        /// <param name="executionId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>        
-        public ExecutionCompletedEventArgs(Guid executionId)
-            : this(executionId, null) { }
+        /// <param name="requestId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>        
+        public ExecutionCompletedEventArgs(Guid requestId)
+            : this(requestId, null) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionCompletedEventArgs" /> class.
         /// </summary>
-        /// <param name="executionId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>
+        /// <param name="requestId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>
         /// <param name="message">If specified, refers to the message that was sent for the request.</param>
-        public ExecutionCompletedEventArgs(Guid executionId, object message)
+        public ExecutionCompletedEventArgs(Guid requestId, object message)
         {
-            ExecutionId = executionId;
+            RequestId = requestId;
             Message = message;
         }
     }

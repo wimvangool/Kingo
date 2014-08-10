@@ -145,9 +145,7 @@
     <Compile Include="IHasChangesIndicator.cs" />
     <Compile Include="IIsValidIndicator.cs" />
     <Compile Include="IMessage.cs" />
-    <Compile Include="IMessage.T1.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="Message.T1.cs" />
     <Compile Include="MessageChangedOptions.cs" />
     <Compile Include="MessageErrorInfo.cs" />
     <Compile Include="MessageValidationAttribute.cs" />

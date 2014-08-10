@@ -8,7 +8,7 @@
         /// <summary>
         /// Identifier of the execution of the <see cref="IRequestDispatcher" />.
         /// </summary>
-        public readonly Guid ExecutionId;
+        public readonly Guid RequestId;
 
         /// <summary>
         /// If specified, refers to the message that was sent for the request.
@@ -23,30 +23,30 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionFailedEventArgs" /> class.
         /// </summary>
-        /// <param name="executionId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>        
+        /// <param name="requestId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>        
         /// <param name="exception">The exception that was thrown while executing the <see cref="IRequestDispatcher" />.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="exception"/> is <c>null</c>.
         /// </exception>
-        public ExecutionFailedEventArgs(Guid executionId, Exception exception)
-            : this(executionId, null, exception) { }
+        public ExecutionFailedEventArgs(Guid requestId, Exception exception)
+            : this(requestId, null, exception) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionFailedEventArgs" /> class.
         /// </summary>
-        /// <param name="executionId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>
+        /// <param name="requestId">Identifier of the execution of the <see cref="IRequestDispatcher" />.</param>
         /// <param name="message">If specified, refers to the message that was sent for the request.</param>
         /// <param name="exception">The exception that was thrown while executing the <see cref="IRequestDispatcher" />.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="exception"/> is <c>null</c>.
         /// </exception>
-        public ExecutionFailedEventArgs(Guid executionId, object message, Exception exception)
+        public ExecutionFailedEventArgs(Guid requestId, object message, Exception exception)
         {
             if (exception == null)
             {
                 throw new ArgumentNullException("exception");
             }
-            ExecutionId = executionId;
+            RequestId = requestId;
             Message = message;
             Exception = exception;
         }
@@ -57,7 +57,7 @@
         /// <returns>A new <see cref="ExecutionCompletedEventArgs" />.</returns>
         public virtual ExecutionCompletedEventArgs ToExecutionCompletedEventArgs()
         {
-            return new ExecutionCompletedEventArgs(ExecutionId, Message);
+            return new ExecutionCompletedEventArgs(RequestId, Message);
         }
     }
 }

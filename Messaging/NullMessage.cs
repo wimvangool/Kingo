@@ -1,10 +1,10 @@
 ﻿namespace System.ComponentModel.Messaging
 {
     /// <summary>
-    /// Represents a message-stub for scenario's where a <see cref="IMessage" /> or <see cref="IMessage{T}" />
+    /// Represents a message-stub for scenario's where an <see cref="IMessage" />
     /// instance is required but none is available.
     /// </summary>
-    public sealed class NullMessage : PropertyChangedBase, IMessage<NullMessage>
+    public sealed class NullMessage : PropertyChangedBase, IMessage
     {
         private readonly bool _isReadOnly;
         private bool _hasChanges;
@@ -36,6 +36,12 @@
         {
             _isReadOnly = makeReadOnly;
             _isValid = message._isValid;
+        }
+
+        /// <inheritdoc />
+        public IMessage Copy(bool makeReadOnly)
+        {
+            return new NullMessage(this, makeReadOnly);
         }
 
         #region [====== Change Tracking ======]
@@ -122,12 +128,6 @@
             get { return null; }
         }
 
-        #endregion
-
-        /// <inheritdoc />
-        public NullMessage Copy(bool makeReadOnly)
-        {
-            return new NullMessage(this, makeReadOnly);
-        }
+        #endregion        
     }
 }

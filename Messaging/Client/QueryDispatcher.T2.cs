@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a query that contains a <see cref="IMessage{T}">message</see> that serves
+    /// Represents a query that contains a <see cref="IMessage">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that serves as the execution-parameter.</typeparam>
     /// <typeparam name="TResult">Type of the result of this query.</typeparam>
-    public abstract class QueryDispatcher<TMessage, TResult> : QueryDispatcherBase<TResult>
-        where TMessage : class, IMessage<TMessage>
+    public abstract class QueryDispatcher<TMessage, TResult> : QueryDispatcherBase<TResult> where TMessage : class, IMessage
     {
         private readonly TMessage _message;
         private readonly MessageStateTracker _messageStateTracker;
@@ -47,13 +46,13 @@ namespace System.ComponentModel.Messaging.Client
         {
             base.OnExecutionStarted(e);
 
-            _messageStateTracker.NotifyExecutionStarted(e.ExecutionId);
+            _messageStateTracker.NotifyExecutionStarted(e.RequestId);
         }
 
         /// <inheritdoc />
         protected override void OnExecutionCanceled(ExecutionCanceledEventArgs e)
         {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.ExecutionId);
+            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
 
             base.OnExecutionCanceled(e);
         }
@@ -61,7 +60,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <inheritdoc />
         protected override void OnExecutionFailed(ExecutionFailedEventArgs e)
         {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.ExecutionId);
+            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
 
             base.OnExecutionFailed(e);
         }
@@ -71,12 +70,11 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResult Execute(ObjectCache cache)
-        {            
-            var executionId = Guid.NewGuid();
-            var message = Message.Copy(true);
+        public override TResult Execute(Guid requestId, ObjectCache cache)
+        {                        
+            var message = (TMessage) Message.Copy(true);
 
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
             TResult result;
 
             try
@@ -85,26 +83,26 @@ namespace System.ComponentModel.Messaging.Client
             }
             catch (Exception exception)
             {
-                OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception));
+                OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, message, result));
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {                        
-            var message = Message.Copy(true);
+            var message = (TMessage) Message.Copy(true);
             var context = SynchronizationContext.Current;
 
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
             TResult result;
             
             if (TryGetFromCache(cache, message, out result))
             {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result));
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, message, result));
 
                 return CreateCompletedTask(result);
             }
@@ -118,15 +116,15 @@ namespace System.ComponentModel.Messaging.Client
                     }
                     catch (OperationCanceledException exception)
                     {
-                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, message, exception)));
+                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, message, exception)));
                         throw;
                     }
                     catch (Exception exception)
                     {
-                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
+                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(executionId, message, result)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, message, result)));
 
                     return result;
                 }

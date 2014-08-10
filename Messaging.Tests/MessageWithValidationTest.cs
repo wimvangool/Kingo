@@ -8,7 +8,7 @@ namespace System.ComponentModel.Messaging
     {
         #region [====== MessageWithValidation ======]
 
-        private sealed class MessageWithValidation : Message<MessageWithValidation>
+        private sealed class MessageWithValidation : Message
         {
             private object _irrelevantValue;
             private Guid _customerId;
@@ -66,7 +66,7 @@ namespace System.ComponentModel.Messaging
                 }
             }
 
-            public override MessageWithValidation Copy(bool makeReadOnly)
+            public override Message Copy(bool makeReadOnly)
             {
                 return new MessageWithValidation(this, makeReadOnly);
             }
@@ -223,7 +223,9 @@ namespace System.ComponentModel.Messaging
                 CustomerId = Guid.NewGuid(),
                 CustomerName = "Bob"
             };
-            var copy = message.Copy(true);
+            var copy = message.Copy(true) as MessageWithValidation;
+
+            Assert.IsNotNull(copy);
 
             copy.IrrelevantValue = new object();            
         }
@@ -238,7 +240,9 @@ namespace System.ComponentModel.Messaging
                 CustomerId = Guid.NewGuid(),
                 CustomerName = "Bob"
             };
-            var copy = message.Copy(true);
+            var copy = message.Copy(true) as MessageWithValidation;
+
+            Assert.IsNotNull(copy);
 
             copy.CustomerId = Guid.NewGuid();            
         }
@@ -253,7 +257,9 @@ namespace System.ComponentModel.Messaging
                 CustomerId = Guid.NewGuid(),
                 CustomerName = "Bob"
             };
-            var copy = message.Copy(true);
+            var copy = message.Copy(true) as MessageWithValidation;
+
+            Assert.IsNotNull(copy);
 
             copy.CustomerName = "Someone else";
         }

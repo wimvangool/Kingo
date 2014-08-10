@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a command that contains a <see cref="IMessage{T}">message</see> that serves
+    /// Represents a command that contains a <see cref="IMessage">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that serves as the execution-parameter.</typeparam>
-    public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IMessage<TMessage>
+    public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IMessage
     {        
         private readonly TMessage _message;
         private readonly MessageStateTracker _messageStateTracker;
@@ -44,13 +44,13 @@ namespace System.ComponentModel.Messaging.Client
         {
             base.OnExecutionStarted(e);
 
-            _messageStateTracker.NotifyExecutionStarted(e.ExecutionId);
+            _messageStateTracker.NotifyExecutionStarted(e.RequestId);
         }
 
         /// <inheritdoc />
         protected override void OnExecutionCanceled(ExecutionCanceledEventArgs e)
         {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.ExecutionId);
+            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
 
             base.OnExecutionCanceled(e);            
         }
@@ -58,7 +58,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <inheritdoc />
         protected override void OnExecutionFailed(ExecutionFailedEventArgs e)
         {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.ExecutionId);
+            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
 
             base.OnExecutionFailed(e);            
         }
@@ -68,12 +68,11 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override void Execute()
-        {            
-            var executionId = Guid.NewGuid();
-            var message = Message.Copy(true);
+        public override void Execute(Guid requestId)
+        {                        
+            var message = (TMessage) Message.Copy(true);
 
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));            
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));            
 
             try
             {
@@ -81,19 +80,19 @@ namespace System.ComponentModel.Messaging.Client
             }
             catch (Exception exception)
             {
-                OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception));
+                OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId, message));
         }
 
         /// <inheritdoc />
-        public override Task ExecuteAsync(Guid executionId, CancellationToken? token, IProgressReporter reporter)
+        public override Task ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter)
         {                        
-            var message = Message.Copy(true);
+            var message = (TMessage) Message.Copy(true);
             var context = SynchronizationContext.Current;
 
-            OnExecutionStarted(new ExecutionStartedEventArgs(executionId, message));
+            OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
 
             return Start(() =>
             {
@@ -105,15 +104,15 @@ namespace System.ComponentModel.Messaging.Client
                     }
                     catch (OperationCanceledException exception)
                     {
-                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(executionId, message, exception)));
+                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, message, exception)));
                         throw;
                     }
                     catch (Exception exception)
                     {
-                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(executionId, message, exception)));
+                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(executionId, message)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId, message)));
                 }
             });
         }

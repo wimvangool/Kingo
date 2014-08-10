@@ -49,28 +49,28 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public TResult Execute()
+        public TResult Execute(Guid requestId)
         {
-            return Execute(null);
+            return Execute(requestId, null);
         }
 
         /// <inheritdoc />
-        public abstract TResult Execute(ObjectCache cache);        
+        public abstract TResult Execute(Guid executionId, ObjectCache cache);        
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync(Guid executionId)
+        public Task<TResult> ExecuteAsync(Guid requestId)
         {
-            return ExecuteAsync(executionId, null, null, null);
+            return ExecuteAsync(requestId, null, null, null);
         }        
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache)
+        public Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache)
         {
-            return ExecuteAsync(executionId, cache, null, null);
+            return ExecuteAsync(requestId, cache, null, null);
         }
 
         /// <inheritdoc />
-        public abstract Task<TResult> ExecuteAsync(Guid executionId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
+        public abstract Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()

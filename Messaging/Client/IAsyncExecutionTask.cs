@@ -10,7 +10,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Returns the identifier of this task.
         /// </summary>
-        Guid ExecutionId
+        Guid RequestId
         {
             get;
         }

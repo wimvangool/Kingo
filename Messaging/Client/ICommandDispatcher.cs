@@ -12,23 +12,24 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Executes the command synchronously.
         /// </summary>
+        /// <param name="requestId">Identifier of the request.</param>    
         /// <exception cref="RequestExecutionException">
         /// The command failed for (somewhat) predictable reasons, like insufficient rights, invalid parameters or
         /// because the system's business logic wouldn't allow this command to be executed.
         /// </exception> 
-        void Execute();
+        void Execute(Guid requestId);
 
         /// <summary>
         /// Executes the command asynchronously.
         /// </summary>   
-        /// <param name="executionId">Identifier of the asynchronous task.</param>     
+        /// <param name="requestId">Identifier of the request.</param>     
         /// <returns>The task that is responsible for executing this command.</returns>        
-        Task ExecuteAsync(Guid executionId);
+        Task ExecuteAsync(Guid requestId);
 
         /// <summary>
         /// Executes the command asynchronously.
         /// </summary>  
-        /// <param name="executionId">Identifier of the asynchronous task.</param>         
+        /// <param name="requestId">Identifier of the request.</param>         
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this command.
         /// </param>
@@ -36,6 +37,6 @@ namespace System.ComponentModel.Messaging.Client
         /// Optional reporter that can be used to report back the progress the task has made.
         /// </param>
         /// <returns>The task that is responsible for executing this command.</returns>        
-        Task ExecuteAsync(Guid executionId, CancellationToken? token, IProgressReporter reporter);
+        Task ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter);
     }
 }

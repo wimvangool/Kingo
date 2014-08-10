@@ -63,6 +63,30 @@ namespace System.ComponentModel.Messaging.Client
             Add(messages);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompositeMessage" /> class.
+        /// </summary>
+        /// <param name="message">The message to copy.</param>
+        /// <param name="makeReadOnly">Indicates whether the new instance should be marked readonly.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        protected CompositeMessage(CompositeMessage message, bool makeReadOnly)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            _messages = new List<IMessage>(message._messages.Select(m => m.Copy(makeReadOnly)));
+            _messages.TrimExcess();
+        }
+
+        /// <inheritdoc />
+        public virtual IMessage Copy(bool makeReadOnly)
+        {
+            return new CompositeMessage(this, makeReadOnly);
+        }
+
         #region [====== Change Tracking ======]
 
         /// <inheritdoc />

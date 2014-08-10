@@ -45,19 +45,19 @@ namespace System.ComponentModel.Messaging.Client
 
         #endregion
 
-        #region [====== Execution ======]        
+        #region [====== Execution ======]
 
         /// <inheritdoc />
-        public abstract void Execute();
+        public abstract void Execute(Guid requestId);
 
         /// <inheritdoc />
-        public Task ExecuteAsync(Guid executionId)
+        public Task ExecuteAsync(Guid requestId)
         {
-            return ExecuteAsync(executionId, null, null);
+            return ExecuteAsync(requestId, null, null);
         }
 
         /// <inheritdoc />
-        public abstract Task ExecuteAsync(Guid executionId, CancellationToken? token, IProgressReporter reporter);
+        public abstract Task ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter);
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()
