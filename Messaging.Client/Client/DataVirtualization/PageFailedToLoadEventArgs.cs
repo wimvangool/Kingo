@@ -7,7 +7,7 @@ using System.Text;
 namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
     /// <summary>
-    /// Arguments of the <see cref="IVirtualCollectionImplementation{T}.PageFailedToLoad" /> event.
+    /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.PageFailedToLoad" /> event.
     /// </summary>
     public class PageFailedToLoadEventArgs : EventArgs
     {

@@ -12,27 +12,27 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// <typeparam name="T">Type of the items of this collection.</typeparam>
     public class VirtualCollectionPage<T> : ReadOnlyCollection<T>
     {
-        private readonly IVirtualCollectionImplementation<T> _collection;
+        private readonly IVirtualCollectionPageLoader<T> _loader;
         private readonly int _pageIndex;
         private readonly List<T> _items;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualCollectionPage{T}" /> class.
         /// </summary>
-        /// <param name="collection">The collection this page belongs to.</param>
+        /// <param name="loader">The loader that loaded this page.</param>
         /// <param name="pageIndex">The index of this page.</param>
         /// <param name="items">The items of this page.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="collection"/> or <paramref name="items"/> is <c>null</c>.
+        /// <paramref name="loader"/> or <paramref name="items"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="pageIndex"/> is less than <c>0</c>.
         /// </exception>
-        public VirtualCollectionPage(IVirtualCollectionImplementation<T> collection, int pageIndex, IEnumerable<T> items)
+        public VirtualCollectionPage(IVirtualCollectionPageLoader<T> loader, int pageIndex, IEnumerable<T> items)
         {
-            if (collection == null)
+            if (loader == null)
             {
-                throw new ArgumentNullException("collection");
+                throw new ArgumentNullException("loader");
             }
             if (pageIndex < 0)
             {
@@ -42,7 +42,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             {
                 throw new ArgumentNullException("items");
             }
-            _collection = collection;
+            _loader = loader;
             _pageIndex = pageIndex;
             _items = new List<T>(items);
             _items.TrimExcess();
@@ -51,9 +51,9 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <summary>
         /// The collection this page belongs to.
         /// </summary>
-        protected IVirtualCollectionImplementation<T> Collection
+        protected IVirtualCollectionPageLoader<T> Loader
         {
-            get { return _collection; }
+            get { return _loader; }
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             {
                 int count;
 
-                if (Collection.TryGetCount(out count))
+                if (Loader.TryGetCount(out count))
                 {
-                    return (PageIndex + 1) * Collection.PageSize < count;
+                    return (PageIndex + 1) * Loader.PageSize < count;
                 }
                 return false;
             }
@@ -124,11 +124,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             int middleIndex = (_items.Count - 1) / 2;
             if (middleIndex >= index && HasPreviousPage)
             {
-                Collection.LoadPage(PageIndex - 1);
+                Loader.LoadPage(PageIndex - 1);
             }
             else if (middleIndex < index && HasNextPage)
             {
-                Collection.LoadPage(PageIndex + 1);
+                Loader.LoadPage(PageIndex + 1);
             }
         }
 

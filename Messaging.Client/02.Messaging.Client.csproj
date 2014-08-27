@@ -55,10 +55,10 @@
     <Compile Include="Client\DataVirtualization\IndexRange.cs" />
     <Compile Include="Client\DataVirtualization\PageLoadedEventArgs.T1.cs" />
     <Compile Include="Client\DataVirtualization\PageFailedToLoadEventArgs.cs" />
-    <Compile Include="Client\DataVirtualization\IVirtualCollectionImplementation.cs" />
+    <Compile Include="Client\DataVirtualization\IVirtualCollectionPageLoader.T1.cs" />
     <Compile Include="Client\DataVirtualization\ReadOnlyCollection.T1.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollection.T1.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionImplementation.T1.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionPageLoader.T1.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionItemStatus.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionPage.T1.cs" />
     <Compile Include="Client\TransactionalEventBuffer.cs" />

@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
     /// <summary>
-    /// Serves as a base-class implementation for implementors of the <see cref="IVirtualCollectionImplementation{T}" /> interface..
+    /// Serves as a base-class implementation for implementors of the <see cref="IVirtualCollectionPageLoader{T}" /> interface..
     /// </summary>
     /// <typeparam name="T">Type of the items of the collection.</typeparam>
     /// <remarks>
     /// <para>
-    /// The <see cref="VirtualCollectionImplementation{T}" /> class uses an <see cref="ObjectCache" /> to store
+    /// The <see cref="VirtualCollectionPageLoader{T}" /> class uses an <see cref="ObjectCache" /> to store
     /// and retrieve it loaded pages. Derived classes are responsible for providing the exact <see cref="ObjectCache" />
-    /// implementation by overriding the <see cref="VirtualCollectionImplementation{T}.PageCache" /> property.    
+    /// implementation by overriding the <see cref="VirtualCollectionPageLoader{T}.PageCache" /> property.    
     /// </para>
     /// <para>
     /// Since an <see cref="ObjectCache"/> implements <see cref="IDisposable" />, the cache must be disposed after use.
@@ -27,13 +27,13 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// the client to dispose it when necessary. This allows a single cache to be used by multiple components of the
     /// application, and also let pages be cached even after an implementation-instance is no longer used, e.g., when
     /// a screen displaying the items is closed. Then, when the screen is opened again, a new
-    /// <see cref="VirtualCollectionImplementation{T}" /> instance can reuse the cached page of a previous instance,
+    /// <see cref="VirtualCollectionPageLoader{T}" /> instance can reuse the cached page of a previous instance,
     /// improving overal performance. For this to work, instances that want to share cached pages need to use
-    /// the same <see cref="VirtualCollectionImplementation{T}.CacheRegionId" />, such that the keys generated for
+    /// the same <see cref="VirtualCollectionPageLoader{T}.CacheRegionId" />, such that the keys generated for
     /// specific pages are identical.
     /// </para>
     /// </remarks>
-    public abstract class VirtualCollectionImplementation<T> : AsyncObject, IVirtualCollectionImplementation<T>
+    public abstract class VirtualCollectionPageLoader<T> : AsyncObject, IVirtualCollectionPageLoader<T>
     {
         private const int _DefaultPageSize = 20;
 
@@ -44,16 +44,16 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         private Task<int> _loadCountTask;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VirtualCollectionImplementation{T}" /> class.
+        /// Initializes a new instance of the <see cref="VirtualCollectionPageLoader{T}" /> class.
         /// </summary>
         /// <param name="cacheRegionId">
         /// A unique identifier that is used to create the keys to store and retrieve pages from the cache.
         /// </param>
-        protected VirtualCollectionImplementation(Guid cacheRegionId)
+        protected VirtualCollectionPageLoader(Guid cacheRegionId)
             : this(cacheRegionId, _DefaultPageSize, SynchronizationContext.Current) { }        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VirtualCollectionImplementation{T}" /> class.
+        /// Initializes a new instance of the <see cref="VirtualCollectionPageLoader{T}" /> class.
         /// </summary>
         /// <param name="cacheRegionId">
         /// A unique identifier that is used to create the keys to store and retrieve pages from the cache.
@@ -62,11 +62,11 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="pageSize"/> is negative.
         /// </exception>
-        protected VirtualCollectionImplementation(Guid cacheRegionId, int pageSize)
+        protected VirtualCollectionPageLoader(Guid cacheRegionId, int pageSize)
             : this(cacheRegionId, pageSize, SynchronizationContext.Current) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VirtualCollectionImplementation{T}" /> class.
+        /// Initializes a new instance of the <see cref="VirtualCollectionPageLoader{T}" /> class.
         /// </summary>
         /// <param name="cacheRegionId">
         /// A unique identifier that is used to create the keys to store and retrieve pages from the cache.
@@ -76,7 +76,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="pageSize"/> is negative.
         /// </exception>
-        protected VirtualCollectionImplementation(Guid cacheRegionId, int pageSize, SynchronizationContext synchronizationContext)  : base(synchronizationContext)
+        protected VirtualCollectionPageLoader(Guid cacheRegionId, int pageSize, SynchronizationContext synchronizationContext)  : base(synchronizationContext)
         {
             if (pageSize < 0)
             {

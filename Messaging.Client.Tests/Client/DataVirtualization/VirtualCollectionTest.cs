@@ -10,14 +10,14 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     public sealed class VirtualCollectionTest
     {
         private SynchronizationContextScope _scope;
-        private VirtualCollectionImplementationSpy _implementation;
+        private VirtualCollectionPageLoaderSpy _implementation;
         private VirtualCollection<int> _collection;
 
         [TestInitialize]
         public void Setup()
         {
             _scope = new SynchronizationContextScope(new SynchronousContext());
-            _implementation = new VirtualCollectionImplementationSpy(Enumerable.Range(1, 88), 20);
+            _implementation = new VirtualCollectionPageLoaderSpy(Enumerable.Range(1, 88), 20);
             _implementation.UseInfiniteCacheLifetime = true;
             _collection = new VirtualCollection<int>(_implementation);
         }

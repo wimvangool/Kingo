@@ -7,7 +7,7 @@ using System.Text;
 namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
     /// <summary>
-    /// Arguments of the <see cref="IVirtualCollectionImplementation{T}.CountLoaded" /> event.
+    /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.CountLoaded" /> event.
     /// </summary>
     public class CountLoadedEventArgs : EventArgs
     {

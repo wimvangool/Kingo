@@ -12,7 +12,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// collection.
     /// </summary>
     /// <typeparam name="T">Type of the items that are loaded.</typeparam>
-    public interface IVirtualCollectionImplementation<T> : IEnumerable<T>
+    public interface IVirtualCollectionPageLoader<T> : IEnumerable<T>
     {
         /// <summary>
         /// Returns the size of the chunks of items that are loaded at once.

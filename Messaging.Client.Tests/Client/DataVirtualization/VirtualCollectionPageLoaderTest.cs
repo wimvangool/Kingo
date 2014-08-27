@@ -7,17 +7,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
     [TestClass]
-    public sealed class VirtualCollectionImplementationTest
+    public sealed class VirtualCollectionPageLoaderTest
     {
         private const int _Count = 67;
         private SynchronizationContextScope _scope;
-        private VirtualCollectionImplementationSpy _implementation;
+        private VirtualCollectionPageLoaderSpy _implementation;
 
         [TestInitialize]
         public void Setup()
         {
             _scope = new SynchronizationContextScope(new SynchronousContext());
-            _implementation = new VirtualCollectionImplementationSpy(Enumerable.Range(1, _Count), 10);
+            _implementation = new VirtualCollectionPageLoaderSpy(Enumerable.Range(1, _Count), 10);
         }
 
         [TestCleanup]

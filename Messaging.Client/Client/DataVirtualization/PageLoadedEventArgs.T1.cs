@@ -7,7 +7,7 @@ using System.Text;
 namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
     /// <summary>
-    /// Arguments of the <see cref="IVirtualCollectionImplementation{T}.PageLoaded" /> event.
+    /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.PageLoaded" /> event.
     /// </summary>
     /// <typeparam name="T">Type of the item that was loaded.</typeparam>
     public class PageLoadedEventArgs<T> : EventArgs

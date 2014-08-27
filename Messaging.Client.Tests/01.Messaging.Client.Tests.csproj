@@ -60,8 +60,8 @@
     </Compile>
     <Compile Include="Client\DataVirtualization\IndexRangeTest.cs" />
     <Compile Include="Client\DataVirtualization\IndexSetTest.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionImplementationSpy.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionImplementationTest.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionPageLoaderSpy.cs" />
+    <Compile Include="Client\DataVirtualization\VirtualCollectionPageLoaderTest.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionTest.cs" />
     <Compile Include="Client\SynchronousContext.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />

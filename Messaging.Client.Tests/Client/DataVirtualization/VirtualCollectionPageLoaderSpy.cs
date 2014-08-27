@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
-    internal sealed class VirtualCollectionImplementationSpy : VirtualCollectionImplementation<int>, IDisposable
+    internal sealed class VirtualCollectionPageLoaderSpy : VirtualCollectionPageLoader<int>, IDisposable
     {
         #region [====== PageLifetime ======]
 
@@ -48,7 +48,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         private readonly AutoResetEvent _pageLoadWaitEvent;
         private bool _isDisposed;
 
-        public VirtualCollectionImplementationSpy(IEnumerable<int> items, int pageSize) : base(Guid.NewGuid(), pageSize)
+        public VirtualCollectionPageLoaderSpy(IEnumerable<int> items, int pageSize) : base(Guid.NewGuid(), pageSize)
         {
             _items = new List<int>(items);
             _pageCache = new MemoryCache("VirtualCollectionCache");

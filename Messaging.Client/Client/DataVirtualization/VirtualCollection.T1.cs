@@ -14,25 +14,33 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
     /// <typeparam name="T">Type of the items in this collection.</typeparam>
     public class VirtualCollection<T> : ReadOnlyCollection<VirtualCollectionItem<T>>, INotifyCollectionChanged
     {               
-        private readonly IVirtualCollectionImplementation<T> _implementation;        
+        private readonly IVirtualCollectionPageLoader<T> _loader;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
         /// </summary>
-        /// <param name="implementation">The provider that is used to load all items asynchronously.</param>        
+        /// <param name="loader">The loader that is used to load all pages/items asynchronously.</param>        
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="implementation"/> is <c>null</c>.
+        /// <paramref name="loader"/> is <c>null</c>.
         /// </exception>        
-        public VirtualCollection(IVirtualCollectionImplementation<T> implementation)
+        public VirtualCollection(IVirtualCollectionPageLoader<T> loader)
         {
-            if (implementation == null)
+            if (loader == null)
             {
-                throw new ArgumentNullException("implementation");
+                throw new ArgumentNullException("loader");
             }
-            _implementation = implementation;
-            _implementation.CountLoaded += HandleCountLoaded;
-            _implementation.PageFailedToLoad += HandlePageFailedToLoad;
-            _implementation.PageLoaded += HandlePageLoaded;            
+            _loader = loader;
+            _loader.CountLoaded += HandleCountLoaded;
+            _loader.PageFailedToLoad += HandlePageFailedToLoad;
+            _loader.PageLoaded += HandlePageLoaded;            
+        }
+
+        /// <summary>
+        /// Returns the <see cref="IVirtualCollectionPageLoader{T}" /> that is used by this collection to load its pages.
+        /// </summary>
+        protected IVirtualCollectionPageLoader<T> Loader
+        {
+            get { return _loader; }
         }
 
         #region [====== List - Count ======]
@@ -50,7 +58,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             {
                 int count;
 
-                if (_implementation.TryGetCount(out count))
+                if (Loader.TryGetCount(out count))
                 {
                     return count;
                 }
@@ -93,13 +101,13 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
                 {
                     throw NewIndexOutOfRangeException(index);
                 }
-                if (_implementation.HasFailedToLoadItem(index))
+                if (Loader.HasFailedToLoadItem(index))
                 {
                     return VirtualCollectionItem<T>.ErrorItem;
                 }
                 T item;
 
-                if (_implementation.TryGetItem(index, out item))
+                if (Loader.TryGetItem(index, out item))
                 {
                     return new VirtualCollectionItem<T>(item);
                 }
@@ -140,7 +148,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
             {
                 int index = 0;
 
-                foreach (var itemOfCollection in _implementation)
+                foreach (var itemOfCollection in Loader)
                 {
                     if (Equals(itemOfCollection, item.Value))
                     {
@@ -157,7 +165,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         {
             if (item.IsLoaded)
             {
-                return _implementation.Any(itemOfCollection => Equals(itemOfCollection, item.Value));
+                return _loader.Any(itemOfCollection => Equals(itemOfCollection, item.Value));
             }
             return false;
         }
@@ -173,7 +181,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         {
             int count;
 
-            if (_implementation.TryGetCount(out count))
+            if (_loader.TryGetCount(out count))
             {
                 for (int index = 0; index < count; index++)
                 {
