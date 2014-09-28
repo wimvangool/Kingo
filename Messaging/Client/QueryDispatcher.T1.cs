@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Messaging.Client
 {    
     /// <summary>
-    /// Represents a command that has no execution-parameter(s).
+    /// Represents a query that has no execution-parameter(s).
     /// </summary>
-    /// <typeparam name="TResult">Type of the result of this query.</typeparam>
-    public abstract class QueryDispatcher<TResult> : QueryDispatcherBase<TResult>        
+    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
+    public abstract class QueryDispatcher<TResponse> : QueryDispatcherBase<TResponse> where TResponse : IMessage       
     {        
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResult Execute(Guid requestId, ObjectCache cache)
+        public override TResponse Execute(Guid requestId, ObjectCache cache)
         {                        
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
-            TResult result;
+            TResponse result;
 
             try
             {                
@@ -28,22 +28,22 @@ namespace System.ComponentModel.Messaging.Client
                 OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, result));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, result));
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {                       
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
-            TResult result;
+            TResponse result;
 
             if (TryGetFromCache(cache, GetType(), out result))
             {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, result));
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, result));
 
                 return CreateCompletedTask(result);
             }
@@ -65,7 +65,7 @@ namespace System.ComponentModel.Messaging.Client
                         scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, result)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, result)));
 
                     return result;
                 }
@@ -82,36 +82,21 @@ namespace System.ComponentModel.Messaging.Client
         /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
         /// more options when creating this task.
         /// </remarks>
-        protected virtual Task<TResult> Start(Func<TResult> query)
+        protected virtual Task<TResponse> Start(Func<TResponse> query)
         {
-            return Task<TResult>.Factory.StartNew(query);
+            return Task<TResponse>.Factory.StartNew(query);
         }
 
-        private TResult ExecuteQuery(ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        private TResponse ExecuteQuery(ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {
             CacheItemPolicy policy;
 
             if (cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return ExecuteInTransactionScope(token, reporter);
+                return Execute(token, reporter);
             }
-            return cache.GetOrAdd(GetType(), () => ExecuteInTransactionScope(token, reporter), policy);
-        }
-
-        private TResult ExecuteInTransactionScope(CancellationToken? token, IProgressReporter reporter)
-        {
-            TResult result;
-
-            token.ThrowIfCancellationRequested();
-
-            using (var scope = CreateTransactionScope())
-            {
-                result = Execute(token, reporter);
-
-                scope.Complete();
-            }
-            return result;
-        }
+            return cache.GetOrAdd(GetType(), () => Execute(token, reporter), policy);
+        }        
 
         /// <summary>
         /// Executes this query.
@@ -126,7 +111,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResult Execute(CancellationToken? token, IProgressReporter reporter);
+        protected abstract TResponse Execute(CancellationToken? token, IProgressReporter reporter);
 
         #endregion        
     }

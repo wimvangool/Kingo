@@ -8,20 +8,20 @@ namespace System.ComponentModel.Messaging.Client
     /// <summary>
     /// Represents a dispatcher that dispatches or executes queries.
     /// </summary>
-    /// <typeparam name="TResult">Type of the result of this query.</typeparam>
-    public interface IQueryDispatcher<TResult> : IRequestDispatcher
+    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
+    public interface IQueryDispatcher<TResponse> : IRequestDispatcher where TResponse : IMessage
     {
         /// <summary>
         /// Occurs when an execution of this <see cref="IQueryDispatcher{T}" /> has succeeded.
         /// </summary>
-        new event EventHandler<ExecutionSucceededEventArgs<TResult>> ExecutionSucceeded;
+        new event EventHandler<ExecutionSucceededEventArgs<TResponse>> ExecutionSucceeded;
 
         /// <summary>
         /// Executes the query synchronously.
         /// </summary>
         /// <param name="requestId">Identifier of the request.</param> 
         /// <returns>The result of this query.</returns>
-        TResult Execute(Guid requestId);
+        TResponse Execute(Guid requestId);
 
         /// <summary>
         /// Executes the query synchronously.
@@ -31,14 +31,14 @@ namespace System.ComponentModel.Messaging.Client
         /// Optional cache-parameter that can be used by this query to get it's result from cache.
         /// </param>
         /// <returns>The result of this query.</returns>
-        TResult Execute(Guid requestId, ObjectCache cache);
+        TResponse Execute(Guid requestId, ObjectCache cache);
 
         /// <summary>
         /// Executes the query asynchronously.
         /// </summary>      
         /// <param name="requestId">Identifier of the request.</param>     
         /// <returns>The task that is responsible for executing this query.</returns>        
-        Task<TResult> ExecuteAsync(Guid requestId);        
+        Task<TResponse> ExecuteAsync(Guid requestId);        
 
         /// <summary>
         /// Executes the query asynchronously.
@@ -49,7 +49,7 @@ namespace System.ComponentModel.Messaging.Client
         /// store the result before the task is completed.
         /// </param>
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache);
+        Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache);
 
         /// <summary>
         /// Executes the query asynchronously.
@@ -66,6 +66,6 @@ namespace System.ComponentModel.Messaging.Client
         /// Optional reporter that can be used to report back the progress the task has made.
         /// </param>
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
+        Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
     }
 }

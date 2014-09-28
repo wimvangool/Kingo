@@ -70,6 +70,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="MSTestFramework.cs" />
     <Compile Include="Server\BooleanOperandExtensionsTest.cs" />
     <Compile Include="Server\ComparableOperandExtensionsTest.cs" />
     <Compile Include="Server\NullableOperandExtensionsTest.cs" />

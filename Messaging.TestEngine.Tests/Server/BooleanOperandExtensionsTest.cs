@@ -22,7 +22,7 @@ namespace System.ComponentModel.Messaging.Server
 
         private void ExpectFailure()
         {
-            _scenarioMock.Setup(framework => framework.Fail(It.IsAny<string>(), It.IsAny<object[]>()));
+            _scenarioMock.Setup(framework => framework.Fail(It.IsAny<string>()));
         }
 
         private IOperand<bool> CreateOperand(bool value)

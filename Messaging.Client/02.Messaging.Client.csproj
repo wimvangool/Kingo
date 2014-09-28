@@ -61,7 +61,6 @@
     <Compile Include="Client\DataVirtualization\VirtualCollectionPageLoader.T1.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionItemStatus.cs" />
     <Compile Include="Client\DataVirtualization\VirtualCollectionPage.T1.cs" />
-    <Compile Include="Client\TransactionalEventBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Client\ClientEventBus.cs" />
     <Compile Include="Client\ClientEventBusConnection.cs" />

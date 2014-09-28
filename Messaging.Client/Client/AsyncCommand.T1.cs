@@ -89,8 +89,8 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <summary>
-        /// Indicates whether or not the encapsulated <see cref="Dispatcher" /> should be
-        /// executed synchronously.
+        /// Indicates whether or not any running execution of this request should be canceled
+        /// when a new execution is started.
         /// </summary>
         protected bool CancelPreviousOnExecution
         {

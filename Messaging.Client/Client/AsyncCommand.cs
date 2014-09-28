@@ -141,15 +141,17 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>
-        /// <typeparam name="TResult">Type of the result of the query.</typeparam>
+        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>
+        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
         /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TResult, TParameter>(QueryDispatcher<TMessage, TResult> dispatcher) where TMessage : class, IMessage
+        public static AsyncCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher)
+            where TRequest : class, IMessage
+            where TResponse : IMessage
         {
             if (dispatcher == null)
             {
@@ -161,8 +163,8 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>
-        /// <typeparam name="TResult">Type of the result of the query.</typeparam>
+        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>
+        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
@@ -170,7 +172,9 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TResult, TParameter>(QueryDispatcher<TMessage, TResult> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
+        public static AsyncCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher, AsyncCommandOptions options)
+            where TRequest : class, IMessage
+            where TResponse : IMessage
         {
             if (dispatcher == null)
             {
@@ -182,15 +186,17 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>      
-        /// <typeparam name="TResult">Type of the result of the query.</typeparam>  
+        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>      
+        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>  
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
         /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage, TResult>(QueryDispatcher<TMessage, TResult> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
+        public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher, AsyncCommandOptions options)
+            where TRequest : class, IMessage
+            where TResponse : IMessage
         {
             if (dispatcher == null)
             {
@@ -202,14 +208,16 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>    
-        /// <typeparam name="TResult">Type of the result of the query.</typeparam>    
+        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>    
+        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>    
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
         /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage, TResult>(QueryDispatcher<TMessage, TResult> dispatcher) where TMessage : class, IMessage
+        public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher)
+            where TRequest : class, IMessage
+            where TResponse : IMessage
         {
             if (dispatcher == null)
             {

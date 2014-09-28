@@ -168,6 +168,39 @@
   <data name="ExpressionOfCompatibleType" xml:space="preserve">
     <value>Instance was of unexpected type. Did not expect an instance of '{0}', but instance was of (compatible) type '{1}'.</value>
   </data>
+  <data name="MessageChecker_HasChangesChanged_TimesNotEqual" xml:space="preserve">
+    <value>Message '{0}' should have raised the HasChangesChanged-event {1} time(s) but instead raised it {2} time(s).</value>
+  </data>
+  <data name="MessageChecker_IsValidChanged_TimesNotEqual" xml:space="preserve">
+    <value>Message '{0}' should have raised the IsValidChanged-event {1} time(s) but instead raised it {2} time(s).</value>
+  </data>
+  <data name="MessageChecker_MessageHasErrors" xml:space="preserve">
+    <value>Message '{0}' was expected to have no errors.</value>
+  </data>
+  <data name="MessageChecker_MessageHasNoErrors" xml:space="preserve">
+    <value>Message '{0}' was expected to have errors.</value>
+  </data>
+  <data name="MessageChecker_MessageIsValid" xml:space="preserve">
+    <value>Message '{0}' was supposed to be invalid but it was.</value>
+  </data>
+  <data name="MessageChecker_MessageNotValid" xml:space="preserve">
+    <value>Message '{0}' was supposed to be valid but it was not.</value>
+  </data>
+  <data name="MessageChecker_MessageWasChanged" xml:space="preserve">
+    <value>Message '{0}' was supposed to be marked as changed but it was not.</value>
+  </data>
+  <data name="MessageChecker_MessageWasNotChanged" xml:space="preserve">
+    <value>Message '{0}' was not supposed to be marked as changed but it was.</value>
+  </data>
+  <data name="MessageChecker_PropertyHasNoErrors" xml:space="preserve">
+    <value>Property '{0}.{1}' was expected to have an error.</value>
+  </data>
+  <data name="MessageChecker_PropertyWasNotChanged" xml:space="preserve">
+    <value>Property '{0}.{1}' should have been changed but it was not.</value>
+  </data>
+  <data name="MessageChecker_UnexpectedNumberOfPropertiesChanged" xml:space="preserve">
+    <value>Message '{0}' should have changed {1} different properties but instead marked {2} properties as changed.</value>
+  </data>
   <data name="NullStatement_PreconditionFailed" xml:space="preserve">
     <value>The conjunction-statement failed because the conjunction precondition failed.</value>
   </data>

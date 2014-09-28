@@ -34,7 +34,7 @@ namespace System.ComponentModel.Messaging.Client
         event EventHandler ProgressChanged;
 
         /// <summary>
-        /// Returns the progress has made so far.
+        /// Returns the progress the request has made so far.
         /// </summary>
         Progress Progress
         {

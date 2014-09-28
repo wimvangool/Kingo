@@ -150,20 +150,7 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public abstract IAsyncExecutionTask CreateAsyncExecutionTask();
-
-        /// <summary>
-        /// Creates and returns a new <see cref="TransactionScope" /> in which the request is executed.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual TransactionScope CreateTransactionScope()
-        {
-            return new TransactionScope(TransactionScopeOption.Required, new TransactionOptions()
-            {
-                IsolationLevel = IsolationLevel.ReadCommitted,
-                Timeout = TransactionManager.DefaultTimeout
-            });
-        }
+        public abstract IAsyncExecutionTask CreateAsyncExecutionTask();        
 
         #endregion
     }

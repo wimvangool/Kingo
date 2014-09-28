@@ -61,6 +61,15 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value cannot be negative: {0}..
+        /// </summary>
+        internal static string MessageTester_InvalidTimesArgument {
+            get {
+                return ResourceManager.GetString("MessageTester_InvalidTimesArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No domain-event was found at the specified index: {0}..
         /// </summary>
         internal static string Scenario_DomainEventNotFound {

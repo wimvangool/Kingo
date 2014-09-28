@@ -9,7 +9,7 @@ namespace System.ComponentModel.Messaging.Client
     /// Serves as the base-class for the <see cref="QueryDispatcher{T}" /> and <see cref="QueryDispatcher{T, S}"/> classes,
     /// implementing the <see cref="IQueryDispatcher{T}" /> interface.
     /// </summary>
-    public abstract class QueryDispatcherBase<TResult> : RequestDispatcher, IQueryDispatcher<TResult>
+    public abstract class QueryDispatcherBase<TResponse> : RequestDispatcher, IQueryDispatcher<TResponse> where TResponse : IMessage
     {
         internal QueryDispatcherBase() { }
 
@@ -18,16 +18,16 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Occurs when an execution of this <see cref="ICommandDispatcher" /> has succeeded.
         /// </summary>
-        public event EventHandler<ExecutionSucceededEventArgs<TResult>> ExecutionSucceeded;
+        public event EventHandler<ExecutionSucceededEventArgs<TResponse>> ExecutionSucceeded;
 
         internal override void Add(EventHandler<ExecutionSucceededEventArgs> handler)
         {
-            ExecutionSucceeded += new EventHandler<ExecutionSucceededEventArgs<TResult>>(handler);
+            ExecutionSucceeded += new EventHandler<ExecutionSucceededEventArgs<TResponse>>(handler);
         }
 
         internal override void Remove(EventHandler<ExecutionSucceededEventArgs> handler)
         {
-            ExecutionSucceeded -= new EventHandler<ExecutionSucceededEventArgs<TResult>>(handler);
+            ExecutionSucceeded -= new EventHandler<ExecutionSucceededEventArgs<TResponse>>(handler);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="e"/> is <c>null</c>.
         /// </exception>
-        protected virtual void OnExecutionSucceeded(ExecutionSucceededEventArgs<TResult> e)
+        protected virtual void OnExecutionSucceeded(ExecutionSucceededEventArgs<TResponse> e)
         {
             ExecutionSucceeded.Raise(this, e);
 
@@ -49,33 +49,33 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public TResult Execute(Guid requestId)
+        public TResponse Execute(Guid requestId)
         {
             return Execute(requestId, null);
         }
 
         /// <inheritdoc />
-        public abstract TResult Execute(Guid executionId, ObjectCache cache);        
+        public abstract TResponse Execute(Guid executionId, ObjectCache cache);        
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync(Guid requestId)
+        public Task<TResponse> ExecuteAsync(Guid requestId)
         {
             return ExecuteAsync(requestId, null, null, null);
         }        
 
         /// <inheritdoc />
-        public Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache)
+        public Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache)
         {
             return ExecuteAsync(requestId, cache, null, null);
         }
 
         /// <inheritdoc />
-        public abstract Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
+        public abstract Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()
         {
-            return new QueryExecutionTask<TResult>(this, null);
+            return new QueryExecutionTask<TResponse>(this, null);
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace System.ComponentModel.Messaging.Client
         /// <paramref name="key"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="InvalidCastException">
-        /// The value retrieved from the cache could not be cast to <typeparamref name="TResult"/>.
+        /// The value retrieved from the cache could not be cast to <typeparamref name="TResponse"/>.
         /// </exception>
-        protected static bool TryGetFromCache(ObjectCache cache, object key, out TResult result)
+        protected static bool TryGetFromCache(ObjectCache cache, object key, out TResponse result)
         {
             if (key == null)
             {
@@ -124,7 +124,7 @@ namespace System.ComponentModel.Messaging.Client
             }
             if (cache == null)
             {
-                result = default(TResult);
+                result = default(TResponse);
                 return false;
             }
             return cache.TryGetValue(key, out result);
@@ -135,9 +135,9 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         /// <param name="result">The result is this query.</param>
         /// <returns>A new and completed <see cref="Task{T}"/>.</returns>
-        internal static Task<TResult> CreateCompletedTask(TResult result)
+        internal static Task<TResponse> CreateCompletedTask(TResponse result)
         {
-            var taskCompletionSource = new TaskCompletionSource<TResult>();
+            var taskCompletionSource = new TaskCompletionSource<TResponse>();
             taskCompletionSource.SetResult(result);
             return taskCompletionSource.Task;
         }

@@ -18,7 +18,7 @@ namespace System.ComponentModel.Messaging.Client
 
             try
             {
-                ExecuteInTransactionScope(null, null);
+                Execute(null, null);
             }
             catch (Exception exception)
             {
@@ -41,7 +41,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                   
                     try
                     {                                                
-                        ExecuteInTransactionScope(token, reporter);                        
+                        Execute(token, reporter);                        
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -71,19 +71,7 @@ namespace System.ComponentModel.Messaging.Client
         protected virtual Task Start(Action command)
         {
             return Task.Factory.StartNew(command);
-        }
-
-        private void ExecuteInTransactionScope(CancellationToken? token, IProgressReporter reporter)
-        {
-            token.ThrowIfCancellationRequested();
-
-            using (var scope = CreateTransactionScope())
-            {
-                Execute(token, reporter);
-
-                scope.Complete();
-            }
-        }
+        }        
 
         /// <summary>
         /// Executes the command.

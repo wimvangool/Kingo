@@ -214,6 +214,105 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; should have raised the HasChangesChanged-event {1} time(s) but instead raised it {2} time(s)..
+        /// </summary>
+        internal static string MessageChecker_HasChangesChanged_TimesNotEqual {
+            get {
+                return ResourceManager.GetString("MessageChecker_HasChangesChanged_TimesNotEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; should have raised the IsValidChanged-event {1} time(s) but instead raised it {2} time(s)..
+        /// </summary>
+        internal static string MessageChecker_IsValidChanged_TimesNotEqual {
+            get {
+                return ResourceManager.GetString("MessageChecker_IsValidChanged_TimesNotEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; was expected to have no errors..
+        /// </summary>
+        internal static string MessageChecker_MessageHasErrors {
+            get {
+                return ResourceManager.GetString("MessageChecker_MessageHasErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; was expected to have errors..
+        /// </summary>
+        internal static string MessageChecker_MessageHasNoErrors {
+            get {
+                return ResourceManager.GetString("MessageChecker_MessageHasNoErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; was supposed to be invalid but it was..
+        /// </summary>
+        internal static string MessageChecker_MessageIsValid {
+            get {
+                return ResourceManager.GetString("MessageChecker_MessageIsValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; was supposed to be valid but it was not..
+        /// </summary>
+        internal static string MessageChecker_MessageNotValid {
+            get {
+                return ResourceManager.GetString("MessageChecker_MessageNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; was supposed to be marked as changed but it was not..
+        /// </summary>
+        internal static string MessageChecker_MessageWasChanged {
+            get {
+                return ResourceManager.GetString("MessageChecker_MessageWasChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; was not supposed to be marked as changed but it was..
+        /// </summary>
+        internal static string MessageChecker_MessageWasNotChanged {
+            get {
+                return ResourceManager.GetString("MessageChecker_MessageWasNotChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}.{1}&apos; was expected to have an error..
+        /// </summary>
+        internal static string MessageChecker_PropertyHasNoErrors {
+            get {
+                return ResourceManager.GetString("MessageChecker_PropertyHasNoErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}.{1}&apos; should have been changed but it was not..
+        /// </summary>
+        internal static string MessageChecker_PropertyWasNotChanged {
+            get {
+                return ResourceManager.GetString("MessageChecker_PropertyWasNotChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message &apos;{0}&apos; should have changed {1} different properties but instead marked {2} properties as changed..
+        /// </summary>
+        internal static string MessageChecker_UnexpectedNumberOfPropertiesChanged {
+            get {
+                return ResourceManager.GetString("MessageChecker_UnexpectedNumberOfPropertiesChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The conjunction-statement failed because the conjunction precondition failed..
         /// </summary>
         internal static string NullStatement_PreconditionFailed {

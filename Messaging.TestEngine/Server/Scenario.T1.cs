@@ -61,7 +61,7 @@ namespace System.ComponentModel.Messaging.Server
         /// If an exception is expected to be thrown, then the <see cerf="ExceptionException" /> must be set to
         /// <c>true</c> before this method is called. If so, any exception will be caught and the <see cref="Exception" />
         /// property will be set accordingly. On the other hand, if <see cerf="ExceptionException" /> is set to <c>true</c>
-        /// and no exception is thrown as a result of the message to test, then the scenario's <see cref="Scenario.Fail(string)" />
+        /// and no exception is thrown as a result of the message to test, then the scenario's <see cref="IScenario.Fail(string)" />
         /// method will be called with a message indicating the expected exception was not thrown. If no exception is
         /// expected, any exception is simply rethrown, assuming the scenario will fail automatically as a result.
         /// </para>

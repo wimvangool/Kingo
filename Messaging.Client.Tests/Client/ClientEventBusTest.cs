@@ -164,23 +164,7 @@ namespace System.ComponentModel.Messaging.Client
             MessageHandler.Handle(new object());
 
             Assert.AreEqual(1, _eventBus.MessageCount);
-        }
-
-        [TestMethod]
-        public void Publish_BuffersAllMessagesUntilTransactionCommits_IfTransactionIsActive()
-        {
-            using (var transactionScope = new TransactionScope())
-            {
-                MessageHandler.Handle(new object());
-                MessageHandler.Handle(new object());
-                MessageHandler.Handle(new object());
-
-                Assert.AreEqual(0, _eventBus.MessageCount);
-
-                transactionScope.Complete();
-            }
-            Assert.AreEqual(3, _eventBus.MessageCount);
-        }
+        }        
 
         #endregion
     }

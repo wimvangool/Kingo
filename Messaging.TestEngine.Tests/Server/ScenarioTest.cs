@@ -31,15 +31,15 @@ namespace System.ComponentModel.Messaging.Server
                 get { return null; }
             }
 
+            protected override IUnitTestFramework UnitTestFramework
+            {
+                get { return MSTestFramework.Instance; }
+            }
+
             public new object DomainEventAt(int index)
             {
                 return base.DomainEventAt(index);
-            }
-
-            protected override void Fail(string message)
-            {
-                Assert.Fail(message);
-            }
+            }            
         }
 
         private sealed class ErroneousScenario : ScenarioUnderTest

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a task that can executes a query asynchronously.
+    /// Represents a task that can execute a query asynchronously.
     /// </summary>
-    public class QueryExecutionTask<TResult> : AsyncExecutionTask<IQueryDispatcher<TResult>>
+    public class QueryExecutionTask<TResponse> : AsyncExecutionTask<IQueryDispatcher<TResponse>> where TResponse : IMessage
     {
-        private readonly IQueryDispatcher<TResult> _dispatcher;
+        private readonly IQueryDispatcher<TResponse> _dispatcher;
         private readonly ObjectCache _cache;
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public QueryExecutionTask(IQueryDispatcher<TResult> dispatcher, ObjectCache cache)
+        public QueryExecutionTask(IQueryDispatcher<TResponse> dispatcher, ObjectCache cache)
         {
             if (dispatcher == null)
             {
@@ -34,7 +34,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        protected override IQueryDispatcher<TResult> Dispatcher
+        protected override IQueryDispatcher<TResponse> Dispatcher
         {
             get { return _dispatcher; }
         }
@@ -42,7 +42,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// If the task has been started, returns the associated <see cref="Task" /> instance of this task.
         /// </summary>
-        protected Task<TResult> Task
+        protected Task<TResponse> Task
         {
             get;
             private set;

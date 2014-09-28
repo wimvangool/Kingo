@@ -70,9 +70,16 @@ namespace System.ComponentModel.Messaging.Server
             _scenarioMock.VerifyAll();    
         }
 
-        private void ExpectFailure()
+        private void ExpectFailure(bool expectMessageParameters)
         {
-            _scenarioMock.Setup(framework => framework.Fail(It.IsAny<string>(), It.IsAny<object[]>()));
+            if (expectMessageParameters)
+            {
+                _scenarioMock.Setup(framework => framework.Fail(It.IsAny<string>(), It.IsAny<object[]>()));
+            }
+            else
+            {
+                _scenarioMock.Setup(framework => framework.Fail(It.IsAny<string>()));
+            }
         }
 
         #region [====== Basic Tests ======]
@@ -100,7 +107,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNull_Fails_IfExpressionIsValueType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -111,7 +118,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNull_Fails_IfExpressionIsReferenceTypeAndNotNull()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = new object();
             var operand = new Operand<object>(Scenario, value);
@@ -152,7 +159,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotNull_Fails_IfExpressionIsReferenceTypeAndNull()
         {
-            ExpectFailure();
+            ExpectFailure(false);
 
             var operand = new Operand<object>(Scenario, null);
 
@@ -176,7 +183,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsA_Fails_IfExpressionIsValueTypeAndNotOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<object>(Scenario, value);
@@ -196,7 +203,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsA_Fails_IfExpressionIsReferenceTypeAndNotOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = new object();
             var operand = new Operand<object>(Scenario, value);
@@ -216,7 +223,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsA_Fails_IfExpressionIsNullAndNotOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var operand = new Operand<object>(Scenario, null);
 
@@ -233,12 +240,12 @@ namespace System.ComponentModel.Messaging.Server
 
         #endregion
 
-        #region [====== IsA<TExpected> ======]        
+        #region [====== IsA<TExpected> ======]
 
         [TestMethod]        
         public void IsA_ExpectedType_Fails_IfExpressionIsValueTypeAndNotOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<object>(Scenario, value);
@@ -258,7 +265,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]       
         public void IsA_ExpectedType_Fails_IfExpressionIsReferenceTypeAndNotOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = new object();
             var operand = new Operand<object>(Scenario, value);
@@ -278,7 +285,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsA_ExpectedType_Fails_IfExpressionIsNullAndNotOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var operand = new Operand<object>(Scenario, null);
 
@@ -319,7 +326,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotA_Fails_IfExpressionIsValueTypeAndOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<object>(Scenario, value);
@@ -339,7 +346,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotA_Fails_IfExpressionIsReferenceTypeAndOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<object>(Scenario, value);
@@ -358,7 +365,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotA_Fails_IfExpressionIsNullAndOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var operand = new Operand<string>(Scenario, null);
 
@@ -381,7 +388,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotA_UnexpectedType_Fails_IfExpressionIsValueTypeAndOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<object>(Scenario, value);
@@ -401,7 +408,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotA_UnexpectedType_Fails_IfExpressionIsReferenceTypeAndOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<object>(Scenario, value);
@@ -420,7 +427,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotA_UnexpectedType_Fails_IfExpressionIsNullAndOfCompatibleType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var operand = new Operand<string>(Scenario, null);
 
@@ -434,7 +441,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsTheSameInstanceAs_Fails_IfExpressionIsValueType()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -445,7 +452,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsTheSameInstanceAs_Fails_IfExpressionIsReferenceTypeAndNotTheSameInstance()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = new object();
             var operand = new Operand<object>(Scenario, value);
@@ -487,7 +494,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotTheSameInstanceAs_Fails_IfExpressionIsReferenceTypeAndTheSameInstance()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = new object();
             var operand = new Operand<object>(Scenario, value);
@@ -502,7 +509,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsEqualTo_Fails_IfExpressionIsValueTypeAndNotEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -522,7 +529,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsEqualTo_Fails_IfExpressionIsReferenceTypeAndNotEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);
@@ -541,12 +548,12 @@ namespace System.ComponentModel.Messaging.Server
 
         #endregion
 
-        #region [====== IsEqualTo(T, IEqualityComparer<T>) ======]        
+        #region [====== IsEqualTo(T, IEqualityComparer<T>) ======]
 
         [TestMethod]        
         public void IsEqualToByComparer_Fails_IfExpressionIsValueTypeAndNotEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -566,7 +573,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsEqualToByComparer_Fails_IfExpressionIsReferenceTypeAndNotEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);
@@ -599,7 +606,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotEqualTo_Fails_IfExpressionIsValueTypeAndEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -619,7 +626,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotEqualTo_DoesNotFail_IfExpressionIsReferenceTypeAndEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);
@@ -643,7 +650,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotEqualToByComparer_Fails_IfExpressionIsValueTypeAndEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -663,7 +670,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsNotEqualToByComparer_Fails_IfExpressionIsReferenceTypeAndEqual()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);
@@ -678,7 +685,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsSmallerThanByComparer_Fails_IfExpressionIsValueTypeAndNotSmaller()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -698,7 +705,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsSmallerThanByComparer_Fails_IfExpressionIsReferenceTypeAndNotSmaller()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);
@@ -722,7 +729,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsSmallerThanOrEqualToByComparer_Fails_IfExpressionIsValueTypeAndGreater()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -742,7 +749,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsSmallerThanOrEqualToByComparer_Fails_IfExpressionIsReferenceTypeAndGreater()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);
@@ -766,7 +773,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsGreaterThanByComparer_Fails_IfExpressionIsValueTypeAndNotGreater()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -786,7 +793,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsGreaterThanByComparer_Fails_IfExpressionIsReferenceTypeAndNotGreater()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);
@@ -810,7 +817,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsGreaterThanOrEqualToByComparer_Fails_IfExpressionIsValueTypeAndSmaller()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             var value = DateTime.Now.Ticks;
             var operand = new Operand<long>(Scenario, value);
@@ -830,7 +837,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]        
         public void IsGreaterThanOrEqualToByComparer_Fails_IfExpressionIsReferenceTypeAndSmaller()
         {
-            ExpectFailure();
+            ExpectFailure(true);
 
             const string value = "Some value";
             var operand = new Operand<string>(Scenario, value);

@@ -82,17 +82,12 @@ namespace System.ComponentModel.Messaging.Client
         protected internal abstract void Unsubscribe(object subscriber);
 
         void IMessageHandler<object>.Handle(object message)
-        {           
-            TransactionalMessageBuffer.Write(this, message);
-        }
-       
-        internal void Commit(object message)
         {
             using (var scope = CreateSynchronizationContextScope())
             {
                 scope.Post(() => Publish(message));
             }
-        }
+        }               
 
         /// <summary>
         /// Publishes the specified message on this bus.

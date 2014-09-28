@@ -67,6 +67,14 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         /// <summary>
+        /// Returns the <see cref="IUnitTestFramework" /> that is used to run this scenario.
+        /// </summary>
+        protected abstract IUnitTestFramework UnitTestFramework
+        {
+            get;
+        }
+
+        /// <summary>
         /// Returns the processor that is used to execute this <see cref="Scenario" />.
         /// </summary>
         protected abstract IMessageProcessor MessageProcessor
@@ -101,19 +109,45 @@ namespace System.ComponentModel.Messaging.Server
 
         void IScenario.Fail()
         {
-            Fail(null);
+            Fail();
+        }
+
+        void IScenario.Fail(string message)
+        {
+            
         }
 
         void IScenario.Fail(string message, params object[] parameters)
         {
-            Fail(string.Format(CultureInfo.CurrentCulture, message, parameters));
+            UnitTestFramework.FailTest(message, parameters);
         }
 
         /// <summary>
-        /// Fails the scenario with the specified message.
+        /// Marks this scenario as failed.
         /// </summary>
-        /// <param name="message">A message indicating the cause of failure.</param>
-        protected abstract void Fail(string message);
+        protected void Fail()
+        {
+            UnitTestFramework.FailTest();
+        }
+
+        /// <summary>
+        /// Marks this scenario as failed using the specified <paramref name="message"/>.
+        /// </summary>
+        /// <param name="message">The reason why the scenario failed.</param>
+        protected void Fail(string message)
+        {
+            UnitTestFramework.FailTest(message);
+        }
+
+        /// <summary>
+        /// Marks this scenario as failed using the specified <paramref name="message"/>.
+        /// </summary>
+        /// <param name="message">The reason why the scenario failed.</param>
+        /// <param name="parameters">An optional array of parameters to include in the message.</param>
+        protected void Fail(string message, params object[] parameters)
+        {
+            UnitTestFramework.FailTest(message, parameters);
+        }
 
         internal void SaveDomainEvent(object domainEvent)
         {

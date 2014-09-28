@@ -9,11 +9,13 @@ namespace System.ComponentModel.Messaging.Client
     /// Represents a query that contains a <see cref="IMessage">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
-    /// <typeparam name="TMessage">Type of the message that serves as the execution-parameter.</typeparam>
-    /// <typeparam name="TResult">Type of the result of this query.</typeparam>
-    public abstract class QueryDispatcher<TMessage, TResult> : QueryDispatcherBase<TResult> where TMessage : class, IMessage
+    /// <typeparam name="TRequest">Type of the message that serves as the execution-parameter.</typeparam>
+    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
+    public abstract class QueryDispatcher<TRequest, TResponse> : QueryDispatcherBase<TResponse>
+        where TRequest : class, IMessage
+        where TResponse : IMessage
     {
-        private readonly TMessage _message;
+        private readonly TRequest _message;
         private readonly MessageStateTracker _messageStateTracker;
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        protected QueryDispatcher(TMessage message)
+        protected QueryDispatcher(TRequest message)
         {
             if (message == null)
             {
@@ -34,7 +36,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public TMessage Message
+        public TRequest Message
         {
             get { return _message; }
         }
@@ -70,12 +72,12 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResult Execute(Guid requestId, ObjectCache cache)
+        public override TResponse Execute(Guid requestId, ObjectCache cache)
         {                        
-            var message = (TMessage) Message.Copy(true);
+            var message = (TRequest) Message.Copy(true);
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
-            TResult result;
+            TResponse result;
 
             try
             {                
@@ -86,23 +88,23 @@ namespace System.ComponentModel.Messaging.Client
                 OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, message, result));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, message, result));
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task<TResult> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {                        
-            var message = (TMessage) Message.Copy(true);
+            var message = (TRequest) Message.Copy(true);
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
-            TResult result;
+            TResponse result;
             
             if (TryGetFromCache(cache, message, out result))
             {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, message, result));
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, message, result));
 
                 return CreateCompletedTask(result);
             }
@@ -124,7 +126,7 @@ namespace System.ComponentModel.Messaging.Client
                         scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResult>(requestId, message, result)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, message, result)));
 
                     return result;
                 }
@@ -141,36 +143,21 @@ namespace System.ComponentModel.Messaging.Client
         /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
         /// more options when creating this task.
         /// </remarks>
-        protected virtual Task<TResult> Start(Func<TResult> query)
+        protected virtual Task<TResponse> Start(Func<TResponse> query)
         {
-            return Task<TResult>.Factory.StartNew(query);
+            return Task<TResponse>.Factory.StartNew(query);
         }
 
-        private TResult ExecuteQuery(TMessage message, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        private TResponse ExecuteQuery(TRequest message, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
         {
             CacheItemPolicy policy;
 
             if (cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return ExecuteInTransactionScope(message, token, reporter);
+                return Execute(message, token, reporter);
             }
-            return cache.GetOrAdd(message, () => ExecuteInTransactionScope(message, token, reporter), policy);
-        }
-
-        private TResult ExecuteInTransactionScope(TMessage message, CancellationToken? token, IProgressReporter reporter)
-        {
-            TResult result;
-
-            token.ThrowIfCancellationRequested();
-
-            using (var scope = CreateTransactionScope())
-            {
-                result = Execute(message, token, reporter);
-
-                scope.Complete();
-            }
-            return result;
-        }
+            return cache.GetOrAdd(message, () => Execute(message, token, reporter), policy);
+        }        
 
         /// <summary>
         /// Executes the query.
@@ -188,7 +175,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResult Execute(TMessage message, CancellationToken? token, IProgressReporter reporter);                        
+        protected abstract TResponse Execute(TRequest message, CancellationToken? token, IProgressReporter reporter);                        
 
         #endregion
     }
