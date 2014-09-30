@@ -163,7 +163,7 @@ namespace System.ComponentModel.Messaging.Server
         protected internal abstract void RegisterSingle(Type type);        
 
         /// <inheritdoc />
-        internal IEnumerable<IMessageHandlerPipeline<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message) where TMessage : class
+        internal IEnumerable<IMessageHandler<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message) where TMessage : class
         {
             if (message == null)
             {
@@ -183,17 +183,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>                
-        protected internal abstract object CreateMessageHandler(Type type);
-
-        internal static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
-        {
-            return MessageHandlerClass.CreateMessageHandler(handler);
-        }
-
-        internal static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
-        {
-            return MessageHandlerClass.CreateMessageHandler(action);
-        }
+        protected internal abstract object CreateMessageHandler(Type type);        
 
         private static IEnumerable<Assembly> FindAssembliesIn(string directory)
         {

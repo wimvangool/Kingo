@@ -39,15 +39,7 @@ namespace System.ComponentModel.Messaging.Server
         protected abstract MessageHandlerFactory MessageHandlerFactory
         {
             get;
-        }
-
-        /// <summary>
-        /// Returns the <see cref="IMessageHandlerPipelineFactory" /> of this processor. Default returns <c>null</c>.
-        /// </summary>
-        protected virtual IMessageHandlerPipelineFactory PipelineFactory
-        {
-            get { return null; }
-        }
+        }        
 
         /// <inheritdoc />
         public void Process<TMessage>(TMessage message) where TMessage : class
@@ -68,7 +60,7 @@ namespace System.ComponentModel.Messaging.Server
                 {
                     foreach (var handler in MessageHandlerFactory.CreateMessageHandlersFor(message))
                     {
-                        CreatePipelineFor(handler).Handle(message);
+                        handler.Handle(message);
 
                         CurrentUseCase.ThrowIfCancellationRequested();
                     }
@@ -102,7 +94,7 @@ namespace System.ComponentModel.Messaging.Server
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
-                    CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(handler)).Handle(message);
+                    handler.Handle(message);
 
                     CurrentUseCase.ThrowIfCancellationRequested();
                     scope.Complete();
@@ -121,11 +113,11 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         /// <inheritdoc />
-        public virtual void Process<TMessage>(TMessage message, Action<TMessage> action, CancellationToken? token, IProgressReporter reporter) where TMessage : class
+        public virtual void Process<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token, IProgressReporter reporter) where TMessage : class
         {
-            if (action == null)
+            if (handler == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException("handler");
             }
             BeginUseCase(message, token, reporter);
 
@@ -135,7 +127,7 @@ namespace System.ComponentModel.Messaging.Server
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
-                    CreatePipelineFor(MessageHandlerFactory.CreateMessageHandler(action)).Handle(message);
+                    handler.Invoke(message);
 
                     CurrentUseCase.ThrowIfCancellationRequested();
                     scope.Complete();
@@ -155,11 +147,6 @@ namespace System.ComponentModel.Messaging.Server
         private void EndMessage()
         {
             CurrentUseCase = CurrentUseCase.ParentUseCase;
-        }
-
-        private IMessageHandler<TMessage> CreatePipelineFor<TMessage>(IMessageHandlerPipeline<TMessage> handler) where TMessage : class
-        {
-            return PipelineFactory == null ? handler : PipelineFactory.CreatePipeline(handler, UnitOfWorkContext.Current);
-        }        
+        }               
     }
 }

@@ -48,7 +48,7 @@ namespace System.ComponentModel.Messaging.Server
             }
         }                       
 
-        public IEnumerable<IMessageHandlerPipeline<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message) where TMessage : class
+        public IEnumerable<IMessageHandler<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message) where TMessage : class
         {
             // This LINQ construct first selects all message handler interface definitions that are compatible with
             // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -61,38 +61,11 @@ namespace System.ComponentModel.Messaging.Server
             return from interfaceType in _interfaceTypes
                    let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                    where messageTypeOfInterface.IsInstanceOfType(message)
-                   let messageHandlerTypeDefinition = typeof(MessageHandlerPipelineForClass<>)
-                   let messageHandlerType = messageHandlerTypeDefinition.MakeGenericType(messageTypeOfInterface)                   
-                   select CreateMessageHandler<TMessage>(messageHandlerType, _factory, _classType);
+                   select (IMessageHandler<TMessage>) _factory.CreateMessageHandler(_classType);
         }                
 
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
-        private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>);
-
-        public static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
-        {
-            var specifiedInterfaceType = typeof(IMessageHandler<TMessage>);
-            var actualInterfaceType = GetFirstInterfaceTypeFor(handler.GetType(), specifiedInterfaceType);
-            return new MessageHandlerPipelineForInterface<TMessage>(handler, actualInterfaceType);
-        }
-
-        public static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(Action<TMessage> action) where TMessage : class
-        {
-            return new MessageHandlerPipelineForAction<TMessage>(action);
-        }
-
-        private static IMessageHandlerPipeline<TMessage> CreateMessageHandler<TMessage>(Type messageHandlerType, MessageHandlerFactory factory, Type classType) where TMessage : class
-        {
-            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-            var constructor = messageHandlerType.GetConstructor(flags, null, new[] { typeof(MessageHandlerFactory), typeof(Type) }, null);
-            var constructorArguments = new object[] { factory, classType };
-            return (IMessageHandlerPipeline<TMessage>) constructor.Invoke(constructorArguments);
-        }
-
-        private static Type GetFirstInterfaceTypeFor(Type handlerType, Type specifiedInterfaceType)
-        {
-            return GetMessageHandlerInterfaceTypesImplementedByCore(handlerType).First(specifiedInterfaceType.IsAssignableFrom);
-        }
+        private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>);                       
 
         public static bool TryRegisterIn(MessageHandlerFactory container, Type type, Func<Type, bool> predicate, out MessageHandlerClass handler)
         {

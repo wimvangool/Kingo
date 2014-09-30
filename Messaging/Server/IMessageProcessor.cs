@@ -108,23 +108,23 @@ namespace System.ComponentModel.Messaging.Server
         /// </summary>
         /// <typeparam name="TMessage">Type of the message.</typeparam>
         /// <param name="message">Message to handle.</param>
-        /// <param name="action">Delegate that will be used to handle the message.</param>
+        /// <param name="handler">Delegate that will be used to handle the message.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="action"/> is <c>null</c>.
+        /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
         /// </exception>
-        void Process<TMessage>(TMessage message, Action<TMessage> action) where TMessage : class;
+        void Process<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class;
 
         /// <summary>
         /// Processes the specified message by invoking the specified delegate.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message.</typeparam>
         /// <param name="message">Message to handle.</param>
-        /// <param name="action">Delegate that will be used to handle the message.</param>
+        /// <param name="handler">Delegate that will be used to handle the message.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param>
@@ -132,7 +132,7 @@ namespace System.ComponentModel.Messaging.Server
         /// Reporter that can be used to report the progress.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="action"/> is <c>null</c>.
+        /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
@@ -142,6 +142,6 @@ namespace System.ComponentModel.Messaging.Server
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
         /// </exception>
-        void Process<TMessage>(TMessage message, Action<TMessage> action, CancellationToken? token, IProgressReporter reporter) where TMessage : class;
+        void Process<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token, IProgressReporter reporter) where TMessage : class;
     }
 }
