@@ -80,7 +80,7 @@ namespace System.ComponentModel.Messaging.Client
         {
             IsValidChanged.Raise(sender, e);
 
-            OnPropertyChanged(() => IsValid);
+            NotifyOfPropertyChange(() => IsValid);
         }
 
         /// <inheritdoc />

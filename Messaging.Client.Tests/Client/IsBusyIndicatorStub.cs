@@ -15,7 +15,7 @@
         {
             IsBusyChanged.Raise(this);
 
-            OnPropertyChanged(() => IsBusy);
+            NotifyOfPropertyChange(() => IsBusy);
         }
 
         public bool IsBusy

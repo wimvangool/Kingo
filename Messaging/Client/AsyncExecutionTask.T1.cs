@@ -108,7 +108,7 @@ namespace System.ComponentModel.Messaging.Client
         {
             _isBusyChangedHandlers.Raise(this);
 
-            OnPropertyChanged("IsBusy");
+            NotifyOfPropertyChange("IsBusy");
         }
 
         bool IIsBusyIndicator.IsBusy
@@ -131,7 +131,7 @@ namespace System.ComponentModel.Messaging.Client
             StatusChanged.Raise(this);
 
             OnIsBusyChanged();
-            OnPropertyChanged(() => Status);
+            NotifyOfPropertyChange(() => Status);
         }
 
         /// <inheritdoc />
@@ -163,7 +163,7 @@ namespace System.ComponentModel.Messaging.Client
         {
             ProgressChanged.Raise(this);
 
-            OnPropertyChanged(() => Progress);
+            NotifyOfPropertyChange(() => Progress);
         }
 
         /// <inheritdoc />

@@ -291,7 +291,7 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         protected virtual void OnIsValidChanged()
         {
-            OnPropertyChanged("IsValid");
+            NotifyOfPropertyChange("IsValid");
             OnCanExecuteChanged();
         }
 
@@ -326,8 +326,8 @@ namespace System.ComponentModel.Messaging.Client
         {
             IsExecutingChanged.Raise(this);
 
-            OnPropertyChanged(() => IsExecuting);
-            OnPropertyChanged("IsBusy");
+            NotifyOfPropertyChange(() => IsExecuting);
+            NotifyOfPropertyChange("IsBusy");
 
             if (AllowParrallelExecutions)
             {

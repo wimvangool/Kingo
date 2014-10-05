@@ -15,7 +15,7 @@
         {
             IsValidChanged.Raise(this);
 
-            OnPropertyChanged(() => IsValid);
+            NotifyOfPropertyChange(() => IsValid);
         }
 
         public bool IsValid

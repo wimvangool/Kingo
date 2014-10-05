@@ -13,9 +13,9 @@ namespace System.ComponentModel.Messaging
         /// <summary>
         /// Raises the <see cref="PropertyChanged" /> event, signalling all properties have changed.
         /// </summary>
-        protected virtual void OnAllPropertiesChanged()
+        protected virtual void NotifyOfPropertyChange()
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(string.Empty));
+            NotifyOfPropertyChange(new PropertyChangedEventArgs(string.Empty));
         }
 
         /// <summary>
@@ -26,9 +26,9 @@ namespace System.ComponentModel.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="property"/> is <c>null</c>.
         /// </exception>
-        protected void OnPropertyChanged<TProperty>(Expression<Func<TProperty>> property)
+        protected void NotifyOfPropertyChange<TProperty>(Expression<Func<TProperty>> property)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(GetPropertyNameOf(property)));
+            NotifyOfPropertyChange(new PropertyChangedEventArgs(GetPropertyNameOf(property)));
         }
 
         /// <summary>
@@ -39,16 +39,16 @@ namespace System.ComponentModel.Messaging
         /// A <c>null </c> or <c>string.Empty</c> value for <paramref name="propertyName"/> indicates that
         /// all properties have changed.
         /// </remarks>
-        protected void OnPropertyChanged(string propertyName)
+        protected void NotifyOfPropertyChange(string propertyName)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            NotifyOfPropertyChange(new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
         /// Raises the <see cref="PropertyChanged" /> event.
         /// </summary>
         /// <param name="e">Arguments that contain the name of the property that has changed.</param>
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        protected virtual void NotifyOfPropertyChange(PropertyChangedEventArgs e)
         {
             PropertyChanged.Raise(this, e);
         }

@@ -77,7 +77,7 @@ namespace System.ComponentModel.Messaging.Client
         {
             IsBusyChanged.Raise(sender, e);
 
-            OnPropertyChanged(() => IsBusy);
+            NotifyOfPropertyChange(() => IsBusy);
         }
 
         /// <inheritdoc />

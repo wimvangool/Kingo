@@ -96,7 +96,7 @@ namespace System.ComponentModel.Messaging.Client
         {
             HasChangesChanged.Raise(sender, e);
 
-            OnPropertyChanged(() => HasChanges);
+            NotifyOfPropertyChange(() => HasChanges);
         }
 
         /// <inheritdoc />
@@ -166,7 +166,7 @@ namespace System.ComponentModel.Messaging.Client
         {
             IsValidChanged.Raise(sender, e);
 
-            OnPropertyChanged(() => IsValid);
+            NotifyOfPropertyChange(() => IsValid);
         }
 
         /// <inheritdoc />

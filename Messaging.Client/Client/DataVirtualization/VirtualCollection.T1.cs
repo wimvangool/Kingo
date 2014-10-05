@@ -74,7 +74,7 @@ namespace System.ComponentModel.Messaging.Client.DataVirtualization
         /// <remarks>This method is invoked when the count has been (re)loaded.</remarks>
         protected virtual void HandleCountLoaded(object sender, CountLoadedEventArgs e)
         {
-            OnPropertyChanged(() => Count);
+            NotifyOfPropertyChange(() => Count);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 

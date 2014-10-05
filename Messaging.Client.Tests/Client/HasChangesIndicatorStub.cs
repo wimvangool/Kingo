@@ -15,7 +15,7 @@
         {
             HasChangesChanged.Raise(this);
 
-            OnPropertyChanged(() => HasChanges);
+            NotifyOfPropertyChange(() => HasChanges);
         }
 
         public bool HasChanges

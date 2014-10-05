@@ -162,7 +162,7 @@ namespace System.ComponentModel.Messaging
         {
             HasChangesChanged.Raise(this);
 
-            OnPropertyChanged(() => HasChanges);
+            NotifyOfPropertyChange(() => HasChanges);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace System.ComponentModel.Messaging
         /// <remarks>
         /// In addition to the base implementation, this method also marks the message as changed and triggers validation.
         /// </remarks>
-        protected override void OnAllPropertiesChanged()
+        protected override void NotifyOfPropertyChange()
         {
             OnPropertyChanged(string.Empty, MessageChangedOption.MarkAsChangedAndValidate);
         }
@@ -211,7 +211,7 @@ namespace System.ComponentModel.Messaging
         /// </remarks>
         protected void OnPropertyChanged(string propertyName, MessageChangedOption option)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            NotifyOfPropertyChange(new PropertyChangedEventArgs(propertyName));
             
             switch (option)
             {
