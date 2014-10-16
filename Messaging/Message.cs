@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Messaging.Resources;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace System.ComponentModel.Messaging
@@ -65,6 +66,39 @@ namespace System.ComponentModel.Messaging
         /// set to <c>true</c>.
         /// </returns>
         public abstract Message Copy(bool makeReadOnly);
+
+        /// <summary>
+        /// Creates and returns a copy of the specified <paramref name="message"/>.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="message">The message to copy.</param>
+        /// <param name="makeReadOnly">Indicates whether or not the copy should be readonly.</param>
+        /// <returns>
+        /// <c>null</c> if <paramref name="message"/> is <c>null</c>; otherwise, a copy of the message.
+        /// </returns>
+        protected static TMessage Copy<TMessage>(TMessage message, bool makeReadOnly) where TMessage : class, IMessage
+        {
+            return message == null ? null : (TMessage) message.Copy(makeReadOnly);
+        }
+
+        /// <summary>
+        /// Creates and returns a deep copy of the specified collection of messages.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the messages in the collection.</typeparam>
+        /// <param name="messages">The collection to copy.</param>
+        /// <param name="makeReadOnly">Indicates whether or not the copy should be readonly.</param>
+        /// <returns>
+        /// <c>null</c> if <paramref name="messages"/> is <c>null</c>; otherwise, a new collection containing
+        /// copies of all elements of <paramref name="messages"/>.
+        /// </returns>
+        protected static IList<TMessage> Copy<TMessage>(IEnumerable<TMessage> messages, bool makeReadOnly) where TMessage : IMessage
+        {
+            if (messages == null)
+            {
+                return null;
+            }
+            return messages.Select(message => (TMessage) message.Copy(makeReadOnly)).ToArray();
+        }
 
         #endregion
 
@@ -173,7 +207,7 @@ namespace System.ComponentModel.Messaging
         /// </remarks>
         protected override void NotifyOfPropertyChange()
         {
-            OnPropertyChanged(string.Empty, MessageChangedOption.MarkAsChangedAndValidate);
+            NotifyOfPropertyChange(string.Empty, MessageChangedOption.MarkAsChangedAndValidate);
         }
 
         /// <summary>
@@ -192,9 +226,9 @@ namespace System.ComponentModel.Messaging
         /// This message if readonly and the <paramref name="option"/> parameter indicates that this message
         /// must be marked as changed.
         /// </exception>
-        protected void OnPropertyChanged<TProperty>(Expression<Func<TProperty>> property, MessageChangedOption option)
+        protected void NotifyOfPropertyChange<TProperty>(Expression<Func<TProperty>> property, MessageChangedOption option)
         {
-            OnPropertyChanged(GetPropertyNameOf(property), option);            
+            NotifyOfPropertyChange(GetPropertyNameOf(property), option);            
         }
 
         /// <summary>
@@ -209,7 +243,7 @@ namespace System.ComponentModel.Messaging
         /// A <c>null </c> or <c>string.Empty</c> value for <paramref name="propertyName"/> indicates that
         /// all properties have changed.
         /// </remarks>
-        protected void OnPropertyChanged(string propertyName, MessageChangedOption option)
+        protected void NotifyOfPropertyChange(string propertyName, MessageChangedOption option)
         {
             NotifyOfPropertyChange(new PropertyChangedEventArgs(propertyName));
             
@@ -283,7 +317,7 @@ namespace System.ComponentModel.Messaging
         {
             IsValidChanged.Raise(this);
 
-            OnPropertyChanged(() => IsValid, MessageChangedOption.None);
+            NotifyOfPropertyChange(() => IsValid, MessageChangedOption.None);
         }
 
         /// <inheritdoc />

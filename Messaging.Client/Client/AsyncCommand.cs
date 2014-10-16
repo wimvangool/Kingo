@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Messaging.Client
+﻿namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IRequestDispatcherCommand" /> interface.

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+﻿namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
     /// <summary>
     /// Represents the state of a <see cref="VirtualCollectionItem{T}" />.

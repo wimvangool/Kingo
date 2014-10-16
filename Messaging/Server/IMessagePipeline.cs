@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Messaging.Server
 {
     /// <summary>
     /// When implemented by a class, represents a pipeline a message goes through before it is processed or executed.

@@ -14,14 +14,14 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResponse Execute(Guid requestId, ObjectCache cache)
+        public override TResponse Execute(Guid requestId)
         {                        
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
             TResponse result;
 
             try
             {                
-                result = ExecuteQuery(cache, null, null);                
+                result = ExecuteQuery(null, null);                
             }
             catch (Exception exception)
             {
@@ -34,14 +34,14 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public override Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter)
         {                       
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
             TResponse result;
 
-            if (TryGetFromCache(cache, GetType(), out result))
+            if (TryGetFromCache(GetType(), out result))
             {
                 OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, result));
 
@@ -53,7 +53,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                   
                     try
                     {                        
-                        result = ExecuteQuery(cache, token, reporter);                                                
+                        result = ExecuteQuery(token, reporter);                                                
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -87,15 +87,15 @@ namespace System.ComponentModel.Messaging.Client
             return Task<TResponse>.Factory.StartNew(query);
         }
 
-        private TResponse ExecuteQuery(ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        private TResponse ExecuteQuery(CancellationToken? token, IProgressReporter reporter)
         {
             CacheItemPolicy policy;
 
-            if (cache == null || !TryCreateCacheItemPolicy(out policy))
+            if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return Execute(token, reporter);
+                return (TResponse) Execute(token, reporter).Copy(false);
             }
-            return cache.GetOrAdd(GetType(), () => Execute(token, reporter), policy);
+            return (TResponse) Cache.GetOrAdd(GetType(), () => Execute(token, reporter), policy).Copy(false);
         }        
 
         /// <summary>

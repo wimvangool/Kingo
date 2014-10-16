@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Messaging.Server;
+﻿using System.ComponentModel.Messaging.Server;
 using System.Runtime.Caching;
 
 namespace System.ComponentModel.Messaging.Client

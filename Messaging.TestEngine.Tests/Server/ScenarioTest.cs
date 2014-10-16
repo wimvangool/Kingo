@@ -31,7 +31,7 @@ namespace System.ComponentModel.Messaging.Server
                 get { return null; }
             }
 
-            protected override IUnitTestFramework UnitTestFramework
+            protected override IUnitTestFramework Framework
             {
                 get { return MSTestFramework.Instance; }
             }

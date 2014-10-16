@@ -32,7 +32,7 @@ namespace System.ComponentModel.Messaging
                     {
                         _irrelevantValue = value;
 
-                        OnPropertyChanged(() => IrrelevantValue, MessageChangedOption.None);
+                        NotifyOfPropertyChange(() => IrrelevantValue, MessageChangedOption.None);
                     }
                 }
             }
@@ -46,7 +46,7 @@ namespace System.ComponentModel.Messaging
                     {
                         _customerId = value;
 
-                        OnPropertyChanged(() => CustomerId, MessageChangedOption.MarkAsChanged);
+                        NotifyOfPropertyChange(() => CustomerId, MessageChangedOption.MarkAsChanged);
                     }
                 }
             }
@@ -61,7 +61,7 @@ namespace System.ComponentModel.Messaging
                     {
                         _customerName = value;
 
-                        OnPropertyChanged(() => CustomerName, MessageChangedOption.MarkAsChangedAndValidate);
+                        NotifyOfPropertyChange(() => CustomerName, MessageChangedOption.MarkAsChangedAndValidate);
                     }
                 }
             }

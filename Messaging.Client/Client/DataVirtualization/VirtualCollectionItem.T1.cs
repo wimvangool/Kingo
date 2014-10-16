@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+﻿namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
 	/// <summary>
 	/// Represents an item of a <see cref="VirtualCollection{T}" />.

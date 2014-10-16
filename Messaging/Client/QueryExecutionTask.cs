@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Messaging.Server;
-using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,27 +9,22 @@ namespace System.ComponentModel.Messaging.Client
     /// </summary>
     public class QueryExecutionTask<TResponse> : AsyncExecutionTask<IQueryDispatcher<TResponse>> where TResponse : IMessage
     {
-        private readonly IQueryDispatcher<TResponse> _dispatcher;
-        private readonly ObjectCache _cache;
+        private readonly IQueryDispatcher<TResponse> _dispatcher;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryExecutionTask{T}" /> class.
         /// </summary>
-        /// <param name="dispatcher">The dispatcher that is used to execute the query.</param>
-        /// <param name="cache">
-        /// Optional cache that is supplied to the query to store and/or retrieve its result from.
-        /// </param>
+        /// <param name="dispatcher">The dispatcher that is used to execute the query.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public QueryExecutionTask(IQueryDispatcher<TResponse> dispatcher, ObjectCache cache)
+        public QueryExecutionTask(IQueryDispatcher<TResponse> dispatcher)
         {
             if (dispatcher == null)
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            _dispatcher = dispatcher;
-            _cache = cache;
+            _dispatcher = dispatcher;           
         }
 
         /// <inheritdoc />
@@ -51,7 +45,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <inheritdoc />
         protected override void Execute(CancellationToken token, IProgressReporter reporter)
         {
-            Task = _dispatcher.ExecuteAsync(RequestId, _cache, token, reporter);
+            Task = _dispatcher.ExecuteAsync(RequestId, token, reporter);
         }
     }
 }

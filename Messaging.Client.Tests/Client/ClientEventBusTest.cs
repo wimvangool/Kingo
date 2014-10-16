@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Messaging.Server;
-using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Messaging.Client

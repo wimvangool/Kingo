@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Messaging.Resources;
-using System.Threading;
+﻿using System.Threading;
 
 namespace System.ComponentModel.Messaging.Server
 {

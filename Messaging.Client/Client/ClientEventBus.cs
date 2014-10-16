@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Messaging.Server;
 using System.Threading;
-using System.Transactions;
 
 namespace System.ComponentModel.Messaging.Client
 {

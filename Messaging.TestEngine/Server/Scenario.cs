@@ -69,7 +69,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <summary>
         /// Returns the <see cref="IUnitTestFramework" /> that is used to run this scenario.
         /// </summary>
-        protected abstract IUnitTestFramework UnitTestFramework
+        protected abstract IUnitTestFramework Framework
         {
             get;
         }
@@ -119,7 +119,7 @@ namespace System.ComponentModel.Messaging.Server
 
         void IScenario.Fail(string message, params object[] parameters)
         {
-            UnitTestFramework.FailTest(message, parameters);
+            Framework.FailTest(message, parameters);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace System.ComponentModel.Messaging.Server
         /// </summary>
         protected void Fail()
         {
-            UnitTestFramework.FailTest();
+            Framework.FailTest();
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <param name="message">The reason why the scenario failed.</param>
         protected void Fail(string message)
         {
-            UnitTestFramework.FailTest(message);
+            Framework.FailTest(message);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <param name="parameters">An optional array of parameters to include in the message.</param>
         protected void Fail(string message, params object[] parameters)
         {
-            UnitTestFramework.FailTest(message, parameters);
+            Framework.FailTest(message, parameters);
         }
 
         internal void SaveDomainEvent(object domainEvent)

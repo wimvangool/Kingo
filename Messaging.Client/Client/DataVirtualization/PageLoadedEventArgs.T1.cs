@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+﻿namespace System.ComponentModel.Messaging.Client.DataVirtualization
 {
     /// <summary>
     /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.PageLoaded" /> event.

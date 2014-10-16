@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Messaging.Resources;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 
 namespace System.ComponentModel.Messaging.Server
 {

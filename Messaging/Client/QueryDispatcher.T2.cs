@@ -72,7 +72,7 @@ namespace System.ComponentModel.Messaging.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResponse Execute(Guid requestId, ObjectCache cache)
+        public override TResponse Execute(Guid requestId)
         {                        
             var message = (TRequest) Message.Copy(true);
 
@@ -81,7 +81,7 @@ namespace System.ComponentModel.Messaging.Client
 
             try
             {                
-                result = ExecuteQuery(message, cache, null, null);                
+                result = ExecuteQuery(message, null, null);                
             }
             catch (Exception exception)
             {
@@ -94,7 +94,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public override Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter)
         {                        
             var message = (TRequest) Message.Copy(true);
             var context = SynchronizationContext.Current;
@@ -102,7 +102,7 @@ namespace System.ComponentModel.Messaging.Client
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
             TResponse result;
             
-            if (TryGetFromCache(cache, message, out result))
+            if (TryGetFromCache(message, out result))
             {
                 OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, message, result));
 
@@ -114,7 +114,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                   
                     try
                     {                        
-                        result = ExecuteQuery(message, cache, token, reporter);                        
+                        result = ExecuteQuery(message, token, reporter);                        
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -148,15 +148,15 @@ namespace System.ComponentModel.Messaging.Client
             return Task<TResponse>.Factory.StartNew(query);
         }
 
-        private TResponse ExecuteQuery(TRequest message, ObjectCache cache, CancellationToken? token, IProgressReporter reporter)
+        private TResponse ExecuteQuery(TRequest message, CancellationToken? token, IProgressReporter reporter)
         {
             CacheItemPolicy policy;
 
-            if (cache == null || !TryCreateCacheItemPolicy(out policy))
+            if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return Execute(message, token, reporter);
+                return (TResponse) Execute(message, token, reporter).Copy(false);
             }
-            return cache.GetOrAdd(message, () => Execute(message, token, reporter), policy);
+            return (TResponse) Cache.GetOrAdd(message, () => Execute(message, token, reporter), policy).Copy(false);
         }        
 
         /// <summary>

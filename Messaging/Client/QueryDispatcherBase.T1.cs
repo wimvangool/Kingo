@@ -11,7 +11,7 @@ namespace System.ComponentModel.Messaging.Client
     /// </summary>
     public abstract class QueryDispatcherBase<TResponse> : RequestDispatcher, IQueryDispatcher<TResponse> where TResponse : IMessage
     {
-        internal QueryDispatcherBase() { }
+        internal QueryDispatcherBase() { }        
 
         #region [====== ExecutionSucceeded ======]
 
@@ -48,34 +48,30 @@ namespace System.ComponentModel.Messaging.Client
 
         #region [====== Execution ======]
 
-        /// <inheritdoc />
-        public TResponse Execute(Guid requestId)
+        /// <summary>
+        /// Returns the cache that is used to store the results of this query.
+        /// </summary>
+        protected virtual ObjectCache Cache
         {
-            return Execute(requestId, null);
+            get { return null; }
         }
 
         /// <inheritdoc />
-        public abstract TResponse Execute(Guid executionId, ObjectCache cache);        
+        public abstract TResponse Execute(Guid requestId);            
 
         /// <inheritdoc />
         public Task<TResponse> ExecuteAsync(Guid requestId)
         {
-            return ExecuteAsync(requestId, null, null, null);
-        }        
+            return ExecuteAsync(requestId, null, null);
+        }                
 
         /// <inheritdoc />
-        public Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache)
-        {
-            return ExecuteAsync(requestId, cache, null, null);
-        }
-
-        /// <inheritdoc />
-        public abstract Task<TResponse> ExecuteAsync(Guid requestId, ObjectCache cache, CancellationToken? token, IProgressReporter reporter);
+        public abstract Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter);
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()
         {
-            return new QueryExecutionTask<TResponse>(this, null);
+            return new QueryExecutionTask<TResponse>(this);
         }
 
         /// <summary>
@@ -101,9 +97,8 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <summary>
-        /// Attempts to retrieve a cached value from the cache, if <paramref name="cache"/> is not <c>null</c>.
-        /// </summary>        
-        /// <param name="cache">The cache to retrieve the value from.</param>
+        /// Attempts to retrieve a cached value from the cache, if <see cref="Cache" /> is not <c>null</c>.
+        /// </summary>                
         /// <param name="key">The key of the cached value.</param>        
         /// <param name="result">
         /// If the method returns <c>true</c>, this parameter will contain the cached value after the method completes;
@@ -116,18 +111,18 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="InvalidCastException">
         /// The value retrieved from the cache could not be cast to <typeparamref name="TResponse"/>.
         /// </exception>
-        protected static bool TryGetFromCache(ObjectCache cache, object key, out TResponse result)
+        protected bool TryGetFromCache(object key, out TResponse result)
         {
             if (key == null)
             {
                 throw new ArgumentNullException("key");
             }
-            if (cache == null)
+            if (Cache == null)
             {
                 result = default(TResponse);
                 return false;
             }
-            return cache.TryGetValue(key, out result);
+            return Cache.TryGetValue(key, out result);
         }
 
         /// <summary>
