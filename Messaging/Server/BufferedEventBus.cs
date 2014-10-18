@@ -11,12 +11,13 @@ namespace System.ComponentModel.Messaging.Server
     {        
         private readonly List<IEventBuffer> _buffer;
         private readonly IDomainEventBus _domainEventBus;
-        private bool _hasBeenFlushed;
+        private readonly UnitOfWorkContext _context;
 
-        internal BufferedEventBus(IDomainEventBus domainEventBus)
+        internal BufferedEventBus(IDomainEventBus domainEventBus, UnitOfWorkContext context)
         {                        
             _buffer = new List<IEventBuffer>();
             _domainEventBus = domainEventBus;
+            _context = context;
         }
 
         Guid IUnitOfWork.FlushGroupId
@@ -30,17 +31,14 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         void IDomainEventBus.Publish<TMessage>(TMessage message)
-        {
-            if (_hasBeenFlushed)
-            {
-                throw NewBufferHasAlreadyBeenFlushedException(typeof(TMessage));
-            }
+        {            
             _buffer.Add(new EventBuffer<TMessage>(_domainEventBus, message));
+            _context.EnlistUnitOfWork(this);
         }
 
         bool IUnitOfWork.RequiresFlush()
         {
-            return !_hasBeenFlushed && _buffer.Count > 0;
+            return _buffer.Count > 0;
         }
 
         void IUnitOfWork.Flush()
@@ -48,8 +46,7 @@ namespace System.ComponentModel.Messaging.Server
             foreach (var bufferedEvent in _buffer)
             {
                 bufferedEvent.Flush();
-            }
-            _hasBeenFlushed = true;
+            }            
             _buffer.Clear();            
         }
 
@@ -80,13 +77,6 @@ namespace System.ComponentModel.Messaging.Server
             var messageFormat = ExceptionMessages.BufferedEventBus_NoBusAvailable;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, messageType.Name);
             return new InvalidOperationException(message);
-        }
-
-        private static Exception NewBufferHasAlreadyBeenFlushedException(Type messageType)
-        {
-            var messageFormat = ExceptionMessages.BufferedEventBus_BusAlreadyFlushed;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, messageType.Name);
-            return new InvalidOperationException(message);
-        }
+        }        
     }
 }

@@ -126,9 +126,6 @@
   <data name="AsyncExecutionTask_TaskAlreadyStarted" xml:space="preserve">
     <value>Cannot execute this task because it was already executed or canceled.</value>
   </data>
-  <data name="BufferedEventBus_BusAlreadyFlushed" xml:space="preserve">
-    <value>Cannot publish event of type '{0}' because the bus has already been flushed.</value>
-  </data>
   <data name="BufferedEventBus_NoBusAvailable" xml:space="preserve">
     <value>Cannot publish event of type '{0}' because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope.</value>
   </data>

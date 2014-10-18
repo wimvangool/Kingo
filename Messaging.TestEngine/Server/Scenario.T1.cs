@@ -28,7 +28,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <summary>
         /// Returns the last message that was handled in the When-phase.
         /// </summary>
-        protected TMessage Message
+        public TMessage Message
         {
             get;
             private set;

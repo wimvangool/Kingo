@@ -42,10 +42,9 @@ namespace System.ComponentModel.Messaging.Server
 
         internal BufferedEventBus PushBus(IDomainEventBus domainEventBus)
         {
-            var bufferedEventBus = new BufferedEventBus(domainEventBus);
+            var bufferedEventBus = new BufferedEventBus(domainEventBus, this);
 
-            _bufferedEventBuses.Push(bufferedEventBus);
-            _flushController.Enlist(bufferedEventBus);
+            _bufferedEventBuses.Push(bufferedEventBus);            
 
             return bufferedEventBus;
         }

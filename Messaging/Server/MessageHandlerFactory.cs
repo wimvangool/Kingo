@@ -71,30 +71,21 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         /// <summary>
-        /// Registers all message-handler types that are found in the assembly with the specified <paramref name="assemblyName"/>.
+        /// Registers all message-handler types that are found in the assembly.
         /// </summary>
-        /// <param name="assemblyName">Name of the assembly to scan for message-handlers.</param>
+        /// <param name="assemblyFile">Name of the assembly to scan for message-handlers.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="assemblyName"/> is <c>null</c>.
+        /// <paramref name="assemblyFile"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="assemblyName"/> is not a valid path to an existing assembly.
+        /// <paramref name="assemblyFile"/> is not a valid path to an existing assembly.
         /// </exception>
-        public void RegisterMessageHandlersFrom(string assemblyName)
+        /// <exception cref="IOException">
+        /// The specified <paramref name="assemblyFile"/> could not be found or loaded.
+        /// </exception>
+        public void RegisterMessageHandlersFrom(string assemblyFile)
         {
-            if (assemblyName == null)
-            {
-                throw new ArgumentNullException("assemblyName");
-            }
-            if (Path.IsPathRooted(assemblyName))
-            {
-                RegisterMessageHandlersFrom(Assembly.LoadFrom(assemblyName));
-                return;
-            }
-            string relativeRoot = Assembly.GetCallingAssembly().Location;
-            string assemblyLocation = Path.Combine(relativeRoot, assemblyName);
-
-            RegisterMessageHandlersFrom(Assembly.LoadFrom(assemblyLocation));
+            RegisterMessageHandlersFrom(Assembly.LoadFrom(assemblyFile));
         }
 
         /// <summary>
@@ -103,7 +94,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <param name="assembly">The assembly to scan for message-handlers.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assembly"/> is <c>null</c>.
-        /// </exception>
+        /// </exception>        
         public void RegisterMessageHandlersFrom(Assembly assembly)
         {
             RegisterMessageHandlersFrom(assembly, null);
