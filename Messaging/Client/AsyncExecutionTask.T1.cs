@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Messaging.Resources;
-using System.ComponentModel.Messaging.Server;
 using System.Threading;
 
 namespace System.ComponentModel.Messaging.Client

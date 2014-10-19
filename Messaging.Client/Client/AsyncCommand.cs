@@ -181,6 +181,27 @@
         /// <summary>
         /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
+        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>    
+        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>    
+        /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
+        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dispatcher"/> is <c>null</c>.
+        /// </exception>
+        public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher)
+            where TRequest : class, IMessage
+            where TResponse : IMessage
+        {
+            if (dispatcher == null)
+            {
+                throw new ArgumentNullException("dispatcher");
+            }
+            return new AsyncCommand(dispatcher, dispatcher.Message);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// </summary>
         /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>      
         /// <typeparam name="TResponse">Type of the result of the query.</typeparam>  
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
@@ -198,27 +219,6 @@
                 throw new ArgumentNullException("dispatcher");
             }
             return new AsyncCommand(dispatcher, dispatcher.Message, options);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
-        /// </summary>
-        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>    
-        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>    
-        /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dispatcher"/> is <c>null</c>.
-        /// </exception>
-        public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher)
-            where TRequest : class, IMessage
-            where TResponse : IMessage
-        {
-            if (dispatcher == null)
-            {
-                throw new ArgumentNullException("dispatcher");
-            }
-            return new AsyncCommand(dispatcher, dispatcher.Message);
         }
 
         #endregion

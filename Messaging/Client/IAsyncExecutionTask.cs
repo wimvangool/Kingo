@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Messaging.Server;
-
-namespace System.ComponentModel.Messaging.Client
+﻿namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
     /// Represents a task that encapsulates the asynchronous execution of a request.
