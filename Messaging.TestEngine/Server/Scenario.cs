@@ -114,7 +114,7 @@ namespace System.ComponentModel.Messaging.Server
 
         void IScenario.Fail(string message)
         {
-            
+            Framework.FailTest(message);
         }
 
         void IScenario.Fail(string message, params object[] parameters)

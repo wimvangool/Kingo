@@ -159,6 +159,8 @@ namespace System.ComponentModel.Messaging.Server
                 _selectedAggregates.Add(aggregate);
 
                 UnitOfWorkContext.Enlist(this);
+
+                return true;
             }
             aggregate = null;
             return false;
