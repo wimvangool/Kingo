@@ -53,11 +53,11 @@ namespace System.ComponentModel.Messaging.Client
         /// <inheritdoc />
         public Task ExecuteAsync(Guid requestId)
         {
-            return ExecuteAsync(requestId, null, null);
+            return ExecuteAsync(requestId, null);
         }
 
         /// <inheritdoc />
-        public abstract Task ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter);
+        public abstract Task ExecuteAsync(Guid requestId, CancellationToken? token);
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()

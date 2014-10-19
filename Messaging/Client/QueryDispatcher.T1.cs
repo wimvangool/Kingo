@@ -21,7 +21,7 @@ namespace System.ComponentModel.Messaging.Client
 
             try
             {                
-                result = ExecuteQuery(null, null);                
+                result = ExecuteQuery(null);                
             }
             catch (Exception exception)
             {
@@ -34,7 +34,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token)
         {                       
             var context = SynchronizationContext.Current;
 
@@ -53,7 +53,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                   
                     try
                     {                        
-                        result = ExecuteQuery(token, reporter);                                                
+                        result = ExecuteQuery(token);                                                
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -87,15 +87,15 @@ namespace System.ComponentModel.Messaging.Client
             return Task<TResponse>.Factory.StartNew(query);
         }
 
-        private TResponse ExecuteQuery(CancellationToken? token, IProgressReporter reporter)
+        private TResponse ExecuteQuery(CancellationToken? token)
         {
             CacheItemPolicy policy;
 
             if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return (TResponse) Execute(token, reporter).Copy(false);
+                return (TResponse) Execute(token).Copy(false);
             }
-            return (TResponse) Cache.GetOrAdd(GetType(), () => Execute(token, reporter), policy).Copy(false);
+            return (TResponse) Cache.GetOrAdd(GetType(), () => Execute(token), policy).Copy(false);
         }        
 
         /// <summary>
@@ -103,15 +103,12 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>        
         /// <param name="token">
         /// Token that can be used to cancel the task.
-        /// </param>
-        /// <param name="reporter">
-        /// Reporter that can be used to report the progress.
-        /// </param>
+        /// </param>        
         /// <returns>The result of this query.</returns>       
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResponse Execute(CancellationToken? token, IProgressReporter reporter);
+        protected abstract TResponse Execute(CancellationToken? token);
 
         #endregion        
     }

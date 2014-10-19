@@ -81,7 +81,7 @@ namespace System.ComponentModel.Messaging.Client
 
             try
             {                
-                result = ExecuteQuery(message, null, null);                
+                result = ExecuteQuery(message, null);                
             }
             catch (Exception exception)
             {
@@ -94,7 +94,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter)
+        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token)
         {                        
             var message = (TRequest) Message.Copy(true);
             var context = SynchronizationContext.Current;
@@ -114,7 +114,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                   
                     try
                     {                        
-                        result = ExecuteQuery(message, token, reporter);                        
+                        result = ExecuteQuery(message, token);                        
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -148,15 +148,15 @@ namespace System.ComponentModel.Messaging.Client
             return Task<TResponse>.Factory.StartNew(query);
         }
 
-        private TResponse ExecuteQuery(TRequest message, CancellationToken? token, IProgressReporter reporter)
+        private TResponse ExecuteQuery(TRequest message, CancellationToken? token)
         {
             CacheItemPolicy policy;
 
             if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return (TResponse) Execute(message, token, reporter).Copy(false);
+                return (TResponse) Execute(message, token).Copy(false);
             }
-            return (TResponse) Cache.GetOrAdd(message, () => Execute(message, token, reporter), policy).Copy(false);
+            return (TResponse) Cache.GetOrAdd(message, () => Execute(message, token), policy).Copy(false);
         }        
 
         /// <summary>
@@ -165,17 +165,14 @@ namespace System.ComponentModel.Messaging.Client
         /// <param name="message">The execution-parameter.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this query.
-        /// </param>              
-        /// <param name="reporter">
-        /// Reporter that can be used to report the progress.
-        /// </param>  
+        /// </param>                      
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>        
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResponse Execute(TRequest message, CancellationToken? token, IProgressReporter reporter);                        
+        protected abstract TResponse Execute(TRequest message, CancellationToken? token);                        
 
         #endregion
     }

@@ -26,20 +26,7 @@ namespace System.ComponentModel.Messaging.Client
         AsyncExecutionTaskStatus Status
         {
             get;
-        }
-
-        /// <summary>
-        /// Occurs when <see cref="Progress" /> changes.
-        /// </summary>
-        event EventHandler ProgressChanged;
-
-        /// <summary>
-        /// Returns the progress the request has made so far.
-        /// </summary>
-        Progress Progress
-        {
-            get;
-        }
+        }              
 
         /// <summary>
         /// Executes this task.

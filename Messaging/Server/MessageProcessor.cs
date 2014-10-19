@@ -8,7 +8,7 @@ namespace System.ComponentModel.Messaging.Server
     public abstract class MessageProcessor : IMessageProcessor
     {
         private readonly IMessageProcessorBus _domainEventBus;                
-        private readonly ThreadLocal<UseCase> _currentUseCase;                            
+        private readonly ThreadLocal<MessagePointer> _currentMessage;                            
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
@@ -16,7 +16,7 @@ namespace System.ComponentModel.Messaging.Server
         protected MessageProcessor()
         {
             _domainEventBus = new MessageProcessorBus(this);
-            _currentUseCase = new ThreadLocal<UseCase>();
+            _currentMessage = new ThreadLocal<MessagePointer>();
         }        
 
         /// <inheritdoc />
@@ -26,10 +26,10 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         /// <inheritdoc />
-        public UseCase CurrentUseCase
+        public MessagePointer Message
         {
-            get { return _currentUseCase.Value; }
-            private set { _currentUseCase.Value = value; }
+            get { return _currentMessage.Value; }
+            private set { _currentMessage.Value = value; }
         }
 
         /// <summary>
@@ -43,17 +43,17 @@ namespace System.ComponentModel.Messaging.Server
         /// <inheritdoc />
         public void Process<TMessage>(TMessage message) where TMessage : class
         {
-            Process(message, null, null);
+            Process(message, null as CancellationToken?);
         }
 
         /// <inheritdoc />
-        public virtual void Process<TMessage>(TMessage message, CancellationToken? token, IProgressReporter reporter) where TMessage : class
+        public virtual void Process<TMessage>(TMessage message, CancellationToken? token) where TMessage : class
         {            
-            BeginUseCase(message, token, reporter);
+            PushMessage(message, token);
 
             try
             {                
-                CurrentUseCase.ThrowIfCancellationRequested();
+                Message.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
@@ -61,91 +61,91 @@ namespace System.ComponentModel.Messaging.Server
                     {
                         handler.Handle(message);
 
-                        CurrentUseCase.ThrowIfCancellationRequested();
+                        Message.ThrowIfCancellationRequested();
                     }
                     scope.Complete();
                 }
             }
             finally
             {
-                EndMessage();
+                PopMessage();
             }            
         }
 
         /// <inheritdoc />
         public void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class
         {
-            Process(message, handler, null, null);
+            Process(message, handler, null);
         }
 
         /// <inheritdoc />
-        public virtual void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token, IProgressReporter reporter) where TMessage : class
+        public virtual void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class
         {
             if (handler == null)
             {
                 throw new ArgumentNullException("handler");
             }
-            BeginUseCase(message, token, reporter);
+            PushMessage(message, token);
 
             try
             {
-                CurrentUseCase.ThrowIfCancellationRequested();
+                Message.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
                     handler.Handle(message);
 
-                    CurrentUseCase.ThrowIfCancellationRequested();
+                    Message.ThrowIfCancellationRequested();
                     scope.Complete();
                 }
             }
             finally
             {
-                EndMessage();
+                PopMessage();
             }            
         }
 
         /// <inheritdoc />
         public void Process<TMessage>(TMessage message, Action<TMessage> action) where TMessage : class
         {
-            Process(message, action, null, null);
+            Process(message, action, null);
         }
 
         /// <inheritdoc />
-        public virtual void Process<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token, IProgressReporter reporter) where TMessage : class
+        public virtual void Process<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token) where TMessage : class
         {
             if (handler == null)
             {
                 throw new ArgumentNullException("handler");
             }
-            BeginUseCase(message, token, reporter);
+            PushMessage(message, token);
 
             try
             {
-                CurrentUseCase.ThrowIfCancellationRequested();
+                Message.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
                     handler.Invoke(message);
 
-                    CurrentUseCase.ThrowIfCancellationRequested();
+                    Message.ThrowIfCancellationRequested();
                     scope.Complete();
                 }
             }
             finally
             {
-                EndMessage();
+                PopMessage();
             }            
         }
 
-        private void BeginUseCase(object message, CancellationToken? token, IProgressReporter reporter)
+        private void PushMessage(object message, CancellationToken? token)
         {
-            CurrentUseCase = CurrentUseCase == null ? new UseCase(message, token, reporter) : CurrentUseCase.CreateChildUseCase(message, token, reporter);            
+            Message = Message == null ? new MessagePointer(message, token) : Message.CreateChildPointer(message, token);            
         }
 
-        private void EndMessage()
+        private void PopMessage()
         {
-            CurrentUseCase = CurrentUseCase.ParentUseCase;
+            Message = Message.ParentPointer;
         }               
     }
 }

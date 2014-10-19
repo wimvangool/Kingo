@@ -32,11 +32,8 @@ namespace System.ComponentModel.Messaging.Client
         /// <param name="requestId">Identifier of the request.</param>         
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this command.
-        /// </param>
-        /// <param name="reporter">
-        /// Optional reporter that can be used to report back the progress the task has made.
-        /// </param>
+        /// </param>        
         /// <returns>The task that is responsible for executing this command.</returns>        
-        Task ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter);
+        Task ExecuteAsync(Guid requestId, CancellationToken? token);
     }
 }

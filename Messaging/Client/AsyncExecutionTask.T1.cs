@@ -11,18 +11,14 @@ namespace System.ComponentModel.Messaging.Client
     public abstract class AsyncExecutionTask<TDispatcher> : PropertyChangedBase, IAsyncExecutionTask where TDispatcher : class, IRequestDispatcher
     {
         private readonly Guid _requestId;
-        private readonly Lazy<CancellationTokenSource> _cancellationTokenSource;
-        private readonly ProgressReporter _progressReporter;
-        private Progress _progress;
+        private readonly Lazy<CancellationTokenSource> _cancellationTokenSource;                
         private AsyncExecutionTaskStatus _status;
         private EventHandler _isBusyChangedHandlers;
 
         internal AsyncExecutionTask()
         {
             _requestId = Guid.NewGuid();
-            _cancellationTokenSource = new Lazy<CancellationTokenSource>(() => new CancellationTokenSource());
-            _progressReporter = new ProgressReporter();
-            _progressReporter.ProgressChanged += HandleProgressChanged;
+            _cancellationTokenSource = new Lazy<CancellationTokenSource>(() => new CancellationTokenSource());            
         }
 
         /// <inheritdoc />
@@ -72,8 +68,7 @@ namespace System.ComponentModel.Messaging.Client
         {
             if (e.RequestId.Equals(RequestId))
             {
-                Status = AsyncExecutionTaskStatus.Done;
-                Progress = Progress.MaxValue;
+                Status = AsyncExecutionTaskStatus.Done;               
 
                 OnTaskEnded();
             }
@@ -149,44 +144,7 @@ namespace System.ComponentModel.Messaging.Client
             }
         }
 
-        #endregion
-
-        #region [====== Progress ======]
-
-        /// <inheritdoc />
-        public event EventHandler ProgressChanged;
-
-        /// <summary>
-        /// Raises the <see cref="ProgressChanged" /> event.
-        /// </summary>
-        protected virtual void OnProgressChanged()
-        {
-            ProgressChanged.Raise(this);
-
-            NotifyOfPropertyChange(() => Progress);
-        }
-
-        /// <inheritdoc />
-        public Progress Progress
-        {
-            get { return _progress; }
-            private set
-            {
-                if (_progress != value)
-                {
-                    _progress = value;
-
-                    OnProgressChanged();
-                }
-            }
-        }
-
-        private void HandleProgressChanged(object sender, Server.ProgressChangedEventArgs e)
-        {
-            Progress = e.Progress;
-        } 
-
-        #endregion
+        #endregion        
 
         #region [====== Execution ======]
 
@@ -196,7 +154,7 @@ namespace System.ComponentModel.Messaging.Client
             {
                 OnTaskStarting();
 
-                Execute(_cancellationTokenSource.Value.Token, _progressReporter);
+                Execute(_cancellationTokenSource.Value.Token);
 
                 Status = AsyncExecutionTaskStatus.Running;
                 return;
@@ -209,11 +167,8 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         /// <param name="token">
         /// Token that can be used to cancel the task.
-        /// </param>
-        /// <param name="reporter">
-        /// Reporter that can be used to report the progress.
-        /// </param>
-        protected abstract void Execute(CancellationToken token, IProgressReporter reporter);
+        /// </param>        
+        protected abstract void Execute(CancellationToken token);
 
         /// <inheritdoc />
         public void Cancel()

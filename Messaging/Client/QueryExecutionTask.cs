@@ -43,9 +43,9 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        protected override void Execute(CancellationToken token, IProgressReporter reporter)
+        protected override void Execute(CancellationToken token)
         {
-            Task = _dispatcher.ExecuteAsync(RequestId, token, reporter);
+            Task = _dispatcher.ExecuteAsync(RequestId, token);
         }
     }
 }

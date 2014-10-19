@@ -5,41 +5,38 @@ namespace System.ComponentModel.Messaging.Server
     /// <summary>
     /// Represents the stack of messages that is being handled by the processor.
     /// </summary>
-    public sealed class UseCase : IProgressReporter
+    public sealed class MessagePointer
     {
         /// <summary>
-        /// The message that is associated to this <see cref="UseCase" />.
+        /// The message that is associated to this <see cref="MessagePointer" />.
         /// </summary>
         public readonly object Message;              
 
         /// <summary>
-        /// The parent UseCase.
+        /// The parent MessagePointer.
         /// </summary>
-        public readonly UseCase ParentUseCase;
+        public readonly MessagePointer ParentPointer;
 
-        private readonly CancellationToken? _token;
-        private readonly IProgressReporter _reporter;
+        private readonly CancellationToken? _token;        
         
-        internal UseCase(object message, CancellationToken? token, IProgressReporter reporter)
+        internal MessagePointer(object message, CancellationToken? token)
         {
             Message = message;
 
-            _token = token;
-            _reporter = reporter;
+            _token = token;            
         }
 
-        private UseCase(object message, CancellationToken? token, IProgressReporter reporter, UseCase parentUseCase)
+        private MessagePointer(object message, CancellationToken? token, MessagePointer parentPointer)
         {            
             Message = message;
-            ParentUseCase = parentUseCase;
+            ParentPointer = parentPointer;
 
-            _token = token;
-            _reporter = reporter;
+            _token = token;            
         }
 
-        internal UseCase CreateChildUseCase(object instance, CancellationToken? token, IProgressReporter reporter)
+        internal MessagePointer CreateChildPointer(object instance, CancellationToken? token)
         {
-            return new UseCase(instance, token, reporter, this);
+            return new MessagePointer(instance, token, this);
         }
 
         /// <summary>
@@ -47,9 +44,9 @@ namespace System.ComponentModel.Messaging.Server
         /// </summary>
         /// <typeparam name="TMessage">Type to check.</typeparam>
         /// <returns><c>true</c> if this message is of the specified type; otherwise <c>false</c>.</returns>
-        public bool IsMessageA<TMessage>()
+        public bool PointsToA<TMessage>()
         {
-            return IsMessageA(typeof(TMessage));
+            return PointsToA(typeof(TMessage));
         }
 
         /// <summary>
@@ -60,13 +57,26 @@ namespace System.ComponentModel.Messaging.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public bool IsMessageA(Type type)
+        public bool PointsToA(Type type)
         {
             if (type == null)
             {
                 throw new ArgumentNullException("type");
             }
             return type.IsInstanceOfType(Message);
+        }
+
+        /// <summary>
+        /// Attempts to cast the <see cref="Message" /> to which this pointer refers to the specified type.
+        /// </summary>
+        /// <typeparam name="TMessage">Type to cast to.</typeparam>
+        /// <param name="message">
+        /// When the cast succeeds, this parameter will point to the casted instance; otherwise <c>null</c>.
+        /// </param>
+        /// <returns><c>true</c> if the cast succeed; otherwise <c>false</c>.</returns>
+        public bool TryCastMessageTo<TMessage>(out TMessage message) where TMessage : class
+        {
+            return (message = Message as TMessage) != null;
         }
 
         #region [====== Cancellation ======]
@@ -77,45 +87,14 @@ namespace System.ComponentModel.Messaging.Server
         /// </summary>
         public void ThrowIfCancellationRequested()
         {
-            UseCase stack = this;
+            MessagePointer stack = this;
 
             do
             {
                 stack._token.ThrowIfCancellationRequested();
-            } while ((stack = stack.ParentUseCase) != null);
+            } while ((stack = stack.ParentPointer) != null);
         }
 
-        #endregion
-
-        #region [====== ProgressReporter ======]
-
-        /// <inheritdoc />
-        public void Report(int total, int progress)
-        {
-            if (_reporter != null)
-            {
-                _reporter.Report(total, progress);
-            }
-        }
-
-        /// <inheritdoc />
-        public void Report(double total, double progress)
-        {
-            if (_reporter != null)
-            {
-                _reporter.Report(total, progress);
-            }
-        }
-
-        /// <inheritdoc />
-        public void Report(Progress progress)
-        {
-            if (_reporter != null)
-            {
-                _reporter.Report(progress);
-            }
-        }
-
-        #endregion
+        #endregion        
     }
 }

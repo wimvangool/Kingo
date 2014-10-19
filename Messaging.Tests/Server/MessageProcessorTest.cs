@@ -23,7 +23,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]
         public void CurrentMessage_IsNull_WhenNoMessageIsBeingHandled()
         {
-            Assert.IsNull(Processor.CurrentUseCase);
+            Assert.IsNull(Processor.Message);
         }
 
         [TestMethod]
@@ -32,10 +32,10 @@ namespace System.ComponentModel.Messaging.Server
             object messageA = new object();
             object messageB = null;
 
-            Processor.Process(messageA, message => messageB = Processor.CurrentUseCase.Message);
+            Processor.Process(messageA, message => messageB = Processor.Message.Message);
 
             Assert.AreSame(messageA, messageB);
-            Assert.IsNull(Processor.CurrentUseCase);
+            Assert.IsNull(Processor.Message);
         }
 
         [TestMethod]
@@ -43,16 +43,16 @@ namespace System.ComponentModel.Messaging.Server
         {
             object messageA = new object();
             object messageB = new object();
-            UseCase message = null;
+            MessagePointer message = null;
 
             Processor.Process(messageA, a =>            
-                Processor.Process(messageB, b => message = Processor.CurrentUseCase)
+                Processor.Process(messageB, b => message = Processor.Message)
             );
 
             Assert.IsNotNull(message);
             Assert.AreSame(messageB, message.Message);
-            Assert.AreSame(messageA, message.ParentUseCase.Message);
-            Assert.IsNull(Processor.CurrentUseCase);
+            Assert.AreSame(messageA, message.ParentPointer.Message);
+            Assert.IsNull(Processor.Message);
         }
 
         #endregion

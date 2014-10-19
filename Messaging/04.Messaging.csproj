@@ -65,12 +65,8 @@
     <Compile Include="Client\QueryDelegate.T2.cs" />
     <Compile Include="Server\CompositeConnection.cs" />
     <Compile Include="Server\IMessagePipeline.cs" />
-    <Compile Include="Server\IProgressReporter.cs" />
     <Compile Include="Client\EventMonitor.cs" />
     <Compile Include="Server\MessagePipeline.cs" />
-    <Compile Include="Server\Progress.cs" />
-    <Compile Include="Server\ProgressChangedEventArgs.cs" />
-    <Compile Include="Client\ProgressReporter.cs" />
     <Compile Include="Client\QueryExecutionTask.cs" />
     <Compile Include="Client\AsyncExecutionTaskStatus.cs" />
     <Compile Include="Server\AggregateNotFoundException.cs" />
@@ -123,7 +119,7 @@
     <Compile Include="Server\MessageProcessorBusConnection.cs" />
     <Compile Include="Server\MessageProcessorBusConnectionForAction.T1.cs" />
     <Compile Include="Server\MessageProcessorBusConnectionForInterface.T1.cs" />
-    <Compile Include="Server\UseCase.cs" />
+    <Compile Include="Server\MessagePointer.cs" />
     <Compile Include="Server\ScopeSpecificCacheEntry.T1.cs" />
     <Compile Include="Server\ScopeSpecificCacheRelay.cs" />
     <Compile Include="Clock.cs" />

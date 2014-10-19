@@ -18,7 +18,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <summary>
         /// Returns the message that is currently being handled by the processor.
         /// </summary>
-        UseCase CurrentUseCase
+        MessagePointer Message
         {
             get;
         }
@@ -36,31 +36,7 @@ namespace System.ComponentModel.Messaging.Server
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
         /// </exception>
-        void Process<TMessage>(TMessage message) where TMessage : class;
-
-        /// <summary>
-        /// Processes the specified message by invoking all registered external message handlers.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>
-        /// <param name="reporter">
-        /// Reporter that can be used to report the progress.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="OperationCanceledException">
-        /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception> 
-        /// <exception cref="RequestExecutionException">
-        /// The specified <paramref name="message"/> represents a command and failed for (somewhat) predictable reasons,
-        /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
-        /// command to be executed.
-        /// </exception>
-        void Process<TMessage>(TMessage message, CancellationToken? token, IProgressReporter reporter) where TMessage : class;
+        void Process<TMessage>(TMessage message) where TMessage : class;        
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler.
@@ -86,10 +62,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <param name="handler">Handler that will be used to handle the message.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
-        /// </param>
-        /// <param name="reporter">
-        /// Reporter that can be used to report the progress.
-        /// </param>
+        /// </param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
         /// </exception>
@@ -101,7 +74,7 @@ namespace System.ComponentModel.Messaging.Server
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
         /// </exception>
-        void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token, IProgressReporter reporter) where TMessage : class;
+        void Process<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class;
 
         /// <summary>
         /// Processes the specified message by invoking the specified delegate.
@@ -127,10 +100,7 @@ namespace System.ComponentModel.Messaging.Server
         /// <param name="handler">Delegate that will be used to handle the message.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
-        /// </param>
-        /// <param name="reporter">
-        /// Reporter that can be used to report the progress.
-        /// </param>
+        /// </param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
         /// </exception>
@@ -142,6 +112,6 @@ namespace System.ComponentModel.Messaging.Server
         /// like insufficient rights, invalid parameters or because the system's state/business rules wouldn't allow this
         /// command to be executed.
         /// </exception>
-        void Process<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token, IProgressReporter reporter) where TMessage : class;
+        void Process<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token) where TMessage : class;
     }
 }

@@ -18,7 +18,7 @@ namespace System.ComponentModel.Messaging.Client
 
             try
             {
-                Execute(null, null);
+                Execute(null);
             }
             catch (Exception exception)
             {
@@ -29,7 +29,7 @@ namespace System.ComponentModel.Messaging.Client
         }
 
         /// <inheritdoc />
-        public override Task ExecuteAsync(Guid requestId, CancellationToken? token, IProgressReporter reporter)
+        public override Task ExecuteAsync(Guid requestId, CancellationToken? token)
         {                        
             var context = SynchronizationContext.Current;
 
@@ -41,7 +41,7 @@ namespace System.ComponentModel.Messaging.Client
                 {                   
                     try
                     {                                                
-                        Execute(token, reporter);                        
+                        Execute(token);                        
                     }
                     catch (OperationCanceledException exception)
                     {
@@ -78,10 +78,7 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>   
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this command.
-        /// </param>   
-        /// <param name="reporter">
-        /// Reporter that can be used to report the progress.
-        /// </param>
+        /// </param>           
         /// <exception cref="RequestExecutionException">
         /// The command failed for (somewhat) predictable reasons, like insufficient rights, invalid parameters or
         /// because the system's state/business rules wouldn't allow this command to be executed.
@@ -92,7 +89,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract void Execute(CancellationToken? token, IProgressReporter reporter);
+        protected abstract void Execute(CancellationToken? token);
 
         #endregion
     }
