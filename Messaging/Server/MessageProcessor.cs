@@ -8,7 +8,7 @@ namespace System.ComponentModel.Messaging.Server
     public abstract class MessageProcessor : IMessageProcessor
     {
         private readonly IMessageProcessorBus _domainEventBus;                
-        private readonly ThreadLocal<MessagePointer> _currentMessage;                            
+        private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                            
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
@@ -16,7 +16,7 @@ namespace System.ComponentModel.Messaging.Server
         protected MessageProcessor()
         {
             _domainEventBus = new MessageProcessorBus(this);
-            _currentMessage = new ThreadLocal<MessagePointer>();
+            _currentMessagePointer = new ThreadLocal<MessagePointer>();
         }        
 
         /// <inheritdoc />
@@ -26,10 +26,10 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         /// <inheritdoc />
-        public MessagePointer Message
+        public MessagePointer MessagePointer
         {
-            get { return _currentMessage.Value; }
-            private set { _currentMessage.Value = value; }
+            get { return _currentMessagePointer.Value; }
+            private set { _currentMessagePointer.Value = value; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace System.ComponentModel.Messaging.Server
 
             try
             {                
-                Message.ThrowIfCancellationRequested();
+                MessagePointer.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
@@ -61,7 +61,7 @@ namespace System.ComponentModel.Messaging.Server
                     {
                         handler.Handle(message);
 
-                        Message.ThrowIfCancellationRequested();
+                        MessagePointer.ThrowIfCancellationRequested();
                     }
                     scope.Complete();
                 }
@@ -89,13 +89,13 @@ namespace System.ComponentModel.Messaging.Server
 
             try
             {
-                Message.ThrowIfCancellationRequested();
+                MessagePointer.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
                     handler.Handle(message);
 
-                    Message.ThrowIfCancellationRequested();
+                    MessagePointer.ThrowIfCancellationRequested();
                     scope.Complete();
                 }
             }
@@ -122,13 +122,13 @@ namespace System.ComponentModel.Messaging.Server
 
             try
             {
-                Message.ThrowIfCancellationRequested();
+                MessagePointer.ThrowIfCancellationRequested();
 
                 using (var scope = new UnitOfWorkScope(DomainEventBus))
                 {
                     handler.Invoke(message);
 
-                    Message.ThrowIfCancellationRequested();
+                    MessagePointer.ThrowIfCancellationRequested();
                     scope.Complete();
                 }
             }
@@ -140,12 +140,12 @@ namespace System.ComponentModel.Messaging.Server
 
         private void PushMessage(object message, CancellationToken? token)
         {
-            Message = Message == null ? new MessagePointer(message, token) : Message.CreateChildPointer(message, token);            
+            MessagePointer = MessagePointer == null ? new MessagePointer(message, token) : MessagePointer.CreateChildPointer(message, token);            
         }
 
         private void PopMessage()
         {
-            Message = Message.ParentPointer;
+            MessagePointer = MessagePointer.ParentPointer;
         }               
     }
 }

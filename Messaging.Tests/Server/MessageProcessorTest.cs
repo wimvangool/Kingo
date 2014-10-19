@@ -23,7 +23,7 @@ namespace System.ComponentModel.Messaging.Server
         [TestMethod]
         public void CurrentMessage_IsNull_WhenNoMessageIsBeingHandled()
         {
-            Assert.IsNull(Processor.Message);
+            Assert.IsNull(Processor.MessagePointer);
         }
 
         [TestMethod]
@@ -32,10 +32,10 @@ namespace System.ComponentModel.Messaging.Server
             object messageA = new object();
             object messageB = null;
 
-            Processor.Process(messageA, message => messageB = Processor.Message.Message);
+            Processor.Process(messageA, message => messageB = Processor.MessagePointer.Message);
 
             Assert.AreSame(messageA, messageB);
-            Assert.IsNull(Processor.Message);
+            Assert.IsNull(Processor.MessagePointer);
         }
 
         [TestMethod]
@@ -46,13 +46,13 @@ namespace System.ComponentModel.Messaging.Server
             MessagePointer message = null;
 
             Processor.Process(messageA, a =>            
-                Processor.Process(messageB, b => message = Processor.Message)
+                Processor.Process(messageB, b => message = Processor.MessagePointer)
             );
 
             Assert.IsNotNull(message);
             Assert.AreSame(messageB, message.Message);
             Assert.AreSame(messageA, message.ParentPointer.Message);
-            Assert.IsNull(Processor.Message);
+            Assert.IsNull(Processor.MessagePointer);
         }
 
         #endregion

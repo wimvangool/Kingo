@@ -16,9 +16,9 @@ namespace System.ComponentModel.Messaging.Server
         }
 
         /// <summary>
-        /// Returns the message that is currently being handled by the processor.
+        /// Returns a pointer to the message that is currently being handled by the processor.
         /// </summary>
-        MessagePointer Message
+        MessagePointer MessagePointer
         {
             get;
         }
