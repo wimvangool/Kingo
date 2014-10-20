@@ -1,12 +1,12 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
-    internal sealed class MessageStateTracker
+    internal sealed class RequestMessageStateTracker
     {
-        private readonly IMessage _message;
+        private readonly IRequestMessage _message;
         private Guid _requestId;
         private bool _messageHadChanges;
 
-        public MessageStateTracker(IMessage message)
+        public RequestMessageStateTracker(IRequestMessage message)
         {
             _message = message;
         }

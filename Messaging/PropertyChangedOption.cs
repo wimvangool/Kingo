@@ -2,9 +2,9 @@
 namespace System.ComponentModel.Messaging
 {
     /// <summary>
-    /// The options that can be specified when a property of a <see cref="Message" /> has changed.
+    /// The options that can be specified when a property of a <see cref="RequestMessage" /> has changed.
     /// </summary>    
-    public enum MessageChangedOption
+    public enum PropertyChangedOption
     {
         /// <summary>
         /// Indicates that no further action is required.

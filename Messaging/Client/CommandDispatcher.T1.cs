@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a command that contains a <see cref="IMessage">message</see> that serves
+    /// Represents a command that contains a <see cref="IRequestMessage">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that serves as the execution-parameter.</typeparam>
-    public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IMessage
+    public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IRequestMessage
     {        
         private readonly TMessage _message;
-        private readonly MessageStateTracker _messageStateTracker;
+        private readonly RequestMessageStateTracker _messageStateTracker;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandDispatcher{T}" /> class.
@@ -27,7 +27,7 @@ namespace System.ComponentModel.Messaging.Client
                 throw new ArgumentNullException("message");
             }            
             _message = message;
-            _messageStateTracker = new MessageStateTracker(message);
+            _messageStateTracker = new RequestMessageStateTracker(message);
         }
 
         /// <inheritdoc />

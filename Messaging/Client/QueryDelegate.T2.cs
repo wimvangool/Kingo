@@ -9,7 +9,7 @@ namespace System.ComponentModel.Messaging.Client
     /// <typeparam name="TRequest">Type of the message that serves as the execution-parameter.</typeparam>
     /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
     public class QueryDelegate<TRequest, TResponse> : QueryDispatcher<TRequest, TResponse>
-        where TRequest : class, IMessage, new()
+        where TRequest : class, IRequestMessage, new()
         where TResponse : IMessage
     {
         private readonly Func<TRequest, CancellationToken?, TResponse> _method;

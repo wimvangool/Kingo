@@ -7,21 +7,21 @@ namespace System.ComponentModel.Messaging
     /// <summary>
     /// Represents the result of a validation-step of a message or other component.
     /// </summary>
-    public sealed class MessageErrorInfo : IDataErrorInfo
+    public sealed class RequestMessageErrorInfo : IDataErrorInfo
     {        
         private readonly List<ValidationResult> _validationResults;
         private readonly Dictionary<string, string> _errorMessagesPerMember;        
 
-        private MessageErrorInfo(List<ValidationResult> validationResults, Dictionary<string, string> errorMessagesPerMember)
+        private RequestMessageErrorInfo(List<ValidationResult> validationResults, Dictionary<string, string> errorMessagesPerMember)
         {            
             _validationResults = validationResults;
             _errorMessagesPerMember = errorMessagesPerMember;
         }
 
-        internal MessageErrorInfo(MessageErrorInfo errorInfo)
+        internal RequestMessageErrorInfo(RequestMessageErrorInfo errorInfo)
         {
-            _validationResults = new List<ValidationResult>(errorInfo._validationResults);
-            _errorMessagesPerMember = new Dictionary<string, string>(errorInfo._errorMessagesPerMember);
+            _validationResults = errorInfo._validationResults == null ? null : new List<ValidationResult>(errorInfo._validationResults);
+            _errorMessagesPerMember = errorInfo._errorMessagesPerMember == null ? null : new Dictionary<string, string>(errorInfo._errorMessagesPerMember);
         }
 
         /// <inheritdoc />
@@ -53,29 +53,29 @@ namespace System.ComponentModel.Messaging
         }
 
         /// <summary>
-        /// This value is used to mark a <see cref="Message" /> as invalid when no validation of it has yet taken place.
+        /// This value is used to mark a <see cref="RequestMessage" /> as invalid when no validation of it has yet taken place.
         /// </summary>
-        internal static readonly MessageErrorInfo NotYetValidated = new MessageErrorInfo(null, null);                      
+        internal static readonly RequestMessageErrorInfo NotYetValidated = new RequestMessageErrorInfo(null, null);                      
 
         /// <summary>
         /// Performs validation of the instance that is specified by the <paramref name="validationContext"/>
-        /// and returns any validation errors in the form of a <see cref="MessageErrorInfo" /> instance.
+        /// and returns any validation errors in the form of a <see cref="RequestMessageErrorInfo" /> instance.
         /// </summary>
         /// <param name="validationContext">The validation context to use.</param>
         /// <returns>
-        /// A new <see cref="MessageErrorInfo" />-instance containing all validation-errors, or <c>null</c>
+        /// A new <see cref="RequestMessageErrorInfo" />-instance containing all validation-errors, or <c>null</c>
         /// if validation completed succesfully.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="validationContext"/> is <c>null</c>.
         /// </exception>
-        public static MessageErrorInfo CreateErrorInfo(ValidationContext validationContext)
+        public static RequestMessageErrorInfo CreateErrorInfo(ValidationContext validationContext)
         {
             if (validationContext == null)
             {
                 throw new ArgumentNullException("validationContext");
             }
-            MessagePropertyLabelCollection.Add(validationContext.ObjectInstance);
+            RequestMessagePropertyLabelCollection.Add(validationContext.ObjectInstance);
 
             try
             {
@@ -88,11 +88,11 @@ namespace System.ComponentModel.Messaging
                 }
                 var errorMessagesPerMember = CreateErrorMessagesPerMember(validationResults);
 
-                return new MessageErrorInfo(validationResults, errorMessagesPerMember);
+                return new RequestMessageErrorInfo(validationResults, errorMessagesPerMember);
             }
             finally
             {
-                MessagePropertyLabelCollection.Remove(validationContext.ObjectInstance);
+                RequestMessagePropertyLabelCollection.Remove(validationContext.ObjectInstance);
             }            
         }
 

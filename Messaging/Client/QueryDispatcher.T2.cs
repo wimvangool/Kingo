@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a query that contains a <see cref="IMessage">message</see> that serves
+    /// Represents a query that contains a <see cref="IRequestMessage">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
     /// <typeparam name="TRequest">Type of the message that serves as the execution-parameter.</typeparam>
     /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
     public abstract class QueryDispatcher<TRequest, TResponse> : QueryDispatcherBase<TResponse>
-        where TRequest : class, IMessage
+        where TRequest : class, IRequestMessage
         where TResponse : IMessage
     {
         private readonly TRequest _message;
-        private readonly MessageStateTracker _messageStateTracker;
+        private readonly RequestMessageStateTracker _messageStateTracker;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryDispatcher{T1, T2}" /> class.
@@ -31,7 +31,7 @@ namespace System.ComponentModel.Messaging.Client
                 throw new ArgumentNullException("message");
             }
             _message = message;
-            _messageStateTracker = new MessageStateTracker(message);
+            _messageStateTracker = new RequestMessageStateTracker(message);
         }
 
         /// <inheritdoc />
@@ -153,9 +153,9 @@ namespace System.ComponentModel.Messaging.Client
 
             if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return (TResponse) Execute(message, token).Copy(false);
+                return (TResponse) Execute(message, token).Copy();
             }
-            return (TResponse) Cache.GetOrAdd(message, () => Execute(message, token), policy).Copy(false);
+            return (TResponse) Cache.GetOrAdd(message, () => Execute(message, token), policy).Copy();
         }        
 
         /// <summary>

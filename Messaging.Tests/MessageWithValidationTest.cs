@@ -8,7 +8,7 @@ namespace System.ComponentModel.Messaging
     {
         #region [====== MessageWithValidation ======]
 
-        private sealed class MessageWithValidation : Message
+        private sealed class MessageWithValidation : RequestMessage
         {
             private object _irrelevantValue;
             private Guid _customerId;
@@ -23,6 +23,7 @@ namespace System.ComponentModel.Messaging
                 _customerName = message._customerName;
             }
 
+            [RequestMessageProperty(PropertyChangedOption.None)]
             public object IrrelevantValue
             {
                 get { return _irrelevantValue; }
@@ -32,11 +33,12 @@ namespace System.ComponentModel.Messaging
                     {
                         _irrelevantValue = value;
 
-                        NotifyOfPropertyChange(() => IrrelevantValue, MessageChangedOption.None);
+                        NotifyOfPropertyChange(() => IrrelevantValue);
                     }
                 }
             }
 
+            [RequestMessageProperty(PropertyChangedOption.MarkAsChanged)]
             public Guid CustomerId
             {
                 get { return _customerId; }
@@ -46,12 +48,13 @@ namespace System.ComponentModel.Messaging
                     {
                         _customerId = value;
 
-                        NotifyOfPropertyChange(() => CustomerId, MessageChangedOption.MarkAsChanged);
+                        NotifyOfPropertyChange(() => CustomerId);
                     }
                 }
             }
 
             [Required]
+            [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
             public string CustomerName
             {
                 get { return _customerName; }
@@ -61,12 +64,12 @@ namespace System.ComponentModel.Messaging
                     {
                         _customerName = value;
 
-                        NotifyOfPropertyChange(() => CustomerName, MessageChangedOption.MarkAsChangedAndValidate);
+                        NotifyOfPropertyChange(() => CustomerName);
                     }
                 }
             }
 
-            public override Message Copy(bool makeReadOnly)
+            public override RequestMessage Copy(bool makeReadOnly)
             {
                 return new MessageWithValidation(this, makeReadOnly);
             }

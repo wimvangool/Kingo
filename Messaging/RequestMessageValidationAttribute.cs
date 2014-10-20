@@ -19,7 +19,7 @@ namespace System.ComponentModel.Messaging
     /// to get the appropriate label.
     /// </para>
     /// </remarks>
-    public abstract class MessageValidationAttribute : ValidationAttribute
+    public abstract class RequestMessageValidationAttribute : ValidationAttribute
     {
         /// <inheritdoc />
         protected sealed override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -28,7 +28,7 @@ namespace System.ComponentModel.Messaging
             {
                 return IsValid(value, null, null);
             }
-            var propertyMapping = MessagePropertyLabelCollection.For(validationContext.ObjectInstance);
+            var propertyMapping = RequestMessagePropertyLabelCollection.For(validationContext.ObjectInstance);
             var labelName = propertyMapping.FindLabelFor(validationContext.MemberName);
 
             return IsValid(value, validationContext, labelName);

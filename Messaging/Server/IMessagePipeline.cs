@@ -17,7 +17,7 @@
         /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="command"/> could not be executed for functional reasons.
         /// </exception>
-        void Execute<TCommand>(TCommand command, IMessageProcessor processor) where TCommand : class, IMessage;
+        void Execute<TCommand>(TCommand command, IMessageProcessor processor) where TCommand : class, IRequestMessage;
 
         /// <summary>
         /// Handles the specified <paramref name="event"/> using the specified <paramref name="processor"/>.
@@ -44,6 +44,6 @@
         /// <exception cref="RequestExecutionException">
         /// The specified <paramref name="request"/> could not be executed for functional reasons.
         /// </exception>
-        TResponse Execute<TRequest, TResponse>(TRequest request, Func<TRequest, TResponse> query) where TRequest : class, IMessage;
+        TResponse Execute<TRequest, TResponse>(TRequest request, Func<TRequest, TResponse> query) where TRequest : class, IRequestMessage;
     }
 }

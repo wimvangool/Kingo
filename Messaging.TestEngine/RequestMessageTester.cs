@@ -5,26 +5,26 @@ using System.Globalization;
 namespace System.ComponentModel.Messaging
 {
     /// <summary>
-    /// This class can be used to assert the behavior of <see cref="IMessage">messages</see>
+    /// This class can be used to assert the behavior of <see cref="IRequestMessage">messages</see>
     /// when their properties are being changed/assigned.
     /// </summary>
-    public class MessageTester
+    public class RequestMessageTester
     {
         private readonly IUnitTestFramework _unitTestFramework;
         private readonly List<string> _changedProperties;
-        private readonly IMessage _message;
+        private readonly IRequestMessage _message;
         private int _hasChangesChangedCount;
         private int _isValidChangedCount;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageTester" /> class.
+        /// Initializes a new instance of the <see cref="RequestMessageTester" /> class.
         /// </summary>
         /// <param name="unitTestFramework">The framework that is used to run the tests.</param>
         /// <param name="message">The message under test.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public MessageTester(IUnitTestFramework unitTestFramework, IMessage message)
+        public RequestMessageTester(IUnitTestFramework unitTestFramework, IRequestMessage message)
         {
             if (unitTestFramework == null)
             {
@@ -60,7 +60,7 @@ namespace System.ComponentModel.Messaging
         /// <summary>
         /// Returns the message under test.
         /// </summary>
-        protected IMessage Message
+        protected IRequestMessage Message
         {
             get { return _message; }
         }

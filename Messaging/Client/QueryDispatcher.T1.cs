@@ -92,9 +92,9 @@ namespace System.ComponentModel.Messaging.Client
 
             if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return (TResponse) Execute(token).Copy(false);
+                return (TResponse) Execute(token).Copy();
             }
-            return (TResponse) Cache.GetOrAdd(GetType(), () => Execute(token), policy).Copy(false);
+            return (TResponse) Cache.GetOrAdd(GetType(), () => Execute(token), policy).Copy();
         }        
 
         /// <summary>

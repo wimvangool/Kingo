@@ -63,7 +63,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IMessage
+        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
@@ -83,7 +83,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
+        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
@@ -102,7 +102,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IMessage
+        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
@@ -120,7 +120,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IMessage
+        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
@@ -145,7 +145,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static AsyncCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher)
-            where TRequest : class, IMessage
+            where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
             if (dispatcher == null)
@@ -168,7 +168,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static AsyncCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher, AsyncCommandOptions options)
-            where TRequest : class, IMessage
+            where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
             if (dispatcher == null)
@@ -189,7 +189,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher)
-            where TRequest : class, IMessage
+            where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
             if (dispatcher == null)
@@ -211,7 +211,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher, AsyncCommandOptions options)
-            where TRequest : class, IMessage
+            where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
             if (dispatcher == null)

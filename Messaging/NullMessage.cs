@@ -1,10 +1,10 @@
 ﻿namespace System.ComponentModel.Messaging
 {
     /// <summary>
-    /// Represents a message-stub for scenario's where an <see cref="IMessage" />
+    /// Represents a message-stub for scenario's where an <see cref="IRequestMessage" />
     /// instance is required but none is available.
     /// </summary>
-    public sealed class NullMessage : PropertyChangedBase, IMessage
+    public sealed class NullMessage : PropertyChangedBase, IRequestMessage
     {
         private readonly bool _isReadOnly;
         private bool _hasChanges;
@@ -38,10 +38,24 @@
             _isValid = message._isValid;
         }
 
+        IMessage IMessage.Copy()
+        {
+            return Copy();
+        }
+
         /// <inheritdoc />
-        public IMessage Copy(bool makeReadOnly)
+        IRequestMessage IRequestMessage.Copy(bool makeReadOnly)
         {
             return new NullMessage(this, makeReadOnly);
+        }
+
+        /// <summary>
+        /// Creates and returns a read-only copy of this message.
+        /// </summary>
+        /// <returns>A read-only copy of this message.</returns>
+        public NullMessage Copy()
+        {
+            return new NullMessage(this, true);
         }
 
         #region [====== Change Tracking ======]
@@ -64,7 +78,7 @@
             {
                 if (_isReadOnly && value)
                 {
-                    throw Message.NewMessageIsReadOnlyException(this);
+                    throw RequestMessage.NewMessageIsReadOnlyException(this);
                 }
                 if (_hasChanges != value)
                 {

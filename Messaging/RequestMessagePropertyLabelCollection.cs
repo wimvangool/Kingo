@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace System.ComponentModel.Messaging
 {
-    internal sealed class MessagePropertyLabelCollection
+    internal sealed class RequestMessagePropertyLabelCollection
     {
         private readonly object _message;
         private readonly Lazy<Dictionary<string, string>> _labels;
 
-        private MessagePropertyLabelCollection(object message)
+        private RequestMessagePropertyLabelCollection(object message)
         {
             _message = message;
             _labels = new Lazy<Dictionary<string, string>>(ConstructLabelMapping, true);
@@ -53,18 +53,18 @@ namespace System.ComponentModel.Messaging
                    select property;
         }
 
-        private static readonly Dictionary<object, MessagePropertyLabelCollection> _Labels;      
+        private static readonly Dictionary<object, RequestMessagePropertyLabelCollection> _Labels;      
 
-        static MessagePropertyLabelCollection()
+        static RequestMessagePropertyLabelCollection()
         {
-            _Labels = new Dictionary<object, MessagePropertyLabelCollection>();
+            _Labels = new Dictionary<object, RequestMessagePropertyLabelCollection>();
         }
 
         internal static void Add(object message)
         {
             lock (_Labels)
             {
-                _Labels.Add(message, new MessagePropertyLabelCollection(message));
+                _Labels.Add(message, new RequestMessagePropertyLabelCollection(message));
             }
         }
 
@@ -76,17 +76,17 @@ namespace System.ComponentModel.Messaging
             }
         }
 
-        internal static MessagePropertyLabelCollection For(object message)
+        internal static RequestMessagePropertyLabelCollection For(object message)
         {
             lock (_Labels)
             {
-                MessagePropertyLabelCollection labels;
+                RequestMessagePropertyLabelCollection labels;
 
                 if (_Labels.TryGetValue(message, out labels))
                 {
                     return labels;
                 }
-                return new MessagePropertyLabelCollection(message);
+                return new RequestMessagePropertyLabelCollection(message);
             }
         }
     }
