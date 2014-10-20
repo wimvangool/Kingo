@@ -74,6 +74,7 @@
     <Compile Include="MessageTwo.cs" />
     <Compile Include="ClockTest.cs" />
     <Compile Include="ClockWithOffsetTest.cs" />
+    <Compile Include="MessageWithChildMessageTest.cs" />
     <Compile Include="Server\MessageHandlerSpy.cs" />
     <Compile Include="Server\MessageProcessorBusTest.cs" />
     <Compile Include="Server\MessageProcessorStub.cs" />

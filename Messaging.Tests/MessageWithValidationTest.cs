@@ -145,24 +145,18 @@ namespace System.ComponentModel.Messaging
 
             // From false to false.
             eventWasRaised = false;
-            message.HasChanges = false;
+            message.AcceptChanges();
 
             Assert.IsFalse(eventWasRaised);
 
             // From false to true.
-            message.HasChanges = true;
+            message.CustomerId = Guid.NewGuid();
 
-            Assert.IsTrue(eventWasRaised);
-
-            // From true to true.
-            eventWasRaised = false;
-            message.HasChanges = true;
-
-            Assert.IsFalse(eventWasRaised);
+            Assert.IsTrue(eventWasRaised);            
 
             // From true to false.
             eventWasRaised = false;
-            message.HasChanges = false;
+            message.AcceptChanges();
 
             Assert.IsTrue(eventWasRaised);
         }
@@ -177,24 +171,18 @@ namespace System.ComponentModel.Messaging
 
             // From false to false.
             eventWasRaised = false;
-            message.HasChanges = false;
+            message.AcceptChanges();
 
             Assert.IsFalse(eventWasRaised);
 
             // From false to true.
-            message.HasChanges = true;
+            message.CustomerId = Guid.NewGuid();
 
-            Assert.IsTrue(eventWasRaised);
-
-            // From true to true.
-            eventWasRaised = false;
-            message.HasChanges = true;
-
-            Assert.IsFalse(eventWasRaised);
+            Assert.IsTrue(eventWasRaised);            
 
             // From true to false.
             eventWasRaised = false;
-            message.HasChanges = false;
+            message.AcceptChanges();
 
             Assert.IsTrue(eventWasRaised);
         }

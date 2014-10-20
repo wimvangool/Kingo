@@ -74,12 +74,8 @@
         public bool HasChanges
         {
             get { return _hasChanges;}
-            set
-            {
-                if (_isReadOnly && value)
-                {
-                    throw RequestMessage.NewMessageIsReadOnlyException(this);
-                }
+            private set
+            {                
                 if (_hasChanges != value)
                 {
                     _hasChanges = value;
@@ -87,6 +83,12 @@
                     OnHasChangesChanged();
                 }
             }
+        }        
+
+        /// <inheritdoc />
+        public void AcceptChanges()
+        {
+            HasChanges = false;            
         }
 
         #endregion

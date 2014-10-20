@@ -84,7 +84,6 @@
     <Compile Include="InvalidMessageException.cs" />
     <Compile Include="Client\IQueryDispatcher.T1.cs" />
     <Compile Include="Client\IRequestDispatcher.cs" />
-    <Compile Include="Client\RequestMessageStateTracker.cs" />
     <Compile Include="Client\QueryDispatcher.T1.cs" />
     <Compile Include="Client\QueryDispatcher.T2.cs" />
     <Compile Include="Client\QueryDispatcherBase.T1.cs" />

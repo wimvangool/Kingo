@@ -6,13 +6,9 @@
     public interface IRequestMessage : IMessage, IHasChangesIndicator, IIsValidIndicator, IDataErrorInfo
     {
         /// <summary>
-        /// Indicates whether or not this message has any changes.
+        /// Marks this message as unchanged.
         /// </summary>
-        new bool HasChanges
-        {
-            get;
-            set;
-        }
+        void AcceptChanges();        
 
         /// <summary>
         /// Validates all values of this message and then updates the validation-state.

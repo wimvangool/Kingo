@@ -14,8 +14,7 @@ namespace System.ComponentModel.Messaging.Client
         where TRequest : class, IRequestMessage
         where TResponse : IMessage
     {
-        private readonly TRequest _message;
-        private readonly RequestMessageStateTracker _messageStateTracker;
+        private readonly TRequest _message;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryDispatcher{T1, T2}" /> class.
@@ -30,43 +29,14 @@ namespace System.ComponentModel.Messaging.Client
             {
                 throw new ArgumentNullException("message");
             }
-            _message = message;
-            _messageStateTracker = new RequestMessageStateTracker(message);
+            _message = message;            
         }
 
         /// <inheritdoc />
         public TRequest Message
         {
             get { return _message; }
-        }
-
-        #region [====== Events ======]
-
-        /// <inheritdoc />
-        protected override void OnExecutionStarted(ExecutionStartedEventArgs e)
-        {
-            base.OnExecutionStarted(e);
-
-            _messageStateTracker.NotifyExecutionStarted(e.RequestId);
-        }
-
-        /// <inheritdoc />
-        protected override void OnExecutionCanceled(ExecutionCanceledEventArgs e)
-        {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
-
-            base.OnExecutionCanceled(e);
-        }
-
-        /// <inheritdoc />
-        protected override void OnExecutionFailed(ExecutionFailedEventArgs e)
-        {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
-
-            base.OnExecutionFailed(e);
-        }
-
-        #endregion
+        }        
 
         #region [====== Execution ======]
 

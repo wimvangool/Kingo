@@ -10,8 +10,7 @@ namespace System.ComponentModel.Messaging.Client
     /// <typeparam name="TMessage">Type of the message that serves as the execution-parameter.</typeparam>
     public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IRequestMessage
     {        
-        private readonly TMessage _message;
-        private readonly RequestMessageStateTracker _messageStateTracker;
+        private readonly TMessage _message;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandDispatcher{T}" /> class.
@@ -26,43 +25,14 @@ namespace System.ComponentModel.Messaging.Client
             {
                 throw new ArgumentNullException("message");
             }            
-            _message = message;
-            _messageStateTracker = new RequestMessageStateTracker(message);
+            _message = message;            
         }
 
         /// <inheritdoc />
         public TMessage Message
         {
             get { return _message; }
-        }
-
-        #region [====== Events ======]
-
-        /// <inheritdoc />
-        protected override void OnExecutionStarted(ExecutionStartedEventArgs e)
-        {
-            base.OnExecutionStarted(e);
-
-            _messageStateTracker.NotifyExecutionStarted(e.RequestId);
-        }
-
-        /// <inheritdoc />
-        protected override void OnExecutionCanceled(ExecutionCanceledEventArgs e)
-        {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
-
-            base.OnExecutionCanceled(e);            
-        }
-
-        /// <inheritdoc />
-        protected override void OnExecutionFailed(ExecutionFailedEventArgs e)
-        {
-            _messageStateTracker.NotifyExecutionEndedPrematurely(e.RequestId);
-
-            base.OnExecutionFailed(e);            
-        }
-
-        #endregion
+        }        
 
         #region [====== Execution ======]
 

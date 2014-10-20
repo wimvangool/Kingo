@@ -28,7 +28,7 @@ namespace System.ComponentModel.Messaging
         /// </exception>
         protected void NotifyOfPropertyChange<TProperty>(Expression<Func<TProperty>> property)
         {
-            NotifyOfPropertyChange(new PropertyChangedEventArgs(GetPropertyNameOf(property)));
+            NotifyOfPropertyChange(new PropertyChangedEventArgs(NameOf(property)));
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace System.ComponentModel.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="property"/> is <c>null</c>.
         /// </exception>
-        protected static string GetPropertyNameOf(Expression property)
+        protected static string NameOf(Expression property)
         {
             if (property == null)
             {

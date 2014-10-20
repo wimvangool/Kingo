@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Messaging.Resources;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace System.ComponentModel.Messaging
@@ -14,6 +15,7 @@ namespace System.ComponentModel.Messaging
     public abstract class RequestMessage : PropertyChangedBase, IRequestMessage, IServiceProvider
     {
         private readonly Dictionary<Type, object> _services;
+        private readonly Dictionary<string, IRequestMessage> _requestMessageProperties;
         private readonly bool _isReadOnly;
         private RequestMessageErrorInfo _errorInfo;                       
         private bool _hasChanges;
@@ -24,6 +26,7 @@ namespace System.ComponentModel.Messaging
         protected RequestMessage()
         {
             _services = new Dictionary<Type, object>();
+            _requestMessageProperties = new Dictionary<string, IRequestMessage>();
             _isReadOnly = false;
             _errorInfo = RequestMessageErrorInfo.NotYetValidated;
             _hasChanges = false;
@@ -44,6 +47,7 @@ namespace System.ComponentModel.Messaging
                 throw new ArgumentNullException("message");
             }
             _services = new Dictionary<Type, object>(message._services);
+            _requestMessageProperties = Copy(message._requestMessageProperties, makeReadOnly);
             _isReadOnly = makeReadOnly;
             _errorInfo = message._errorInfo == null ? null : new RequestMessageErrorInfo(message._errorInfo);
             _hasChanges = false;
@@ -72,6 +76,17 @@ namespace System.ComponentModel.Messaging
         /// set to <c>true</c>.
         /// </returns>
         public abstract RequestMessage Copy(bool makeReadOnly);
+
+        private static Dictionary<string, IRequestMessage> Copy(Dictionary<string, IRequestMessage> properties, bool makeReadOnly)
+        {
+            var propertiesCopy = new Dictionary<string, IRequestMessage>(properties.Count);
+
+            foreach (var property in properties)
+            {
+                propertiesCopy.Add(property.Key, Copy(property.Value, makeReadOnly));
+            }
+            return propertiesCopy;
+        }
 
         /// <summary>
         /// Creates and returns a copy of the specified <paramref name="message"/>.
@@ -179,13 +194,9 @@ namespace System.ComponentModel.Messaging
         /// <inheritdoc />
         public bool HasChanges
         {
-            get { return _hasChanges; }
-            set
-            {                                
-                if (_isReadOnly && value)
-                {
-                    throw NewMessageIsReadOnlyException(this);
-                }
+            get { return _hasChanges || _requestMessageProperties.Values.Any(message => message.HasChanges); }
+            private set
+            {                
                 if (_hasChanges != value)
                 {
                     _hasChanges = value;
@@ -194,6 +205,17 @@ namespace System.ComponentModel.Messaging
                 }
             }
         }
+
+        /// <inheritdoc />
+        public void AcceptChanges()
+        {
+            HasChanges = false;
+
+            foreach (var message in _requestMessageProperties.Values)
+            {
+                message.AcceptChanges();
+            }
+        }        
 
         /// <summary>
         /// Raises the <see cref="HasChangesChanged" /> and <see cref="INotifyPropertyChanged.PropertyChanged" /> events.
@@ -213,6 +235,10 @@ namespace System.ComponentModel.Messaging
         /// </remarks>
         protected override void NotifyOfPropertyChange()
         {
+            if (_isReadOnly)
+            {
+                throw NewMessageIsReadOnlyException(this);
+            }
             NotifyOfPropertyChange(string.Empty);
             HasChanges = true;
             Validate();
@@ -220,7 +246,7 @@ namespace System.ComponentModel.Messaging
 
         /// <inheritdoc />
         protected override void NotifyOfPropertyChange(PropertyChangedEventArgs e)
-        {
+        {            
             base.NotifyOfPropertyChange(e);
 
             var option = RequestMessageProperty.GetPropertyChangeOption(GetType(), e.PropertyName);
@@ -231,10 +257,18 @@ namespace System.ComponentModel.Messaging
                     return;
 
                 case PropertyChangedOption.MarkAsChanged:
+                    if (_isReadOnly)
+                    {
+                        throw NewMessageIsReadOnlyException(this);
+                    }
                     HasChanges = true;
                     return;
 
                 case PropertyChangedOption.MarkAsChangedAndValidate:
+                    if (_isReadOnly)
+                    {
+                        throw NewMessageIsReadOnlyException(this);
+                    }
                     HasChanges = true;
                     Validate();
                     return;
@@ -323,27 +357,150 @@ namespace System.ComponentModel.Messaging
 
         #endregion
 
-        #region [====== ToString ======]
+        #region [====== GetMessage and SetMessage ======]
 
         /// <summary>
-        /// Returns a human-readable string containing all relevant property-values.
+        /// Gets the <see cref="IRequestMessage" /> that was set for the specified <paramref name="property"/>.
         /// </summary>
-        /// <returns>A human-readable string containing all relevant property-values.</returns>
-        public override string ToString()
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="property">The property for which the message was set.</param>
+        /// <returns>
+        /// The message that was set for the specified message; returns <c>null</c> when no message was set.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="property"/> is <c>null</c>.
+        /// </exception>
+        protected TMessage GetMessage<TMessage>(Expression<Func<TMessage>> property) where TMessage : class, IRequestMessage
         {
-            var message = new StringBuilder("<");
+            return GetMessage(NameOf(property)) as TMessage;
+        }
 
-            foreach (var property in RequestMessageProperty.GetProperties(GetType()))
+        /// <summary>
+        /// Gets the <see cref="IRequestMessage" /> that was set for the specified <paramref name="propertyName"/>.
+        /// </summary>       
+        /// <param name="propertyName">The property for which the message was set.</param>
+        /// <returns>
+        /// The message that was set for the specified message; returns <c>null</c> when no message was set.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="propertyName"/> is <c>null</c>.
+        /// </exception>
+        protected IRequestMessage GetMessage(string propertyName)
+        {
+            if (propertyName == null)
             {
-                var propertyName = property.Name;
-                var propertyValue = property.GetValue(this);
-
-                message.AppendFormat(CultureInfo.InvariantCulture, "{0}: {1}", propertyName, propertyValue);                
+                throw new ArgumentNullException("propertyName");
             }
-            message.Append(">");
+            IRequestMessage message;
 
-            return message.ToString();
-        }        
+            if (_requestMessageProperties.TryGetValue(propertyName, out message))
+            {
+                return message;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Sets a message for the specified <paramref name="property"/>.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="property">The property for which the message is set.</param>
+        /// <param name="message">The message.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="property"/> is <c>null</c>.
+        /// </exception>
+        protected void SetMessage<TMessage>(Expression<Func<TMessage>> property, TMessage message) where TMessage : class, IRequestMessage
+        {
+            SetMessage(NameOf(property), message);
+        }
+
+        /// <summary>
+        /// Sets a message for the specified <paramref name="propertyName"/>.
+        /// </summary>        
+        /// <param name="propertyName">The property for which the message is set.</param>
+        /// <param name="message">The message.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="propertyName"/> is <c>null</c>.
+        /// </exception>
+        protected void SetMessage(string propertyName, IRequestMessage message)
+        {
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException("propertyName");
+            }
+            IRequestMessage oldMessage;
+
+            if (_requestMessageProperties.TryGetValue(propertyName, out oldMessage))
+            {
+                if (ReferenceEquals(oldMessage, message))
+                {
+                    return;
+                }
+                Detach(oldMessage);
+            }
+            _requestMessageProperties[propertyName] = message;
+
+            Attach(message);
+            NotifyOfPropertyChange(propertyName);
+        }
+
+        #endregion
+
+        #region [====== Attach and Detach ======]
+
+        private void Attach(IRequestMessage message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+            message.HasChangesChanged += HandleMessageHasChangesChanged;
+            message.IsValidChanged += HandleMessageIsValidChanged;
+        }
+
+        private void Detach(IRequestMessage message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+            message.IsValidChanged -= HandleMessageIsValidChanged;
+            message.HasChangesChanged -= HandleMessageHasChangesChanged;
+        }
+
+        private void HandleMessageHasChangesChanged(object sender, EventArgs e)
+        {
+            OnHasChangesChanged();
+        }
+
+        private void HandleMessageIsValidChanged(object sender, EventArgs e)
+        {
+            OnIsValidChanged();
+        }
+
+        #endregion
+
+        #region [====== ToString ======]
+
+        ///// <summary>
+        ///// Returns a human-readable string containing all relevant property-values.
+        ///// </summary>
+        ///// <returns>A human-readable string containing all relevant property-values.</returns>
+        //public override string ToString()
+        //{
+        //    var message = new StringBuilder("<");
+
+        //    foreach (var property in RequestMessageProperty.GetProperties(GetType()))
+        //    {
+        //        var propertyName = property.Name;
+        //        var propertyValue = property.GetValue(this);
+
+        //        message.AppendFormat(CultureInfo.InvariantCulture, "{0}: {1}", propertyName, propertyValue);                
+        //    }
+        //    message.Append(">");
+
+        //    return message.ToString();
+        //}        
 
         #endregion
 
