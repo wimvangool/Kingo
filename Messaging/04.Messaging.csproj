@@ -67,6 +67,11 @@
     <Compile Include="Message.cs" />
     <Compile Include="RequestMessageProperty.cs" />
     <Compile Include="RequestMessagePropertyAttribute.cs" />
+    <Compile Include="Resources\ValidationMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValidationMessages.resx</DependentUpon>
+    </Compile>
     <Compile Include="Server\CompositeConnection.cs" />
     <Compile Include="Server\IMessagePipeline.cs" />
     <Compile Include="Client\EventMonitor.cs" />
@@ -145,8 +150,8 @@
     <Compile Include="RequestMessage.cs" />
     <Compile Include="PropertyChangedOption.cs" />
     <Compile Include="RequestMessageErrorInfo.cs" />
-    <Compile Include="RequestMessageValidationAttribute.cs" />
-    <Compile Include="RequestMessagePropertyLabelCollection.cs" />
+    <Compile Include="Validation\RequestMessageValidationAttribute.cs" />
+    <Compile Include="Validation\RequestMessageLabelProvider.cs" />
     <Compile Include="NullMessage.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="Server\UnitOfWorkCache.cs" />
@@ -167,11 +172,17 @@
     <Compile Include="Server\UnitOfWorkWrapper.cs" />
     <Compile Include="Server\UnitOfWorkGroup.cs" />
     <Compile Include="Server\UnitOfWorkItem.cs" />
+    <Compile Include="Validation\RequiredAttribute.cs" />
+    <Compile Include="Validation\RequiredStringConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ValidationMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

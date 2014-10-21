@@ -316,7 +316,7 @@ namespace System.ComponentModel.Messaging
         /// <inheritdoc />
         public bool IsValid
         {
-            get { return ErrorInfo == null; }            
+            get { return ErrorInfo == null && _requestMessageProperties.Values.All(message => message.IsValid); }            
         }
 
         /// <inheritdoc />
@@ -335,7 +335,12 @@ namespace System.ComponentModel.Messaging
         /// <inheritdoc />
         public void Validate()
         {
-            ErrorInfo = RequestMessageErrorInfo.CreateErrorInfo(CreateValidationContext());                       
+            ErrorInfo = RequestMessageErrorInfo.CreateErrorInfo(CreateValidationContext());
+
+            foreach (var message in _requestMessageProperties.Values)
+            {
+                message.Validate();
+            }
         }    
         
         /// <summary>
@@ -438,9 +443,16 @@ namespace System.ComponentModel.Messaging
                 }
                 Detach(oldMessage);
             }
-            _requestMessageProperties[propertyName] = message;
+            if (message == null)
+            {
+                _requestMessageProperties.Remove(propertyName);
+            }
+            else
+            {
+                _requestMessageProperties[propertyName] = message;
 
-            Attach(message);
+                Attach(message);
+            }
             NotifyOfPropertyChange(propertyName);
         }
 
@@ -449,21 +461,13 @@ namespace System.ComponentModel.Messaging
         #region [====== Attach and Detach ======]
 
         private void Attach(IRequestMessage message)
-        {
-            if (message == null)
-            {
-                return;
-            }
+        {            
             message.HasChangesChanged += HandleMessageHasChangesChanged;
             message.IsValidChanged += HandleMessageIsValidChanged;
         }
 
         private void Detach(IRequestMessage message)
-        {
-            if (message == null)
-            {
-                return;
-            }
+        {            
             message.IsValidChanged -= HandleMessageIsValidChanged;
             message.HasChangesChanged -= HandleMessageHasChangesChanged;
         }

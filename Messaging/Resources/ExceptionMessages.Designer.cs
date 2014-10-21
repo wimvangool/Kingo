@@ -286,6 +286,15 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid value for StringConstraint specified: {0}..
+        /// </summary>
+        internal static string RequiredAttribute_InvalidStringConstraint {
+            get {
+                return ResourceManager.GetString("RequiredAttribute_InvalidStringConstraint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The scopes were not nested correctly..
         /// </summary>
         internal static string Scope_IncorrectNesting {

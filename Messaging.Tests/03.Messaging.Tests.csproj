@@ -38,6 +38,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\..\..\..\Program Files (x86)\JetBrains\ReSharper\v8.0\Bin\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -111,6 +114,7 @@
     <Compile Include="Server\UnitOfWorkTwoSyncTest.cs" />
     <Compile Include="Server\UnitOfWorkWrapperGroupTest.cs" />
     <Compile Include="Server\UnitOfWorkWrapperItemTest.cs" />
+    <Compile Include="Validation\RequiredAttributeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\04.Messaging.csproj">

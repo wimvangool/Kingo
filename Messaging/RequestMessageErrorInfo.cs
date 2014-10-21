@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Messaging.Validation;
 using System.Linq;
 
 namespace System.ComponentModel.Messaging
@@ -75,7 +76,7 @@ namespace System.ComponentModel.Messaging
             {
                 throw new ArgumentNullException("validationContext");
             }
-            RequestMessagePropertyLabelCollection.Add(validationContext.ObjectInstance);
+            RequestMessageLabelProvider.Add(validationContext.ObjectInstance);
 
             try
             {
@@ -92,7 +93,7 @@ namespace System.ComponentModel.Messaging
             }
             finally
             {
-                RequestMessagePropertyLabelCollection.Remove(validationContext.ObjectInstance);
+                RequestMessageLabelProvider.Remove(validationContext.ObjectInstance);
             }            
         }
 
