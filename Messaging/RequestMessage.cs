@@ -281,6 +281,94 @@ namespace System.ComponentModel.Messaging
 
         #endregion
 
+        #region [====== SetValue ======]
+
+        /// <summary>
+        /// Sets the specified property to the specified value and raises the <see cref="INotifyPropertyChanged.PropertyChanged" /> event
+        /// when the value was changed.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the property.</typeparam>
+        /// <param name="property">The property.</param>
+        /// <param name="value">New value of the property.</param>
+        /// <param name="currentValue">Old value of the property.</param>        
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="property"/> is <c>null</c>.
+        /// </exception>
+        protected void SetValue<TValue>(Expression<Func<TValue>> property, TValue value, ref TValue currentValue)
+        {
+            SetValue(NameOf(property), value, ref currentValue, null);
+        }
+
+        /// <summary>
+        /// Sets the specified property to the specified value and raises the <see cref="INotifyPropertyChanged.PropertyChanged" /> event
+        /// when the value was changed.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the property.</typeparam>
+        /// <param name="property">The property.</param>
+        /// <param name="value">New value of the property.</param>
+        /// <param name="currentValue">Old value of the property.</param>
+        /// <param name="propertyChanged">
+        /// Optional. when not <c>null</c>, is called when <paramref name="value"/> is unequal to <paramref name="currentValue"/>.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="property"/> is <c>null</c>.
+        /// </exception>
+        protected void SetValue<TValue>(Expression<Func<TValue>> property, TValue value, ref TValue currentValue, Action propertyChanged)
+        {
+            SetValue(NameOf(property), value, ref currentValue, propertyChanged);
+        }
+
+        /// <summary>
+        /// Sets the specified property to the specified value and raises the <see cref="INotifyPropertyChanged.PropertyChanged" /> event
+        /// when the value was changed.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the property.</typeparam>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="value">New value of the property.</param>
+        /// <param name="currentValue">Old value of the property.</param>       
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="propertyName"/> is <c>null</c>.
+        /// </exception>
+        protected void SetValue<TValue>(string propertyName, TValue value, ref TValue currentValue)
+        {
+            SetValue(propertyName, value, ref currentValue, null);
+        }
+
+        /// <summary>
+        /// Sets the specified property to the specified value and raises the <see cref="INotifyPropertyChanged.PropertyChanged" /> event
+        /// when the value was changed.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the property.</typeparam>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="value">New value of the property.</param>
+        /// <param name="currentValue">Old value of the property.</param>
+        /// <param name="propertyChanged">
+        /// Optional. when not <c>null</c>, is called when <paramref name="value"/> is unequal to <paramref name="currentValue"/>.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="propertyName"/> is <c>null</c>.
+        /// </exception>
+        protected void SetValue<TValue>(string propertyName, TValue value, ref TValue currentValue, Action propertyChanged)
+        {
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException("propertyName");
+            }
+            if (Equals(currentValue, value))
+            {
+                return;
+            }
+            currentValue = value;
+
+            if (propertyChanged != null)
+            {
+                propertyChanged.Invoke();
+            }
+            NotifyOfPropertyChange(propertyName);
+        }
+
+        #endregion
+
         #region [====== Validation ======]
 
         string IDataErrorInfo.this[string columnName]

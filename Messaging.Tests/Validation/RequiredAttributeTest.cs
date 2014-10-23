@@ -39,15 +39,7 @@ namespace System.ComponentModel.Messaging.Validation
             public object ObjectValue
             {
                 get { return _objectValue; }
-                set
-                {
-                    if (_objectValue != value)
-                    {
-                        _objectValue = value;
-
-                        NotifyOfPropertyChange(() => ObjectValue);
-                    }
-                }
+                set { SetValue(() => ObjectValue, value, ref _objectValue); }
             }
 
             #endregion
@@ -65,15 +57,7 @@ namespace System.ComponentModel.Messaging.Validation
             public String StringValueThatCannotBeEmpty
             {
                 get { return _stringValueThatCannotBeEmpty; }
-                set
-                {
-                    if (_stringValueThatCannotBeEmpty != value)
-                    {
-                        _stringValueThatCannotBeEmpty = value;
-
-                        NotifyOfPropertyChange(() => StringValueThatCannotBeEmpty);
-                    }
-                }
+                set { SetValue(() => StringValueThatCannotBeEmpty, value, ref _stringValueThatCannotBeEmpty); }
             }
 
             #endregion
@@ -91,15 +75,7 @@ namespace System.ComponentModel.Messaging.Validation
             public String StringValueThatCannotBeWhiteSpace
             {
                 get { return _stringValueThatCannotBeWhiteSpace; }
-                set
-                {
-                    if (_stringValueThatCannotBeWhiteSpace != value)
-                    {
-                        _stringValueThatCannotBeWhiteSpace = value;
-
-                        NotifyOfPropertyChange(() => StringValueThatCannotBeWhiteSpace);
-                    }
-                }
+                set { SetValue(() => StringValueThatCannotBeWhiteSpace, value, ref _stringValueThatCannotBeWhiteSpace); }
             }
 
             #endregion
@@ -117,15 +93,7 @@ namespace System.ComponentModel.Messaging.Validation
             public int? NullableIntValue
             {
                 get { return _nullableIntValue; }
-                set
-                {
-                    if (_nullableIntValue != value)
-                    {
-                        _nullableIntValue = value;
-
-                        NotifyOfPropertyChange(() => NullableIntValue);
-                    }
-                }
+                set { SetValue(() => NullableIntValue, value, ref _nullableIntValue); }
             }
 
             #endregion       
@@ -143,15 +111,7 @@ namespace System.ComponentModel.Messaging.Validation
             public int IntValue
             {
                 get { return _intValue; }
-                set
-                {
-                    if (_intValue != value)
-                    {
-                        _intValue = value;
-
-                        NotifyOfPropertyChange(() => IntValue);
-                    }
-                }
+                set { SetValue(() => IntValue, value, ref _intValue); }
             }
 
             #endregion
@@ -169,15 +129,7 @@ namespace System.ComponentModel.Messaging.Validation
             public Guid GuidValue
             {
                 get { return _guidValue; }
-                set
-                {
-                    if (_guidValue != value)
-                    {
-                        _guidValue = value;
-
-                        NotifyOfPropertyChange(() => GuidValue);
-                    }
-                }
+                set { SetValue(() => GuidValue, value, ref _guidValue); }
             }
 
             #endregion

@@ -43,15 +43,7 @@ namespace System.ComponentModel.Messaging
             public int Value
             {
                 get { return _value; }
-                set
-                {
-                    if (_value != value)
-                    {
-                        _value = value;
-
-                        NotifyOfPropertyChange(() => Value);
-                    }
-                }
+                set { SetValue(() => Value, value, ref _value); }
             }
 
             #endregion
@@ -81,8 +73,7 @@ namespace System.ComponentModel.Messaging
                 _value = value;
             }
 
-            private ChildMessage(ChildMessage message, bool makeReadOnly)
-                : base(message, makeReadOnly)
+            private ChildMessage(ChildMessage message, bool makeReadOnly): base(message, makeReadOnly)
             {
                 _value = message._value;
             }
@@ -101,15 +92,7 @@ namespace System.ComponentModel.Messaging
             public int Value
             {
                 get { return _value; }
-                set
-                {
-                    if (_value != value)
-                    {
-                        _value = value;
-
-                        NotifyOfPropertyChange(() => Value);
-                    }
-                }
+                set { SetValue(() => Value, value, ref _value); }
             }
 
             #endregion

@@ -27,30 +27,14 @@ namespace System.ComponentModel.Messaging
             public object IrrelevantValue
             {
                 get { return _irrelevantValue; }
-                set
-                {
-                    if (_irrelevantValue != value)
-                    {
-                        _irrelevantValue = value;
-
-                        NotifyOfPropertyChange(() => IrrelevantValue);
-                    }
-                }
+                set { SetValue(() => IrrelevantValue, value, ref _irrelevantValue); }
             }
 
             [RequestMessageProperty(PropertyChangedOption.MarkAsChanged)]
             public Guid CustomerId
             {
                 get { return _customerId; }
-                set
-                {
-                    if (_customerId != value)
-                    {
-                        _customerId = value;
-
-                        NotifyOfPropertyChange(() => CustomerId);
-                    }
-                }
+                set { SetValue(() => CustomerId, value, ref _customerId); }                                                   
             }
 
             [Required]
@@ -58,15 +42,7 @@ namespace System.ComponentModel.Messaging
             public string CustomerName
             {
                 get { return _customerName; }
-                set
-                {
-                    if (_customerName != value)
-                    {
-                        _customerName = value;
-
-                        NotifyOfPropertyChange(() => CustomerName);
-                    }
-                }
+                set { SetValue(() => CustomerName, value, ref _customerName); }
             }
 
             public override RequestMessage Copy(bool makeReadOnly)
