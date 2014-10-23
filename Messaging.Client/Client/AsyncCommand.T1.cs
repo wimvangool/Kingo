@@ -4,13 +4,13 @@ using System.Windows.Input;
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Provides a basic implementation of the <see cref="IRequestDispatcherCommand" /> interface.
+    /// Provides a basic implementation of the <see cref="INotifyIsExecuting" /> interface.
     /// </summary>       
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
-    public class AsyncCommand<TParameter> : PropertyChangedBase, IRequestDispatcherCommand       
+    public class AsyncCommand<TParameter> : PropertyChangedBase, INotifyIsExecuting       
     {
         private readonly IRequestDispatcher _dispatcher;
-        private readonly IIsValidIndicator _isValidIndicator;        
+        private readonly INotifyIsValid _isValidIndicator;        
         private readonly AsyncCommandOptions _options;
         private readonly List<IAsyncExecutionTask> _runningTasks;
 
@@ -34,7 +34,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, IIsValidIndicator isValidIndicator)
+        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator)
             : this(dispatcher, isValidIndicator, AsyncCommandOptions.None) { }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, IIsValidIndicator isValidIndicator, AsyncCommandOptions options)
+        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator, AsyncCommandOptions options)
         {
             if (dispatcher == null)
             {
@@ -75,7 +75,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <summary>
         /// Returns the indicator that indicates whether or not the associated request is valid to execute.
         /// </summary>
-        protected IIsValidIndicator IsValidIndicator
+        protected INotifyIsValid IsValidIndicator
         {
             get { return _isValidIndicator; }
         }       
@@ -275,19 +275,19 @@ namespace System.ComponentModel.Messaging.Client
 
         #region [====== IsValidIndicator ======]
 
-        event EventHandler IIsValidIndicator.IsValidChanged
+        event EventHandler INotifyIsValid.IsValidChanged
         {
             add { IsValidIndicator.IsValidChanged += value; }
             remove { IsValidIndicator.IsValidChanged -= value; }
         }
 
-        bool IIsValidIndicator.IsValid
+        bool INotifyIsValid.IsValid
         {
             get { return IsValidIndicator.IsValid; }
         }
 
         /// <summary>
-        /// Executes as soon as <see cref="IIsValidIndicator.IsValidChanged" /> is raised.
+        /// Executes as soon as <see cref="INotifyIsValid.IsValidChanged" /> is raised.
         /// </summary>
         protected virtual void OnIsValidChanged()
         {
@@ -299,13 +299,13 @@ namespace System.ComponentModel.Messaging.Client
 
         #region [====== IsBusyIndicator ======]
 
-        event EventHandler IIsBusyIndicator.IsBusyChanged
+        event EventHandler INotifyIsBusy.IsBusyChanged
         {
             add { IsExecutingChanged += value; }
             remove { IsExecutingChanged -= value; }
         }
 
-        bool IIsBusyIndicator.IsBusy
+        bool INotifyIsBusy.IsBusy
         {
             get { return IsExecuting; }
         }

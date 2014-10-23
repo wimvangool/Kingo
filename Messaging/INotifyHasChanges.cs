@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a component that can indicate whether or not it has any changes.
     /// </summary>
-    public interface IHasChangesIndicator : INotifyPropertyChanged
+    public interface INotifyHasChanges : INotifyPropertyChanged
     {
         /// <summary>
         /// Occurs when <see cref="HasChanges" /> changed.

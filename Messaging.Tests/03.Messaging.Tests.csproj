@@ -83,7 +83,7 @@
     <Compile Include="Server\MessageProcessorStub.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
-    <Compile Include="MessageWithValidationTest.cs" />
+    <Compile Include="RequestMessagePropertyTest.cs" />
     <Compile Include="Server\MessageHandlerClassTest.cs" />
     <Compile Include="Server\MessageHandlerFactoryStub.cs" />
     <Compile Include="Server\MessageProcessorTest.cs" />

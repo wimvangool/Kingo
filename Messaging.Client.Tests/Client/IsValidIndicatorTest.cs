@@ -4,12 +4,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel.Messaging.Client
 {
     [TestClass]
-    public sealed class CompositeIsValidIndicatorTest
+    public sealed class IsValidIndicatorTest
     {
         [TestMethod]
         public void IsValid_ReturnsTrue_WhenNoChildrenAreAdded()
         {
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
 
             Assert.IsTrue(indicator.IsValid);
         }
@@ -17,7 +17,10 @@ namespace System.ComponentModel.Messaging.Client
         [TestMethod]
         public void IsValid_ReturnsTrue_WhenAddedChildIsValid()
         {
-            var indicator = new CompositeIsValidIndicator(new IsValidIndicatorStub(true));
+            var indicator = new IsValidIndicator()
+            {
+                new IsValidIndicatorStub(true)
+            };
 
             Assert.IsTrue(indicator.IsValid);
         }
@@ -25,7 +28,10 @@ namespace System.ComponentModel.Messaging.Client
         [TestMethod]
         public void IsValid_ReturnsFalse_WhenAddedChildIsNotValid()
         {
-            var indicator = new CompositeIsValidIndicator(new IsValidIndicatorStub(false));
+            var indicator = new IsValidIndicator()
+            {
+                new IsValidIndicatorStub(false)
+            };
 
             Assert.IsFalse(indicator.IsValid);
         }
@@ -33,7 +39,11 @@ namespace System.ComponentModel.Messaging.Client
         [TestMethod]
         public void IsValid_ReturnsFalse_WhenAnyAddedChildIsNotValid()
         {
-            var indicator = new CompositeIsValidIndicator(new IsValidIndicatorStub(false), new IsValidIndicatorStub(true));
+            var indicator = new IsValidIndicator()
+            {
+                new IsValidIndicatorStub(false),
+                new IsValidIndicatorStub(true)
+            };
 
             Assert.IsFalse(indicator.IsValid);
         }
@@ -42,16 +52,16 @@ namespace System.ComponentModel.Messaging.Client
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddRange_Throws_IfCollectionIsNull()
         {
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
 
-            indicator.AddRange(null as IEnumerable<IIsValidIndicator>);
+            indicator.AddRange(null as IEnumerable<INotifyIsValid>);
         }
 
         [TestMethod]
         public void IsValidChanged_IsRaised_WhenChildIsAdded()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
 
             indicator.IsValidChanged += (s, e) => raiseCount++;
             indicator.PropertyChanged += (s, e) => IncrementIfIsValidChanged(e, ref raiseCount);
@@ -65,7 +75,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsRaised_WhenMultipleChildsAreAdded()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
 
             indicator.IsValidChanged += (s, e) => raiseCount++;
             indicator.PropertyChanged += (s, e) => IncrementIfIsValidChanged(e, ref raiseCount);
@@ -79,7 +89,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsNotRaised_WhenAddedChildIsNull()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
 
             indicator.IsValidChanged += (s, e) => raiseCount++;
             indicator.PropertyChanged += (s, e) => IncrementIfIsValidChanged(e, ref raiseCount);
@@ -93,7 +103,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsNotRaised_WhenAddedChildWasAlreadyAddedBefore()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
             var child = new IsValidIndicatorStub(false);
 
             indicator.IsValidChanged += (s, e) => raiseCount++;
@@ -109,7 +119,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsRaised_WhenChildIsRemoved()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
             var child = new IsValidIndicatorStub(false);
 
             indicator.Add(child);
@@ -125,7 +135,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsNotRaised_WhenChildToRemoveIsNull()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
             var child = new IsValidIndicatorStub(false);
 
             indicator.Add(child);
@@ -141,7 +151,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsNotRaised_WhenChildToRemoveDoesNotExist()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
             var child = new IsValidIndicatorStub(false);
 
             indicator.IsValidChanged += (s, e) => raiseCount++;
@@ -156,7 +166,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsRaised_WhenIndicatorIsCleared()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
             var child = new IsValidIndicatorStub(false);
 
             indicator.Add(child);
@@ -172,7 +182,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsNotRaised_WhenIndicatorIsClearedButWasAlreadyEmpty()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
 
             indicator.IsValidChanged += (s, e) => raiseCount++;
             indicator.PropertyChanged += (s, e) => IncrementIfIsValidChanged(e, ref raiseCount);
@@ -186,7 +196,7 @@ namespace System.ComponentModel.Messaging.Client
         public void IsValidChanged_IsRaised_WhenChildIsValidChanged()
         {
             int raiseCount = 0;
-            var indicator = new CompositeIsValidIndicator();
+            var indicator = new IsValidIndicator();
             var child = new IsValidIndicatorStub(false);
 
             indicator.Add(child);

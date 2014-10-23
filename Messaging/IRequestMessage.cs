@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a request-message that supports change-tracking and validation.
     /// </summary>
-    public interface IRequestMessage : IMessage, IHasChangesIndicator, IIsValidIndicator, IDataErrorInfo
+    public interface IRequestMessage : IMessage, INotifyHasChanges, INotifyIsValid, IDataErrorInfo
     {
         /// <summary>
         /// Marks this message as unchanged.

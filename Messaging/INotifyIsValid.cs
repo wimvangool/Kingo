@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a component that can indicate whether or not it is valid.
     /// </summary>
-    public interface IIsValidIndicator : INotifyPropertyChanged
+    public interface INotifyIsValid : INotifyPropertyChanged
     {
         /// <summary>
         /// Occurs when <see cref="IsValid" /> changed.

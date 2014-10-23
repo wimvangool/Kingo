@@ -89,14 +89,14 @@ namespace System.ComponentModel.Messaging.Client
 
         #region [====== IsBusyIndicator ======]
 
-        event EventHandler IIsBusyIndicator.IsBusyChanged
+        event EventHandler INotifyIsBusy.IsBusyChanged
         {
             add { _isBusyChangedHandlers += value; }
             remove { _isBusyChangedHandlers -= value; }
         }
 
         /// <summary>
-        /// Raises the <see cref="IIsBusyIndicator.IsBusyChanged" /> event.
+        /// Raises the <see cref="INotifyIsBusy.IsBusyChanged" /> event.
         /// </summary>
         protected virtual void OnIsBusyChanged()
         {
@@ -105,7 +105,7 @@ namespace System.ComponentModel.Messaging.Client
             NotifyOfPropertyChange("IsBusy");
         }
 
-        bool IIsBusyIndicator.IsBusy
+        bool INotifyIsBusy.IsBusy
         {
             get { return Status == AsyncExecutionTaskStatus.Running; }
         }

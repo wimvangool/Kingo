@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
-    internal sealed class IsValidIndicatorStub : PropertyChangedBase, IIsValidIndicator
+    internal sealed class IsValidIndicatorStub : PropertyChangedBase, INotifyIsValid
     {
         private bool _isValid;
 

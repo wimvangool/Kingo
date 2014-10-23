@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a task that encapsulates the asynchronous execution of a request.
     /// </summary>
-    public interface IAsyncExecutionTask : IIsBusyIndicator
+    public interface IAsyncExecutionTask : INotifyIsBusy
     {
         /// <summary>
         /// Returns the identifier of this task.

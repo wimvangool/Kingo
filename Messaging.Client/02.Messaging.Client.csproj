@@ -66,10 +66,10 @@
     <Compile Include="Client\ClientEventBusConnection.cs" />
     <Compile Include="Client\AsyncCommand.T1.cs" />
     <Compile Include="Client\AsyncCommandOptions.cs" />
-    <Compile Include="Client\CompositeHasChangesIndicator.cs" />
-    <Compile Include="Client\CompositeIsBusyIndicator.cs" />
-    <Compile Include="Client\CompositeIsValidIndicator.cs" />
-    <Compile Include="Client\IRequestDispatcherCommand.cs" />
+    <Compile Include="Client\HasChangesIndicator.cs" />
+    <Compile Include="Client\IsBusyIndicator.cs" />
+    <Compile Include="Client\IsValidIndicator.cs" />
+    <Compile Include="Client\INotifyIsExecuting.cs" />
     <Compile Include="Client\ICompositeCommand.cs" />
     <Compile Include="Client\OneToManyCommand.cs" />
     <Compile Include="Client\OneToManyCommandConnection.cs" />

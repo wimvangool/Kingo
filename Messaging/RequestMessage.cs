@@ -206,6 +206,15 @@ namespace System.ComponentModel.Messaging
             }
         }
 
+        private void MarkAsChanged()
+        {
+            if (_isReadOnly)
+            {
+                throw NewMessageIsReadOnlyException(this);
+            }
+            HasChanges = true;
+        }
+
         /// <inheritdoc />
         public void AcceptChanges()
         {
@@ -257,26 +266,18 @@ namespace System.ComponentModel.Messaging
                     return;
 
                 case PropertyChangedOption.MarkAsChanged:
-                    if (_isReadOnly)
-                    {
-                        throw NewMessageIsReadOnlyException(this);
-                    }
-                    HasChanges = true;
+                    MarkAsChanged();
                     return;
 
                 case PropertyChangedOption.MarkAsChangedAndValidate:
-                    if (_isReadOnly)
-                    {
-                        throw NewMessageIsReadOnlyException(this);
-                    }
-                    HasChanges = true;
+                    MarkAsChanged();
                     Validate();
                     return;
 
                 default:
                     throw NewInvalidOptionException(option);
             }   
-        }        
+        }
 
         #endregion
 

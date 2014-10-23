@@ -76,7 +76,7 @@ namespace System.ComponentModel.Messaging
         #region [====== Change Assertion ======]
 
         /// <summary>
-        /// Asserts that the <see cref="IHasChangesIndicator.HasChangesChanged" />-event was raised exactly <paramref name="times"/> times.
+        /// Asserts that the <see cref="INotifyHasChanges.HasChangesChanged" />-event was raised exactly <paramref name="times"/> times.
         /// </summary>
         /// <param name="times">The expected number of times the event was raied.</param>
         /// <exception cref="ArgumentOutOfRangeException">
@@ -159,7 +159,7 @@ namespace System.ComponentModel.Messaging
         #region [====== Validation Assertion ======]
 
         /// <summary>
-        /// Asserts that the <see cref="IIsValidIndicator.IsValidChanged" />-event was raised exactly <paramref name="times"/> times.
+        /// Asserts that the <see cref="INotifyIsValid.IsValidChanged" />-event was raised exactly <paramref name="times"/> times.
         /// </summary>
         /// <param name="times">The expected number of times the event was raied.</param>
         /// <exception cref="ArgumentOutOfRangeException">

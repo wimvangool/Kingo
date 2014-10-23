@@ -1,7 +1,7 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Provides a basic implementation of the <see cref="IRequestDispatcherCommand" /> interface.
+    /// Provides a basic implementation of the <see cref="INotifyIsExecuting" /> interface.
     /// </summary>  
     public class AsyncCommand : AsyncCommand<object>
     {
@@ -25,7 +25,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, IIsValidIndicator isValidIndicator)
+        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator)
             : base(dispatcher, isValidIndicator) { }
 
         /// <summary>
@@ -41,7 +41,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, IIsValidIndicator isValidIndicator, AsyncCommandOptions options)
+        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator, AsyncCommandOptions options)
             : base(dispatcher, isValidIndicator, options) { }
 
         /// <inheritdoc />

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a component that can indicate whether or not it is busy.
     /// </summary>
-    public interface IIsBusyIndicator : INotifyPropertyChanged
+    public interface INotifyIsBusy : INotifyPropertyChanged
     {
         /// <summary>
         /// Occurs when <see cref="IsBusy" /> changed.

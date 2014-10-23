@@ -1,22 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.Messaging.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Messaging
 {
     [TestClass]
-    public sealed class MessageWithValidationTest
+    public sealed class RequestMessagePropertyTest
     {
         #region [====== MessageWithValidation ======]
 
-        private sealed class MessageWithValidation : RequestMessage
+        private sealed class TestMessage : RequestMessage
         {
             private object _irrelevantValue;
             private Guid _customerId;
             private string _customerName;
 
-            public MessageWithValidation() { }
+            public TestMessage() { }
 
-            private MessageWithValidation(MessageWithValidation message, bool makeReadOnly) : base(message, makeReadOnly)
+            private TestMessage(TestMessage message, bool makeReadOnly) : base(message, makeReadOnly)
             {
                 _irrelevantValue = message._irrelevantValue;
                 _customerId = message._customerId;
@@ -71,7 +71,7 @@ namespace System.ComponentModel.Messaging
 
             public override RequestMessage Copy(bool makeReadOnly)
             {
-                return new MessageWithValidation(this, makeReadOnly);
+                return new TestMessage(this, makeReadOnly);
             }
         }
 
@@ -82,7 +82,7 @@ namespace System.ComponentModel.Messaging
         [TestMethod]
         public void Message_HasNoChanges_WhenJustCreated()
         {            
-            var message = new MessageWithValidation();
+            var message = new TestMessage();
 
             Assert.IsFalse(message.HasChanges);
         }
@@ -92,7 +92,7 @@ namespace System.ComponentModel.Messaging
         {
             bool eventWasRaised = false;
 
-            var message = new MessageWithValidation();
+            var message = new TestMessage();
             message.PropertyChanged += (s, e) =>
             {
                 eventWasRaised = eventWasRaised || (e.PropertyName == "IrrelevantValue");
@@ -108,7 +108,7 @@ namespace System.ComponentModel.Messaging
         {
             bool eventWasRaised = false;
 
-            var message = new MessageWithValidation();
+            var message = new TestMessage();
             message.PropertyChanged += (s, e) =>
             {
                 eventWasRaised = eventWasRaised || (e.PropertyName == "CustomerId");
@@ -124,7 +124,7 @@ namespace System.ComponentModel.Messaging
         {
             bool eventWasRaised = false;
 
-            var message = new MessageWithValidation();
+            var message = new TestMessage();
             message.PropertyChanged += (s, e) =>
             {
                 eventWasRaised = eventWasRaised || (e.PropertyName == "CustomerName");
@@ -140,7 +140,7 @@ namespace System.ComponentModel.Messaging
         {            
             bool eventWasRaised;
 
-            var message = new MessageWithValidation();
+            var message = new TestMessage();
             message.HasChangesChanged += (s, e) => eventWasRaised = true;
 
             // From false to false.
@@ -166,7 +166,7 @@ namespace System.ComponentModel.Messaging
         {
             bool eventWasRaised;
 
-            var message = new MessageWithValidation();
+            var message = new TestMessage();
             message.PropertyChanged += (s, e) => eventWasRaised = (e.PropertyName == "HasChanges");
 
             // From false to false.
@@ -190,7 +190,7 @@ namespace System.ComponentModel.Messaging
         [TestMethod]
         public void Message_Copy_ReturnsCopyThatHasNoChanges()
         {
-            var message = new MessageWithValidation()
+            var message = new TestMessage()
             {
                 IrrelevantValue = new object(),
                 CustomerId = Guid.NewGuid(),
@@ -208,13 +208,13 @@ namespace System.ComponentModel.Messaging
         [TestMethod]
         public void ReadOnlyMessage_CanChangeProperty_IfOptionIsNone()
         {
-            var message = new MessageWithValidation()
+            var message = new TestMessage()
             {
                 IrrelevantValue = new object(),
                 CustomerId = Guid.NewGuid(),
                 CustomerName = "Bob"
             };
-            var copy = message.Copy(true) as MessageWithValidation;
+            var copy = message.Copy(true) as TestMessage;
 
             Assert.IsNotNull(copy);
 
@@ -225,13 +225,13 @@ namespace System.ComponentModel.Messaging
         [ExpectedException(typeof(InvalidOperationException))]
         public void ReadOnlyMessage_CannotChangeProperty_IfOptionIsMarkAsChanged()
         {
-            var message = new MessageWithValidation()
+            var message = new TestMessage()
             {
                 IrrelevantValue = new object(),
                 CustomerId = Guid.NewGuid(),
                 CustomerName = "Bob"
             };
-            var copy = message.Copy(true) as MessageWithValidation;
+            var copy = message.Copy(true) as TestMessage;
 
             Assert.IsNotNull(copy);
 
@@ -242,13 +242,13 @@ namespace System.ComponentModel.Messaging
         [ExpectedException(typeof(InvalidOperationException))]
         public void ReadOnlyMessage_CannotChangeProperty_IfOptionIsMarkAsChangedAndValidate()
         {
-            var message = new MessageWithValidation()
+            var message = new TestMessage()
             {
                 IrrelevantValue = new object(),
                 CustomerId = Guid.NewGuid(),
                 CustomerName = "Bob"
             };
-            var copy = message.Copy(true) as MessageWithValidation;
+            var copy = message.Copy(true) as TestMessage;
 
             Assert.IsNotNull(copy);
 
@@ -262,10 +262,29 @@ namespace System.ComponentModel.Messaging
         [TestMethod]
         public void Message_IsInvalid_WhenJustCreated()
         {
-            var message = new MessageWithValidation();
+            var message = new TestMessage();
 
             Assert.IsFalse(message.IsValid);
         }
+
+        [TestMethod]
+        public void Message_IsValidated_WhenPropertyWithOptionValidateHasChanged()
+        {
+            bool eventWasRaised = false;
+
+            var message = new TestMessage();
+
+            message.PropertyChanged += (s, e) =>
+            {
+                eventWasRaised = eventWasRaised || (e.PropertyName == "IsValid");
+            };
+            message.CustomerName = "Some Customer";
+
+            Assert.IsTrue(eventWasRaised);
+            Assert.IsTrue(message.IsValid);
+        }
+
+
 
         #endregion
     }

@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
-    internal sealed class HasChangesIndicatorStub : PropertyChangedBase, IHasChangesIndicator
+    internal sealed class HasChangesIndicatorStub : PropertyChangedBase, INotifyHasChanges
     {
         private bool _hasChanges;
 

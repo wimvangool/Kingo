@@ -27,8 +27,7 @@ namespace System.ComponentModel.Messaging.Validation
             }
 
             #region [====== ObjectValue ======]
-
-            [UsedImplicitly]
+           
             public static string ObjectValueLabel
             {
                 get { return "[Object]"; }
@@ -53,27 +52,130 @@ namespace System.ComponentModel.Messaging.Validation
 
             #endregion
 
-            #region [====== StringValue ======]
-
-            [UsedImplicitly]
-            public static string StringValueLabel
+            #region [====== StringValueThatCannotBeEmpty ======]
+            
+            public static string StringValueThatCannotBeEmptyLabel
             {
-                get { return "[String]"; }
+                get { return "[StringThatCannotBeEmpty]"; }
             }
 
-            private String _stringValue;
+            private String _stringValueThatCannotBeEmpty;
 
             [Required(StringConstraint = RequiredStringConstraint.NotNullOrEmpty)]           
-            public String StringValue
+            public String StringValueThatCannotBeEmpty
             {
-                get { return _stringValue; }
+                get { return _stringValueThatCannotBeEmpty; }
                 set
                 {
-                    if (_stringValue != value)
+                    if (_stringValueThatCannotBeEmpty != value)
                     {
-                        _stringValue = value;
+                        _stringValueThatCannotBeEmpty = value;
 
-                        NotifyOfPropertyChange(() => StringValue);
+                        NotifyOfPropertyChange(() => StringValueThatCannotBeEmpty);
+                    }
+                }
+            }
+
+            #endregion
+
+            #region [====== StringValueThatCannotBeWhiteSpace ======]
+            
+            public static string StringValueThatCannotBeWhiteSpaceLabel
+            {
+                get { return "[StringThatCannotBeWhiteSpace]"; }
+            }
+
+            private String _stringValueThatCannotBeWhiteSpace;
+
+            [Required(StringConstraint = RequiredStringConstraint.NotNullOrWhiteSpace)]
+            public String StringValueThatCannotBeWhiteSpace
+            {
+                get { return _stringValueThatCannotBeWhiteSpace; }
+                set
+                {
+                    if (_stringValueThatCannotBeWhiteSpace != value)
+                    {
+                        _stringValueThatCannotBeWhiteSpace = value;
+
+                        NotifyOfPropertyChange(() => StringValueThatCannotBeWhiteSpace);
+                    }
+                }
+            }
+
+            #endregion
+
+            #region [====== NullableIntValue ======]
+
+            public static string NullableIntValueLabel
+            {
+                get { return "[NullableIntValue]"; }
+            }
+
+            private int? _nullableIntValue;
+
+            [Required]
+            public int? NullableIntValue
+            {
+                get { return _nullableIntValue; }
+                set
+                {
+                    if (_nullableIntValue != value)
+                    {
+                        _nullableIntValue = value;
+
+                        NotifyOfPropertyChange(() => NullableIntValue);
+                    }
+                }
+            }
+
+            #endregion       
+     
+            #region [====== IntValue ======]
+
+            public static string IntValueLabel
+            {
+                get { return "[IntValue]"; }
+            }
+
+            private int _intValue;
+
+            [Required]
+            public int IntValue
+            {
+                get { return _intValue; }
+                set
+                {
+                    if (_intValue != value)
+                    {
+                        _intValue = value;
+
+                        NotifyOfPropertyChange(() => IntValue);
+                    }
+                }
+            }
+
+            #endregion
+
+            #region [====== GuidValue ======]
+
+            public static string GuidValueLabel
+            {
+                get { return "[GuidValue]"; }
+            }
+
+            private Guid _guidValue;
+
+            [Required]
+            public Guid GuidValue
+            {
+                get { return _guidValue; }
+                set
+                {
+                    if (_guidValue != value)
+                    {
+                        _guidValue = value;
+
+                        NotifyOfPropertyChange(() => GuidValue);
                     }
                 }
             }
@@ -83,6 +185,7 @@ namespace System.ComponentModel.Messaging.Validation
 
         #endregion
 
+        private readonly Random _random = new Random();
         private TestMessage _message;
 
         private IDataErrorInfo ErrorInfo
@@ -93,9 +196,15 @@ namespace System.ComponentModel.Messaging.Validation
         [TestInitialize]
         public void Setup()
         {
-            _message = new TestMessage();
-            _message.ObjectValue = new object();
-            _message.StringValue = "Something";
+            _message = new TestMessage()
+            {
+                ObjectValue = new object(),
+                StringValueThatCannotBeEmpty = "Something",
+                StringValueThatCannotBeWhiteSpace = "Something Else",
+                NullableIntValue = _random.Next(),
+                IntValue = _random.Next(1, int.MaxValue),
+                GuidValue = Guid.NewGuid()
+            };            
         }
 
         [TestMethod]
@@ -118,13 +227,53 @@ namespace System.ComponentModel.Messaging.Validation
         }
 
         [TestMethod]
-        public void Message_IsMarkedInvalid_IfRequiredStringIsEmpty()
+        public void Message_IsMarkedInvalid_IfStringThatCannotBeEmptyIsEmpty()
         {
-            _message.StringValue = string.Empty;
+            _message.StringValueThatCannotBeEmpty = string.Empty;
             _message.Validate();
 
             Assert.IsFalse(_message.IsValid);
-            AssertErrorMessage(ErrorInfo["StringValue"], TestMessage.StringValueLabel);
+            AssertErrorMessage(ErrorInfo["StringValueThatCannotBeEmpty"], TestMessage.StringValueThatCannotBeEmptyLabel);
+        }
+
+        [TestMethod]
+        public void Message_IsMarkedInvalid_IfStringThatCannotBeWhiteSpaceIsWhiteSpace()
+        {
+            _message.StringValueThatCannotBeWhiteSpace = new string(' ', _random.Next(1, 20));
+            _message.Validate();
+
+            Assert.IsFalse(_message.IsValid);
+            AssertErrorMessage(ErrorInfo["StringValueThatCannotBeWhiteSpace"], TestMessage.StringValueThatCannotBeWhiteSpaceLabel);
+        }
+
+        [TestMethod]
+        public void Message_IsMarkedInvalid_IfRequiredNullableIntValueIsNull()
+        {
+            _message.NullableIntValue = null;
+            _message.Validate();
+
+            Assert.IsFalse(_message.IsValid);
+            AssertErrorMessage(ErrorInfo["NullableIntValue"], TestMessage.NullableIntValueLabel);
+        }
+
+        [TestMethod]
+        public void Message_IsMarkedInvalid_IfRequiredIntValueIsZero()
+        {
+            _message.IntValue = 0;
+            _message.Validate();
+
+            Assert.IsFalse(_message.IsValid);
+            AssertErrorMessage(ErrorInfo["IntValue"], TestMessage.IntValueLabel);
+        }
+
+        [TestMethod]
+        public void Message_IsMarkedInvalid_IfRequiredGuidValueIsEmpty()
+        {
+            _message.GuidValue = Guid.Empty;
+            _message.Validate();
+
+            Assert.IsFalse(_message.IsValid);
+            AssertErrorMessage(ErrorInfo["GuidValue"], TestMessage.GuidValueLabel);
         }
 
         private static void AssertErrorMessage(string errorMessage, string expectedLabel)

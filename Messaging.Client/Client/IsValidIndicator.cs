@@ -1,69 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a <see cref="IIsValidIndicator" /> that is composed of other indicators.
+    /// Represents a <see cref="INotifyIsValid" /> that is composed of other indicators.
     /// </summary>
-    public class CompositeIsValidIndicator : PropertyChangedBase, IIsValidIndicator
+    public class IsValidIndicator : PropertyChangedBase, INotifyIsValid, IEnumerable<INotifyIsValid>
     {
-        private readonly List<IIsValidIndicator> _indicators;
+        private readonly List<INotifyIsValid> _indicators;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class.
+        /// Initializes a new instance of the <see cref="IsValidIndicator" /> class.
         /// </summary>
-        public CompositeIsValidIndicator()
+        public IsValidIndicator()
         {
-            _indicators = new List<IIsValidIndicator>();
-        }
+            _indicators = new List<INotifyIsValid>();
+        }        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds the two
-        /// specified indicators to this instance.
-        /// </summary>        
-        public CompositeIsValidIndicator(IIsValidIndicator a, IIsValidIndicator b)
-            : this()
-        {
-            Add(a);
-            Add(b);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds the three
-        /// specified indicators to this instance.
-        /// </summary>        
-        public CompositeIsValidIndicator(IIsValidIndicator a, IIsValidIndicator b, IIsValidIndicator c)
-            : this()
-        {
-            Add(a);
-            Add(b);
-            Add(c);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds all
+        /// Initializes a new instance of the <see cref="IsValidIndicator" /> class and adds all
         /// specified indicators to this instance.
         /// </summary>
         /// <param name="indicators">The list of indicators to add to this instance.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public CompositeIsValidIndicator(params IIsValidIndicator[] indicators)
-            : this(indicators as IEnumerable<IIsValidIndicator>) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeIsValidIndicator" /> class and adds all
-        /// specified indicators to this instance.
-        /// </summary>
-        /// <param name="indicators">The list of indicators to add to this instance.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="indicators"/> is <c>null</c>.
-        /// </exception>
-        public CompositeIsValidIndicator(IEnumerable<IIsValidIndicator> indicators)
-            : this()
+        public IsValidIndicator(IEnumerable<INotifyIsValid> indicators)         
         {
-            AddRange(indicators);
+            if (indicators == null)
+            {
+                throw new ArgumentNullException("indicators");
+            }
+            _indicators = new List<INotifyIsValid>();
+
+            foreach (var indicator in indicators)
+            {
+                Add(indicator, false);
+            }
         }
 
         #region [====== IsValidIndicator ======]
@@ -100,9 +75,9 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void AddRange(params IIsValidIndicator[] indicators)
+        public void AddRange(params INotifyIsValid[] indicators)
         {
-            AddRange(indicators as IEnumerable<IIsValidIndicator>);
+            AddRange(indicators as IEnumerable<INotifyIsValid>);
         }
 
         /// <summary>
@@ -112,7 +87,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="indicators"/> is <c>null</c>.
         /// </exception>
-        public void AddRange(IEnumerable<IIsValidIndicator> indicators)
+        public void AddRange(IEnumerable<INotifyIsValid> indicators)
         {
             if (indicators == null)
             {
@@ -132,12 +107,12 @@ namespace System.ComponentModel.Messaging.Client
         /// <remarks>
         /// <paramref name="indicator"/> is only added if it not <c>null</c> and not already present.
         /// </remarks>
-        public void Add(IIsValidIndicator indicator)
+        public void Add(INotifyIsValid indicator)
         {
             Add(indicator, true);
         }
 
-        private void Add(IIsValidIndicator indicator, bool raiseIsValidChanged)
+        private void Add(INotifyIsValid indicator, bool raiseIsValidChanged)
         {
             if (indicator == null || _indicators.Contains(indicator))
             {
@@ -157,12 +132,12 @@ namespace System.ComponentModel.Messaging.Client
         /// Removes the specified <paramref name="indicator"/> from this indicator.
         /// </summary>
         /// <param name="indicator">The indicator to remove.</param>
-        public void Remove(IIsValidIndicator indicator)
+        public void Remove(INotifyIsValid indicator)
         {
             Remove(indicator, true);
         }
 
-        private void Remove(IIsValidIndicator indicator, bool raiseIsValidChanged)
+        private void Remove(INotifyIsValid indicator, bool raiseIsValidChanged)
         {
             if (_indicators.Contains(indicator))
             {
@@ -186,13 +161,27 @@ namespace System.ComponentModel.Messaging.Client
             {
                 return;
             }
-            var indicators = new List<IIsValidIndicator>(_indicators);
+            var indicators = new List<INotifyIsValid>(_indicators);
             
             foreach (var indicator in indicators)
             {
                 Remove(indicator, false);
             }
             OnIsValidChanged();
+        }
+
+        #endregion
+
+        #region [====== Enumerable ======]
+
+        public IEnumerator<INotifyIsValid> GetEnumerator()
+        {
+            return _indicators.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _indicators.GetEnumerator();
         }
 
         #endregion

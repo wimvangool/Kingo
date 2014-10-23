@@ -23,9 +23,9 @@ namespace System.ComponentModel.Messaging.Validation
             _validationMethods = new Dictionary<Type, Func<object, ValidationContext, ValidationResult>>()
 		    {
 			    { typeof(string), (value, context) => IsValidString((string) value, context, StringConstraint) },
-			    { typeof(byte), (value, context) => IsValidInteger((long) value, context) },
-			    { typeof(short), (value, context) => IsValidInteger((long) value, context) },
-			    { typeof(int), (value, context) => IsValidInteger((long) value, context) },
+			    { typeof(byte), (value, context) => IsValidInteger((byte) value, context) },
+			    { typeof(short), (value, context) => IsValidInteger((short) value, context) },
+			    { typeof(int), (value, context) => IsValidInteger((int) value, context) },
 			    { typeof(long), (value, context) => IsValidInteger((long) value, context) },
 			    { typeof(float), (value, context) => IsValidDouble((double) value, context) },
 			    { typeof(double), (value, context) => IsValidDouble((long) value, context) },
