@@ -87,7 +87,7 @@
     <Compile Include="Client\ExecutionSucceededEventArgs.cs" />
     <Compile Include="Client\ExecutionSucceededEventArgs.T1.cs" />
     <Compile Include="Client\ICommandDispatcher.cs" />
-    <Compile Include="InvalidMessageException.cs" />
+    <Compile Include="InvalidRequestException.cs" />
     <Compile Include="Client\IQueryDispatcher.T1.cs" />
     <Compile Include="Client\IRequestDispatcher.cs" />
     <Compile Include="Client\QueryDispatcher.T1.cs" />

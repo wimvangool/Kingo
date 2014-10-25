@@ -278,8 +278,13 @@ namespace System.ComponentModel.Messaging
 
         string IDataErrorInfo.Error
         {
-            get { return IsValid ? null : ErrorInfo.Error; }
-        }               
+            get { return IsValid ? null : RequestMessageErrorInfo.Concatenate(GetErrorMessages()); }
+        }
+        
+        internal IEnumerable<string> GetErrorMessages()
+        {                  
+            return new[] { ErrorInfo == null ? null : ErrorInfo.Error }.Concat(_attachedMessages.Select(message => message.Error));
+        }
         
         internal RequestMessageErrorInfo ErrorInfo
         {

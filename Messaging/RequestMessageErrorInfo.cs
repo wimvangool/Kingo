@@ -126,16 +126,11 @@ namespace System.ComponentModel.Messaging
                 }
                 errorMessages.Add(result.ErrorMessage);
             }
-        }
-
-        /// <summary>
-        /// Concatenates all specified messages by placing each message on a new line.
-        /// </summary>
-        /// <param name="errorMessages">The messages to concatenate.</param>
-        /// <returns>The concatenated string.</returns>        
-        private static string Concatenate(IEnumerable<string> errorMessages)
+        }        
+        
+        internal static string Concatenate(IEnumerable<string> errorMessages)
         {            
-            return string.Join(Environment.NewLine, errorMessages);
+            return string.Join(Environment.NewLine, errorMessages.Where(error => !string.IsNullOrWhiteSpace(error)));
         }         
     }
 }

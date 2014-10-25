@@ -8,42 +8,42 @@ namespace System.ComponentModel.Messaging
     /// when executing it.
     /// </summary>
     [Serializable]
-    public class InvalidMessageException : RequestExecutionException
+    public class InvalidRequestException : RequestExecutionException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
+        /// Initializes a new instance of the <see cref="InvalidRequestException" /> class.
         /// </summary>
         /// <param name="request">The invalid command.</param>      
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(object request)
+        public InvalidRequestException(IDataErrorInfo request)
             : base(request, CreateMessage(request)) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
+        /// Initializes a new instance of the <see cref="InvalidRequestException" /> class.
         /// </summary>
         /// <param name="request">The invalid command.</param>   
         /// <param name="inner">Cause of this exception.</param>    
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(object request, Exception inner)
+        public InvalidRequestException(IDataErrorInfo request, Exception inner)
             : base(request, CreateMessage(request), inner) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
+        /// Initializes a new instance of the <see cref="InvalidRequestException" /> class.
         /// </summary>
         /// <param name="request">The invalid command.</param>
         /// <param name="message">Message of the exception.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(object request, string message)
+        public InvalidRequestException(object request, string message)
             : base(request, message) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
+        /// Initializes a new instance of the <see cref="InvalidRequestException" /> class.
         /// </summary>
         /// <param name="request">The invalid command.</param>
         /// <param name="message">Message of the exception.</param>
@@ -51,31 +51,24 @@ namespace System.ComponentModel.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="request"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(object request, string message, Exception inner)
+        public InvalidRequestException(object request, string message, Exception inner)
             : base(request, message, inner) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
+        /// Initializes a new instance of the <see cref="InvalidRequestException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected InvalidMessageException(SerializationInfo info, StreamingContext context)
+        protected InvalidRequestException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }        
 
-        private static string CreateMessage(object request)
+        private static string CreateMessage(IDataErrorInfo request)
         {
             if (request == null)
             {
-                return null;
-            }
-            var requestType = request.GetType().Name;
-
-            var errorInfo = request as IDataErrorInfo;
-            if (errorInfo == null)
-            {
-                return string.Format(ExceptionMessages.InvalidCommandException_Message, requestType);    
-            }
-            return string.Format(ExceptionMessages.InvalidCommandException_MessageWithErrors, requestType, Environment.NewLine + errorInfo.Error);
+                throw new ArgumentNullException("request");
+            }                        
+            return string.Format(ExceptionMessages.InvalidCommandException_MessageWithErrors, request.GetType().Name, Environment.NewLine + request.Error);
         }
     }
 }

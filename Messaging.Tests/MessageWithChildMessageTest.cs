@@ -23,8 +23,7 @@ namespace System.ComponentModel.Messaging
                 _value = value;
             }
 
-            private ParentMessage(ParentMessage message, bool makeReadOnly)
-                : base(message, makeReadOnly)
+            private ParentMessage(ParentMessage message, bool makeReadOnly) : base(message, makeReadOnly)
             {
                 _value = message._value;
             }

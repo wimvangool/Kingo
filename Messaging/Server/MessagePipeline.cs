@@ -24,7 +24,7 @@
                     processor.Process(command);
                     return;
                 }
-                throw new InvalidMessageException(command);
+                throw new InvalidRequestException(command);
             }
             throw new ArgumentNullException("command");
         }
@@ -61,7 +61,7 @@
                 {
                     return query.Invoke(request);
                 }
-                throw new InvalidMessageException(request);
+                throw new InvalidRequestException(request);
             }
             throw new ArgumentNullException("request");
         }
