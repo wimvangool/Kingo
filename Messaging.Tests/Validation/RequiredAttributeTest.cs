@@ -39,7 +39,7 @@ namespace System.ComponentModel.Messaging.Validation
             public object ObjectValue
             {
                 get { return _objectValue; }
-                set { SetValue(() => ObjectValue, value, ref _objectValue); }
+                set { SetValue(ref _objectValue, value, () => ObjectValue); }
             }
 
             #endregion
@@ -57,7 +57,7 @@ namespace System.ComponentModel.Messaging.Validation
             public String StringValueThatCannotBeEmpty
             {
                 get { return _stringValueThatCannotBeEmpty; }
-                set { SetValue(() => StringValueThatCannotBeEmpty, value, ref _stringValueThatCannotBeEmpty); }
+                set { SetValue(ref _stringValueThatCannotBeEmpty, value, () => StringValueThatCannotBeEmpty); }
             }
 
             #endregion
@@ -75,7 +75,7 @@ namespace System.ComponentModel.Messaging.Validation
             public String StringValueThatCannotBeWhiteSpace
             {
                 get { return _stringValueThatCannotBeWhiteSpace; }
-                set { SetValue(() => StringValueThatCannotBeWhiteSpace, value, ref _stringValueThatCannotBeWhiteSpace); }
+                set { SetValue(ref _stringValueThatCannotBeWhiteSpace, value, () => StringValueThatCannotBeWhiteSpace); }
             }
 
             #endregion
@@ -93,7 +93,7 @@ namespace System.ComponentModel.Messaging.Validation
             public int? NullableIntValue
             {
                 get { return _nullableIntValue; }
-                set { SetValue(() => NullableIntValue, value, ref _nullableIntValue); }
+                set { SetValue(ref _nullableIntValue, value, () => NullableIntValue); }
             }
 
             #endregion       
@@ -111,7 +111,7 @@ namespace System.ComponentModel.Messaging.Validation
             public int IntValue
             {
                 get { return _intValue; }
-                set { SetValue(() => IntValue, value, ref _intValue); }
+                set { SetValue(ref _intValue, value, () => IntValue); }
             }
 
             #endregion
@@ -129,7 +129,7 @@ namespace System.ComponentModel.Messaging.Validation
             public Guid GuidValue
             {
                 get { return _guidValue; }
-                set { SetValue(() => GuidValue, value, ref _guidValue); }
+                set { SetValue(ref _guidValue, value, () => GuidValue); }
             }
 
             #endregion

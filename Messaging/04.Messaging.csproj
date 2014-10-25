@@ -65,6 +65,7 @@
     <Compile Include="Client\QueryDelegate.T2.cs" />
     <Compile Include="IRequestMessage.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="ObservableCollectionWrapper.T1.cs" />
     <Compile Include="RequestMessageProperty.cs" />
     <Compile Include="RequestMessagePropertyAttribute.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">

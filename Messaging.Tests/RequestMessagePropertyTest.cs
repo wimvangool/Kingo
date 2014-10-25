@@ -27,14 +27,14 @@ namespace System.ComponentModel.Messaging
             public object IrrelevantValue
             {
                 get { return _irrelevantValue; }
-                set { SetValue(() => IrrelevantValue, value, ref _irrelevantValue); }
+                set { SetValue(ref _irrelevantValue, value, () => IrrelevantValue); }
             }
 
             [RequestMessageProperty(PropertyChangedOption.MarkAsChanged)]
             public Guid CustomerId
             {
                 get { return _customerId; }
-                set { SetValue(() => CustomerId, value, ref _customerId); }                                                   
+                set { SetValue(ref _customerId, value, () => CustomerId); }                                                   
             }
 
             [Required]
@@ -42,7 +42,7 @@ namespace System.ComponentModel.Messaging
             public string CustomerName
             {
                 get { return _customerName; }
-                set { SetValue(() => CustomerName, value, ref _customerName); }
+                set { SetValue(ref _customerName, value, () => CustomerName); }
             }
 
             public override RequestMessage Copy(bool makeReadOnly)
@@ -182,7 +182,8 @@ namespace System.ComponentModel.Messaging
         }
 
         [TestMethod]
-        public void ReadOnlyMessage_CanChangeProperty_IfOptionIsNone()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ReadOnlyMessage_CannotChangeProperty_IfOptionIsNone()
         {
             var message = new TestMessage()
             {

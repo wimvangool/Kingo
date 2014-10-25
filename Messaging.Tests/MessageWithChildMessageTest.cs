@@ -43,18 +43,20 @@ namespace System.ComponentModel.Messaging
             public int Value
             {
                 get { return _value; }
-                set { SetValue(() => Value, value, ref _value); }
+                set { SetValue(ref _value, value, () => Value); }
             }
 
             #endregion
 
             #region [====== ChildMessage ======]
 
+            private ChildMessage _child;
+
             [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
             public ChildMessage Child
             {
-                get { return GetMessage(() => Child); }
-                set { SetMessage(() => Child, value); }
+                get { return _child; }
+                set { SetValue(ref _child, value, () => Child); }
             }
 
             #endregion
@@ -92,7 +94,7 @@ namespace System.ComponentModel.Messaging
             public int Value
             {
                 get { return _value; }
-                set { SetValue(() => Value, value, ref _value); }
+                set { SetValue(ref _value, value, () => Value); }
             }
 
             #endregion

@@ -8,7 +8,7 @@ namespace System.ComponentModel.Messaging
     /// <summary>
     /// Represents the result of a validation-step of a message or other component.
     /// </summary>
-    public sealed class RequestMessageErrorInfo : IDataErrorInfo
+    internal sealed class RequestMessageErrorInfo : IDataErrorInfo
     {        
         private readonly List<ValidationResult> _validationResults;
         private readonly Dictionary<string, string> _errorMessagesPerMember;        
@@ -70,7 +70,7 @@ namespace System.ComponentModel.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="validationContext"/> is <c>null</c>.
         /// </exception>
-        public static RequestMessageErrorInfo CreateErrorInfo(ValidationContext validationContext)
+        internal static RequestMessageErrorInfo CreateErrorInfo(ValidationContext validationContext)
         {
             if (validationContext == null)
             {
@@ -132,16 +132,9 @@ namespace System.ComponentModel.Messaging
         /// Concatenates all specified messages by placing each message on a new line.
         /// </summary>
         /// <param name="errorMessages">The messages to concatenate.</param>
-        /// <returns>The concatenated string.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessages"/> is <c>null</c>.
-        /// </exception>
-        public static string Concatenate(IEnumerable<string> errorMessages)
-        {
-            if (errorMessages == null)
-            {
-                throw new ArgumentNullException("errorMessages");
-            }
+        /// <returns>The concatenated string.</returns>        
+        private static string Concatenate(IEnumerable<string> errorMessages)
+        {            
             return string.Join(Environment.NewLine, errorMessages);
         }         
     }
