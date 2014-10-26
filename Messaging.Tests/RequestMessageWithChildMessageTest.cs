@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel.Messaging
 {
     [TestClass]
-    public sealed class MessageWithChildMessageTest
+    public sealed class RequestMessageWithChildMessageTest
     {
         #region [====== ParentMessage ======]
 

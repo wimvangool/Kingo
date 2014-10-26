@@ -162,21 +162,42 @@ namespace System.ComponentModel.Messaging
 
         #endregion
 
-        #region [====== EditableObject ======]
+        #region [====== EditableObject ======]        
+
+        public bool IsInEditMode
+        {
+            get { return RequestMessageEditScope.IsInEditMode(this); }
+        }
+
+        /// <summary>
+        /// Creates and returns a scope in which members of this message can be altered and
+        /// rolled back if required. Validation will be suppressed while the scope is active.
+        /// </summary>
+        /// <returns>A new scope.</returns>
+        public ITransactionalScope CreateEditScope()
+        {
+            return RequestMessageEditScope.BeginEdit(this, true);
+        }
 
         void IEditableObject.BeginEdit()
         {
-            throw new NotImplementedException();
+            RequestMessageEditScope.BeginEdit(this);
+
+            NotifyOfPropertyChange(() => IsInEditMode);
         }
 
         void IEditableObject.CancelEdit()
         {
-            throw new NotImplementedException();
+            RequestMessageEditScope.CancelEdit(this);
+
+            NotifyOfPropertyChange(() => IsInEditMode);
         }
 
         void IEditableObject.EndEdit()
         {
-            throw new NotImplementedException();
+            RequestMessageEditScope.EndEdit(this);
+
+            NotifyOfPropertyChange(() => IsInEditMode);
         }
 
         #endregion
@@ -335,8 +356,8 @@ namespace System.ComponentModel.Messaging
         /// <param name="recursive">
         /// Indicates whether or not any attached messages should also be validated.
         /// </param>
-        protected virtual void Validate(bool recursive)
-        {
+        internal virtual void Validate(bool recursive)
+        {            
             ErrorInfo = RequestMessageErrorInfo.CreateErrorInfo(CreateValidationContext());
 
             if (recursive)
@@ -481,7 +502,7 @@ namespace System.ComponentModel.Messaging
 
         #endregion       
 
-        #region [====== CreateCollection ======]                
+        #region [====== CreateCollection ======]
 
         /// <summary>
         /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
@@ -527,13 +548,13 @@ namespace System.ComponentModel.Messaging
 
         #region [====== Attach and Detach ======]
 
-        protected TMessage AttachCopy<TMessage>(TMessage messageToCopy, bool makeReadOnly) where TMessage : class, IRequestMessage
+        protected TMessage AttachCopy<TMessage>(TMessage messageToCopy) where TMessage : class, IRequestMessage
         {
             if (messageToCopy == null)
             {
                 return null;
             }
-            return Attach((TMessage) messageToCopy.Copy(makeReadOnly));
+            return Attach((TMessage) messageToCopy.Copy(IsReadOnly));
         }
 
         protected TMessage Attach<TMessage>() where TMessage : class, IRequestMessage, new()

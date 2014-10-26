@@ -207,7 +207,7 @@
   <data name="UnitOfWorkScope_IncorrectNestingOrWrongThread" xml:space="preserve">
     <value>The scope was incorrectly nested or was called from a different thread than it was created on.</value>
   </data>
-  <data name="UnitOfWorkScope_ScopeAlreadyCompleted" xml:space="preserve">
+  <data name="TransactionScope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
   </data>
   <data name="WritableEventStream_MissingEventHandler" xml:space="preserve">

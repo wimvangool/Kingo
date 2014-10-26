@@ -322,6 +322,15 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The scope has already completed..
+        /// </summary>
+        internal static string TransactionScope_ScopeAlreadyCompleted {
+            get {
+                return ResourceManager.GetString("TransactionScope_ScopeAlreadyCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to enlist &apos;{0}&apos; because no context was found..
         /// </summary>
         internal static string UnitOfWorkContext_FailedToEnlistUnitOfWork {
@@ -336,15 +345,6 @@ namespace System.ComponentModel.Messaging.Resources {
         internal static string UnitOfWorkScope_IncorrectNestingOrWrongThread {
             get {
                 return ResourceManager.GetString("UnitOfWorkScope_IncorrectNestingOrWrongThread", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The scope has already completed..
-        /// </summary>
-        internal static string UnitOfWorkScope_ScopeAlreadyCompleted {
-            get {
-                return ResourceManager.GetString("UnitOfWorkScope_ScopeAlreadyCompleted", resourceCulture);
             }
         }
         

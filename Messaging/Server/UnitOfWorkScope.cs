@@ -5,7 +5,7 @@ namespace System.ComponentModel.Messaging.Server
     /// <summary>
     /// Represents a scope that controls the lifetime of a <see cref="UnitOfWorkContext" />.
     /// </summary>        
-    public sealed class UnitOfWorkScope : IDisposable
+    public sealed class UnitOfWorkScope : ITransactionalScope
     {
         private readonly UnitOfWorkContext _context;
         private readonly BufferedEventBus _bufferedEventBus;
@@ -58,7 +58,7 @@ namespace System.ComponentModel.Messaging.Server
         /// The scope has already been disposed.
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        /// The scope has already been completed
+        /// The scope has already been completed.
         /// </exception>
         public void Complete()
         {
@@ -111,7 +111,7 @@ namespace System.ComponentModel.Messaging.Server
 
         private static Exception NewScopeAlreadyCompletedException()
         {
-            return new InvalidOperationException(ExceptionMessages.UnitOfWorkScope_ScopeAlreadyCompleted);
+            return new InvalidOperationException(ExceptionMessages.TransactionScope_ScopeAlreadyCompleted);
         }
 
         private static Exception NewIncorrectNestingOrWrongThreadException()
