@@ -19,7 +19,7 @@ namespace System.ComponentModel.Messaging
         /// Creates and returns a copy of this message.
         /// </summary>
         /// <returns>A copy of this message.</returns>
-        protected abstract Message Copy();
+        public abstract Message Copy();
 
         /// <summary>
         /// Creates and returns a (materialized) copy of the specified collection.
