@@ -3,20 +3,20 @@
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyIsExecuting" /> interface.
     /// </summary>  
-    public class AsyncCommand : AsyncCommand<object>
+    public class ClientCommand : ClientCommand<object>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
         /// </summary>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>             
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher)
+        public ClientCommand(IRequestDispatcher dispatcher)
             : base(dispatcher) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
         /// </summary>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="isValidIndicator">
@@ -25,11 +25,11 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator)
+        public ClientCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator)
             : base(dispatcher, isValidIndicator) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
         /// </summary>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="isValidIndicator">
@@ -41,7 +41,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator, AsyncCommandOptions options)
+        public ClientCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator, ClientCommandOptions options)
             : base(dispatcher, isValidIndicator, options) { }
 
         /// <inheritdoc />
@@ -54,79 +54,79 @@
         #region [====== Command Factory Methods - CommandDispatcher ======]
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
+        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand<TParameter>(dispatcher, dispatcher.Message);
+            return new ClientCommand<TParameter>(dispatcher, dispatcher.Message);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IRequestMessage
+        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand<TParameter>(dispatcher, dispatcher.Message, options);
+            return new ClientCommand<TParameter>(dispatcher, dispatcher.Message, options);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>        
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, AsyncCommandOptions options) where TMessage : class, IRequestMessage
+        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand(dispatcher, dispatcher.Message, options);
+            return new ClientCommand(dispatcher, dispatcher.Message, options);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message that is sent by the dispatcher.</typeparam>        
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
+        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
         {
             if (dispatcher == null)
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand(dispatcher, dispatcher.Message);
+            return new ClientCommand(dispatcher, dispatcher.Message);
         }
 
         #endregion
@@ -134,17 +134,17 @@
         #region [====== Command Factory Methods - QueryDispatcher ======]
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>
         /// <typeparam name="TResponse">Type of the result of the query.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher)
+        public static ClientCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher)
             where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
@@ -152,22 +152,22 @@
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand<TParameter>(dispatcher, dispatcher.Message);
+            return new ClientCommand<TParameter>(dispatcher, dispatcher.Message);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>
         /// <typeparam name="TResponse">Type of the result of the query.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher, AsyncCommandOptions options)
+        public static ClientCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher, ClientCommandOptions options)
             where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
@@ -175,20 +175,20 @@
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand<TParameter>(dispatcher, dispatcher.Message, options);
+            return new ClientCommand<TParameter>(dispatcher, dispatcher.Message, options);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>    
         /// <typeparam name="TResponse">Type of the result of the query.</typeparam>    
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher)
+        public static ClientCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher)
             where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
@@ -196,21 +196,21 @@
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand(dispatcher, dispatcher.Message);
+            return new ClientCommand(dispatcher, dispatcher.Message);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="AsyncCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
+        /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
         /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>      
         /// <typeparam name="TResponse">Type of the result of the query.</typeparam>  
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
-        /// <returns>A new <see cref="AsyncCommand{T}" />.</returns>
+        /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static AsyncCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher, AsyncCommandOptions options)
+        public static ClientCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher, ClientCommandOptions options)
             where TRequest : class, IRequestMessage
             where TResponse : IMessage
         {
@@ -218,7 +218,7 @@
             {
                 throw new ArgumentNullException("dispatcher");
             }
-            return new AsyncCommand(dispatcher, dispatcher.Message, options);
+            return new ClientCommand(dispatcher, dispatcher.Message, options);
         }
 
         #endregion

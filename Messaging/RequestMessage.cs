@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Messaging.Resources;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.ServiceModel.Channels;
-using System.Text;
 
 namespace System.ComponentModel.Messaging
 {

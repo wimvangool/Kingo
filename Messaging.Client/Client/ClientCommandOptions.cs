@@ -1,10 +1,10 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Represents a set of options that defines the behavior of a <see cref="AsyncCommand{T}" />.
+    /// Represents a set of options that defines the behavior of a <see cref="ClientCommand{T}" />.
     /// </summary>
     [Flags]
-    public enum AsyncCommandOptions
+    public enum ClientCommandOptions
     {
         /// <summary>
         /// No options.

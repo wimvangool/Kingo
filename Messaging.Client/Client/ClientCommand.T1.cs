@@ -7,25 +7,25 @@ namespace System.ComponentModel.Messaging.Client
     /// Provides a basic implementation of the <see cref="INotifyIsExecuting" /> interface.
     /// </summary>       
     /// <typeparam name="TParameter">Type of the parameter that can be specified for executing this request.</typeparam>
-    public class AsyncCommand<TParameter> : PropertyChangedBase, INotifyIsExecuting       
+    public class ClientCommand<TParameter> : PropertyChangedBase, INotifyIsExecuting       
     {
         private readonly IRequestDispatcher _dispatcher;
         private readonly INotifyIsValid _isValidIndicator;        
-        private readonly AsyncCommandOptions _options;
+        private readonly ClientCommandOptions _options;
         private readonly List<IAsyncExecutionTask> _runningTasks;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
         /// </summary>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>             
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher)
-            : this(dispatcher, null, AsyncCommandOptions.None) { }
+        public ClientCommand(IRequestDispatcher dispatcher)
+            : this(dispatcher, null, ClientCommandOptions.None) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
         /// </summary>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="isValidIndicator">
@@ -34,11 +34,11 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator)
-            : this(dispatcher, isValidIndicator, AsyncCommandOptions.None) { }
+        public ClientCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator)
+            : this(dispatcher, isValidIndicator, ClientCommandOptions.None) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsyncCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="ClientCommand{T}" /> class.
         /// </summary>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="isValidIndicator">
@@ -50,7 +50,7 @@ namespace System.ComponentModel.Messaging.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public AsyncCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator, AsyncCommandOptions options)
+        public ClientCommand(IRequestDispatcher dispatcher, INotifyIsValid isValidIndicator, ClientCommandOptions options)
         {
             if (dispatcher == null)
             {
@@ -85,7 +85,7 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         protected bool AllowParrallelExecutions
         {
-            get { return IsSet(AsyncCommandOptions.AllowParrallelExecutions); }
+            get { return IsSet(ClientCommandOptions.AllowParrallelExecutions); }
         }
 
         /// <summary>
@@ -94,10 +94,10 @@ namespace System.ComponentModel.Messaging.Client
         /// </summary>
         protected bool CancelPreviousOnExecution
         {
-            get { return IsSet(AsyncCommandOptions.CancelPreviousOnExecution); }
+            get { return IsSet(ClientCommandOptions.CancelPreviousOnExecution); }
         }
 
-        private bool IsSet(AsyncCommandOptions options)
+        private bool IsSet(ClientCommandOptions options)
         {
             return (_options & options) == options;
         }

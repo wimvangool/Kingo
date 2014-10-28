@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Messaging.Validation
+﻿namespace System.ComponentModel.Messaging.Validation
 {
     /// <summary>
     /// Represents a value that can be used on the <see cref="RequiredAttribute" /> to indicate

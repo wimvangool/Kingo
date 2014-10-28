@@ -1,7 +1,7 @@
 ﻿namespace System.ComponentModel.Messaging.Client
 {
     /// <summary>
-    /// Arguments for the <see cref="AsyncCommand{T}.TaskStarted" /> event.
+    /// Arguments for the <see cref="ClientCommand{T}.TaskStarted" /> event.
     /// </summary>
     public class AsyncExecutionTaskStartedEventArgs : EventArgs
     {

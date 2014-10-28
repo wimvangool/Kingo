@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Messaging.Validation;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.Messaging.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Messaging
