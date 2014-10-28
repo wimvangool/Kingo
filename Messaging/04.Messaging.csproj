@@ -70,6 +70,7 @@
     <Compile Include="RequestMessageEditScope.cs" />
     <Compile Include="RequestMessageProperty.cs" />
     <Compile Include="RequestMessagePropertyAttribute.cs" />
+    <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -155,7 +156,6 @@
     <Compile Include="RequestMessageErrorInfo.cs" />
     <Compile Include="Validation\RequestMessageValidationAttribute.cs" />
     <Compile Include="Validation\RequestMessageLabelProvider.cs" />
-    <Compile Include="NullMessage.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="Server\UnitOfWorkCache.cs" />
     <Compile Include="Server\UnitOfWorkController.cs" />

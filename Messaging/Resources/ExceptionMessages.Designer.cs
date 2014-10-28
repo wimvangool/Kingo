@@ -322,6 +322,15 @@ namespace System.ComponentModel.Messaging.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot complete this scope because it is not the current scope..
+        /// </summary>
+        internal static string TransactionScope_CannotCompleteScope {
+            get {
+                return ResourceManager.GetString("TransactionScope_CannotCompleteScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The scope has already completed..
         /// </summary>
         internal static string TransactionScope_ScopeAlreadyCompleted {

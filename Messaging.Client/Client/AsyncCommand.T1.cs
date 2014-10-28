@@ -58,7 +58,7 @@ namespace System.ComponentModel.Messaging.Client
             }
             _dispatcher = dispatcher;
             _dispatcher.IsExecutingChanged += (s, e) => OnIsExecutingChanged();
-            _isValidIndicator = isValidIndicator ?? new NullMessage(true, true);
+            _isValidIndicator = isValidIndicator ?? new IsValidIndicator();
             _isValidIndicator.IsValidChanged += (s, e) => OnIsValidChanged();           
             _options = options;
             _runningTasks = new List<IAsyncExecutionTask>();

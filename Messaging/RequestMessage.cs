@@ -169,14 +169,28 @@ namespace System.ComponentModel.Messaging
             get { return RequestMessageEditScope.IsInEditMode(this); }
         }
 
-        /// <summary>
-        /// Creates and returns a scope in which members of this message can be altered and
-        /// rolled back if required. Validation will be suppressed while the scope is active.
-        /// </summary>
-        /// <returns>A new scope.</returns>
-        public ITransactionalScope CreateEditScope()
+        /// <inheritdoc />
+        public RequestMessageEditScope CreateEditScope()
         {
-            return RequestMessageEditScope.BeginEdit(this, true);
+            return CreateEditScope(false, null);
+        }
+
+        /// <inheritdoc />
+        public RequestMessageEditScope CreateEditScope(object state)
+        {
+            return CreateEditScope(false, state);
+        }
+
+        /// <inheritdoc />
+        public RequestMessageEditScope CreateEditScope(bool suppressValidation)
+        {
+            return CreateEditScope(suppressValidation, null);
+        }
+
+        /// <inheritdoc />
+        public RequestMessageEditScope CreateEditScope(bool suppressValidation, object state)
+        {
+            return RequestMessageEditScope.BeginEdit(this, suppressValidation, state, true);
         }
 
         void IEditableObject.BeginEdit()
@@ -252,17 +266,21 @@ namespace System.ComponentModel.Messaging
             HasChangesChanged.Raise(this);
 
             NotifyOfPropertyChange(() => HasChanges);
-        }        
+        }
+        
+        #endregion
+
+        #region [====== Property Changes ======]        
 
         /// <inheritdoc />
-        protected override void NotifyOfPropertyChange(PropertyChangedEventArgs e)
+        protected void NotifyOfPropertyChange(RequestMessagePropertyChangedEventArgs e)
         {            
             NotifyOfPropertyChange(e, GetDeclaredOptionFor(e.PropertyName));
         }
 
-        protected virtual void NotifyOfPropertyChange(PropertyChangedEventArgs e, PropertyChangedOption option)
+        protected virtual void NotifyOfPropertyChange(RequestMessagePropertyChangedEventArgs e, PropertyChangedOption option)
         {
-            base.NotifyOfPropertyChange(e);
+            base.NotifyOfPropertyChange(e);            
 
             switch (option)
             {
@@ -282,10 +300,10 @@ namespace System.ComponentModel.Messaging
             }   
         }
 
-        protected void MarkAsChangedAndValidate()
+        internal void MarkAsChangedAndValidate()
         {
             MarkAsChanged();
-            Validate();
+            Validate(false);
         }
 
         #endregion        
@@ -348,20 +366,13 @@ namespace System.ComponentModel.Messaging
         public void Validate()
         {
             Validate(true);
-        }    
-
-        /// <summary>
-        /// Validates this message.
-        /// </summary>
-        /// <param name="recursive">
-        /// Indicates whether or not any attached messages should also be validated.
-        /// </param>
-        internal virtual void Validate(bool recursive)
-        {            
-            ErrorInfo = RequestMessageErrorInfo.CreateErrorInfo(CreateValidationContext());
-
-            if (recursive)
+        }            
+        
+        internal virtual void Validate(bool forceValidation)
+        {
+            if (forceValidation || !RequestMessageEditScope.IsValidationSuppressed(this))
             {
+                ErrorInfo = RequestMessageErrorInfo.CreateErrorInfo(CreateValidationContext());
                 ValidateAttachedMessages();
             }
         }        
@@ -474,7 +485,10 @@ namespace System.ComponentModel.Messaging
             {
                 throw new ArgumentNullException("propertyName");
             }
-		    if (Equals(currentValue, value))
+            var oldValue = currentValue;
+            var newValue = value;
+
+		    if (Equals(oldValue, newValue))
 		    {
 			    return false;
 		    }		
@@ -482,11 +496,13 @@ namespace System.ComponentModel.Messaging
 		    {
 			    Detach((IRequestMessage) currentValue);
 			    Attach((IRequestMessage) value);
-		    }		
+		    }
+            var state = RequestMessageEditScope.GetEditScopeState(this);
+            var eventArgs = new RequestMessagePropertyChangedEventArgs(propertyName, oldValue, newValue, state);
+
 		    currentValue = value;				
 		
-		    NotifyOfPropertyChange(new PropertyChangedEventArgs(propertyName), option);
-		
+		    NotifyOfPropertyChange(eventArgs, option);		
 		    return true;
 	    }
 

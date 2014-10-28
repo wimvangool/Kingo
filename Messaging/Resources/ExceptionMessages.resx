@@ -216,4 +216,7 @@
   <data name="RequiredAttribute_InvalidStringConstraint" xml:space="preserve">
     <value>Invalid value for StringConstraint specified: {0}.</value>
   </data>
+  <data name="TransactionScope_CannotCompleteScope" xml:space="preserve">
+    <value>Cannot complete this scope because it is not the current scope.</value>
+  </data>
 </root>

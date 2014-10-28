@@ -8,18 +8,20 @@ using System.Threading;
 
 namespace System.ComponentModel.Messaging
 {
-    internal sealed class RequestMessageEditScope : ITransactionalScope
+    public sealed class RequestMessageEditScope : ITransactionalScope
     {
+        private readonly RequestMessageEditScope _parentScope;
         private readonly IRequestMessage _message;
-        private readonly IRequestMessage _messageBackup;
+        private readonly IRequestMessage _messageBackup;        
+        private readonly bool _suppressValidation;
+        private readonly object _state;
 
         private readonly HashSet<string> _changedProperties;
-        private readonly bool _suppressValidation;
         private bool _messageValidationWasFired;
         private bool _hasCompleted;
         private bool _isDisposed;        
 
-        private RequestMessageEditScope(IRequestMessage message, IRequestMessage messageBackup, bool suppressValidation)
+        private RequestMessageEditScope(IRequestMessage message, IRequestMessage messageBackup, bool suppressValidation, object state)
         {
             _message = message;
             _message.PropertyChanged += HandleMessagePropertyChanged;
@@ -27,6 +29,19 @@ namespace System.ComponentModel.Messaging
             
             _changedProperties = new HashSet<string>();
             _suppressValidation = suppressValidation;
+            _state = state;
+        }
+
+        private RequestMessageEditScope(RequestMessageEditScope parentScope, IRequestMessage messageBackup, bool suppressValidation, object state)
+        {
+            _parentScope = parentScope;
+            _message = parentScope._message;
+            _message.PropertyChanged += HandleMessagePropertyChanged;
+            _messageBackup = messageBackup;
+
+            _changedProperties = new HashSet<string>();
+            _suppressValidation = suppressValidation;
+            _state = state;
         }
 
         private void HandleMessagePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -39,6 +54,38 @@ namespace System.ComponentModel.Messaging
             _changedProperties.Add(propertyName);            
         }
 
+        private RequestMessageEditScope CreateNestedScope(bool suppressValidation, object state)
+        {
+            return new RequestMessageEditScope(this, _message.Copy(true), suppressValidation, state); ;
+        }
+
+        private RequestMessageEditScope ParentScope
+        {
+            get { return _parentScope; }
+        }
+
+        private IRequestMessage Message
+        {
+            get { return _message; }
+        }
+
+        public IRequestMessage MessageBackup
+        {
+            get { return _messageBackup; }
+        }        
+
+        public object State
+        {
+            get { return _state; }
+        }
+
+        private bool SuppressesValidation()
+        {
+            _messageValidationWasFired = true;
+
+            return _suppressValidation | (_parentScope != null && _parentScope.SuppressesValidation());
+        }
+
         public void Complete()
         {
             if (_isDisposed)
@@ -49,6 +96,14 @@ namespace System.ComponentModel.Messaging
             {
                 throw NewScopeAlreadyCompletedException();
             }
+            if (IsNotCurrentScope())
+            {
+                throw NewCannotCompleteScopeException();
+            }            
+            if (_messageValidationWasFired && _suppressValidation && (_parentScope == null || !_parentScope.SuppressesValidation()))
+            {
+                _message.Validate();
+            }
             _changedProperties.Clear();
             _hasCompleted = true;
         }
@@ -58,9 +113,13 @@ namespace System.ComponentModel.Messaging
             if (_isDisposed)
             {
                 return;
+            }            
+            if (IsNotCurrentScope())
+            {
+                throw NewIncorrectNestingOfScopesException();
             }
-            _isDisposed = true;
             _message.PropertyChanged -= HandleMessagePropertyChanged;
+            _isDisposed = true;
 
             if (_hasCompleted)
             {
@@ -72,7 +131,18 @@ namespace System.ComponentModel.Messaging
             }
         }
 
-        internal void RestoreBackup()
+        private bool IsNotCurrentScope()
+        {
+            RequestMessageEditScope editScope;
+
+            if (MessagesInEditMode.TryGetValue(Message, out editScope))
+            {
+                return !ReferenceEquals(this, editScope);
+            }
+            return true;
+        }
+
+        private void RestoreBackup()
         {
             foreach (var property in PropertiesToRestore())
             {
@@ -101,10 +171,24 @@ namespace System.ComponentModel.Messaging
             }            
         }
 
+        #region [====== Exception Factory Methods ======]
+
         private static Exception NewScopeAlreadyCompletedException()
         {
             return new InvalidOperationException(ExceptionMessages.TransactionScope_ScopeAlreadyCompleted);
         }
+
+        private static Exception NewCannotCompleteScopeException()
+        {
+            return new InvalidOperationException(ExceptionMessages.TransactionScope_CannotCompleteScope);
+        }
+
+        private static Exception NewIncorrectNestingOfScopesException()
+        {
+            return new InvalidOperationException(ExceptionMessages.Scope_IncorrectNesting);
+        }
+
+        #endregion
 
         #region [====== BeginEdit, CancelEdit & EndEdit ======]
 
@@ -125,17 +209,39 @@ namespace System.ComponentModel.Messaging
             get { return _MessagesInEditMode.Value; }
         }
 
-        internal static bool IsInEditMode(RequestMessage requestMessage)
+        internal static bool IsInEditMode(IRequestMessage message)
         {
-            return MessagesInEditMode.ContainsKey(requestMessage);
+            return MessagesInEditMode.ContainsKey(message);
+        }
+
+        internal static object GetEditScopeState(IRequestMessage message)
+        {
+            RequestMessageEditScope editScope;
+
+            if (MessagesInEditMode.TryGetValue(message, out editScope))
+            {
+                return editScope.State;
+            }
+            return null;
+        }
+
+        internal static bool IsValidationSuppressed(IRequestMessage message)
+        {
+            RequestMessageEditScope editScope;
+
+            if (MessagesInEditMode.TryGetValue(message, out editScope))
+            {
+                return editScope.SuppressesValidation();
+            }
+            return false;
         }
 
         internal static RequestMessageEditScope BeginEdit(IRequestMessage message)
         {
-            return BeginEdit(message, false);
+            return BeginEdit(message, false, null, false);
         }        
 
-        internal static RequestMessageEditScope BeginEdit(IRequestMessage message, bool createNewScope)
+        internal static RequestMessageEditScope BeginEdit(IRequestMessage message, bool suppressValidation, object state, bool createNewScope)
         {
             RequestMessageEditScope editScope;
 
@@ -143,12 +249,12 @@ namespace System.ComponentModel.Messaging
             {
                 if (createNewScope)
                 {
-                    // TODO...
+                    MessagesInEditMode[message] = editScope = editScope.CreateNestedScope(suppressValidation, state);
                 }
             }
             else
             {
-                MessagesInEditMode.Add(message, editScope = new RequestMessageEditScope(message, message.Copy(true), createNewScope));
+                MessagesInEditMode.Add(message, editScope = new RequestMessageEditScope(message, message.Copy(true), suppressValidation, state));
             }
             return editScope;
         }
@@ -162,7 +268,7 @@ namespace System.ComponentModel.Messaging
                 editScope.RestoreBackup();
                 editScope.Dispose();
 
-                MessagesInEditMode.Remove(message);
+                EndScope(editScope);
             }
         }
 
@@ -174,7 +280,19 @@ namespace System.ComponentModel.Messaging
             {                
                 editScope.Dispose();
 
-                MessagesInEditMode.Remove(message);
+                EndScope(editScope);
+            }
+        }
+
+        private static void EndScope(RequestMessageEditScope editScope)
+        {
+            if (editScope.ParentScope == null)
+            {
+                MessagesInEditMode.Remove(editScope.Message);
+            }
+            else
+            {
+                MessagesInEditMode[editScope.Message] = editScope.ParentScope;
             }
         }
 

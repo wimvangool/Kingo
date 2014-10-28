@@ -38,11 +38,11 @@ namespace System.ComponentModel.Messaging
             return new ObservableCollectionWrapper<TValue>(this, makeReadOnly);
         }
 
-        internal override void Validate(bool recursive)
+        internal override void Validate(bool forceValidation)
         {
             // This default implementation is overridden to prevent needless validation of this instance.
-            if (recursive)
-            {
+            if (forceValidation || !RequestMessageEditScope.IsValidationSuppressed(this))
+            {                
                 ValidateAttachedMessages();
             }
         }

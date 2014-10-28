@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Messaging.Validation;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -232,6 +232,225 @@ namespace System.ComponentModel.Messaging
                 editScope.Complete();
                 editScope.Complete();
             }
+        }
+
+        #endregion
+
+        #region [====== EditScope - Nesting ======]
+
+        [TestMethod]
+        public void EditScope_CanBeNested_IfNestingIsCorrect()
+        {
+            using (_message.CreateEditScope())
+            {
+                _message.IntValue = 3;
+
+                using (_message.CreateEditScope())
+                {
+                    _message.IntValue = 5;
+                }
+
+                Assert.AreEqual(3, _message.IntValue);
+            }
+            Assert.AreEqual(0, _message.IntValue);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void EditScope_Throws_IfNestingOfCompleteIsIncorrect()
+        {
+            using (var outerScope = _message.CreateEditScope())
+            {
+                using (_message.CreateEditScope())
+                {
+                    outerScope.Complete();
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void EditScope_Throws_IfNestingOfDisposeIsIncorrect()
+        {
+            using (var outerScope = _message.CreateEditScope())
+            using (var innerScope = _message.CreateEditScope())
+            {
+                outerScope.Dispose();
+                innerScope.Complete();
+            }            
+        }
+
+        #endregion
+
+        #region [====== EditScope - State ======]
+
+        [TestMethod]
+        public void State_IsNull_WhenPropertyIsChangedWithoutEditScope()
+        {
+            bool eventWasRaised = false;
+
+            _message.PropertyChanged += (s, e) =>
+            {
+                var eventArgs = e as RequestMessagePropertyChangedEventArgs;
+                if (eventArgs == null)
+                {
+                    return;
+                }
+                eventWasRaised = true;
+
+                Assert.IsNull(eventArgs.State);
+            };
+            _message.IntValue = 3;
+
+            Assert.IsTrue(eventWasRaised);
+        }
+
+        [TestMethod]
+        public void ScopeId_IsPublishedInPropertyChangedEventArgs_WhenPropertyIsChangedWithinThatScope()
+	    {
+		    var nullStateCount = 0;
+	
+		    var outerScopeState = new object();
+		    var outerScopeStateCount = 0;
+		
+		    var innerScopeState = new object();			
+		    var innerScopeStateCount = 0;
+
+            _message.PropertyChanged += (s, e) =>
+            {
+                var eventArgs = e as RequestMessagePropertyChangedEventArgs;
+                if (eventArgs == null)
+                {
+                    return;
+                }
+                if (eventArgs.State == null)
+                {
+                    nullStateCount++;
+                }
+                else if (eventArgs.State == outerScopeState)
+                {
+                    outerScopeStateCount++;
+                }
+                else if (eventArgs.State == innerScopeState)
+                {
+                    innerScopeStateCount++;
+                }
+            };
+		
+		    _message.IntValue = 1;
+		
+		    using (var outerScope = _message.CreateEditScope(outerScopeState))
+		    {
+			    _message.IntValue = 2;
+		
+			    using (var innerScope = _message.CreateEditScope(innerScopeState))
+			    {
+				    _message.IntValue = 3;
+			
+				    innerScope.Complete();
+			    }
+
+                Assert.AreEqual(3, _message.IntValue);
+			
+			    _message.IntValue = 4;
+			
+			    outerScope.Complete();
+            };
+
+            Assert.AreEqual(4, _message.IntValue);
+
+		    _message.IntValue = 5;
+
+            Assert.AreEqual(5, _message.IntValue);
+		
+		    Assert.AreEqual(2, nullStateCount);
+		    Assert.AreEqual(2, outerScopeStateCount);
+		    Assert.AreEqual(1, innerScopeStateCount);
+	    }
+
+        #endregion
+
+        #region [====== EditScope - SuppressValidation ======]
+
+        [TestMethod]
+        public void EditScope_SuppressesValidationInScope_WhenSuppressValidationIsTrue()
+        {
+            Assert.IsFalse(_message.IsValid);
+
+            using (var editScope = _message.CreateEditScope(true))
+            {
+                // Normally, this would trigger validation.
+                _message.IntValue = 4;
+
+                Assert.IsFalse(_message.IsValid);
+
+                // Validation will now be performed.
+                editScope.Complete();
+            }
+
+            Assert.IsTrue(_message.IsValid);
+        }
+
+        [TestMethod]
+        public void EditScope_WillStillSuppressValidation_IfOuterScopeSuppressesValidation()
+        {
+            Assert.IsFalse(_message.IsValid);
+
+            using (var outerScope = _message.CreateEditScope(true))
+            {
+                // Normally, this would trigger validation.
+                _message.IntValue = 4;
+
+                Assert.IsFalse(_message.IsValid);
+
+                using (var nestedScope = _message.CreateEditScope(false))
+                {
+                    // Normally, this would trigger validation, but the outer-scope prevents this.
+                    _message.IntValue = 5;
+
+                    Assert.IsFalse(_message.IsValid);
+
+                    nestedScope.Complete();
+                }
+
+                Assert.IsFalse(_message.IsValid);
+
+                // Validation will now be performed.
+                outerScope.Complete();
+            }
+
+            Assert.IsTrue(_message.IsValid);
+        }
+
+        [TestMethod]
+        public void EditScope_WillStillSuppressValidation_IfInnerScopeSuppressesValidation()
+        {
+            Assert.IsFalse(_message.IsValid);
+
+            using (var outerScope = _message.CreateEditScope(false))
+            {
+                // This will trigger validation.
+                _message.IntValue = 4;
+
+                Assert.IsTrue(_message.IsValid);
+
+                using (var nestedScope = _message.CreateEditScope(true))
+                {
+                    // Normally, this would trigger validation, but the inner-scope prevents this.
+                    _message.IntValue = 0;
+
+                    Assert.IsTrue(_message.IsValid);
+
+                    // Validation will now be performed.
+                    nestedScope.Complete();
+                }
+
+                Assert.IsFalse(_message.IsValid);
+                
+                outerScope.Complete();
+            }
+
+            Assert.IsFalse(_message.IsValid);
         }
 
         #endregion
