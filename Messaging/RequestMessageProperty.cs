@@ -28,7 +28,7 @@ namespace System.ComponentModel.Messaging
 
         public object GetValue(object instance)
         {
-            return _property.GetValue(instance, new object[0]);
+            return _property.GetValue(instance, null);
         }
 
         #region [====== Reflection Methods ======]

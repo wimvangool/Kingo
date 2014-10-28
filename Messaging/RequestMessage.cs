@@ -158,8 +158,11 @@ namespace System.ComponentModel.Messaging
 
         #endregion
 
-        #region [====== EditableObject ======]        
+        #region [====== EditableObject ======]
 
+        /// <summary>
+        /// Indicates whether or not this message is in edit-mode.
+        /// </summary>
         public bool IsInEditMode
         {
             get { return RequestMessageEditScope.IsInEditMode(this); }
@@ -266,7 +269,7 @@ namespace System.ComponentModel.Messaging
         
         #endregion
 
-        #region [====== Property Changes ======]        
+        #region [====== Property Changes ======]
 
         /// <inheritdoc />
         protected void NotifyOfPropertyChange(RequestMessagePropertyChangedEventArgs e)
