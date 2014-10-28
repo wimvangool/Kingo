@@ -8,7 +8,7 @@ namespace System.ComponentModel.Messaging
     /// <summary>
     /// Serves as a simple base-implementation of the <see cref="IMessage" /> interface.
     /// </summary>
-    public abstract class Message : PropertyChangedBase, IMessage
+    public abstract class Message : IMessage
     {        
         IMessage IMessage.Copy()
         {
