@@ -58,7 +58,6 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IUnitTestFramework.cs" />
-    <Compile Include="RequestMessageTester.cs" />
     <Compile Include="Server\BooleanOperandExtensions.cs" />
     <Compile Include="Server\ConjunctionStatement.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">

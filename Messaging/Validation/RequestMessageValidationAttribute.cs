@@ -37,13 +37,29 @@ namespace System.ComponentModel.Messaging.Validation
         /// <summary>
         /// The <see cref="ValidationResult" /> that indicates validation succeeded.
         /// </summary>
-        protected static readonly ValidationResult Valid = ValidationResult.Success;        
+        protected static readonly ValidationResult Valid = ValidationResult.Success;
+
+        /// <summary>
+        /// Attempts to resolve a particular service using the specified <paramref name="serviceProvider"/>.
+        /// </summary>
+        /// <typeparam name="TService">Type of the service to resolve.</typeparam>
+        /// <param name="serviceProvider">The provider that is used to resolve the service.</param>
+        /// <param name="service">
+        /// When the service was resolved, this parameter will refer to that service when the method has completed.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> is the service was resolved; otherwise <c>false</c>.
+        /// </returns>
+        protected static bool TryResolve<TService>(IServiceProvider serviceProvider, out TService service) where TService : class
+        {
+            return (service = Resolve<TService>(serviceProvider)) != null;
+        }
 
         /// <summary>
         /// Resolves a service of the specified type using the <see cref="IServiceProvider" /> of the <paramref name="serviceProvider"/>.
         /// </summary>
-        /// <typeparam name="TService">Type of service to resolve.</typeparam>
-        /// <param name="serviceProvider">The context that is used to resolve the service.</param>
+        /// <typeparam name="TService">Type of the service to resolve.</typeparam>
+        /// <param name="serviceProvider">The provider that is used to resolve the service.</param>
         /// <returns>
         /// The resolved service, or <c>null</c> if no service of the specified type was found.
         /// </returns>
