@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Serves as the base-class for the <see cref="QueryDispatcher{T}" /> and <see cref="QueryDispatcher{T, S}"/> classes,

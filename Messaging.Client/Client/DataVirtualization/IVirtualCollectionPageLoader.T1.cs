@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// When implemented by a class, represents an implementation for the <see cref="VirtualCollection{T}" /> class

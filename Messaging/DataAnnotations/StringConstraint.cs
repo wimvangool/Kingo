@@ -1,10 +1,10 @@
-﻿namespace System.ComponentModel.Messaging.Validation
+﻿namespace System.ComponentModel.DataAnnotations
 {
     /// <summary>
-    /// Represents a value that can be used on the <see cref="RequiredAttribute" /> to indicate
+    /// Represents a value that can be used on the <see cref="RequiredConstraintAttribute" /> to indicate
     /// what values of a string are interpreted as invalid.
     /// </summary>
-    public enum RequiredStringConstraint
+    public enum StringConstraint
     {
         /// <summary>
         /// Indicates that a string may not be <c>null</c>.

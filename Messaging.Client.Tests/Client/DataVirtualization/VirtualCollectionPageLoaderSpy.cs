@@ -3,7 +3,7 @@ using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+namespace System.ComponentModel.Client.DataVirtualization
 {
     internal sealed class VirtualCollectionPageLoaderSpy : VirtualCollectionPageLoader<int>, IDisposable
     {

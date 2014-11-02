@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 using System.Runtime.Serialization;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     /// <summary>
     /// This exception or any derived type is thrown if a command was found to be invalid

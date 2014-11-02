@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {   
     /// <summary>
     /// Provides a basic, in-memory implementation of the <see cref="IScopeSpecificCache" /> interface.

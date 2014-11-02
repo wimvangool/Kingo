@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.ComponentModel.Messaging.Resources {
+namespace System.ComponentModel.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace System.ComponentModel.Messaging.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.ComponentModel.Messaging.Resources.FailureMessages", typeof(FailureMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.ComponentModel.Resources.FailureMessages", typeof(FailureMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// A value that is used to specify the lifetime of a certain message-handler at runtime.

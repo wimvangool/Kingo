@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging
+﻿namespace System.ComponentModel
 {
     /// <summary>
     /// Contains extension-methods for raising events.

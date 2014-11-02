@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging.Server.SampleHandlers.ForTryRegisterInTests
+namespace System.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
 {
     [InstanceLifetime((InstanceLifetime) 5)]
     internal sealed class MessageHandlerWithInvalidLifetimeAttribute : IMessageHandler<Command>

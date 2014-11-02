@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Server;
+﻿using System.ComponentModel.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     [TestClass]
     public sealed class ClientEventBusTest

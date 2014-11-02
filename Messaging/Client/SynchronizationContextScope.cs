@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 using System.Threading;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a scope that manages a <see cref="SynchronizationContext" />.

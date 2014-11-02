@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     internal sealed class MessageProcessorBusConnectionForInterface<TMessage> : MessageProcessorBusConnection
         where TMessage : class

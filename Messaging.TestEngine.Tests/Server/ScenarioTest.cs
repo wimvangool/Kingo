@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     [TestClass]   
     public sealed class ScenarioTest

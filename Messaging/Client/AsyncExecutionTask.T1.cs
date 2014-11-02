@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 using System.Threading;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Provides a base-class implementation of the <see cref="IAsyncExecutionTask" /> interface.

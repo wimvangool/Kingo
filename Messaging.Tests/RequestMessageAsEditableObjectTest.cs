@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Validation;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     [TestClass]
     public sealed class RequestMessageAsEditableObjectTest
@@ -25,7 +25,7 @@ namespace System.ComponentModel.Messaging
 
             private int _intValue;
 
-            [Required]
+            [RequiredConstraint]
             [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
             public int IntValue
             {

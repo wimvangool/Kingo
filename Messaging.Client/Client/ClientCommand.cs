@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Client
+﻿namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyIsExecuting" /> interface.

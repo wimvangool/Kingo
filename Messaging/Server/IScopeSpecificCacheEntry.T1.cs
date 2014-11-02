@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a handle to an item in cache.

@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging.Server.SampleApplication
+namespace System.ComponentModel.Server.SampleApplication
 {
     internal sealed class ShoppingCartItem
     {

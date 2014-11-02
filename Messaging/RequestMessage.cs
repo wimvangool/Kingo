@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     /// <summary>
     /// Represents a basic implementation of the <see cref="IRequestMessage" /> interface, in which
@@ -277,6 +277,19 @@ namespace System.ComponentModel.Messaging
             NotifyOfPropertyChange(e, GetDeclaredOptionFor(e.PropertyName));
         }
 
+        /// <summary>
+        /// Raises the <see cref="INotifyPropertyChanged.PropertyChanged" /> event.
+        /// </summary>
+        /// <param name="e">Arguments that contain the name of the property that has changed.</param>
+        /// <param name="option">
+        /// Determines which action(s) should follow the change of the property.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="e"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="option"/> is not a valid <see cref="PropertyChangedOption" />.
+        /// </exception>
         protected virtual void NotifyOfPropertyChange(RequestMessagePropertyChangedEventArgs e, PropertyChangedOption option)
         {
             base.NotifyOfPropertyChange(e);            
@@ -563,20 +576,39 @@ namespace System.ComponentModel.Messaging
 
         #region [====== Attach and Detach ======]
 
-        protected TMessage AttachCopy<TMessage>(TMessage messageToCopy) where TMessage : class, IRequestMessage
+        /// <summary>
+        /// Creates and returns a copy of the specified <paramref name="message"/> that is also automatically attached as child to this message.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message to copy.</typeparam>
+        /// <param name="message">The message to copy.</param>
+        /// <returns>
+        /// A copy of <paramref name="message"/>, or <c>null</c> if <paramref name="message"/> is <c>null</c>.
+        /// </returns>
+        protected TMessage AttachCopy<TMessage>(TMessage message) where TMessage : class, IRequestMessage
         {
-            if (messageToCopy == null)
+            if (message == null)
             {
                 return null;
             }
-            return Attach((TMessage) messageToCopy.Copy(IsReadOnly));
+            return Attach((TMessage) message.Copy(IsReadOnly));
         }
 
+        /// <summary>
+        /// Creates and returns a new instance of <typeparamref name="TMessage"/> that is also automatically attached as child to this message.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message to create.</typeparam>
+        /// <returns>A new instance of <typeparamref name="TMessage"/>.</returns>
         protected TMessage Attach<TMessage>() where TMessage : class, IRequestMessage, new()
         {
             return Attach(new TMessage());
         }
 
+        /// <summary>
+        /// Attaches the specified <paramref name="message"/> to this message and immediately returns it.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message to attach.</typeparam>
+        /// <param name="message">The message to attach.</param>
+        /// <returns>The specified <paramref name="message"/>.</returns>
         protected TMessage Attach<TMessage>(TMessage message) where TMessage : class, IRequestMessage
         {
             Attach(message as IRequestMessage);

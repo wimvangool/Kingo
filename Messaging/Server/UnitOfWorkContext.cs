@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 using System.Globalization;
 using System.Threading;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents the context in which a certain message is being handled.

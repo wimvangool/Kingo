@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Server;
+﻿using System.ComponentModel.Server;
 using System.Threading;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents an event-bus for client or front-end components that can be used within a <see cref="MessageProcessor" />

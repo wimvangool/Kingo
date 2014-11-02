@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.Messaging.Server.SampleApplication;
-using System.ComponentModel.Messaging.Server.SampleApplication.Infrastructure;
+﻿using System.ComponentModel.Server.SampleApplication;
+using System.ComponentModel.Server.SampleApplication.Infrastructure;
 using System.Reflection;
 using Microsoft.Practices.Unity;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     internal sealed class SampleApplicationProcessor : MessageProcessor
     {        
@@ -40,7 +40,7 @@ namespace System.ComponentModel.Messaging.Server
 
         private static bool IsHandlerForMessageProcessorTests(Type type)
         {
-            return type.Namespace == "System.ComponentModel.Messaging.Server.SampleApplication.MessageHandlers";
+            return type.Namespace == "System.ComponentModel.Server.SampleApplication.MessageHandlers";
         }
     }
 }

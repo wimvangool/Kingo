@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 using System.Globalization;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents the version of a certain <see cref="IAggregate{TKey, TVersion}">aggregate</see>.

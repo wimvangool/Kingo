@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     internal sealed class EventBuffer<TKey, TVersion, TEvent> : IEventBuffer<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>

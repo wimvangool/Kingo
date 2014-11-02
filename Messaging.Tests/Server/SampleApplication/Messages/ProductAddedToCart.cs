@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server.SampleApplication.Messages
+﻿namespace System.ComponentModel.Server.SampleApplication.Messages
 {
     internal sealed class ProductAddedToCart : IAggregateEvent<Guid, Int32Version>
     {

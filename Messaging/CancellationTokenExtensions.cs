@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     /// <summary>
     /// Contains extension-methods for a nullable <see cref="CancellationToken" />.

@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging
+﻿namespace System.ComponentModel
 {
     /// <summary>
     /// Represents a service that is used to validate a certain property of a message and requires

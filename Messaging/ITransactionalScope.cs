@@ -1,6 +1,6 @@
 ﻿using System.Transactions;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     /// <summary>
     /// Represents an abstract scope in code in which certain changes are made that can be committed or rolled back.    

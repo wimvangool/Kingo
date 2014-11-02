@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// When implemented, represents a factory of all message-handlers that are used to handle the messages

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IConnection" /> interface and can be used

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a scenario that follows the Behavior Driven Development (BDD) style, which is characterized

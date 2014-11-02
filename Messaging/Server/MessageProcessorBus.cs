@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {       
     internal sealed class MessageProcessorBus : IMessageProcessorBus
     {

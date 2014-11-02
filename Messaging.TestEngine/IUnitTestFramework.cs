@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging
+﻿namespace System.ComponentModel
 {
     /// <summary>
     /// When implemented by a class, this type abstracts away the unit testing framework that is beging used.

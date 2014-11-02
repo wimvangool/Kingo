@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 using System.Runtime.Serialization;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// This type of exception is thrown when something goes wrong in the domain of an application.

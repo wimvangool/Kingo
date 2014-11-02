@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents an event that is raised or associated to a specific aggregate.

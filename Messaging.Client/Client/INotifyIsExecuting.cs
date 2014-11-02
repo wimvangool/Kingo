@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a request made from a client that lies on top of a regular <see cref="IRequestDispatcher">Request</see>.

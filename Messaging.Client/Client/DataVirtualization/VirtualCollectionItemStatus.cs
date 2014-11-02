@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Client.DataVirtualization
+﻿namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents the state of a <see cref="VirtualCollectionItem{T}" />.

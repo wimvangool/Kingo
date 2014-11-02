@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents a list of items that only allows read-operations.

@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents an Aggregate, following the definition of a Domain Driven Design.

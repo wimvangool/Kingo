@@ -6,7 +6,7 @@
     <ProjectGuid>{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel.Messaging</RootNamespace>
+    <RootNamespace>System.ComponentModel</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.Client.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     internal interface IEventBuffer<out TKey, out TVersion>
         where TKey : struct, IEquatable<TKey>

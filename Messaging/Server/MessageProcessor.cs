@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a handler of arbitrary messages.

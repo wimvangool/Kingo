@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a command that delegates it's work to some specified functions.

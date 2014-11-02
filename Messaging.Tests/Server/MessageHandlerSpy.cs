@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     internal sealed class MessageHandlerSpy : IMessageHandler<MessageOne>, IMessageHandler<MessageTwo>
     {

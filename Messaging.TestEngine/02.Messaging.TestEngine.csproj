@@ -8,7 +8,7 @@
     <ProjectGuid>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel.Messaging</RootNamespace>
+    <RootNamespace>System.ComponentModel</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.TestEngine</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

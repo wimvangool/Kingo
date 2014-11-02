@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IMessagePipeline" /> interface.

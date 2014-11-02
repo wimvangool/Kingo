@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Client
+﻿namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Arguments for the <see cref="ClientCommand{T}.TaskStarted" /> event.

@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {    
     /// <summary>
     /// When implemented by a class, represents a unit of work that can be flushed.

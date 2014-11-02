@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a buffer of events.

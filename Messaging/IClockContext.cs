@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     internal interface IClockContext
     {

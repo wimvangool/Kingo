@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     internal sealed class ThreadStaticClockContext : IClockContext
     {

@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {    
     /// <summary>
     /// When implemented by a class, handles messages of the specified <paramtyperef name="TMessage" />.

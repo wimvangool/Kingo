@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     internal sealed class RequestMessageProperty
     {

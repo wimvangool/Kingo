@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     internal sealed class OneToOneCommandConnection : Connection
     {

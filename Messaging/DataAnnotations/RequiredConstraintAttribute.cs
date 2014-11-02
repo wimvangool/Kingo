@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Messaging.Validation
+namespace System.ComponentModel.DataAnnotations
 {
     /// <summary>
     /// When applied to a property, indicates that this property must be set to a non-null or non-zero value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public sealed class RequiredAttribute : RequestMessageValidationAttribute
+    public sealed class RequiredConstraintAttribute : ConstraintAttribute
     {
         private readonly Dictionary<Type, Func<object, ValidationContext, ValidationResult>> _validationMethods;    
 	
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequiredAttribute" /> class.
+        /// Initializes a new instance of the <see cref="RequiredConstraintAttribute" /> class.
         /// </summary>
-	    public RequiredAttribute()
+	    public RequiredConstraintAttribute()
 	    {
             _validationMethods = new Dictionary<Type, Func<object, ValidationContext, ValidationResult>>()
 		    {
@@ -34,7 +33,7 @@ namespace System.ComponentModel.Messaging.Validation
         /// <summary>
         /// Indicates which string-values are interpreted as not set.
         /// </summary>
-	    public RequiredStringConstraint StringConstraint
+	    public StringConstraint StringConstraint
 	    {
 		    get;
 		    set;
@@ -81,17 +80,17 @@ namespace System.ComponentModel.Messaging.Validation
 		    return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 	    }		
 	
-	    private ValidationResult IsValidString(string value, ValidationContext validationContext, RequiredStringConstraint constraint)
+	    private ValidationResult IsValidString(string value, ValidationContext validationContext, StringConstraint constraint)
 	    {
 		    switch (constraint)
 		    {
-			    case RequiredStringConstraint.NotNull:
+			    case StringConstraint.NotNull:
 				    return Valid;
 			
-			    case RequiredStringConstraint.NotNullOrEmpty:
+			    case StringConstraint.NotNullOrEmpty:
 				    return value.Length == 0 ? NotValid(validationContext) : Valid;
 				
-			    case RequiredStringConstraint.NotNullOrWhiteSpace:
+			    case StringConstraint.NotNullOrWhiteSpace:
 				    return string.IsNullOrWhiteSpace(value) ? NotValid(validationContext) : Valid;
 				
 			    default:
@@ -124,7 +123,7 @@ namespace System.ComponentModel.Messaging.Validation
             return NotValid(validationContext, ValidationMessages.Required_MissingRequiredValue);
         }
 
-        private static Exception NewInvalidStringConstraintException(RequiredStringConstraint constraint)
+        private static Exception NewInvalidStringConstraintException(StringConstraint constraint)
         {
             var messageFormat = ExceptionMessages.RequiredAttribute_InvalidStringConstraint;
             var message = string.Format(messageFormat, constraint);

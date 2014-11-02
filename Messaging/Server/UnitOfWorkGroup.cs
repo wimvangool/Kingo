@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {    
     internal sealed class UnitOfWorkGroup : UnitOfWorkWrapper
     {

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Validation;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     [TestClass]
     public sealed class RequestMessagePropertyTest
@@ -37,7 +37,7 @@ namespace System.ComponentModel.Messaging
                 set { SetValue(ref _customerId, value, () => CustomerId); }                                                   
             }
 
-            [Required]
+            [RequiredConstraint]
             [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
             public string CustomerName
             {

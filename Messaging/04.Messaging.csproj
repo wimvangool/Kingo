@@ -7,7 +7,7 @@
     <ProjectGuid>{757D77D3-7B32-4F21-9617-88274D50B517}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel.Messaging</RootNamespace>
+    <RootNamespace>System.ComponentModel</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -76,6 +76,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ValidationMessages.resx</DependentUpon>
     </Compile>
+    <Compile Include="AssemblySet.cs" />
     <Compile Include="Server\CompositeConnection.cs" />
     <Compile Include="Server\IMessagePipeline.cs" />
     <Compile Include="Client\EventMonitor.cs" />
@@ -154,8 +155,8 @@
     <Compile Include="RequestMessage.cs" />
     <Compile Include="PropertyChangedOption.cs" />
     <Compile Include="RequestMessageErrorInfo.cs" />
-    <Compile Include="Validation\RequestMessageValidationAttribute.cs" />
-    <Compile Include="Validation\RequestMessageLabelProvider.cs" />
+    <Compile Include="DataAnnotations\ConstraintAttribute.cs" />
+    <Compile Include="DataAnnotations\RequestMessageLabelProvider.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="Server\UnitOfWorkCache.cs" />
     <Compile Include="Server\UnitOfWorkController.cs" />
@@ -175,8 +176,8 @@
     <Compile Include="Server\UnitOfWorkWrapper.cs" />
     <Compile Include="Server\UnitOfWorkGroup.cs" />
     <Compile Include="Server\UnitOfWorkItem.cs" />
-    <Compile Include="Validation\RequiredAttribute.cs" />
-    <Compile Include="Validation\RequiredStringConstraint.cs" />
+    <Compile Include="DataAnnotations\RequiredConstraintAttribute.cs" />
+    <Compile Include="DataAnnotations\StringConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">

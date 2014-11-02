@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging
+﻿namespace System.ComponentModel
 {
     /// <summary>
     /// Provides some additional data for the <see cref="INotifyPropertyChanged.PropertyChanged" /> event.

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Practices.Unity;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Implements a <see cref="MessageHandlerFactory"/> by using a <see cref="IUnityContainer" />.

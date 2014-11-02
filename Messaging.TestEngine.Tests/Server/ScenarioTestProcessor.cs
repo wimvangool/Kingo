@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     internal sealed class ScenarioTestProcessor : MessageProcessor
     {        

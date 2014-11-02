@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyPropertyChanged" /> interface.

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     internal sealed class AggregateSet<TKey, TVersion, TValue> : IEnumerable<AggregateVersionTracker<TKey, TVersion, TValue>>
         where TKey : struct, IEquatable<TKey>

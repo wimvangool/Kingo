@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Serves as a base-class implementation for implementors of the <see cref="IVirtualCollectionPageLoader{T}" /> interface..

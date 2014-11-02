@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace System.ComponentModel.Messaging.Validation
+namespace System.ComponentModel.DataAnnotations
 {
     internal sealed class RequestMessageLabelProvider
     {

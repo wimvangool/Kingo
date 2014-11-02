@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     internal class Operand<T> : IOperand<T>
     {

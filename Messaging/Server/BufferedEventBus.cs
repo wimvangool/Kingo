@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 using System.Globalization;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents an in-memory event-bus that is flushed when the <see cref="UnitOfWorkScope" /> completes.

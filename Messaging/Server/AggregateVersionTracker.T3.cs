@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     internal sealed class AggregateVersionTracker<TKey, TVersion, TAggregate>
         where TKey : struct, IEquatable<TKey>

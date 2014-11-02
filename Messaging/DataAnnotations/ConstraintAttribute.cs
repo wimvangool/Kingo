@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace System.ComponentModel.Messaging.Validation
+﻿namespace System.ComponentModel.DataAnnotations
 {
     /// <summary>
     /// Serves as a bass-class for all <see cref="ValidationAttribute">ValidationAttributes</see> that are
@@ -19,7 +17,7 @@ namespace System.ComponentModel.Messaging.Validation
     /// to get the appropriate label.
     /// </para>
     /// </remarks>
-    public abstract class RequestMessageValidationAttribute : ValidationAttribute
+    public abstract class ConstraintAttribute : ValidationAttribute
     {
         /// <inheritdoc />
         protected virtual ValidationResult NotValid(ValidationContext validationContext, string errorMessage)

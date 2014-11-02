@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Messaging.Server.SampleApplication.Messages;
+using System.ComponentModel.Server.SampleApplication.Messages;
 using System.Linq;
 
-namespace System.ComponentModel.Messaging.Server.SampleApplication
+namespace System.ComponentModel.Server.SampleApplication
 {
     internal sealed class ShoppingCart : Aggregate<Guid, Int32Version>
     {

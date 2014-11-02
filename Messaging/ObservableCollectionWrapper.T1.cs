@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     internal sealed class ObservableCollectionWrapper<TValue> : RequestMessage
     {

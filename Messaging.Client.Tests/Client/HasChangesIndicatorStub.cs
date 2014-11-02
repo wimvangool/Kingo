@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Client
+﻿namespace System.ComponentModel.Client
 {
     internal sealed class HasChangesIndicatorStub : PropertyChangedBase, INotifyHasChanges
     {

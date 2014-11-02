@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents an in-memory stream of <see cref="IAggregateEvent{T, S}">aggregate events</see>.

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {    
     /// <summary>
     /// Represents a scope that controls the lifetime of a <see cref="UnitOfWorkContext" />.

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>    
-    <id>System.ComponentModel.Messaging.Unity</id>    
+    <id>System.ComponentModel.Unity</id>    
     <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>    

@@ -7,7 +7,7 @@
     <ProjectGuid>{77F45326-E908-47EB-B924-A3BD26CAD6B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel.Messaging</RootNamespace>
+    <RootNamespace>System.ComponentModel</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.Unity</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

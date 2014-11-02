@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Messaging.Resources;
+using System.ComponentModel.Resources;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
+    /// <summary>
+    /// Represents a scope in which changes can be made to a <see cref="RequestMessage" /> that can be rolled back if required.
+    /// </summary>
     public sealed class RequestMessageEditScope : ITransactionalScope
     {
         private readonly RequestMessageEditScope _parentScope;
@@ -67,11 +70,17 @@ namespace System.ComponentModel.Messaging
             get { return _message; }
         }
 
+        /// <summary>
+        /// The message that is used as a backup to rollback any changes if so required.
+        /// </summary>
         public IRequestMessage MessageBackup
         {
             get { return _messageBackup; }
         }        
 
+        /// <summary>
+        /// Custom state object that can be used to relate changes to a specific scope.
+        /// </summary>
         public object State
         {
             get { return _state; }
@@ -84,6 +93,7 @@ namespace System.ComponentModel.Messaging
             return _suppressValidation | (_parentScope != null && _parentScope.SuppressesValidation());
         }
 
+        /// <inheritdoc />
         public void Complete()
         {
             if (_isDisposed)
@@ -106,6 +116,9 @@ namespace System.ComponentModel.Messaging
             _hasCompleted = true;
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             if (_isDisposed)

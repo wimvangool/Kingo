@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents an internal message-bus that can be used to publish domain events and let all subscribers,

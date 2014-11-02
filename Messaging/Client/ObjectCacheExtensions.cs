@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Caching;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Contains extension methods for the <see cref="ObjectCache" /> class.

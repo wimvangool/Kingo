@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a <see cref="INotifyHasChanges" /> that is composed of other indicators.
@@ -140,6 +140,7 @@ namespace System.ComponentModel.Messaging.Client
 
         #region [====== Enumerable ======]
 
+        /// <inheritdoc />
         public IEnumerator<INotifyHasChanges> GetEnumerator()
         {
             return _indicators.GetEnumerator();

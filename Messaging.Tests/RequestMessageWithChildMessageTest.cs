@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Validation;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     [TestClass]
     public sealed class RequestMessageWithChildMessageTest
@@ -31,7 +31,7 @@ namespace System.ComponentModel.Messaging
 
             private int _value;
 
-            [Required]
+            [RequiredConstraint]
             [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
             public int Value
             {
@@ -82,7 +82,7 @@ namespace System.ComponentModel.Messaging
 
             private int _value;
 
-            [Required]
+            [RequiredConstraint]
             [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
             public int Value
             {

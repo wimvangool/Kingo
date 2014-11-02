@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a UnitOfWork that can be flushed and comitted to a backing store. This class is a so-called

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.Messaging.Server.SampleApplication.Messages;
+﻿using System.ComponentModel.Server.SampleApplication.Messages;
 
-namespace System.ComponentModel.Messaging.Server.SampleApplication.MessageHandlers
+namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
 {
     internal sealed class ShoppingCartHandler : IMessageHandler<AddProductToCart>,
                                                 IMessageHandler<CreateShoppingCart>

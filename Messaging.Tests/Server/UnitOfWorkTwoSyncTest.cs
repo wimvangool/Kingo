@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {    
     internal sealed class UnitOfWorkTwoSyncTest : IUnitOfWork
     {

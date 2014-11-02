@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.Messaging.Server.SampleApplication.Infrastructure
+namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 {
     internal sealed class ShoppingCartRepository : IShoppingCartRepository, IUnitOfWork
     {        

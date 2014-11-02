@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyIsExecuting" /> interface.
@@ -62,6 +62,25 @@ namespace System.ComponentModel.Messaging.Client
             _isValidIndicator.IsValidChanged += (s, e) => OnIsValidChanged();           
             _options = options;
             _runningTasks = new List<IAsyncExecutionTask>();
+        }
+
+        private string _name;
+
+        /// <summary>
+        /// Gets or sets the name of this command.
+        /// </summary>
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+
+                    NotifyOfPropertyChange(() => Name);
+                }
+            }
         }
 
         /// <summary>

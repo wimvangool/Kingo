@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Serves as the base-class for the <see cref="CommandDispatcher" /> and <see cref="CommandDispatcher{T}"/> classes,

@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Client
+﻿namespace System.ComponentModel.Client
 {
     /// <summary>
     /// EventArgs for the <see cref="IQueryDispatcher{T}.ExecutionSucceeded" /> event.

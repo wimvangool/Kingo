@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     [TestClass]
     public sealed class StopwatchClockTest

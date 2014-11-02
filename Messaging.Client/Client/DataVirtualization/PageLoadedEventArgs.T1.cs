@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Client.DataVirtualization
+﻿namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.PageLoaded" /> event.

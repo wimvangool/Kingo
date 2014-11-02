@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Messaging.Client.DataVirtualization
+namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents a range of indices that mark which items of a <see cref="VirtualCollection{T}" /> have failed to load.

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a command that is composed of other commands that are connected and disconnected

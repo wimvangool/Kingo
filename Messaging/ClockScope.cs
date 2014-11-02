@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.Messaging.Resources;
+﻿using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     internal sealed class ClockScope : IDisposable
     {

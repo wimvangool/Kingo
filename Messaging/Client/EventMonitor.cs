@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Messaging.Server;
+﻿using System.ComponentModel.Server;
 using System.Runtime.Caching;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a <see cref="ChangeMonitor" /> that connects to a <see cref="IMessageProcessorBus" /> to receive

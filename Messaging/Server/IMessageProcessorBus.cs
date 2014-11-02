@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, represents a <see cref="MessageProcessorBus" /> to which event-handlers can subscribe.

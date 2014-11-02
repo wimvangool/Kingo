@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging.Client
+﻿namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a component that can indicate whether or not it is busy.

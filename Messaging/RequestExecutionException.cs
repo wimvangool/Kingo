@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace System.ComponentModel.Messaging
+namespace System.ComponentModel
 {
     /// <summary>
     /// This exception or any derived type is thrown if a request has failed due to non-technical reasons.

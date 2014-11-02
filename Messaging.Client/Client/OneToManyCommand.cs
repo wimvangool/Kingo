@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Input;
 
-namespace System.ComponentModel.Messaging.Client
+namespace System.ComponentModel.Client
 {
     /// <summary>
     /// Represents a command that can have many active connections at once.

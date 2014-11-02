@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace System.ComponentModel.Messaging.Server
+namespace System.ComponentModel.Server
 {
     internal sealed class UnitOfWorkController
     {

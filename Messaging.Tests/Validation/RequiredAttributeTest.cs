@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Messaging.Validation
+namespace System.ComponentModel.DataAnnotations
 {
     [TestClass]
     public sealed class RequiredAttributeTest
@@ -30,7 +30,7 @@ namespace System.ComponentModel.Messaging.Validation
 
             private object _objectValue;
 
-            [Required]           
+            [RequiredConstraint]           
             public object ObjectValue
             {
                 get { return _objectValue; }
@@ -46,10 +46,10 @@ namespace System.ComponentModel.Messaging.Validation
                 get { return "[StringThatCannotBeEmpty]"; }
             }
 
-            private String _stringValueThatCannotBeEmpty;
+            private string _stringValueThatCannotBeEmpty;
 
-            [Required(StringConstraint = RequiredStringConstraint.NotNullOrEmpty)]           
-            public String StringValueThatCannotBeEmpty
+            [RequiredConstraint(StringConstraint = StringConstraint.NotNullOrEmpty)]           
+            public string StringValueThatCannotBeEmpty
             {
                 get { return _stringValueThatCannotBeEmpty; }
                 set { SetValue(ref _stringValueThatCannotBeEmpty, value, () => StringValueThatCannotBeEmpty); }
@@ -66,8 +66,8 @@ namespace System.ComponentModel.Messaging.Validation
 
             private String _stringValueThatCannotBeWhiteSpace;
 
-            [Required(StringConstraint = RequiredStringConstraint.NotNullOrWhiteSpace)]
-            public String StringValueThatCannotBeWhiteSpace
+            [RequiredConstraint(StringConstraint = StringConstraint.NotNullOrWhiteSpace)]
+            public string StringValueThatCannotBeWhiteSpace
             {
                 get { return _stringValueThatCannotBeWhiteSpace; }
                 set { SetValue(ref _stringValueThatCannotBeWhiteSpace, value, () => StringValueThatCannotBeWhiteSpace); }
@@ -84,7 +84,7 @@ namespace System.ComponentModel.Messaging.Validation
 
             private int? _nullableIntValue;
 
-            [Required]
+            [RequiredConstraint]
             public int? NullableIntValue
             {
                 get { return _nullableIntValue; }
@@ -102,7 +102,7 @@ namespace System.ComponentModel.Messaging.Validation
 
             private int _intValue;
 
-            [Required]
+            [RequiredConstraint]
             public int IntValue
             {
                 get { return _intValue; }
@@ -120,7 +120,7 @@ namespace System.ComponentModel.Messaging.Validation
 
             private Guid _guidValue;
 
-            [Required]
+            [RequiredConstraint]
             public Guid GuidValue
             {
                 get { return _guidValue; }

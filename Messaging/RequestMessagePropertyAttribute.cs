@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Messaging
+﻿namespace System.ComponentModel
 {
     /// <summary>
     /// This attribute can be applied to properties of the <see cref="IRequestMessage"/>-implementor to
