@@ -104,7 +104,7 @@ namespace System.ComponentModel.Server
 
             Assert.IsTrue(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNotNull(handlerClass);
-            Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.Single));
+            Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.Singleton));
         }
 
         [TestMethod]

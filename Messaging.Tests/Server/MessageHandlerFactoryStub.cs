@@ -6,13 +6,15 @@ namespace System.ComponentModel.Server
     {
         private readonly List<Type> _perResolveLifetimeTypes;
         private readonly List<Type> _perUnitOfWorkLifetimeTypes;
+        private readonly List<Type> _perScenarioLifetimeTypes;
         private readonly List<Type> _singleLifetimeTypes;
 
         public MessageHandlerFactoryStub()
         {
-            _perResolveLifetimeTypes = new List<Type>(4);
-            _perUnitOfWorkLifetimeTypes = new List<Type>(4);
-            _singleLifetimeTypes = new List<Type>(4);
+            _perResolveLifetimeTypes = new List<Type>();
+            _perUnitOfWorkLifetimeTypes = new List<Type>();
+            _perScenarioLifetimeTypes = new List<Type>();
+            _singleLifetimeTypes = new List<Type>();
         }
 
         public bool HasRegistered(Type type, InstanceLifetime lifetime)
@@ -25,7 +27,10 @@ namespace System.ComponentModel.Server
                 case InstanceLifetime.PerUnitOfWork:
                     return _perUnitOfWorkLifetimeTypes.Contains(type);
 
-                case InstanceLifetime.Single:
+                case InstanceLifetime.PerScenario:
+                    return _perScenarioLifetimeTypes.Contains(type);
+
+                case InstanceLifetime.Singleton:
                     return _singleLifetimeTypes.Contains(type);
 
                 default:
@@ -33,9 +38,14 @@ namespace System.ComponentModel.Server
             }            
         }
 
-        protected internal override void RegisterWithPerResolveLifetime(Type type)
+        protected internal override void RegisterWithPerResolveLifetime(Type concreteType)
         {
-            _perResolveLifetimeTypes.Add(type);
+            _perResolveLifetimeTypes.Add(concreteType);
+        }
+
+        protected internal override void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType)
+        {
+            throw NewNotSupportedException();
         }
 
         protected internal override void RegisterWithPerUnitOfWorkLifetime(Type type)
@@ -43,14 +53,39 @@ namespace System.ComponentModel.Server
             _perUnitOfWorkLifetimeTypes.Add(type);
         }
 
-        protected internal override void RegisterSingle(Type type)
+        protected internal override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType)
         {
-            _singleLifetimeTypes.Add(type);
-        }        
+            throw NewNotSupportedException();
+        }
+
+        protected internal override void RegisterWithPerScenarioLifetime(Type concreteType)
+        {
+            _perScenarioLifetimeTypes.Add(concreteType);
+        }
+
+        protected internal override void RegisterWithPerScenarioLifetime(Type concreteType, Type abstractType)
+        {
+            throw NewNotSupportedException();
+        }
+
+        protected internal override void RegisterSingleton(Type concreteType)
+        {
+            _singleLifetimeTypes.Add(concreteType);
+        }
+
+        protected internal override void RegisterSingleton(Type concreteType, Type abstractType)
+        {
+            throw NewNotSupportedException();
+        }
 
         protected internal override object CreateMessageHandler(Type type)
         {
-            throw new NotSupportedException("This method is not supported by the stub.");
+            throw NewNotSupportedException();
+        }
+
+        private static NotSupportedException NewNotSupportedException()
+        {
+            return new NotSupportedException("This method is not supported by the stub.");
         }
     }
 }

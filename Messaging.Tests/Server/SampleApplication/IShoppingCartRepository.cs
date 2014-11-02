@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Server.SampleApplication
 {
-    internal interface IShoppingCartRepository
+    public interface IShoppingCartRepository
     {
         void Add(ShoppingCart cart);
 

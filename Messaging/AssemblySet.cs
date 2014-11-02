@@ -75,7 +75,7 @@ namespace System.ComponentModel
         /// Returns a collection containing of all types that are part of this set of assemblies.
         /// </summary>
         /// <returns>A collection of types.</returns>
-        public IEnumerable<Type> DeclaredTypes()
+        public IEnumerable<Type> GetTypes()
         {
             return _assemblies.SelectMany(assembly => assembly.GetTypes());
         }
@@ -102,6 +102,12 @@ namespace System.ComponentModel
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _assemblies.GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Join(Environment.NewLine, _assemblies.Select(assembly => assembly.GetName().ToString()).OrderBy(name => name));
         }
 
         /// <summary>
@@ -199,9 +205,12 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="sets">The sets to unite into a single set.</param>
         /// <returns>A union of the specified <paramref name="sets"/>.</returns>
+        /// <remarks>
+        /// This method will ignore <c>null</c>-references in <paramref name="sets"/>.
+        /// </remarks>
         public static AssemblySet Join(params AssemblySet[] sets)
         {
-            return new AssemblySet(sets.SelectMany(set => set._assemblies));
+            return new AssemblySet(sets.Where(set => set != null).SelectMany(set => set._assemblies));
         }
     }
 }

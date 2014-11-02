@@ -142,6 +142,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More than one type found that could be used as an implementation of dependency &apos;{0}&apos;: {1}..
+        /// </summary>
+        internal static string DependencyClass_AmbigiousMatch {
+            get {
+                return ResourceManager.GetString("DependencyClass_AmbigiousMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
         /// </summary>
         internal static string DomainModelException_CommandFailed {

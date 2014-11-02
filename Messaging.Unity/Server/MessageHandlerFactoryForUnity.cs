@@ -40,21 +40,64 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        protected override void RegisterWithPerUnitOfWorkLifetime(Type type)
+        protected override void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType)
         {
-            _container.RegisterType(type, new CacheBasedLifetimeManager(UnitOfWorkContext.Cache));
+            _container.RegisterType(abstractType, concreteType);
         }
 
         /// <inheritdoc />
-        protected override void RegisterSingle(Type type)
+        protected override void RegisterWithPerUnitOfWorkLifetime(Type type)
+        {
+            _container.RegisterType(type, PerUnitOfWorkLifetime());
+        }
+
+        /// <inheritdoc />
+        protected override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType)
+        {
+            _container.RegisterType(concreteType, PerUnitOfWorkLifetime());
+            _container.RegisterType(abstractType, concreteType);
+        }
+
+        /// <inheritdoc />
+        protected override void RegisterWithPerScenarioLifetime(Type concreteType)
+        {
+            _container.RegisterType(concreteType, PerScenarioLifetime());
+        }
+
+        /// <inheritdoc />
+        protected override void RegisterWithPerScenarioLifetime(Type concreteType, Type abstractType)
+        {
+            _container.RegisterType(concreteType, PerScenarioLifetime());
+            _container.RegisterType(concreteType, abstractType);
+        }
+
+        /// <inheritdoc />
+        protected override void RegisterSingleton(Type type)
         {
             _container.RegisterType(type, new ContainerControlledLifetimeManager());
+        }
+
+        /// <inheritdoc />
+        protected override void RegisterSingleton(Type concreteType, Type abstractType)
+        {
+            _container.RegisterType(concreteType, new ContainerControlledLifetimeManager());
+            _container.RegisterType(abstractType, concreteType);
         }
 
         /// <inheritdoc />
         protected override object CreateMessageHandler(Type type)
         {
             return _container.Resolve(type);
+        }
+
+        private static LifetimeManager PerUnitOfWorkLifetime()
+        {
+            return new CacheBasedLifetimeManager(UnitOfWorkContext.Cache);
+        }
+
+        private static LifetimeManager PerScenarioLifetime()
+        {
+            return new CacheBasedLifetimeManager(Scenario.Cache);
         }
 
         #endregion

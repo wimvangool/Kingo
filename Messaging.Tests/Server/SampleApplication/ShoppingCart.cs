@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace System.ComponentModel.Server.SampleApplication
 {
-    internal sealed class ShoppingCart : Aggregate<Guid, Int32Version>
+    public sealed class ShoppingCart : Aggregate<Guid, Int32Version>
     {
         private readonly Guid _id;
         private Int32Version _version;

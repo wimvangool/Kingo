@@ -2,7 +2,7 @@
 
 namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 {
-    internal sealed class ShoppingCartRepository : IShoppingCartRepository, IUnitOfWork
+    public sealed class ShoppingCartRepository : IShoppingCartRepository, IUnitOfWork
     {        
         private readonly Dictionary<Guid, ShoppingCart> _carts;
         private int _flushCount;

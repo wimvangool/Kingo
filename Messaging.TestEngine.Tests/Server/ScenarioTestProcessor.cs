@@ -25,8 +25,14 @@ namespace System.ComponentModel.Server
 
         private static ScenarioTestProcessor CreateProcessor()
         {
-            var messageHandlerFactory = new MessageHandlerFactoryForUnity();
-            messageHandlerFactory.RegisterMessageHandlersFrom(Assembly.GetExecutingAssembly());
+            var messageHandlerFactory = new MessageHandlerFactoryForUnity()
+            {                
+                ApplicationLayer = AssemblySet.CurrentAssembly(),
+                DomainLayer = AssemblySet.CurrentAssembly(),
+                DataAccessLayer = AssemblySet.CurrentAssembly()
+            };
+            messageHandlerFactory.RegisterMessageHandlers();
+
             return new ScenarioTestProcessor(messageHandlerFactory);
         }
     }

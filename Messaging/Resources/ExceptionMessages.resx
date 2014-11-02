@@ -219,4 +219,7 @@
   <data name="TransactionScope_CannotCompleteScope" xml:space="preserve">
     <value>Cannot complete this scope because it is not the current scope.</value>
   </data>
+  <data name="DependencyClass_AmbigiousMatch" xml:space="preserve">
+    <value>More than one type found that could be used as an implementation of dependency '{0}': {1}.</value>
+  </data>
 </root>

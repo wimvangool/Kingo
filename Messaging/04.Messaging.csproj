@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="AssemblySet.cs" />
     <Compile Include="Server\CompositeConnection.cs" />
+    <Compile Include="Server\DependencyClass.cs" />
     <Compile Include="Server\IMessagePipeline.cs" />
     <Compile Include="Client\EventMonitor.cs" />
     <Compile Include="Server\MessagePipeline.cs" />

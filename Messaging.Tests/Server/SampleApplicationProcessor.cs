@@ -28,19 +28,26 @@ namespace System.ComponentModel.Server
 
         private static SampleApplicationProcessor CreateProcessor()
         {
-            var factory = new MessageHandlerFactoryForUnity();
-
-            factory.RegisterMessageHandlersFrom(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
-            factory.Container
-                .RegisterType<IShoppingCartRepository, ShoppingCartRepository>()
-                .RegisterType<ShoppingCartRepository>(new ContainerControlledLifetimeManager());                
-
+            var factory = new MessageHandlerFactoryForUnity()
+            {                
+                ApplicationLayer = AssemblySet.CurrentAssembly(),
+                DomainLayer = AssemblySet.CurrentAssembly(),
+                DataAccessLayer = AssemblySet.CurrentAssembly()
+            };
+            factory.RegisterMessageHandlers(IsHandlerForMessageProcessorTests);
+            factory.RegisterDependencies(null, IsRepositoryInterface, InstanceLifetime.Singleton);
+            
             return new SampleApplicationProcessor(factory);
         }
 
         private static bool IsHandlerForMessageProcessorTests(Type type)
         {
             return type.Namespace == "System.ComponentModel.Server.SampleApplication.MessageHandlers";
+        }
+
+        private static bool IsRepositoryInterface(Type type)
+        {
+            return type.IsInterface && type.Name.EndsWith("Repository");
         }
     }
 }

@@ -38,8 +38,8 @@ namespace System.ComponentModel.Server
                     _factory.RegisterWithPerUnitOfWorkLifetime(_classType);
                     return;
                     
-                case InstanceLifetime.Single:                    
-                    _factory.RegisterSingle(_classType);
+                case InstanceLifetime.Singleton:                    
+                    _factory.RegisterSingleton(_classType);
                     return;
                     
                 default:                    
@@ -121,7 +121,7 @@ namespace System.ComponentModel.Server
             return interfaceType.GetGenericArguments()[0];
         }        
 
-        private static Exception NewInvalidLifetimeModeSpecifiedException(Type classType, InstanceLifetime lifeTime)
+        internal static Exception NewInvalidLifetimeModeSpecifiedException(Type classType, InstanceLifetime lifeTime)
         {
             var messageFormat = ExceptionMessages.MessageHandlerClass_InvalidInstanceLifetimeMode;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, classType, lifeTime);

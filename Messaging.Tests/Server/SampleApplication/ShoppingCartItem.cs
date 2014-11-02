@@ -1,7 +1,7 @@
 ﻿
 namespace System.ComponentModel.Server.SampleApplication
 {
-    internal sealed class ShoppingCartItem
+    public sealed class ShoppingCartItem
     {
         private readonly int _productId;
         private int _quantity;
