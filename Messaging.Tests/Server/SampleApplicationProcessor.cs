@@ -1,9 +1,4 @@
-﻿using System.ComponentModel.Server.SampleApplication;
-using System.ComponentModel.Server.SampleApplication.Infrastructure;
-using System.Reflection;
-using Microsoft.Practices.Unity;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     internal sealed class SampleApplicationProcessor : MessageProcessor
     {        
