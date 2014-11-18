@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Resources;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace System.ComponentModel
 {
@@ -12,7 +13,7 @@ namespace System.ComponentModel
     /// change tracking and validation are supported.
     /// </summary>
     [Serializable]
-    public abstract class RequestMessage : PropertyChangedBase, IRequestMessage, IServiceProvider
+    public abstract class RequestMessage : PropertyChangedBase, IRequestMessage, IServiceProvider, IExtensibleDataObject
     {
         [NonSerialized]
         private readonly bool _isReadOnly;
@@ -25,6 +26,9 @@ namespace System.ComponentModel
 
         [NonSerialized]
         private bool _hasChanges;
+
+        [NonSerialized]
+        private ExtensionDataObject _extensionData;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessage" /> class.
@@ -91,6 +95,12 @@ namespace System.ComponentModel
         public bool IsReadOnly
         {
             get { return _isReadOnly; }
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData
+        {
+            get { return _extensionData; }
+            set { _extensionData = value; }
         }
 
         #region [====== Message Copying ======]
