@@ -11,13 +11,19 @@ namespace System.ComponentModel
     /// Represents a basic implementation of the <see cref="IRequestMessage" /> interface, in which
     /// change tracking and validation are supported.
     /// </summary>
-    public abstract class RequestMessage : PropertyChangedBase, IRequestMessage, IServiceProvider, IEditableObject
+    [Serializable]
+    public abstract class RequestMessage : PropertyChangedBase, IRequestMessage, IServiceProvider
     {
-        private readonly Dictionary<Type, object> _services;                        
-        private readonly LinkedList<IRequestMessage> _attachedMessages;
+        [NonSerialized]
         private readonly bool _isReadOnly;
 
-        private RequestMessageErrorInfo _errorInfo;                       
+        [NonSerialized]
+        private RequestMessageValidator _validator;
+
+        [NonSerialized]
+        private LinkedList<IRequestMessage> _attachedMessages;
+
+        [NonSerialized]
         private bool _hasChanges;
 
         /// <summary>
@@ -30,12 +36,8 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="makeReadOnly">Indicates whether the new instance should be marked readonly.</param>
         protected RequestMessage(bool makeReadOnly)
-        {
-            _services = new Dictionary<Type, object>();                                    
-            _attachedMessages = new LinkedList<IRequestMessage>();
-            _isReadOnly = makeReadOnly;
-
-            _errorInfo = RequestMessageErrorInfo.NotYetValidated;
+        {            
+            _isReadOnly = makeReadOnly;            
             _hasChanges = false;
         }                
 
@@ -53,13 +55,35 @@ namespace System.ComponentModel
             {
                 throw new ArgumentNullException("message");
             }
-            _services = new Dictionary<Type, object>(message._services);
-            _attachedMessages = new LinkedList<IRequestMessage>();
-            _isReadOnly = makeReadOnly;
-
-            _errorInfo = message._errorInfo == null ? null : new RequestMessageErrorInfo(message._errorInfo);
+            _isReadOnly = makeReadOnly;  
+            _validator = message._validator == null ? null : new RequestMessageValidator(this, message._validator);                                  
             _hasChanges = false;
         }
+
+        internal RequestMessageValidator Validator
+        {
+            get
+            {
+                if (_validator == null)
+                {
+                    _validator = new RequestMessageValidator(this);
+                }
+                return _validator;
+            }
+        }
+
+        private LinkedList<IRequestMessage> AttachedMessages
+        {
+            get
+            {
+                if (_attachedMessages == null)
+                {
+                    _attachedMessages = new LinkedList<IRequestMessage>();
+                }
+                return _attachedMessages;
+            }
+        }
+
 
         /// <summary>
         /// Indicates whether or not this message is marked as read-only.
@@ -136,7 +160,7 @@ namespace System.ComponentModel
             }
             try
             {
-                _services.Add(typeof(TService), service);
+                Validator.Add(typeof(TService), service);
             }
             catch (ArgumentException)
             {
@@ -147,13 +171,7 @@ namespace System.ComponentModel
 
         object IServiceProvider.GetService(Type serviceType)
         {
-            object service;
-
-            if (_services.TryGetValue(serviceType, out service))
-            {
-                return service;
-            }
-            return null;
+            return Validator.GetService(serviceType);
         }
 
         #endregion
@@ -223,7 +241,7 @@ namespace System.ComponentModel
         /// <inheritdoc />
         public bool HasChanges
         {
-            get { return _hasChanges || _attachedMessages.Any(message => message.HasChanges); }
+            get { return _hasChanges || AttachedMessages.Any(message => message.HasChanges); }
             private set
             {                
                 if (_hasChanges != value)
@@ -251,6 +269,10 @@ namespace System.ComponentModel
         {
             HasChanges = false;
 
+            if (_attachedMessages == null)
+            {
+                return;
+            }
             foreach (var message in _attachedMessages)
             {
                 message.AcceptChanges();
@@ -339,26 +361,13 @@ namespace System.ComponentModel
         
         internal RequestMessageErrorInfo ErrorInfo
         {
-            get { return _errorInfo; }
-            set
-            {
-                var oldValue = IsValid;
-
-                _errorInfo = value;
-
-                var newValue = IsValid;
-
-                if (oldValue != newValue)
-                {
-                    OnIsValidChanged();
-                }
-            }
+            get { return Validator.ErrorInfo; }            
         }
 
         /// <inheritdoc />
         public bool IsValid
         {
-            get { return ErrorInfo == null && _attachedMessages.All(message => message.IsValid); }            
+            get { return Validator.ErrorInfo == null && (_attachedMessages == null || _attachedMessages.All(message => message.IsValid)); }            
         }
 
         /// <inheritdoc />
@@ -367,7 +376,7 @@ namespace System.ComponentModel
         /// <summary>
         /// Raises the <see cref="IsValidChanged" />- and <see cref="INotifyPropertyChanged.PropertyChanged" />-events.
         /// </summary>        
-        protected virtual void OnIsValidChanged()
+        protected internal virtual void OnIsValidChanged()
         {
             IsValidChanged.Raise(this);
 
@@ -380,17 +389,20 @@ namespace System.ComponentModel
             Validate(true);
         }            
         
-        internal virtual void Validate(bool forceValidation)
+        internal virtual void Validate(bool ignoreEditScope)
         {
-            if (forceValidation || !RequestMessageEditScope.IsValidationSuppressed(this))
+            if (Validator.TryValidateMessage(ignoreEditScope, CreateValidationContext()))
             {
-                ErrorInfo = RequestMessageErrorInfo.CreateErrorInfo(CreateValidationContext());
                 ValidateAttachedMessages();
-            }
+            }           
         }        
 
         internal void ValidateAttachedMessages()
         {
+            if (_attachedMessages == null)
+            {
+                return;
+            }
             foreach (var message in _attachedMessages)
             {
                 message.Validate();
@@ -623,7 +635,7 @@ namespace System.ComponentModel
                 message.HasChangesChanged += HandleMessageHasChangesChanged;
                 message.IsValidChanged += HandleMessageIsValidChanged;
 
-                _attachedMessages.AddLast(message);
+                AttachedMessages.AddLast(message);
             }
         }
 
@@ -634,7 +646,7 @@ namespace System.ComponentModel
                 message.IsValidChanged -= HandleMessageIsValidChanged;
                 message.HasChangesChanged -= HandleMessageHasChangesChanged;
 
-                _attachedMessages.Remove(message);
+                AttachedMessages.Remove(message);
             }
         }
 

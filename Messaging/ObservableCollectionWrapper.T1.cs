@@ -16,7 +16,7 @@ namespace System.ComponentModel
             _isRequestMessageCollection = IsRequestMessage(typeof(TValue));
 
             Attach(collection);
-            ErrorInfo = null;
+            Validator.ErrorInfo = null;
         }
 
         private ObservableCollectionWrapper(ObservableCollectionWrapper<TValue> message, bool makeReadOnly)  : base(message, makeReadOnly)
@@ -26,7 +26,7 @@ namespace System.ComponentModel
             _isRequestMessageCollection = message._isRequestMessageCollection;
 
             Attach(_collection);
-            ErrorInfo = null;
+            Validator.ErrorInfo = null;
         }
 
         public override RequestMessage Copy(bool makeReadOnly)
@@ -34,10 +34,10 @@ namespace System.ComponentModel
             return new ObservableCollectionWrapper<TValue>(this, makeReadOnly);
         }
 
-        internal override void Validate(bool forceValidation)
+        internal override void Validate(bool ignoreEditScope)
         {
             // This default implementation is overridden to prevent needless validation of this instance.
-            if (forceValidation || !RequestMessageEditScope.IsValidationSuppressed(this))
+            if (ignoreEditScope || !RequestMessageEditScope.IsValidationSuppressed(this))
             {                
                 ValidateAttachedMessages();
             }

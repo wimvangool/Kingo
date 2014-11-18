@@ -71,6 +71,7 @@
     <Compile Include="RequestMessageProperty.cs" />
     <Compile Include="RequestMessagePropertyAttribute.cs" />
     <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
+    <Compile Include="RequestMessageValidator.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
