@@ -8,7 +8,7 @@ namespace System.ComponentModel.Server
     public interface IMessageProcessor
     {
         /// <summary>
-        /// Returns the domain-event bus of this processor.
+        /// Returns the <see cref="IMessageProcessorBus" /> of this processor.
         /// </summary>
         IMessageProcessorBus DomainEventBus
         {
@@ -25,7 +25,117 @@ namespace System.ComponentModel.Server
 
         #region [====== Commands ======]
 
-        
+        /// <summary>
+        /// Executes the specified command by invoking all registered message handlers.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>        
+        /// <returns>The number of handlers that handled the message.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        int Execute<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>;        
+
+        /// <summary>
+        /// Executes the specified command by invoking all registered message handlers.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>        
+        /// <param name="token">
+        /// Optional token that can be used to cancel the operation.
+        /// </param>  
+        /// <returns>The number of handlers that handled the message.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// <paramref name="token"/> was specified and used to cancel the execution.
+        /// </exception>         
+        int Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+
+        /// <summary>
+        /// Executes the specified command by invoking the specified handler.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>        
+        /// <param name="handler">Executer that will be used to handle the message.</param>
+        /// <returns><c>1</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        int Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>;
+
+        /// <summary>
+        /// Executes the specified command by invoking the specified handler.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>        
+        /// <param name="handler">Executer that will be used to handle the message.</param>
+        /// <param name="token">
+        /// Optional token that can be used to cancel the operation.
+        /// </param>        
+        /// <returns><c>1</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// <paramref name="token"/> was specified and used to cancel the execution.
+        /// </exception>         
+        int Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+
+        /// <summary>
+        /// Executes the specified command by invoking the specified delegate.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>        
+        /// <param name="handler">Delegate that will be used to handle the message.</param>
+        /// <returns><c>1</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        int Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>;
+
+        /// <summary>
+        /// Executes the specified command by invoking the specified delegate.
+        /// </summary>
+        /// <typeparam name="TCommand">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>        
+        /// <param name="handler">Delegate that will be used to handle the message.</param>
+        /// <param name="token">
+        /// Optional token that can be used to cancel the operation.
+        /// </param>        
+        /// <returns><c>1</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        /// <exception cref="OperationCanceledException">
+        /// <paramref name="token"/> was specified and used to cancel the execution.
+        /// </exception>         
+        int Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
 
         #endregion
 

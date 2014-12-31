@@ -39,7 +39,47 @@ namespace System.ComponentModel.Server
         protected abstract MessageHandlerFactory MessageHandlerFactory
         {
             get;
-        }        
+        }
+
+        #region [====== Commands ======]
+
+        /// <inheritdoc />
+        public int Execute<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return Handle(message, message);
+        }
+
+        /// <inheritdoc />
+        public int Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return Handle(message, message, token);
+        }
+
+        /// <inheritdoc />
+        public int Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return Handle(message, message, handler);
+        }
+
+        /// <inheritdoc />
+        public int Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return Handle(message, message, handler, token);
+        }
+
+        /// <inheritdoc />
+        public int Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return Handle(message, message, handler);
+        }
+
+        /// <inheritdoc />
+        public int Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return Handle(message, message, handler, token);
+        }
+
+        #endregion
 
         #region [====== Events ======]
 
