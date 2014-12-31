@@ -11,11 +11,7 @@ namespace System.ComponentModel.Client
         /// <summary>
         /// Executes the command synchronously.
         /// </summary>
-        /// <param name="requestId">Identifier of the request.</param>    
-        /// <exception cref="RequestExecutionException">
-        /// The command failed for (somewhat) predictable reasons, like insufficient rights, invalid parameters or
-        /// because the system's business logic wouldn't allow this command to be executed.
-        /// </exception> 
+        /// <param name="requestId">Identifier of the request.</param>            
         void Execute(Guid requestId);
 
         /// <summary>

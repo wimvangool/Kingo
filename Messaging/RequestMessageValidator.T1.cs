@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 
 namespace System.ComponentModel
 {
-    internal sealed class RequestMessageValidator : IServiceProvider
+    internal sealed class RequestMessageValidator<TMessage> : IServiceProvider where TMessage : RequestMessage<TMessage>
     {
-        private readonly RequestMessage _requestMessage;
+        private readonly RequestMessage<TMessage> _requestMessage;
         private readonly Dictionary<Type, object> _services;        
         private RequestMessageErrorInfo _errorInfo;
 
-        internal RequestMessageValidator(RequestMessage requestMessage)
+        internal RequestMessageValidator(RequestMessage<TMessage> requestMessage)
         {
             _requestMessage = requestMessage;
             _services = new Dictionary<Type, object>();           
             _errorInfo = RequestMessageErrorInfo.NotYetValidated;
         }
 
-        internal RequestMessageValidator(RequestMessage requestMessage, RequestMessageValidator validator)
+        internal RequestMessageValidator(RequestMessage<TMessage> requestMessage, RequestMessageValidator<TMessage> validator)
         {
             _requestMessage = requestMessage;
             _services = new Dictionary<Type, object>(validator._services);            

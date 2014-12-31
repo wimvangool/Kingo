@@ -51,6 +51,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="BusinessRuleViolationException.cs" />
     <Compile Include="Client\AsyncExecutionTask.T1.cs" />
     <Compile Include="Client\AsyncObject.cs" />
     <Compile Include="Client\CommandDelegate.T1.cs" />
@@ -64,26 +65,31 @@
     <Compile Include="Client\ObjectCacheExtensions.cs" />
     <Compile Include="Client\QueryDelegate.T1.cs" />
     <Compile Include="Client\QueryDelegate.T2.cs" />
+    <Compile Include="IMessage.cs" />
+    <Compile Include="IMessageValidator.T1.cs" />
     <Compile Include="IRequestMessage.cs" />
-    <Compile Include="ITransactionalScope.cs" />
-    <Compile Include="Message.cs" />
+    <Compile Include="IRequestMessage.T1.cs" />
+    <Compile Include="ITransactionScope.cs" />
+    <Compile Include="Message.T1.cs" />
+    <Compile Include="MessageDeniedException.cs" />
     <Compile Include="ObservableCollectionWrapper.T1.cs" />
+    <Compile Include="FunctionalException.cs" />
     <Compile Include="RequestMessageEditScope.cs" />
+    <Compile Include="MessageErrorTree.cs" />
     <Compile Include="RequestMessageProperty.cs" />
     <Compile Include="RequestMessagePropertyAttribute.cs" />
     <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
-    <Compile Include="RequestMessageValidator.cs" />
+    <Compile Include="RequestMessageValidator.T1.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ValidationMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="AssemblySet.cs" />
+    <Compile Include="Server\ActionDecorator.T1.cs" />
     <Compile Include="Server\CompositeConnection.cs" />
     <Compile Include="Server\DependencyClass.cs" />
-    <Compile Include="Server\IMessagePipeline.cs" />
     <Compile Include="Client\EventMonitor.cs" />
-    <Compile Include="Server\MessagePipeline.cs" />
     <Compile Include="Client\QueryExecutionTask.cs" />
     <Compile Include="Client\AsyncExecutionTaskStatus.cs" />
     <Compile Include="Server\AggregateNotFoundException.cs" />
@@ -94,7 +100,7 @@
     <Compile Include="Client\ExecutionSucceededEventArgs.cs" />
     <Compile Include="Client\ExecutionSucceededEventArgs.T1.cs" />
     <Compile Include="Client\ICommandDispatcher.cs" />
-    <Compile Include="InvalidRequestException.cs" />
+    <Compile Include="InvalidMessageException.cs" />
     <Compile Include="Client\IQueryDispatcher.T1.cs" />
     <Compile Include="Client\IRequestDispatcher.cs" />
     <Compile Include="Client\QueryDispatcher.T1.cs" />
@@ -108,7 +114,9 @@
     <Compile Include="Server\AggregateVersionTracker.T3.cs" />
     <Compile Include="Server\IAggregateVersion.T1.cs" />
     <Compile Include="Server\DateTimeVersion.cs" />
+    <Compile Include="Server\IMessageProcessorBusConnection.cs" />
     <Compile Include="Server\Int64Version.cs" />
+    <Compile Include="Server\MessageHandlerDecorator.T1.cs" />
     <Compile Include="Server\Repository.T3.cs" />
     <Compile Include="Server\Int32Version.cs" />
     <Compile Include="Server\DomainException.cs" />
@@ -132,9 +140,7 @@
     <Compile Include="Server\MessageHandlerFactory.cs" />
     <Compile Include="Server\MessageProcessor.cs" />
     <Compile Include="Server\MessageProcessorBus.cs" />
-    <Compile Include="Server\MessageProcessorBusConnection.cs" />
-    <Compile Include="Server\MessageProcessorBusConnectionForAction.T1.cs" />
-    <Compile Include="Server\MessageProcessorBusConnectionForInterface.T1.cs" />
+    <Compile Include="Server\MessageProcessorBusConnection.T1.cs" />
     <Compile Include="Server\MessagePointer.cs" />
     <Compile Include="Server\ScopeSpecificCacheEntry.T1.cs" />
     <Compile Include="Server\ScopeSpecificCacheRelay.cs" />
@@ -154,8 +160,8 @@
     <Compile Include="IAsyncValidationService.cs" />
     <Compile Include="INotifyHasChanges.cs" />
     <Compile Include="INotifyIsValid.cs" />
-    <Compile Include="IMessage.cs" />
-    <Compile Include="RequestMessage.cs" />
+    <Compile Include="IMessage.T1.cs" />
+    <Compile Include="RequestMessage.T1.cs" />
     <Compile Include="PropertyChangedOption.cs" />
     <Compile Include="RequestMessageErrorInfo.cs" />
     <Compile Include="DataAnnotations\ConstraintAttribute.cs" />
@@ -164,7 +170,6 @@
     <Compile Include="Server\UnitOfWorkCache.cs" />
     <Compile Include="Server\UnitOfWorkController.cs" />
     <Compile Include="IClock.cs" />
-    <Compile Include="RequestExecutionException.cs" />
     <Compile Include="Server\IUnitOfWork.cs" />
     <Compile Include="SystemClock.cs" />
     <Compile Include="Server\UnitOfWorkContext.cs" />

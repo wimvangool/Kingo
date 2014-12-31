@@ -35,22 +35,22 @@ namespace System.ComponentModel.Server
         protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) {}
 
         /// <summary>
-        /// Converts this instance into an instance of <see cref="RequestExecutionException" />.
+        /// Converts this instance into an instance of <see cref="BusinessRuleViolationException" />.
         /// </summary>
-        /// <param name="command">The command that caused the exception.</param>
+        /// <param name="failedMessage">The message that caused the exception.</param>
         /// <returns>
-        /// An instance of <see cref="RequestExecutionException" /> that wraps this exception and the inner
+        /// An instance of <see cref="BusinessRuleViolationException" /> that wraps this exception and the inner
         /// exception.
         /// </returns>
-        public virtual RequestExecutionException AsRequestExecutionException(object command)
+        public virtual BusinessRuleViolationException AsBusinessRuleException(IMessage failedMessage)
         {
-            if (command == null)
+            if (failedMessage == null)
             {
-                throw new ArgumentNullException("command");
+                throw new ArgumentNullException("failedMessage");
             }
             var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
-            var message = string.Format(messageFormat, command.GetType());
-            return new RequestExecutionException(command, message, this);
+            var message = string.Format(messageFormat, failedMessage.GetType());
+            return new BusinessRuleViolationException(failedMessage, message, this);
         }        
     }
 }

@@ -33,6 +33,6 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        IMessageSequence Append<TMessage>(TMessage message) where TMessage : class;
+        IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
     }
 }

@@ -74,6 +74,7 @@
     <Compile Include="MSTestFramework.cs" />
     <Compile Include="Server\BooleanOperandExtensionsTest.cs" />
     <Compile Include="Server\ComparableOperandExtensionsTest.cs" />
+    <Compile Include="Server\DomainEvent.cs" />
     <Compile Include="Server\NullableOperandExtensionsTest.cs" />
     <Compile Include="Server\OperandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />

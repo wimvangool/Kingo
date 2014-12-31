@@ -66,6 +66,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="MessageStub.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Server\PerUnitOfWorkLifetimeManagerTest.cs" />
     <Compile Include="Server\UnityTestProcessor.cs" />

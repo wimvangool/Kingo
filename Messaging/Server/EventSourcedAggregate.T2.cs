@@ -82,8 +82,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentException">
         /// No handler for an event of the specified type has been registered.
         /// </exception>
-        protected void Apply<TEvent>(TEvent @event)
-            where TEvent : class, IAggregateEvent<TKey, TVersion>
+        protected void Apply<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
         {
             if (@event == null)
             {

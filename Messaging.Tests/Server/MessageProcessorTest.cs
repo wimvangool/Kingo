@@ -29,29 +29,31 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void CurrentMessage_TakesValueOfTheMessageThatIsBeingHandled()
         {
-            object messageA = new object();
-            object messageB = null;
+            MessageStub messageA = new MessageStub();
+            IMessage messageB = null;
 
-            Processor.Process(messageA, message => messageB = Processor.MessagePointer.Message);
+            Processor.Handle(messageA, null, message => messageB = Processor.MessagePointer.Message);
 
-            Assert.AreSame(messageA, messageB);
+            Assert.IsNotNull(messageB);
+            Assert.AreNotSame(messageA, messageB);
+            Assert.AreSame(messageA.GetType(), messageB.GetType());
             Assert.IsNull(Processor.MessagePointer);
         }
 
         [TestMethod]
         public void CurrentMessage_ReturnsEntireHistoryOfMessages_IfMessagesAreHandledInANestedFashion()
         {
-            object messageA = new object();
-            object messageB = new object();
-            MessagePointer message = null;
+            MessageStub messageA = new MessageStub();
+            MessageStub messageB = new MessageStub();
+            MessagePointer messagePointer = null;
 
-            Processor.Process(messageA, a =>            
-                Processor.Process(messageB, b => message = Processor.MessagePointer)
+            Processor.Handle(messageA, null, a =>            
+                Processor.Handle(messageB, null, b => messagePointer = Processor.MessagePointer)
             );
 
-            Assert.IsNotNull(message);
-            Assert.AreSame(messageB, message.Message);
-            Assert.AreSame(messageA, message.ParentPointer.Message);
+            Assert.IsNotNull(messagePointer);
+            Assert.AreSame(messageB.GetType(), messagePointer.Message.GetType());
+            Assert.AreSame(messageA.GetType(), messagePointer.ParentPointer.Message.GetType());
             Assert.IsNull(Processor.MessagePointer);
         }
 
@@ -67,10 +69,10 @@ namespace System.ComponentModel.Server
 
             using (Processor.DomainEventBus.ConnectThreadLocal<ShoppingCartCreated>(e => createdEvent = e, true))
             {
-                Processor.Process(new CreateShoppingCart
+                Processor.Handle(new CreateShoppingCart
                 {
                     ShoppingCartId = shoppingCartId
-                });
+                }, null);
             }
 
             Assert.IsNotNull(createdEvent);
@@ -83,11 +85,11 @@ namespace System.ComponentModel.Server
         {
             Guid shoppingCartId = Guid.NewGuid();
 
-            Processor.Process(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCart
             {
                 ShoppingCartId = shoppingCartId
             });
-            Processor.Process(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCart
             {
                 ShoppingCartId = shoppingCartId
             });                       
@@ -99,7 +101,7 @@ namespace System.ComponentModel.Server
             // Ensure the cart exists before any product are added to it.
             Guid shoppingCartId = Guid.NewGuid();                        
 
-            Processor.Process(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCart
             {
                 ShoppingCartId = shoppingCartId
             });
@@ -111,7 +113,7 @@ namespace System.ComponentModel.Server
 
             using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCart>(e => productAddedEvent = e, true))
             {                
-                Processor.Process(new AddProductToCart
+                Processor.Handle(new AddProductToCart
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,
@@ -134,11 +136,11 @@ namespace System.ComponentModel.Server
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);            
 
-            Processor.Process(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCart
             {
                 ShoppingCartId = shoppingCartId
             });
-            Processor.Process(new AddProductToCart
+            Processor.Handle(new AddProductToCart
             {
                 ShoppingCartId = shoppingCartId,
                 ProductId = productId,
@@ -151,7 +153,7 @@ namespace System.ComponentModel.Server
 
             using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCart>(e => productAddedEvent = e, true))
             {
-                Processor.Process(new AddProductToCart
+                Processor.Handle(new AddProductToCart
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,

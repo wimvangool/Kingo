@@ -8,20 +8,20 @@ namespace System.ComponentModel
     /// Represents the result of a validation-step of a message or other component.
     /// </summary>
     internal sealed class RequestMessageErrorInfo : IDataErrorInfo
-    {        
-        private readonly List<ValidationResult> _validationResults;
-        private readonly Dictionary<string, string> _errorMessagesPerMember;        
+    {                
+        private readonly Dictionary<string, string> _errorMessagesPerMember;
+        private readonly string _errorMessage;
 
-        private RequestMessageErrorInfo(List<ValidationResult> validationResults, Dictionary<string, string> errorMessagesPerMember)
-        {            
-            _validationResults = validationResults;
+        private RequestMessageErrorInfo(Dictionary<string, string> errorMessagesPerMember, string errorMessage)
+        {                        
             _errorMessagesPerMember = errorMessagesPerMember;
+            _errorMessage = errorMessage;
         }
 
         internal RequestMessageErrorInfo(RequestMessageErrorInfo errorInfo)
-        {
-            _validationResults = errorInfo._validationResults == null ? null : new List<ValidationResult>(errorInfo._validationResults);
+        {            
             _errorMessagesPerMember = errorInfo._errorMessagesPerMember == null ? null : new Dictionary<string, string>(errorInfo._errorMessagesPerMember);
+            _errorMessage = errorInfo._errorMessage;
         }
 
         /// <inheritdoc />
@@ -42,18 +42,11 @@ namespace System.ComponentModel
         /// <inheritdoc />
         public string Error
         {
-            get
-            {
-                if (_validationResults == null)
-                {
-                    return string.Empty;
-                }
-                return Concatenate(_validationResults.Select(result => result.ErrorMessage));
-            }
+            get { return _errorMessage;}
         }
 
         /// <summary>
-        /// This value is used to mark a <see cref="RequestMessage" /> as invalid when no validation of it has yet taken place.
+        /// This value is used to mark a <see cref="RequestMessage{TMessage}" /> as invalid when no validation of it has yet taken place.
         /// </summary>
         internal static readonly RequestMessageErrorInfo NotYetValidated = new RequestMessageErrorInfo(null, null);                      
 
@@ -85,15 +78,25 @@ namespace System.ComponentModel
                 if (isValid)
                 {
                     return null;
-                }
+                }                
                 var errorMessagesPerMember = CreateErrorMessagesPerMember(validationResults);
+                var errorMessage = CreateErrorMessage(validationResults);
 
-                return new RequestMessageErrorInfo(validationResults, errorMessagesPerMember);
+                return new RequestMessageErrorInfo(errorMessagesPerMember, errorMessage);
             }
             finally
             {
                 RequestMessageLabelProvider.Remove(validationContext.ObjectInstance);
             }            
+        }
+
+        private static string CreateErrorMessage(IEnumerable<ValidationResult> validationResults)
+        {
+            if (validationResults == null)
+            {
+                return string.Empty;
+            }
+            return Concatenate(validationResults.Select(result => result.ErrorMessage));
         }
 
         private static Dictionary<string, string> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)

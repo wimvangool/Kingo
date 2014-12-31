@@ -6,8 +6,8 @@ namespace System.ComponentModel.Server
 {       
     internal sealed class MessageProcessorBus : IMessageProcessorBus
     {
-        private readonly ICollection<MessageProcessorBusConnection> _connections;
-        private readonly ThreadLocal<ICollection<MessageProcessorBusConnection>> _threadLocalConnections;
+        private readonly ICollection<IMessageProcessorBusConnection> _connections;
+        private readonly ThreadLocal<ICollection<IMessageProcessorBusConnection>> _threadLocalConnections;
         private readonly IMessageProcessor _processor;  
         
         public MessageProcessorBus(IMessageProcessor processor)
@@ -16,8 +16,8 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("processor");
             }
-            _connections = new SynchronizedCollection<MessageProcessorBusConnection>();
-            _threadLocalConnections = new ThreadLocal<ICollection<MessageProcessorBusConnection>>(() => new List<MessageProcessorBusConnection>());  
+            _connections = new SynchronizedCollection<IMessageProcessorBusConnection>();
+            _threadLocalConnections = new ThreadLocal<ICollection<IMessageProcessorBusConnection>>(() => new List<IMessageProcessorBusConnection>());  
             _processor = processor;                
         }
 
@@ -28,9 +28,13 @@ namespace System.ComponentModel.Server
             return Connect(handler, openConnection, _connections);
         }
 
-        public IConnection Connect<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class
+        public IConnection Connect<TMessage>(Action<TMessage> handler, bool openConnection) where TMessage : class
         {
-            var connection = new MessageProcessorBusConnectionForAction<TMessage>(_connections, action);
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+            var connection = new MessageProcessorBusConnection<TMessage>(_connections, handler);
 
             if (openConnection)
             {
@@ -41,7 +45,11 @@ namespace System.ComponentModel.Server
 
         public IConnection Connect<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class
         {
-            var connection = new MessageProcessorBusConnectionForInterface<TMessage>(_connections, handler);
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+            var connection = new MessageProcessorBusConnection<TMessage>(_connections, handler);
 
             if (openConnection)
             {
@@ -59,9 +67,13 @@ namespace System.ComponentModel.Server
             return Connect(handler, openConnection, _threadLocalConnections.Value);
         }
 
-        public IConnection ConnectThreadLocal<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class
+        public IConnection ConnectThreadLocal<TMessage>(Action<TMessage> handler, bool openConnection) where TMessage : class
         {
-            var connection = new MessageProcessorBusConnectionForAction<TMessage>(_threadLocalConnections.Value, action);
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+            var connection = new MessageProcessorBusConnection<TMessage>(_threadLocalConnections.Value, handler);
 
             if (openConnection)
             {
@@ -71,8 +83,12 @@ namespace System.ComponentModel.Server
         }
         
         public IConnection ConnectThreadLocal<TMessage>(IMessageHandler<TMessage> handler, bool openConnection) where TMessage : class
-        {            
-            var connection = new MessageProcessorBusConnectionForInterface<TMessage>(_threadLocalConnections.Value, handler);
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+            var connection = new MessageProcessorBusConnection<TMessage>(_threadLocalConnections.Value, handler);
 
             if (openConnection)
             {
@@ -83,18 +99,18 @@ namespace System.ComponentModel.Server
 
         #endregion        
 
-        public void Publish<TMessage>(TMessage message) where TMessage : class
+        public void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
             InvokeRegisteredHandlers(message);
             InvokeConnectedHandlers(message);                            
         }
 
-        private void InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class
+        private void InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
-            _processor.Process(message);
+            _processor.Handle(message);
         }              
 
-        private void InvokeConnectedHandlers<TMessage>(TMessage message) where TMessage : class
+        private void InvokeConnectedHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
             foreach (var connection in _connections)
             {
@@ -109,7 +125,7 @@ namespace System.ComponentModel.Server
             } 
         }
 
-        private static IConnection Connect(object handler, bool openConnection, ICollection<MessageProcessorBusConnection> connections)
+        private static IConnection Connect(object handler, bool openConnection, ICollection<IMessageProcessorBusConnection> connections)
         {
             if (handler == null)
             {
@@ -124,7 +140,7 @@ namespace System.ComponentModel.Server
             return connection;
         }
 
-        private static IEnumerable<IConnection> CreateConnections(object handler, ICollection<MessageProcessorBusConnection> connections)
+        private static IEnumerable<IConnection> CreateConnections(object handler, ICollection<IMessageProcessorBusConnection> connections)
         {
             return from interfaceType in handler.GetType().GetInterfaces()
                    where IsMessageHandler(interfaceType)
@@ -136,12 +152,12 @@ namespace System.ComponentModel.Server
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IMessageHandler<>);
         }
 
-        private static IConnection CreateConnection(object handler, ICollection<MessageProcessorBusConnection> connections, Type interfaceType)
+        private static IConnection CreateConnection(object handler, ICollection<IMessageProcessorBusConnection> connections, Type interfaceType)
         {
             var messageType = interfaceType.GetGenericArguments()[0];
-            var connectionTypeDefinition = typeof(MessageProcessorBusConnectionForInterface<>);
+            var connectionTypeDefinition = typeof(MessageProcessorBusConnection<>);
             var connectionType = connectionTypeDefinition.MakeGenericType(messageType);            
-            var constructor = connectionType.GetConstructor(new [] { typeof(ICollection<MessageProcessorBusConnection>), interfaceType });
+            var constructor = connectionType.GetConstructor(new [] { typeof(ICollection<IMessageProcessorBusConnection>), interfaceType });
 
             return (IConnection) constructor.Invoke(new [] { connections, handler });
         }

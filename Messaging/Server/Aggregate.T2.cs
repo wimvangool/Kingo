@@ -70,7 +70,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        protected void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
+        protected void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
         {
             _buffer.Write(@event);
 

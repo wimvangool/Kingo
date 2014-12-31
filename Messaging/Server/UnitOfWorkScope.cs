@@ -5,7 +5,7 @@ namespace System.ComponentModel.Server
     /// <summary>
     /// Represents a scope that controls the lifetime of a <see cref="UnitOfWorkContext" />.
     /// </summary>        
-    public sealed class UnitOfWorkScope : ITransactionalScope
+    public sealed class UnitOfWorkScope : ITransactionScope
     {
         private readonly UnitOfWorkContext _context;
         private readonly BufferedEventBus _bufferedEventBus;

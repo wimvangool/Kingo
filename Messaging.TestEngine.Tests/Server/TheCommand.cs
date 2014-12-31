@@ -2,10 +2,19 @@
 
 namespace System.ComponentModel.Server
 {
-    internal sealed class TheCommand
+    internal sealed class TheCommand : Message<TheCommand>
     {
         public Exception ExceptionToThrow;
 
-        public IEnumerable<object> DomainEventsToPublish;
+        public IEnumerable<DomainEvent> DomainEventsToPublish;
+
+        public override TheCommand Copy()
+        {
+            return new TheCommand()
+            {
+                ExceptionToThrow = ExceptionToThrow,
+                DomainEventsToPublish = DomainEventsToPublish
+            };
+        }
     }
 }

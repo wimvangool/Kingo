@@ -8,7 +8,7 @@ namespace System.ComponentModel
     {
         #region [====== MessageWithValidation ======]
 
-        private sealed class TestMessage : RequestMessage
+        private sealed class TestMessage : RequestMessage<TestMessage>
         {
             private object _irrelevantValue;
             private Guid _customerId;
@@ -45,7 +45,7 @@ namespace System.ComponentModel
                 set { SetValue(ref _customerName, value, () => CustomerName); }
             }
 
-            public override RequestMessage Copy(bool makeReadOnly)
+            public override TestMessage Copy(bool makeReadOnly)
             {
                 return new TestMessage(this, makeReadOnly);
             }

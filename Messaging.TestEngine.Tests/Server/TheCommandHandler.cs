@@ -1,8 +1,8 @@
 ﻿
 namespace System.ComponentModel.Server
-{    
+{
     internal sealed class TheCommandHandler : IMessageHandler<TheCommand>
-    {        
+    {
         public void Handle(TheCommand command)
         {
             if (command.ExceptionToThrow != null)

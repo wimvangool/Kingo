@@ -153,12 +153,6 @@
   <data name="IntXXVersion_NegativeValue" xml:space="preserve">
     <value>Version cannot be negative: {0}.</value>
   </data>
-  <data name="InvalidCommandException_Message" xml:space="preserve">
-    <value>Command '{0}' could not be executed because it was invalid.</value>
-  </data>
-  <data name="InvalidCommandException_MessageWithErrors" xml:space="preserve">
-    <value>Command '{0}' could not be executed because it was invalid. Errors: {1}.</value>
-  </data>
   <data name="MemoryCache_NullValueCreated" xml:space="preserve">
     <value>The value factory returned a null-value.</value>
   </data>
@@ -221,5 +215,8 @@
   </data>
   <data name="DependencyClass_AmbigiousMatch" xml:space="preserve">
     <value>More than one type found that could be used as an implementation of dependency '{0}': {1}.</value>
+  </data>
+  <data name="MessageProcessor_InvalidMessage" xml:space="preserve">
+    <value>The message is invalid. See ErrorTree for details.</value>
   </data>
 </root>

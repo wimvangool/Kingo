@@ -7,15 +7,15 @@ namespace System.ComponentModel
     /// </summary>
     /// <remarks>
     /// <para>
-    /// When implemented by a class, the <see cref="ITransactionalScope" /> is entered as soon as the scope is created
-    /// end exitted when <see cref="IDisposable.Dispose">Dispose()</see> is called. The <see cref="ITransactionalScope.Complete()" />
+    /// When implemented by a class, the <see cref="ITransactionScope" /> is entered as soon as the scope is created
+    /// end exitted when <see cref="IDisposable.Dispose">Dispose()</see> is called. The <see cref="ITransactionScope.Complete()" />
     /// method is responsible for committing the changes that were made inside the scope.
     /// </para>
     /// <para>
     /// This design has of course been inspired by the design of the <see cref="TransactionScope" /> class.
     /// </para>
     /// </remarks>
-    public interface ITransactionalScope : IDisposable
+    public interface ITransactionScope : IDisposable
     {
         /// <summary>
         /// Completes the scope by flushing all registered wrappers.

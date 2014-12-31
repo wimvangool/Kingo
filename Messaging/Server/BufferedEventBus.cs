@@ -61,7 +61,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message" /> is <c>null</c>.
         /// </exception>
-        public static void Publish<TMessage>(TMessage message) where TMessage : class
+        public static void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
             var context = UnitOfWorkContext.Current;
             if (context != null)

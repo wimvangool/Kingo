@@ -107,11 +107,7 @@ namespace System.ComponentModel.Client
         /// <param name="message">The execution-parameter.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this command.
-        /// </param>                 
-        /// <exception cref="RequestExecutionException">
-        /// The command failed for (somewhat) predictable reasons, like insufficient rights, invalid parameters or
-        /// because the system's state/business rules wouldn't allow this command to be executed.
-        /// </exception> 
+        /// </param>                         
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>        

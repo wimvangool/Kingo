@@ -7,10 +7,10 @@ namespace System.ComponentModel.Server
     /// by the Given-When-Then pattern.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is executed on the When-phase.</typeparam>    
-    public abstract class Scenario<TMessage> : Scenario where TMessage : class
+    public abstract class Scenario<TMessage> : Scenario where TMessage : class, IMessage<TMessage>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scenario" /> class.
+        /// Initializes a new instance of the <see cref="Scenario{T}" /> class.
         /// </summary>
         protected Scenario() { }
 
@@ -32,6 +32,14 @@ namespace System.ComponentModel.Server
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Returns the validator of the message.
+        /// </summary>
+        protected virtual IMessageValidator<TMessage> Validator
+        {
+            get { return Message as IMessageValidator<TMessage>; }
         }
 
         /// <summary>
@@ -79,22 +87,22 @@ namespace System.ComponentModel.Server
             Given().ProcessWith(processor);
 
             // This scenario must collect all events that are published during the When()-phase.
-            using (processor.DomainEventBus.ConnectThreadLocal<object>(SaveDomainEvent, true))
+            using (processor.DomainEventBus.ConnectThreadLocal<IMessage>(SaveDomainEvent, true))
             using (var scope = new UnitOfWorkScope(processor.DomainEventBus))
             {
                 Message = When();
 
-                HandleMessage(processor, Message);
+                HandleMessage(processor, Message, Validator);
 
                 scope.Complete();
             }            
         }                       
 
-        private void HandleMessage(IMessageProcessor processor, TMessage message)
+        internal virtual void HandleMessage(IMessageProcessor processor, TMessage message, IMessageValidator<TMessage> validator)
         {
             try
             {
-                processor.Process(message);
+                processor.Handle(message, validator); 
             }
             catch (Exception exception)
             {

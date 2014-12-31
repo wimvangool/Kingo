@@ -178,24 +178,6 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command &apos;{0}&apos; could not be executed because it was invalid..
-        /// </summary>
-        internal static string InvalidCommandException_Message {
-            get {
-                return ResourceManager.GetString("InvalidCommandException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Command &apos;{0}&apos; could not be executed because it was invalid. Errors: {1}..
-        /// </summary>
-        internal static string InvalidCommandException_MessageWithErrors {
-            get {
-                return ResourceManager.GetString("InvalidCommandException_MessageWithErrors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The value factory returned a null-value..
         /// </summary>
         internal static string MemoryCache_NullValueCreated {
@@ -246,6 +228,15 @@ namespace System.ComponentModel.Resources {
         internal static string MessageHandlerClass_InvalidInstanceLifetimeMode {
             get {
                 return ResourceManager.GetString("MessageHandlerClass_InvalidInstanceLifetimeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The message is invalid. See ErrorTree for details..
+        /// </summary>
+        internal static string MessageProcessor_InvalidMessage {
+            get {
+                return ResourceManager.GetString("MessageProcessor_InvalidMessage", resourceCulture);
             }
         }
         

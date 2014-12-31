@@ -8,7 +8,7 @@ namespace System.ComponentModel
     {
         #region [====== ParentMessage ======]
 
-        private sealed class ParentMessage : RequestMessage
+        private sealed class ParentMessage : RequestMessage<ParentMessage>
         {
             public ParentMessage() { }
 
@@ -22,7 +22,7 @@ namespace System.ComponentModel
                 _value = message._value;
             }
 
-            public override RequestMessage Copy(bool makeReadOnly)
+            public override ParentMessage Copy(bool makeReadOnly)
             {
                 return new ParentMessage(this, makeReadOnly);
             }
@@ -59,7 +59,7 @@ namespace System.ComponentModel
 
         #region [====== ChildMessage ======]
 
-        private sealed class ChildMessage : RequestMessage
+        private sealed class ChildMessage : RequestMessage<ChildMessage>
         {
             public ChildMessage() { }
 
@@ -73,7 +73,7 @@ namespace System.ComponentModel
                 _value = message._value;
             }
 
-            public override RequestMessage Copy(bool makeReadOnly)
+            public override ChildMessage Copy(bool makeReadOnly)
             {
                 return new ChildMessage(this, makeReadOnly);
             }

@@ -9,17 +9,18 @@ using System.Runtime.Serialization;
 namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a basic implementation of the <see cref="IRequestMessage" /> interface, in which
+    /// Represents a basic implementation of the <see cref="IRequestMessage{TMessage}" /> interface, in which
     /// change tracking and validation are supported.
     /// </summary>
     [Serializable]
-    public abstract class RequestMessage : PropertyChangedBase, IRequestMessage, IServiceProvider, IExtensibleDataObject
+    public abstract class RequestMessage<TMessage> : PropertyChangedBase, IRequestMessage<TMessage>, IEditableObject, IServiceProvider, IExtensibleDataObject
+        where TMessage : RequestMessage<TMessage>
     {
         [NonSerialized]
         private readonly bool _isReadOnly;
 
         [NonSerialized]
-        private RequestMessageValidator _validator;
+        private RequestMessageValidator<TMessage> _validator;
 
         [NonSerialized]
         private LinkedList<IRequestMessage> _attachedMessages;
@@ -31,12 +32,12 @@ namespace System.ComponentModel
         private ExtensionDataObject _extensionData;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessage" /> class.
+        /// Initializes a new instance of the <see cref="RequestMessage{TMessage}" /> class.
         /// </summary>
         protected RequestMessage() : this(false) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessage" /> class.
+        /// Initializes a new instance of the <see cref="RequestMessage{TMessage}" /> class.
         /// </summary>
         /// <param name="makeReadOnly">Indicates whether the new instance should be marked readonly.</param>
         protected RequestMessage(bool makeReadOnly)
@@ -53,24 +54,24 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        protected RequestMessage(RequestMessage message, bool makeReadOnly)
+        protected RequestMessage(TMessage message, bool makeReadOnly)
         {            
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
             _isReadOnly = makeReadOnly;  
-            _validator = message._validator == null ? null : new RequestMessageValidator(this, message._validator);                                  
+            _validator = message._validator == null ? null : new RequestMessageValidator<TMessage>(this, message._validator);                                  
             _hasChanges = false;
         }
 
-        internal RequestMessageValidator Validator
+        internal RequestMessageValidator<TMessage> Validator
         {
             get
             {
                 if (_validator == null)
                 {
-                    _validator = new RequestMessageValidator(this);
+                    _validator = new RequestMessageValidator<TMessage>(this);
                 }
                 return _validator;
             }
@@ -87,7 +88,6 @@ namespace System.ComponentModel
                 return _attachedMessages;
             }
         }
-
 
         /// <summary>
         /// Indicates whether or not this message is marked as read-only.
@@ -110,7 +110,17 @@ namespace System.ComponentModel
             return Copy(true);
         }
 
+        TMessage IMessage<TMessage>.Copy()
+        {
+            return Copy(true);
+        }
+
         IRequestMessage IRequestMessage.Copy(bool makeReadOnly)
+        {
+            return Copy(makeReadOnly);
+        }
+
+        TMessage IRequestMessage<TMessage>.Copy(bool makeReadOnly)
         {
             return Copy(makeReadOnly);
         }
@@ -125,7 +135,7 @@ namespace System.ComponentModel
         /// even if this message is marked as changed. If the copy is readonly, the HasChanges-flag cannot be
         /// set to <c>true</c>.
         /// </returns>
-        public abstract RequestMessage Copy(bool makeReadOnly);                      
+        public abstract TMessage Copy(bool makeReadOnly);                      
 
         #endregion
 
@@ -361,13 +371,8 @@ namespace System.ComponentModel
 
         string IDataErrorInfo.Error
         {
-            get { return IsValid ? null : RequestMessageErrorInfo.Concatenate(GetErrorMessages()); }
-        }
-        
-        internal IEnumerable<string> GetErrorMessages()
-        {                  
-            return new[] { ErrorInfo == null ? null : ErrorInfo.Error }.Concat(_attachedMessages.Select(message => message.Error));
-        }
+            get { return IsValid ? null : ErrorInfo.Error; }
+        }                
         
         internal RequestMessageErrorInfo ErrorInfo
         {
@@ -397,7 +402,36 @@ namespace System.ComponentModel
         public void Validate()
         {
             Validate(true);
-        }            
+        }
+
+        bool IMessageValidator<TMessage>.IsNotValid(TMessage message, out MessageErrorTree errorTree)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            return message.IsNotValid(out errorTree);
+        }
+
+        /// <inheritdoc />
+        protected bool IsNotValid(out MessageErrorTree errorTree)
+        {
+            Validate(true);
+
+            if (IsValid)
+            {
+                errorTree = null;
+                return false;
+            }
+            errorTree = CreateErrorTree();
+            return true;
+        }
+
+        internal virtual MessageErrorTree CreateErrorTree()
+        {
+            // TODO...
+            throw new NotImplementedException();
+        }
         
         internal virtual void Validate(bool ignoreEditScope)
         {
@@ -601,37 +635,37 @@ namespace System.ComponentModel
         /// <summary>
         /// Creates and returns a copy of the specified <paramref name="message"/> that is also automatically attached as child to this message.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to copy.</typeparam>
+        /// <typeparam name="T">Type of the message to copy.</typeparam>
         /// <param name="message">The message to copy.</param>
         /// <returns>
         /// A copy of <paramref name="message"/>, or <c>null</c> if <paramref name="message"/> is <c>null</c>.
         /// </returns>
-        protected TMessage AttachCopy<TMessage>(TMessage message) where TMessage : class, IRequestMessage
+        protected T AttachCopy<T>(T message) where T : class, IRequestMessage<T>
         {
             if (message == null)
             {
                 return null;
             }
-            return Attach((TMessage) message.Copy(IsReadOnly));
+            return Attach(message.Copy(IsReadOnly));
         }
 
         /// <summary>
         /// Creates and returns a new instance of <typeparamref name="TMessage"/> that is also automatically attached as child to this message.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to create.</typeparam>
+        /// <typeparam name="T">Type of the message to create.</typeparam>
         /// <returns>A new instance of <typeparamref name="TMessage"/>.</returns>
-        protected TMessage Attach<TMessage>() where TMessage : class, IRequestMessage, new()
+        protected T Attach<T>() where T : class, IRequestMessage, new()
         {
-            return Attach(new TMessage());
+            return Attach(new T());
         }
 
         /// <summary>
         /// Attaches the specified <paramref name="message"/> to this message and immediately returns it.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to attach.</typeparam>
+        /// <typeparam name="T">Type of the message to attach.</typeparam>
         /// <param name="message">The message to attach.</param>
         /// <returns>The specified <paramref name="message"/>.</returns>
-        protected TMessage Attach<TMessage>(TMessage message) where TMessage : class, IRequestMessage
+        protected T Attach<T>(T message) where T : class, IRequestMessage
         {
             Attach(message as IRequestMessage);
 

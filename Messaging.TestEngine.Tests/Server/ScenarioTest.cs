@@ -82,9 +82,9 @@ namespace System.ComponentModel.Server
 
         private sealed class HappyFlowScenario : ScenarioUnderTest
         {
-            private readonly IEnumerable<object> _messagesToPublish;
+            private readonly IEnumerable<DomainEvent> _messagesToPublish;
 
-            public HappyFlowScenario(IEnumerable<object> messagesToPublish)
+            public HappyFlowScenario(IEnumerable<DomainEvent> messagesToPublish)
             {
                 _messagesToPublish = messagesToPublish;
             }
@@ -193,7 +193,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void HandleWith_WillSetExceptionToNull_IfNoExceptionWasThrownByWhen()
         {
-            var messages = new[] { new object(), new object() };
+            var messages = new[] { new DomainEvent(), new DomainEvent(),  };
             var scenario = new HappyFlowScenario(messages);
 
             scenario.ProcessWith(Processor);
@@ -204,14 +204,14 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void HandleWith_WillHaveDomainEvents_IfNoExceptionWasThrownByWhenAndSomeEventsWerePublished()
         {
-            var messages = new[] { new object(), new object() };
+            var messages = new[] { new DomainEvent(), new DomainEvent(),  };
             var scenario = new HappyFlowScenario(messages);
 
             scenario.ProcessWith(Processor);
                  
             Assert.AreEqual(messages.Length, scenario.DomainEventCount);
-            Assert.AreSame(messages[0], scenario.DomainEventAt(0));
-            Assert.AreSame(messages[1], scenario.DomainEventAt(1));
+            Assert.AreSame(messages[0].GetType(), scenario.DomainEventAt(0).GetType());
+            Assert.AreSame(messages[1].GetType(), scenario.DomainEventAt(1).GetType());
         }
 
         #endregion

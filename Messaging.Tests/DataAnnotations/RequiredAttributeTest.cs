@@ -7,7 +7,7 @@ namespace System.ComponentModel.DataAnnotations
     {
         #region [====== TestMessage ======]
 
-        private sealed class TestMessage : RequestMessage
+        private sealed class TestMessage : RequestMessage<TestMessage>
         {
             public TestMessage() { }
 
@@ -16,7 +16,7 @@ namespace System.ComponentModel.DataAnnotations
                 _objectValue = message._objectValue;
             }
 
-            public override RequestMessage Copy(bool makeReadOnly)
+            public override TestMessage Copy(bool makeReadOnly)
             {
                 return new TestMessage(this, makeReadOnly);
             }

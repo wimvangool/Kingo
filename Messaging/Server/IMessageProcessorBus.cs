@@ -24,7 +24,7 @@
         /// Connects the specified callback to the bus.
         /// </summary>
         /// <typeparam name="TMessage">Type of event to listen to.</typeparam>
-        /// <param name="action">
+        /// <param name="handler">
         /// Callback that will handle any events of type <paramtyperef name="TMessage"/>.
         /// </param>
         /// <param name="openConnection">
@@ -32,9 +32,9 @@
         /// </param>
         /// <returns>The created connection.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="action"/> is <c>null</c>.
+        /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        IConnection Connect<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class;
+        IConnection Connect<TMessage>(Action<TMessage> handler, bool openConnection) where TMessage : class;
 
         /// <summary>
         /// Connects the specified handler to the bus.
@@ -75,7 +75,7 @@
         /// published on the current thread.
         /// </summary>
         /// <typeparam name="TMessage">Type of event to listen to.</typeparam>
-        /// <param name="action">
+        /// <param name="handler">
         /// Callback that will handle any events of type <paramtyperef name="TMessage"/>.
         /// </param>
         /// <param name="openConnection">
@@ -83,9 +83,9 @@
         /// </param>
         /// <returns>The created connection.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="action"/> is <c>null</c>.
+        /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        IConnection ConnectThreadLocal<TMessage>(Action<TMessage> action, bool openConnection) where TMessage : class;
+        IConnection ConnectThreadLocal<TMessage>(Action<TMessage> handler, bool openConnection) where TMessage : class;
 
         /// <summary>
         /// Connects the specified handler to the bus, which will only receive those events that are

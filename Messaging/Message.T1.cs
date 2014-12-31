@@ -4,11 +4,16 @@ using System.Linq;
 namespace System.ComponentModel
 {
     /// <summary>
-    /// Serves as a simple base-implementation of the <see cref="IMessage" /> interface.
+    /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
-    public abstract class Message : IMessage
-    {        
+    public abstract class Message<TMessage> : IMessage<TMessage> where TMessage : Message<TMessage>
+    {
         IMessage IMessage.Copy()
+        {
+            return Copy();
+        }
+
+        TMessage IMessage<TMessage>.Copy()
         {
             return Copy();
         }
@@ -17,15 +22,15 @@ namespace System.ComponentModel
         /// Creates and returns a copy of this message.
         /// </summary>
         /// <returns>A copy of this message.</returns>
-        public abstract Message Copy();
+        public abstract TMessage Copy();
 
         /// <summary>
         /// Creates and returns a (materialized) copy of the specified collection.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the messages in the collection.</typeparam>
+        /// <typeparam name="T">Type of the messages in the collection.</typeparam>
         /// <param name="messages">The collection to copy.</param>
         /// <returns>The copied collection, or <c>null</c> if <paramref name="messages" /> was <c>null</c>.</returns>
-        public static IList<TMessage> Copy<TMessage>(IEnumerable<TMessage> messages) where TMessage : class, IMessage
+        public static IList<T> Copy<T>(IEnumerable<T> messages) where T : class, IMessage<T>
         {
             return messages == null ? null : messages.Select(Copy).ToArray();
         }
@@ -33,14 +38,14 @@ namespace System.ComponentModel
         /// <summary>
         /// Creates and returns a copy of the specified <paramref name="message"/>.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to copy.</typeparam>
+        /// <typeparam name="T">Type of the message to copy.</typeparam>
         /// <param name="message">The message to copy.</param>
         /// <returns>
         /// A copy of the specified <paramref name="message"/>, or <c>null</c> if <paramref name="message"/> was <c>null</c>.
         /// </returns>
-        public static TMessage Copy<TMessage>(TMessage message) where TMessage : class, IMessage
+        public static T Copy<T>(T message) where T : class, IMessage<T>
         {
-            return message == null ? null : (TMessage) message.Copy();
-        }
+            return message == null ? null : message.Copy();
+        }        
     }
 }

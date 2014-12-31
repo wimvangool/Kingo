@@ -22,7 +22,7 @@ namespace System.ComponentModel.Server
                 return sequence;
             }
 
-            public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class
+            public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
             {
                 return new MessageSequenceNode<TMessage>(message);
             }
@@ -40,7 +40,7 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public virtual IMessageSequence Append<TMessage>(TMessage message) where TMessage : class
+        public virtual IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
             return new MessageSequencePair(this, new MessageSequenceNode<TMessage>(message));
         }

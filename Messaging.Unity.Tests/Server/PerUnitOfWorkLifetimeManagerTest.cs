@@ -28,7 +28,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void GetValue_ReturnsNull_IfNoValueHasBeenStored()
         {
-            Processor.Process(new object(), message =>            
+            Processor.Handle(new MessageStub(), null, message =>            
                 Assert.IsNull(_lifetimeManager.GetValue())             
             );
         }
@@ -36,9 +36,9 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void GetValue_ReturnsStoredValue_IfValueWasStoredInCache()
         {
-            var instance = new object();
+            var instance = new MessageStub();
 
-            Processor.Process(instance, message =>
+            Processor.Handle(instance, null, message =>
             {
                 _lifetimeManager.SetValue(instance);
 
@@ -57,9 +57,9 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void RemoveValue_RemovesValueFromTheCache_IfValueWasStoredInCache()
         {
-            var instance = new object();
+            var instance = new MessageStub();
 
-            Processor.Process(instance, message =>
+            Processor.Handle(instance, null, message =>
             {
                 _lifetimeManager.SetValue(instance);
                 _lifetimeManager.RemoveValue();

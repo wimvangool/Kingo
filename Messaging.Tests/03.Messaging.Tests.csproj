@@ -74,6 +74,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="MessageStub.cs" />
     <Compile Include="RequestMessageAsEditableObjectTest.cs" />
     <Compile Include="MessageOne.cs" />
     <Compile Include="MessageTwo.cs" />
@@ -117,7 +118,7 @@
     <Compile Include="Server\UnitOfWorkTwoSyncTest.cs" />
     <Compile Include="Server\UnitOfWorkWrapperGroupTest.cs" />
     <Compile Include="Server\UnitOfWorkWrapperItemTest.cs" />
-    <Compile Include="Validation\RequiredAttributeTest.cs" />
+    <Compile Include="DataAnnotations\RequiredAttributeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\04.Messaging.csproj">

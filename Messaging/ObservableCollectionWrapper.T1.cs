@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 
 namespace System.ComponentModel
 {
-    internal sealed class ObservableCollectionWrapper<TValue> : RequestMessage
+    internal sealed class ObservableCollectionWrapper<TValue> : RequestMessage<ObservableCollectionWrapper<TValue>>
     {
         private readonly ObservableCollection<TValue> _collection;        
         private readonly bool _isRequestMessageCollection;
@@ -29,7 +29,7 @@ namespace System.ComponentModel
             Validator.ErrorInfo = null;
         }
 
-        public override RequestMessage Copy(bool makeReadOnly)
+        public override ObservableCollectionWrapper<TValue> Copy(bool makeReadOnly)
         {
             return new ObservableCollectionWrapper<TValue>(this, makeReadOnly);
         }
@@ -41,6 +41,12 @@ namespace System.ComponentModel
             {                
                 ValidateAttachedMessages();
             }
+        }
+
+        internal override MessageErrorTree CreateErrorTree()
+        {
+            // TODO...
+            throw new NotImplementedException();
         }
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

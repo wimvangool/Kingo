@@ -3,18 +3,9 @@
     /// <summary>
     /// Represents a request-message that supports change-tracking and validation.
     /// </summary>
-    public interface IRequestMessage : INotifyHasChanges, INotifyIsValid, IDataErrorInfo        
-    {                
-        /// <summary>
-        /// Marks this message as unchanged.
-        /// </summary>
-        void AcceptChanges();
-
-        /// <summary>
-        /// Validates all values of this message and then updates the validation-state.
-        /// </summary>
-        void Validate();
-
+    public interface IRequestMessage<TMessage> : IRequestMessage, IMessage<TMessage>, IMessageValidator<TMessage>
+        where TMessage : class, IRequestMessage<TMessage>
+    {
         /// <summary>
         /// Creates and returns a copy of this message.
         /// </summary>
@@ -25,6 +16,6 @@
         /// even if this message is marked as changed. If the copy is readonly, the HasChanges-flag cannot be
         /// set to <c>true</c>.
         /// </returns>
-        IRequestMessage Copy(bool makeReadOnly); 
+        new TMessage Copy(bool makeReadOnly);
     }
 }

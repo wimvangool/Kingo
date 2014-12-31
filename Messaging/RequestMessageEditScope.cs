@@ -7,9 +7,9 @@ using System.Threading;
 namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a scope in which changes can be made to a <see cref="RequestMessage" /> that can be rolled back if required.
+    /// Represents a scope in which changes can be made to a <see cref="IRequestMessage" /> that can be rolled back if required.
     /// </summary>
-    public sealed class RequestMessageEditScope : ITransactionalScope
+    public sealed class RequestMessageEditScope : ITransactionScope
     {
         private readonly RequestMessageEditScope _parentScope;
         private readonly IRequestMessage _message;

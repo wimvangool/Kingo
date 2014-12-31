@@ -3,7 +3,7 @@
     /// <summary>
     /// When implemented by a class, handles messages of the specified <paramtyperef name="TMessage" />.
     /// </summary>
-    /// <typeparam name="TMessage"></typeparam>  
+    /// <typeparam name="TMessage">Type of the message to handle.</typeparam>  
     public interface IMessageHandler<in TMessage> where TMessage : class
     {        
         /// <summary>
