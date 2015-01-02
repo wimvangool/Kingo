@@ -3,7 +3,7 @@
 namespace System.ComponentModel
 {
     /// <summary>
-    /// This exception is thrown when a business rule was violated while processing a <see cref="IMessage" />.
+    /// This exception is thrown when a business rule was violated while processing a <see cref="object" />.
     /// </summary>
     [Serializable]
     public class BusinessRuleViolationException : FunctionalException
@@ -15,7 +15,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public BusinessRuleViolationException(IMessage failedMessage)
+        public BusinessRuleViolationException(object failedMessage)
             : base(failedMessage) {}
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public BusinessRuleViolationException(IMessage failedMessage, string message)
+        public BusinessRuleViolationException(object failedMessage, string message)
             : base(failedMessage, message) {}
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public BusinessRuleViolationException(IMessage failedMessage, string message, Exception inner)
+        public BusinessRuleViolationException(object failedMessage, string message, Exception inner)
             : base(failedMessage, message, inner) {}
 
         /// <summary>

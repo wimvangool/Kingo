@@ -115,7 +115,8 @@
     <Compile Include="Server\DateTimeVersion.cs" />
     <Compile Include="Server\IMessageProcessorBusConnection.cs" />
     <Compile Include="Server\Int64Version.cs" />
-    <Compile Include="Server\MessageHandlerDecorator.T1.cs" />
+    <Compile Include="Server\PassThroughPipeline.T1.cs" />
+    <Compile Include="Server\MessageValidationPipeline.cs" />
     <Compile Include="Server\Repository.T3.cs" />
     <Compile Include="Server\Int32Version.cs" />
     <Compile Include="Server\DomainException.cs" />

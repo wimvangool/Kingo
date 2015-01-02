@@ -10,7 +10,7 @@ namespace System.ComponentModel
     [Serializable]
     public abstract class FunctionalException : Exception
     {
-        private readonly IMessage _failedMessage;
+        private readonly object _failedMessage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FunctionalException" /> class.
@@ -19,7 +19,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(IMessage failedMessage)
+        protected FunctionalException(object failedMessage)
         {
             if (failedMessage == null)
             {
@@ -36,7 +36,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(IMessage failedMessage, string message)
+        protected FunctionalException(object failedMessage, string message)
             : base(message)
         {
             if (failedMessage == null)
@@ -55,7 +55,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(IMessage failedMessage, string message, Exception inner)
+        protected FunctionalException(object failedMessage, string message, Exception inner)
             : base(message, inner)
         {
             if (failedMessage == null)
@@ -76,7 +76,7 @@ namespace System.ComponentModel
         /// <summary>
         /// The message that could not be processed.
         /// </summary>
-        public IMessage FailedMessage
+        public object FailedMessage
         {
             get { return _failedMessage; }
         }

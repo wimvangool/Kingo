@@ -74,6 +74,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="CommandStub.cs" />
     <Compile Include="MessageStub.cs" />
     <Compile Include="RequestMessageAsEditableObjectTest.cs" />
     <Compile Include="MessageOne.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Server\MessageHandlerSpy.cs" />
     <Compile Include="Server\MessageProcessorBusTest.cs" />
     <Compile Include="Server\MessageProcessorStub.cs" />
+    <Compile Include="Server\MessageValidationPipelineTest.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
     <Compile Include="Server\MessageHandlerClassTest.cs" />

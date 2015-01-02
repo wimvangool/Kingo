@@ -22,7 +22,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(IMessage failedMessage, string message)
+        public InvalidMessageException(object failedMessage, string message)
             : base(failedMessage, message) { }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(IMessage failedMessage, string message, Exception inner)
+        public InvalidMessageException(object failedMessage, string message, Exception inner)
             : base(failedMessage, message, inner) { }
         
         /// <summary>
@@ -45,7 +45,7 @@ namespace System.ComponentModel
         /// <param name="errorTree">
         /// If specified, contains all the validation-errors of the <paramref name="failedMessage"/>.
         /// </param>
-        public InvalidMessageException(IMessage failedMessage, string message, MessageErrorTree errorTree)
+        public InvalidMessageException(object failedMessage, string message, MessageErrorTree errorTree)
             : base(failedMessage, message)
         {
             ErrorTree = errorTree;

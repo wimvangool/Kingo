@@ -16,7 +16,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public MessageDeniedException(IMessage failedMessage) 
+        public MessageDeniedException(object failedMessage) 
             : base(failedMessage) {}
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public MessageDeniedException(IMessage failedMessage, string message)
+        public MessageDeniedException(object failedMessage, string message)
             : base(failedMessage, message) {}
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public MessageDeniedException(IMessage failedMessage, string message, Exception inner)
+        public MessageDeniedException(object failedMessage, string message, Exception inner)
             : base(failedMessage, message, inner) {}
 
         /// <summary>
