@@ -106,15 +106,6 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;.&quot;.
-        /// </summary>
-        internal static string Comparable_IncompatbileType {
-            get {
-                return ResourceManager.GetString("Comparable_IncompatbileType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The connection is already closed..
         /// </summary>
         internal static string Connection_AlreadyClosed {
@@ -169,15 +160,6 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value factory returned a null-value..
-        /// </summary>
-        internal static string MemoryCache_NullValueCreated {
-            get {
-                return ResourceManager.GetString("MemoryCache_NullValueCreated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unknown value of type &apos;{0}&apos; specified: {1}..
         /// </summary>
         internal static string Message_InvalidOption {
@@ -205,15 +187,6 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple attributes of the specified type were found when only a single was expected: {0}..
-        /// </summary>
-        internal static string MessageHanderPipeline_MultipleAttributesFound {
-            get {
-                return ResourceManager.GetString("MessageHanderPipeline_MultipleAttributesFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invalid InstanceLifetime was specified on class &apos;{0}&apos;: {1}. .
         /// </summary>
         internal static string MessageHandlerClass_InvalidInstanceLifetimeMode {
@@ -228,51 +201,6 @@ namespace System.ComponentModel.Resources {
         internal static string MessageProcessor_InvalidMessage {
             get {
                 return ResourceManager.GetString("MessageProcessor_InvalidMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot start this lifetime because it has been already started once..
-        /// </summary>
-        internal static string ObjectCacheValueLifetime_AlreadyStarted {
-            get {
-                return ResourceManager.GetString("ObjectCacheValueLifetime_AlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot combine this lifetime with the other because the other has already started..
-        /// </summary>
-        internal static string ObjectCacheValueLifetime_OtherAlreadyStarted {
-            get {
-                return ResourceManager.GetString("ObjectCacheValueLifetime_OtherAlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot combine this lifetime with another because it has already started..
-        /// </summary>
-        internal static string ObjectCacheValueLifetime_ThisAlreadyStarted {
-            get {
-                return ResourceManager.GetString("ObjectCacheValueLifetime_ThisAlreadyStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; cannot be negative: {1}..
-        /// </summary>
-        internal static string Progress_NegativeValue {
-            get {
-                return ResourceManager.GetString("Progress_NegativeValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid value specified: {0}. Value must be within range of [{1}, {2}]..
-        /// </summary>
-        internal static string Progress_ValueOutOfRange {
-            get {
-                return ResourceManager.GetString("Progress_ValueOutOfRange", resourceCulture);
             }
         }
         
@@ -309,15 +237,6 @@ namespace System.ComponentModel.Resources {
         internal static string SynchronizationContextScope_ContextNotSet {
             get {
                 return ResourceManager.GetString("SynchronizationContextScope_ContextNotSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The length of a lifetime cannot be zero..
-        /// </summary>
-        internal static string TimerBasedLifetime_ZeroLifetime {
-            get {
-                return ResourceManager.GetString("TimerBasedLifetime_ZeroLifetime", resourceCulture);
             }
         }
         
