@@ -141,9 +141,6 @@
   <data name="Connection_AlreadyOpen" xml:space="preserve">
     <value>The connection is already open.</value>
   </data>
-  <data name="DateTimeVersion_Overflow" xml:space="preserve">
-    <value>The timestamp could not be incremented because it already has the maximum allowed value.</value>
-  </data>
   <data name="DomainModelException_CommandFailed" xml:space="preserve">
     <value>Command '{0}' failed.</value>
   </data>
@@ -218,5 +215,8 @@
   </data>
   <data name="MessageProcessor_InvalidMessage" xml:space="preserve">
     <value>The message is invalid. See ErrorTree for details.</value>
+  </data>
+  <data name="ReadOnlyDictionary_NotSupported" xml:space="preserve">
+    <value>Cannot change this collection because it is read-only.</value>
   </data>
 </root>

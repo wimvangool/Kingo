@@ -74,10 +74,9 @@
     <Compile Include="MessageDeniedException.cs" />
     <Compile Include="ObservableCollectionWrapper.T1.cs" />
     <Compile Include="FunctionalException.cs" />
+    <Compile Include="ReadOnlyDictionary.T2.cs" />
     <Compile Include="RequestMessageEditScope.cs" />
     <Compile Include="MessageErrorTree.cs" />
-    <Compile Include="RequestMessageProperty.cs" />
-    <Compile Include="RequestMessagePropertyAttribute.cs" />
     <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
     <Compile Include="RequestMessageValidator.T1.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">

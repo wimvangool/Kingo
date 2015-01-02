@@ -133,15 +133,6 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The timestamp could not be incremented because it already has the maximum allowed value..
-        /// </summary>
-        internal static string DateTimeVersion_Overflow {
-            get {
-                return ResourceManager.GetString("DateTimeVersion_Overflow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to More than one type found that could be used as an implementation of dependency &apos;{0}&apos;: {1}..
         /// </summary>
         internal static string DependencyClass_AmbigiousMatch {
@@ -282,6 +273,15 @@ namespace System.ComponentModel.Resources {
         internal static string Progress_ValueOutOfRange {
             get {
                 return ResourceManager.GetString("Progress_ValueOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot change this collection because it is read-only..
+        /// </summary>
+        internal static string ReadOnlyDictionary_NotSupported {
+            get {
+                return ResourceManager.GetString("ReadOnlyDictionary_NotSupported", resourceCulture);
             }
         }
         

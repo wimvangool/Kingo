@@ -25,8 +25,7 @@ namespace System.ComponentModel
 
             private int _intValue;
 
-            [RequiredConstraint]
-            [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
+            [RequiredConstraint]            
             public int IntValue
             {
                 get { return _intValue; }
@@ -34,12 +33,11 @@ namespace System.ComponentModel
             }
 
             private TestMessage _child;
-            
-            [RequestMessageProperty(PropertyChangedOption.MarkAsChanged)]
+                        
             public TestMessage Child
             {
                 get { return _child; }
-                set { SetValue(ref _child, value, () => Child); }
+                set { SetValue(ref _child, value, () => Child, PropertyChangedOption.MarkAsChanged); }
             }            
         }
 

@@ -31,8 +31,7 @@ namespace System.ComponentModel
 
             private int _value;
 
-            [RequiredConstraint]
-            [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
+            [RequiredConstraint]            
             public int Value
             {
                 get { return _value; }
@@ -44,8 +43,7 @@ namespace System.ComponentModel
             #region [====== ChildMessage ======]
 
             private ChildMessage _child;
-
-            [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
+            
             public ChildMessage Child
             {
                 get { return _child; }
@@ -82,8 +80,7 @@ namespace System.ComponentModel
 
             private int _value;
 
-            [RequiredConstraint]
-            [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
+            [RequiredConstraint]            
             public int Value
             {
                 get { return _value; }

@@ -24,6 +24,8 @@ namespace System.ComponentModel
             _errorMessage = errorInfo._errorMessage;
         }
 
+        #region [====== IDataErrorInfo ======]
+
         /// <inheritdoc />
         public string this[string columnName]
         {
@@ -44,6 +46,8 @@ namespace System.ComponentModel
         {
             get { return _errorMessage;}
         }
+
+        #endregion
 
         /// <summary>
         /// This value is used to mark a <see cref="RequestMessage{TMessage}" /> as invalid when no validation of it has yet taken place.
@@ -133,6 +137,40 @@ namespace System.ComponentModel
         internal static string Concatenate(IEnumerable<string> errorMessages)
         {            
             return string.Join(Environment.NewLine, errorMessages.Where(error => !string.IsNullOrWhiteSpace(error)));
-        }         
+        }
+
+        #region [====== MessageErrorTree Factory ======]
+
+        internal static MessageErrorTree CreateErrorTree<TMessage>(RequestMessage<TMessage> message, IEnumerable<IRequestMessage> attachedMessages)
+            where TMessage : RequestMessage<TMessage>
+        {
+            var messageType = typeof(TMessage);
+            var errors = message.ErrorInfo == null ? null : message.ErrorInfo._errorMessagesPerMember;
+            var childErrors = CreateErrorTrees(attachedMessages);
+
+            return new MessageErrorTree(messageType, errors, childErrors);
+        }
+
+        private static IEnumerable<MessageErrorTree> CreateErrorTrees(IEnumerable<IRequestMessage> messages)
+        {
+            if (messages == null)
+            {
+                return Enumerable.Empty<MessageErrorTree>();
+            }
+            var childErrors = new LinkedList<MessageErrorTree>();            
+
+            foreach (var message in messages)
+            {
+                MessageErrorTree childErrorTree;
+
+                if (message.IsNotValid(out childErrorTree))
+                {
+                    childErrors.AddLast(childErrorTree);
+                }
+            }
+            return childErrors;
+        }
+
+        #endregion
     }
 }

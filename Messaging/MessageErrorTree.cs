@@ -9,13 +9,13 @@ namespace System.ComponentModel
     public sealed class MessageErrorTree
     {
         private readonly Type _messageType;
-        private readonly Dictionary<string, string> _errors;
+        private readonly IDictionary<string, string> _errors;
         private readonly MessageErrorTree[] _childErrorTrees;
  
-        internal MessageErrorTree(Type messageType, Dictionary<string, string> errors, IEnumerable<MessageErrorTree> childErrorTrees)
+        internal MessageErrorTree(Type messageType, IDictionary<string, string> errors, IEnumerable<MessageErrorTree> childErrorTrees)
         {
             _messageType = messageType;
-            _errors = errors;
+            _errors = new ReadOnlyDictionary<string, string>(errors);
             _childErrorTrees = childErrorTrees.ToArray();
         }
 
@@ -25,20 +25,20 @@ namespace System.ComponentModel
         public Type MessageType
         {
             get { return _messageType; }
-        }
+        }        
 
         /// <summary>
         /// Returns the number of errors that were detected on the related message.
         /// </summary>
-        public int ErrorCount
+        public int TotalErrorCount
         {
-            get { return _errors.Count; }
+            get { return _errors.Count + ChildErrors.Sum(errorTree => errorTree.TotalErrorCount); }
         }
 
         /// <summary>
         /// Returns the errors that were detected on the message. The key represent a property, the value contains the error message.
         /// </summary>
-        public IEnumerable<KeyValuePair<string, string>> Errors
+        public IDictionary<string, string> Errors
         {
             get { return _errors; }
         }

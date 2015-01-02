@@ -16,6 +16,10 @@ namespace System.ComponentModel
     public abstract class RequestMessage<TMessage> : PropertyChangedBase, IRequestMessage<TMessage>, IEditableObject, IServiceProvider, IExtensibleDataObject
         where TMessage : RequestMessage<TMessage>
     {
+        // The _validator and _attachedMessages fields could have been made readonly but were not because we want to support the use
+        // of WCF's DataContractSerializer, which does not call constructors upon deserialization. For this reason, we use the
+        // lazy initialization pattern.
+
         [NonSerialized]
         private readonly bool _isReadOnly;
 
@@ -316,7 +320,7 @@ namespace System.ComponentModel
         /// <inheritdoc />
         protected void NotifyOfPropertyChange(RequestMessagePropertyChangedEventArgs e)
         {            
-            NotifyOfPropertyChange(e, GetDeclaredOptionFor(e.PropertyName));
+            NotifyOfPropertyChange(e, PropertyChangedOption.None);
         }
 
         /// <summary>
@@ -357,7 +361,7 @@ namespace System.ComponentModel
         internal void MarkAsChangedAndValidate()
         {
             MarkAsChanged();
-            Validate(false);
+            Validate(false, true);
         }
 
         #endregion        
@@ -398,44 +402,44 @@ namespace System.ComponentModel
             NotifyOfPropertyChange(() => IsValid);
         }
 
-        /// <inheritdoc />
-        public void Validate()
-        {
-            Validate(true);
-        }
-
         bool IMessageValidator<TMessage>.IsNotValid(TMessage message, out MessageErrorTree errorTree)
         {
-            if (message == null)
+            var requestMessage = message as IRequestMessage;
+            if (requestMessage == null)
             {
                 throw new ArgumentNullException("message");
             }
-            return message.IsNotValid(out errorTree);
+            return requestMessage.IsNotValid(out errorTree);
         }
 
         /// <inheritdoc />
-        protected bool IsNotValid(out MessageErrorTree errorTree)
+        bool IRequestMessage.IsNotValid(out MessageErrorTree errorTree)
         {
-            Validate(true);
+            return IsNotValid(out errorTree);
+        }
+
+        internal virtual bool IsNotValid(out MessageErrorTree errorTree)
+        {
+            Validate(true, false);
 
             if (IsValid)
             {
                 errorTree = null;
                 return false;
             }
-            errorTree = CreateErrorTree();
+            errorTree = RequestMessageErrorInfo.CreateErrorTree(this, _attachedMessages);
             return true;
-        }
+        }        
 
-        internal virtual MessageErrorTree CreateErrorTree()
+        /// <inheritdoc />
+        public void Validate()
         {
-            // TODO...
-            throw new NotImplementedException();
-        }
+            Validate(true, true);
+        }        
         
-        internal virtual void Validate(bool ignoreEditScope)
+        internal virtual void Validate(bool ignoreEditScope, bool validateAttachedMessages)
         {
-            if (Validator.TryValidateMessage(ignoreEditScope, CreateValidationContext()))
+            if (Validator.TryValidateMessage(ignoreEditScope, CreateValidationContext()) && validateAttachedMessages)
             {
                 ValidateAttachedMessages();
             }           
@@ -525,7 +529,7 @@ namespace System.ComponentModel
         /// </exception>
         protected bool SetValue<TValue>(ref TValue currentValue, TValue value, string propertyName)
         {
-            return SetValue(ref currentValue, value, propertyName, GetDeclaredOptionFor(propertyName));
+            return SetValue(ref currentValue, value, propertyName, PropertyChangedOption.MarkAsChangedAndValidate);
         }
 
         /// <summary>
@@ -577,12 +581,7 @@ namespace System.ComponentModel
         internal static bool IsRequestMessage(Type type)
         {
             return typeof(IRequestMessage).IsAssignableFrom(type);
-        }
-
-        private PropertyChangedOption GetDeclaredOptionFor(string propertyName)
-        {
-            return RequestMessageProperty.GetPropertyChangeOption(GetType(), propertyName);
-        }
+        }        
 
         #endregion       
 

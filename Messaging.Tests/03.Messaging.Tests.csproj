@@ -80,6 +80,7 @@
     <Compile Include="MessageTwo.cs" />
     <Compile Include="ClockTest.cs" />
     <Compile Include="ClockWithOffsetTest.cs" />
+    <Compile Include="RequestMessageIsNotValidTest.cs" />
     <Compile Include="RequestMessageWithChildCollectionsTest.cs" />
     <Compile Include="RequestMessageWithChildMessageTest.cs" />
     <Compile Include="Server\MessageHandlerSpy.cs" />
@@ -87,7 +88,6 @@
     <Compile Include="Server\MessageProcessorStub.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
-    <Compile Include="RequestMessagePropertyTest.cs" />
     <Compile Include="Server\MessageHandlerClassTest.cs" />
     <Compile Include="Server\MessageHandlerFactoryStub.cs" />
     <Compile Include="Server\MessageProcessorTest.cs" />

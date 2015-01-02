@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -34,19 +35,39 @@ namespace System.ComponentModel
             return new ObservableCollectionWrapper<TValue>(this, makeReadOnly);
         }
 
-        internal override void Validate(bool ignoreEditScope)
+        internal override void Validate(bool ignoreEditScope, bool validateAttachedMessages)
         {
             // This default implementation is overridden to prevent needless validation of this instance.
-            if (ignoreEditScope || !RequestMessageEditScope.IsValidationSuppressed(this))
+            if (ignoreEditScope || !RequestMessageEditScope.IsValidationSuppressed(this) && validateAttachedMessages)
             {                
                 ValidateAttachedMessages();
             }
         }
 
-        internal override MessageErrorTree CreateErrorTree()
+        internal override bool IsNotValid(out MessageErrorTree errorTree)
         {
-            // TODO...
-            throw new NotImplementedException();
+            var messages = _collection as IEnumerable<IRequestMessage>;
+            if (messages != null)
+            {
+                var errorTrees = new LinkedList<MessageErrorTree>();
+
+                foreach (var message in messages)
+                {
+                    MessageErrorTree messageErrorTree;
+
+                    if (message.IsNotValid(out messageErrorTree))
+                    {
+                        errorTrees.AddLast(messageErrorTree);
+                    }
+                }
+                if (errorTrees.Count > 0)
+                {
+                    errorTree = new MessageErrorTree(typeof(ObservableCollection<TValue>), null, errorTrees);
+                    return true;
+                }
+            }
+            errorTree = null;
+            return false;
         }
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

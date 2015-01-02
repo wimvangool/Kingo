@@ -75,40 +75,13 @@ namespace System.ComponentModel.Server
         }
 
         /// <summary>
-        /// Returns a new timestamp for the associated aggregate.
+        /// Returns a new timestamp for the associated aggregate representing the current time.
         /// </summary>
-        /// <returns>A new timestamp for the associated aggregate.</returns>
-        /// <exception cref="OverflowException">
-        /// The value of this instance is equal to <see cref="DateTime.MaxValue" />.
-        /// </exception>
-        /// <remarks>
-        /// By default, this method returns the current date and time as the new timestamp.
-        /// Whether this timestamp is based on local time or UTC time depends on the <see cref="DateTimeKind" /> of
-        /// this instance. However, if the current timestamp is larger than the new timestamp (in
-        /// other words, it has a value from the future), the smallest possible increment is applied,
-        /// which is one tick.
-        /// </remarks>
+        /// <returns>A new timestamp for the associated aggregate.</returns>       
         public DateTimeVersion Increment()
         {
-            var newVersion = IncrementVersion();
-            if (newVersion < this)
-            {
-                try
-                {
-                    return new DateTimeVersion(_value.AddTicks(1));
-                }
-                catch (ArgumentOutOfRangeException exception)
-                {
-                    throw NewTimestampOverflowException(exception);
-                }                                
-            }
-            return newVersion;
-        }
-
-        private DateTimeVersion IncrementVersion()
-        {
-            return _value.Kind == DateTimeKind.Utc ? UtcNow() : Now();            
-        }
+            return _value.Kind == DateTimeKind.Utc ? UtcNow() : Now();  
+        }        
 
         /// <summary>
         /// Returns a timestamp with the current local date and time.
@@ -138,12 +111,7 @@ namespace System.ComponentModel.Server
         public static DateTimeVersion Increment(ref DateTimeVersion version)
         {
             return version = version.Increment();
-        }
-
-        private static Exception NewTimestampOverflowException(ArgumentOutOfRangeException exception)
-        {
-            return new OverflowException(ExceptionMessages.DateTimeVersion_Overflow, exception);
-        }
+        }        
 
         private static Exception NewInvalidInstanceException(object obj)
         {

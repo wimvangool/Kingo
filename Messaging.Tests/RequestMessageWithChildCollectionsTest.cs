@@ -69,8 +69,7 @@ namespace System.ComponentModel
 
             private int _value;
 
-            [RequiredConstraint]
-            [RequestMessageProperty(PropertyChangedOption.MarkAsChangedAndValidate)]
+            [RequiredConstraint]           
             public int Value
             {
                 get { return _value; }
