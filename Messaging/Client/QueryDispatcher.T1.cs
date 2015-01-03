@@ -7,16 +7,16 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Represents a query that has no execution-parameter(s).
     /// </summary>
-    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
-    public abstract class QueryDispatcher<TResponse> : QueryDispatcherBase<TResponse> where TResponse : IMessage       
+    /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
+    public abstract class QueryDispatcher<TMessageOut> : QueryDispatcherBase<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>       
     {        
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResponse Execute(Guid requestId)
+        public override TMessageOut Execute(Guid requestId)
         {                        
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
-            TResponse result;
+            TMessageOut result;
 
             try
             {                
@@ -27,22 +27,22 @@ namespace System.ComponentModel.Client
                 OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, result));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, result));
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token)
+        public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token)
         {                       
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
-            TResponse result;
+            TMessageOut result;
 
             if (TryGetFromCache(GetType(), out result))
             {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, result));
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, result));
 
                 return CreateCompletedTask(result);
             }
@@ -64,7 +64,7 @@ namespace System.ComponentModel.Client
                         scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, result)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, result)));
 
                     return result;
                 }
@@ -81,20 +81,20 @@ namespace System.ComponentModel.Client
         /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
         /// more options when creating this task.
         /// </remarks>
-        protected virtual Task<TResponse> Start(Func<TResponse> query)
+        protected virtual Task<TMessageOut> Start(Func<TMessageOut> query)
         {
-            return Task<TResponse>.Factory.StartNew(query);
+            return Task<TMessageOut>.Factory.StartNew(query);
         }
 
-        private TResponse ExecuteQuery(CancellationToken? token)
+        private TMessageOut ExecuteQuery(CancellationToken? token)
         {
             CacheItemPolicy policy;
 
             if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return (TResponse) Execute(token).Copy();
+                return (TMessageOut) Execute(token).Copy();
             }
-            return (TResponse) Cache.GetOrAdd(GetType(), () => Execute(token), policy).Copy();
+            return (TMessageOut) Cache.GetOrAdd(GetType(), () => Execute(token), policy).Copy();
         }        
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace System.ComponentModel.Client
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResponse Execute(CancellationToken? token);
+        protected abstract TMessageOut Execute(CancellationToken? token);
 
         #endregion        
     }

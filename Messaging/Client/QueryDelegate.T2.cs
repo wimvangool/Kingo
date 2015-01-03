@@ -6,14 +6,14 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Represents a <see cref="IQueryDispatcher{T}" /> that delegates it's implementation to another method.
     /// </summary>
-    /// <typeparam name="TRequest">Type of the message that serves as the execution-parameter.</typeparam>
-    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
-    public class QueryDelegate<TRequest, TResponse> : QueryDispatcher<TRequest, TResponse>
-        where TRequest : class, IRequestMessage, new()
-        where TResponse : IMessage
+    /// <typeparam name="TMessageIn">Type of the message that serves as the execution-parameter.</typeparam>
+    /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
+    public class QueryDelegate<TMessageIn, TMessageOut> : QueryDispatcher<TMessageIn, TMessageOut>
+        where TMessageIn : class, IRequestMessage<TMessageIn>, new()
+        where TMessageOut : class, IMessage<TMessageOut>
     {
-        private readonly Func<TRequest, CancellationToken?, TResponse> _method;
-        private readonly Func<Func<TResponse>, Task<TResponse>> _taskFactory;
+        private readonly Func<TMessageIn, CancellationToken?, TMessageOut> _method;
+        private readonly Func<Func<TMessageOut>, Task<TMessageOut>> _taskFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryDelegate{T}" /> class.
@@ -22,7 +22,7 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> is <c>null</c>.
         /// </exception>        
-        public QueryDelegate(Func<TRequest, CancellationToken?, TResponse> method)
+        public QueryDelegate(Func<TMessageIn, CancellationToken?, TMessageOut> method)
             : this(method, null, null) { }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> is <c>null</c>.
         /// </exception>
-        public QueryDelegate(Func<TRequest, CancellationToken?, TResponse> method, TRequest message)
+        public QueryDelegate(Func<TMessageIn, CancellationToken?, TMessageOut> method, TMessageIn message)
             : this(method, message, null) { }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> is <c>null</c>.
         /// </exception>
-        public QueryDelegate(Func<TRequest, CancellationToken?, TResponse> method, Func<Func<TResponse>, Task<TResponse>> taskFactory)
+        public QueryDelegate(Func<TMessageIn, CancellationToken?, TMessageOut> method, Func<Func<TMessageOut>, Task<TMessageOut>> taskFactory)
             : this(method, null, taskFactory) { }
 
         /// <summary>
@@ -56,8 +56,8 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> is <c>null</c>.
         /// </exception>
-        public QueryDelegate(Func<TRequest, CancellationToken?, TResponse> method, TRequest message, Func<Func<TResponse>, Task<TResponse>> taskFactory)
-            : base(message ?? new TRequest())
+        public QueryDelegate(Func<TMessageIn, CancellationToken?, TMessageOut> method, TMessageIn message, Func<Func<TMessageOut>, Task<TMessageOut>> taskFactory)
+            : base(message ?? new TMessageIn())
         {
             if (method == null)
             {
@@ -70,13 +70,13 @@ namespace System.ComponentModel.Client
         /// <summary>
         /// The method that is used to execute this query.
         /// </summary>
-        protected Func<TRequest, CancellationToken?, TResponse> Method
+        protected Func<TMessageIn, CancellationToken?, TMessageOut> Method
         {
             get { return _method; }
         }
 
         /// <inheritdoc />
-        protected override Task<TResponse> Start(Func<TResponse> query)
+        protected override Task<TMessageOut> Start(Func<TMessageOut> query)
         {
             if (_taskFactory == null)
             {
@@ -86,7 +86,7 @@ namespace System.ComponentModel.Client
         }
 
         /// <inheritdoc />
-        protected override TResponse Execute(TRequest message, CancellationToken? token)
+        protected override TMessageOut Execute(TMessageIn message, CancellationToken? token)
         {
             return Method.Invoke(message, token);
         }

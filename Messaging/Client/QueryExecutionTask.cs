@@ -6,9 +6,9 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Represents a task that can execute a query asynchronously.
     /// </summary>
-    public class QueryExecutionTask<TResponse> : AsyncExecutionTask<IQueryDispatcher<TResponse>> where TResponse : IMessage
+    public class QueryExecutionTask<TMessageOut> : AsyncExecutionTask<IQueryDispatcher<TMessageOut>> where TMessageOut : class, IMessage<TMessageOut>
     {
-        private readonly IQueryDispatcher<TResponse> _dispatcher;        
+        private readonly IQueryDispatcher<TMessageOut> _dispatcher;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryExecutionTask{T}" /> class.
@@ -17,7 +17,7 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public QueryExecutionTask(IQueryDispatcher<TResponse> dispatcher)
+        public QueryExecutionTask(IQueryDispatcher<TMessageOut> dispatcher)
         {
             if (dispatcher == null)
             {
@@ -27,7 +27,7 @@ namespace System.ComponentModel.Client
         }
 
         /// <inheritdoc />
-        protected override IQueryDispatcher<TResponse> Dispatcher
+        protected override IQueryDispatcher<TMessageOut> Dispatcher
         {
             get { return _dispatcher; }
         }
@@ -35,7 +35,7 @@ namespace System.ComponentModel.Client
         /// <summary>
         /// If the task has been started, returns the associated <see cref="Task" /> instance of this task.
         /// </summary>
-        protected Task<TResponse> Task
+        protected Task<TMessageOut> Task
         {
             get;
             private set;

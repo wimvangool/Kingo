@@ -63,7 +63,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
+        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage<TMessage>
         {
             if (dispatcher == null)
             {
@@ -83,7 +83,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage
+        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage<TMessage>
         {
             if (dispatcher == null)
             {
@@ -102,7 +102,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage
+        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage<TMessage>
         {
             if (dispatcher == null)
             {
@@ -120,7 +120,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage
+        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage<TMessage>
         {
             if (dispatcher == null)
             {
@@ -136,17 +136,17 @@
         /// <summary>
         /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>
-        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>
+        /// <typeparam name="TMessageIn">Type of the message that is sent by the dispatcher.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the result of the query.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
         /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher)
-            where TRequest : class, IRequestMessage
-            where TResponse : IMessage
+        public static ClientCommand<TParameter> CreateCommand<TMessageIn, TMessageOut, TParameter>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)
             {
@@ -158,8 +158,8 @@
         /// <summary>
         /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>
-        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>
+        /// <typeparam name="TMessageIn">Type of the message that is sent by the dispatcher.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the result of the query.</typeparam>
         /// <typeparam name="TParameter">Type of the parameter of the command.</typeparam>
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
@@ -167,9 +167,9 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand<TParameter> CreateCommand<TRequest, TResponse, TParameter>(QueryDispatcher<TRequest, TResponse> dispatcher, ClientCommandOptions options)
-            where TRequest : class, IRequestMessage
-            where TResponse : IMessage
+        public static ClientCommand<TParameter> CreateCommand<TMessageIn, TMessageOut, TParameter>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher, ClientCommandOptions options)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)
             {
@@ -181,16 +181,16 @@
         /// <summary>
         /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>    
-        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>    
+        /// <typeparam name="TMessageIn">Type of the message that is sent by the dispatcher.</typeparam>    
+        /// <typeparam name="TMessageOut">Type of the result of the query.</typeparam>    
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>        
         /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher)
-            where TRequest : class, IRequestMessage
-            where TResponse : IMessage
+        public static ClientCommand CreateCommand<TMessageIn, TMessageOut>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)
             {
@@ -202,17 +202,17 @@
         /// <summary>
         /// Creates and returns a new <see cref="ClientCommand{T}" /> that encapsulates the specified <paramref name="dispatcher"/>.
         /// </summary>
-        /// <typeparam name="TRequest">Type of the message that is sent by the dispatcher.</typeparam>      
-        /// <typeparam name="TResponse">Type of the result of the query.</typeparam>  
+        /// <typeparam name="TMessageIn">Type of the message that is sent by the dispatcher.</typeparam>      
+        /// <typeparam name="TMessageOut">Type of the result of the query.</typeparam>  
         /// <param name="dispatcher">The dispatcher that is used to execute all requests.</param>
         /// <param name="options">The opions that determine the exact behavior of this command.</param>
         /// <returns>A new <see cref="ClientCommand{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand CreateCommand<TRequest, TResponse>(QueryDispatcher<TRequest, TResponse> dispatcher, ClientCommandOptions options)
-            where TRequest : class, IRequestMessage
-            where TResponse : IMessage
+        public static ClientCommand CreateCommand<TMessageIn, TMessageOut>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher, ClientCommandOptions options)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)
             {

@@ -6,27 +6,27 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Represents a dispatcher that dispatches or executes queries.
     /// </summary>
-    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
-    public interface IQueryDispatcher<TResponse> : IRequestDispatcher where TResponse : IMessage
+    /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
+    public interface IQueryDispatcher<TMessageOut> : IRequestDispatcher where TMessageOut : class, IMessage<TMessageOut>
     {
         /// <summary>
         /// Occurs when an execution of this <see cref="IQueryDispatcher{T}" /> has succeeded.
         /// </summary>
-        new event EventHandler<ExecutionSucceededEventArgs<TResponse>> ExecutionSucceeded;
+        new event EventHandler<ExecutionSucceededEventArgs<TMessageOut>> ExecutionSucceeded;
 
         /// <summary>
         /// Executes the query synchronously.
         /// </summary>
         /// <param name="requestId">Identifier of the request.</param> 
         /// <returns>The result of this query.</returns>
-        TResponse Execute(Guid requestId);        
+        TMessageOut Execute(Guid requestId);        
 
         /// <summary>
         /// Executes the query asynchronously.
         /// </summary>      
         /// <param name="requestId">Identifier of the request.</param>     
         /// <returns>The task that is responsible for executing this query.</returns>        
-        Task<TResponse> ExecuteAsync(Guid requestId);                
+        Task<TMessageOut> ExecuteAsync(Guid requestId);                
 
         /// <summary>
         /// Executes the query asynchronously.
@@ -36,6 +36,6 @@ namespace System.ComponentModel.Client
         /// Optional token that can be used to cancel the execution of this query.
         /// </param>        
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token);
+        Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token);
     }
 }

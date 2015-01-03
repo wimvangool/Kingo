@@ -8,13 +8,13 @@ namespace System.ComponentModel.Client
     /// Represents a query that contains a <see cref="IRequestMessage">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
-    /// <typeparam name="TRequest">Type of the message that serves as the execution-parameter.</typeparam>
-    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
-    public abstract class QueryDispatcher<TRequest, TResponse> : QueryDispatcherBase<TResponse>
-        where TRequest : class, IRequestMessage
-        where TResponse : IMessage
+    /// <typeparam name="TMessageIn">Type of the message that serves as the execution-parameter.</typeparam>
+    /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
+    public abstract class QueryDispatcher<TMessageIn, TMessageOut> : QueryDispatcherBase<TMessageOut>
+        where TMessageIn : class, IRequestMessage<TMessageIn>
+        where TMessageOut : class, IMessage<TMessageOut>
     {
-        private readonly TRequest _message;        
+        private readonly TMessageIn _message;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryDispatcher{T1, T2}" /> class.
@@ -23,7 +23,7 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        protected QueryDispatcher(TRequest message)
+        protected QueryDispatcher(TMessageIn message)
         {
             if (message == null)
             {
@@ -33,7 +33,7 @@ namespace System.ComponentModel.Client
         }
 
         /// <inheritdoc />
-        public TRequest Message
+        public TMessageIn Message
         {
             get { return _message; }
         }        
@@ -41,12 +41,12 @@ namespace System.ComponentModel.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TResponse Execute(Guid requestId)
+        public override TMessageOut Execute(Guid requestId)
         {                        
-            var message = (TRequest) Message.Copy(true);
+            var message = Message.Copy(true);
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
-            TResponse result;
+            TMessageOut result;
 
             try
             {                
@@ -57,23 +57,23 @@ namespace System.ComponentModel.Client
                 OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception));
                 throw;
             }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, message, result));
+            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result));
 
             return result;
         }
 
         /// <inheritdoc />
-        public override Task<TResponse> ExecuteAsync(Guid requestId, CancellationToken? token)
+        public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token)
         {                        
-            var message = (TRequest) Message.Copy(true);
+            var message = Message.Copy(true);
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
-            TResponse result;
+            TMessageOut result;
             
             if (TryGetFromCache(message, out result))
             {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, message, result));
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result));
 
                 return CreateCompletedTask(result);
             }
@@ -95,7 +95,7 @@ namespace System.ComponentModel.Client
                         scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception)));
                         throw;
                     }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TResponse>(requestId, message, result)));
+                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result)));
 
                     return result;
                 }
@@ -112,20 +112,20 @@ namespace System.ComponentModel.Client
         /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
         /// more options when creating this task.
         /// </remarks>
-        protected virtual Task<TResponse> Start(Func<TResponse> query)
+        protected virtual Task<TMessageOut> Start(Func<TMessageOut> query)
         {
-            return Task<TResponse>.Factory.StartNew(query);
+            return Task<TMessageOut>.Factory.StartNew(query);
         }
 
-        private TResponse ExecuteQuery(TRequest message, CancellationToken? token)
+        private TMessageOut ExecuteQuery(TMessageIn message, CancellationToken? token)
         {
             CacheItemPolicy policy;
 
             if (Cache == null || !TryCreateCacheItemPolicy(out policy))
             {
-                return (TResponse) Execute(message, token).Copy();
+                return (TMessageOut) Execute(message, token).Copy();
             }
-            return (TResponse) Cache.GetOrAdd(message, () => Execute(message, token), policy).Copy();
+            return (TMessageOut) Cache.GetOrAdd(message, () => Execute(message, token), policy).Copy();
         }        
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace System.ComponentModel.Client
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TResponse Execute(TRequest message, CancellationToken? token);                        
+        protected abstract TMessageOut Execute(TMessageIn message, CancellationToken? token);                        
 
         #endregion
     }

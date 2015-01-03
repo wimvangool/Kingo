@@ -8,7 +8,7 @@ namespace System.ComponentModel.Client
     /// as it's execution-parameter.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that serves as the execution-parameter.</typeparam>
-    public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IRequestMessage
+    public abstract class CommandDispatcher<TMessage> : CommandDispatcherBase where TMessage : class, IRequestMessage<TMessage>
     {        
         private readonly TMessage _message;        
 
@@ -39,7 +39,7 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         public override void Execute(Guid requestId)
         {                        
-            var message = (TMessage) Message.Copy(true);
+            var message = Message.Copy(true);
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));            
 
@@ -58,7 +58,7 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         public override Task ExecuteAsync(Guid requestId, CancellationToken? token)
         {                        
-            var message = (TMessage) Message.Copy(true);
+            var message = Message.Copy(true);
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));

@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -139,6 +140,46 @@ namespace System.ComponentModel.Server
 
         #region [====== Commands ======]
 
+        /// <inheritdoc />      
+        public Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return ExecuteAsync(message, NoMessageHandler<TCommand>(), null);
+        }
+
+        /// <inheritdoc />              
+        public Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return ExecuteAsync(message, NoMessageHandler<TCommand>(), token);
+        }
+
+        /// <inheritdoc />        
+        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return ExecuteAsync(message, ToMessageHandler(handler), null);
+        }
+
+        /// <inheritdoc />                
+        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return ExecuteAsync(message, ToMessageHandler(handler), token);
+        }
+
+        /// <inheritdoc />        
+        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        {
+            return ExecuteAsync(message, handler, null);
+        }
+
+        /// <inheritdoc />              
+        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            return Start(() => Execute(message, handler, token), message.GetType(), token);
+        }
+
         /// <inheritdoc />
         public void Execute<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>
         {
@@ -179,16 +220,32 @@ namespace System.ComponentModel.Server
 
         #region [====== Queries ======]
 
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+        /// <inheritdoc />       
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
             where TMessageIn : class, IRequestMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return Execute(message, new FuncDecorator<TMessageIn, TMessageOut>(query));
+            return ExecuteAsync(message, new FuncDecorator<TMessageIn, TMessageOut>(query), null);
         }
 
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+        /// <inheritdoc />       
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return ExecuteAsync(message, new FuncDecorator<TMessageIn, TMessageOut>(query), token);
+        }
+
+        /// <inheritdoc />     
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return ExecuteAsync(message, query, null);
+        }
+
+        /// <inheritdoc />     
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
             where TMessageIn : class, IRequestMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
@@ -196,7 +253,43 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            PushMessage(ref message, null);
+            return Start(() => Execute(message, query, token), message.GetType(), token);
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return Execute(message, new FuncDecorator<TMessageIn, TMessageOut>(query), null);
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return Execute(message, new FuncDecorator<TMessageIn, TMessageOut>(query), token);
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return Execute(message, query, null);
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            PushMessage(ref message, token);
 
             try
             {
@@ -215,6 +308,52 @@ namespace System.ComponentModel.Server
         #endregion
 
         #region [====== Events ======]
+
+        /// <inheritdoc />       
+        public Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, null, NoMessageHandler<TMessage>(), null);
+        }
+
+        /// <inheritdoc />       
+        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, validator, NoMessageHandler<TMessage>(), null);
+        }
+
+        /// <inheritdoc />               
+        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, CancellationToken? token) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, validator, NoMessageHandler<TMessage>(), token);
+        }
+
+        /// <inheritdoc />      
+        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, validator, ToMessageHandler(handler), null);
+        }
+
+        /// <inheritdoc />                
+        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, validator, ToMessageHandler(handler), token);
+        }
+
+        /// <inheritdoc />        
+        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, validator, handler, null);
+        }
+
+        /// <inheritdoc />                
+        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            return Start(() => Handle(message, validator, handler, token), message.GetType(), token);
+        }
 
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
@@ -275,7 +414,7 @@ namespace System.ComponentModel.Server
 
         #endregion
 
-        #region [====== Pipelines ======]
+        #region [====== Pipeline Factories ======]
 
         private void PushMessage<TMessage>(ref TMessage message, CancellationToken? token) where TMessage : class, IMessage<TMessage>
         {                                    
@@ -342,6 +481,48 @@ namespace System.ComponentModel.Server
         private static IMessageHandler<TMessage> NoMessageHandler<TMessage>() where TMessage : class
         {
             return null;
+        }
+
+        #endregion
+
+        #region [====== Task Factories ======]
+
+        /// <summary>
+        /// Creates, starts and returns a new <see cref="Task" /> that is used to execute this command.
+        /// </summary>
+        /// <param name="command">The action that will be invoked on the background thread.</param>
+        /// <param name="messageType">Type of the message that is being handled.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>The newly created task.</returns>
+        /// <remarks>
+        /// The default implementation uses the <see cref="TaskFactory.StartNew(Action)">StartNew</see>-method
+        /// to start and return a new <see cref="Task" />. You may want to override this method to specify
+        /// more options when creating this task.
+        /// </remarks>
+        protected virtual Task Start(Action command, Type messageType, CancellationToken? token)
+        {
+            return token.HasValue
+                ? Task.Factory.StartNew(command, token.Value)
+                : Task.Factory.StartNew(command);
+        }
+
+        /// <summary>
+        /// Creates, starts and returns a new <see cref="Task{T}" /> that is used to execute this query.
+        /// </summary>
+        /// <param name="query">The action that will be invoked on the background thread.</param>
+        /// <param name="messageType">Type of the message that is being handled.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>The newly created task.</returns>
+        /// <remarks>
+        /// The default implementation uses the <see cref="TaskFactory{T}.StartNew(Func{T})">StartNew</see>-method
+        /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
+        /// more options when creating this task.
+        /// </remarks>
+        protected virtual Task<TMessageOut> Start<TMessageOut>(Func<TMessageOut> query, Type messageType, CancellationToken? token)
+        {
+            return token.HasValue
+                ? Task<TMessageOut>.Factory.StartNew(query, token.Value)
+                : Task<TMessageOut>.Factory.StartNew(query);
         }
 
         #endregion

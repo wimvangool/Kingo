@@ -88,7 +88,7 @@
     <Compile Include="Server\ActionDecorator.T1.cs" />
     <Compile Include="Server\CompositeConnection.cs" />
     <Compile Include="Server\DependencyClass.cs" />
-    <Compile Include="Client\EventMonitor.cs" />
+    <Compile Include="Server\EventMonitor.cs" />
     <Compile Include="Client\QueryExecutionTask.cs" />
     <Compile Include="Client\AsyncExecutionTaskStatus.cs" />
     <Compile Include="Server\AggregateNotFoundException.cs" />

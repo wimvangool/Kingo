@@ -6,7 +6,7 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Represents a <see cref="ICommandDispatcher" /> that delegates it's implementation to another method.
     /// </summary>
-    public class CommandDelegate<TMessage> : CommandDispatcher<TMessage> where TMessage : class, IRequestMessage, new()
+    public class CommandDelegate<TMessage> : CommandDispatcher<TMessage> where TMessage : class, IRequestMessage<TMessage>, new()
     {
         private readonly Action<TMessage, CancellationToken?> _method;
         private readonly Func<Action, Task> _taskFactory;

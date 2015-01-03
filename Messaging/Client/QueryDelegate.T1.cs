@@ -6,11 +6,11 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Represents a <see cref="IQueryDispatcher{T}" /> that delegates it's implementation to another method.
     /// </summary>
-    /// <typeparam name="TResponse">Type of the result of this query.</typeparam>
-    public class QueryDelegate<TResponse> : QueryDispatcher<TResponse> where TResponse : IMessage
+    /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
+    public class QueryDelegate<TMessageOut> : QueryDispatcher<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>
     {
-        private readonly Func<CancellationToken?, TResponse> _method;
-        private readonly Func<Func<TResponse>, Task<TResponse>> _taskFactory;
+        private readonly Func<CancellationToken?, TMessageOut> _method;
+        private readonly Func<Func<TMessageOut>, Task<TMessageOut>> _taskFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryDelegate{T}" /> class.
@@ -19,7 +19,7 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> is <c>null</c>.
         /// </exception>
-        public QueryDelegate(Func<CancellationToken?, TResponse> method)
+        public QueryDelegate(Func<CancellationToken?, TMessageOut> method)
             : this(method, null) { }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace System.ComponentModel.Client
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> is <c>null</c>.
         /// </exception>
-        public QueryDelegate(Func<CancellationToken?, TResponse> method, Func<Func<TResponse>, Task<TResponse>> taskFactory)
+        public QueryDelegate(Func<CancellationToken?, TMessageOut> method, Func<Func<TMessageOut>, Task<TMessageOut>> taskFactory)
         {
             if (method == null)
             {
@@ -43,13 +43,13 @@ namespace System.ComponentModel.Client
         /// <summary>
         /// The method that is used to execute this query.
         /// </summary>
-        protected Func<CancellationToken?, TResponse> Method
+        protected Func<CancellationToken?, TMessageOut> Method
         {
             get { return _method; }
         }
 
         /// <inheritdoc />
-        protected override Task<TResponse> Start(Func<TResponse> query)
+        protected override Task<TMessageOut> Start(Func<TMessageOut> query)
         {
             if (_taskFactory == null)
             {
@@ -59,7 +59,7 @@ namespace System.ComponentModel.Client
         }
 
         /// <inheritdoc />
-        protected override TResponse Execute(CancellationToken? token)
+        protected override TMessageOut Execute(CancellationToken? token)
         {
             return Method.Invoke(token);
         }

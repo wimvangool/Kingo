@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Server;
 using System.Runtime.Caching;
 
-namespace System.ComponentModel.Client
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a <see cref="ChangeMonitor" /> that connects to a <see cref="IMessageProcessorBus" /> to receive
@@ -49,7 +49,7 @@ namespace System.ComponentModel.Client
             get { return _uniqueId; }
         }                
 
-        #region [====== Dispose ======]                
+        #region [====== Dispose ======]
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -76,7 +76,7 @@ namespace System.ComponentModel.Client
 
         #endregion   
      
-        #region [====== OnChanged ======]                               
+        #region [====== OnChanged ======]
 
         /// <summary>
         /// Called by derived classes to raise the event when a dependency changes.
