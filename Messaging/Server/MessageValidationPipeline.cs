@@ -52,11 +52,18 @@ namespace System.ComponentModel.Server
         /// Validates the specified <paramref name="message"/> before it is passed to the next <see cref="Handler"/>.
         /// </summary>
         /// <param name="message">The message to handle.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="InvalidMessageException">
         /// <see cref="Validator"/> is not <c>null</c> and <paramref name="message"/> is invalid.
         /// </exception>
         public void Handle(TMessage message)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
             MessageErrorTree errors;
 
             if (Validator != null && Validator.IsNotValid(message, out errors))

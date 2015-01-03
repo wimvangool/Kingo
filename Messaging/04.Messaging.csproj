@@ -111,10 +111,12 @@
     <Compile Include="Server\EventBuffer.T3.cs" />
     <Compile Include="Server\Aggregate.T2.cs" />
     <Compile Include="Server\AggregateVersionTracker.T3.cs" />
+    <Compile Include="Server\FuncDecorator.T2.cs" />
     <Compile Include="Server\IAggregateVersion.T1.cs" />
     <Compile Include="Server\DateTimeVersion.cs" />
     <Compile Include="Server\IMessageProcessorBusConnection.cs" />
     <Compile Include="Server\Int64Version.cs" />
+    <Compile Include="Server\IQuery.T2.cs" />
     <Compile Include="Server\PassThroughPipeline.T1.cs" />
     <Compile Include="Server\MessageValidationPipeline.cs" />
     <Compile Include="Server\Repository.T3.cs" />

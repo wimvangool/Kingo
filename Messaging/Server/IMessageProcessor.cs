@@ -135,6 +135,44 @@ namespace System.ComponentModel.Server
 
         #region [====== Queries ======]
 
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
+        /// </summary>
+        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <param name="query">The query to execute.</param>
+        /// <returns>The result of the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
+        /// </summary>
+        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <param name="query">The query to execute.</param>
+        /// <returns>The result of the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="FunctionalException">
+        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
+        /// the preconditions that are in effect for this message to process.
+        /// </exception>
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
+
         #endregion
 
         #region [====== Events ======]

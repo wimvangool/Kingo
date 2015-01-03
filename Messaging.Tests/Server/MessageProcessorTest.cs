@@ -18,16 +18,16 @@ namespace System.ComponentModel.Server
 
         #endregion        
 
-        #region [====== CurrentMessage Tests ======]
+        #region [====== MessagePointer Tests ======]
 
         [TestMethod]
-        public void CurrentMessage_IsNull_WhenNoMessageIsBeingHandled()
+        public void MessagePointer_IsNull_WhenNoMessageIsBeingHandled()
         {
             Assert.IsNull(Processor.MessagePointer);
         }
 
         [TestMethod]
-        public void CurrentMessage_TakesValueOfTheMessageThatIsBeingHandled()
+        public void MessagePointer_TakesValueOfTheMessageThatIsBeingHandled()
         {
             MessageStub messageA = new MessageStub();
             IMessage messageB = null;
@@ -41,7 +41,7 @@ namespace System.ComponentModel.Server
         }
 
         [TestMethod]
-        public void CurrentMessage_ReturnsEntireHistoryOfMessages_IfMessagesAreHandledInANestedFashion()
+        public void MessagePointer_ReturnsEntireHistoryOfMessages_IfMessagesAreHandledInANestedFashion()
         {
             MessageStub messageA = new MessageStub();
             MessageStub messageB = new MessageStub();
@@ -173,6 +173,6 @@ namespace System.ComponentModel.Server
             get { return SampleApplicationProcessor.Instance; }
         }
 
-        #endregion        
+        #endregion                
     }
 }

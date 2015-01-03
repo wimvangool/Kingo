@@ -61,6 +61,49 @@ namespace System.ComponentModel.Server
 
         #endregion        
 
+        #region [====== QueryDispatcherPipeline ======]
+
+        internal sealed class QueryDispatcherPipeline<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn>
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            private readonly IQuery<TMessageIn, TMessageOut> _query;
+            private readonly MessageProcessor _processor;
+
+            internal QueryDispatcherPipeline(IQuery<TMessageIn, TMessageOut> query, MessageProcessor processor)
+            {
+                if (query == null)
+                {
+                    throw new ArgumentNullException("query");
+                }
+                _query = query;
+                _processor = processor;
+            }
+
+            internal TMessageOut Result
+            {
+                get;
+                private set;
+            }
+
+            void IMessageHandler<TMessageIn>.Handle(TMessageIn message)
+            {
+                using (var scope = new UnitOfWorkScope(_processor.DomainEventBus))
+                {
+                    Result = Execute(message);
+
+                    scope.Complete();
+                }                
+            }
+
+            private TMessageOut Execute(TMessageIn message)
+            {
+                return _processor.CreateQueryPipeline(_query).Execute(message);
+            }
+        }
+
+        #endregion
+
         private readonly IMessageProcessorBus _domainEventBus;                
         private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                            
 
@@ -134,6 +177,43 @@ namespace System.ComponentModel.Server
 
         #endregion
 
+        #region [====== Queries ======]
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return Execute(message, new FuncDecorator<TMessageIn, TMessageOut>(query));
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            PushMessage(ref message, null);
+
+            try
+            {
+                var pipeline = new QueryDispatcherPipeline<TMessageIn, TMessageOut>(query, this);
+
+                CreatePerMessagePipeline(pipeline, message).Handle(message);
+
+                return pipeline.Result;
+            }
+            finally
+            {
+                PopMessage();
+            }              
+        }
+
+        #endregion
+
         #region [====== Events ======]
 
         /// <inheritdoc />
@@ -193,6 +273,10 @@ namespace System.ComponentModel.Server
             }                   
         }
 
+        #endregion
+
+        #region [====== Pipelines ======]
+
         private void PushMessage<TMessage>(ref TMessage message, CancellationToken? token) where TMessage : class, IMessage<TMessage>
         {                                    
             MessagePointer = MessagePointer == null ?
@@ -231,6 +315,23 @@ namespace System.ComponentModel.Server
         protected virtual IMessageHandler<TMessage> CreatePerMessageHandlerPipeline<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
         {
             return handler;
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="IQuery{TMessageIn, TMessageOut}"/> pipeline on top of each query that will be executed.
+        /// </summary>
+        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>       
+        /// <param name="query">The query to execute.</param>
+        /// <returns>A query pipeline.</returns>
+        /// <remarks>
+        /// The default implementation simply returns the specified <paramref name="query"/>.
+        /// </remarks>
+        protected virtual IQuery<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return query;
         }
 
         private static IMessageHandler<TMessage> ToMessageHandler<TMessage>(Action<TMessage> handler) where TMessage : class
