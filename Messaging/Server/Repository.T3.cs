@@ -30,7 +30,7 @@ namespace System.ComponentModel.Server
 
         #region [====== IUnitOfWork Implementation ======]
 
-        Guid IUnitOfWork.FlushGroupId
+        int IUnitOfWork.FlushGroupId
         {
             get { return FlushGroupId; }
         }
@@ -39,13 +39,13 @@ namespace System.ComponentModel.Server
         /// Indicates which group this unit of work belongs to.
         /// </summary>
         /// <remarks>
-        /// The default implementation returns the <see cref="Guid.Empty">empty Guid</see>, which
+        /// The default implementation returns <c>0</c>, which
         /// prevents this <see cref="Repository{S, T, U}" /> from grouping with other
         /// <see cref="IUnitOfWork">units of work</see>.
         /// </remarks>
-        protected virtual Guid FlushGroupId
+        protected virtual int FlushGroupId
         {
-            get { return Guid.Empty; }
+            get { return 0; }
         }
 
         bool IUnitOfWork.CanBeFlushedAsynchronously

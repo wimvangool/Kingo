@@ -17,9 +17,9 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
             get { return _flushCount; }
         }
 
-        public Guid FlushGroupId
+        public int FlushGroupId
         {
-            get { return Guid.Empty; }
+            get { return 0; }
         }
 
         public bool CanBeFlushedAsynchronously

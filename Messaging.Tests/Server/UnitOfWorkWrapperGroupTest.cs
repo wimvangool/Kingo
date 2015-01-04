@@ -239,12 +239,12 @@ namespace System.ComponentModel.Server
             flushableMockB.Verify(flushable => flushable.Flush(), Times.Once());
         }
 
-        private static Guid FlushIdOne
+        private static int FlushIdOne
         {
             get { return UnitOfWorkWrapperItemTest.FlushIdOne; }
         }
 
-        private static Guid FlushIdTwo
+        private static int FlushIdTwo
         {
             get { return UnitOfWorkWrapperItemTest.FlushIdTwo; }
         }

@@ -119,8 +119,8 @@ namespace System.ComponentModel.Server
             flushableMock.Verify(flushable => flushable.Flush(), Times.Once());
         }
 
-        internal static readonly Guid FlushIdOne = Guid.NewGuid();
-        internal static readonly Guid FlushIdTwo = Guid.NewGuid();
+        internal static readonly int FlushIdOne = 1;
+        internal static readonly int FlushIdTwo = 2;
 
         private static IUnitOfWork CreateUnitOfWork()
         {

@@ -24,9 +24,9 @@ namespace System.ComponentModel.Server
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        Guid IUnitOfWork.FlushGroupId
+        int IUnitOfWork.FlushGroupId
         {
-            get { return Guid.Empty; }
+            get { return 0; }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

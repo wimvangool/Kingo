@@ -22,7 +22,7 @@ namespace System.ComponentModel.Server
             get { return 1; }
         }
 
-        public override Guid FlushGroupId
+        public override int FlushGroupId
         {
             get { return _unitOfWork.FlushGroupId; }
         }

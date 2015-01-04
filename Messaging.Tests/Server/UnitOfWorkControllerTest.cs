@@ -18,9 +18,9 @@ namespace System.ComponentModel.Server
                 _creationThread = Thread.CurrentThread;
             }
 
-            public Guid FlushGroupId
+            public int FlushGroupId
             {
-                get { return Guid.Empty; }
+                get { return 0; }
             }
 
             public bool CanBeFlushedAsynchronously
@@ -132,12 +132,12 @@ namespace System.ComponentModel.Server
             checkerB.AssertFlushedOnExpectedThread();          
         }
 
-        private static Guid FlushIdOne
+        private static int FlushIdOne
         {
             get { return UnitOfWorkWrapperItemTest.FlushIdOne; }
         }
 
-        private static Guid FlushIdTwo
+        private static int FlushIdTwo
         {
             get { return UnitOfWorkWrapperItemTest.FlushIdTwo; }
         }

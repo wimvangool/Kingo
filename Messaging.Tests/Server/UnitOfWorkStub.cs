@@ -33,9 +33,9 @@ namespace System.ComponentModel.Server
             _requiresFlush = true;
         }
 
-        public Guid FlushGroupId
+        public int FlushGroupId
         {
-            get { return Guid.Empty; }
+            get { return 0; }
         }
 
         public bool CanBeFlushedAsynchronously

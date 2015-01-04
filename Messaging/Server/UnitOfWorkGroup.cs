@@ -23,7 +23,7 @@ namespace System.ComponentModel.Server
             get { return _items.Count; }
         }
 
-        public override Guid FlushGroupId
+        public override int FlushGroupId
         {
             get { return _items[0].FlushGroupId; }
         }

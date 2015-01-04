@@ -4,15 +4,15 @@ namespace System.ComponentModel.Server
     internal sealed class UnitOfWorkOneSyncTest : IUnitOfWork
     {
         private readonly IUnitOfWork _flushable;
-        private readonly Guid _flushGroupId;
+        private readonly int _flushGroupId;
 
-        public UnitOfWorkOneSyncTest(IUnitOfWork flushable, Guid flushGroupId)
+        public UnitOfWorkOneSyncTest(IUnitOfWork flushable, int flushGroupId)
         {
             _flushable = flushable;
             _flushGroupId = flushGroupId;
         }
 
-        public Guid FlushGroupId
+        public int FlushGroupId
         {
             get { return _flushGroupId; }
         }

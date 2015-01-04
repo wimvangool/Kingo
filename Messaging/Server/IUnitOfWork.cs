@@ -11,11 +11,11 @@ namespace System.ComponentModel.Server
         /// is called, so that can be determined on which thread this instance's <see cref="Flush()" /> will be called.
         /// </summary>
         /// <remarks>
-        /// When this property returns <see cref="Guid.Empty" />, this <see cref="IUnitOfWork" /> will never be grouped
+        /// When this property returns <c>0</c>, this <see cref="IUnitOfWork" /> will never be grouped
         /// with other instances. For all other values, this id can be used to ensure that all <see cref="IUnitOfWork" />
         /// instances with the same id are flushed on the same thread.
         /// </remarks>
-        Guid FlushGroupId
+        int FlushGroupId
         {
             get;
         }

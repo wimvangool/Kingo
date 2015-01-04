@@ -9,7 +9,7 @@ namespace System.ComponentModel.Server
             get;
         }
 
-        public abstract Guid FlushGroupId
+        public abstract int FlushGroupId
         {
             get;
         }
@@ -23,7 +23,7 @@ namespace System.ComponentModel.Server
 
         public bool TryMergeWith(UnitOfWorkItem item, out UnitOfWorkGroup group)
         {
-            if (WrapsSameUnitOfWorkAs(item) || item.FlushGroupId.Equals(Guid.Empty) || item.FlushGroupId != FlushGroupId)
+            if (WrapsSameUnitOfWorkAs(item) || item.FlushGroupId.Equals(0) || item.FlushGroupId != FlushGroupId)
             {
                 group = null;
                 return false;
