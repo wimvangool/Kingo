@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,7 @@ namespace System.ComponentModel
     /// </summary>
     public sealed class AssemblySet : IEnumerable<Assembly>
     {
+        [DebuggerDisplay("Count = {_assemblies.Count}")]
         private readonly HashSet<Assembly> _assemblies;
 
         /// <summary>
@@ -107,7 +109,7 @@ namespace System.ComponentModel
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Join(Environment.NewLine, _assemblies.Select(assembly => assembly.GetName().ToString()).OrderBy(name => name));
+            return string.Join(", ", _assemblies.Select(assembly => assembly.GetName().Name).OrderBy(name => name));
         }
 
         /// <summary>

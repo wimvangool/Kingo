@@ -1,10 +1,16 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Diagnostics;
+
+namespace System.ComponentModel.Server
 {
     internal sealed class ScopeSpecificCacheEntry<T> : IScopeSpecificCacheEntry<T>
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ScopeSpecificCache _cache;
-        private readonly T _value;
-        private readonly Action<T> _valueInvalidatedCallback;        
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly Action<T> _valueInvalidatedCallback;  
+
+        private readonly T _value;              
         private bool _isDisposed;        
 
         public ScopeSpecificCacheEntry(ScopeSpecificCache cache, T value, Action<T> valueInvalidatedCallback)
@@ -23,6 +29,16 @@
             RemoveValue();
 
             _isDisposed = true;
+        }
+
+        public override string ToString()
+        {
+            var value = _value as object;
+            if (value == null)
+            {
+                return "null";
+            }
+            return value.ToString();
         }
 
         private void RemoveValue()

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System.ComponentModel.Server
 {
     internal sealed class MessageProcessorBusConnection<TMessage> : Connection, IMessageProcessorBusConnection where TMessage : class
     {
-        private readonly ICollection<IMessageProcessorBusConnection> _connections;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly ICollection<IMessageProcessorBusConnection> _connections;        
         private readonly IMessageHandler<TMessage> _handler;
 
         public MessageProcessorBusConnection(ICollection<IMessageProcessorBusConnection> connections, IMessageHandler<TMessage> handler)

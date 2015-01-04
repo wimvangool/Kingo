@@ -150,6 +150,7 @@ namespace System.ComponentModel
             message.ChildMessages.Add(new ChildMessage(2));
             message.ChildMessages.Add(new ChildMessage());
             message.ChildMessages.Add(new ChildMessage(4));
+            message.AcceptChanges();
 
             var validator = message as IMessageValidator<ParentMessage>;
             MessageErrorTree errorTree;

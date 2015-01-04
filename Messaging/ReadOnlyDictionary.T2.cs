@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Resources;
+using System.Diagnostics;
+using System.Text;
 
 namespace System.ComponentModel
 {
     [Serializable]
     internal sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IDictionary<TKey, TValue> _dictionary;
 
         internal ReadOnlyDictionary()
@@ -17,6 +20,17 @@ namespace System.ComponentModel
         internal ReadOnlyDictionary(IDictionary<TKey, TValue> dictionary)
         {
             _dictionary = dictionary ?? new Dictionary<TKey, TValue>();
+        }
+
+        public override string ToString()
+        {
+            var errors = new StringBuilder();
+
+            foreach (var error in _dictionary)
+            {
+                errors.AppendFormat("[{0} -> {1}] ", error.Key, error.Value);
+            }
+            return errors.ToString();
         }
 
         #region [====== IDictionary<TKey,TValue> ======]

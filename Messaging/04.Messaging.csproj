@@ -72,7 +72,7 @@
     <Compile Include="ITransactionScope.cs" />
     <Compile Include="Message.T1.cs" />
     <Compile Include="MessageDeniedException.cs" />
-    <Compile Include="ObservableCollectionWrapper.T1.cs" />
+    <Compile Include="RequestMessageAttachedCollection.T1.cs" />
     <Compile Include="FunctionalException.cs" />
     <Compile Include="ReadOnlyDictionary.T2.cs" />
     <Compile Include="RequestMessageEditScope.cs" />
@@ -151,6 +151,7 @@
     <Compile Include="ClockScope.cs" />
     <Compile Include="ClockWithOffset.cs" />
     <Compile Include="IClockContext.cs" />
+    <Compile Include="Server\ThreadNamePipeline.T1.cs" />
     <Compile Include="StaticClockContext.cs" />
     <Compile Include="StopwatchClock.cs" />
     <Compile Include="ThreadStaticClockContext.cs" />

@@ -40,6 +40,12 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format("{0} Item(s) Cached", _entries.Count);
+        }
+
+        /// <inheritdoc />
         public IScopeSpecificCacheEntry<T> Add<T>(T value)
         {            
             return Add(value, null);

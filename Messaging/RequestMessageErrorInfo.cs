@@ -44,7 +44,17 @@ namespace System.ComponentModel
         /// <inheritdoc />
         public string Error
         {
-            get { return _errorMessage;}
+            get { return _errorMessage; }
+        }
+
+        public int ErrorCount
+        {
+            get { return _errorMessagesPerMember == null ? 0 : _errorMessagesPerMember.Count; }
+        }
+
+        public override string ToString()
+        {
+            return _errorMessage ?? "No errors";
         }
 
         #endregion

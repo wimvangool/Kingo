@@ -5,12 +5,12 @@ using System.Collections.Specialized;
 
 namespace System.ComponentModel
 {
-    internal sealed class ObservableCollectionWrapper<TValue> : RequestMessage<ObservableCollectionWrapper<TValue>>
+    internal sealed class RequestMessageAttachedCollection<TValue> : RequestMessage<RequestMessageAttachedCollection<TValue>>
     {
         private readonly ObservableCollection<TValue> _collection;        
         private readonly bool _isRequestMessageCollection;
 
-        internal ObservableCollectionWrapper(ObservableCollection<TValue> collection, bool makeReadOnly) : base(makeReadOnly)
+        internal RequestMessageAttachedCollection(ObservableCollection<TValue> collection, bool makeReadOnly) : base(makeReadOnly)
         {
             _collection = collection;
             _collection.CollectionChanged += HandleCollectionChanged;          
@@ -20,7 +20,7 @@ namespace System.ComponentModel
             Validator.ErrorInfo = null;
         }
 
-        private ObservableCollectionWrapper(ObservableCollectionWrapper<TValue> message, bool makeReadOnly)  : base(message, makeReadOnly)
+        private RequestMessageAttachedCollection(RequestMessageAttachedCollection<TValue> message, bool makeReadOnly)  : base(message, makeReadOnly)
         {
             _collection = new ObservableCollection<TValue>(message._collection);
             _collection.CollectionChanged += HandleCollectionChanged;            
@@ -30,9 +30,9 @@ namespace System.ComponentModel
             Validator.ErrorInfo = null;
         }
 
-        public override ObservableCollectionWrapper<TValue> Copy(bool makeReadOnly)
+        public override RequestMessageAttachedCollection<TValue> Copy(bool makeReadOnly)
         {
-            return new ObservableCollectionWrapper<TValue>(this, makeReadOnly);
+            return new RequestMessageAttachedCollection<TValue>(this, makeReadOnly);
         }
 
         internal override void Validate(bool ignoreEditScope, bool validateAttachedMessages)

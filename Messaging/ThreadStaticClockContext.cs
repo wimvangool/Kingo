@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 
 namespace System.ComponentModel
 {
     internal sealed class ThreadStaticClockContext : IClockContext
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ThreadLocal<IClock> _clock;
         
         private ThreadStaticClockContext()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace System.ComponentModel
@@ -6,11 +7,16 @@ namespace System.ComponentModel
     /// <summary>
     /// Represents a tree of errors that have been detected on a specific <see cref="IMessage" />.
     /// </summary>
-    [Serializable]
+    [Serializable]    
     public sealed class MessageErrorTree
-    {
+    {        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Type _messageType;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IDictionary<string, string> _errors;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly MessageErrorTree[] _childErrorTrees;
 
         /// <summary>
@@ -70,10 +76,20 @@ namespace System.ComponentModel
 
         /// <summary>
         /// Returns a collection of <see cref="MessageErrorTree">error trees</see> that contain the errors of child-messages, if present.
-        /// </summary>
+        /// </summary>        
+        [DebuggerDisplay("Count = {_childErrorTrees.Length}")]
         public IEnumerable<MessageErrorTree> ChildErrors
         {
             get { return _childErrorTrees; }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format("{0} contains {1} error(s) and {2} child error(s).",
+                _messageType.Name,
+                _errors.Count,
+                _childErrorTrees.Sum(errorTree => errorTree.Errors.Count));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace System.ComponentModel.Server
@@ -9,6 +10,7 @@ namespace System.ComponentModel.Server
     /// </summary>
     public abstract class MessageHandlerFactory
     {
+        [DebuggerDisplay("Count = {_messageHandlers.Count}")]
         private readonly List<MessageHandlerClass> _messageHandlers;        
 
         /// <summary>
@@ -17,6 +19,14 @@ namespace System.ComponentModel.Server
         protected MessageHandlerFactory()
         {                        
             _messageHandlers = new List<MessageHandlerClass>();
+        }
+
+        /// <summary>
+        /// Returns the number of classes implementing the <see cref="IMessageHandler{T}" /> interface have been registered in this factory.
+        /// </summary>
+        public int MessageHandlerCount
+        {
+            get { return _messageHandlers.Count; }
         }
 
         /// <summary>
@@ -53,6 +63,12 @@ namespace System.ComponentModel.Server
         {
             get;
             set;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format("{0} MessageHandler(s) Registered", _messageHandlers.Count);
         }
 
         #region [====== MessageHandlers ======]

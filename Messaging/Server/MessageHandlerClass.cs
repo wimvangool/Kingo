@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Resources;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 
@@ -8,7 +9,8 @@ namespace System.ComponentModel.Server
 {
     internal sealed class MessageHandlerClass
     {        
-        private readonly MessageHandlerFactory _factory;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly MessageHandlerFactory _factory;        
         private readonly Type _classType;
         private readonly Type[] _interfaceTypes;
 
@@ -61,7 +63,12 @@ namespace System.ComponentModel.Server
                    let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                    where messageTypeOfInterface.IsInstanceOfType(message)
                    select (IMessageHandler<TMessage>) _factory.CreateMessageHandler(_classType);
-        }                
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1} interface(s) implemented)", _classType.Name, _interfaceTypes.Length);
+        }
 
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
         private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>);                       

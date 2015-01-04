@@ -1,21 +1,68 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
 namespace System.ComponentModel.Server
 {       
+    [DebuggerTypeProxy(typeof(DebuggerProxy))]
     internal sealed class MessageProcessorBus : IMessageProcessorBus
     {
+        #region [====== DebuggerProxy ======]
+
+        private sealed class DebuggerProxy
+        {
+            private static readonly IMessageProcessorBusConnection[] _NoConnections = new IMessageProcessorBusConnection[0];
+            private readonly MessageProcessorBus _bus;
+
+            internal DebuggerProxy(MessageProcessorBus bus)
+            {
+                _bus = bus;
+            }
+
+            [DebuggerDisplay("Count = {StaticConnectionCount}")]            
+            public IEnumerable<IMessageProcessorBusConnection> StaticConnections
+            {
+                get { return _bus._connections; }
+            }            
+
+            [DebuggerDisplay("Count = {ThreadStaticConnectionCount}")]            
+            public IEnumerable<IMessageProcessorBusConnection> ThreadStaticConnections
+            {
+                get
+                {
+                    if (_bus._threadLocalConnections.IsValueCreated)
+                    {
+                        return _bus._threadLocalConnections.Value;
+                    }
+                    return _NoConnections;
+                }
+            }
+
+            private int StaticConnectionCount
+            {
+                get { return StaticConnections.Count(); }
+            }
+
+            private int ThreadStaticConnectionCount
+            {
+                get { return ThreadStaticConnections.Count(); }
+            }
+
+            public override string ToString()
+            {
+                return string.Format("ConnectionCount = {0}", StaticConnections.Count() + ThreadStaticConnections.Count());
+            }
+        }
+
+        #endregion
+
         private readonly ICollection<IMessageProcessorBusConnection> _connections;
-        private readonly ThreadLocal<ICollection<IMessageProcessorBusConnection>> _threadLocalConnections;
+        private readonly ThreadLocal<ICollection<IMessageProcessorBusConnection>> _threadLocalConnections;        
         private readonly IMessageProcessor _processor;  
         
-        public MessageProcessorBus(IMessageProcessor processor)
-        {
-            if (processor == null)
-            {
-                throw new ArgumentNullException("processor");
-            }
+        internal MessageProcessorBus(IMessageProcessor processor)
+        {            
             _connections = new SynchronizedCollection<IMessageProcessorBusConnection>();
             _threadLocalConnections = new ThreadLocal<ICollection<IMessageProcessorBusConnection>>(() => new List<IMessageProcessorBusConnection>());  
             _processor = processor;                

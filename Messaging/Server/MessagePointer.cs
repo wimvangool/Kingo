@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 
 namespace System.ComponentModel.Server
 {
@@ -77,6 +79,33 @@ namespace System.ComponentModel.Server
         public bool TryCastMessageTo<TMessage>(out TMessage message) where TMessage : class
         {
             return (message = Message as TMessage) != null;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var pointerString = new StringBuilder();
+            var pointerStack = new Stack<MessagePointer>();
+            var pointer = this;
+
+            do
+            {
+                pointerStack.Push(pointer);
+            }
+            while ((pointer = pointer.ParentPointer) != null);            
+
+            while (pointerStack.Count > 1)
+            {                
+                pointerString.Append(pointerStack.Pop().Message.GetType().Name);
+                pointerString.Append("->");
+            }
+            pointerString.Append(pointerStack.Pop().Message.GetType().Name);
+
+            if (_token.HasValue && _token.Value.IsCancellationRequested)
+            {
+                pointerString.Append(" (Cancellation Requested)");
+            }
+            return pointerString.ToString();
         }
 
         #region [====== Cancellation ======]

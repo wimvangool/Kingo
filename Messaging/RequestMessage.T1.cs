@@ -2,10 +2,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Resources;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using System.Text;
 
 namespace System.ComponentModel
 {
@@ -21,14 +23,19 @@ namespace System.ComponentModel
                                                      IExtensibleDataObject,
                                                      ISerializable
         where TMessage : RequestMessage<TMessage>
-    {
+    {                
+        private readonly bool _isReadOnly;                     
+        private bool _hasChanges;
+
         // The _validator and _attachedMessages fields could have been made readonly but were not because we want to support the use
         // of WCF's DataContractSerializer, which does not call constructors upon deserialization. For this reason, we use the
-        // lazy initialization pattern.        
-        private readonly bool _isReadOnly;        
-        private RequestMessageValidator<TMessage> _validator;        
-        private LinkedList<IRequestMessage> _attachedMessages;        
-        private bool _hasChanges;        
+        // lazy initialization pattern.  
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private RequestMessageValidator<TMessage> _validator;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private LinkedList<IRequestMessage> _attachedMessages;
+       
         private ExtensionDataObject _extensionData;
 
         /// <summary>
@@ -73,6 +80,7 @@ namespace System.ComponentModel
         /// <param name="context">The streaming context.</param>
         protected RequestMessage(SerializationInfo info, StreamingContext context) { }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal RequestMessageValidator<TMessage> Validator
         {
             get
@@ -85,6 +93,7 @@ namespace System.ComponentModel
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private LinkedList<IRequestMessage> AttachedMessages
         {
             get
@@ -105,6 +114,7 @@ namespace System.ComponentModel
             get { return _isReadOnly; }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ExtensionDataObject IExtensibleDataObject.ExtensionData
         {
             get { return _extensionData; }
@@ -680,7 +690,7 @@ namespace System.ComponentModel
         {
             var collection = new ObservableCollection<TValue>(values);
 
-            Attach(new ObservableCollectionWrapper<TValue>(collection, IsReadOnly));
+            Attach(new RequestMessageAttachedCollection<TValue>(collection, IsReadOnly));
 
             return collection;
         }
@@ -764,25 +774,17 @@ namespace System.ComponentModel
 
         #region [====== ToString ======]
 
-        ///// <summary>
-        ///// Returns a human-readable string containing all relevant property-values.
-        ///// </summary>
-        ///// <returns>A human-readable string containing all relevant property-values.</returns>
-        //public override string ToString()
-        //{
-        //    var message = new StringBuilder("<");
-
-        //    foreach (var property in RequestMessageProperty.GetProperties(GetType()))
-        //    {
-        //        var propertyName = property.Name;
-        //        var propertyValue = property.GetValue(this);
-
-        //        message.AppendFormat(CultureInfo.InvariantCulture, "{0}: {1}", propertyName, propertyValue);                
-        //    }
-        //    message.Append(">");
-
-        //    return message.ToString();
-        //}        
+        /// <summary>
+        /// Returns a human-readable string containing all relevant property-values.
+        /// </summary>
+        /// <returns>A human-readable string containing all relevant property-values.</returns>
+        public override string ToString()
+        {
+            return string.Format("{0} ({1}, {2})",
+                GetType().Name,
+                IsReadOnly ? "ReadOnly" : (HasChanges ? "Changed" : "Unchanged"),
+                IsValid ? "Valid" : string.Format("Invalid: {0} error(s)", ErrorInfo == null ? 0: ErrorInfo.ErrorCount));            
+        }        
 
         #endregion
 

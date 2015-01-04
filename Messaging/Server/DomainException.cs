@@ -35,6 +35,25 @@ namespace System.ComponentModel.Server
         protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) {}
 
         /// <summary>
+        /// Converts this instance into an instance of <see cref="InvalidMessageException" />.
+        /// </summary>
+        /// <param name="failedMessage">The message that caused the exception.</param>
+        /// <returns>
+        /// An instance of <see cref="InvalidMessageException" /> that wraps this exception and the inner
+        /// exception.
+        /// </returns>
+        public virtual InvalidMessageException AsInvalidMessageException(IMessage failedMessage)
+        {
+            if (failedMessage == null)
+            {
+                throw new ArgumentNullException("failedMessage");
+            }
+            var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
+            var message = string.Format(messageFormat, failedMessage.GetType());
+            return new InvalidMessageException(failedMessage, message, this);
+        }
+
+        /// <summary>
         /// Converts this instance into an instance of <see cref="BusinessRuleViolationException" />.
         /// </summary>
         /// <param name="failedMessage">The message that caused the exception.</param>
@@ -42,7 +61,7 @@ namespace System.ComponentModel.Server
         /// An instance of <see cref="BusinessRuleViolationException" /> that wraps this exception and the inner
         /// exception.
         /// </returns>
-        public virtual BusinessRuleViolationException AsBusinessRuleException(IMessage failedMessage)
+        public virtual BusinessRuleViolationException AsBusinessRuleViolationException(IMessage failedMessage)
         {
             if (failedMessage == null)
             {

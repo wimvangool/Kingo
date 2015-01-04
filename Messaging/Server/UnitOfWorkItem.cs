@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System.ComponentModel.Server
 {
@@ -13,7 +14,13 @@ namespace System.ComponentModel.Server
                 throw new ArgumentNullException("unitOfWork");
             }
             _unitOfWork = unitOfWork;            
-        }        
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public override int ItemCount
+        {
+            get { return 1; }
+        }
 
         public override Guid FlushGroupId
         {
@@ -23,6 +30,11 @@ namespace System.ComponentModel.Server
         public override bool CanBeFlushedAsynchronously
         {
             get { return _unitOfWork.CanBeFlushedAsynchronously; }
+        }
+
+        public override string ToString()
+        {
+            return _unitOfWork.GetType().Name;
         }
 
         public override bool WrapsSameUnitOfWorkAs(UnitOfWorkItem item)

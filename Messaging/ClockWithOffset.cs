@@ -1,9 +1,13 @@
-﻿namespace System.ComponentModel
+﻿using System.Diagnostics;
+
+namespace System.ComponentModel
 {
     internal sealed class ClockWithOffset : Clock
     {
         private readonly IClock _clock;
         private readonly TimeSpan _offset;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Func<DateTime, TimeSpan, DateTime> _dateAndTimeCalculator;
 
         private ClockWithOffset(IClock clock, TimeSpan offset, Func<DateTime, TimeSpan, DateTime> dateAndTimeCalculator)

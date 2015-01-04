@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Resources;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace System.ComponentModel.Server
@@ -11,6 +12,8 @@ namespace System.ComponentModel.Server
     {        
         private readonly List<IEventBuffer> _buffer;
         private readonly IDomainEventBus _domainEventBus;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly UnitOfWorkContext _context;
 
         internal BufferedEventBus(IDomainEventBus domainEventBus, UnitOfWorkContext context)
@@ -20,11 +23,13 @@ namespace System.ComponentModel.Server
             _context = context;
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         Guid IUnitOfWork.FlushGroupId
         {
             get { return Guid.Empty; }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         bool IUnitOfWork.CanBeFlushedAsynchronously
         {
             get { return false; }
@@ -48,6 +53,12 @@ namespace System.ComponentModel.Server
                 bufferedEvent.Flush();
             }            
             _buffer.Clear();            
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format("{0} Event(s) Published", _buffer.Count);
         }
 
         /// <summary>

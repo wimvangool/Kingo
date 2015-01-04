@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -82,12 +83,23 @@ namespace System.ComponentModel.Server
 
         #endregion
 
-        private readonly List<UnitOfWorkWrapper> _unitsOfWork;        
+        private readonly List<UnitOfWorkWrapper> _enlistedUnits;        
 
         public UnitOfWorkController()
         {
-            _unitsOfWork = new List<UnitOfWorkWrapper>(2);            
-        }        
+            _enlistedUnits = new List<UnitOfWorkWrapper>(2);            
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal int EnlistedItemCount
+        {
+            get { return _enlistedUnits.Sum(unit => unit.ItemCount); }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} Item(s) Enlisted", EnlistedItemCount);
+        }
 
         public void Enlist(IUnitOfWork unitOfWork)
         {
@@ -99,9 +111,9 @@ namespace System.ComponentModel.Server
             // New units are first attempted to be merged with any existing unit based on group-id,
             // since units with the same group-id will always be flushed on same thread sequentially (but not
             // in any particular order). Only if this fails will units be added as a completely new item.
-            for (int index = 0; index < _unitsOfWork.Count; index++)
+            for (int index = 0; index < _enlistedUnits.Count; index++)
             {
-                UnitOfWorkWrapper unit = _unitsOfWork[index];
+                UnitOfWorkWrapper unit = _enlistedUnits[index];
                 UnitOfWorkGroup unitGroup;
 
                 if (unit.WrapsSameUnitOfWorkAs(newUnit))
@@ -110,11 +122,11 @@ namespace System.ComponentModel.Server
                 }
                 if (unit.TryMergeWith(newUnit, out unitGroup))
                 {
-                    _unitsOfWork[index] = unitGroup;
+                    _enlistedUnits[index] = unitGroup;
                     return;
                 }
             }
-            _unitsOfWork.Add(newUnit);
+            _enlistedUnits.Add(newUnit);
         }
 
         public void Flush()
@@ -132,11 +144,11 @@ namespace System.ComponentModel.Server
             // First, all unit-items and groups that actually require a flush are collected.
             unitsOfWork = new LinkedList<UnitOfWorkWrapper>();
 
-            foreach (var unit in _unitsOfWork)
+            foreach (var unit in _enlistedUnits)
             {
                 unit.CollectUnitsThatRequireFlush(unitsOfWork);
             }
-            _unitsOfWork.Clear();
+            _enlistedUnits.Clear();
 
             return unitsOfWork.Count > 0;
         }

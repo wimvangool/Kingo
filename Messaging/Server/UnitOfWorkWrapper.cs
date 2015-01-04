@@ -4,6 +4,11 @@ namespace System.ComponentModel.Server
 {
     internal abstract class UnitOfWorkWrapper
     {
+        public abstract int ItemCount
+        {
+            get;
+        }
+
         public abstract Guid FlushGroupId
         {
             get;

@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
@@ -89,23 +91,32 @@ namespace System.ComponentModel.Server
 
             void IMessageHandler<TMessageIn>.Handle(TMessageIn message)
             {
+                _processor.MessagePointer.ThrowIfCancellationRequested();
+
                 using (var scope = new UnitOfWorkScope(_processor.DomainEventBus))
                 {
                     Result = Execute(message);
 
                     scope.Complete();
-                }                
+                }
+                _processor.MessagePointer.ThrowIfCancellationRequested();
             }
 
             private TMessageOut Execute(TMessageIn message)
             {
-                return _processor.CreateQueryPipeline(_query).Execute(message);
+                var result = _processor.CreateQueryPipeline(_query).Execute(message);
+
+                _processor.MessagePointer.ThrowIfCancellationRequested();
+
+                return result;
             }
         }
 
         #endregion
 
-        private readonly IMessageProcessorBus _domainEventBus;                
+        private readonly IMessageProcessorBus _domainEventBus;
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                            
 
         /// <summary>
@@ -118,7 +129,7 @@ namespace System.ComponentModel.Server
         }        
 
         /// <inheritdoc />
-        public IMessageProcessorBus DomainEventBus
+        public virtual IMessageProcessorBus DomainEventBus
         {
             get { return _domainEventBus; }
         }
@@ -136,6 +147,40 @@ namespace System.ComponentModel.Server
         protected abstract MessageHandlerFactory MessageHandlerFactory
         {
             get;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var processorString = new StringBuilder(GetType().Name);
+
+            processorString.AppendFormat(" ({0}, {1})",
+                ToString(MessageHandlerFactory),
+                ToString(MessagePointer));
+            
+            return processorString.ToString();
+        }
+
+        private static string ToString(MessageHandlerFactory factory)
+        {
+            return string.Format("{0} MessageHandler(s) Registered", factory == null ? 0 : factory.MessageHandlerCount);
+        }
+
+        private static string ToString(MessagePointer pointer)
+        {
+            if (pointer == null)
+            {
+                return "Idle on " + Thread.CurrentThread.Name;
+            }
+            if (pointer.PointsToA(typeof(IRequestMessage)))
+            {
+                return string.Format("Executing {0} on {1}",
+                    pointer.Message.GetType().Name,
+                    Thread.CurrentThread.Name);
+            }
+            return string.Format("Handling {0} on {1}",
+                    pointer.Message.GetType().Name,
+                    Thread.CurrentThread.Name);
         }
 
         #region [====== Commands ======]
@@ -438,7 +483,7 @@ namespace System.ComponentModel.Server
         /// <returns>A pipeline that will handle a message.</returns>        
         protected virtual IMessageHandler<TMessage> CreatePerMessagePipeline<TMessage>(IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator) where TMessage : class
         {
-            return new MessageValidationPipeline<TMessage>(handler, validator);
+            return new ThreadNamePipeline<TMessage>(new MessageValidationPipeline<TMessage>(handler, validator));
         }
 
         /// <summary>

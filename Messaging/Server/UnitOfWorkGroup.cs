@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace System.ComponentModel.Server
@@ -16,6 +17,12 @@ namespace System.ComponentModel.Server
             _items.TrimExcess();
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public override int ItemCount
+        {
+            get { return _items.Count; }
+        }
+
         public override Guid FlushGroupId
         {
             get { return _items[0].FlushGroupId; }
@@ -24,6 +31,11 @@ namespace System.ComponentModel.Server
         public override bool CanBeFlushedAsynchronously
         {
             get { return _items.All(item => item.CanBeFlushedAsynchronously); }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Count = {0}", ItemCount);
         }
 
         public override bool WrapsSameUnitOfWorkAs(UnitOfWorkItem item)

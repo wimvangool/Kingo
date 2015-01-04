@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Resources;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 
@@ -8,8 +9,38 @@ namespace System.ComponentModel.Server
     /// <summary>
     /// Represents the context in which a certain message is being handled.
     /// </summary>
+    [DebuggerTypeProxy(typeof(DebuggerProxy))]
     public sealed class UnitOfWorkContext : IDisposable
     {
+        #region [====== DebuggerProxy ======]
+
+        private sealed class DebuggerProxy
+        {
+            private readonly UnitOfWorkContext _context;
+
+            internal DebuggerProxy(UnitOfWorkContext context)
+            {
+                _context = context;
+            }
+
+            public BufferedEventBus DomainEventBus
+            {
+                get { return _context._bufferedEventBuses.Peek(); }
+            }
+
+            public UnitOfWorkController FlushController
+            {
+                get { return _context._flushController; }
+            }
+
+            public ScopeSpecificCache Cache
+            {
+                get { return _context._cache; }
+            }
+        }
+
+        #endregion
+
         private readonly Stack<BufferedEventBus> _bufferedEventBuses;             
         private readonly UnitOfWorkController _flushController;
         private readonly ScopeSpecificCache _cache;   
@@ -83,6 +114,7 @@ namespace System.ComponentModel.Server
         /// </summary>
         public static readonly IScopeSpecificCache Cache = new UnitOfWorkCache();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly ThreadLocal<UnitOfWorkContext> _Current = new ThreadLocal<UnitOfWorkContext>();
 
         /// <summary>
