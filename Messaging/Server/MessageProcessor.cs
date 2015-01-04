@@ -188,25 +188,25 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />      
         public Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>
         {
-            return ExecuteAsync(message, NoMessageHandler<TCommand>(), null);
+            return ExecuteAsync(message, NullHandler<TCommand>(), null);
         }
 
         /// <inheritdoc />              
         public Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
         {
-            return ExecuteAsync(message, NoMessageHandler<TCommand>(), token);
+            return ExecuteAsync(message, NullHandler<TCommand>(), token);
         }
 
         /// <inheritdoc />        
         public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
         {
-            return ExecuteAsync(message, ToMessageHandler(handler), null);
+            return ExecuteAsync(message, (ActionDecorator<TCommand>) handler, null);
         }
 
         /// <inheritdoc />                
         public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
         {
-            return ExecuteAsync(message, ToMessageHandler(handler), token);
+            return ExecuteAsync(message, (ActionDecorator<TCommand>) handler, token);
         }
 
         /// <inheritdoc />        
@@ -270,7 +270,7 @@ namespace System.ComponentModel.Server
             where TMessageIn : class, IRequestMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return ExecuteAsync(message, new FuncDecorator<TMessageIn, TMessageOut>(query), null);
+            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, null);
         }
 
         /// <inheritdoc />       
@@ -278,7 +278,7 @@ namespace System.ComponentModel.Server
             where TMessageIn : class, IRequestMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return ExecuteAsync(message, new FuncDecorator<TMessageIn, TMessageOut>(query), token);
+            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
         }
 
         /// <inheritdoc />     
@@ -306,7 +306,7 @@ namespace System.ComponentModel.Server
             where TMessageIn : class, IRequestMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return Execute(message, new FuncDecorator<TMessageIn, TMessageOut>(query), null);
+            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, null);
         }
 
         /// <inheritdoc />
@@ -314,7 +314,7 @@ namespace System.ComponentModel.Server
             where TMessageIn : class, IRequestMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return Execute(message, new FuncDecorator<TMessageIn, TMessageOut>(query), token);
+            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
         }
 
         /// <inheritdoc />
@@ -357,31 +357,31 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />       
         public Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, null, NoMessageHandler<TMessage>(), null);
+            return HandleAsync(message, null, NullHandler<TMessage>(), null);
         }
 
         /// <inheritdoc />       
         public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, validator, NoMessageHandler<TMessage>(), null);
+            return HandleAsync(message, validator, NullHandler<TMessage>(), null);
         }
 
         /// <inheritdoc />               
         public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, CancellationToken? token) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, validator, NoMessageHandler<TMessage>(), token);
+            return HandleAsync(message, validator, NullHandler<TMessage>(), token);
         }
 
         /// <inheritdoc />      
         public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, validator, ToMessageHandler(handler), null);
+            return HandleAsync(message, validator, (ActionDecorator<TMessage>) handler, null);
         }
 
         /// <inheritdoc />                
         public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, validator, ToMessageHandler(handler), token);
+            return HandleAsync(message, validator, (ActionDecorator<TMessage>) handler, token);
         }
 
         /// <inheritdoc />        
@@ -403,31 +403,31 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, null, NoMessageHandler<TMessage>(), null);
+            Handle(message, null, NullHandler<TMessage>(), null);
         }
 
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, validator, NoMessageHandler<TMessage>(), null);
+            Handle(message, validator, NullHandler<TMessage>(), null);
         }
 
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, CancellationToken? token) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, validator, NoMessageHandler<TMessage>(), token);
+            Handle(message, validator, NullHandler<TMessage>(), token);
         }
 
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, validator, ToMessageHandler(handler), null);
+            Handle(message, validator, (ActionDecorator<TMessage>) handler, null);
         }
 
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, validator, ToMessageHandler(handler), token);             
+            Handle(message, validator, (ActionDecorator<TMessage>) handler, token);             
         }
 
         /// <inheritdoc />
@@ -483,7 +483,11 @@ namespace System.ComponentModel.Server
         /// <returns>A pipeline that will handle a message.</returns>        
         protected virtual IMessageHandler<TMessage> CreatePerMessagePipeline<TMessage>(IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator) where TMessage : class
         {
-            return new ThreadNamePipeline<TMessage>(new MessageValidationPipeline<TMessage>(handler, validator));
+            return new MessageHandlerPipelineFactory<TMessage>()
+            {
+                h => new ThreadNamePipeline<TMessage>(h),
+                h => new MessageValidationPipeline<TMessage>(h, validator)
+            }.CreateMessageHandlerPipeline(handler); 
         }
 
         /// <summary>
@@ -516,14 +520,9 @@ namespace System.ComponentModel.Server
             where TMessageOut : class, IMessage<TMessageOut>
         {
             return query;
-        }
+        }        
 
-        private static IMessageHandler<TMessage> ToMessageHandler<TMessage>(Action<TMessage> handler) where TMessage : class
-        {
-            return handler == null ? null : new ActionDecorator<TMessage>(handler);
-        }
-
-        private static IMessageHandler<TMessage> NoMessageHandler<TMessage>() where TMessage : class
+        private static IMessageHandler<TMessage> NullHandler<TMessage>() where TMessage : class
         {
             return null;
         }

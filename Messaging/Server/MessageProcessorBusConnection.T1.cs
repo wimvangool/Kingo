@@ -18,7 +18,7 @@ namespace System.ComponentModel.Server
         internal MessageProcessorBusConnection(ICollection<IMessageProcessorBusConnection> connections, Action<TMessage> handler)
         {
             _connections = connections;
-            _handler = new ActionDecorator<TMessage>(handler);
+            _handler = (ActionDecorator<TMessage>) handler;
         }
 
         protected override bool IsOpen
