@@ -24,7 +24,7 @@ namespace System.ComponentModel
                 : base(message, makeReadOnly)
             {
                 _value = message._value;
-                _childMessages = AttachCollection(message._childMessages);
+                _childMessages = AttachCollectionCopy(message._childMessages);
             }
 
             public override ParentMessage Copy(bool makeReadOnly)

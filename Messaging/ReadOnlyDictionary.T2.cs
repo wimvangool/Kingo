@@ -4,6 +4,7 @@ using System.ComponentModel.Resources;
 
 namespace System.ComponentModel
 {
+    [Serializable]
     internal sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         private readonly IDictionary<TKey, TValue> _dictionary;

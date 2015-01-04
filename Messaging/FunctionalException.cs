@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Server;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace System.ComponentModel
 {
@@ -10,6 +11,7 @@ namespace System.ComponentModel
     [Serializable]
     public abstract class FunctionalException : Exception
     {
+        private const string _FailedMessageKey = "_failedMessage";
         private readonly object _failedMessage;
 
         /// <summary>
@@ -70,8 +72,21 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected FunctionalException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { /* TODO */ }
+            : base(info, context)
+        {
+            _failedMessage = info.GetValue(_FailedMessageKey, typeof(object));
+        }
+
+        /// <inheritdoc />
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue(_FailedMessageKey, _failedMessage);
+        }
 
         /// <summary>
         /// The message that could not be processed.

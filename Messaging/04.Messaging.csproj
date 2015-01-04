@@ -85,6 +85,7 @@
       <DependentUpon>ValidationMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="AssemblySet.cs" />
+    <Compile Include="SerializationInfoExtensions.cs" />
     <Compile Include="Server\ActionDecorator.T1.cs" />
     <Compile Include="Server\CompositeConnection.cs" />
     <Compile Include="Server\DependencyClass.cs" />

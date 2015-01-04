@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace System.ComponentModel
 {
@@ -9,10 +10,8 @@ namespace System.ComponentModel
     [Serializable]
     public class InvalidMessageException : FunctionalException
     {
-        /// <summary>
-        /// If specified, contains all the validation-errors of the <see cref="FunctionalException.FailedMessage" />.
-        /// </summary>
-        public readonly MessageErrorTree ErrorTree;
+        private const string _ErrorTreeKey = "_errorTree";
+        private readonly MessageErrorTree _errorTree;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
@@ -48,7 +47,7 @@ namespace System.ComponentModel
         public InvalidMessageException(object failedMessage, string message, MessageErrorTree errorTree)
             : base(failedMessage, message)
         {
-            ErrorTree = errorTree;
+            _errorTree = errorTree;
         }
 
         /// <summary>
@@ -56,7 +55,28 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected InvalidMessageException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }                  
+            : base(info, context)
+        {
+            _errorTree = (MessageErrorTree) info.GetValue(_ErrorTreeKey, typeof(MessageErrorTree));
+        }
+
+        /// <inheritdoc />
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue(_ErrorTreeKey, _errorTree);
+        }
+
+        /// <summary>
+        /// If specified, contains all the validation-errors of the <see cref="FunctionalException.FailedMessage" />.
+        /// </summary>
+        public MessageErrorTree ErrorTree
+        {
+            get { return _errorTree; }
+        }
     }
 }

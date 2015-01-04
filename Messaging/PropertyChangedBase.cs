@@ -5,6 +5,7 @@ namespace System.ComponentModel
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyPropertyChanged" /> interface.
     /// </summary>
+    [Serializable]
     public abstract class PropertyChangedBase : INotifyPropertyChanged
     {
         /// <inheritdoc />

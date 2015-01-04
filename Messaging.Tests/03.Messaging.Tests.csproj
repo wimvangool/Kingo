@@ -75,6 +75,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="CommandStub.cs" />
+    <Compile Include="InvalidMessageExceptionTest.cs" />
     <Compile Include="MessageStub.cs" />
     <Compile Include="RequestMessageAsEditableObjectTest.cs" />
     <Compile Include="MessageOne.cs" />

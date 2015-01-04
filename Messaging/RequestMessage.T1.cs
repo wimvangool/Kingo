@@ -5,6 +5,7 @@ using System.ComponentModel.Resources;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace System.ComponentModel
 {
@@ -13,26 +14,21 @@ namespace System.ComponentModel
     /// change tracking and validation are supported.
     /// </summary>
     [Serializable]
-    public abstract class RequestMessage<TMessage> : PropertyChangedBase, IRequestMessage<TMessage>, IEditableObject, IServiceProvider, IExtensibleDataObject
+    public abstract class RequestMessage<TMessage> : PropertyChangedBase,
+                                                     IRequestMessage<TMessage>,
+                                                     IEditableObject,
+                                                     IServiceProvider,
+                                                     IExtensibleDataObject,
+                                                     ISerializable
         where TMessage : RequestMessage<TMessage>
     {
         // The _validator and _attachedMessages fields could have been made readonly but were not because we want to support the use
         // of WCF's DataContractSerializer, which does not call constructors upon deserialization. For this reason, we use the
-        // lazy initialization pattern.
-
-        [NonSerialized]
-        private readonly bool _isReadOnly;
-
-        [NonSerialized]
-        private RequestMessageValidator<TMessage> _validator;
-
-        [NonSerialized]
-        private LinkedList<IRequestMessage> _attachedMessages;
-
-        [NonSerialized]
-        private bool _hasChanges;
-
-        [NonSerialized]
+        // lazy initialization pattern.        
+        private readonly bool _isReadOnly;        
+        private RequestMessageValidator<TMessage> _validator;        
+        private LinkedList<IRequestMessage> _attachedMessages;        
+        private bool _hasChanges;        
         private ExtensionDataObject _extensionData;
 
         /// <summary>
@@ -68,6 +64,14 @@ namespace System.ComponentModel
             _validator = message._validator == null ? null : new RequestMessageValidator<TMessage>(this, message._validator);                                  
             _hasChanges = false;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RequestMessage{TMessage}" /> class by deserializing it's contents
+        /// from a <see cref="SerializationInfo" /> instance.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
+        protected RequestMessage(SerializationInfo info, StreamingContext context) { }
 
         internal RequestMessageValidator<TMessage> Validator
         {
@@ -106,6 +110,27 @@ namespace System.ComponentModel
             get { return _extensionData; }
             set { _extensionData = value; }
         }
+
+        #region [====== Serialization ======]
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+            {
+                throw new ArgumentNullException("info");
+            }
+            GetObjectData(info, context);
+        }
+
+        /// <summary>
+        /// Populates a <see cref="SerializationInfo" /> with the data needed to serialize the target object.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
+        protected virtual void GetObjectData(SerializationInfo info, StreamingContext context) { }
+
+        #endregion
 
         #region [====== Message Copying ======]
 
@@ -583,9 +608,9 @@ namespace System.ComponentModel
             return typeof(IRequestMessage).IsAssignableFrom(type);
         }        
 
-        #endregion       
+        #endregion
 
-        #region [====== CreateCollection ======]
+        #region [====== Attach and Detach ======]
 
         /// <summary>
         /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
@@ -600,7 +625,20 @@ namespace System.ComponentModel
         /// </remarks>
         protected ObservableCollection<TValue> AttachCollection<TValue>()
         {
-            return AttachCollection(Enumerable.Empty<TValue>());
+            return AttachCollectionCopy(Enumerable.Empty<TValue>());
+        }
+
+        /// <summary>
+        /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
+        /// and validation by deserializing it from the specified <see cref="SerializationInfo" />.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the values stored in the collection.</typeparam>    
+        /// <param name="info">The serialization info.</param>
+        /// <param name="name">Name of the collection to retrieve.</param>
+        /// <returns>An <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking and validation.</returns>
+        protected ObservableCollection<TValue> AttachCollection<TValue>(SerializationInfo info, string name)
+        {
+            return AttachCollection((IEnumerable<TValue>) info.GetValue(name, typeof(TValue[])));
         }
 
         /// <summary>
@@ -620,16 +658,32 @@ namespace System.ComponentModel
         /// </remarks>
         protected ObservableCollection<TValue> AttachCollection<TValue>(IEnumerable<TValue> values)
         {
+            return AttachCollectionCopy(values);
+        }        
+
+        /// <summary>
+        /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
+        /// and validation.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the values stored in the collection.</typeparam>        
+        /// <param name="values">The initial values stored in the collection.</param>
+        /// <returns>
+        /// An <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking and validation.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> is <c>null</c>.
+        /// </exception>
+        /// <remarks>
+        /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessage" />-type, all values will be treated like child-messages.
+        /// </remarks>
+        protected ObservableCollection<TValue> AttachCollectionCopy<TValue>(IEnumerable<TValue> values)
+        {
             var collection = new ObservableCollection<TValue>(values);
 
             Attach(new ObservableCollectionWrapper<TValue>(collection, IsReadOnly));
 
             return collection;
-        }               
-
-        #endregion
-
-        #region [====== Attach and Detach ======]
+        }
 
         /// <summary>
         /// Creates and returns a copy of the specified <paramref name="message"/> that is also automatically attached as child to this message.
@@ -649,13 +703,16 @@ namespace System.ComponentModel
         }
 
         /// <summary>
-        /// Creates and returns a new instance of <typeparamref name="TMessage"/> that is also automatically attached as child to this message.
+        /// Deserializes a message of type <typeparamref name="T"/> from the specified <see cref="SerializationInfo" />
+        /// and attached it to this message.
         /// </summary>
-        /// <typeparam name="T">Type of the message to create.</typeparam>
-        /// <returns>A new instance of <typeparamref name="TMessage"/>.</returns>
-        protected T Attach<T>() where T : class, IRequestMessage, new()
+        /// <typeparam name="T">Type of the message to deserialize.</typeparam>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="name">Name of the message to retrieve.</param>
+        /// <returns>The attached message.</returns>
+        protected T Attach<T>(SerializationInfo info, string name) where T : class, IRequestMessage
         {
-            return Attach(new T());
+            return Attach((T) info.GetValue(name, typeof(T)));
         }
 
         /// <summary>

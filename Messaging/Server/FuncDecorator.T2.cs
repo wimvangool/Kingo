@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     internal sealed class FuncDecorator<TMessageIn, TMessageOut> : IQuery<TMessageIn, TMessageOut>
         where TMessageIn : class, IRequestMessage<TMessageIn>
