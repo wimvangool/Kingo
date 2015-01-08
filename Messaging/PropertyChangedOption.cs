@@ -2,7 +2,7 @@
 namespace System.ComponentModel
 {
     /// <summary>
-    /// The options that can be specified when a property of a <see cref="RequestMessage{TMessage}" /> has changed.
+    /// The options that can be specified when a property of a <see cref="RequestMessageViewModel{TMessage}" /> has changed.
     /// </summary>    
     public enum PropertyChangedOption
     {

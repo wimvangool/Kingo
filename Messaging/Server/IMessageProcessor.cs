@@ -35,7 +35,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>;
+        Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking all registered message handlers asynchronously.
@@ -49,7 +49,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>               
-        Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+        Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified delegate asynchronously.
@@ -61,7 +61,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>;
+        Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified delegate asynchronously.
@@ -76,7 +76,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>                
-        Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+        Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified handler asynchronously.
@@ -88,7 +88,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>;
+        Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified handler asynchronously.
@@ -103,7 +103,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>               
-        Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+        Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking all registered message handlers.
@@ -117,7 +117,7 @@ namespace System.ComponentModel.Server
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>
-        void Execute<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>;        
+        void Execute<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking all registered message handlers.
@@ -137,7 +137,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>         
-        void Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+        void Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified delegate.
@@ -152,7 +152,7 @@ namespace System.ComponentModel.Server
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>
-        void Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>;
+        void Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified delegate.
@@ -173,7 +173,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>         
-        void Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+        void Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified handler.
@@ -188,7 +188,7 @@ namespace System.ComponentModel.Server
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>
-        void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>;
+        void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>; 
 
         /// <summary>
         /// Executes the specified command by invoking the specified handler.
@@ -209,7 +209,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>         
-        void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>;
+        void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>; 
 
         #endregion
 
@@ -226,9 +226,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>        
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query) where TMessageIn : class, IRequestMessage<TMessageIn>;           
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -244,9 +242,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>                 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IRequestMessage<TMessageIn>;         
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -259,9 +255,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>        
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class, IRequestMessage<TMessageIn>;            
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -277,9 +271,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>                
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IRequestMessage<TMessageIn>;           
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -296,9 +288,7 @@ namespace System.ComponentModel.Server
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query) where TMessageIn : class, IRequestMessage<TMessageIn>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -321,9 +311,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IRequestMessage<TMessageIn>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -340,9 +328,7 @@ namespace System.ComponentModel.Server
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class, IRequestMessage<TMessageIn>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -365,9 +351,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IRequestMessage<TMessageIn>;           
 
         #endregion
 

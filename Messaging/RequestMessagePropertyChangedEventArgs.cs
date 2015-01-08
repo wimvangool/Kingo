@@ -16,7 +16,7 @@
         public readonly object NewValue;
 
         /// <summary>
-        /// The state was provided when an <see cref="RequestMessageEditScope" /> was created.
+        /// The state was provided when an <see cref="RequestMessageViewModelEditScope" /> was created.
         /// </summary>
         public readonly object State;
 
@@ -26,7 +26,7 @@
         /// <param name="propertyName">Name of the property that was changed.</param>
         /// <param name="oldValue">The old value of the property.</param>
         /// <param name="newValue">The new value of the property.</param>
-        /// <param name="state">The state was provided when an <see cref="RequestMessageEditScope" /> was created.</param>
+        /// <param name="state">The state was provided when an <see cref="RequestMessageViewModelEditScope" /> was created.</param>
         public RequestMessagePropertyChangedEventArgs(string propertyName, object oldValue, object newValue, object state) : base(propertyName)
         {
             OldValue = oldValue;

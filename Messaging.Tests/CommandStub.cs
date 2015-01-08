@@ -2,7 +2,7 @@
 
 namespace System.ComponentModel
 {
-    public sealed class CommandStub : RequestMessage<CommandStub>
+    public sealed class CommandStub : RequestMessageViewModel<CommandStub>
     {
         public CommandStub() { }
 

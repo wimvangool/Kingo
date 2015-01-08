@@ -9,8 +9,19 @@
     {
         private readonly Action<TMessage> _handler;
 
-        private ActionDecorator(Action<TMessage> handler)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActionDecorator{TMessage}" /> class.
+        /// </summary>
+        /// <param name="handler">The handler to invoke.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
+        public ActionDecorator(Action<TMessage> handler)
         {
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
             _handler = handler;
         }
 

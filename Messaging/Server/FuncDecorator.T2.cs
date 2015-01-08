@@ -6,14 +6,23 @@
     /// </summary>
     /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
     /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
-    public sealed class FuncDecorator<TMessageIn, TMessageOut> : IQuery<TMessageIn, TMessageOut>
-        where TMessageIn : class, IRequestMessage<TMessageIn>
-        where TMessageOut : class, IMessage<TMessageOut>
+    public sealed class FuncDecorator<TMessageIn, TMessageOut> : IQuery<TMessageIn, TMessageOut> where TMessageIn : class     
     {
         private readonly Func<TMessageIn, TMessageOut> _query;
 
-        private FuncDecorator(Func<TMessageIn, TMessageOut> query)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FuncDecorator{TMessageIn, TMessageOut}" /> class.
+        /// </summary>
+        /// <param name="query">The query to invoke.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>
+        public FuncDecorator(Func<TMessageIn, TMessageOut> query)
         {            
+            if (query == null)
+            {
+                throw new ArgumentNullException("query");
+            }
             _query = query;
         }
 

@@ -11,7 +11,7 @@ namespace System.ComponentModel
     public class InvalidMessageException : FunctionalException
     {
         private const string _ErrorTreeKey = "_errorTree";
-        private readonly MessageErrorTree _errorTree;
+        private readonly ValidationErrorTree _errorTree;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
@@ -44,7 +44,7 @@ namespace System.ComponentModel
         /// <param name="errorTree">
         /// If specified, contains all the validation-errors of the <paramref name="failedMessage"/>.
         /// </param>
-        public InvalidMessageException(object failedMessage, string message, MessageErrorTree errorTree)
+        public InvalidMessageException(object failedMessage, string message, ValidationErrorTree errorTree)
             : base(failedMessage, message)
         {
             _errorTree = errorTree;
@@ -59,7 +59,7 @@ namespace System.ComponentModel
         protected InvalidMessageException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _errorTree = (MessageErrorTree) info.GetValue(_ErrorTreeKey, typeof(MessageErrorTree));
+            _errorTree = (ValidationErrorTree) info.GetValue(_ErrorTreeKey, typeof(ValidationErrorTree));
         }
 
         /// <inheritdoc />
@@ -74,7 +74,7 @@ namespace System.ComponentModel
         /// <summary>
         /// If specified, contains all the validation-errors of the <see cref="FunctionalException.FailedMessage" />.
         /// </summary>
-        public MessageErrorTree ErrorTree
+        public ValidationErrorTree ErrorTree
         {
             get { return _errorTree; }
         }

@@ -7,12 +7,14 @@ namespace System.ComponentModel.Server
     public sealed class MessageValidationPipelineTest
     {
         private Mock<IMessageHandler<CommandStub>> _nextHandlerMock;
+        private RequestMessageValidator<CommandStub> _validator;
         private CommandStub _command;
 
         [TestInitialize]
         public void Setup()
         {
             _nextHandlerMock = new Mock<IMessageHandler<CommandStub>>(MockBehavior.Strict);
+            _validator = new RequestMessageValidator<CommandStub>();
             _command = new CommandStub();
         }
 
@@ -31,7 +33,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void Handle_InvokesNextHandler_IfMessageIsValid()
         {
-            var pipeline = new MessageValidationPipeline<CommandStub>(_nextHandlerMock.Object, _command);
+            var pipeline = new MessageValidationPipeline<CommandStub>(_nextHandlerMock.Object, _validator);
 
             _command.Value = "Some Value";
             _nextHandlerMock.Setup(handler => handler.Handle(_command));
@@ -45,7 +47,7 @@ namespace System.ComponentModel.Server
         [ExpectedException(typeof(InvalidMessageException))]
         public void Handle_Throws_IfValidatorIsSpecifiedAndMessageIsInvalid()
         {
-            var pipeline = new MessageValidationPipeline<CommandStub>(_nextHandlerMock.Object, _command);
+            var pipeline = new MessageValidationPipeline<CommandStub>(_nextHandlerMock.Object, _validator);
           
             _nextHandlerMock.Setup(handler => handler.Handle(_command));
 

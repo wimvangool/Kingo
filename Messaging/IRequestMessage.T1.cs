@@ -1,9 +1,14 @@
-﻿namespace System.ComponentModel
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a request-message that supports change-tracking and validation.
+    /// Represent a message that can validate itself.
     /// </summary>
-    public interface IRequestMessage<TMessage> : IRequestMessage, IMessage<TMessage>, IMessageValidator<TMessage>
+    public interface IRequestMessage<out TMessage> : IRequestMessage, IMessage<TMessage>
         where TMessage : class, IRequestMessage<TMessage>
     {
         /// <summary>

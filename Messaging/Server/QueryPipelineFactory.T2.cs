@@ -10,8 +10,7 @@ namespace System.ComponentModel.Server
     /// <typeparam name="TMessageOut">Type of the messages that come out of the pipeline.</typeparam>
     public class QueryPipelineFactory<TMessageIn, TMessageOut> : IQueryPipelineFactory<TMessageIn, TMessageOut>,
                                                                  IEnumerable<IQueryPipelineFactory<TMessageIn, TMessageOut>>
-        where TMessageIn : class, IRequestMessage<TMessageIn>
-        where TMessageOut : class, IMessage<TMessageOut>
+        where TMessageIn : class, IRequestMessage<TMessageIn>        
     {
         private readonly List<IQueryPipelineFactory<TMessageIn, TMessageOut>> _factories;
 

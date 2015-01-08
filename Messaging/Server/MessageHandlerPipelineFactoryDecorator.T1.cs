@@ -9,8 +9,19 @@
     {
         private readonly Func<IMessageHandler<TMessage>, IMessageHandler<TMessage>> _factory;
 
-        private MessageHandlerPipelineFactoryDecorator(Func<IMessageHandler<TMessage>, IMessageHandler<TMessage>> factory)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageHandlerPipelineFactoryDecorator{TMessage}" /> class.
+        /// </summary>
+        /// <param name="factory">The factory to invoke.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="factory"/> is <c>null</c>.
+        /// </exception>
+        public MessageHandlerPipelineFactoryDecorator(Func<IMessageHandler<TMessage>, IMessageHandler<TMessage>> factory)
         {            
+            if (factory == null)
+            {
+                throw new ArgumentNullException("factory");
+            }
             _factory = factory;
         }
 

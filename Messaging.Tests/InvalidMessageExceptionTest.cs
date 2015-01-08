@@ -14,7 +14,7 @@ namespace System.ComponentModel
         #region [====== ParentMessage ======]
 
         [Serializable]
-        private sealed class ParentMessage : RequestMessage<ParentMessage>
+        private sealed class ParentMessage : RequestMessageViewModel<ParentMessage>
         {
             private const string _ChildMessagesKey = "_childMessages";            
             private readonly ObservableCollection<ChildMessage> _childMessages;            
@@ -90,7 +90,7 @@ namespace System.ComponentModel
         #region [====== ChildMessage ======]
 
         [Serializable]
-        private sealed class ChildMessage : RequestMessage<ChildMessage>
+        private sealed class ChildMessage : RequestMessageViewModel<ChildMessage>
         {
             public ChildMessage() { }
 
@@ -152,10 +152,10 @@ namespace System.ComponentModel
             message.ChildMessages.Add(new ChildMessage(4));
             message.AcceptChanges();
 
-            var validator = message as IMessageValidator<ParentMessage>;
-            MessageErrorTree errorTree;
+            var validator = new RequestMessageValidator<ParentMessage>();
+            ValidationErrorTree errorTree;
             
-            Assert.IsTrue(validator.IsNotValid(message , out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(message , out errorTree));
             Assert.IsNotNull(errorTree);
 
             var exception = new InvalidMessageException(message, "Message contains errors.", errorTree);
@@ -198,7 +198,7 @@ namespace System.ComponentModel
             Assert.AreEqual(message.Value, messageCopy.Value);
         }
 
-        private static void AssertEqualErrorTree(MessageErrorTree errorTree, MessageErrorTree errorTreeCopy)
+        private static void AssertEqualErrorTree(ValidationErrorTree errorTree, ValidationErrorTree errorTreeCopy)
         {
             Assert.IsNotNull(errorTreeCopy);
             Assert.AreSame(errorTree.MessageType, errorTreeCopy.MessageType);

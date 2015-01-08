@@ -64,9 +64,9 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            MessageErrorTree errors;
+            ValidationErrorTree errors;
 
-            if (Validator != null && Validator.IsNotValid(message, out errors))
+            if (Validator != null && Validator.TryGetValidationErrors(message, out errors))
             {
                 throw new InvalidMessageException(message, ExceptionMessages.MessageProcessor_InvalidMessage, errors);                
             }            

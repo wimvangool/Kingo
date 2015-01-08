@@ -63,7 +63,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage<TMessage>
+        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher) where TMessage : RequestMessageViewModel<TMessage>
         {
             if (dispatcher == null)
             {
@@ -83,7 +83,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage<TMessage>
+        public static ClientCommand<TParameter> CreateCommand<TMessage, TParameter>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : RequestMessageViewModel<TMessage>
         {
             if (dispatcher == null)
             {
@@ -102,7 +102,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : class, IRequestMessage<TMessage>
+        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher, ClientCommandOptions options) where TMessage : RequestMessageViewModel<TMessage>
         {
             if (dispatcher == null)
             {
@@ -120,7 +120,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
-        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : class, IRequestMessage<TMessage>
+        public static ClientCommand CreateCommand<TMessage>(CommandDispatcher<TMessage> dispatcher) where TMessage : RequestMessageViewModel<TMessage>
         {
             if (dispatcher == null)
             {
@@ -145,7 +145,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static ClientCommand<TParameter> CreateCommand<TMessageIn, TMessageOut, TParameter>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageIn : RequestMessageViewModel<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)
@@ -168,7 +168,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static ClientCommand<TParameter> CreateCommand<TMessageIn, TMessageOut, TParameter>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher, ClientCommandOptions options)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageIn : RequestMessageViewModel<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)
@@ -189,7 +189,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static ClientCommand CreateCommand<TMessageIn, TMessageOut>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageIn : RequestMessageViewModel<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)
@@ -211,7 +211,7 @@
         /// <paramref name="dispatcher"/> is <c>null</c>.
         /// </exception>
         public static ClientCommand CreateCommand<TMessageIn, TMessageOut>(QueryDispatcher<TMessageIn, TMessageOut> dispatcher, ClientCommandOptions options)
-            where TMessageIn : class, IRequestMessage<TMessageIn>
+            where TMessageIn : RequestMessageViewModel<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
             if (dispatcher == null)

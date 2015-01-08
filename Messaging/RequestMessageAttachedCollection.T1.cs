@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 
 namespace System.ComponentModel
 {
-    internal sealed class RequestMessageAttachedCollection<TValue> : RequestMessage<RequestMessageAttachedCollection<TValue>>
+    internal sealed class RequestMessageAttachedCollection<TValue> : RequestMessageViewModel<RequestMessageAttachedCollection<TValue>>
     {
         private readonly ObservableCollection<TValue> _collection;        
         private readonly bool _isRequestMessageCollection;
@@ -14,10 +14,9 @@ namespace System.ComponentModel
         {
             _collection = collection;
             _collection.CollectionChanged += HandleCollectionChanged;          
-            _isRequestMessageCollection = IsRequestMessage(typeof(TValue));
+            _isRequestMessageCollection = IsRequestMessageViewModel(typeof(TValue));
 
-            Attach(collection);
-            Validator.ErrorInfo = null;
+            Attach(collection);            
         }
 
         private RequestMessageAttachedCollection(RequestMessageAttachedCollection<TValue> message, bool makeReadOnly)  : base(message, makeReadOnly)
@@ -26,43 +25,24 @@ namespace System.ComponentModel
             _collection.CollectionChanged += HandleCollectionChanged;            
             _isRequestMessageCollection = message._isRequestMessageCollection;
 
-            Attach(_collection);
-            Validator.ErrorInfo = null;
+            Attach(_collection);            
         }
 
         public override RequestMessageAttachedCollection<TValue> Copy(bool makeReadOnly)
         {
             return new RequestMessageAttachedCollection<TValue>(this, makeReadOnly);
-        }
+        }        
 
-        internal override void Validate(bool ignoreEditScope, bool validateAttachedMessages)
+        internal override bool TryGetValidationErrors(bool includeChildErrors, out ValidationErrorTree errorTree)
         {
-            // This default implementation is overridden to prevent needless validation of this instance.
-            if (ignoreEditScope || !RequestMessageEditScope.IsValidationSuppressed(this) && validateAttachedMessages)
-            {                
-                ValidateAttachedMessages();
-            }
-        }
-
-        internal override bool IsNotValid(out MessageErrorTree errorTree)
-        {
-            var messages = _collection as IEnumerable<IRequestMessage>;
-            if (messages != null)
+            if (includeChildErrors)
             {
-                var errorTrees = new LinkedList<MessageErrorTree>();
+                var messages = _collection as IEnumerable<IRequestMessage>;
+                ICollection<ValidationErrorTree> childErrorTrees;
 
-                foreach (var message in messages)
+                if (messages != null && TryGetValidationErrors(messages, out childErrorTrees))
                 {
-                    MessageErrorTree messageErrorTree;
-
-                    if (message.IsNotValid(out messageErrorTree))
-                    {
-                        errorTrees.AddLast(messageErrorTree);
-                    }
-                }
-                if (errorTrees.Count > 0)
-                {
-                    errorTree = new MessageErrorTree(typeof(ObservableCollection<TValue>), null, errorTrees);
+                    errorTree = ValidationErrorTree.Merge(typeof(ObservableCollection<TValue>), childErrorTrees);
                     return true;
                 }
             }
@@ -97,7 +77,7 @@ namespace System.ComponentModel
             }
             foreach (var item in items)
             {
-                Attach(item as IRequestMessage);
+                Attach(item as IRequestMessageViewModel);
             }
         }
 
@@ -109,7 +89,7 @@ namespace System.ComponentModel
             }
             foreach (var item in items)
             {
-                Detach(item as IRequestMessage);
+                Detach(item as IRequestMessageViewModel);
             }
         }
     }

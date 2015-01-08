@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Resources;
+using System.Data.Odbc;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,45 +12,43 @@ using System.Security.Permissions;
 namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a basic implementation of the <see cref="IRequestMessage{TMessage}" /> interface, in which
+    /// Represents a basic implementation of the <see cref="IRequestMessageViewModel" /> interface, in which
     /// change tracking and validation are supported.
     /// </summary>
     [Serializable]
-    public abstract class RequestMessage<TMessage> : PropertyChangedBase,
-                                                     IRequestMessage<TMessage>,
-                                                     IEditableObject,
-                                                     IServiceProvider,
-                                                     IExtensibleDataObject,
-                                                     ISerializable
-        where TMessage : RequestMessage<TMessage>
-    {                
+    public abstract class RequestMessageViewModel<TMessage> : PropertyChangedBase,
+                                                              IRequestMessage<TMessage>,
+                                                              IRequestMessageViewModel,
+                                                              IEditableObject,
+                                                              IServiceProvider,
+                                                              IExtensibleDataObject,
+                                                              ISerializable
+        where TMessage : RequestMessageViewModel<TMessage>
+    {        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly LinkedList<IRequestMessageViewModel> _attachedMessages;
+
+        private readonly Dictionary<Type, object> _services;
+        private ValidationErrorTree _errorTree;
+
         private readonly bool _isReadOnly;                     
-        private bool _hasChanges;
-
-        // The _validator and _attachedMessages fields could have been made readonly but were not because we want to support the use
-        // of WCF's DataContractSerializer, which does not call constructors upon deserialization. For this reason, we use the
-        // lazy initialization pattern.  
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private RequestMessageValidator<TMessage> _validator;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private LinkedList<IRequestMessage> _attachedMessages;
-       
-        private ExtensionDataObject _extensionData;
+        private bool _hasChanges;       
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessage{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="RequestMessageViewModel{TMessage}" /> class.
         /// </summary>
-        protected RequestMessage() : this(false) { }
+        protected RequestMessageViewModel() : this(false) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessage{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="RequestMessageViewModel{TMessage}" /> class.
         /// </summary>
         /// <param name="makeReadOnly">Indicates whether the new instance should be marked readonly.</param>
-        protected RequestMessage(bool makeReadOnly)
-        {            
-            _isReadOnly = makeReadOnly;            
-            _hasChanges = false;
+        protected RequestMessageViewModel(bool makeReadOnly)
+        {           
+            _attachedMessages = new LinkedList<IRequestMessageViewModel>();
+            _services = new Dictionary<Type, object>();
+            _errorTree = ValidationErrorTree.NotYetValidated(GetType());
+            _isReadOnly = makeReadOnly;                        
         }                
 
         /// <summary>
@@ -60,50 +59,30 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        protected RequestMessage(TMessage message, bool makeReadOnly)
+        protected RequestMessageViewModel(TMessage message, bool makeReadOnly)
         {            
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            _isReadOnly = makeReadOnly;  
-            _validator = message._validator == null ? null : new RequestMessageValidator<TMessage>(this, message._validator);                                  
-            _hasChanges = false;
+            _attachedMessages = new LinkedList<IRequestMessageViewModel>();
+            _services = new Dictionary<Type, object>(message._services);
+            _errorTree = ValidationErrorTree.NotYetValidated(GetType());                   
+            _isReadOnly = makeReadOnly;                         
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequestMessage{TMessage}" /> class by deserializing it's contents
+        /// Initializes a new instance of the <see cref="RequestMessageViewModel{TMessage}" /> class by deserializing it's contents
         /// from a <see cref="SerializationInfo" /> instance.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected RequestMessage(SerializationInfo info, StreamingContext context) { }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal RequestMessageValidator<TMessage> Validator
+        protected RequestMessageViewModel(SerializationInfo info, StreamingContext context)
         {
-            get
-            {
-                if (_validator == null)
-                {
-                    _validator = new RequestMessageValidator<TMessage>(this);
-                }
-                return _validator;
-            }
-        }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private LinkedList<IRequestMessage> AttachedMessages
-        {
-            get
-            {
-                if (_attachedMessages == null)
-                {
-                    _attachedMessages = new LinkedList<IRequestMessage>();
-                }
-                return _attachedMessages;
-            }
-        }
+            _attachedMessages = new LinkedList<IRequestMessageViewModel>();
+            _services = new Dictionary<Type, object>();
+            _errorTree = ValidationErrorTree.NotYetValidated(GetType());
+        }                
 
         /// <summary>
         /// Indicates whether or not this message is marked as read-only.
@@ -113,12 +92,18 @@ namespace System.ComponentModel
             get { return _isReadOnly; }
         }
 
+        #region [====== ExtensibleObject ======]
+
+        private ExtensionDataObject _extensionData;
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ExtensionDataObject IExtensibleDataObject.ExtensionData
         {
             get { return _extensionData; }
             set { _extensionData = value; }
         }
+
+        #endregion
 
         #region [====== Serialization ======]
 
@@ -156,9 +141,9 @@ namespace System.ComponentModel
         IRequestMessage IRequestMessage.Copy(bool makeReadOnly)
         {
             return Copy(makeReadOnly);
-        }
+        }        
 
-        TMessage IRequestMessage<TMessage>.Copy(bool makeReadOnly)
+        IRequestMessageViewModel IRequestMessageViewModel.Copy(bool makeReadOnly)
         {
             return Copy(makeReadOnly);
         }
@@ -218,7 +203,7 @@ namespace System.ComponentModel
             }
             try
             {
-                Validator.Add(typeof(TService), service);
+                _services.Add(typeof(TService), service);
             }
             catch (ArgumentException)
             {
@@ -229,7 +214,13 @@ namespace System.ComponentModel
 
         object IServiceProvider.GetService(Type serviceType)
         {
-            return Validator.GetService(serviceType);
+            object service;
+
+            if (_services.TryGetValue(serviceType, out service))
+            {
+                return service;
+            }
+            return null;
         }
 
         #endregion
@@ -241,50 +232,50 @@ namespace System.ComponentModel
         /// </summary>
         public bool IsInEditMode
         {
-            get { return RequestMessageEditScope.IsInEditMode(this); }
+            get { return RequestMessageViewModelEditScope.IsInEditMode(this); }
         }
 
         /// <inheritdoc />
-        public RequestMessageEditScope CreateEditScope()
+        public RequestMessageViewModelEditScope CreateEditScope()
         {
             return CreateEditScope(false, null);
         }
 
         /// <inheritdoc />
-        public RequestMessageEditScope CreateEditScope(object state)
+        public RequestMessageViewModelEditScope CreateEditScope(object state)
         {
             return CreateEditScope(false, state);
         }
 
         /// <inheritdoc />
-        public RequestMessageEditScope CreateEditScope(bool suppressValidation)
+        public RequestMessageViewModelEditScope CreateEditScope(bool suppressValidation)
         {
             return CreateEditScope(suppressValidation, null);
         }
 
         /// <inheritdoc />
-        public RequestMessageEditScope CreateEditScope(bool suppressValidation, object state)
+        public RequestMessageViewModelEditScope CreateEditScope(bool suppressValidation, object state)
         {
-            return RequestMessageEditScope.BeginEdit(this, suppressValidation, state, true);
+            return RequestMessageViewModelEditScope.BeginEdit(this, suppressValidation, state, true);
         }
 
         void IEditableObject.BeginEdit()
         {
-            RequestMessageEditScope.BeginEdit(this);
+            RequestMessageViewModelEditScope.BeginEdit(this);
 
             NotifyOfPropertyChange(() => IsInEditMode);
         }
 
         void IEditableObject.CancelEdit()
         {
-            RequestMessageEditScope.CancelEdit(this);
+            RequestMessageViewModelEditScope.CancelEdit(this);
 
             NotifyOfPropertyChange(() => IsInEditMode);
         }
 
         void IEditableObject.EndEdit()
         {
-            RequestMessageEditScope.EndEdit(this);
+            RequestMessageViewModelEditScope.EndEdit(this);
 
             NotifyOfPropertyChange(() => IsInEditMode);
         }
@@ -299,7 +290,7 @@ namespace System.ComponentModel
         /// <inheritdoc />
         public bool HasChanges
         {
-            get { return _hasChanges || AttachedMessages.Any(message => message.HasChanges); }
+            get { return _hasChanges || _attachedMessages.Any(message => message.HasChanges); }
             private set
             {                
                 if (_hasChanges != value)
@@ -395,7 +386,12 @@ namespace System.ComponentModel
         internal void MarkAsChangedAndValidate()
         {
             MarkAsChanged();
-            Validate(false, true);
+
+            if (RequestMessageViewModelEditScope.IsValidationSuppressed(this))
+            {
+                return;
+            }
+            Validate();
         }
 
         #endregion        
@@ -404,23 +400,23 @@ namespace System.ComponentModel
 
         string IDataErrorInfo.this[string columnName]
         {
-            get { return IsValid ? null : ErrorInfo[columnName]; }
+            get { return _errorTree == null ? null : ErrorTree[columnName]; }
         }
 
         string IDataErrorInfo.Error
         {
-            get { return IsValid ? null : ErrorInfo.Error; }
+            get { return _errorTree == null ? null : ErrorTree.Error; }
         }                
         
-        internal RequestMessageErrorInfo ErrorInfo
+        private IDataErrorInfo ErrorTree
         {
-            get { return Validator.ErrorInfo; }            
+            get { return _errorTree; }            
         }
 
         /// <inheritdoc />
         public bool IsValid
         {
-            get { return Validator.ErrorInfo == null && (_attachedMessages == null || _attachedMessages.All(message => message.IsValid)); }            
+            get { return _errorTree == null && (_attachedMessages == null || _attachedMessages.All(message => message.IsValid)); }            
         }
 
         /// <inheritdoc />
@@ -429,68 +425,80 @@ namespace System.ComponentModel
         /// <summary>
         /// Raises the <see cref="IsValidChanged" />- and <see cref="INotifyPropertyChanged.PropertyChanged" />-events.
         /// </summary>        
-        protected internal virtual void OnIsValidChanged()
+        protected virtual void OnIsValidChanged()
         {
             IsValidChanged.Raise(this);
 
             NotifyOfPropertyChange(() => IsValid);
         }
 
-        bool IMessageValidator<TMessage>.IsNotValid(TMessage message, out MessageErrorTree errorTree)
-        {
-            var requestMessage = message as IRequestMessage;
-            if (requestMessage == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            return requestMessage.IsNotValid(out errorTree);
-        }
-
-        /// <inheritdoc />
-        bool IRequestMessage.IsNotValid(out MessageErrorTree errorTree)
-        {
-            return IsNotValid(out errorTree);
-        }
-
-        internal virtual bool IsNotValid(out MessageErrorTree errorTree)
-        {
-            Validate(true, false);
-
-            if (IsValid)
-            {
-                errorTree = null;
-                return false;
-            }
-            errorTree = RequestMessageErrorInfo.CreateErrorTree(this, _attachedMessages);
-            return true;
-        }        
-
         /// <inheritdoc />
         public void Validate()
         {
-            Validate(true, true);
-        }        
-        
-        internal virtual void Validate(bool ignoreEditScope, bool validateAttachedMessages)
-        {
-            if (Validator.TryValidateMessage(ignoreEditScope, CreateValidationContext()) && validateAttachedMessages)
+            var oldValue = IsValid;
+            var newValue = !TryGetValidationErrors(false, out _errorTree) && ValidateAttachedMessages();
+
+            if (oldValue != newValue)
             {
-                ValidateAttachedMessages();
-            }           
+                OnIsValidChanged();
+            }
+        }                              
+
+        internal bool ValidateAttachedMessages()
+        {
+            if (_attachedMessages.Count > 0)
+            {
+                foreach (var message in _attachedMessages)
+                {
+                    message.Validate();
+                }
+                return _attachedMessages.All(message => message.IsValid);
+            }
+            return true;
+        }
+
+        /// <inheritdoc />
+        bool IRequestMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
+        {
+            return TryGetValidationErrors(true, out errorTree);
+        }
+
+        internal virtual bool TryGetValidationErrors(bool includeChildErrors, out ValidationErrorTree errorTree)
+        {
+            errorTree = ValidationErrorTree.TryGetValidationErrors(CreateValidationContext());
+            ICollection<ValidationErrorTree> childErrorTrees;
+
+            if (includeChildErrors && TryGetValidationErrors(_attachedMessages, out childErrorTrees))
+            {
+                errorTree = errorTree == null
+                    ? ValidationErrorTree.Merge(GetType(), childErrorTrees)
+                    : ValidationErrorTree.Merge(errorTree, childErrorTrees);
+            }
+            return errorTree != null;
+        }
+
+        internal static bool TryGetValidationErrors(IEnumerable<IRequestMessage> messages, out ICollection<ValidationErrorTree> childErrorTrees)
+        {
+            var childErrorTreeList = new LinkedList<ValidationErrorTree>();
+
+            foreach (var message in messages)
+            {
+                ValidationErrorTree childErrorTree;
+
+                if (message.TryGetValidationErrors(out childErrorTree))
+                {
+                    childErrorTreeList.AddLast(childErrorTree);
+                }
+            }   
+            if (childErrorTreeList.Count == 0)
+            {
+                childErrorTrees = null;
+                return false;
+            }
+            childErrorTrees = childErrorTreeList;
+            return true;
         }        
 
-        internal void ValidateAttachedMessages()
-        {
-            if (_attachedMessages == null)
-            {
-                return;
-            }
-            foreach (var message in _attachedMessages)
-            {
-                message.Validate();
-            }
-        }
-        
         /// <summary>
         /// Creates and returns a <see cref="ValidationContext" /> that is used during validation of this message.
         /// </summary>
@@ -598,12 +606,12 @@ namespace System.ComponentModel
 		    {
 			    return false;
 		    }		
-		    if (IsRequestMessage(typeof(TValue)))
+		    if (IsRequestMessageViewModel(typeof(TValue)))
 		    {
-			    Detach((IRequestMessage) currentValue);
-			    Attach((IRequestMessage) value);
+			    Detach((IRequestMessageViewModel) currentValue);
+			    Attach((IRequestMessageViewModel) value);
 		    }
-            var state = RequestMessageEditScope.GetEditScopeState(this);
+            var state = RequestMessageViewModelEditScope.GetEditScopeState(this);
             var eventArgs = new RequestMessagePropertyChangedEventArgs(propertyName, oldValue, newValue, state);
 
 		    currentValue = value;				
@@ -612,9 +620,9 @@ namespace System.ComponentModel
 		    return true;
 	    }
 
-        internal static bool IsRequestMessage(Type type)
+        internal static bool IsRequestMessageViewModel(Type type)
         {
-            return typeof(IRequestMessage).IsAssignableFrom(type);
+            return typeof(IRequestMessageViewModel).IsAssignableFrom(type);
         }        
 
         #endregion
@@ -630,7 +638,7 @@ namespace System.ComponentModel
         /// An <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking and validation.
         /// </returns>        
         /// <remarks>
-        /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessage" />-type, all values will be treated like child-messages.
+        /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessageViewModel" />-type, all values will be treated like child-messages.
         /// </remarks>
         protected ObservableCollection<TValue> AttachCollection<TValue>()
         {
@@ -663,7 +671,7 @@ namespace System.ComponentModel
         /// <paramref name="values"/> is <c>null</c>.
         /// </exception>
         /// <remarks>
-        /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessage" />-type, all values will be treated like child-messages.
+        /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessageViewModel" />-type, all values will be treated like child-messages.
         /// </remarks>
         protected ObservableCollection<TValue> AttachCollection<TValue>(IEnumerable<TValue> values)
         {
@@ -683,7 +691,7 @@ namespace System.ComponentModel
         /// <paramref name="values"/> is <c>null</c>.
         /// </exception>
         /// <remarks>
-        /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessage" />-type, all values will be treated like child-messages.
+        /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessageViewModel" />-type, all values will be treated like child-messages.
         /// </remarks>
         protected ObservableCollection<TValue> AttachCollectionCopy<TValue>(IEnumerable<TValue> values)
         {
@@ -702,13 +710,14 @@ namespace System.ComponentModel
         /// <returns>
         /// A copy of <paramref name="message"/>, or <c>null</c> if <paramref name="message"/> is <c>null</c>.
         /// </returns>
-        protected T AttachCopy<T>(T message) where T : class, IRequestMessage<T>
+        protected T AttachCopy<T>(T message) where T : class, IRequestMessageViewModel, IRequestMessage<T>
         {
-            if (message == null)
+            var requestMessage = message as IRequestMessage<T>;
+            if (requestMessage == null)
             {
                 return null;
             }
-            return Attach(message.Copy(IsReadOnly));
+            return Attach(requestMessage.Copy(IsReadOnly));
         }
 
         /// <summary>
@@ -719,7 +728,7 @@ namespace System.ComponentModel
         /// <param name="info">The serialization info.</param>
         /// <param name="name">Name of the message to retrieve.</param>
         /// <returns>The attached message.</returns>
-        protected T Attach<T>(SerializationInfo info, string name) where T : class, IRequestMessage
+        protected T Attach<T>(SerializationInfo info, string name) where T : class, IRequestMessageViewModel
         {
             return Attach((T) info.GetValue(name, typeof(T)));
         }
@@ -730,32 +739,32 @@ namespace System.ComponentModel
         /// <typeparam name="T">Type of the message to attach.</typeparam>
         /// <param name="message">The message to attach.</param>
         /// <returns>The specified <paramref name="message"/>.</returns>
-        protected T Attach<T>(T message) where T : class, IRequestMessage
+        protected T Attach<T>(T message) where T : class, IRequestMessageViewModel
         {
-            Attach(message as IRequestMessage);
+            Attach(message as IRequestMessageViewModel);
 
             return message;
         }
 
-        internal void Attach(IRequestMessage message)
+        internal void Attach(IRequestMessageViewModel message)
         {
             if (message != null)
             {
                 message.HasChangesChanged += HandleMessageHasChangesChanged;
                 message.IsValidChanged += HandleMessageIsValidChanged;
 
-                AttachedMessages.AddLast(message);
+                _attachedMessages.AddLast(message);
             }
         }
 
-        internal void Detach(IRequestMessage message)
+        internal void Detach(IRequestMessageViewModel message)
         {
             if (message != null)
             {
                 message.IsValidChanged -= HandleMessageIsValidChanged;
                 message.HasChangesChanged -= HandleMessageHasChangesChanged;
 
-                AttachedMessages.Remove(message);
+                _attachedMessages.Remove(message);
             }
         }
 
@@ -782,7 +791,7 @@ namespace System.ComponentModel
             return string.Format("{0} ({1}, {2})",
                 GetType().Name,
                 IsReadOnly ? "ReadOnly" : (HasChanges ? "Changed" : "Unchanged"),
-                IsValid ? "Valid" : string.Format("Invalid: {0} error(s)", ErrorInfo == null ? 0: ErrorInfo.ErrorCount));            
+                IsValid ? "Valid" : string.Format("Invalid: {0} error(s)", _errorTree == null ? 0 : _errorTree.TotalErrorCount));            
         }        
 
         #endregion

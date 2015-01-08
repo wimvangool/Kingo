@@ -7,13 +7,13 @@ using System.Threading;
 namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a scope in which changes can be made to a <see cref="IRequestMessage" /> that can be rolled back if required.
+    /// Represents a scope in which changes can be made to a <see cref="IRequestMessageViewModel" /> that can be rolled back if required.
     /// </summary>
-    public sealed class RequestMessageEditScope : ITransactionScope
+    public sealed class RequestMessageViewModelEditScope : ITransactionScope
     {
-        private readonly RequestMessageEditScope _parentScope;
-        private readonly IRequestMessage _message;
-        private readonly IRequestMessage _messageBackup;        
+        private readonly RequestMessageViewModelEditScope _parentScope;
+        private readonly IRequestMessageViewModel _message;
+        private readonly IRequestMessageViewModel _messageBackup;        
         private readonly bool _suppressValidation;
         private readonly object _state;
 
@@ -22,7 +22,7 @@ namespace System.ComponentModel
         private bool _hasCompleted;
         private bool _isDisposed;        
 
-        private RequestMessageEditScope(IRequestMessage message, IRequestMessage messageBackup, bool suppressValidation, object state)
+        private RequestMessageViewModelEditScope(IRequestMessageViewModel message, IRequestMessageViewModel messageBackup, bool suppressValidation, object state)
         {
             _message = message;
             _message.PropertyChanged += HandleMessagePropertyChanged;
@@ -33,7 +33,7 @@ namespace System.ComponentModel
             _state = state;
         }
 
-        private RequestMessageEditScope(RequestMessageEditScope parentScope, IRequestMessage messageBackup, bool suppressValidation, object state)
+        private RequestMessageViewModelEditScope(RequestMessageViewModelEditScope parentScope, IRequestMessageViewModel messageBackup, bool suppressValidation, object state)
         {
             _parentScope = parentScope;
             _message = parentScope._message;
@@ -55,17 +55,17 @@ namespace System.ComponentModel
             _changedProperties.Add(propertyName);            
         }
 
-        private RequestMessageEditScope CreateNestedScope(bool suppressValidation, object state)
+        private RequestMessageViewModelEditScope CreateNestedScope(bool suppressValidation, object state)
         {
-            return new RequestMessageEditScope(this, _message.Copy(true), suppressValidation, state); ;
+            return new RequestMessageViewModelEditScope(this, _message.Copy(true), suppressValidation, state); ;
         }
 
-        private RequestMessageEditScope ParentScope
+        private RequestMessageViewModelEditScope ParentScope
         {
             get { return _parentScope; }
         }
 
-        private IRequestMessage Message
+        private IRequestMessageViewModel Message
         {
             get { return _message; }
         }
@@ -73,7 +73,7 @@ namespace System.ComponentModel
         /// <summary>
         /// The message that is used as a backup to rollback any changes if so required.
         /// </summary>
-        public IRequestMessage MessageBackup
+        public IRequestMessageViewModel MessageBackup
         {
             get { return _messageBackup; }
         }        
@@ -98,7 +98,7 @@ namespace System.ComponentModel
         {
             if (_isDisposed)
             {
-                throw new ObjectDisposedException(typeof(RequestMessageEditScope).Name);
+                throw new ObjectDisposedException(typeof(RequestMessageViewModelEditScope).Name);
             }
             if (_hasCompleted)
             {
@@ -144,7 +144,7 @@ namespace System.ComponentModel
 
         private bool IsNotCurrentScope()
         {
-            RequestMessageEditScope editScope;
+            RequestMessageViewModelEditScope editScope;
 
             if (MessagesInEditMode.TryGetValue(Message, out editScope))
             {
@@ -203,31 +203,31 @@ namespace System.ComponentModel
 
         #region [====== BeginEdit, CancelEdit & EndEdit ======]
 
-        private static readonly ThreadLocal<Dictionary<IRequestMessage, RequestMessageEditScope>> _MessagesInEditMode;
+        private static readonly ThreadLocal<Dictionary<IRequestMessageViewModel, RequestMessageViewModelEditScope>> _MessagesInEditMode;
 
-        static RequestMessageEditScope()
+        static RequestMessageViewModelEditScope()
         {
-            _MessagesInEditMode = new ThreadLocal<Dictionary<IRequestMessage, RequestMessageEditScope>>(CreateScopeDictionary);
+            _MessagesInEditMode = new ThreadLocal<Dictionary<IRequestMessageViewModel, RequestMessageViewModelEditScope>>(CreateScopeDictionary);
         }   
      
-        private static Dictionary<IRequestMessage, RequestMessageEditScope> CreateScopeDictionary()
+        private static Dictionary<IRequestMessageViewModel, RequestMessageViewModelEditScope> CreateScopeDictionary()
         {
-            return new Dictionary<IRequestMessage, RequestMessageEditScope>();
+            return new Dictionary<IRequestMessageViewModel, RequestMessageViewModelEditScope>();
         }
 
-        private static Dictionary<IRequestMessage, RequestMessageEditScope> MessagesInEditMode
+        private static Dictionary<IRequestMessageViewModel, RequestMessageViewModelEditScope> MessagesInEditMode
         {
             get { return _MessagesInEditMode.Value; }
         }
 
-        internal static bool IsInEditMode(IRequestMessage message)
+        internal static bool IsInEditMode(IRequestMessageViewModel message)
         {
             return MessagesInEditMode.ContainsKey(message);
         }
 
-        internal static object GetEditScopeState(IRequestMessage message)
+        internal static object GetEditScopeState(IRequestMessageViewModel message)
         {
-            RequestMessageEditScope editScope;
+            RequestMessageViewModelEditScope editScope;
 
             if (MessagesInEditMode.TryGetValue(message, out editScope))
             {
@@ -236,9 +236,9 @@ namespace System.ComponentModel
             return null;
         }
 
-        internal static bool IsValidationSuppressed(IRequestMessage message)
+        internal static bool IsValidationSuppressed(IRequestMessageViewModel message)
         {
-            RequestMessageEditScope editScope;
+            RequestMessageViewModelEditScope editScope;
 
             if (MessagesInEditMode.TryGetValue(message, out editScope))
             {
@@ -247,14 +247,14 @@ namespace System.ComponentModel
             return false;
         }
 
-        internal static RequestMessageEditScope BeginEdit(IRequestMessage message)
+        internal static RequestMessageViewModelEditScope BeginEdit(IRequestMessageViewModel message)
         {
             return BeginEdit(message, false, null, false);
         }        
 
-        internal static RequestMessageEditScope BeginEdit(IRequestMessage message, bool suppressValidation, object state, bool createNewScope)
+        internal static RequestMessageViewModelEditScope BeginEdit(IRequestMessageViewModel message, bool suppressValidation, object state, bool createNewScope)
         {
-            RequestMessageEditScope editScope;
+            RequestMessageViewModelEditScope editScope;
 
             if (MessagesInEditMode.TryGetValue(message, out editScope))
             {
@@ -265,14 +265,14 @@ namespace System.ComponentModel
             }
             else
             {
-                MessagesInEditMode.Add(message, editScope = new RequestMessageEditScope(message, message.Copy(true), suppressValidation, state));
+                MessagesInEditMode.Add(message, editScope = new RequestMessageViewModelEditScope(message, message.Copy(true), suppressValidation, state));
             }
             return editScope;
         }
 
-        internal static void CancelEdit(IRequestMessage message)
+        internal static void CancelEdit(IRequestMessageViewModel message)
         {
-            RequestMessageEditScope editScope;
+            RequestMessageViewModelEditScope editScope;
 
             if (MessagesInEditMode.TryGetValue(message, out editScope))
             {
@@ -283,9 +283,9 @@ namespace System.ComponentModel
             }
         }
 
-        internal static void EndEdit(IRequestMessage message)
+        internal static void EndEdit(IRequestMessageViewModel message)
         {
-            RequestMessageEditScope editScope;
+            RequestMessageViewModelEditScope editScope;
 
             if (MessagesInEditMode.TryGetValue(message, out editScope))
             {                
@@ -295,7 +295,7 @@ namespace System.ComponentModel
             }
         }
 
-        private static void EndScope(RequestMessageEditScope editScope)
+        private static void EndScope(RequestMessageViewModelEditScope editScope)
         {
             if (editScope.ParentScope == null)
             {

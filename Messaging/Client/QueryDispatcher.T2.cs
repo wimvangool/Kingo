@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace System.ComponentModel.Client
 {
     /// <summary>
-    /// Represents a query that contains a <see cref="IRequestMessage">message</see> that serves
+    /// Represents a query that contains a <see cref="IRequestMessageViewModel">message</see> that serves
     /// as it's execution-parameter.
     /// </summary>
     /// <typeparam name="TMessageIn">Type of the message that serves as the execution-parameter.</typeparam>

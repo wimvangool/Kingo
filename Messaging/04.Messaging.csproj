@@ -69,16 +69,17 @@
     <Compile Include="IMessageValidator.T1.cs" />
     <Compile Include="IRequestMessage.cs" />
     <Compile Include="IRequestMessage.T1.cs" />
+    <Compile Include="IRequestMessageViewModel.cs" />
     <Compile Include="ITransactionScope.cs" />
     <Compile Include="Message.T1.cs" />
     <Compile Include="MessageDeniedException.cs" />
     <Compile Include="RequestMessageAttachedCollection.T1.cs" />
     <Compile Include="FunctionalException.cs" />
     <Compile Include="ReadOnlyDictionary.T2.cs" />
-    <Compile Include="RequestMessageEditScope.cs" />
-    <Compile Include="MessageErrorTree.cs" />
-    <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
     <Compile Include="RequestMessageValidator.T1.cs" />
+    <Compile Include="RequestMessageViewModelEditScope.cs" />
+    <Compile Include="ValidationErrorTree.cs" />
+    <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -171,9 +172,8 @@
     <Compile Include="INotifyHasChanges.cs" />
     <Compile Include="INotifyIsValid.cs" />
     <Compile Include="IMessage.T1.cs" />
-    <Compile Include="RequestMessage.T1.cs" />
+    <Compile Include="RequestMessageViewModel.T1.cs" />
     <Compile Include="PropertyChangedOption.cs" />
-    <Compile Include="RequestMessageErrorInfo.cs" />
     <Compile Include="DataAnnotations\ConstraintAttribute.cs" />
     <Compile Include="DataAnnotations\RequestMessageLabelProvider.cs" />
     <Compile Include="PropertyChangedBase.cs" />

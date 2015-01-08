@@ -13,6 +13,6 @@
         /// If this method returns <c>true</c>, this parameter will contain all the validation-errors.
         /// </param>
         /// <returns><c>true</c> if any errors were found during validation; otherwise <c>false</c>.</returns>
-        bool IsNotValid(TMessage message, out MessageErrorTree errorTree);
+        bool TryGetValidationErrors(TMessage message, out ValidationErrorTree errorTree);
     }
 }

@@ -6,11 +6,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel
 {
     [TestClass]
-    public sealed class RequestMessageIsNotValidTest
+    public sealed class RequestMessageTryGetValidationErrorsTest
     {
         #region [====== ParentMessage ======]
 
-        private sealed class ParentMessage : RequestMessage<ParentMessage>
+        private sealed class ParentMessage : RequestMessageViewModel<ParentMessage>
         {
             private readonly ObservableCollection<ChildMessage> _childMessages;            
 
@@ -71,7 +71,7 @@ namespace System.ComponentModel
 
         #region [====== ChildMessage ======]
 
-        private sealed class ChildMessage : RequestMessage<ChildMessage>
+        private sealed class ChildMessage : RequestMessageViewModel<ChildMessage>
         {
             public ChildMessage() { }
 
@@ -108,25 +108,24 @@ namespace System.ComponentModel
         #endregion
 
         [TestMethod]
-        public void IsNotValid_ReturnsFalse_IfMessageIsValid()
+        public void TryGetValidationErrors_ReturnsFalse_IfMessageIsValid()
         {
             var message = new ParentMessage(1);
-            var validator = message as IMessageValidator<ParentMessage>;
-            MessageErrorTree errorTree;
+            var validator = new RequestMessageValidator<ParentMessage>();
+            ValidationErrorTree errorTree;
 
-            Assert.IsFalse(validator.IsNotValid(message, out errorTree));
-            Assert.IsNull(errorTree);
-            Assert.IsTrue(message.IsValid);
+            Assert.IsFalse(validator.TryGetValidationErrors(message, out errorTree));
+            Assert.IsNull(errorTree);            
         }
 
         [TestMethod]
-        public void IsNotValid_ReturnsTrue_IfMessagePropertyIsNotValid()
+        public void TryGetValidationErrors_ReturnsTrue_IfMessagePropertyTryGetValidationErrors()
         {
             var message = new ParentMessage(0);
-            var validator = message as IMessageValidator<ParentMessage>;
-            MessageErrorTree errorTree;
+            var validator = new RequestMessageValidator<ParentMessage>();
+            ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.IsNotValid(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(1, errorTree.TotalErrorCount);
@@ -134,16 +133,16 @@ namespace System.ComponentModel
         }     
    
         [TestMethod]
-        public void IsNotValid_ReturnsTrue_IfChildMessageIsNotValid()
+        public void TryGetValidationErrors_ReturnsTrue_IfChildMessageTryGetValidationErrors()
         {
             var message = new ParentMessage(1)
             {
                 Child = new ChildMessage()
             };
-            var validator = message as IMessageValidator<ParentMessage>;
-            MessageErrorTree errorTree;
+            var validator = new RequestMessageValidator<ParentMessage>();
+            ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.IsNotValid(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(1, errorTree.TotalErrorCount);
@@ -157,16 +156,16 @@ namespace System.ComponentModel
         }
 
         [TestMethod]
-        public void IsNotValid_ReturnsTrue_IfChildMessagesInCollectionAreNotValid()
+        public void TryGetValidationErrors_ReturnsTrue_IfChildMessagesInCollectionAreNotValid()
         {
             var message = new ParentMessage(1);
             message.ChildMessages.Add(new ChildMessage());
             message.ChildMessages.Add(new ChildMessage());
 
-            var validator = message as IMessageValidator<ParentMessage>;
-            MessageErrorTree errorTree;
+            var validator = new RequestMessageValidator<ParentMessage>();
+            ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.IsNotValid(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(2, errorTree.TotalErrorCount);
@@ -194,7 +193,7 @@ namespace System.ComponentModel
         }
 
         [TestMethod]
-        public void IsNotValid_ReturnsTrue_IfAnyMessageIsNotValid()
+        public void TryGetValidationErrors_ReturnsTrue_IfAnyMessageTryGetValidationErrors()
         {
             var message = new ParentMessage(0)
             {
@@ -204,10 +203,10 @@ namespace System.ComponentModel
             message.ChildMessages.Add(new ChildMessage(1));
             message.ChildMessages.Add(new ChildMessage());
 
-            var validator = message as IMessageValidator<ParentMessage>;
-            MessageErrorTree errorTree;
+            var validator = new RequestMessageValidator<ParentMessage>();
+            ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.IsNotValid(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(3, errorTree.TotalErrorCount);

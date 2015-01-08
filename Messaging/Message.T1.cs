@@ -6,6 +6,7 @@ namespace System.ComponentModel
     /// <summary>
     /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
+    [Serializable]
     public abstract class Message<TMessage> : IMessage<TMessage> where TMessage : Message<TMessage>
     {
         IMessage IMessage.Copy()

@@ -8,7 +8,7 @@ namespace System.ComponentModel
     {
         #region [====== ParentMessage ======]
 
-        private sealed class ParentMessage : RequestMessage<ParentMessage>
+        private sealed class ParentMessage : RequestMessageViewModel<ParentMessage>
         {
             public ParentMessage() { }
 
@@ -57,7 +57,7 @@ namespace System.ComponentModel
 
         #region [====== ChildMessage ======]
 
-        private sealed class ChildMessage : RequestMessage<ChildMessage>
+        private sealed class ChildMessage : RequestMessageViewModel<ChildMessage>
         {
             public ChildMessage() { }
 

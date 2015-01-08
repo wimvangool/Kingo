@@ -5,9 +5,7 @@
     /// </summary>    
     /// <typeparam name="TMessageIn">Type of the messages that go into the pipeline.</typeparam>
     /// <typeparam name="TMessageOut">Type of the messages that come out of the pipeline.</typeparam>
-    public interface IQueryPipelineFactory<TMessageIn, TMessageOut>
-        where TMessageIn : class, IRequestMessage<TMessageIn>
-        where TMessageOut : class, IMessage<TMessageOut>
+    public interface IQueryPipelineFactory<TMessageIn, TMessageOut> where TMessageIn : class        
     {
         /// <summary>
         /// Creates and returns a pipeline of <see cref="IQuery{TMessageIn, TMessageOut}">Queries</see>

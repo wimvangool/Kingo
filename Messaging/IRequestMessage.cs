@@ -1,9 +1,14 @@
-﻿namespace System.ComponentModel
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a request-message that supports change-tracking and validation.
+    /// Represent a message that can validate itself.
     /// </summary>
-    public interface IRequestMessage : INotifyHasChanges, INotifyIsValid, IDataErrorInfo        
+    public interface IRequestMessage : IMessage
     {
         /// <summary>
         /// Creates and returns a copy of this message.
@@ -15,17 +20,7 @@
         /// even if this message is marked as changed. If the copy is readonly, the HasChanges-flag cannot be
         /// set to <c>true</c>.
         /// </returns>
-        IRequestMessage Copy(bool makeReadOnly); 
-
-        /// <summary>
-        /// Marks this message as unchanged.
-        /// </summary>
-        void AcceptChanges();
-
-        /// <summary>
-        /// Validates all values of this message and then updates the validation-state.
-        /// </summary>
-        void Validate();
+        IRequestMessage Copy(bool makeReadOnly);
 
         /// <summary>
         /// Validates all values of this message and returns whether or not any errors were found.
@@ -34,6 +29,6 @@
         /// If this method returns <c>true</c>, this parameter will contain all the validation-errors.
         /// </param>
         /// <returns><c>true</c> if any errors were found during validation; otherwise <c>false</c>.</returns>
-        bool IsNotValid(out MessageErrorTree errorTree);
+        bool TryGetValidationErrors(out ValidationErrorTree errorTree);
     }
 }

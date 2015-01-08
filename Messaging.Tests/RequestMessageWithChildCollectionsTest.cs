@@ -9,7 +9,7 @@ namespace System.ComponentModel
     {
         #region [====== ParentMessage ======]
 
-        private sealed class ParentMessage : RequestMessage<ParentMessage>
+        private sealed class ParentMessage : RequestMessageViewModel<ParentMessage>
         {
             private readonly ObservableCollection<int> _integers;
             private readonly ObservableCollection<ChildMessage> _childMessages;
@@ -46,7 +46,7 @@ namespace System.ComponentModel
 
         #region [====== ChildMessage ======]
 
-        private sealed class ChildMessage : RequestMessage<ChildMessage>
+        private sealed class ChildMessage : RequestMessageViewModel<ChildMessage>
         {
             public ChildMessage() { }
 

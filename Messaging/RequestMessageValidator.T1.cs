@@ -1,82 +1,24 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace System.ComponentModel
 {
-    internal sealed class RequestMessageValidator<TMessage> : IServiceProvider where TMessage : RequestMessage<TMessage>
+    /// <summary>
+    /// Represent a <see cref="IMessageValidator{TMessage}" /> for a specific <see cref="IRequestMessage{TMessage}">message</see>.
+    /// </summary>
+    /// <typeparam name="TMessage">Type of the message to validate.</typeparam>
+    public class RequestMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class, IRequestMessage<TMessage>
     {
-        private readonly RequestMessage<TMessage> _requestMessage;
-        private readonly Dictionary<Type, object> _services;        
-        private RequestMessageErrorInfo _errorInfo;
-
-        internal RequestMessageValidator(RequestMessage<TMessage> requestMessage)
+        /// <inheritdoc />
+        public virtual bool TryGetValidationErrors(TMessage message, out ValidationErrorTree errorTree)
         {
-            _requestMessage = requestMessage;
-            _services = new Dictionary<Type, object>();           
-            _errorInfo = RequestMessageErrorInfo.NotYetValidated;
-        }
-
-        internal RequestMessageValidator(RequestMessage<TMessage> requestMessage, RequestMessageValidator<TMessage> validator)
-        {
-            _requestMessage = requestMessage;
-            _services = new Dictionary<Type, object>(validator._services);            
-            _errorInfo = validator._errorInfo == null ? null : new RequestMessageErrorInfo(validator._errorInfo);
-        }        
-
-        #region [====== DataErrorInfo ======]
-
-        internal RequestMessageErrorInfo ErrorInfo
-        {
-            get { return _errorInfo; }
-            set
+            if (message == null)
             {
-                var oldValue = _requestMessage.IsValid;
-
-                _errorInfo = value;
-
-                var newValue = _requestMessage.IsValid;
-
-                if (oldValue != newValue)
-                {
-                    _requestMessage.OnIsValidChanged();
-                }
+                throw new ArgumentNullException("message");
             }
+            return message.TryGetValidationErrors(out errorTree);
         }
-
-        #endregion
-
-        #region [====== ServiceProvider ======]
-
-        internal void Add(Type serviceType, object service)
-        {
-            _services.Add(serviceType, service);
-        }
-
-        public object GetService(Type serviceType)
-        {
-            object service;
-
-            if (_services.TryGetValue(serviceType, out service))
-            {
-                return service;
-            }
-            return null;
-        }
-
-        #endregion
-
-        #region [====== Validation ======]
-
-        internal bool TryValidateMessage(bool ignoreEditScope, ValidationContext validationContext)
-        {
-            if (ignoreEditScope || !RequestMessageEditScope.IsValidationSuppressed(_requestMessage))
-            {
-                ErrorInfo = RequestMessageErrorInfo.CreateErrorInfo(validationContext);
-                return true;
-            }
-            return false;
-        }
-
-        #endregion
     }
 }

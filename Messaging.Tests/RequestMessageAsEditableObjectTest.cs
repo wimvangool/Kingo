@@ -8,7 +8,7 @@ namespace System.ComponentModel
     {
         #region [====== TestMessage ======]
 
-        private sealed class TestMessage : RequestMessage<TestMessage>
+        private sealed class TestMessage : RequestMessageViewModel<TestMessage>
         {
             public TestMessage() { }
 
