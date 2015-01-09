@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace System.ComponentModel
 {
@@ -7,8 +9,44 @@ namespace System.ComponentModel
     /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
     [Serializable]
-    public abstract class Message<TMessage> : IMessage<TMessage> where TMessage : Message<TMessage>
+    public abstract class Message<TMessage> : IMessage<TMessage>, IExtensibleDataObject where TMessage : Message<TMessage>
     {
+        private ExtensionDataObject _extensionData;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Message{TMessage}" /> class.
+        /// </summary>
+        protected Message() { }
+
+        /// <summary>
+        /// Copy constructor.
+        /// </summary>
+        /// <param name="message">The message to copy.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        protected Message(TMessage message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            _extensionData = message._extensionData;
+        }
+
+        #region [====== ExtensibleObject ======]
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        ExtensionDataObject IExtensibleDataObject.ExtensionData
+        {
+            get { return _extensionData; }
+            set { _extensionData = value; }
+        }
+
+        #endregion
+
+        #region [====== Copy ======]
+
         IMessage IMessage.Copy()
         {
             return Copy();
@@ -47,6 +85,8 @@ namespace System.ComponentModel
         public static T Copy<T>(T message) where T : class, IMessage<T>
         {
             return message == null ? null : message.Copy();
-        }        
+        }
+
+        #endregion
     }
 }

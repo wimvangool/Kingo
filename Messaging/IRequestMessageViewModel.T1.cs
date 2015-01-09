@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel
+﻿namespace System.ComponentModel
 {
     /// <summary>
-    /// Represent a message that can validate itself.
+    /// Represents a request-message that supports change-tracking and validation.
     /// </summary>
-    public interface IRequestMessage<out TMessage> : IRequestMessage, IMessage<TMessage>
-        where TMessage : class, IRequestMessage<TMessage>
+    /// <typeparam name="TMessage">Type of the implemented message.</typeparam>
+    public interface IRequestMessageViewModel<out TMessage> : IMessage<TMessage>, IRequestMessageViewModel
+        where TMessage : class, IRequestMessageViewModel<TMessage>
     {
         /// <summary>
         /// Creates and returns a copy of this message.
@@ -21,6 +17,6 @@ namespace System.ComponentModel
         /// even if this message is marked as changed. If the copy is readonly, the HasChanges-flag cannot be
         /// set to <c>true</c>.
         /// </returns>
-        new TMessage Copy(bool makeReadOnly);
+        new TMessage Copy(bool makeReadOnly); 
     }
 }

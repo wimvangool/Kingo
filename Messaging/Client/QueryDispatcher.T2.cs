@@ -11,7 +11,7 @@ namespace System.ComponentModel.Client
     /// <typeparam name="TMessageIn">Type of the message that serves as the execution-parameter.</typeparam>
     /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
     public abstract class QueryDispatcher<TMessageIn, TMessageOut> : QueryDispatcherBase<TMessageOut>
-        where TMessageIn : class, IRequestMessage<TMessageIn>
+        where TMessageIn : class, IMessage<TMessageIn>
         where TMessageOut : class, IMessage<TMessageOut>
     {
         private readonly TMessageIn _message;        
@@ -43,7 +43,7 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         public override TMessageOut Execute(Guid requestId)
         {                        
-            var message = Message.Copy(true);
+            var message = Message.Copy();
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
             TMessageOut result;
@@ -65,7 +65,7 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token)
         {                        
-            var message = Message.Copy(true);
+            var message = Message.Copy();
             var context = SynchronizationContext.Current;
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));

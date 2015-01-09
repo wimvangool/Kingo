@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Resources;
-using System.Data.Odbc;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -17,8 +16,7 @@ namespace System.ComponentModel
     /// </summary>
     [Serializable]
     public abstract class RequestMessageViewModel<TMessage> : PropertyChangedBase,
-                                                              IRequestMessage<TMessage>,
-                                                              IRequestMessageViewModel,
+                                                              IRequestMessageViewModel<TMessage>,
                                                               IEditableObject,
                                                               IServiceProvider,
                                                               IExtensibleDataObject,
@@ -30,6 +28,7 @@ namespace System.ComponentModel
 
         private readonly Dictionary<Type, object> _services;
         private ValidationErrorTree _errorTree;
+        private ExtensionDataObject _extensionData;
 
         private readonly bool _isReadOnly;                     
         private bool _hasChanges;       
@@ -67,7 +66,8 @@ namespace System.ComponentModel
             }
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>(message._services);
-            _errorTree = ValidationErrorTree.NotYetValidated(GetType());                   
+            _errorTree = ValidationErrorTree.NotYetValidated(GetType());
+            _extensionData = message._extensionData;      
             _isReadOnly = makeReadOnly;                         
         }
 
@@ -81,7 +81,7 @@ namespace System.ComponentModel
         {
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>();
-            _errorTree = ValidationErrorTree.NotYetValidated(GetType());
+            _errorTree = ValidationErrorTree.NotYetValidated(GetType());            
         }                
 
         /// <summary>
@@ -92,9 +92,7 @@ namespace System.ComponentModel
             get { return _isReadOnly; }
         }
 
-        #region [====== ExtensibleObject ======]
-
-        private ExtensionDataObject _extensionData;
+        #region [====== ExtensibleObject ======]        
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ExtensionDataObject IExtensibleDataObject.ExtensionData
@@ -136,14 +134,14 @@ namespace System.ComponentModel
         TMessage IMessage<TMessage>.Copy()
         {
             return Copy(true);
-        }
-
-        IRequestMessage IRequestMessage.Copy(bool makeReadOnly)
+        }  
+        
+        IRequestMessageViewModel IRequestMessageViewModel.Copy(bool makeReadOnly)
         {
             return Copy(makeReadOnly);
-        }        
+        }
 
-        IRequestMessageViewModel IRequestMessageViewModel.Copy(bool makeReadOnly)
+        TMessage IRequestMessageViewModel<TMessage>.Copy(bool makeReadOnly)
         {
             return Copy(makeReadOnly);
         }
@@ -317,11 +315,7 @@ namespace System.ComponentModel
         public void AcceptChanges()
         {
             HasChanges = false;
-
-            if (_attachedMessages == null)
-            {
-                return;
-            }
+            
             foreach (var message in _attachedMessages)
             {
                 message.AcceptChanges();
@@ -710,14 +704,13 @@ namespace System.ComponentModel
         /// <returns>
         /// A copy of <paramref name="message"/>, or <c>null</c> if <paramref name="message"/> is <c>null</c>.
         /// </returns>
-        protected T AttachCopy<T>(T message) where T : class, IRequestMessageViewModel, IRequestMessage<T>
-        {
-            var requestMessage = message as IRequestMessage<T>;
-            if (requestMessage == null)
+        protected T AttachCopy<T>(T message) where T : class, IRequestMessageViewModel<T>
+        {            
+            if (message == null)
             {
                 return null;
             }
-            return Attach(requestMessage.Copy(IsReadOnly));
+            return Attach(message.Copy(IsReadOnly));
         }
 
         /// <summary>

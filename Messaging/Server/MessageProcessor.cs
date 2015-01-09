@@ -67,7 +67,7 @@ namespace System.ComponentModel.Server
         #region [====== QueryDispatcherPipeline ======]
 
         internal sealed class QueryDispatcherPipeline<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn>
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             private readonly IQuery<TMessageIn, TMessageOut> _query;
             private readonly MessageProcessor _processor;
@@ -185,37 +185,37 @@ namespace System.ComponentModel.Server
         #region [====== Commands ======]
 
         /// <inheritdoc />      
-        public Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>
+        public Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             return ExecuteAsync(message, NullHandler<TCommand>(), null);
         }
 
         /// <inheritdoc />              
-        public Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        public Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             return ExecuteAsync(message, NullHandler<TCommand>(), token);
         }
 
         /// <inheritdoc />        
-        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             return ExecuteAsync(message, (ActionDecorator<TCommand>) handler, null);
         }
 
         /// <inheritdoc />                
-        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             return ExecuteAsync(message, (ActionDecorator<TCommand>) handler, token);
         }
 
         /// <inheritdoc />        
-        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             return ExecuteAsync(message, handler, null);
         }
 
         /// <inheritdoc />              
-        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             if (message == null)
             {
@@ -225,37 +225,37 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message) where TCommand : class, IRequestMessage<TCommand>
+        public void Execute<TCommand>(TCommand message) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             Handle(message, new RequestMessageValidator<TCommand>());
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        public void Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             Handle(message, new RequestMessageValidator<TCommand>(), token);
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        public void Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             Handle(message, new RequestMessageValidator<TCommand>(), handler);
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        public void Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             Handle(message, new RequestMessageValidator<TCommand>(), handler, token);
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IRequestMessage<TCommand>
+        public void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             Handle(message, new RequestMessageValidator<TCommand>(), handler);
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IRequestMessage<TCommand>
+        public void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
         {
             Handle(message, new RequestMessageValidator<TCommand>(), handler, token);
         }
@@ -266,28 +266,28 @@ namespace System.ComponentModel.Server
 
         /// <inheritdoc />       
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>           
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage          
         {
             return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, null);
         }
 
         /// <inheritdoc />       
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
         }
 
         /// <inheritdoc />     
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             return ExecuteAsync(message, query, null);
         }
 
         /// <inheritdoc />     
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             if (message == null)
             {
@@ -298,28 +298,28 @@ namespace System.ComponentModel.Server
 
         /// <inheritdoc />
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, null);
         }
 
         /// <inheritdoc />
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
         }
 
         /// <inheritdoc />
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             return Execute(message, query, null);
         }
 
         /// <inheritdoc />
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IRequestMessage<TMessageIn>           
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage          
         {
             if (message == null)
             {
@@ -507,7 +507,7 @@ namespace System.ComponentModel.Server
         /// The default implementation simply returns the specified <paramref name="query"/>.
         /// </remarks>
         protected virtual IQuery<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IRequestMessage<TMessageIn>            
+            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
         {
             return query;
         }        

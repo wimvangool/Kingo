@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel
+﻿namespace System.ComponentModel
 {
     /// <summary>
-    /// Represent a <see cref="IMessageValidator{TMessage}" /> for a specific <see cref="IRequestMessage{TMessage}">message</see>.
+    /// Represent a <see cref="IMessageValidator{TMessage}" /> for a specific <see cref="IRequestMessage">message</see>.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to validate.</typeparam>
-    public class RequestMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class, IRequestMessage<TMessage>
+    public class RequestMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class, IRequestMessage
     {
         /// <inheritdoc />
         public virtual bool TryGetValidationErrors(TMessage message, out ValidationErrorTree errorTree)
