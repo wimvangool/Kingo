@@ -21,7 +21,7 @@
         /// </exception>
         protected RequestMessage(TMessage message) : base(message) { }
 
-        #region [====== RequestMessage ======]
+        #region [====== Validation ======]
 
         bool IRequestMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
         {
@@ -35,7 +35,20 @@
         /// If this method returns <c>true</c>, this parameter will contain all the validation-errors.
         /// </param>
         /// <returns><c>true</c> if any errors were found during validation; otherwise <c>false</c>.</returns>
-        protected abstract bool TryGetValidationErrors(out ValidationErrorTree errorTree);
+        protected virtual bool TryGetValidationErrors(out ValidationErrorTree errorTree)
+        {
+            return Validate().TryBuildErrorTree(out errorTree);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="ValidationErrorTreeBuilder" /> for this message
+        /// containing all validation errors.
+        /// </summary>
+        /// <returns>A new <see cref="ValidationErrorTreeBuilder" /> for this message.</returns>
+        protected virtual ValidationErrorTreeBuilder Validate()
+        {
+            return new ValidationErrorTreeBuilder(GetType());
+        }
 
         #endregion
     }

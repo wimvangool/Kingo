@@ -87,6 +87,6 @@ namespace System.ComponentModel
             return message == null ? null : message.Copy();
         }
 
-        #endregion
+        #endregion        
     }
 }

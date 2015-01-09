@@ -197,6 +197,7 @@
     <Compile Include="Server\UnitOfWorkItem.cs" />
     <Compile Include="DataAnnotations\RequiredConstraintAttribute.cs" />
     <Compile Include="DataAnnotations\StringConstraint.cs" />
+    <Compile Include="ValidationErrorTreeBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
