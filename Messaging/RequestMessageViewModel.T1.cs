@@ -126,11 +126,6 @@ namespace System.ComponentModel
 
         #region [====== Message Copying ======]
 
-        IMessage IMessage.Copy()
-        {
-            return Copy(true);
-        }
-
         TMessage IMessage<TMessage>.Copy()
         {
             return Copy(true);
@@ -390,7 +385,15 @@ namespace System.ComponentModel
 
         #endregion        
 
-        #region [====== Validation ======]
+        #region [====== Validation ======]        
+
+        private sealed class DefaultValidator<T> : AutomaticMessageValidator<T> where T : RequestMessageViewModel<T>
+        {
+            protected override ValidationContext CreateValidationContext(T message)
+            {
+                return message.CreateValidationContext();
+            }
+        }
 
         string IDataErrorInfo.this[string columnName]
         {
@@ -429,8 +432,9 @@ namespace System.ComponentModel
         /// <inheritdoc />
         public void Validate()
         {
+            var validator = CreateValidator();
             var oldValue = IsValid;
-            var newValue = !TryGetValidationErrors(false, out _errorTree) && ValidateAttachedMessages();
+            var newValue = !validator.TryGetValidationErrors((TMessage) this, out _errorTree) && ValidateAttachedMessages();
 
             if (oldValue != newValue)
             {
@@ -451,15 +455,17 @@ namespace System.ComponentModel
             return true;
         }
 
-        /// <inheritdoc />
-        bool IRequestMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
+        bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
         {
             return TryGetValidationErrors(true, out errorTree);
         }
 
         internal virtual bool TryGetValidationErrors(bool includeChildErrors, out ValidationErrorTree errorTree)
-        {
-            errorTree = ValidationErrorTree.TryGetValidationErrors(CreateValidationContext());
+        {            
+            // First, we validate this message.
+            CreateValidator().TryGetValidationErrors((TMessage) this, out errorTree);
+
+            // Second, if required, we validate all children and merge all errors into a single ValidationErrorTree.
             ICollection<ValidationErrorTree> childErrorTrees;
 
             if (includeChildErrors && TryGetValidationErrors(_attachedMessages, out childErrorTrees))
@@ -471,7 +477,7 @@ namespace System.ComponentModel
             return errorTree != null;
         }
 
-        internal static bool TryGetValidationErrors(IEnumerable<IRequestMessage> messages, out ICollection<ValidationErrorTree> childErrorTrees)
+        internal static bool TryGetValidationErrors(IEnumerable<IMessage> messages, out ICollection<ValidationErrorTree> childErrorTrees)
         {
             var childErrorTreeList = new LinkedList<ValidationErrorTree>();
 
@@ -483,7 +489,7 @@ namespace System.ComponentModel
                 {
                     childErrorTreeList.AddLast(childErrorTree);
                 }
-            }   
+            }
             if (childErrorTreeList.Count == 0)
             {
                 childErrorTrees = null;
@@ -491,7 +497,16 @@ namespace System.ComponentModel
             }
             childErrorTrees = childErrorTreeList;
             return true;
-        }        
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.
+        /// </summary>
+        /// <returns>A new <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.</returns>
+        protected virtual IMessageValidator<TMessage> CreateValidator()
+        {
+            return new DefaultValidator<TMessage>();
+        }
 
         /// <summary>
         /// Creates and returns a <see cref="ValidationContext" /> that is used during validation of this message.
@@ -501,7 +516,7 @@ namespace System.ComponentModel
         /// registered through one the message's <see cref="RegisterService{T}" /> methods.
         /// </returns>
         /// <remarks>
-        /// A subclass can override this method to return a more specific <see cref="ValidationContext" /> is required.
+        /// A subclass can override this method to return a more specific <see cref="ValidationContext" /> if required.
         /// This may be necessary when a custom <see cref="IServiceProvider">service provider</see> is needed to
         /// perform validation on this message.
         /// </remarks>

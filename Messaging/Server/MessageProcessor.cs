@@ -66,8 +66,7 @@ namespace System.ComponentModel.Server
 
         #region [====== QueryDispatcherPipeline ======]
 
-        internal sealed class QueryDispatcherPipeline<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn>
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
+        internal sealed class QueryDispatcherPipeline<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn> where TMessageIn : class, IMessage<TMessageIn>         
         {
             private readonly IQuery<TMessageIn, TMessageOut> _query;
             private readonly MessageProcessor _processor;
@@ -170,265 +169,50 @@ namespace System.ComponentModel.Server
             if (pointer == null)
             {
                 return "Idle on " + Thread.CurrentThread.Name;
-            }
-            if (pointer.PointsToA(typeof(IRequestMessage)))
-            {
-                return string.Format("Executing {0} on {1}",
-                    pointer.Message.GetType().Name,
-                    Thread.CurrentThread.Name);
-            }
+            }            
             return string.Format("Handling {0} on {1}",
                     pointer.Message.GetType().Name,
                     Thread.CurrentThread.Name);
         }
 
-        #region [====== Commands ======]
+        #region [====== Commands & Events ======]
 
-        /// <inheritdoc />      
-        public Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IMessage<TCommand>, IRequestMessage
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            return ExecuteAsync(message, NullHandler<TCommand>(), null);
+            return HandleAsync(message, NullHandler<TMessage>(), validator, token);
         }
 
-        /// <inheritdoc />              
-        public Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            return ExecuteAsync(message, NullHandler<TCommand>(), token);
+            return HandleAsync(message, (ActionDecorator<TMessage>) handler, validator, token);
         }
 
-        /// <inheritdoc />        
-        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
-        {
-            return ExecuteAsync(message, (ActionDecorator<TCommand>) handler, null);
-        }
-
-        /// <inheritdoc />                
-        public Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
-        {
-            return ExecuteAsync(message, (ActionDecorator<TCommand>) handler, token);
-        }
-
-        /// <inheritdoc />        
-        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
-        {
-            return ExecuteAsync(message, handler, null);
-        }
-
-        /// <inheritdoc />              
-        public Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            return Start(() => Execute(message, handler, token), message.GetType(), token);
+            return Start(() => Handle(message, handler, validator, token), message.GetType(), token);
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message) where TCommand : class, IMessage<TCommand>, IRequestMessage
+        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, new RequestMessageValidator<TCommand>());
+            Handle(message, NullHandler<TMessage>(), validator, token);
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
+        public void Handle<TMessage>(TMessage message, Action<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, new RequestMessageValidator<TCommand>(), token);
+            Handle(message, (ActionDecorator<TMessage>) handler, validator, token);
         }
 
         /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
-        {
-            Handle(message, new RequestMessageValidator<TCommand>(), handler);
-        }
-
-        /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
-        {
-            Handle(message, new RequestMessageValidator<TCommand>(), handler, token);
-        }
-
-        /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage
-        {
-            Handle(message, new RequestMessageValidator<TCommand>(), handler);
-        }
-
-        /// <inheritdoc />
-        public void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage
-        {
-            Handle(message, new RequestMessageValidator<TCommand>(), handler, token);
-        }
-
-        #endregion
-
-        #region [====== Queries ======]
-
-        /// <inheritdoc />       
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage          
-        {
-            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, null);
-        }
-
-        /// <inheritdoc />       
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
-        {
-            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
-        }
-
-        /// <inheritdoc />     
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
-        {
-            return ExecuteAsync(message, query, null);
-        }
-
-        /// <inheritdoc />     
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            return Start(() => Execute(message, query, token), message.GetType(), token);
-        }
-
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
-        {
-            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, null);
-        }
-
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
-        {
-            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
-        }
-
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
-        {
-            return Execute(message, query, null);
-        }
-
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage          
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            PushMessage(ref message, token);
-
-            try
-            {
-                var pipeline = new QueryDispatcherPipeline<TMessageIn, TMessageOut>(query, this);
-
-                CreatePerMessagePipeline(pipeline, new RequestMessageValidator<TMessageIn>()).Handle(message);
-
-                return pipeline.Result;
-            }
-            finally
-            {
-                PopMessage();
-            }              
-        }
-
-        #endregion
-
-        #region [====== Events ======]
-
-        /// <inheritdoc />       
-        public Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-        {
-            return HandleAsync(message, null, NullHandler<TMessage>(), null);
-        }
-
-        /// <inheritdoc />       
-        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator) where TMessage : class, IMessage<TMessage>
-        {
-            return HandleAsync(message, validator, NullHandler<TMessage>(), null);
-        }
-
-        /// <inheritdoc />               
-        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, CancellationToken? token) where TMessage : class, IMessage<TMessage>
-        {
-            return HandleAsync(message, validator, NullHandler<TMessage>(), token);
-        }
-
-        /// <inheritdoc />      
-        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
-        {
-            return HandleAsync(message, validator, (ActionDecorator<TMessage>) handler, null);
-        }
-
-        /// <inheritdoc />                
-        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
-        {
-            return HandleAsync(message, validator, (ActionDecorator<TMessage>) handler, token);
-        }
-
-        /// <inheritdoc />        
-        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
-        {
-            return HandleAsync(message, validator, handler, null);
-        }
-
-        /// <inheritdoc />                
-        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            return Start(() => Handle(message, validator, handler, token), message.GetType(), token);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-        {
-            Handle(message, null, NullHandler<TMessage>(), null);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator) where TMessage : class, IMessage<TMessage>
-        {
-            Handle(message, validator, NullHandler<TMessage>(), null);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, CancellationToken? token) where TMessage : class, IMessage<TMessage>
-        {
-            Handle(message, validator, NullHandler<TMessage>(), token);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
-        {
-            Handle(message, validator, (ActionDecorator<TMessage>) handler, null);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
-        {
-            Handle(message, validator, (ActionDecorator<TMessage>) handler, token);             
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
-        {
-            Handle(message, validator, handler, null);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
             if (message == null)
             {
@@ -445,10 +229,59 @@ namespace System.ComponentModel.Server
             finally
             {
                 PopMessage();
-            }                   
+            }
         }
 
-        #endregion
+        #endregion      
+  
+        #region [====== Queries ======]
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        {
+            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, token);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            return Start(() => Execute(message, query, validator, token), message.GetType(), token);
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        {
+            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, token);
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            PushMessage(ref message, token);
+
+            try
+            {
+                var pipeline = new QueryDispatcherPipeline<TMessageIn, TMessageOut>(query, this);
+
+                CreatePerMessagePipeline(pipeline, validator).Handle(message);
+
+                return pipeline.Result;
+            }
+            finally
+            {
+                PopMessage();
+            } 
+        }
+
+        #endregion                      
 
         #region [====== Pipeline Factories ======]
 
@@ -472,7 +305,7 @@ namespace System.ComponentModel.Server
         /// <param name="handler">The handler to decorate.</param>
         /// <param name="validator">Optional validator of the message.</param>
         /// <returns>A pipeline that will handle a message.</returns>        
-        protected virtual IMessageHandler<TMessage> CreatePerMessagePipeline<TMessage>(IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator) where TMessage : class
+        protected virtual IMessageHandler<TMessage> CreatePerMessagePipeline<TMessage>(IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator) where TMessage : class, IMessage
         {
             return new MessageHandlerPipelineFactory<TMessage>()
             {
@@ -507,7 +340,7 @@ namespace System.ComponentModel.Server
         /// The default implementation simply returns the specified <paramref name="query"/>.
         /// </remarks>
         protected virtual IQuery<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage           
+            where TMessageIn : class, IMessage<TMessageIn>           
         {
             return query;
         }        

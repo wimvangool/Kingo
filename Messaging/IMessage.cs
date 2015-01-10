@@ -1,14 +1,23 @@
-﻿namespace System.ComponentModel
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a message.
-    /// </summary> 
+    /// Represents a message that can validate itself.
+    /// </summary>
     public interface IMessage
     {
         /// <summary>
-        /// Creates and returns a copy of this message.
+        /// Validates all values of this message and returns whether or not any errors were found.
         /// </summary>        
-        /// <returns>A copy of this message.</returns>
-        IMessage Copy();
+        /// <param name="errorTree">
+        /// If this method returns <c>true</c>, this parameter will contain all the validation-errors.
+        /// </param>
+        /// <returns><c>true</c> if any errors were found during validation; otherwise <c>false</c>.
+        /// </returns>   
+        bool TryGetValidationErrors(out ValidationErrorTree errorTree);
     }
 }

@@ -152,10 +152,10 @@ namespace System.ComponentModel
             message.ChildMessages.Add(new ChildMessage(4));
             message.AcceptChanges();
 
-            var validator = new RequestMessageValidator<ParentMessage>();
+            var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree;
             
-            Assert.IsTrue(validator.TryGetValidationErrors(message , out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(out errorTree));
             Assert.IsNotNull(errorTree);
 
             var exception = new InvalidMessageException(message, "Message contains errors.", errorTree);
@@ -218,6 +218,6 @@ namespace System.ComponentModel
             {
                 AssertEqualErrorTree(childErrors[index], childErrorsCopy[index]);
             }
-        }
+        }        
     }
 }

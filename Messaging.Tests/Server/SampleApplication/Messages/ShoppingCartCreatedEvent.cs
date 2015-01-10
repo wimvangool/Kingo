@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Server.SampleApplication.Messages
 {
-    internal sealed class ShoppingCartCreated : Message<ShoppingCartCreated>, IAggregateEvent<Guid, Int32Version>
+    internal sealed class ShoppingCartCreatedEvent : Message<ShoppingCartCreatedEvent>, IAggregateEvent<Guid, Int32Version>
     {
         public Guid ShoppingCartId;
         public Int32Version ShoppingCartVersion;
@@ -15,9 +15,9 @@
             get { return ShoppingCartVersion; }
         }
 
-        public override ShoppingCartCreated Copy()
+        public override ShoppingCartCreatedEvent Copy()
         {
-            return new ShoppingCartCreated()
+            return new ShoppingCartCreatedEvent()
             {
                 ShoppingCartId = ShoppingCartId,
                 ShoppingCartVersion = ShoppingCartVersion

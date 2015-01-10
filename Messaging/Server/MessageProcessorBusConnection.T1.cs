@@ -43,7 +43,7 @@ namespace System.ComponentModel.Server
             {
                 return;
             }
-            processor.Handle(message, null, handler);
+            processor.Handle(message, handler);
         }
     }
 }

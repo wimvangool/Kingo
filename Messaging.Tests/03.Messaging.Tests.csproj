@@ -98,10 +98,10 @@
     <Compile Include="Server\SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
     <Compile Include="Server\SampleApplication\IShoppingCartRepository.cs" />
     <Compile Include="Server\SampleApplication\MessageHandlers\ShoppingCartHandler.cs" />
-    <Compile Include="Server\SampleApplication\Messages\AddProductToCart.cs" />
-    <Compile Include="Server\SampleApplication\Messages\CreateShoppingCart.cs" />
-    <Compile Include="Server\SampleApplication\Messages\ProductAddedToCart.cs" />
-    <Compile Include="Server\SampleApplication\Messages\ShoppingCartCreated.cs" />
+    <Compile Include="Server\SampleApplication\Messages\AddProductToCartCommand.cs" />
+    <Compile Include="Server\SampleApplication\Messages\CreateShoppingCartCommand.cs" />
+    <Compile Include="Server\SampleApplication\Messages\ProductAddedToCartEvent.cs" />
+    <Compile Include="Server\SampleApplication\Messages\ShoppingCartCreatedEvent.cs" />
     <Compile Include="Server\SampleApplication\ShoppingCart.cs" />
     <Compile Include="Server\SampleApplication\ShoppingCartItem.cs" />
     <Compile Include="Server\SampleHandlers\Command.cs" />

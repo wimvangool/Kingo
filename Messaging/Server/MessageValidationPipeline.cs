@@ -7,10 +7,32 @@ namespace System.ComponentModel.Server
     /// a message is invalid.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-    public class MessageValidationPipeline<TMessage> : IMessageHandler<TMessage> where TMessage : class
+    public class MessageValidationPipeline<TMessage> : IMessageHandler<TMessage> where TMessage : class, IMessage
     {
+        #region [====== DefaultValidator ======]
+
+        private sealed class DefaultValidator<T> : IMessageValidator<T> where T : class, IMessage
+        {
+            public bool TryGetValidationErrors(T message, out ValidationErrorTree errorTree)
+            {
+                return message.TryGetValidationErrors(out errorTree);
+            }
+        }
+
+        #endregion
+
         private readonly IMessageHandler<TMessage> _handler;
         private readonly IMessageValidator<TMessage> _validator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageValidationPipeline{TMessage}" /> class.
+        /// </summary>
+        /// <param name="handler">The next handler to invoke.</param>        
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
+        public MessageValidationPipeline(IMessageHandler<TMessage> handler)
+            : this(handler, null) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageValidationPipeline{TMessage}" /> class.
@@ -29,7 +51,7 @@ namespace System.ComponentModel.Server
                 throw new ArgumentNullException("handler");
             }
             _handler = handler;
-            _validator = validator;
+            _validator = validator ?? new DefaultValidator<TMessage>();
         }
 
         /// <summary>
@@ -56,7 +78,7 @@ namespace System.ComponentModel.Server
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="InvalidMessageException">
-        /// <see cref="Validator"/> is not <c>null</c> and <paramref name="message"/> is invalid.
+        /// <paramref name="message"/> is invalid.
         /// </exception>
         public void Handle(TMessage message)
         {
@@ -66,7 +88,7 @@ namespace System.ComponentModel.Server
             }
             ValidationErrorTree errors;
 
-            if (Validator != null && Validator.TryGetValidationErrors(message, out errors))
+            if (Validator.TryGetValidationErrors(message, out errors))
             {
                 throw new InvalidMessageException(message, ExceptionMessages.MessageProcessor_InvalidMessage, errors);                
             }            

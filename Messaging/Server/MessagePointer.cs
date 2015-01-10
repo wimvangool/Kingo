@@ -12,7 +12,7 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// The message that is associated to this <see cref="MessagePointer" />.
         /// </summary>
-        public readonly IMessage Message;              
+        public readonly object Message;              
 
         /// <summary>
         /// The parent MessagePointer.
@@ -21,14 +21,14 @@ namespace System.ComponentModel.Server
 
         private readonly CancellationToken? _token;        
         
-        internal MessagePointer(IMessage message, CancellationToken? token)
+        internal MessagePointer(object message, CancellationToken? token)
         {
             Message = message;
 
             _token = token;            
         }
 
-        private MessagePointer(IMessage message, CancellationToken? token, MessagePointer parentPointer)
+        private MessagePointer(object message, CancellationToken? token, MessagePointer parentPointer)
         {            
             Message = message;
             ParentPointer = parentPointer;
@@ -36,7 +36,7 @@ namespace System.ComponentModel.Server
             _token = token;            
         }
 
-        internal MessagePointer CreateChildPointer(IMessage message, CancellationToken? token)
+        internal MessagePointer CreateChildPointer(object message, CancellationToken? token)
         {
             return new MessagePointer(message, token, this);
         }

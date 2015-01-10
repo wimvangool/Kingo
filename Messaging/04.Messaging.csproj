@@ -51,6 +51,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="AutomaticMessageValidator.T1.cs" />
     <Compile Include="BusinessRuleViolationException.cs" />
     <Compile Include="Client\AsyncExecutionTask.T1.cs" />
     <Compile Include="Client\AsyncObject.cs" />
@@ -67,17 +68,15 @@
     <Compile Include="Client\QueryDelegate.T2.cs" />
     <Compile Include="IMessage.cs" />
     <Compile Include="IMessageValidator.T1.cs" />
-    <Compile Include="IRequestMessage.cs" />
     <Compile Include="IRequestMessageViewModel.cs" />
     <Compile Include="IRequestMessageViewModel.T1.cs" />
     <Compile Include="ITransactionScope.cs" />
+    <Compile Include="ManualMessageValidator.T1.cs" />
     <Compile Include="Message.T1.cs" />
     <Compile Include="MessageDeniedException.cs" />
-    <Compile Include="RequestMessage.T1.cs" />
     <Compile Include="RequestMessageAttachedCollection.T1.cs" />
     <Compile Include="FunctionalException.cs" />
     <Compile Include="ReadOnlyDictionary.T2.cs" />
-    <Compile Include="RequestMessageValidator.T1.cs" />
     <Compile Include="RequestMessageViewModelEditScope.cs" />
     <Compile Include="ValidationErrorTree.cs" />
     <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />

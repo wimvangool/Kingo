@@ -6,7 +6,7 @@ using System.Linq;
 namespace System.ComponentModel
 {
     /// <summary>
-    /// Represents a tree of errors that have been detected on a specific <see cref="IMessage" />.
+    /// Represents a tree of errors that have been detected on a specific message.
     /// </summary>
     [Serializable]    
     public sealed class ValidationErrorTree : IDataErrorInfo
@@ -88,7 +88,7 @@ namespace System.ComponentModel
             return _errors.Count == 0 ? null : Concatenate(_errors.Values);
         }
 
-        private static string Concatenate(IEnumerable<string> errorMessages)
+        internal static string Concatenate(IEnumerable<string> errorMessages)
         {
             return string.Join(Environment.NewLine, errorMessages.Where(error => !string.IsNullOrWhiteSpace(error)));
         }
@@ -148,75 +148,7 @@ namespace System.ComponentModel
         internal static ValidationErrorTree NotYetValidated(Type messageType)
         {
             return new ValidationErrorTree(messageType, new ReadOnlyDictionary<string, string>(), null);
-        }
-
-        /// <summary>
-        /// Performs validation of the instance that is specified by the <paramref name="validationContext"/>
-        /// and returns any validation errors in the form of a <see cref="ValidationErrorTree" /> instance.
-        /// </summary>
-        /// <param name="validationContext">The validation context to use.</param>
-        /// <returns>
-        /// A new <see cref="ValidationErrorTree" />-instance containing all validation-errors, or <c>null</c>
-        /// if validation completed succesfully.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="validationContext"/> is <c>null</c>.
-        /// </exception>
-        internal static ValidationErrorTree TryGetValidationErrors(ValidationContext validationContext)
-        {
-            if (validationContext == null)
-            {
-                throw new ArgumentNullException("validationContext");
-            }
-            RequestMessageLabelProvider.Add(validationContext.ObjectInstance);
-
-            try
-            {
-                var validationResults = new List<ValidationResult>();
-                var isValid = Validator.TryValidateObject(validationContext.ObjectInstance, validationContext, validationResults, true);
-
-                if (isValid)
-                {
-                    return null;
-                }                              
-                return new ValidationErrorTree(validationContext.ObjectType, CreateErrorMessagesPerMember(validationResults));
-            }
-            finally
-            {
-                RequestMessageLabelProvider.Remove(validationContext.ObjectInstance);
-            }
-        }        
-
-        private static Dictionary<string, string> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)
-        {
-            var errorMessageBuilder = new Dictionary<string, List<string>>();
-
-            foreach (var result in validationResults)
-            {
-                AppendErrorMessage(errorMessageBuilder, result);
-            }
-            var errorMessagesPerMember = new Dictionary<string, string>();
-
-            foreach (var member in errorMessageBuilder)
-            {
-                errorMessagesPerMember.Add(member.Key, Concatenate(member.Value));
-            }
-            return errorMessagesPerMember;
-        }
-
-        private static void AppendErrorMessage(IDictionary<string, List<string>> errorMessageBuilder, ValidationResult result)
-        {
-            foreach (var memberName in result.MemberNames)
-            {
-                List<string> errorMessages;
-
-                if (!errorMessageBuilder.TryGetValue(memberName, out errorMessages))
-                {
-                    errorMessageBuilder.Add(memberName, errorMessages = new List<string>());
-                }
-                errorMessages.Add(result.ErrorMessage);
-            }
-        }
+        }                        
 
         internal static ValidationErrorTree Merge(Type messageType, ICollection<ValidationErrorTree> childErrorTrees)
         {

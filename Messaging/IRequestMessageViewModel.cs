@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a request-message that supports change-tracking and validation.
     /// </summary>
-    public interface IRequestMessageViewModel : IRequestMessage, INotifyHasChanges, INotifyIsValid, IDataErrorInfo        
+    public interface IRequestMessageViewModel : IMessage, INotifyHasChanges, INotifyIsValid, IDataErrorInfo        
     {
         /// <summary>
         /// Creates and returns a copy of this message.

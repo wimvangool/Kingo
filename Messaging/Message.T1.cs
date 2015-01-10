@@ -45,12 +45,7 @@ namespace System.ComponentModel
 
         #endregion
 
-        #region [====== Copy ======]
-
-        IMessage IMessage.Copy()
-        {
-            return Copy();
-        }
+        #region [====== Copy ======]        
 
         TMessage IMessage<TMessage>.Copy()
         {
@@ -87,6 +82,24 @@ namespace System.ComponentModel
             return message == null ? null : message.Copy();
         }
 
-        #endregion        
+        #endregion
+
+        #region [====== Validation ======]
+
+        bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
+        {
+            return CreateValidator().TryGetValidationErrors((TMessage) this, out errorTree);
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.
+        /// </summary>
+        /// <returns>A new <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.</returns>
+        protected virtual IMessageValidator<TMessage> CreateValidator()
+        {
+            return new ManualMessageValidator<TMessage>();
+        }
+
+        #endregion
     }
 }

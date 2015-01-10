@@ -30,9 +30,9 @@ namespace System.ComponentModel.Server
         public void MessagePointer_TakesValueOfTheMessageThatIsBeingHandled()
         {
             MessageStub messageA = new MessageStub();
-            IMessage messageB = null;
+            object messageB = null;
 
-            Processor.Handle(messageA, null, message => messageB = Processor.MessagePointer.Message);
+            Processor.Handle(messageA, message => messageB = Processor.MessagePointer.Message);
 
             Assert.IsNotNull(messageB);
             Assert.AreNotSame(messageA, messageB);
@@ -47,8 +47,8 @@ namespace System.ComponentModel.Server
             MessageStub messageB = new MessageStub();
             MessagePointer messagePointer = null;
 
-            Processor.Handle(messageA, null, a =>            
-                Processor.Handle(messageB, null, b => messagePointer = Processor.MessagePointer)
+            Processor.Handle(messageA, a =>            
+                Processor.Handle(messageB, b => messagePointer = Processor.MessagePointer)
             );
 
             Assert.IsNotNull(messagePointer);
@@ -65,14 +65,14 @@ namespace System.ComponentModel.Server
         public void CreateShoppingCart_PublishesShoppingCartCreated_IfCartWasCreated()
         {
             Guid shoppingCartId = Guid.NewGuid();
-            ShoppingCartCreated createdEvent = null;
+            ShoppingCartCreatedEvent createdEvent = null;
 
-            using (Processor.DomainEventBus.ConnectThreadLocal<ShoppingCartCreated>(e => createdEvent = e, true))
+            using (Processor.DomainEventBus.ConnectThreadLocal<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
             {
-                Processor.Handle(new CreateShoppingCart
+                Processor.Handle(new CreateShoppingCartCommand
                 {
                     ShoppingCartId = shoppingCartId
-                }, null);
+                });
             }
 
             Assert.IsNotNull(createdEvent);
@@ -85,11 +85,11 @@ namespace System.ComponentModel.Server
         {
             Guid shoppingCartId = Guid.NewGuid();
 
-            Processor.Handle(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            Processor.Handle(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });                       
@@ -101,19 +101,19 @@ namespace System.ComponentModel.Server
             // Ensure the cart exists before any product are added to it.
             Guid shoppingCartId = Guid.NewGuid();                        
 
-            Processor.Handle(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
 
             // Add some quantity of a certain product to the cart.
-            ProductAddedToCart productAddedEvent = null;
+            ProductAddedToCartEvent productAddedEvent = null;
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);
 
-            using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCart>(e => productAddedEvent = e, true))
+            using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {                
-                Processor.Handle(new AddProductToCart
+                Processor.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,
@@ -136,11 +136,11 @@ namespace System.ComponentModel.Server
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);            
 
-            Processor.Handle(new CreateShoppingCart
+            Processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            Processor.Handle(new AddProductToCart
+            Processor.Handle(new AddProductToCartCommand
             {
                 ShoppingCartId = shoppingCartId,
                 ProductId = productId,
@@ -148,12 +148,12 @@ namespace System.ComponentModel.Server
             });
 
             // Increase the quantity of the product again.
-            ProductAddedToCart productAddedEvent = null;
+            ProductAddedToCartEvent productAddedEvent = null;
             int extraQuantity = _random.Next(3, 6);
 
-            using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCart>(e => productAddedEvent = e, true))
+            using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {
-                Processor.Handle(new AddProductToCart
+                Processor.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,

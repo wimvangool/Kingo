@@ -24,109 +24,74 @@ namespace System.ComponentModel.Server
             get;
         }
 
-        #region [====== Commands ======]
+        #region [====== Commands & Events ======]
 
         /// <summary>
-        /// Executes the specified command by invoking all registered message handlers asynchronously.
+        /// Processes the specified message by invoking all registered message handlers asynchronously.
         /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>  
-        /// <returns>The <see cref="Task" /> that is executing the command.</returns>              
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param>        
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>  
+        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>               
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task ExecuteAsync<TCommand>(TCommand message) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
+        /// </exception> 
+        Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>;
 
         /// <summary>
-        /// Executes the specified command by invoking all registered message handlers asynchronously.
+        /// Processes the specified message by invoking the specified handler asynchronously.
         /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>          
-        /// <returns>The <see cref="Task" /> that is executing the command.</returns>  
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="handler">
+        /// Optional handler that will be used to handle the message.
+        /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
+        /// </param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param>        
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>  
+        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>               
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>               
-        Task ExecuteAsync<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
+        /// </exception> 
+        Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>;
 
         /// <summary>
-        /// Executes the specified command by invoking the specified delegate asynchronously.
+        /// Processes the specified message by invoking the specified handler asynchronously.
         /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">Delegate that will be used to execute the command.</param>  
-        /// <returns>The <see cref="Task" /> that is executing the command.</returns>        
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="handler">
+        /// Optional handler that will be used to handle the message.
+        /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
+        /// </param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param>        
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>  
+        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>               
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
+        /// </exception>  
+        Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>;
 
         /// <summary>
-        /// Executes the specified command by invoking the specified delegate asynchronously.
+        /// Processes the specified message by invoking all registered message handlers.
         /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">Delegate that will be used to execute the command.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>          
-        /// <returns>The <see cref="Task" /> that is executing the command.</returns>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>                
-        Task ExecuteAsync<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
-
-        /// <summary>
-        /// Executes the specified command by invoking the specified handler asynchronously.
-        /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">MessageHandler that will be used to execute the command.</param>  
-        /// <returns>The <see cref="Task" /> that is executing the command.</returns>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
-
-        /// <summary>
-        /// Executes the specified command by invoking the specified handler asynchronously.
-        /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">MessageHandler that will be used to execute the command.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>      
-        /// <returns>The <see cref="Task" /> that is executing the command.</returns>            
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>               
-        Task ExecuteAsync<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
-
-        /// <summary>
-        /// Executes the specified command by invoking all registered message handlers.
-        /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>                
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        void Execute<TCommand>(TCommand message) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
-
-        /// <summary>
-        /// Executes the specified command by invoking all registered message handlers.
-        /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>          
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param>        
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>                
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
@@ -136,33 +101,23 @@ namespace System.ComponentModel.Server
         /// </exception>
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>         
-        void Execute<TCommand>(TCommand message, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
+        /// </exception>
+        void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>;
 
         /// <summary>
-        /// Executes the specified command by invoking the specified delegate.
+        /// Processes the specified message by invoking the specified handler.
         /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">Delegate that will be used to execute the command.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        void Execute<TCommand>(TCommand message, Action<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
-
-        /// <summary>
-        /// Executes the specified command by invoking the specified delegate.
-        /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">Delegate that will be used to execute the command.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>                
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="handler">
+        /// Optional handler that will be used to handle the message.
+        /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
+        /// </param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param>        
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>                
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
@@ -172,33 +127,23 @@ namespace System.ComponentModel.Server
         /// </exception>
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>         
-        void Execute<TCommand>(TCommand message, Action<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
+        /// </exception>
+        void Handle<TMessage>(TMessage message, Action<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>;
 
         /// <summary>
-        /// Executes the specified command by invoking the specified handler.
+        /// Processes the specified message by invoking the specified handler.
         /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">MessageHandler that will be used to execute the command.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
-
-        /// <summary>
-        /// Executes the specified command by invoking the specified handler.
-        /// </summary>
-        /// <typeparam name="TCommand">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>        
-        /// <param name="handler">MessageHandler that will be used to execute the command.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>                
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="message">Message to handle.</param>
+        /// <param name="handler">
+        /// Optional handler that will be used to handle the message.
+        /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
+        /// </param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param>        
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>                
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
@@ -208,8 +153,8 @@ namespace System.ComponentModel.Server
         /// </exception>
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>         
-        void Execute<TCommand>(TCommand message, IMessageHandler<TCommand> handler, CancellationToken? token) where TCommand : class, IMessage<TCommand>, IRequestMessage; 
+        /// </exception>
+        void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>;
 
         #endregion
 
@@ -222,11 +167,18 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param> 
+        /// <param name="token">
+        /// Optional token that can be used to cancel the operation.
+        /// </param> 
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>        
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;           
+        /// </exception> 
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -235,108 +187,30 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param> 
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>                 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;         
+        /// </exception> 
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>        
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;            
-
-        /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
-        /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
         /// </param> 
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>                
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;           
-
-        /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
-        /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>
-        /// <returns>The result of the <paramref name="query"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;
-
-        /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
-        /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param> 
-        /// <returns>The result of the <paramref name="query"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        /// <exception cref="OperationCanceledException">
-        /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;
-
-        /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
-        /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>
-        /// <returns>The result of the <paramref name="query"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;
-
-        /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
-        /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param>  
@@ -351,148 +225,25 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token) where TMessageIn : class, IMessage<TMessageIn>, IRequestMessage;           
-
-        #endregion
-
-        #region [====== Events ======]
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
-        /// Processes the specified message by invoking all registered message handlers asynchronously.
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>          
-        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>      
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking all registered message handlers asynchronously.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>  
-        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking all registered message handlers asynchronously.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>        
-        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>   
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>                
-        Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, CancellationToken? token) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified delegate asynchronously.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Delegate that will be used to handle the message.</param>  
-        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified delegate asynchronously.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Delegate that will be used to handle the message.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>    
-        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>             
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>                
-        Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified handler asynchronously.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Handler that will be used to handle the message.</param>   
-        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>      
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>        
-        Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified handler asynchronously.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Handler that will be used to handle the message.</param>
+        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <param name="query">The query to execute.</param>
+        /// <param name="validator">
+        /// Optional custom validator of the message.
+        /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
+        /// </param> 
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param>  
-        /// <returns>The <see cref="Task" /> that is handling the <paramref name="message"/>.</returns>               
+        /// <returns>The result of the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>                 
-        Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking all registered message handlers.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>                
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        void Handle<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking all registered message handlers.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking all registered message handlers.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>          
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
+        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="FunctionalException">
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
@@ -500,85 +251,9 @@ namespace System.ComponentModel.Server
         /// </exception>
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>         
-        void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, CancellationToken? token) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified delegate.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Delegate that will be used to handle the message.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified delegate.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Delegate that will be used to handle the message.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>                
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        /// <exception cref="OperationCanceledException">
-        /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>         
-        void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, Action<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified handler.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Handler that will be used to handle the message.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>;
-
-        /// <summary>
-        /// Processes the specified message by invoking the specified handler.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <param name="handler">Handler that will be used to handle the message.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the operation.
-        /// </param>                
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>
-        /// <exception cref="OperationCanceledException">
-        /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>         
-        void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator, IMessageHandler<TMessage> handler, CancellationToken? token) where TMessage : class, IMessage<TMessage>;        
-
-        #endregion
+        /// </exception>  
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+       
+        #endregion        
     }
 }

@@ -1,12 +1,12 @@
 ﻿namespace System.ComponentModel.Server.SampleApplication.Messages
 {
-    internal class CreateShoppingCart : Message<CreateShoppingCart>
+    internal class CreateShoppingCartCommand : Message<CreateShoppingCartCommand>
     {
         public Guid ShoppingCartId;
 
-        public override CreateShoppingCart Copy()
+        public override CreateShoppingCartCommand Copy()
         {
-            return new CreateShoppingCart()
+            return new CreateShoppingCartCommand()
             {
                 ShoppingCartId = ShoppingCartId
             };

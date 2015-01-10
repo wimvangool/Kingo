@@ -111,10 +111,10 @@ namespace System.ComponentModel
         public void TryGetValidationErrors_ReturnsFalse_IfMessageIsValid()
         {
             var message = new ParentMessage(1);
-            var validator = new RequestMessageValidator<ParentMessage>();
+            var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree;
 
-            Assert.IsFalse(validator.TryGetValidationErrors(message, out errorTree));
+            Assert.IsFalse(validator.TryGetValidationErrors(out errorTree));
             Assert.IsNull(errorTree);            
         }
 
@@ -122,10 +122,10 @@ namespace System.ComponentModel
         public void TryGetValidationErrors_ReturnsTrue_IfMessagePropertyTryGetValidationErrors()
         {
             var message = new ParentMessage(0);
-            var validator = new RequestMessageValidator<ParentMessage>();
+            var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(1, errorTree.TotalErrorCount);
@@ -139,10 +139,10 @@ namespace System.ComponentModel
             {
                 Child = new ChildMessage()
             };
-            var validator = new RequestMessageValidator<ParentMessage>();
+            var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(1, errorTree.TotalErrorCount);
@@ -162,10 +162,10 @@ namespace System.ComponentModel
             message.ChildMessages.Add(new ChildMessage());
             message.ChildMessages.Add(new ChildMessage());
 
-            var validator = new RequestMessageValidator<ParentMessage>();
+            var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(2, errorTree.TotalErrorCount);
@@ -203,10 +203,10 @@ namespace System.ComponentModel
             message.ChildMessages.Add(new ChildMessage(1));
             message.ChildMessages.Add(new ChildMessage());
 
-            var validator = new RequestMessageValidator<ParentMessage>();
+            var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree;
 
-            Assert.IsTrue(validator.TryGetValidationErrors(message, out errorTree));
+            Assert.IsTrue(validator.TryGetValidationErrors(out errorTree));
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(typeof(ParentMessage), errorTree.MessageType);
             Assert.AreEqual(3, errorTree.TotalErrorCount);
@@ -232,6 +232,6 @@ namespace System.ComponentModel
             Assert.AreEqual(typeof(ChildMessage), childErrorTreeTwo.MessageType);
             Assert.AreEqual(1, childErrorTreeTwo.TotalErrorCount);
             Assert.IsTrue(childErrorTreeTwo.Errors.ContainsKey("Value"));
-        }
+        }        
     }
 }

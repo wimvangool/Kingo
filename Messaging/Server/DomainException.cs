@@ -42,7 +42,7 @@ namespace System.ComponentModel.Server
         /// An instance of <see cref="InvalidMessageException" /> that wraps this exception and the inner
         /// exception.
         /// </returns>
-        public virtual InvalidMessageException AsInvalidMessageException(IMessage failedMessage)
+        public virtual InvalidMessageException AsInvalidMessageException(object failedMessage)
         {
             if (failedMessage == null)
             {
@@ -61,7 +61,7 @@ namespace System.ComponentModel.Server
         /// An instance of <see cref="BusinessRuleViolationException" /> that wraps this exception and the inner
         /// exception.
         /// </returns>
-        public virtual BusinessRuleViolationException AsBusinessRuleViolationException(IMessage failedMessage)
+        public virtual BusinessRuleViolationException AsBusinessRuleViolationException(object failedMessage)
         {
             if (failedMessage == null)
             {

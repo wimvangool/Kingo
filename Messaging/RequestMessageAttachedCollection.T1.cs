@@ -31,13 +31,13 @@ namespace System.ComponentModel
         public override RequestMessageAttachedCollection<TValue> Copy(bool makeReadOnly)
         {
             return new RequestMessageAttachedCollection<TValue>(this, makeReadOnly);
-        }        
+        }
 
         internal override bool TryGetValidationErrors(bool includeChildErrors, out ValidationErrorTree errorTree)
         {
             if (includeChildErrors)
             {
-                var messages = _collection as IEnumerable<IRequestMessage>;
+                var messages = _collection as IEnumerable<IMessage>;
                 ICollection<ValidationErrorTree> childErrorTrees;
 
                 if (messages != null && TryGetValidationErrors(messages, out childErrorTrees))

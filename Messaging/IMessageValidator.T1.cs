@@ -12,7 +12,10 @@
         /// <param name="errorTree">
         /// If this method returns <c>true</c>, this parameter will contain all the validation-errors.
         /// </param>
-        /// <returns><c>true</c> if any errors were found during validation; otherwise <c>false</c>.</returns>
+        /// <returns>
+        /// <c>true</c> if <paramref name="message"/> is not <c>null</c> and any errors were found during validation;
+        /// otherwise <c>false</c>.
+        /// </returns>        
         bool TryGetValidationErrors(TMessage message, out ValidationErrorTree errorTree);
     }
 }

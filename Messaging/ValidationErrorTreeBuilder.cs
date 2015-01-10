@@ -5,7 +5,7 @@ namespace System.ComponentModel
     /// <summary>
     /// Represents a builder that can be used to build new instances of the <see cref="ValidationErrorTree" /> class.
     /// </summary>
-    public sealed class ValidationErrorTreeBuilder
+    public class ValidationErrorTreeBuilder
     {
         private readonly Type _messageType;
         private readonly Dictionary<string, string> _errors;

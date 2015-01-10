@@ -28,7 +28,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void GetValue_ReturnsNull_IfNoValueHasBeenStored()
         {
-            Processor.Handle(new MessageStub(), null, message =>            
+            Processor.Handle(new MessageStub(), message =>            
                 Assert.IsNull(_lifetimeManager.GetValue())             
             );
         }
@@ -38,7 +38,7 @@ namespace System.ComponentModel.Server
         {
             var instance = new MessageStub();
 
-            Processor.Handle(instance, null, message =>
+            Processor.Handle(instance, message =>
             {
                 _lifetimeManager.SetValue(instance);
 
@@ -59,7 +59,7 @@ namespace System.ComponentModel.Server
         {
             var instance = new MessageStub();
 
-            Processor.Handle(instance, null, message =>
+            Processor.Handle(instance, message =>
             {
                 _lifetimeManager.SetValue(instance);
                 _lifetimeManager.RemoveValue();

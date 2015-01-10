@@ -4,7 +4,7 @@
     /// Represents a request-message that supports change-tracking and validation.
     /// </summary>
     /// <typeparam name="TMessage">Type of the implemented message.</typeparam>
-    public interface IRequestMessageViewModel<out TMessage> : IMessage<TMessage>, IRequestMessageViewModel
+    public interface IRequestMessageViewModel<TMessage> : IMessage<TMessage>, IRequestMessageViewModel
         where TMessage : class, IRequestMessageViewModel<TMessage>
     {
         /// <summary>
