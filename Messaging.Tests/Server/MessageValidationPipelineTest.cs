@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Server.SampleHandlers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace System.ComponentModel.Server

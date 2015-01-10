@@ -70,11 +70,10 @@
     <Compile Include="IMessageValidator.T1.cs" />
     <Compile Include="IRequestMessageViewModel.cs" />
     <Compile Include="IRequestMessageViewModel.T1.cs" />
-    <Compile Include="ITransactionScope.cs" />
     <Compile Include="ManualMessageValidator.T1.cs" />
     <Compile Include="Message.T1.cs" />
     <Compile Include="MessageDeniedException.cs" />
-    <Compile Include="RequestMessageAttachedCollection.T1.cs" />
+    <Compile Include="AttachedCollection.T1.cs" />
     <Compile Include="FunctionalException.cs" />
     <Compile Include="ReadOnlyDictionary.T2.cs" />
     <Compile Include="RequestMessageViewModelEditScope.cs" />

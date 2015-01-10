@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -22,7 +22,7 @@ namespace System.ComponentModel
         /// <exception cref="SerializationException">
         /// A value has already been associated with <paramref name="name"/>.
         /// </exception>
-        public static void AddCollection<TValue>(this SerializationInfo info, string name, ObservableCollection<TValue> collection)
+        public static void AddCollection<TValue>(this SerializationInfo info, string name, IEnumerable<TValue> collection)
         {
             if (info == null)
             {

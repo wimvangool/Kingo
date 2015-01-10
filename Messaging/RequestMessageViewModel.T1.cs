@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Resources;
 using System.Diagnostics;
@@ -92,7 +91,7 @@ namespace System.ComponentModel
             get { return _isReadOnly; }
         }
 
-        #region [====== ExtensibleObject ======]        
+        #region [====== ExtensibleObject ======]
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         ExtensionDataObject IExtensibleDataObject.ExtensionData
@@ -385,7 +384,7 @@ namespace System.ComponentModel
 
         #endregion        
 
-        #region [====== Validation ======]        
+        #region [====== Validation ======]
 
         private sealed class DefaultValidator<T> : AutomaticMessageValidator<T> where T : RequestMessageViewModel<T>
         {
@@ -639,42 +638,42 @@ namespace System.ComponentModel
         #region [====== Attach and Detach ======]
 
         /// <summary>
-        /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
+        /// Creates and returns an <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking
         /// and validation.
         /// </summary>
         /// <typeparam name="TValue">Type of the values stored in the collection.</typeparam>               
         /// <returns>
-        /// An <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking and validation.
+        /// An <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking and validation.
         /// </returns>        
         /// <remarks>
         /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessageViewModel" />-type, all values will be treated like child-messages.
         /// </remarks>
-        protected ObservableCollection<TValue> AttachCollection<TValue>()
+        protected AttachedCollection<TValue> AttachCollection<TValue>()
         {
             return AttachCollectionCopy(Enumerable.Empty<TValue>());
         }
 
         /// <summary>
-        /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
+        /// Creates and returns an <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking
         /// and validation by deserializing it from the specified <see cref="SerializationInfo" />.
         /// </summary>
         /// <typeparam name="TValue">Type of the values stored in the collection.</typeparam>    
         /// <param name="info">The serialization info.</param>
         /// <param name="name">Name of the collection to retrieve.</param>
-        /// <returns>An <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking and validation.</returns>
-        protected ObservableCollection<TValue> AttachCollection<TValue>(SerializationInfo info, string name)
+        /// <returns>An <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking and validation.</returns>
+        protected AttachedCollection<TValue> AttachCollection<TValue>(SerializationInfo info, string name)
         {
             return AttachCollection((IEnumerable<TValue>) info.GetValue(name, typeof(TValue[])));
         }
 
         /// <summary>
-        /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
+        /// Creates and returns an <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking
         /// and validation.
         /// </summary>
         /// <typeparam name="TValue">Type of the values stored in the collection.</typeparam>        
         /// <param name="values">The initial values stored in the collection.</param>
         /// <returns>
-        /// An <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking and validation.
+        /// An <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking and validation.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="values"/> is <c>null</c>.
@@ -682,19 +681,19 @@ namespace System.ComponentModel
         /// <remarks>
         /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessageViewModel" />-type, all values will be treated like child-messages.
         /// </remarks>
-        protected ObservableCollection<TValue> AttachCollection<TValue>(IEnumerable<TValue> values)
+        protected AttachedCollection<TValue> AttachCollection<TValue>(IEnumerable<TValue> values)
         {
             return AttachCollectionCopy(values);
         }        
 
         /// <summary>
-        /// Creates and returns an <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking
+        /// Creates and returns an <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking
         /// and validation.
         /// </summary>
         /// <typeparam name="TValue">Type of the values stored in the collection.</typeparam>        
         /// <param name="values">The initial values stored in the collection.</param>
         /// <returns>
-        /// An <see cref="ObservableCollection{T}" /> which is attached to this message for change tracking and validation.
+        /// An <see cref="AttachedCollection{T}" /> which is attached to this message for change tracking and validation.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="values"/> is <c>null</c>.
@@ -702,13 +701,9 @@ namespace System.ComponentModel
         /// <remarks>
         /// When <typeparamref name="TValue"/> is a <see cref="IRequestMessageViewModel" />-type, all values will be treated like child-messages.
         /// </remarks>
-        protected ObservableCollection<TValue> AttachCollectionCopy<TValue>(IEnumerable<TValue> values)
-        {
-            var collection = new ObservableCollection<TValue>(values);
-
-            Attach(new RequestMessageAttachedCollection<TValue>(collection, IsReadOnly));
-
-            return collection;
+        protected AttachedCollection<TValue> AttachCollectionCopy<TValue>(IEnumerable<TValue> values)
+        {            
+            return Attach(new AttachedCollection<TValue>(values, IsReadOnly));            
         }
 
         /// <summary>
@@ -720,12 +715,8 @@ namespace System.ComponentModel
         /// A copy of <paramref name="message"/>, or <c>null</c> if <paramref name="message"/> is <c>null</c>.
         /// </returns>
         protected T AttachCopy<T>(T message) where T : class, IRequestMessageViewModel<T>
-        {            
-            if (message == null)
-            {
-                return null;
-            }
-            return Attach(message.Copy(IsReadOnly));
+        {                        
+            return message == null ? null : Attach(message.Copy(IsReadOnly));
         }
 
         /// <summary>

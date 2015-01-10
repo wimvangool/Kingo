@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -17,7 +16,7 @@ namespace System.ComponentModel
         private sealed class ParentMessage : RequestMessageViewModel<ParentMessage>
         {
             private const string _ChildMessagesKey = "_childMessages";            
-            private readonly ObservableCollection<ChildMessage> _childMessages;            
+            private readonly AttachedCollection<ChildMessage> _childMessages;            
 
             public ParentMessage(int value)
             {                
@@ -77,7 +76,7 @@ namespace System.ComponentModel
                 set { SetValue(ref _child, value, () => Child); }
             }
 
-            public ObservableCollection<ChildMessage> ChildMessages
+            public AttachedCollection<ChildMessage> ChildMessages
             {
                 get { return _childMessages; }
             }

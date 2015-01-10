@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,7 +11,7 @@ namespace System.ComponentModel
 
         private sealed class ParentMessage : RequestMessageViewModel<ParentMessage>
         {
-            private readonly ObservableCollection<ChildMessage> _childMessages;            
+            private readonly AttachedCollection<ChildMessage> _childMessages;            
 
             public ParentMessage(int value)
             {
@@ -59,7 +58,7 @@ namespace System.ComponentModel
 
             #region [====== ChildMessageCollection ======]
 
-            public ObservableCollection<ChildMessage> ChildMessages
+            public AttachedCollection<ChildMessage> ChildMessages
             {
                 get { return _childMessages; }
             }
@@ -173,7 +172,7 @@ namespace System.ComponentModel
 
             var childErrorTree = errorTree.ChildErrors.First();
 
-            Assert.AreEqual(typeof(ObservableCollection<ChildMessage>), childErrorTree.MessageType);
+            Assert.AreEqual(typeof(AttachedCollection<ChildMessage>), childErrorTree.MessageType);
             Assert.AreEqual(2, childErrorTree.TotalErrorCount);
             Assert.AreEqual(2, childErrorTree.ChildErrors.Count());
 
@@ -215,7 +214,7 @@ namespace System.ComponentModel
 
             var childErrorTree = errorTree.ChildErrors.First();
 
-            Assert.AreEqual(typeof(ObservableCollection<ChildMessage>), childErrorTree.MessageType);
+            Assert.AreEqual(typeof(AttachedCollection<ChildMessage>), childErrorTree.MessageType);
             Assert.AreEqual(2, childErrorTree.TotalErrorCount);
             Assert.AreEqual(2, childErrorTree.ChildErrors.Count());
 

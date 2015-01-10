@@ -208,6 +208,16 @@ namespace System.ComponentModel.Server
             return left._value <= right._value;
         }
 
+        /// <summary>
+        /// Implicitly converts the specified value to a <see cref="Int32" /> instance.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>An <see cref="Int32" /> instance.</returns>
+        public static implicit operator int(Int32Version value)
+        {
+            return value._value;
+        }  
+
         #endregion
     }
 }

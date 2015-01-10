@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel
@@ -11,8 +10,8 @@ namespace System.ComponentModel
 
         private sealed class ParentMessage : RequestMessageViewModel<ParentMessage>
         {
-            private readonly ObservableCollection<int> _integers;
-            private readonly ObservableCollection<ChildMessage> _childMessages;
+            private readonly AttachedCollection<int> _integers;
+            private readonly AttachedCollection<ChildMessage> _childMessages;
 
             public ParentMessage()
             {
@@ -31,12 +30,12 @@ namespace System.ComponentModel
                 return new ParentMessage(this, makeReadOnly);
             }            
             
-            public ObservableCollection<int> Integers
+            public AttachedCollection<int> Integers
             {
                 get { return _integers; }                
             }            
             
-            public ObservableCollection<ChildMessage> ChildMessages
+            public AttachedCollection<ChildMessage> ChildMessages
             {
                 get { return _childMessages; }
             }

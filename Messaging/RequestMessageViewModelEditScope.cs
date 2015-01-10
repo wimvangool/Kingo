@@ -9,7 +9,7 @@ namespace System.ComponentModel
     /// <summary>
     /// Represents a scope in which changes can be made to a <see cref="IRequestMessageViewModel" /> that can be rolled back if required.
     /// </summary>
-    public sealed class RequestMessageViewModelEditScope : ITransactionScope
+    public sealed class RequestMessageViewModelEditScope : IDisposable
     {
         private readonly RequestMessageViewModelEditScope _parentScope;
         private readonly IRequestMessageViewModel _message;

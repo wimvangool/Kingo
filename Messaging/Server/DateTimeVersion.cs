@@ -200,6 +200,16 @@ namespace System.ComponentModel.Server
             return left._value <= right._value;
         }
 
+        /// <summary>
+        /// Implicitly converts the specified value to a <see cref="DateTime" /> instance.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>A <see cref="DateTime" /> instance.</returns>
+        public static implicit operator DateTime(DateTimeVersion value)
+        {
+            return value._value;
+        }        
+
         #endregion
     }
 }

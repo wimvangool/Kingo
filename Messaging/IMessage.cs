@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel
+﻿namespace System.ComponentModel
 {
     /// <summary>
     /// Represents a message that can validate itself.
