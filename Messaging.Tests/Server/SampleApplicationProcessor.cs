@@ -30,7 +30,7 @@
                 DataAccessLayer = AssemblySet.CurrentAssembly()
             };
             factory.RegisterMessageHandlers(IsHandlerForMessageProcessorTests);
-            factory.RegisterDependencies(null, IsRepositoryInterface, InstanceLifetime.Singleton);
+            factory.RegisterDependencies(null, IsRepositoryInterface);
             
             return new SampleApplicationProcessor(factory);
         }

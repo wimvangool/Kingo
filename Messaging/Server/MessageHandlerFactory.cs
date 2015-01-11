@@ -74,7 +74,8 @@ namespace System.ComponentModel.Server
         #region [====== MessageHandlers ======]
 
         /// <summary>
-        /// Registers all message-handler types that are found in the Service Layer, Application Layer or Data Access Layer.
+        /// Registers all message-handler types that are found in the Service Layer, Application Layer or Data Access Layer
+        /// that are marked with the <see cref="MessageHandlerAttribute" />.
         /// </summary>        
         public void RegisterMessageHandlers()
         {
@@ -82,7 +83,8 @@ namespace System.ComponentModel.Server
         }
 
         /// <summary>
-        /// Registers all message-handler types that are found in the Service Layer, Application Layer or Data Access Layer.
+        /// Registers all message-handler types that are found in the Service Layer, Application Layer or Data Access Layer
+        /// that are marked with the <see cref="MessageHandlerAttribute" />.
         /// </summary>
         /// <param name="predicate">A predicate that filters the requires message-handlers to register (optional).</param>        
         public void RegisterMessageHandlers(Func<Type, bool> predicate)
@@ -131,33 +133,28 @@ namespace System.ComponentModel.Server
         #region [====== Dependencies ======]
 
         /// <summary>
-        /// Registers a set of types that are found in the ServiceLayer and Data Access Layer as dependencies.
-        /// </summary>
-        /// <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>
-        /// <remarks>
-        /// By default, all types will be registered with a <see cref="InstanceLifetime.PerUnitOfWork" /> lifetime.
-        /// </remarks>
-        public void RegisterDependencies(Func<Type, bool> concreteTypePredicate)
+        /// Registers a set of types that are found in the ServiceLayer and Data Access Layer as dependencies
+        /// and are marked with the <see cref="DependencyAttribute"/>.
+        /// </summary>        
+        public void RegisterDependencies()
         {
-            RegisterDependencies(concreteTypePredicate, InstanceLifetime.PerUnitOfWork);
+            RegisterDependencies(null);
         }
 
         /// <summary>
-        /// Registers a set of types that are found in the ServiceLayer and Data Access Layer as dependencies.
+        /// Registers a set of types that are found in the ServiceLayer and Data Access Layer as dependencies
+        /// and are marked with the <see cref="DependencyAttribute"/>.
         /// </summary>
-        /// <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>
-        /// <param name="defaultLifetime">
-        /// Specifies the lifetime of the types that are registered that are not annotated with the <see cref="InstanceLifetimeAttribute" />.
-        /// </param>
-        public void RegisterDependencies(Func<Type, bool> concreteTypePredicate, InstanceLifetime defaultLifetime)
+        /// <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>       
+        public void RegisterDependencies(Func<Type, bool> concreteTypePredicate)
         {
-            DependencyClass.RegisterDependencies(this, concreteTypePredicate, defaultLifetime);            
-        }
+            DependencyClass.RegisterDependencies(this, concreteTypePredicate);
+        }        
 
         /// <summary>
         /// Registers a set of types that are found in the ServiceLayer and Data Access Layer as dependencies that are
         /// implementations of certain abstract types (interfaces or abstract classes) that are found in the Application Layer
-        /// or Domain Layer.
+        /// or Domain Layer and are marked with the <see cref="DependencyAttribute"/>.
         /// </summary>
         /// <param name="concreteTypePredicate">A predicate that identifies which concrete types should be registered as dependencies.</param>
         /// <param name="abstractTypePredicate">A predicate that identifies which abstract types should be registered as dependencies.</param>
@@ -169,26 +166,8 @@ namespace System.ComponentModel.Server
         /// </remarks>
         public void RegisterDependencies(Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate)
         {
-            RegisterDependencies(concreteTypePredicate, abstractTypePredicate, InstanceLifetime.PerUnitOfWork);
-        }
-
-        /// <summary>
-        /// Registers a set of types that are found in the ServiceLayer and Data Access Layer as dependencies that are
-        /// implementations of certain abstract types (interfaces or abstract classes) that are found in the Application Layer
-        /// or Domain Layer.
-        /// </summary>
-        /// <param name="concreteTypePredicate">A predicate that identifies which concrete types should be registered as dependencies.</param>
-        /// <param name="abstractTypePredicate">A predicate that identifies which abstract types should be registered as dependencies.</param>
-        /// <param name="defaultLifetime">
-        /// Specifies the lifetime of the types that are registered that are not annotated with the <see cref="InstanceLifetimeAttribute" />.
-        /// </param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="defaultLifetime"/> is not a valid <see cref="InstanceLifetime" />.
-        /// </exception>
-        public void RegisterDependencies(Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, InstanceLifetime defaultLifetime)
-        {
-            DependencyClass.RegisterDependencies(this, concreteTypePredicate, abstractTypePredicate, defaultLifetime);            
-        }
+            DependencyClass.RegisterDependencies(this, concreteTypePredicate, abstractTypePredicate);
+        }        
 
         #endregion
 

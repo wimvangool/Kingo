@@ -12,7 +12,7 @@ namespace System.ComponentModel.Server
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly MessageHandlerFactory _factory;        
         private readonly Type _classType;
-        private readonly Type[] _interfaceTypes;
+        private readonly Type[] _interfaceTypes;        
 
         private MessageHandlerClass(MessageHandlerFactory factory, Type classType, Type[] interfaceTypes)
         {
@@ -21,16 +21,9 @@ namespace System.ComponentModel.Server
             _interfaceTypes = interfaceTypes;
         }                     
 
-        private void Register()
+        private void Register(InstanceLifetime lifetime)
         {
-            var lifeTimeAttribute = _classType
-                .GetCustomAttributes(typeof(InstanceLifetimeAttribute), true)
-                .Cast<InstanceLifetimeAttribute>()
-                .SingleOrDefault();
-
-            var lifeTime = lifeTimeAttribute == null ? InstanceLifetime.PerResolve : lifeTimeAttribute.Lifetime;
-
-            switch (lifeTime)
+            switch (lifetime)
             {
                 case InstanceLifetime.PerResolve:                    
                     _factory.RegisterWithPerResolveLifetime(_classType);
@@ -45,7 +38,7 @@ namespace System.ComponentModel.Server
                     return;
                     
                 default:                    
-                    throw NewInvalidLifetimeModeSpecifiedException(_classType, lifeTime);                    
+                    throw NewInvalidLifetimeModeSpecifiedException(_classType, lifetime);                    
             }
         }                       
 
@@ -75,7 +68,9 @@ namespace System.ComponentModel.Server
 
         public static bool TryRegisterIn(MessageHandlerFactory container, Type type, Func<Type, bool> predicate, out MessageHandlerClass handler)
         {
-            if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !SatisfiesPredicate(type, predicate))
+            InstanceLifetime lifetime;
+
+            if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !HasMessageHandlerAttribute(type, out lifetime) || !SatisfiesPredicate(type, predicate))
             {
                 handler = null;
                 return false;
@@ -87,7 +82,19 @@ namespace System.ComponentModel.Server
                 return false;
             }
             handler = new MessageHandlerClass(container, type, interfaceTypes);
-            handler.Register();
+            handler.Register(lifetime);
+            return true;
+        }
+
+        private static bool HasMessageHandlerAttribute(Type classType, out InstanceLifetime lifetime)
+        {
+            var attributes = classType.GetCustomAttributes(typeof(MessageHandlerAttribute), true);
+            if (attributes.Length == 0)
+            {
+                lifetime = InstanceLifetime.PerResolve;
+                return false;
+            }
+            lifetime = attributes.Cast<MessageHandlerAttribute>().Single().Lifetime;
             return true;
         }        
 

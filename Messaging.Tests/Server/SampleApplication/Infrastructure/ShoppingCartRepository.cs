@@ -2,6 +2,7 @@
 
 namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 {
+    [Dependency(InstanceLifetime.Singleton)]
     public sealed class ShoppingCartRepository : IShoppingCartRepository, IUnitOfWork
     {        
         private readonly Dictionary<Guid, ShoppingCart> _carts;

@@ -10,19 +10,17 @@ namespace System.ComponentModel.Server
         #region [====== Instance Members ======]
 
         private readonly Type _concreteType;
-        private readonly Type _abstractType; 
-        private readonly InstanceLifetime _lifetime;
+        private readonly Type _abstractType;         
 
-        private DependencyClass(Type concreteType, Type abstractType, InstanceLifetime lifetime)
+        private DependencyClass(Type concreteType, Type abstractType)
         {
             _concreteType = concreteType;
-            _abstractType = abstractType;
-            _lifetime = lifetime;
+            _abstractType = abstractType;            
         }
 
-        private void RegisterIn(MessageHandlerFactory factory)
+        private void RegisterIn(MessageHandlerFactory factory, InstanceLifetime lifetime)
         {
-            switch (_lifetime)
+            switch (lifetime)
             {
                 case InstanceLifetime.PerResolve:
                     RegisterPerResolve(factory);
@@ -41,7 +39,7 @@ namespace System.ComponentModel.Server
                     return;
 
                 default:
-                    throw MessageHandlerClass.NewInvalidLifetimeModeSpecifiedException(_concreteType, _lifetime);
+                    throw MessageHandlerClass.NewInvalidLifetimeModeSpecifiedException(_concreteType, lifetime);
             }
         }
 
@@ -97,48 +95,68 @@ namespace System.ComponentModel.Server
 
         #region [====== Static Members ======]
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate, InstanceLifetime defaultLifetime)
-        {
-            foreach (var dependency in FindDependencies(factory, concreteTypePredicate, defaultLifetime))
-            {
-                dependency.RegisterIn(factory);
-            }
-        }
-
-        private static IEnumerable<DependencyClass> FindDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate, InstanceLifetime defaultLifetime)
-        {
-            return from concreteType in FindConcreteTypes(factory, concreteTypePredicate)
-                   let lifetime = GetSpecifiedOrDefaultLifetime(concreteType, defaultLifetime)
-                   select new DependencyClass(concreteType, null, lifetime);
-        }        
-
-        internal static void RegisterDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, InstanceLifetime defaultLifetime)
-        {
-            foreach (var dependency in FindDependencies(factory, concreteTypePredicate, abstractTypePredicate, defaultLifetime))
-            {
-                dependency.RegisterIn(factory);
-            }
-        }
-
-        private static IEnumerable<DependencyClass> FindDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, InstanceLifetime defaultLifetime)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate)
         {
             var lifetimeCache = new Dictionary<Type, InstanceLifetime>();
 
-            return from abstractType in FindAbstractTypes(factory, abstractTypePredicate)
-                   from concreteType in FindConcreteTypes(factory, concreteTypePredicate)
-                   where abstractType.IsAssignableFrom(concreteType)
-                   group concreteType by abstractType into typeMapping
-                   where typeMapping.Any()
-                   select CreateDependencyClass(typeMapping, defaultLifetime, lifetimeCache);                   
+            foreach (var dependency in FindDependencies(factory, lifetimeCache, concreteTypePredicate))
+            {
+                dependency.RegisterIn(factory, lifetimeCache[dependency._concreteType]);
+            }
         }
 
-        private static DependencyClass CreateDependencyClass(IGrouping<Type, Type> typeMapping, InstanceLifetime defaultLifetime, IDictionary<Type, InstanceLifetime> lifetimeCache)
+        private static IEnumerable<DependencyClass> FindDependencies(MessageHandlerFactory factory, IDictionary<Type, InstanceLifetime> lifetimeCache, Func<Type, bool> concreteTypePredicate)
+        {
+            return from concreteType in FindConcreteTypes(factory, concreteTypePredicate)       
+                   where HasDependencyAttribute(concreteType, lifetimeCache)
+                   select new DependencyClass(concreteType, null);
+        }        
+
+        internal static void RegisterDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate)
+        {
+            var lifetimeCache = new Dictionary<Type, InstanceLifetime>();
+
+            foreach (var dependency in FindDependencies(factory, lifetimeCache, concreteTypePredicate, abstractTypePredicate))
+            {
+                dependency.RegisterIn(factory, lifetimeCache[dependency._concreteType]);
+            }
+        }
+
+        private static IEnumerable<DependencyClass> FindDependencies(MessageHandlerFactory factory, IDictionary<Type, InstanceLifetime> lifetimeCache, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate)
+        {            
+            return from abstractType in FindAbstractTypes(factory, abstractTypePredicate)
+                   from concreteType in FindConcreteTypes(factory, concreteTypePredicate)                   
+                   where abstractType.IsAssignableFrom(concreteType) && HasDependencyAttribute(concreteType, lifetimeCache)
+                   group concreteType by abstractType into typeMapping
+                   where typeMapping.Any()
+                   select CreateDependencyClass(typeMapping);                   
+        }
+
+        private static bool HasDependencyAttribute(Type concreteType, IDictionary<Type, InstanceLifetime> lifetimeCache)
+        {
+            if (lifetimeCache.ContainsKey(concreteType))
+            {
+                return true;
+            }
+            var dependencyAttribute = concreteType
+                .GetCustomAttributes(typeof(DependencyAttribute), false)
+                .Cast<DependencyAttribute>()
+                .SingleOrDefault();
+
+            if (dependencyAttribute == null)
+            {
+                return false;
+            }
+            lifetimeCache.Add(concreteType, dependencyAttribute.Lifetime);
+            return true;
+        }
+
+        private static DependencyClass CreateDependencyClass(IGrouping<Type, Type> typeMapping)
         {            
             var abstractType = typeMapping.Key;
-            var concreteType = GetConcreteType(typeMapping);
-            var lifetime = GetInstanceLifetimeOf(concreteType, defaultLifetime, lifetimeCache);
+            var concreteType = GetConcreteType(typeMapping);            
 
-            return new DependencyClass(concreteType, abstractType, lifetime);
+            return new DependencyClass(concreteType, abstractType);
         }
 
         private static Type GetConcreteType(IGrouping<Type, Type> typeMapping)
@@ -151,30 +169,7 @@ namespace System.ComponentModel.Server
             {
                 throw NewAmbiguousMatchException(typeMapping.Key, typeMapping);
             }
-        }
-
-        private static InstanceLifetime GetInstanceLifetimeOf(Type concreteType, InstanceLifetime defaultLifetime, IDictionary<Type, InstanceLifetime> lifetimeCache)
-        {
-            InstanceLifetime lifetime;
-
-            if (lifetimeCache.TryGetValue(concreteType, out lifetime))
-            {
-                return lifetime;
-            }            
-            lifetimeCache.Add(concreteType, lifetime = GetSpecifiedOrDefaultLifetime(concreteType, defaultLifetime));
-
-            return lifetime;
-        }
-
-        private static InstanceLifetime GetSpecifiedOrDefaultLifetime(Type concreteType, InstanceLifetime defaultLifetime)
-        {
-            var attribute = concreteType.GetCustomAttributes(typeof(InstanceLifetimeAttribute), false).SingleOrDefault() as InstanceLifetimeAttribute;
-            if (attribute == null)
-            {
-                return defaultLifetime;
-            }
-            return attribute.Lifetime;
-        }
+        }            
 
         private static Exception NewAmbiguousMatchException(Type abstractType, IEnumerable<Type> concreteTypes)
         {

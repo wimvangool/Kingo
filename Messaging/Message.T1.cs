@@ -88,16 +88,23 @@ namespace System.ComponentModel
 
         bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
         {
-            return CreateValidator().TryGetValidationErrors((TMessage) this, out errorTree);
+            var validator = CreateValidator();
+            if (validator != null)
+            {
+                return validator.TryGetValidationErrors((TMessage) this, out errorTree);
+            }
+            errorTree = null;
+            return false;
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.
+        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message,
+        /// or <c>null</c> if this message does not require validation.
         /// </summary>
         /// <returns>A new <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.</returns>
         protected virtual IMessageValidator<TMessage> CreateValidator()
         {
-            return new ManualMessageValidator<TMessage>();
+            return null;
         }
 
         #endregion

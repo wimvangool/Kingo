@@ -68,7 +68,7 @@ namespace System.ComponentModel.Server
         protected override void RegisterWithPerScenarioLifetime(Type concreteType, Type abstractType)
         {
             _container.RegisterType(concreteType, PerScenarioLifetime());
-            _container.RegisterType(concreteType, abstractType);
+            _container.RegisterType(abstractType, concreteType);
         }
 
         /// <inheritdoc />

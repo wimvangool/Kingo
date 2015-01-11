@@ -384,15 +384,7 @@ namespace System.ComponentModel
 
         #endregion        
 
-        #region [====== Validation ======]
-
-        private sealed class DefaultValidator<T> : AutomaticMessageValidator<T> where T : RequestMessageViewModel<T>
-        {
-            protected override ValidationContext CreateValidationContext(T message)
-            {
-                return message.CreateValidationContext();
-            }
-        }
+        #region [====== Validation ======]        
 
         string IDataErrorInfo.this[string columnName]
         {
@@ -432,13 +424,16 @@ namespace System.ComponentModel
         public void Validate()
         {
             var validator = CreateValidator();
-            var oldValue = IsValid;
-            var newValue = !validator.TryGetValidationErrors((TMessage) this, out _errorTree) && ValidateAttachedMessages();
-
-            if (oldValue != newValue)
+            if (validator != null)
             {
-                OnIsValidChanged();
-            }
+                var oldValue = IsValid;
+                var newValue = !validator.TryGetValidationErrors((TMessage)this, out _errorTree) && ValidateAttachedMessages();
+
+                if (oldValue != newValue)
+                {
+                    OnIsValidChanged();
+                }    
+            }            
         }                              
 
         internal bool ValidateAttachedMessages()
@@ -462,7 +457,15 @@ namespace System.ComponentModel
         internal virtual bool TryGetValidationErrors(bool includeChildErrors, out ValidationErrorTree errorTree)
         {            
             // First, we validate this message.
-            CreateValidator().TryGetValidationErrors((TMessage) this, out errorTree);
+            var validator = CreateValidator();
+            if (validator == null)
+            {
+                errorTree = null;
+            }
+            else
+            {
+                validator.TryGetValidationErrors((TMessage) this, out errorTree);    
+            }            
 
             // Second, if required, we validate all children and merge all errors into a single ValidationErrorTree.
             ICollection<ValidationErrorTree> childErrorTrees;
@@ -499,30 +502,14 @@ namespace System.ComponentModel
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.
+        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message,
+        /// or <c>null</c> if no validation is required for this message.
         /// </summary>
         /// <returns>A new <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.</returns>
         protected virtual IMessageValidator<TMessage> CreateValidator()
         {
-            return new DefaultValidator<TMessage>();
-        }
-
-        /// <summary>
-        /// Creates and returns a <see cref="ValidationContext" /> that is used during validation of this message.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="ValidationContext" /> pointing to the current message and contains all services that were
-        /// registered through one the message's <see cref="RegisterService{T}" /> methods.
-        /// </returns>
-        /// <remarks>
-        /// A subclass can override this method to return a more specific <see cref="ValidationContext" /> if required.
-        /// This may be necessary when a custom <see cref="IServiceProvider">service provider</see> is needed to
-        /// perform validation on this message.
-        /// </remarks>
-        protected virtual ValidationContext CreateValidationContext()
-        {
-            return new ValidationContext(this, this, null);            
-        }
+            return new AutomaticMessageValidator<TMessage>(message => new ValidationContext(message, message, null));
+        }        
 
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿
 namespace System.ComponentModel.Server
 {
+    [MessageHandler(InstanceLifetime.PerUnitOfWork)]
     internal sealed class TheCommandHandler : IMessageHandler<TheCommand>
     {
         public void Handle(TheCommand command)

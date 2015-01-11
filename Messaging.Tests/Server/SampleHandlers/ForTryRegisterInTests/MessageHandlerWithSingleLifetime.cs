@@ -1,7 +1,7 @@
 ﻿
 namespace System.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
 {
-    [InstanceLifetime(InstanceLifetime.Singleton)]
+    [MessageHandler(InstanceLifetime.Singleton)]
     internal sealed class MessageHandlerWithSingleLifetime : IMessageHandler<Command>
     {        
         public void Handle(Command message) {}  

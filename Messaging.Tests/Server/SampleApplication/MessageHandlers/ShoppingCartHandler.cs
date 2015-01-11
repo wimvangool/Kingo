@@ -2,6 +2,7 @@
 
 namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
 {
+    [MessageHandler(InstanceLifetime.PerUnitOfWork)]
     internal sealed class ShoppingCartHandler : IMessageHandler<AddProductToCartCommand>,
                                                 IMessageHandler<CreateShoppingCartCommand>
     {

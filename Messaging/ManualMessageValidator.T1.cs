@@ -4,8 +4,26 @@
     /// Represents a <see cref="IMessageValidator{TMessage}" /> that validates a message by inline validation-logic.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to validate.</typeparam>
-    public class ManualMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class
+    public sealed class ManualMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class
     {
+        private readonly Func<TMessage, ValidationErrorTreeBuilder> _validateMethod;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ManualMessageValidator{TMessage}" /> class.
+        /// </summary>
+        /// <param name="validateMethod">The method that is used to validate the message.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="validateMethod"/> is <c>null</c>.
+        /// </exception>
+        public ManualMessageValidator(Func<TMessage, ValidationErrorTreeBuilder> validateMethod)
+        {
+            if (validateMethod == null)
+            {
+                throw new ArgumentNullException("validateMethod");
+            }
+            _validateMethod = validateMethod;
+        }
+
         /// <inheritdoc />
         public bool TryGetValidationErrors(TMessage message, out ValidationErrorTree errorTree)
         {
@@ -14,18 +32,7 @@
                 errorTree = null;
                 return false;
             }
-            return Validate(message).TryBuildErrorTree(out errorTree);
-        }
-
-        /// <summary>
-        /// Creates and returns a <see cref="ValidationErrorTreeBuilder" /> that contains all validation-errors
-        /// of the specified <paramref name="message"/>.
-        /// </summary>
-        /// <param name="message">The message to validate.</param>
-        /// <returns>A <see cref="ValidationErrorTreeBuilder" /> that contains all validation-errors.</returns>
-        protected virtual ValidationErrorTreeBuilder Validate(TMessage message)
-        {
-            return new ValidationErrorTreeBuilder(message.GetType());
-        }
+            return _validateMethod.Invoke(message).TryBuildErrorTree(out errorTree);
+        }        
     }
 }

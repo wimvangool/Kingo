@@ -77,6 +77,7 @@
     <Compile Include="FunctionalException.cs" />
     <Compile Include="ReadOnlyDictionary.T2.cs" />
     <Compile Include="RequestMessageViewModelEditScope.cs" />
+    <Compile Include="Server\DependencyAttribute.cs" />
     <Compile Include="ValidationErrorTree.cs" />
     <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">
@@ -144,7 +145,7 @@
     <Compile Include="Server\IMessageProcessor.cs" />
     <Compile Include="Server\IMessageProcessorBus.cs" />
     <Compile Include="Server\InstanceLifetime.cs" />
-    <Compile Include="Server\InstanceLifetimeAttribute.cs" />
+    <Compile Include="Server\MessageHandlerAttribute.cs" />
     <Compile Include="Server\MessageHandlerClass.cs" />
     <Compile Include="Server\MessageHandlerFactory.cs" />
     <Compile Include="Server\MessageProcessor.cs" />

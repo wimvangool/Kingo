@@ -9,8 +9,27 @@ namespace System.ComponentModel
     /// members of a message.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to validate.</typeparam>
-    public class AutomaticMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class
+    public sealed class AutomaticMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class
     {
+        private readonly Func<TMessage, ValidationContext> _validationContextFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutomaticMessageValidator{TMessage}" /> class.
+        /// </summary>        
+        public AutomaticMessageValidator()
+            : this(null) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutomaticMessageValidator{TMessage}" /> class.
+        /// </summary>
+        /// <param name="validationContextFactory">
+        /// The method used to create a <see cref="ValidationContext" /> for a specific message.
+        /// </param>        
+        public AutomaticMessageValidator(Func<TMessage, ValidationContext> validationContextFactory)
+        {            
+            _validationContextFactory = validationContextFactory ?? (message => new ValidationContext(message, null, null));
+        }
+
         /// <inheritdoc />
         public bool TryGetValidationErrors(TMessage message, out ValidationErrorTree errorTree)
         {
@@ -19,7 +38,7 @@ namespace System.ComponentModel
                 errorTree = null;
                 return false;
             }
-            return TryGetValidationErrors(CreateValidationContext(message), out errorTree);
+            return TryGetValidationErrors(_validationContextFactory.Invoke(message), out errorTree);
         }
 
         private bool TryGetValidationErrors(ValidationContext validationContext, out ValidationErrorTree errorTree)
@@ -47,17 +66,7 @@ namespace System.ComponentModel
             {
                 RequestMessageLabelProvider.Remove(validationContext.ObjectInstance);
             }
-        }
-
-        /// <summary>
-        /// Creates and returns a <see cref="ValidationContext" /> instance for the specified <paramref name="message"/>.
-        /// </summary>
-        /// <param name="message">The message to validate.</param>
-        /// <returns>A new <see cref="ValidationContext" /> instance.</returns>
-        protected virtual ValidationContext CreateValidationContext(TMessage message)
-        {
-            return new ValidationContext(message, null, null);
-        }
+        }        
 
         private Dictionary<string, string> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)
         {
@@ -71,20 +80,10 @@ namespace System.ComponentModel
 
             foreach (var member in errorMessageBuilder)
             {
-                errorMessagesPerMember.Add(member.Key, Concatenate(member.Value));
+                errorMessagesPerMember.Add(member.Key, ValidationErrorTree.Concatenate(member.Value));
             }
             return errorMessagesPerMember;
-        }
-
-        /// <summary>
-        /// Concatenates all validation-errors found for a single member into a single error-message.
-        /// </summary>
-        /// <param name="errorMessagesForMember">A collection of validation-errors.</param>
-        /// <returns>A concatenated string of error-messages.</returns>
-        protected virtual string Concatenate(IEnumerable<string> errorMessagesForMember)
-        {
-            return ValidationErrorTree.Concatenate(errorMessagesForMember);
-        }
+        }        
 
         private static void AppendErrorMessage(IDictionary<string, List<string>> errorMessageBuilder, ValidationResult result)
         {
