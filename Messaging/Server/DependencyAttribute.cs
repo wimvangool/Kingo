@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// This attribute must be put on each dependency class to support auto-registration of it

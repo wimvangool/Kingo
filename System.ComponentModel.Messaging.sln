@@ -22,13 +22,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.Messaging.Containers", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Messaging", "Messaging\04.Messaging.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Messaging.Tests", "Messaging.Tests\03.Messaging.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Messaging.Tests", "Messaging.Tests\05.Messaging.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Client", "Messaging.Client\02.Messaging.Client.csproj", "{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Messaging.Client", "Messaging.Client\03.Messaging.Client.csproj", "{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.Messaging.TestEngine", "A.Messaging.TestEngine", "{C3F19C5E-9EAD-4324-9B07-129C32CFA05B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Client.Tests", "Messaging.Client.Tests\01.Messaging.Client.Tests.csproj", "{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Client.Tests", "Messaging.Client.Tests\02.Messaging.Client.Tests.csproj", "{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Client.WpfApplication", "Messaging.Client.WpfApplication\01.Messaging.Client.WpfApplication.csproj", "{2DEC2193-16A6-4F74-87B0-44096BBB0A26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{303380DB-4167-4BB0-8B78-63C959B65C4B} = {72205C90-C23B-4086-8580-050201371032}
 		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286} = {72205C90-C23B-4086-8580-050201371032}
 		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071} = {72205C90-C23B-4086-8580-050201371032}
+		{2DEC2193-16A6-4F74-87B0-44096BBB0A26} = {72205C90-C23B-4086-8580-050201371032}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35

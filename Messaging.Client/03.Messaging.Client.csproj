@@ -44,6 +44,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.solution.cs">
@@ -51,9 +52,11 @@
     </Compile>
     <Compile Include="Client\ClientCommand.cs" />
     <Compile Include="Client\AsyncExecutionTaskStartedEventArgs.cs" />
+    <Compile Include="Client\DataVirtualization\CollectionChangedEventThrottle.cs" />
     <Compile Include="Client\DataVirtualization\CountLoadedEventArgs.cs" />
     <Compile Include="Client\DataVirtualization\IndexSet.cs" />
     <Compile Include="Client\DataVirtualization\IndexRange.cs" />
+    <Compile Include="Client\DataVirtualization\IVirtualCollectionItem.cs" />
     <Compile Include="Client\DataVirtualization\PageLoadedEventArgs.T1.cs" />
     <Compile Include="Client\DataVirtualization\PageFailedToLoadEventArgs.cs" />
     <Compile Include="Client\DataVirtualization\IVirtualCollectionPageLoader.T1.cs" />

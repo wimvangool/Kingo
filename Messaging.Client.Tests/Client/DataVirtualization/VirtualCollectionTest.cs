@@ -9,7 +9,7 @@ namespace System.ComponentModel.Client.DataVirtualization
     {
         private SynchronizationContextScope _scope;
         private VirtualCollectionPageLoaderSpy _implementation;
-        private VirtualCollection<int> _collection;
+        private VirtualCollectionSpy<int> _collection;
 
         [TestInitialize]
         public void Setup()
@@ -17,12 +17,13 @@ namespace System.ComponentModel.Client.DataVirtualization
             _scope = new SynchronizationContextScope(new SynchronousContext());
             _implementation = new VirtualCollectionPageLoaderSpy(Enumerable.Range(1, 88), 20);
             _implementation.UseInfiniteCacheLifetime = true;
-            _collection = new VirtualCollection<int>(_implementation);
+            _collection = new VirtualCollectionSpy<int>(_implementation);
         }
 
         [TestCleanup]
         public void TearDown()
         {
+            _collection.Dispose();
             _implementation.Dispose();
             _scope.Dispose();
         }
@@ -45,12 +46,14 @@ namespace System.ComponentModel.Client.DataVirtualization
         [TestMethod]
         public void Count_ReturnsCount_IfCountHasBeenLoaded()
         {
-            int? count = null;
-
-            _collection.CollectionChanged += (s, e) => count = _collection.Count;
-
             Assert.AreEqual(0, _collection.Count);
-            Assert.AreEqual(88, count);
+
+            if (_collection.WaitForCollectionChangedEvent(TimeSpan.FromMilliseconds(100)))
+            {
+                Assert.AreEqual(88, _collection.Count);
+                return;
+            }
+            Assert.Fail("Count was not loaded");  
         }
 
         #endregion

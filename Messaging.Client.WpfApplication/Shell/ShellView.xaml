@@ -1,0 +1,85 @@
+﻿<Window x:Class="System.ComponentModel.WpfApplication.Shell.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        xmlns:DataVirtualization="clr-namespace:System.ComponentModel.Client.DataVirtualization;assembly=System.ComponentModel.Messaging.Client"
+        Title="Data Virtualization Test"
+        Height="300"
+        Width="300">
+    <TabControl>
+        <TabItem Header="ListView">
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="0"
+                        Command="{Binding ReloadListViewCommand, Mode=OneTime}"
+                        Content="Reload Data" />                
+
+                <ListView Grid.Row="1"
+                          ItemsSource="{Binding ListViewCollection, Mode=OneWay}"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          ScrollViewer.IsDeferredScrollingEnabled="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type DataVirtualization:IVirtualCollectionItem}">
+                            <TextBlock x:Name="Label" Text="{Binding Value}" Background="LightCoral" />
+
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsLoaded}" Value="True">
+                                    <Setter TargetName="Label" Property="Background" Value="LawnGreen" />
+                                    <Setter TargetName="Label" Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+               
+            </Grid>            
+            
+        </TabItem>
+
+        <TabItem Header="DataGrid">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="0"
+                        Command="{Binding ReloadDataGridCommand, Mode=OneTime}"
+                        Content="Reload Data" />
+
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding DataGridCollection, Mode=OneWay}"
+                          AutoGenerateColumns="False"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          ScrollViewer.IsDeferredScrollingEnabled="True">
+                    
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Numbers">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type DataVirtualization:IVirtualCollectionItem}">
+                                    <TextBlock x:Name="Label" Text="{Binding Value}" Background="LightCoral" />
+
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsLoaded}" Value="True">
+                                            <Setter TargetName="Label" Property="Background" Value="LawnGreen" />
+                                            <Setter TargetName="Label" Property="FontWeight" Value="Bold" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>                                        
+                </DataGrid>
+
+            </Grid>
+
+        </TabItem>
+    </TabControl>
+</Window>

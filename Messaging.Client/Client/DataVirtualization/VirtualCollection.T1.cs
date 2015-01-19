@@ -11,7 +11,8 @@ namespace System.ComponentModel.Client.DataVirtualization
     /// <typeparam name="T">Type of the items in this collection.</typeparam>
     public class VirtualCollection<T> : ReadOnlyCollection<VirtualCollectionItem<T>>, INotifyCollectionChanged
     {               
-        private readonly IVirtualCollectionPageLoader<T> _loader;        
+        private readonly IVirtualCollectionPageLoader<T> _loader;
+        private readonly CollectionChangedEventThrottle _eventThrottle;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
@@ -29,7 +30,12 @@ namespace System.ComponentModel.Client.DataVirtualization
             _loader = loader;
             _loader.CountLoaded += HandleCountLoaded;
             _loader.PageFailedToLoad += HandlePageFailedToLoad;
-            _loader.PageLoaded += HandlePageLoaded;            
+            _loader.PageLoaded += HandlePageLoaded;
+
+            _eventThrottle = new CollectionChangedEventThrottle(e => CollectionChanged.Raise(this, e))
+            {
+                RaiseInterval = TimeSpan.FromMilliseconds(100)
+            };
         }
 
         /// <summary>
@@ -93,7 +99,7 @@ namespace System.ComponentModel.Client.DataVirtualization
         public override VirtualCollectionItem<T> this[int index]
         {
             get
-            {
+            {                
                 if (index < 0 || index >= Count)
                 {
                     throw NewIndexOutOfRangeException(index);
@@ -191,6 +197,16 @@ namespace System.ComponentModel.Client.DataVirtualization
 
         #region [====== NotifyCollectionChanged ======]
 
+        /// <summary>
+        /// Gets or sets the sliding window interval that is used to prevent the
+        /// <see cref="CollectionChanged" />-event from raising all too often.
+        /// </summary>
+        public TimeSpan CollectionChangedRaiseInterval
+        {
+            get { return _eventThrottle.RaiseInterval; }
+            set { _eventThrottle.RaiseInterval = value; }
+        }
+
         /// <inheritdoc />
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -212,7 +228,7 @@ namespace System.ComponentModel.Client.DataVirtualization
         /// </exception>
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            CollectionChanged.Raise(this, e);
+            _eventThrottle.NotifyCollectionChanged(e);
         }
 
         #endregion

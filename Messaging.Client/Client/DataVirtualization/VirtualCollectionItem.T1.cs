@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Represents an item of a <see cref="VirtualCollection{T}" />.
 	/// </summary>	
-	public struct VirtualCollectionItem<T> : IEquatable<VirtualCollectionItem<T>>
+	public struct VirtualCollectionItem<T> : IEquatable<VirtualCollectionItem<T>>, IVirtualCollectionItem
 	{
         /// <summary>
         /// Returns the item that indicates that the item was not (yet) loaded.
@@ -34,33 +34,30 @@
             _value = default(T);
 		}
 
-		/// <summary>
-		/// Indicates whether or not this item represents an unloaded item.
-		/// </summary>
+	    /// <inheritdoc />
 	    public bool IsNotLoaded
 	    {
             get { return _status == VirtualCollectionItemStatus.NotLoaded; }
 	    }
 
-        /// <summary>
-        /// Indicates whether or not this item represents a loaded item.
-        /// </summary>
+	    /// <inheritdoc />
 	    public bool IsLoaded
 	    {
             get { return _status == VirtualCollectionItemStatus.Loaded; }
 	    }
 
-		/// <summary>
-		/// Indicates whether or not there was a problem loading this item.
-		/// </summary>
+	    /// <inheritdoc />
 	    public bool FailedToLoad
 	    {
             get { return _status == VirtualCollectionItemStatus.FailedToLoad; }
 	    }
 
-		/// <summary>
-		/// Returns the value of this item. If <see cref="IsNotLoaded" /> is <c>false</c>, this property will return the default value.
-		/// </summary>
+	    object IVirtualCollectionItem.Value
+	    {
+            get { return _value; }
+	    }
+
+	    /// <inheritdoc />
 	    public T Value
 	    {
             get { return _value; }
