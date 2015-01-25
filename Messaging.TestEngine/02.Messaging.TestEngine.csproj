@@ -59,7 +59,6 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IUnitTestFramework.cs" />
     <Compile Include="Server\BooleanOperandExtensions.cs" />
     <Compile Include="Server\ConjunctionStatement.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">

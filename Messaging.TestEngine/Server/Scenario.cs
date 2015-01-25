@@ -64,15 +64,7 @@ namespace System.ComponentModel.Server
         {
             get;
             internal set;
-        }
-
-        /// <summary>
-        /// Returns the <see cref="IUnitTestFramework" /> that is used to run this scenario.
-        /// </summary>
-        protected abstract IUnitTestFramework Framework
-        {
-            get;
-        }
+        }        
 
         /// <summary>
         /// Returns the processor that is used to execute this <see cref="Scenario" />.
@@ -112,31 +104,25 @@ namespace System.ComponentModel.Server
             Fail();
         }
 
-        void IScenario.Fail(string message)
-        {
-            Framework.FailTest(message);
-        }
-
-        void IScenario.Fail(string message, params object[] parameters)
-        {
-            Framework.FailTest(message, parameters);
-        }
-
         /// <summary>
         /// Marks this scenario as failed.
         /// </summary>
-        protected void Fail()
+        protected abstract void Fail();
+
+        void IScenario.Fail(string message)
         {
-            Framework.FailTest();
+            Fail(message);
         }
 
         /// <summary>
         /// Marks this scenario as failed using the specified <paramref name="message"/>.
         /// </summary>
         /// <param name="message">The reason why the scenario failed.</param>
-        protected void Fail(string message)
+        protected abstract void Fail(string message);
+
+        void IScenario.Fail(string message, params object[] parameters)
         {
-            Framework.FailTest(message);
+            Fail(message, parameters);
         }
 
         /// <summary>
@@ -144,10 +130,7 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <param name="message">The reason why the scenario failed.</param>
         /// <param name="parameters">An optional array of parameters to include in the message.</param>
-        protected void Fail(string message, params object[] parameters)
-        {
-            Framework.FailTest(message, parameters);
-        }
+        protected abstract void Fail(string message, params object[] parameters);
 
         internal void SaveDomainEvent(object domainEvent)
         {

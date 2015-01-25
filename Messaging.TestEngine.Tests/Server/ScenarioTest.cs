@@ -31,9 +31,19 @@ namespace System.ComponentModel.Server
                 get { return null; }
             }
 
-            protected override IUnitTestFramework Framework
+            protected override void Fail()
             {
-                get { return MSTestFramework.Instance; }
+                Assert.Fail();
+            }
+
+            protected override void Fail(string message)
+            {
+                Assert.Fail(message);
+            }
+
+            protected override void Fail(string message, params object[] parameters)
+            {
+                Assert.Fail(message, parameters);
             }
 
             public new object DomainEventAt(int index)
