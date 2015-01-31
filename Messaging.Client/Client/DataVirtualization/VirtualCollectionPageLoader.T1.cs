@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Resources;
 using System.Runtime.Caching;
 using System.Threading;
@@ -42,7 +41,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             _collection.OnCountLoaded(e);
         }        
         
-        internal bool TryGetCount(out int count)
+        internal bool TryGetCount(bool loadCountIfRequired, out int count)
         {
             if (_count.HasValue)
             {
@@ -52,20 +51,22 @@ namespace System.ComponentModel.Client.DataVirtualization
             if (_loadCountTask != null && !_loadCountTask.IsCompleted)
             {
                 return CountNotYetLoaded(out count);
-            }            
-            _loadCountTask = StartLoadCountTask();
-            _loadCountTask.ContinueWith(task =>
+            }
+            if (loadCountIfRequired)
             {
-                using (var scope = CreateSynchronizationContextScope())
-                {                    
-                    if (task.IsCanceled || task.IsFaulted)
+                _loadCountTask = StartLoadCountTask();
+                _loadCountTask.ContinueWith(task =>
+                {
+                    using (var scope = CreateSynchronizationContextScope())
                     {
-                        return;
+                        if (task.IsCanceled || task.IsFaulted)
+                        {
+                            return;
+                        }
+                        scope.Post(() => OnCountLoaded(new CountLoadedEventArgs(task.Result)));
                     }
-                    scope.Post(() => OnCountLoaded(new CountLoadedEventArgs(task.Result)));
-                }
-            }, TaskContinuationOptions.ExecuteSynchronously);
-
+                }, TaskContinuationOptions.ExecuteSynchronously);
+            }
             return CountNotYetLoaded(out count);
         }
 
@@ -83,9 +84,8 @@ namespace System.ComponentModel.Client.DataVirtualization
         #endregion
 
         #region [====== Page Loading ======]
-
-        /// <inheritdoc />
-        internal bool TryGetItem(int index, out T item)
+        
+        internal bool TryGetItem(int index, bool loadPageIfRequired, out T item)
         {
             if (_count.HasValue && (index < 0 || index > LargestItemIndex()))
             {
@@ -93,12 +93,12 @@ namespace System.ComponentModel.Client.DataVirtualization
             }
             if (_count.HasValue)
             {
-                return TryGetItemThroughPage(index, out item);
+                return TryGetItemThroughPage(index, loadPageIfRequired, out item);
             }
             throw NewCountNotLoadedException();
         }
 
-        private bool TryGetItemThroughPage(int index, out T item)
+        private bool TryGetItemThroughPage(int index, bool loadPageIfRequired, out T item)
         {
             var pageIndex = CalculatePageIndex(index);            
             IList<T> page;
@@ -107,13 +107,14 @@ namespace System.ComponentModel.Client.DataVirtualization
             {
                 item = page[index % PageSize];
                 return true;
-            }            
-            LoadPage(pageIndex, false);
-
+            }
+            if (loadPageIfRequired)
+            {
+                LoadPage(pageIndex, false);
+            }
             return ItemNotYetLoaded(out item);
         }
-
-        /// <inheritdoc />
+        
         internal void LoadItem(int index)
         {
             if (index < 0 || index > LargestItemIndex())
@@ -122,8 +123,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             }
             LoadPage(CalculatePageIndex(index));
         }
-
-        /// <inheritdoc />
+        
         internal void LoadPage(int pageIndex)
         {
             if (pageIndex < 0 || pageIndex > LargestPageIndex())
@@ -150,7 +150,7 @@ namespace System.ComponentModel.Client.DataVirtualization
                     // nothing ever happened.
                     if (task.IsFaulted)
                     {
-                        OnPageFailedToLoad(pageIndex);
+                        OnPageFailedToLoad(pageIndex, task.Exception);
                     }
                     else
                     {
@@ -176,11 +176,13 @@ namespace System.ComponentModel.Client.DataVirtualization
             return new VirtualCollectionPage<T>(this, pageIndex, items);
         }
 
-        private void OnPageFailedToLoad(int pageIndex)
+        private void OnPageFailedToLoad(int pageIndex, AggregateException exception)
         {
+            var eventArgs = new PageFailedToLoadEventArgs(pageIndex, exception);
+
             _pagesThatFailedToLoad.Add(pageIndex);
 
-            SynchronizationContextScope.Current.Post(() => OnPageFailedToLoad(new PageFailedToLoadEventArgs(pageIndex)));            
+            SynchronizationContextScope.Current.Post(() => OnPageFailedToLoad(eventArgs));            
         }        
         
         private void OnPageFailedToLoad(PageFailedToLoadEventArgs e)
@@ -200,7 +202,7 @@ namespace System.ComponentModel.Client.DataVirtualization
         private void OnPageLoaded(PageLoadedEventArgs<T> e)
         {
             _collection.OnPageLoaded(e);
-        }
+        }       
 
         #endregion
 

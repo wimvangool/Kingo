@@ -6,6 +6,11 @@
     internal enum VirtualCollectionItemStatus
     {
         /// <summary>
+        /// Indicates that the status of the item is undefined.
+        /// </summary>
+        Undefined,
+
+        /// <summary>
         /// Indicates that the item has not (yet) been loaded.
         /// </summary>
         NotLoaded,

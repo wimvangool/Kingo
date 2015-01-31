@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel.Client.DataVirtualization;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace System.ComponentModel.WpfApplication.Shell
 {
     internal sealed class LargeIntegerCollection : VirtualCollection<int>
     {        
+        private static readonly Random _RandomFailureNumber = new Random();
         private const int _CollectionSize = 3456789;
         private const int _PageSize = 10;
 
@@ -34,20 +36,31 @@ namespace System.ComponentModel.WpfApplication.Shell
 
         protected override Task<IList<int>> StartLoadPageTask(int pageIndex)
         {
+            var failureNumber = _RandomFailureNumber.NextDouble();
+
             return Task<IList<int>>.Factory.StartNew(() =>
             {
                 // We simulate a load delay here.
                 Thread.Sleep(TimeSpan.FromMilliseconds(20));
 
+                if (failureNumber <= 0.1)
+                {
+                    throw NewRandomPageLoadException();
+                }
                 return Enumerable.Range(FirstItemOfPage(pageIndex), PageSize).ToArray();
             });
+        }
+
+        private static Exception NewRandomPageLoadException()
+        {
+            return new IOException("Page could not be loaded");
         }        
 
         protected override CacheItemPolicy CreatePageCachePolicy(int pageIndex)
         {
             return new CacheItemPolicy()
             {
-                SlidingExpiration = TimeSpan.FromSeconds(5),
+                SlidingExpiration = TimeSpan.FromSeconds(120),
                 RemovedCallback = args =>                                  
                     Debug.WriteLine("Page {0} was removed from cache.", pageIndex)                
             };

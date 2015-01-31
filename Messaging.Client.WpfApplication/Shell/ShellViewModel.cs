@@ -19,8 +19,9 @@ namespace System.ComponentModel.WpfApplication.Shell
             _reloadDataGridCollectionCommand = new RelayCommand(() =>
             {
                 DataGridCollection = new LargeIntegerCollection("DataGrid");
-            });  
-        }
+            });
+            DisplayName = "Data Virtualization Sample";
+        }                
 
         public ICommand ReloadListViewCommand
         {

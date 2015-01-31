@@ -83,9 +83,10 @@ namespace System.ComponentModel.Client.DataVirtualization
         {
             Assert.AreEqual(0, _collection.Count);
 
-            var item = VirtualCollectionItem<int>.NotLoadedItem;
+            const int itemIndex = 9;
+            var item = new VirtualCollectionItem<int>(itemIndex, VirtualCollectionItemStatus.NotLoaded);
 
-            _collection.PageLoaded += (s, e) => item = _collection[9];
+            _collection.PageLoaded += (s, e) => item = _collection[itemIndex];
             _collection.Loader.LoadPage(0);
 
             Assert.IsFalse(item.IsNotLoaded);
@@ -99,9 +100,10 @@ namespace System.ComponentModel.Client.DataVirtualization
         {
             Assert.AreEqual(0, _collection.Count);
 
-            var item = VirtualCollectionItem<int>.NotLoadedItem;
+            const int itemIndex = 8;
+            var item = new VirtualCollectionItem<int>(itemIndex, VirtualCollectionItemStatus.NotLoaded);
 
-            _collection.PageFailedToLoad += (s, e) => item = _collection[8];
+            _collection.PageFailedToLoad += (s, e) => item = _collection[itemIndex];
             _collection.FailNextPageLoad = true;
             _collection.Loader.LoadPage(0);
 
@@ -240,7 +242,7 @@ namespace System.ComponentModel.Client.DataVirtualization
         {
             int count;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
+            Assert.IsFalse(_collection.Loader.TryGetCount(false, out count));
             Assert.AreEqual(0, count);
         }
 
@@ -252,7 +254,7 @@ namespace System.ComponentModel.Client.DataVirtualization
 
             _collection.CountLoaded += (s, e) => countInEventArgs = e.Count;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
             Assert.AreEqual(_Count, countInEventArgs);
             Assert.AreEqual(1, _collection.LoadCountInvocations);
         }
@@ -262,8 +264,8 @@ namespace System.ComponentModel.Client.DataVirtualization
         {
             int count;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsTrue(_collection.Loader.TryGetCount(out count));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsTrue(_collection.Loader.TryGetCount(false, out count));
             Assert.AreEqual(_Count, count);            
         }
 
@@ -277,7 +279,7 @@ namespace System.ComponentModel.Client.DataVirtualization
         {
             int item;
 
-            _collection.Loader.TryGetItem(0, out item);
+            _collection.Loader.TryGetItem(0, false, out item);
         }
 
         [TestMethod]
@@ -287,8 +289,8 @@ namespace System.ComponentModel.Client.DataVirtualization
             int count;
             int item;
 
-            _collection.Loader.TryGetCount(out count);
-            _collection.Loader.TryGetItem(-1, out item);
+            _collection.Loader.TryGetCount(true, out count);
+            _collection.Loader.TryGetItem(-1, false, out item);
         }
 
         [TestMethod]
@@ -298,9 +300,9 @@ namespace System.ComponentModel.Client.DataVirtualization
             int count;
             int item;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
 
-            _collection.Loader.TryGetItem(_Count, out item);
+            _collection.Loader.TryGetItem(_Count, false, out item);
         }
 
         [TestMethod]
@@ -309,8 +311,8 @@ namespace System.ComponentModel.Client.DataVirtualization
             int count;            
             int item;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsFalse(_collection.Loader.TryGetItem(19, out item));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsFalse(_collection.Loader.TryGetItem(19, false, out item));
             Assert.AreEqual(0, item);            
         }
 
@@ -323,8 +325,8 @@ namespace System.ComponentModel.Client.DataVirtualization
 
             _collection.PageLoaded += (s, e) => page = e;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsFalse(_collection.Loader.TryGetItem(29, out item));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsFalse(_collection.Loader.TryGetItem(29, true, out item));
             
             Assert.AreEqual(1, _collection.LoadPageInvocations);
 
@@ -348,10 +350,10 @@ namespace System.ComponentModel.Client.DataVirtualization
 
             _collection.PageLoaded += (s, e) => pages.Add(e);
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsFalse(_collection.Loader.TryGetItem(30, out item));
-            Assert.IsTrue(_collection.Loader.TryGetItem(33, out item));
-            Assert.IsTrue(_collection.Loader.TryGetItem(35, out item));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsFalse(_collection.Loader.TryGetItem(30, true, out item));
+            Assert.IsTrue(_collection.Loader.TryGetItem(33, true, out item));
+            Assert.IsTrue(_collection.Loader.TryGetItem(35, true, out item));
             
             Assert.AreEqual(3, _collection.LoadPageInvocations);
             Assert.AreEqual(3, pages.Count);
@@ -393,9 +395,9 @@ namespace System.ComponentModel.Client.DataVirtualization
 
             _collection.PageLoaded += (s, e) => page = e;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsFalse(_collection.Loader.TryGetItem(62, out item));
-            Assert.IsTrue(_collection.Loader.TryGetItem(66, out item));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsFalse(_collection.Loader.TryGetItem(62, true, out item));
+            Assert.IsTrue(_collection.Loader.TryGetItem(66, true, out item));
             
             Assert.AreEqual(1, _collection.LoadPageInvocations);
 
@@ -419,8 +421,8 @@ namespace System.ComponentModel.Client.DataVirtualization
             _collection.FailNextPageLoad = true;
             _collection.PageFailedToLoad += (s, e) => pageIndex = e.PageIndex;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsFalse(_collection.Loader.TryGetItem(46, out item));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsFalse(_collection.Loader.TryGetItem(46, true, out item));
             
             Assert.AreEqual(1, _collection.LoadPageInvocations);     
        
@@ -437,8 +439,8 @@ namespace System.ComponentModel.Client.DataVirtualization
             int count;
             int item;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsFalse(_collection.Loader.TryGetItem(11, out item));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsFalse(_collection.Loader.TryGetItem(11, true, out item));
             Assert.IsTrue(_collection.WaitUntilRemovedFromCache(11, TimeSpan.FromSeconds(20)), "Page was not cached or did not expire.");
         }
 
@@ -448,10 +450,10 @@ namespace System.ComponentModel.Client.DataVirtualization
             int count;
             int item;
 
-            Assert.IsFalse(_collection.Loader.TryGetCount(out count));
-            Assert.IsFalse(_collection.Loader.TryGetItem(55, out item));
+            Assert.IsFalse(_collection.Loader.TryGetCount(true, out count));
+            Assert.IsFalse(_collection.Loader.TryGetItem(55, true, out item));
             Assert.IsTrue(_collection.WaitUntilRemovedFromCache(55, TimeSpan.FromSeconds(30)), "Page was not cached or did not expire.");
-            Assert.IsFalse(_collection.Loader.TryGetItem(55, out item), "Page should no longer be in cache.");
+            Assert.IsFalse(_collection.Loader.TryGetItem(55, false, out item), "Page should no longer be in cache.");
         }
 
         #endregion

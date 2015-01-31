@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.Resources;
-
-namespace System.ComponentModel.Client.DataVirtualization
+﻿namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
-    /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.PageFailedToLoad" /> event.
+    /// Arguments of the <see cref="VirtualCollection{T}.PageFailedToLoad" /> event.
     /// </summary>
     public class PageFailedToLoadEventArgs : EventArgs
     {
@@ -13,26 +11,15 @@ namespace System.ComponentModel.Client.DataVirtualization
         public readonly int PageIndex;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PageFailedToLoadEventArgs" /> class.
+        /// The <see cref="AggregateException">Exception(s)</see> that was/were thrown
+        /// while attempting to load the page.
         /// </summary>
-        /// <param name="pageIndex">The index of the item that failed to load.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="pageIndex"/> is negative.
-        /// </exception>
-        public PageFailedToLoadEventArgs(int pageIndex)
-        {
-            if (pageIndex < 0)
-            {
-                throw NewIndexOutOfRangeException(pageIndex);
-            }
+        public readonly AggregateException Exception;
+        
+        internal PageFailedToLoadEventArgs(int pageIndex, AggregateException exception)
+        {            
             PageIndex = pageIndex;
-        }
-
-        private static Exception NewIndexOutOfRangeException(int pageIndex)
-        {
-            var messageFormat = ExceptionMessages.Object_IndexOutOfRange;
-            var message = string.Format(messageFormat, pageIndex);
-            return new ArgumentOutOfRangeException("pageIndex", message);
-        }
+            Exception = exception;
+        }        
     }
 }

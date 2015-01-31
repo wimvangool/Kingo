@@ -1,38 +1,52 @@
-﻿namespace System.ComponentModel.Client.DataVirtualization
+﻿using System.ComponentModel.Resources;
+
+namespace System.ComponentModel.Client.DataVirtualization
 {
 	/// <summary>
 	/// Represents an item of a <see cref="VirtualCollection{T}" />.
 	/// </summary>	
 	public struct VirtualCollectionItem<T> : IEquatable<VirtualCollectionItem<T>>, IVirtualCollectionItem
-	{
-        /// <summary>
-        /// Returns the item that indicates that the item was not (yet) loaded.
-        /// </summary>
-        public static readonly VirtualCollectionItem<T>  NotLoadedItem = new VirtualCollectionItem<T>(VirtualCollectionItemStatus.NotLoaded);
-
-		/// <summary>
-		/// Returns the item that indicates there was a problem loading the item.
-		/// </summary>
-		public static readonly VirtualCollectionItem<T> ErrorItem = new VirtualCollectionItem<T>(VirtualCollectionItemStatus.FailedToLoad);
-
+	{        
         private readonly VirtualCollectionItemStatus _status;
+        private readonly int _indexPlusOne;
 		private readonly T _value;        
 
         /// <summary>
         /// Initializes a new instance of a <see cref="VirtualCollectionItem{T}" /> structure.
         /// </summary>
         /// <param name="value">The loaded item.</param>
-		public VirtualCollectionItem(T value)
-		{
+        /// <param name="index">Index of the item in the collection.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is less than <c>0</c> or equal to <see cref="int.MaxValue" />.
+        /// </exception>
+		public VirtualCollectionItem(int index, T value)
+		{            
 			_status = VirtualCollectionItemStatus.Loaded;
+            _indexPlusOne = Increment(index);
 			_value = value;           
 		}
 
-		private VirtualCollectionItem(VirtualCollectionItemStatus status)
-		{
+	    internal VirtualCollectionItem(int index, VirtualCollectionItemStatus status)
+		{            
             _status = status;
+            _indexPlusOne = Increment(index);
             _value = default(T);
 		}
+
+        private static int Increment(int index)
+        {
+            if (index < 0 || index.Equals(int.MaxValue))
+            {
+                throw NewInvalidPageIndexException(index);
+            }
+            return index + 1;
+        }
+
+	    /// <inheritdoc />
+	    public int Index
+	    {
+	        get { return _indexPlusOne - 1; }            
+	    }
 
 	    /// <inheritdoc />
 	    public bool IsNotLoaded
@@ -91,7 +105,10 @@
         /// </returns>
 		public bool Equals(VirtualCollectionItem<T> other)
 		{
-            return _status == other._status && Equals(_value, other._value);
+            return
+                _status == other._status &&
+                _indexPlusOne == other._indexPlusOne &&
+                Equals(_value, other._value);
 		}
 
         /// <summary>Returns the hash code for this instance.</summary>
@@ -119,7 +136,18 @@
 
         #endregion                		
 
-		#region [====== Operator Overloads ======]
+        #region [====== Factory Methods ======]        
+
+	    private static Exception NewInvalidPageIndexException(int pageIndex)
+	    {
+            var messageFormat = ExceptionMessages.Object_IndexOutOfRange;
+            var message = string.Format(messageFormat, pageIndex);
+            return new ArgumentOutOfRangeException("pageIndex", message);
+	    }
+
+	    #endregion
+
+        #region [====== Operator Overloads ======]
 
         /// <summary>Determines whether two specified <see cref="VirtualCollectionItem{T}" />-instances have the same value.</summary>
 		/// <param name="left">The first instance to compare.</param>

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Resources;
 
 namespace System.ComponentModel.Client.DataVirtualization
 {    
@@ -33,7 +32,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             {
                 int count;
 
-                if (_loader.TryGetCount(out count))
+                if (_loader.TryGetCount(false, out count))
                 {
                     return (PageIndex + 1) * _loader.PageSize < count;
                 }

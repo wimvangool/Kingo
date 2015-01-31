@@ -2,7 +2,6 @@
 using System.Collections.Specialized;
 using System.ComponentModel.Resources;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
@@ -148,7 +147,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             {
                 int count;
 
-                if (_loader.TryGetCount(out count))
+                if (_loader.TryGetCount(true, out count))
                 {
                     return count;
                 }
@@ -196,24 +195,26 @@ namespace System.ComponentModel.Client.DataVirtualization
         /// </exception>        
         public override VirtualCollectionItem<T> this[int index]
         {
-            get
-            {                
-                if (index < 0 || index >= Count)
-                {
-                    throw NewIndexOutOfRangeException(index);
-                }
-                if (_loader.HasFailedToLoadItem(index))
-                {
-                    return VirtualCollectionItem<T>.ErrorItem;
-                }
-                T item;
+            get { return GetItem(index, true); }      
+        }
 
-                if (_loader.TryGetItem(index, out item))
-                {
-                    return new VirtualCollectionItem<T>(item);
-                }
-                return VirtualCollectionItem<T>.NotLoadedItem;
-            }           
+        protected VirtualCollectionItem<T> GetItem(int index, bool loadPageIfRequired)
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw NewIndexOutOfRangeException(index);
+            }
+            if (_loader.HasFailedToLoadItem(index))
+            {
+                return new VirtualCollectionItem<T>(index, VirtualCollectionItemStatus.FailedToLoad);
+            }
+            T item;
+
+            if (_loader.TryGetItem(index, loadPageIfRequired, out item))
+            {
+                return new VirtualCollectionItem<T>(index, item);
+            }
+            return new VirtualCollectionItem<T>(index, VirtualCollectionItemStatus.NotLoaded);
         }
 
         /// <summary>
@@ -245,7 +246,17 @@ namespace System.ComponentModel.Client.DataVirtualization
         /// <inheritdoc />
         protected override int IndexOf(VirtualCollectionItem<T> item)
         {
-            throw new NotImplementedException();
+            int itemIndex = item.Index;
+            int count;
+
+            if (0 <= itemIndex && _loader.TryGetCount(false, out count) && itemIndex < count)
+            {
+                if (item.Equals(GetItem(itemIndex, false)))
+                {
+                    return itemIndex;
+                }
+            }
+            return -1;
         }
 
         /// <inheritdoc />
@@ -257,31 +268,27 @@ namespace System.ComponentModel.Client.DataVirtualization
         /// <inheritdoc />
         protected override void CopyTo(VirtualCollectionItem<T>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            var enumerator = GetEnumerator();
+
+            for (int index = arrayIndex; index < array.Length && enumerator.MoveNext(); index++)
+            {
+                array[index] = enumerator.Current;
+            }
         }
 
         /// <inheritdoc />
         protected override IEnumerator<VirtualCollectionItem<T>> GetEnumerator()
         {
-            return CreateSnapshot().GetEnumerator();
-        }
-
-        protected IList<VirtualCollectionItem<T>> CreateSnapshot()
-        {
             int count;
 
-            if (_loader.TryGetCount(out count))
-            {
-                var items = new VirtualCollectionItem<T>[count];
-
+            if (_loader.TryGetCount(false, out count))
+            {                
                 for (int index = 0; index < count; index++)
                 {
-                    items[index] = this[index];
-                }
-                return items;
+                    yield return GetItem(index, false);
+                }                
             }
-            return new VirtualCollectionItem<T>[0];
-        }
+        }        
 
         #endregion
 

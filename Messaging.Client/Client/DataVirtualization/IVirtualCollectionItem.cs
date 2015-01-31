@@ -6,6 +6,14 @@
     public interface IVirtualCollectionItem
     {
         /// <summary>
+        /// Index of the item in the collection.
+        /// </summary>
+        int Index
+        {
+            get;
+        }
+
+        /// <summary>
         /// Indicates whether or not this item represents an unloaded item.
         /// </summary>
         bool IsNotLoaded

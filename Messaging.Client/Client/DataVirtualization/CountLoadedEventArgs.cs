@@ -3,7 +3,7 @@
 namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
-    /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.CountLoaded" /> event.
+    /// Arguments of the <see cref="VirtualCollection{T}.CountLoaded" /> event.
     /// </summary>
     public class CountLoadedEventArgs : EventArgs
     {

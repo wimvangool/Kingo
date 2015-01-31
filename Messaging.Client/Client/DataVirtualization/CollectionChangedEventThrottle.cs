@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows.Threading;
 
 namespace System.ComponentModel.Client.DataVirtualization
@@ -7,13 +8,14 @@ namespace System.ComponentModel.Client.DataVirtualization
     {
         private readonly Action<NotifyCollectionChangedEventArgs> _raiseEvent;
         private readonly DispatcherTimer _timer;
-        private NotifyCollectionChangedEventArgs _lastEvent;
+        private readonly Queue<NotifyCollectionChangedEventArgs> _events;
 
         internal CollectionChangedEventThrottle(Action<NotifyCollectionChangedEventArgs> raiseEvent)
         {
             _raiseEvent = raiseEvent;
             _timer = new DispatcherTimer(DispatcherPriority.ApplicationIdle);            
             _timer.Tick += HandleTimerTick;
+            _events = new Queue<NotifyCollectionChangedEventArgs>();
         }
 
         internal TimeSpan RaiseInterval
@@ -28,7 +30,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             {
                 throw new ArgumentNullException("e");
             }
-            _lastEvent = e;
+            _events.Enqueue(e);
 
             if (_timer.IsEnabled)
             {
@@ -41,11 +43,27 @@ namespace System.ComponentModel.Client.DataVirtualization
         {
             _timer.Stop();
 
-            if (_lastEvent == null)
+            if (_events.Count == 0)
             {
                 return;
-            }            
-            _raiseEvent.Invoke(_lastEvent);
+            }
+            _raiseEvent.Invoke(Flush(_events));            
+        }
+
+        private static NotifyCollectionChangedEventArgs Flush(Queue<NotifyCollectionChangedEventArgs> events)
+        {
+            // In the future, it would be better to actually merge the events
+            // based on their content. However, for now we simply empty the queue
+            // and return the last event.
+            NotifyCollectionChangedEventArgs lastEvent;
+
+            do
+            {
+                lastEvent = events.Dequeue();
+            }
+            while (events.Count > 0);
+
+            return lastEvent;
         }
 
         internal static readonly TimeSpan DefaultRaiseInterval = TimeSpan.FromMilliseconds(100);
