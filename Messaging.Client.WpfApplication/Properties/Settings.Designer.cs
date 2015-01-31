@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.ComponentModel.WpfApplication.WpfApplication.Properties {
+namespace System.ComponentModel.WpfApplication.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

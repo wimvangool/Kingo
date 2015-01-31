@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{002BBBBE-42B2-4618-B560-509798888BE6}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,9 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.Messaging", "B.Messaging"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.Messaging.Containers", "C.Messaging.Containers", "{4B713399-4B91-4E00-AF1F-D103268F40DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Messaging", "Messaging\04.Messaging.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Messaging", "Messaging\05.Messaging.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Messaging.Tests", "Messaging.Tests\05.Messaging.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Messaging.Tests", "Messaging.Tests\04.Messaging.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Messaging.Client", "Messaging.Client\03.Messaging.Client.csproj", "{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}"
 EndProject
@@ -31,6 +31,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Client.Tests", "Messaging.Client.Tests\02.Messaging.Client.Tests.csproj", "{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Client.WpfApplication", "Messaging.Client.WpfApplication\01.Messaging.Client.WpfApplication.csproj", "{2DEC2193-16A6-4F74-87B0-44096BBB0A26}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D.ServiceTemplate", "D.ServiceTemplate", "{7B278F57-E6AB-42F6-8EE4-A17D334981AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,10 +81,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{77F45326-E908-47EB-B924-A3BD26CAD6B0} = {4B713399-4B91-4E00-AF1F-D103268F40DA}
 		{1D19D39A-15C6-4FDE-90C5-93188F2FC644} = {4B713399-4B91-4E00-AF1F-D103268F40DA}
-		{FA31C09F-6319-484B-96EC-88BF3C3FDB81} = {C3F19C5E-9EAD-4324-9B07-129C32CFA05B}
+		{77F45326-E908-47EB-B924-A3BD26CAD6B0} = {4B713399-4B91-4E00-AF1F-D103268F40DA}
 		{4FE972F0-2046-4039-9461-45D0B7E6229F} = {C3F19C5E-9EAD-4324-9B07-129C32CFA05B}
+		{FA31C09F-6319-484B-96EC-88BF3C3FDB81} = {C3F19C5E-9EAD-4324-9B07-129C32CFA05B}
 		{757D77D3-7B32-4F21-9617-88274D50B517} = {72205C90-C23B-4086-8580-050201371032}
 		{303380DB-4167-4BB0-8B78-63C959B65C4B} = {72205C90-C23B-4086-8580-050201371032}
 		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286} = {72205C90-C23B-4086-8580-050201371032}

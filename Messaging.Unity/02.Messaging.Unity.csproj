@@ -71,9 +71,9 @@
       <Project>{fa31c09f-6319-484b-96ec-88bf3c3fdb81}</Project>
       <Name>02.Messaging.TestEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Messaging\04.Messaging.csproj">
+    <ProjectReference Include="..\Messaging\05.Messaging.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>04.Messaging</Name>
+      <Name>05.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -85,7 +85,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "C:\Development\NuGet Packages"</PostBuildEvent>
+    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

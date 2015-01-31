@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.Resources;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.Caching;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client.DataVirtualization
 {
@@ -9,44 +13,127 @@ namespace System.ComponentModel.Client.DataVirtualization
     /// Represents a read-only collection of items that is partially loaded in memory while items are accessed or iterated.
     /// </summary>
     /// <typeparam name="T">Type of the items in this collection.</typeparam>
-    public class VirtualCollection<T> : ReadOnlyCollection<VirtualCollectionItem<T>>, INotifyCollectionChanged
-    {               
-        private readonly IVirtualCollectionPageLoader<T> _loader;
+    public abstract class VirtualCollection<T> : ReadOnlyCollection<VirtualCollectionItem<T>>, INotifyCollectionChanged, IDisposable
+    {
+        protected const int DefaultPageSize = 20;
+
+        private readonly VirtualCollectionPageLoader<T> _loader;
+        private readonly Lazy<ObjectCache> _pageCache;
         private readonly CollectionChangedEventThrottle _eventThrottle;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
-        /// </summary>
-        /// <param name="loader">The loader that is used to load all pages/items asynchronously.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="loader"/> is <c>null</c>.
-        /// </exception>        
-        public VirtualCollection(IVirtualCollectionPageLoader<T> loader)
-        {
-            if (loader == null)
-            {
-                throw new ArgumentNullException("loader");
-            }
-            _loader = loader;
-            _loader.CountLoaded += HandleCountLoaded;
-            _loader.PageFailedToLoad += HandlePageFailedToLoad;
-            _loader.PageLoaded += HandlePageLoaded;
+        /// </summary>  
+        protected VirtualCollection()
+            : this(DefaultPageSize, CollectionChangedEventThrottle.DefaultRaiseInterval, SynchronizationContext.Current) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
+        /// </summary>               
+        /// <param name="collectionChangedInterval">
+        /// The sliding window interval that is maintained to raise the <see cref="CollectionChanged" /> event
+        /// after a change to the collection occurs to prevent it from raising too frequently.
+        /// </param>              
+        protected VirtualCollection(TimeSpan collectionChangedInterval)
+            : this(DefaultPageSize, collectionChangedInterval, SynchronizationContext.Current) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
+        /// </summary>               
+        /// <param name="pageSize">The maximum number of items to retrieve per page.</param>        
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="pageSize"/> has a negative value.
+        /// </exception>
+        protected VirtualCollection(int pageSize)
+            : this(pageSize, CollectionChangedEventThrottle.DefaultRaiseInterval, SynchronizationContext.Current) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VirtualCollection{T}" /> class.
+        /// </summary>       
+        /// <param name="synchronizationContext">The context that is used to raise all events.</param>        
+        /// <param name="pageSize">The maximum number of items to retrieve per page.</param>
+        /// <param name="collectionChangedInterval">
+        /// The sliding window interval that is maintained to raise the <see cref="CollectionChanged" /> event
+        /// after a change to the collection occurs to prevent it from raising too frequently.
+        /// </param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="pageSize"/> has a negative value.
+        /// </exception>
+        protected VirtualCollection(int pageSize, TimeSpan collectionChangedInterval, SynchronizationContext synchronizationContext)
+        {            
+            _loader = new VirtualCollectionPageLoader<T>(this, synchronizationContext, pageSize);
+            _pageCache = new Lazy<ObjectCache>(CreatePageCache);
             _eventThrottle = new CollectionChangedEventThrottle(e => CollectionChanged.Raise(this, e))
             {
-                RaiseInterval = TimeSpan.FromMilliseconds(100)
+                RaiseInterval = collectionChangedInterval
             };
+        }
+        
+        /// <summary>
+        /// The maximum number of items that are retrieved per page.
+        /// </summary>
+        public int PageSize
+        {
+            get { return _loader.PageSize; }
+        }        
+
+        #region [====== Disposable ======]
+
+        /// <summary>
+        /// Indicates whether or not this instance has been disposed.
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get;
+            private set;
         }
 
         /// <summary>
-        /// Returns the <see cref="IVirtualCollectionPageLoader{T}" /> that is used by this collection to load its pages.
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        protected IVirtualCollectionPageLoader<T> Loader
+        public void Dispose()
         {
-            get { return _loader; }
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
+        /// (<c>false</c>).
+        /// </param>
+        /// <remarks>
+        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
+        /// Otherwise, only unmanaged resources will be released.
+        /// </remarks>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+            if (disposing && _pageCache.IsValueCreated)
+            {
+                var pageCache = _pageCache.Value as IDisposable;
+                if (pageCache != null)
+                {
+                    pageCache.Dispose();
+                }
+            }
+            IsDisposed = true;
+        }
+
+        #endregion
+
         #region [====== List - Count ======]
+
+        /// <summary>
+        /// Occurs when the count has been loaded.
+        /// </summary>
+        public event EventHandler<CountLoadedEventArgs> CountLoaded;
 
         /// <summary>
         /// Returns the size of this collection.
@@ -61,23 +148,34 @@ namespace System.ComponentModel.Client.DataVirtualization
             {
                 int count;
 
-                if (Loader.TryGetCount(out count))
+                if (_loader.TryGetCount(out count))
                 {
                     return count;
                 }
                 return 0;
             }              
-        }  
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="Task{T}" /> that is loading the size of this collection.
+        /// </summary>
+        /// <returns>A new <see cref="Task{T}" />.</returns>
+        protected internal abstract Task<int> StartLoadCountTask();
         
         /// <summary>
         /// Notifies the <see cref="Count" /> property and the whole collection has changed.
-        /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">Argument that contains the loaded count value.</param>
+        /// </summary>        
+        /// <param name="e">Argument that contains the loaded count value.</param>   
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="e"/> is <c>null</c>.
+        /// </exception>
         /// <remarks>This method is invoked when the count has been (re)loaded.</remarks>
-        protected virtual void HandleCountLoaded(object sender, CountLoadedEventArgs e)
+        protected internal virtual void OnCountLoaded(CountLoadedEventArgs e)
         {
+            CountLoaded.Raise(this, e);
+
             NotifyOfPropertyChange(() => Count);
+
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
@@ -104,13 +202,13 @@ namespace System.ComponentModel.Client.DataVirtualization
                 {
                     throw NewIndexOutOfRangeException(index);
                 }
-                if (Loader.HasFailedToLoadItem(index))
+                if (_loader.HasFailedToLoadItem(index))
                 {
                     return VirtualCollectionItem<T>.ErrorItem;
                 }
                 T item;
 
-                if (Loader.TryGetItem(index, out item))
+                if (_loader.TryGetItem(index, out item))
                 {
                     return new VirtualCollectionItem<T>(item);
                 }
@@ -147,30 +245,13 @@ namespace System.ComponentModel.Client.DataVirtualization
         /// <inheritdoc />
         protected override int IndexOf(VirtualCollectionItem<T> item)
         {
-            if (item.IsLoaded)
-            {
-                int index = 0;
-
-                foreach (var itemOfCollection in Loader)
-                {
-                    if (Equals(itemOfCollection, item.Value))
-                    {
-                        return index;
-                    }
-                    index++;
-                }
-            }
-            return -1;
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         protected override bool Contains(VirtualCollectionItem<T> item)
         {
-            if (item.IsLoaded)
-            {
-                return _loader.Any(itemOfCollection => Equals(itemOfCollection, item.Value));
-            }
-            return false;
+            return IndexOf(item) >= 0;
         }
 
         /// <inheritdoc />
@@ -182,16 +263,111 @@ namespace System.ComponentModel.Client.DataVirtualization
         /// <inheritdoc />
         protected override IEnumerator<VirtualCollectionItem<T>> GetEnumerator()
         {
+            return CreateSnapshot().GetEnumerator();
+        }
+
+        protected IList<VirtualCollectionItem<T>> CreateSnapshot()
+        {
             int count;
 
             if (_loader.TryGetCount(out count))
             {
+                var items = new VirtualCollectionItem<T>[count];
+
                 for (int index = 0; index < count; index++)
                 {
-                    yield return this[index];
+                    items[index] = this[index];
                 }
+                return items;
             }
+            return new VirtualCollectionItem<T>[0];
         }
+
+        #endregion
+
+        #region [====== Page Loading ======]
+
+        /// <summary>
+        /// Occurs when there was a problem loading a specific page.
+        /// </summary>
+        public event EventHandler<PageFailedToLoadEventArgs> PageFailedToLoad;
+
+        /// <summary>
+        /// Occurs when a page has been loaded.
+        /// </summary>
+        public event EventHandler<PageLoadedEventArgs<T>> PageLoaded;
+
+        /// <summary>
+        /// Raises the <see cref="PageFailedToLoad" /> event.
+        /// </summary>
+        /// <param name="e">Argument of the event.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="e"/> is <c>null</c>.
+        /// </exception>
+        protected internal virtual void OnPageFailedToLoad(PageFailedToLoadEventArgs e)
+        {
+            PageFailedToLoad.Raise(this, e);
+
+            OnCollectionChanged();
+        }
+
+        /// <summary>
+        /// Raises the <see cref="PageLoaded" /> event.
+        /// </summary>
+        /// <param name="e">Argument of the event.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="e"/> is <c>null</c>.
+        /// </exception>
+        protected internal virtual void OnPageLoaded(PageLoadedEventArgs<T> e)
+        {
+            PageLoaded.Raise(this, e);
+
+            OnCollectionChanged();
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="Task{T}" /> that will load one page of items at the specified <paramref name="pageIndex"/>.
+        /// </summary>
+        /// <param name="pageIndex">The index of the page to load.</param>
+        /// <returns>A new <see cref="Task{T}" />.</returns>
+        protected internal abstract Task<IList<T>> StartLoadPageTask(int pageIndex);        
+
+        #endregion
+
+        #region [====== Page Caching ======]
+
+        /// <summary>
+        /// Returns the cache that is used to store pages.
+        /// </summary>
+        protected internal ObjectCache PageCache
+        {
+            get { return _pageCache.Value; }
+        }
+
+        /// <summary>
+        /// Creates and returns an <see cref="ObjectCache" /> that will be used to cache loaded pages.
+        /// </summary>
+        /// <returns>A new <see cref="ObjectCache" /> instance.</returns>
+        protected virtual ObjectCache CreatePageCache()
+        {
+            return new MemoryCache(GetType().Name);
+        }
+
+        internal string CacheItemKeyOf(int pageIndex)
+        {
+            return pageIndex.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="CacheItemPolicy" /> for the specified <paramref name="pageIndex"/>,
+        /// or <c>null</c> if no policy is specified (the default).
+        /// </summary>
+        /// <param name="pageIndex">The index of the page.</param>        
+        /// <returns>A new <see cref="CacheItemPolicy" /> for the specified <paramref name="pageIndex"/>.</returns>        
+        protected internal virtual CacheItemPolicy CreatePageCachePolicy(int pageIndex)
+        {
+            return null;
+        } 
 
         #endregion
 
@@ -199,9 +375,9 @@ namespace System.ComponentModel.Client.DataVirtualization
 
         /// <summary>
         /// Gets or sets the sliding window interval that is used to prevent the
-        /// <see cref="CollectionChanged" />-event from raising all too often.
+        /// <see cref="CollectionChanged" />-event from raising too frequently.
         /// </summary>
-        public TimeSpan CollectionChangedRaiseInterval
+        public TimeSpan CollectionChangedInterval
         {
             get { return _eventThrottle.RaiseInterval; }
             set { _eventThrottle.RaiseInterval = value; }

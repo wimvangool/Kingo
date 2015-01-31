@@ -5,7 +5,7 @@ using Caliburn.Micro;
 
 namespace System.ComponentModel.WpfApplication.Shell
 {
-    internal sealed class ShellViewModel : Screen
+    public sealed class ShellViewModel : Screen
     {
         private readonly RelayCommand _reloadListViewCollectionCommand;
         private readonly RelayCommand _reloadDataGridCollectionCommand;
@@ -14,11 +14,11 @@ namespace System.ComponentModel.WpfApplication.Shell
         {
             _reloadListViewCollectionCommand = new RelayCommand(() =>
             {
-                ListViewCollection = new VirtualCollection<int>(new IntegerItemLoader("ListView"));
+                ListViewCollection = new LargeIntegerCollection("ListView");
             }); 
             _reloadDataGridCollectionCommand = new RelayCommand(() =>
             {
-                DataGridCollection = new VirtualCollection<int>(new IntegerItemLoader("DataGrid"));
+                DataGridCollection = new LargeIntegerCollection("DataGrid");
             });  
         }
 
@@ -62,6 +62,22 @@ namespace System.ComponentModel.WpfApplication.Shell
                     NotifyOfPropertyChange(() => DataGridCollection);
                 }                
             }
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            if (close)
+            {
+                if (_listViewCollection != null)
+                {
+                    _listViewCollection.Dispose();
+                }
+                if (_dataGridCollection != null)
+                {
+                    _dataGridCollection.Dispose();
+                }
+            }
+            base.OnDeactivate(close);
         }
     }
 }

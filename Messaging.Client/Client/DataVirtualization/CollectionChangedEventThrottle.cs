@@ -47,5 +47,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             }            
             _raiseEvent.Invoke(_lastEvent);
         }
+
+        internal static readonly TimeSpan DefaultRaiseInterval = TimeSpan.FromMilliseconds(100);
     }
 }

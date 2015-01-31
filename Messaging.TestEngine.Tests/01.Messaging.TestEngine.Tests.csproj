@@ -84,9 +84,9 @@
     <Compile Include="Server\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Messaging\04.Messaging.csproj">
+    <ProjectReference Include="..\Messaging\05.Messaging.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>04.Messaging</Name>
+      <Name>05.Messaging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Messaging.Unity\02.Messaging.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.Client.DataVirtualization;
 using System.Diagnostics;
 using System.Linq;
@@ -8,16 +9,14 @@ using System.Threading.Tasks;
 
 namespace System.ComponentModel.WpfApplication.Shell
 {
-    internal sealed class IntegerItemLoader : VirtualCollectionPageLoader<int>
-    {
-        private static readonly MemoryCache _Cache = new MemoryCache("Pages");
+    internal sealed class LargeIntegerCollection : VirtualCollection<int>
+    {        
         private const int _CollectionSize = 3456789;
         private const int _PageSize = 10;
 
         internal readonly string Name;
 
-        internal IntegerItemLoader(string name)
-            : base(Guid.NewGuid(), _PageSize)
+        internal LargeIntegerCollection(string name) : base(_PageSize)
         {
             Name = name;
         }
@@ -42,12 +41,7 @@ namespace System.ComponentModel.WpfApplication.Shell
 
                 return Enumerable.Range(FirstItemOfPage(pageIndex), PageSize).ToArray();
             });
-        }
-
-        protected override ObjectCache PageCache
-        {
-            get { return _Cache; }
-        }
+        }        
 
         protected override CacheItemPolicy CreatePageCachePolicy(int pageIndex)
         {
@@ -75,7 +69,14 @@ namespace System.ComponentModel.WpfApplication.Shell
         {
             base.OnPageLoaded(e);
 
-            Debug.WriteLine("{0}: Page Loaded (Index = {1}, Count = {2})", Name, e.Page.PageIndex, e.Page.Count);
+            Debug.WriteLine("{0}: Page Loaded (Index = {1}, Count = {2})", Name, e.PageIndex, e.PageSize);
+        }
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            base.OnCollectionChanged(e);
+
+            Debug.WriteLine("Collection was changed.");
         }
     }
 }

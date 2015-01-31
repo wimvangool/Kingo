@@ -1,7 +1,9 @@
-﻿namespace System.ComponentModel.Client.DataVirtualization
+﻿using System.Collections.Generic;
+
+namespace System.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
-    /// Arguments of the <see cref="IVirtualCollectionPageLoader{T}.PageLoaded" /> event.
+    /// Arguments of the <see cref="VirtualCollection{T}.PageLoaded" /> event.
     /// </summary>
     /// <typeparam name="T">Type of the item that was loaded.</typeparam>
     public class PageLoadedEventArgs<T> : EventArgs
@@ -9,22 +11,45 @@
         /// <summary>
         /// The page that was loaded.
         /// </summary>
-        public readonly VirtualCollectionPage<T> Page;
+        private readonly VirtualCollectionPage<T> _page;
+        
+        internal PageLoadedEventArgs(VirtualCollectionPage<T> page)
+        {                       
+            _page = page;
+        } 
+       
+        /// <summary>
+        /// The index of the page that was loaded.
+        /// </summary>
+        public int PageIndex
+        {
+            get { return _page.PageIndex; }
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PageLoadedEventArgs{T}" /> class.
-        /// </summary>        
-        /// <param name="page">The page that was loaded.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="page"/> is <c>null</c>.
-        /// </exception>
-        public PageLoadedEventArgs(VirtualCollectionPage<T> page)
+        /// The amount of items in the page.
+        /// </summary>
+        public int PageSize
         {
-            if (page == null)
-            {
-                throw new ArgumentNullException("page");
-            }            
-            Page = page;
-        }        
+            get { return _page.Count; }
+        }
+
+        public bool HasPreviousPage
+        {
+            get { return _page.HasPreviousPage; }
+        }
+
+        public bool HasNextPage
+        {
+            get { return _page.HasNextPage; }
+        }
+
+        /// <summary>
+        /// The items of the page that was loaded.
+        /// </summary>
+        public IEnumerable<T> Items
+        {
+            get { return _page; }
+        }
     }
 }
