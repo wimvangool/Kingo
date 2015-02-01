@@ -56,13 +56,22 @@ namespace System.ComponentModel.WpfApplication.Shell
             return new IOException("Page could not be loaded");
         }        
 
-        protected override CacheItemPolicy CreatePageCachePolicy(int pageIndex)
+        protected override CacheItemPolicy CreatePageCachePolicy(int pageIndex, bool isErrorPage)
         {
+            if (isErrorPage)
+            {
+                return new CacheItemPolicy()
+                {
+                    AbsoluteExpiration = Clock.Current.UtcDateAndTime().AddSeconds(30),
+                    RemovedCallback = args =>
+                        Debug.WriteLine("ErrorPage {0} was removed from cache.", pageIndex)
+                };
+            }
             return new CacheItemPolicy()
             {
                 SlidingExpiration = TimeSpan.FromSeconds(120),
                 RemovedCallback = args =>                                  
-                    Debug.WriteLine("Page {0} was removed from cache.", pageIndex)                
+                    Debug.WriteLine("Page {0} was removed from cache.", pageIndex)
             };
         }
 

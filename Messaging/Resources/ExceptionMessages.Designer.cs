@@ -88,6 +88,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot execute this method because the current SynchronizationContext is null..
+        /// </summary>
+        internal static string AsyncObject_ContextNotSet {
+            get {
+                return ResourceManager.GetString("AsyncObject_ContextNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot publish event of type &apos;{0}&apos; because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope..
         /// </summary>
         internal static string BufferedEventBus_NoBusAvailable {
@@ -228,15 +237,6 @@ namespace System.ComponentModel.Resources {
         internal static string Scope_IncorrectNesting {
             get {
                 return ResourceManager.GetString("Scope_IncorrectNesting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot execute this method because the current SynchronizationContext is null..
-        /// </summary>
-        internal static string SynchronizationContextScope_ContextNotSet {
-            get {
-                return ResourceManager.GetString("SynchronizationContextScope_ContextNotSet", resourceCulture);
             }
         }
         

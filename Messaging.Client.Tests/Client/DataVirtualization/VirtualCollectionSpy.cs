@@ -47,7 +47,8 @@ namespace System.ComponentModel.Client.DataVirtualization
         private readonly Dictionary<int, CachedPagePolicy> _cachedPagePolicies;
         private readonly Lazy<VirtualCollectionPageLoader<int>> _loader;
 
-        public VirtualCollectionSpy(IEnumerable<int> items, int pageSize) : base(pageSize)
+        public VirtualCollectionSpy(IEnumerable<int> items, int pageSize)
+            : base(pageSize, CollectionChangedEventThrottle.DefaultRaiseInterval, new SynchronousContext())
         {
             _collectionRaisedEvent = new ManualResetEventSlim();
             _pageLoadWaitEvent = new AutoResetEvent(false);
@@ -209,7 +210,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             return false;
         }        
 
-        protected internal override CacheItemPolicy CreatePageCachePolicy(int pageIndex)
+        protected internal override CacheItemPolicy CreatePageCachePolicy(int pageIndex, bool isErrorPage)
         {
             if (UseInfiniteCacheLifetime)
             {

@@ -5,7 +5,7 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Basic implementation of the <see cref="IRequestDispatcher" /> interface, serving as a base class for all request-types.
     /// </summary>
-    public abstract class RequestDispatcher : IRequestDispatcher
+    public abstract class RequestDispatcher : AsyncObject, IRequestDispatcher
     {
         internal RequestDispatcher() { }
 

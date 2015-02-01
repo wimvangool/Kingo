@@ -162,7 +162,7 @@
   <data name="Scope_IncorrectNesting" xml:space="preserve">
     <value>The scopes were not nested correctly.</value>
   </data>
-  <data name="SynchronizationContextScope_ContextNotSet" xml:space="preserve">
+  <data name="AsyncObject_ContextNotSet" xml:space="preserve">
     <value>Cannot execute this method because the current SynchronizationContext is null.</value>
   </data>
   <data name="UnitOfWorkContext_FailedToEnlistUnitOfWork" xml:space="preserve">

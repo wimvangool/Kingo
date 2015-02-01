@@ -107,7 +107,6 @@
     <Compile Include="Client\QueryDispatcher.T1.cs" />
     <Compile Include="Client\QueryDispatcher.T2.cs" />
     <Compile Include="Client\QueryDispatcherBase.T1.cs" />
-    <Compile Include="Client\SynchronizationContextScope.cs" />
     <Compile Include="Client\RequestDispatcher.cs" />
     <Compile Include="Server\AggregateSet.T3.cs" />
     <Compile Include="Server\EventBuffer.T3.cs" />

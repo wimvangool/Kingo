@@ -65,8 +65,7 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token)
         {                        
-            var message = Message.Copy();
-            var context = SynchronizationContext.Current;
+            var message = Message.Copy();            
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
             TMessageOut result;
@@ -79,26 +78,23 @@ namespace System.ComponentModel.Client
             }
             return Start(() =>
             {
-                using (var scope = new SynchronizationContextScope(context))
-                {                   
-                    try
-                    {                        
-                        result = ExecuteQuery(message, token);                        
-                    }
-                    catch (OperationCanceledException exception)
-                    {
-                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, message, exception)));
-                        throw;
-                    }
-                    catch (Exception exception)
-                    {
-                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception)));
-                        throw;
-                    }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result)));
-
-                    return result;
+                try
+                {
+                    result = ExecuteQuery(message, token);
                 }
+                catch (OperationCanceledException exception)
+                {
+                    Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, message, exception)));
+                    throw;
+                }
+                catch (Exception exception)
+                {
+                    Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception)));
+                    throw;
+                }
+                Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result)));
+
+                return result;
             });
         }
 

@@ -29,31 +29,26 @@ namespace System.ComponentModel.Client
 
         /// <inheritdoc />
         public override Task ExecuteAsync(Guid requestId, CancellationToken? token)
-        {                        
-            var context = SynchronizationContext.Current;
-
+        {                                    
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
 
             return Start(() =>
             {
-                using (var scope = new SynchronizationContextScope(context))
-                {                   
-                    try
-                    {                                                
-                        Execute(token);                        
-                    }
-                    catch (OperationCanceledException exception)
-                    {
-                        scope.Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, exception)));
-                        throw;
-                    }
-                    catch (Exception exception)
-                    {
-                        scope.Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception)));
-                        throw;
-                    }                    
-                    scope.Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId)));
+                try
+                {
+                    Execute(token);
                 }
+                catch (OperationCanceledException exception)
+                {
+                    Post(() => OnExecutionCanceled(new ExecutionCanceledEventArgs(requestId, exception)));
+                    throw;
+                }
+                catch (Exception exception)
+                {
+                    Post(() => OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception)));
+                    throw;
+                }
+                Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId)));
             });
         }
 

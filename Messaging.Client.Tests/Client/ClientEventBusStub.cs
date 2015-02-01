@@ -7,7 +7,7 @@ namespace System.ComponentModel.Client
         private readonly List<object> _subscribers;
         private int _messageCount;
 
-        public ClientEventBusStub()
+        public ClientEventBusStub() : base(new SynchronousContext())
         {            
             _subscribers = new List<object>();
         }

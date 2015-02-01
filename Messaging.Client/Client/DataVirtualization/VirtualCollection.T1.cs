@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.Resources;
-using System.Globalization;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
@@ -198,6 +197,17 @@ namespace System.ComponentModel.Client.DataVirtualization
             get { return GetItem(index, true); }      
         }
 
+        /// <summary>
+        /// Returns the item at the specified <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">Index of the item.</param>
+        /// <param name="loadPageIfRequired">
+        /// Indicates whether or not the page containing the requested item should be loaded if it was
+        /// not already loaded.
+        /// </param>               
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is negative or larger than largest index of this collection.
+        /// </exception> 
         protected VirtualCollectionItem<T> GetItem(int index, bool loadPageIfRequired)
         {
             if (index < 0 || index >= Count)
@@ -358,21 +368,29 @@ namespace System.ComponentModel.Client.DataVirtualization
         protected virtual ObjectCache CreatePageCache()
         {
             return new MemoryCache(GetType().Name);
-        }
-
-        internal string CacheItemKeyOf(int pageIndex)
-        {
-            return pageIndex.ToString(CultureInfo.InvariantCulture);
-        }
+        }        
 
         /// <summary>
         /// Creates and returns a new <see cref="CacheItemPolicy" /> for the specified <paramref name="pageIndex"/>,
         /// or <c>null</c> if no policy is specified (the default).
         /// </summary>
-        /// <param name="pageIndex">The index of the page.</param>        
+        /// <param name="pageIndex">The index of the page.</param>  
+        /// <param name="isErrorPage">
+        /// Indicates whether or not the page corresponding to the specified <paramref name="pageIndex"/> failed to load,
+        /// in which case the caching policy might differ from that of correctly loaded pages.
+        /// </param>      
         /// <returns>A new <see cref="CacheItemPolicy" /> for the specified <paramref name="pageIndex"/>.</returns>        
-        protected internal virtual CacheItemPolicy CreatePageCachePolicy(int pageIndex)
+        protected internal virtual CacheItemPolicy CreatePageCachePolicy(int pageIndex, bool isErrorPage)
         {
+            if (isErrorPage)
+            {
+                // By default, error-pages are kept in memory for only 30 seconds to allow them to be reloaded
+                // after some reasonable time.
+                return new CacheItemPolicy()
+                {
+                    AbsoluteExpiration = Clock.Current.UtcDateAndTime().AddSeconds(30)
+                };
+            }
             return null;
         } 
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Resources;
+using System.Globalization;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             get { return _pageSize; }
         }               
 
-        #region [====== Count ======]        
+        #region [====== Count ======]
                 
         private void OnCountLoaded(CountLoadedEventArgs e)
         {
@@ -57,14 +58,12 @@ namespace System.ComponentModel.Client.DataVirtualization
                 _loadCountTask = StartLoadCountTask();
                 _loadCountTask.ContinueWith(task =>
                 {
-                    using (var scope = CreateSynchronizationContextScope())
+                    if (task.IsCanceled || task.IsFaulted)
                     {
-                        if (task.IsCanceled || task.IsFaulted)
-                        {
-                            return;
-                        }
-                        scope.Post(() => OnCountLoaded(new CountLoadedEventArgs(task.Result)));
+                        return;
                     }
+                    Post(() => OnCountLoaded(new CountLoadedEventArgs(task.Result)));
+
                 }, TaskContinuationOptions.ExecuteSynchronously);
             }
             return CountNotYetLoaded(out count);
@@ -143,19 +142,16 @@ namespace System.ComponentModel.Client.DataVirtualization
 
             StartLoadPageTask(pageIndex).ContinueWith(task =>
             {
-                using (CreateSynchronizationContextScope())
-                {                    
-                    // NB: We intentionally ignore the IsCanceled-status here,
-                    // since if anyone cancelled loading this page, it's as if
-                    // nothing ever happened.
-                    if (task.IsFaulted)
-                    {
-                        OnPageFailedToLoad(pageIndex, task.Exception);
-                    }
-                    else
-                    {
-                        OnPageLoaded(pageIndex, CreatePage(pageIndex, task.Result));
-                    }
+                // NB: We intentionally ignore the IsCanceled-status here,
+                // since if anyone cancelled loading this page, it's as if
+                // nothing ever happened.
+                if (task.IsFaulted)
+                {
+                    OnPageFailedToLoad(pageIndex, task.Exception);
+                }
+                else
+                {
+                    OnPageLoaded(pageIndex, CreatePage(pageIndex, task.Result));
                 }
             }, TaskContinuationOptions.ExecuteSynchronously); 
         }
@@ -178,11 +174,12 @@ namespace System.ComponentModel.Client.DataVirtualization
 
         private void OnPageFailedToLoad(int pageIndex, AggregateException exception)
         {
-            var eventArgs = new PageFailedToLoadEventArgs(pageIndex, exception);
+            AddPageToCache(pageIndex);
 
-            _pagesThatFailedToLoad.Add(pageIndex);
+            _pagesThatAreLoading.Remove(pageIndex);
+            _pagesThatFailedToLoad.Add(pageIndex);            
 
-            SynchronizationContextScope.Current.Post(() => OnPageFailedToLoad(eventArgs));            
+            Post(() => OnPageFailedToLoad(new PageFailedToLoadEventArgs(pageIndex, exception)));            
         }        
         
         private void OnPageFailedToLoad(PageFailedToLoadEventArgs e)
@@ -196,7 +193,7 @@ namespace System.ComponentModel.Client.DataVirtualization
 
             _pagesThatAreLoading.Remove(pageIndex);
 
-            SynchronizationContextScope.Current.Post(() => OnPageLoaded(new PageLoadedEventArgs<T>(page)));
+            Post(() => OnPageLoaded(new PageLoadedEventArgs<T>(page)));
         }       
         
         private void OnPageLoaded(PageLoadedEventArgs<T> e)
@@ -206,7 +203,7 @@ namespace System.ComponentModel.Client.DataVirtualization
 
         #endregion
 
-        #region [====== Page Caching ======]        
+        #region [====== Page Caching ======]
         
         private ObjectCache PageCache
         {
@@ -215,32 +212,51 @@ namespace System.ComponentModel.Client.DataVirtualization
 
         private bool TryGetPageFromCache(int pageIndex, out IList<T> page)
         {
-            return PageCache.TryGetValue(CacheItemKeyOf(pageIndex), out page);
+            return PageCache.TryGetValue(CreateCachedPageKey(pageIndex), out page);
         }
 
         private bool HasCachedPage(int pageIndex)
         {
-            return PageCache.Contains(CacheItemKeyOf(pageIndex));
+            return PageCache.Contains(CreateCachedPageKey(pageIndex));
+        }
+
+        private void AddPageToCache(int pageIndex)
+        {
+            // If a policy was specified, an eviction-handler is specified which will
+            // unmark the page as error-page and allow the page to be reloaded again.
+            // Moreover, error-pages aren't actually stored, but replaced by a lightweight
+            // dummy-instance.
+            var policy = CreatePageCachePolicy(pageIndex, true);
+            if (policy != null)
+            {
+                policy.RemovedCallback += e => _pagesThatFailedToLoad.Remove(pageIndex);             
+
+                AddPageToCache(pageIndex, new object(), policy);
+            }                                    
         }
 
         private void AddPageToCache(int pageIndex, IList<T> page)
         {
-            if (PageCache.Add(CacheItemKeyOf(pageIndex), page, CreatePageCachePolicy(pageIndex)))
+            AddPageToCache(pageIndex, page, CreatePageCachePolicy(pageIndex, false));
+        }
+
+        private void AddPageToCache(int pageIndex, object value, CacheItemPolicy policy)
+        {
+            if (PageCache.Add(CreateCachedPageKey(pageIndex), value, policy))
             {
                 return;
             }
             throw NewPageAlreadyCachedException(pageIndex);
         }
         
-        private string CacheItemKeyOf(int pageIndex)
+        private static string CreateCachedPageKey(int pageIndex)
         {
-            return _collection.CacheItemKeyOf(pageIndex);
+            return pageIndex.ToString(CultureInfo.InvariantCulture);
         }
         
-        private CacheItemPolicy CreatePageCachePolicy(int pageIndex)
-        {
-            // The first page is always kept in memory indefinitely.
-            return pageIndex == 0 ? null : _collection.CreatePageCachePolicy(pageIndex);            
+        private CacheItemPolicy CreatePageCachePolicy(int pageIndex, bool isErrorPage)
+        {            
+            return _collection.CreatePageCachePolicy(pageIndex, isErrorPage);            
         }        
 
         #endregion
@@ -271,7 +287,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             {
                 return false;
             }
-            return HasCachedPage(pageIndex);
+            return !_pagesThatFailedToLoad.Contains(pageIndex) && HasCachedPage(pageIndex);
         }
         
         internal bool HasFailedToLoadPage(int pageIndex)

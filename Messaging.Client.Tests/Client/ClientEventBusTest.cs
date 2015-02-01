@@ -5,22 +5,14 @@ namespace System.ComponentModel.Client
 {
     [TestClass]
     public sealed class ClientEventBusTest
-    {
-        private SynchronizationContextScope _scope;
+    {        
         private ClientEventBusStub _eventBus;
 
         [TestInitialize]
         public void Setup()
-        {
-            _scope = new SynchronizationContextScope(new SynchronousContext());
+        {            
             _eventBus = new ClientEventBusStub();
-        }
-
-        [TestCleanup]
-        public void Teardown()
-        {
-            _scope.Dispose();
-        }
+        }        
 
         private IMessageHandler<object> MessageHandler
         {

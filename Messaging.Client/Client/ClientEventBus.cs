@@ -82,10 +82,7 @@ namespace System.ComponentModel.Client
 
         void IMessageHandler<object>.Handle(object message)
         {
-            using (var scope = CreateSynchronizationContextScope())
-            {
-                scope.Post(() => Publish(message));
-            }
+            Post(() => Publish(message));
         }               
 
         /// <summary>

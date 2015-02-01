@@ -7,22 +7,19 @@ namespace System.ComponentModel.Client.DataVirtualization
     [TestClass]
     public sealed class VirtualCollectionTest
     {
-        private const int _Count = 67;
-        private SynchronizationContextScope _scope;
+        private const int _Count = 67;        
         private VirtualCollectionSpy _collection;
 
         [TestInitialize]
         public void Setup()
-        {
-            _scope = new SynchronizationContextScope(new SynchronousContext());
+        {                        
             _collection = new VirtualCollectionSpy(Enumerable.Range(1, _Count), 10);
         }
 
         [TestCleanup]
         public void Teardown()
         {
-            _collection.Dispose();
-            _scope.Dispose();
+            _collection.Dispose();            
         }
 
         #region [====== Count ======]
