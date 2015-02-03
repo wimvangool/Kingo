@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Resources;
 using System.Runtime.Serialization;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// This type of exception is thrown when a <see cref="Repository{T, S, U}" /> was unable to retrieve

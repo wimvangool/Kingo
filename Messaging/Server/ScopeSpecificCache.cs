@@ -3,9 +3,9 @@
 namespace System.ComponentModel.Server
 {   
     /// <summary>
-    /// Provides a basic, in-memory implementation of the <see cref="IScopeSpecificCache" /> interface.
+    /// Provides a basic, in-memory implementation of the <see cref="IDependencyCache" /> interface.
     /// </summary>
-    public sealed class ScopeSpecificCache : IScopeSpecificCache, IDisposable
+    public sealed class ScopeSpecificCache : IDependencyCache, IDisposable
     {
         private readonly List<IDisposable> _entries;
         private bool _isDisposed;
@@ -46,13 +46,13 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public IScopeSpecificCacheEntry<T> Add<T>(T value)
+        public IDependencCacheEntry<T> Add<T>(T value)
         {            
             return Add(value, null);
         }
 
         /// <inheritdoc />
-        public IScopeSpecificCacheEntry<T> Add<T>(T value, Action<T> valueInvalidatedCallback)
+        public IDependencCacheEntry<T> Add<T>(T value, Action<T> valueInvalidatedCallback)
         {
             if (_isDisposed)
             {

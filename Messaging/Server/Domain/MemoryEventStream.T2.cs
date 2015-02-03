@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an in-memory stream of <see cref="IAggregateEvent{T, S}">aggregate events</see>.

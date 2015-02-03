@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Resources;
 using System.Globalization;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents the version of a certain <see cref="IAggregate{TKey, TVersion}">aggregate</see>.

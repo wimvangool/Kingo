@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents a stream of <see cref="IAggregateEvent{T, S}" /> that can be written to.

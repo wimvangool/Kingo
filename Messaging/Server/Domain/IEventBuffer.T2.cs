@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server.Domain
 {
     internal interface IEventBuffer<out TKey, out TVersion>
         where TKey : struct, IEquatable<TKey>

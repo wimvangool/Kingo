@@ -13,6 +13,9 @@ namespace System.ComponentModel.Client.DataVirtualization
     /// <typeparam name="T">Type of the items in this collection.</typeparam>
     public abstract class VirtualCollection<T> : ReadOnlyCollection<VirtualCollectionItem<T>>, INotifyCollectionChanged, IDisposable
     {
+        /// <summary>
+        /// Defines the default page size.
+        /// </summary>
         protected const int DefaultPageSize = 20;
 
         private readonly VirtualCollectionPageLoader<T> _loader;

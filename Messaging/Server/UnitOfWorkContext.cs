@@ -53,7 +53,7 @@ namespace System.ComponentModel.Server
             _cache = new ScopeSpecificCache(); 
         }          
         
-        internal IScopeSpecificCache InternalCache
+        internal IDependencyCache InternalCache
         {
             get { return _cache; }
         } 
@@ -112,7 +112,7 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Represents the cache that is associated to the current <see cref="UnitOfWorkContext" />.
         /// </summary>
-        public static readonly IScopeSpecificCache Cache = new UnitOfWorkCache();
+        public static readonly IDependencyCache Cache = new UnitOfWorkCache();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly ThreadLocal<UnitOfWorkContext> _Current = new ThreadLocal<UnitOfWorkContext>();

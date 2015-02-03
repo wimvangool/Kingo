@@ -2,7 +2,7 @@
 using System.ComponentModel.Resources;
 using System.Globalization;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an aggregate that is modeled as a stream of events and can also be restored as such.

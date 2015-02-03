@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.SampleApplication.Messages
+﻿using System.ComponentModel.Server.Domain;
+
+namespace System.ComponentModel.Server.SampleApplication.Messages
 {
     internal sealed class ShoppingCartCreatedEvent : Message<ShoppingCartCreatedEvent>, IAggregateEvent<Guid, Int32Version>
     {

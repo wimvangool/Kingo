@@ -28,7 +28,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void Add_AddsTheValueAndReturnsValidItem()
         {
-            IScopeSpecificCacheEntry<int> cachedItem = _cache.Add(10);
+            IDependencCacheEntry<int> cachedItem = _cache.Add(10);
             int value;
 
             Assert.IsNotNull(cachedItem);
@@ -39,7 +39,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void Dispose_InvalidatesReturnedItem()
         {
-            IScopeSpecificCacheEntry<int> cachedItem = _cache.Add(10);
+            IDependencCacheEntry<int> cachedItem = _cache.Add(10);
             int value;
 
             _cache.Dispose();

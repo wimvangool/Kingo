@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a cache to which items can be added.
     /// </summary>
-    public interface IScopeSpecificCache
+    public interface IDependencyCache
     {
         /// <summary>
         /// Add the specified value to the cache and returns a handle with which the item can be retrieved
@@ -12,7 +12,7 @@
         /// <typeparam name="T">Type of the value to add.</typeparam>
         /// <param name="value">The value to add.</param>
         /// <returns>A handle with which the item can be retrieved or removed again.</returns>
-        IScopeSpecificCacheEntry<T> Add<T>(T value);
+        IDependencCacheEntry<T> Add<T>(T value);
 
         /// <summary>
         /// Add the specified value to the cache and returns a handle with which the item can be retrieved
@@ -24,6 +24,6 @@
         /// The callback that is called as soon as the item is removed from the cache.
         /// </param>
         /// <returns>A handle with which the item can be retrieved or removed again.</returns>
-        IScopeSpecificCacheEntry<T> Add<T>(T value, Action<T> valueRemovedCallback);
+        IDependencCacheEntry<T> Add<T>(T value, Action<T> valueRemovedCallback);
     }
 }

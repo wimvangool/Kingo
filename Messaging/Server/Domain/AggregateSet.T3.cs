@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Domain
 {
     internal sealed class AggregateSet<TKey, TVersion, TValue> : IEnumerable<AggregateVersionTracker<TKey, TVersion, TValue>>
         where TKey : struct, IEquatable<TKey>

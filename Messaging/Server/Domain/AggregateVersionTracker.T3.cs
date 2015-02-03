@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server.Domain
 {
     internal sealed class AggregateVersionTracker<TKey, TVersion, TAggregate>
         where TKey : struct, IEquatable<TKey>

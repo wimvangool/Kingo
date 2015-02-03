@@ -1,43 +1,36 @@
 ﻿using System.ComponentModel.Resources;
 using System.Globalization;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents the version of a certain <see cref="IAggregate{TKey, TVersion}">aggregate</see>.
     /// </summary>
-    public struct Int32Version : IAggregateVersion<Int32Version>, IComparable
+    public struct DateTimeVersion : IAggregateVersion<DateTimeVersion>, IComparable
     {
-        private readonly int _value;
+        private readonly DateTime _value;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Int32Version" /> structure.
+        /// Initializes a new instance of the <see cref="DateTimeVersion" /> structure.
         /// </summary>
-        /// <param name="value">The value of this version.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="value"/> is negative.
-        /// </exception>
-        public Int32Version(int value)
-        {
-            if (value < 0)
-            {
-                throw NewInvalidVersionException(value);
-            }
+        /// <param name="value">The value of this version.</param>        
+        public DateTimeVersion(DateTime value)
+        {            
             _value = value;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (obj is Int32Version)
+            if (obj is DateTimeVersion)
             {
-                return Equals((Int32Version) obj);
+                return Equals((DateTimeVersion) obj);
             }
             return false;
         }
 
         /// <inheritdoc />
-        public bool Equals(Int32Version other)
+        public bool Equals(DateTimeVersion other)
         {
             return _value.Equals(other._value);
         }
@@ -52,7 +45,7 @@ namespace System.ComponentModel.Server
         {
             try
             {
-                return _value.CompareTo(((Int32Version) obj)._value);
+                return _value.CompareTo(((DateTimeVersion) obj)._value);
             }
             catch (InvalidCastException)
             {
@@ -61,16 +54,16 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public int CompareTo(Int32Version other)
+        public int CompareTo(DateTimeVersion other)
         {
             return _value.CompareTo(other._value);
         }        
 
         /// <summary>
-        /// Returns the value of this version as a 32-bit integer value.
+        /// Returns the value of this version as a 64-bit integer value.
         /// </summary>
-        /// <returns>The value of this version as a 32-bit integer value.</returns>
-        public int ToInt32()
+        /// <returns>The value of this version as a 64-bit integer value.</returns>
+        public DateTime ToDateTime()
         {
             return _value;
         }
@@ -82,24 +75,30 @@ namespace System.ComponentModel.Server
         }
 
         /// <summary>
-        /// Returns the incremented version of this aggregate.
+        /// Returns a new timestamp for the associated aggregate representing the current time.
         /// </summary>
-        /// <returns>The incremented version of this aggregate.</returns>
-        /// <exception cref="OverflowException">
-        /// The value of this instance is equal to <see cref="Int32.MaxValue" />.
-        /// </exception>
-        public Int32Version Increment()
+        /// <returns>A new timestamp for the associated aggregate.</returns>       
+        public DateTimeVersion Increment()
         {
-            checked
-            {
-                return new Int32Version(_value + 1);
-            }
+            return _value.Kind == DateTimeKind.Utc ? UtcNow() : Now();  
+        }        
+
+        /// <summary>
+        /// Returns a timestamp with the current local date and time.
+        /// </summary>
+        public static DateTimeVersion Now()
+        {
+            return new DateTimeVersion(Clock.Current.LocalDateAndTime());
         }
 
         /// <summary>
-        /// The initial version of every aggregate.
+        /// Returns a timestamp with the current UTC date and time.
         /// </summary>
-        public static readonly Int32Version Zero = new Int32Version(0);
+        /// <returns></returns>
+        public static DateTimeVersion UtcNow()
+        {
+            return new DateTimeVersion(Clock.Current.UtcDateAndTime());
+        }
 
         /// <summary>
         /// Increments the specified version and returns the result.
@@ -107,24 +106,17 @@ namespace System.ComponentModel.Server
         /// <param name="version">The version to increment.</param>
         /// <returns>The incremented version.</returns>
         /// <exception cref="OverflowException">
-        /// The value of this instance is equal to <see cref="Int32.MaxValue" />.
+        /// The value of this instance is equal to <see cref="DateTime.MaxValue" />.
         /// </exception>
-        public static Int32Version Increment(ref Int32Version version)
+        public static DateTimeVersion Increment(ref DateTimeVersion version)
         {
             return version = version.Increment();
-        }
-
-        private static Exception NewInvalidVersionException(int value)
-        {
-            var messageFormat = ExceptionMessages.IntXXVersion_NegativeValue;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, value);
-            return new ArgumentOutOfRangeException("value", message);
-        }
+        }        
 
         private static Exception NewInvalidInstanceException(object obj)
         {
             var messageFormat = ExceptionMessages.AggregateVersion_InvalidType;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, typeof(Int32Version), obj.GetType());
+            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, typeof(DateTimeVersion), obj.GetType());
             return new ArgumentException(message, "obj");
         }
 
@@ -138,7 +130,7 @@ namespace System.ComponentModel.Server
         /// <returns>
         /// <c>true</c> if both versions are equal; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator ==(Int32Version left, Int32Version right)
+        public static bool operator ==(DateTimeVersion left, DateTimeVersion right)
         {
             return left.Equals(right);
         }
@@ -151,7 +143,7 @@ namespace System.ComponentModel.Server
         /// <returns>
         /// <c>true</c> if both versions are unequal; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator !=(Int32Version left, Int32Version right)
+        public static bool operator !=(DateTimeVersion left, DateTimeVersion right)
         {
             return !left.Equals(right);
         }
@@ -164,7 +156,7 @@ namespace System.ComponentModel.Server
         /// <returns>
         /// <c>true</c> if the left version is greater than the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator >(Int32Version left, Int32Version right)
+        public static bool operator >(DateTimeVersion left, DateTimeVersion right)
         {
             return left._value > right._value;
         }
@@ -177,7 +169,7 @@ namespace System.ComponentModel.Server
         /// <returns>
         /// <c>true</c> if the left version is less than the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator <(Int32Version left, Int32Version right)
+        public static bool operator <(DateTimeVersion left, DateTimeVersion right)
         {
             return left._value < right._value;
         }
@@ -190,7 +182,7 @@ namespace System.ComponentModel.Server
         /// <returns>
         /// <c>true</c> if the left version is greater than or equal to the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator >=(Int32Version left, Int32Version right)
+        public static bool operator >=(DateTimeVersion left, DateTimeVersion right)
         {
             return left._value >= right._value;
         }
@@ -203,20 +195,20 @@ namespace System.ComponentModel.Server
         /// <returns>
         /// <c>true</c> if the left version is less than or equal to the right; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator <=(Int32Version left, Int32Version right)
+        public static bool operator <=(DateTimeVersion left, DateTimeVersion right)
         {
             return left._value <= right._value;
         }
 
         /// <summary>
-        /// Implicitly converts the specified value to a <see cref="Int32" /> instance.
+        /// Implicitly converts the specified value to a <see cref="DateTime" /> instance.
         /// </summary>
         /// <param name="value">The value to convert.</param>
-        /// <returns>An <see cref="Int32" /> instance.</returns>
-        public static implicit operator int(Int32Version value)
+        /// <returns>A <see cref="DateTime" /> instance.</returns>
+        public static implicit operator DateTime(DateTimeVersion value)
         {
             return value._value;
-        }  
+        }        
 
         #endregion
     }

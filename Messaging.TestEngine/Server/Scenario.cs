@@ -43,7 +43,7 @@ namespace System.ComponentModel.Server
             get { return _domainEvents.Count; }
         }
 
-        internal IScopeSpecificCache InternalCache
+        internal IDependencyCache InternalCache
         {
             get { return _cache; }
         }
@@ -177,7 +177,7 @@ namespace System.ComponentModel.Server
         /// Returns the cache that is associated to the <see cref="Scenario" /> that is currently being executed.
         /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
-        public static readonly IScopeSpecificCache Cache = new ScenarioCache();
+        public static readonly IDependencyCache Cache = new ScenarioCache();
 
         private static readonly ThreadLocal<Scenario> _Current = new ThreadLocal<Scenario>();
 

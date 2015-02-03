@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents a buffered stream of events that can be flushed to another stream.

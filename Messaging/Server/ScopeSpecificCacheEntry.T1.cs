@@ -2,7 +2,7 @@
 
 namespace System.ComponentModel.Server
 {
-    internal sealed class ScopeSpecificCacheEntry<T> : IScopeSpecificCacheEntry<T>
+    internal sealed class ScopeSpecificCacheEntry<T> : IDependencCacheEntry<T>
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ScopeSpecificCache _cache;

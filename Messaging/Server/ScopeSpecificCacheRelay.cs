@@ -6,23 +6,23 @@ namespace System.ComponentModel.Server
     /// Represents a cache that relays to a another cache-implementation. This class can be useful
     /// when a component wants to refer to a cache of which it's availability is context-dependent.
     /// </summary>
-    public abstract class ScopeSpecificCacheRelay : IScopeSpecificCache
+    public abstract class ScopeSpecificCacheRelay : IDependencyCache
     {
         /// <inheritdoc />
-        public IScopeSpecificCacheEntry<T> Add<T>(T value)
+        public IDependencCacheEntry<T> Add<T>(T value)
         {
             return CurrentCache().Add(value);
         }
 
         /// <inheritdoc />
-        public IScopeSpecificCacheEntry<T> Add<T>(T value, Action<T> valueRemovedCallback)
+        public IDependencCacheEntry<T> Add<T>(T value, Action<T> valueRemovedCallback)
         {
             return CurrentCache().Add(value, valueRemovedCallback);
         }
 
-        private IScopeSpecificCache CurrentCache()
+        private IDependencyCache CurrentCache()
         {
-            IScopeSpecificCache cache;
+            IDependencyCache cache;
 
             if (TryGetCache(out cache))
             {
@@ -38,7 +38,7 @@ namespace System.ComponentModel.Server
         /// When the cache is avalailable, this parameter will refer to the cache retrieved.
         /// </param>
         /// <returns><c>true</c> is the cache was available; otherwise <c>false</c>.</returns>
-        protected abstract bool TryGetCache(out IScopeSpecificCache cache);
+        protected abstract bool TryGetCache(out IDependencyCache cache);
 
         
         private static InvalidOperationException NewCacheNotAvailableException()

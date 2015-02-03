@@ -34,11 +34,17 @@ namespace System.ComponentModel.Client.DataVirtualization
             get { return _page.Count; }
         }
 
+        /// <summary>
+        /// Indicates whether or not this page is the first page of the collection.
+        /// </summary>
         public bool HasPreviousPage
         {
             get { return _page.HasPreviousPage; }
         }
 
+        /// <summary>
+        /// Indicates whether or not this page is the last page of the collection.
+        /// </summary>
         public bool HasNextPage
         {
             get { return _page.HasNextPage; }

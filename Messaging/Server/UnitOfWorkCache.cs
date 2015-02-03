@@ -2,7 +2,7 @@
 {
     internal sealed class UnitOfWorkCache : ScopeSpecificCacheRelay
     {
-        protected override bool TryGetCache(out IScopeSpecificCache cache)
+        protected override bool TryGetCache(out IDependencyCache cache)
         {
             var context = UnitOfWorkContext.Current;
             if (context == null)

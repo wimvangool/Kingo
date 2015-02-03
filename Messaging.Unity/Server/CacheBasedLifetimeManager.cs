@@ -7,14 +7,14 @@ namespace System.ComponentModel.Server
     /// </summary>
     public sealed class CacheBasedLifetimeManager : LifetimeManager
     {
-        private readonly IScopeSpecificCache _cache;
-        private IScopeSpecificCacheEntry<object> _entry;    
+        private readonly IDependencyCache _cache;
+        private IDependencCacheEntry<object> _entry;    
     
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheBasedLifetimeManager" /> class.
         /// </summary>
         /// <param name="cache">The cache that is used to store all values.</param>
-        public CacheBasedLifetimeManager(IScopeSpecificCache cache)
+        public CacheBasedLifetimeManager(IDependencyCache cache)
         {
             if (cache == null)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Server.Domain;
 using System.ComponentModel.Server.SampleApplication.Messages;
 using System.Linq;
 

@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an aggregate that is modeled as a stream of events.

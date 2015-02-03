@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Server.Domain;
 
 namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 {

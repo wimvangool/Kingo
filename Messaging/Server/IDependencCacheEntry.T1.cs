@@ -4,7 +4,7 @@
     /// Represents a handle to an item in cache.
     /// </summary>
     /// <typeparam name="T">Type of the item in cache.</typeparam>
-    public interface IScopeSpecificCacheEntry<T> : IDisposable
+    public interface IDependencCacheEntry<T> : IDisposable
     {
         /// <summary>
         /// Attempts to retrieve the value from cache.

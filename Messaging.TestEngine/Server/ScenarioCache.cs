@@ -2,7 +2,7 @@
 {
     internal sealed class ScenarioCache : ScopeSpecificCacheRelay
     {
-        protected override bool TryGetCache(out IScopeSpecificCache cache)
+        protected override bool TryGetCache(out IDependencyCache cache)
         {
             var scenario = Scenario.Current;
             if (scenario == null)
