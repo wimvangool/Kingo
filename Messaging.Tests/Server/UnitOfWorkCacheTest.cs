@@ -7,12 +7,12 @@ namespace System.ComponentModel.Server
     {
         #region [====== Setup and Teardown ======]
 
-        private ScopeSpecificCache _cache;
+        private DependencyCache _cache;
 
         [TestInitialize]
         public void Setup()
         {
-            _cache = new ScopeSpecificCache();
+            _cache = new DependencyCache();
         }
 
         [TestCleanup]

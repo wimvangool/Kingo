@@ -57,6 +57,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -88,7 +89,8 @@
     <Compile Include="Server\MessageHandlerSpy.cs" />
     <Compile Include="Server\MessageProcessorBusTest.cs" />
     <Compile Include="Server\MessageProcessorStub.cs" />
-    <Compile Include="Server\MessageValidationPipelineTest.cs" />
+    <Compile Include="Server\Modules\MessageValidationPipelineTest.cs" />
+    <Compile Include="Server\Modules\TransactionScopeModuleTest.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
     <Compile Include="Server\MessageHandlerClassTest.cs" />

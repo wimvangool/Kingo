@@ -5,15 +5,15 @@ namespace System.ComponentModel.Server
     /// <summary>
     /// Provides a basic, in-memory implementation of the <see cref="IDependencyCache" /> interface.
     /// </summary>
-    public sealed class ScopeSpecificCache : IDependencyCache, IDisposable
+    public sealed class DependencyCache : IDependencyCache, IDisposable
     {
         private readonly List<IDisposable> _entries;
         private bool _isDisposed;
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScopeSpecificCache" /> class.
+        /// Initializes a new instance of the <see cref="DependencyCache" /> class.
         /// </summary>
-        public ScopeSpecificCache()
+        public DependencyCache()
         {
             _entries = new List<IDisposable>();
         }
@@ -58,7 +58,7 @@ namespace System.ComponentModel.Server
             {
                 throw NewCacheDisposedException();
             }
-            var cachedItem = new ScopeSpecificCacheEntry<T>(this, value, valueInvalidatedCallback);
+            var cachedItem = new DependencyCacheEntry<T>(this, value, valueInvalidatedCallback);
 
             _entries.Add(cachedItem);
 
@@ -72,7 +72,7 @@ namespace System.ComponentModel.Server
 
         private static Exception NewCacheDisposedException()
         {
-            return new ObjectDisposedException(typeof(ScopeSpecificCache).Name);
+            return new ObjectDisposedException(typeof(DependencyCache).Name);
         }        
     }
 }

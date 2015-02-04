@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server.Modules
 {
     /// <summary>
     /// When implemented by a class, represents a factory that can be used to build a <see cref="IMessageHandler{TMessage}" /> pipeline.

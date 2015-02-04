@@ -33,7 +33,7 @@ namespace System.ComponentModel.Server
                 get { return _context._flushController; }
             }
 
-            public ScopeSpecificCache Cache
+            public DependencyCache Cache
             {
                 get { return _context._cache; }
             }
@@ -43,14 +43,14 @@ namespace System.ComponentModel.Server
 
         private readonly Stack<BufferedEventBus> _bufferedEventBuses;             
         private readonly UnitOfWorkController _flushController;
-        private readonly ScopeSpecificCache _cache;   
+        private readonly DependencyCache _cache;   
         private bool _isDisposed;
         
         internal UnitOfWorkContext()
         {                                    
             _bufferedEventBuses = new Stack<BufferedEventBus>(3);                                
             _flushController = new UnitOfWorkController();
-            _cache = new ScopeSpecificCache(); 
+            _cache = new DependencyCache(); 
         }          
         
         internal IDependencyCache InternalCache

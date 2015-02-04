@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.Resources;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Modules
 {
     /// <summary>
-    /// Represents a pipeline that validates a message and throws an <see cref="InvalidMessageException" /> if
+    /// Represents a module that validates a message and throws an <see cref="InvalidMessageException" /> if
     /// a message is invalid.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-    public class MessageValidationPipeline<TMessage> : IMessageHandler<TMessage> where TMessage : class, IMessage
+    public class MessageValidationModule<TMessage> : MessageHandlerPipelineModule<TMessage> where TMessage : class, IMessage
     {
         #region [====== DefaultValidator ======]
 
@@ -25,17 +25,17 @@ namespace System.ComponentModel.Server
         private readonly IMessageValidator<TMessage> _validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageValidationPipeline{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="MessageValidationModule{TMessage}" /> class.
         /// </summary>
         /// <param name="handler">The next handler to invoke.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public MessageValidationPipeline(IMessageHandler<TMessage> handler)
+        public MessageValidationModule(IMessageHandler<TMessage> handler)
             : this(handler, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageValidationPipeline{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="MessageValidationModule{TMessage}" /> class.
         /// </summary>
         /// <param name="handler">The next handler to invoke.</param>
         /// <param name="validator">
@@ -44,7 +44,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public MessageValidationPipeline(IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator)
+        public MessageValidationModule(IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator)
         {
             if (handler == null)
             {
@@ -54,10 +54,8 @@ namespace System.ComponentModel.Server
             _validator = validator ?? new DefaultValidator<TMessage>();
         }
 
-        /// <summary>
-        /// The next handler to invoke.
-        /// </summary>
-        protected IMessageHandler<TMessage> Handler
+        /// <inheritdoc />
+        protected override IMessageHandler<TMessage> Handler
         {
             get { return _handler; }
         }
@@ -65,7 +63,7 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// The validator that is used to validate each message.
         /// </summary>
-        protected IMessageValidator<TMessage> Validator
+        protected virtual IMessageValidator<TMessage> Validator
         {
             get { return _validator; }
         }
@@ -73,19 +71,12 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Validates the specified <paramref name="message"/> before it is passed to the next <see cref="Handler"/>.
         /// </summary>
-        /// <param name="message">The message to handle.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
+        /// <param name="message">The message to handle.</param>        
         /// <exception cref="InvalidMessageException">
         /// <paramref name="message"/> is invalid.
         /// </exception>
-        public void Handle(TMessage message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
+        protected override void Handle(TMessage message)
+        {            
             ValidationErrorTree errors;
 
             if (Validator.TryGetValidationErrors(message, out errors))

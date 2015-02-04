@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server.Modules
 {
     /// <summary>
     /// This type is used to support implicit type conversion from a <see cref="Func{T, S}" /> to a

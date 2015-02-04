@@ -1,23 +1,23 @@
 ﻿using System.Threading;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Modules
 {
     /// <summary>
     /// This pipeline changes the name of the current thread so that it can easily be identified in the debugger.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-    public class ThreadNamePipeline<TMessage> : IMessageHandler<TMessage> where TMessage : class
+    public class ThreadNameModule<TMessage> : MessageHandlerPipelineModule<TMessage> where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ThreadNamePipeline{TMessage}" /> class.
+        /// Initializes a new instance of the <see cref="ThreadNameModule{TMessage}" /> class.
         /// </summary>
         /// <param name="handler">The next handler to invoke.</param>               
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public ThreadNamePipeline(IMessageHandler<TMessage> handler)
+        public ThreadNameModule(IMessageHandler<TMessage> handler)
         {
             if (handler == null)
             {
@@ -27,19 +27,20 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public void Handle(TMessage message)
+        protected override IMessageHandler<TMessage> Handler
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
+            get { return _handler; }
+        }
+
+        /// <inheritdoc />
+        protected override void Handle(TMessage message)
+        {            
             var currentThread = Thread.CurrentThread;
             if (currentThread.Name == null)
             {
                 currentThread.Name = CreateThreadName(currentThread);
             }
-
-            _handler.Handle(message);
+            Handler.Handle(message);
         }
 
         /// <summary>

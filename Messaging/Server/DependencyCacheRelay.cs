@@ -6,7 +6,7 @@ namespace System.ComponentModel.Server
     /// Represents a cache that relays to a another cache-implementation. This class can be useful
     /// when a component wants to refer to a cache of which it's availability is context-dependent.
     /// </summary>
-    public abstract class ScopeSpecificCacheRelay : IDependencyCache
+    public abstract class DependencyCacheRelay : IDependencyCache
     {
         /// <inheritdoc />
         public IDependencCacheEntry<T> Add<T>(T value)

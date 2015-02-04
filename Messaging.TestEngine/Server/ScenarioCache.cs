@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Server
 {
-    internal sealed class ScenarioCache : ScopeSpecificCacheRelay
+    internal sealed class ScenarioCache : DependencyCacheRelay
     {
         protected override bool TryGetCache(out IDependencyCache cache)
         {

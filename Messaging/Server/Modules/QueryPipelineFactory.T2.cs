@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Modules
 {
     /// <summary>
     /// Represents a factory that can be used to build a <see cref="IQuery{TMessageIn, TMessageOut}" /> pipeline.

@@ -15,7 +15,7 @@ namespace System.ComponentModel.Server
     {        
         private readonly VerificationStatement _statement;
         private readonly List<object> _domainEvents;
-        private readonly ScopeSpecificCache _cache;
+        private readonly DependencyCache _cache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scenario" /> class.
@@ -24,7 +24,7 @@ namespace System.ComponentModel.Server
         {            
             _statement = new VerificationStatement(this);
             _domainEvents = new List<object>();
-            _cache = new ScopeSpecificCache();
+            _cache = new DependencyCache();
         }                
 
         /// <summary>

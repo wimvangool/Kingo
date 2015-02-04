@@ -2,10 +2,10 @@
 
 namespace System.ComponentModel.Server
 {
-    internal sealed class ScopeSpecificCacheEntry<T> : IDependencCacheEntry<T>
+    internal sealed class DependencyCacheEntry<T> : IDependencCacheEntry<T>
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ScopeSpecificCache _cache;
+        private readonly DependencyCache _cache;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Action<T> _valueInvalidatedCallback;  
@@ -13,7 +13,7 @@ namespace System.ComponentModel.Server
         private readonly T _value;              
         private bool _isDisposed;        
 
-        public ScopeSpecificCacheEntry(ScopeSpecificCache cache, T value, Action<T> valueInvalidatedCallback)
+        public DependencyCacheEntry(DependencyCache cache, T value, Action<T> valueInvalidatedCallback)
         {            
             _cache = cache;
             _value = value;

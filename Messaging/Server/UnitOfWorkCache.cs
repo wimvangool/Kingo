@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Server
 {
-    internal sealed class UnitOfWorkCache : ScopeSpecificCacheRelay
+    internal sealed class UnitOfWorkCache : DependencyCacheRelay
     {
         protected override bool TryGetCache(out IDependencyCache cache)
         {

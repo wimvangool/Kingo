@@ -45,7 +45,7 @@ namespace System.ComponentModel
 
         #endregion
 
-        #region [====== Copy ======]        
+        #region [====== Copy ======]
 
         TMessage IMessage<TMessage>.Copy()
         {

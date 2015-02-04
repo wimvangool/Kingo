@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Modules
 {
     [TestClass]
     public sealed class MessageValidationPipelineTest
@@ -17,9 +17,9 @@ namespace System.ComponentModel.Server
         }        
 
         [TestMethod]
-        public void Handle_InvokesNextHandler_IfMessageIsValid()
+        public void Module_InvokesNextHandler_IfMessageIsValid()
         {
-            var pipeline = new MessageValidationPipeline<CommandStub>(_nextHandlerMock.Object, null);
+            IMessageHandler<CommandStub> pipeline = new MessageValidationModule<CommandStub>(_nextHandlerMock.Object, null);
 
             _command.Value = "Some Value";
             _nextHandlerMock.Setup(handler => handler.Handle(_command));
@@ -31,9 +31,9 @@ namespace System.ComponentModel.Server
 
         [TestMethod]
         [ExpectedException(typeof(InvalidMessageException))]
-        public void Handle_Throws_IfValidatorIsSpecifiedAndMessageIsInvalid()
+        public void Module_Throws_IfValidatorIsSpecifiedAndMessageIsInvalid()
         {
-            var pipeline = new MessageValidationPipeline<CommandStub>(_nextHandlerMock.Object, null);
+            IMessageHandler<CommandStub> pipeline = new MessageValidationModule<CommandStub>(_nextHandlerMock.Object, null);
           
             _nextHandlerMock.Setup(handler => handler.Handle(_command));
 
