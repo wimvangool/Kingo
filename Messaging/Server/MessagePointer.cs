@@ -124,6 +124,21 @@ namespace System.ComponentModel.Server
             } while ((stack = stack.ParentPointer) != null);
         }
 
-        #endregion        
+        #endregion                   
+
+        internal MessageSources DetermineMessageSourceOf(object message)
+        {
+            if (ReferenceEquals(Message, message))
+            {
+                return ParentPointer == null
+                    ? MessageSources.ExternalMessageBus
+                    : MessageSources.InternalMessageBus;
+            }
+            if (ParentPointer == null)
+            {
+                return MessageSources.Undefined;
+            }
+            return ParentPointer.DetermineMessageSourceOf(message);
+        }        
     }
 }

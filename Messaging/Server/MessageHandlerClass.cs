@@ -12,13 +12,15 @@ namespace System.ComponentModel.Server
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly MessageHandlerFactory _factory;        
         private readonly Type _classType;
-        private readonly Type[] _interfaceTypes;        
+        private readonly Type[] _interfaceTypes;
+        private readonly MessageSources _sources;
 
-        private MessageHandlerClass(MessageHandlerFactory factory, Type classType, Type[] interfaceTypes)
+        private MessageHandlerClass(MessageHandlerFactory factory, Type classType, Type[] interfaceTypes, MessageSources sources)
         {
             _factory = factory;
             _classType = classType;
             _interfaceTypes = interfaceTypes;
+            _sources = sources;
         }                     
 
         private void Register(InstanceLifetime lifetime)
@@ -42,20 +44,29 @@ namespace System.ComponentModel.Server
             }
         }                       
 
-        public IEnumerable<IMessageHandler<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message) where TMessage : class
+        internal IEnumerable<IMessageHandler<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message, MessageSources source) where TMessage : class
         {
-            // This LINQ construct first selects all message handler interface definitions that are compatible with
-            // the specified message. Then it will dynamically create the correct message handler type for each match
-            // and return it.
-            //
-            // Example:
-            //   When the class implements both IMessageHandler<object> and IMessageHandler<SomeMessage>, then if
-            //   TMessage is of type SomeMessage, two message-handler instances are returned, one for each
-            //   implementation.
-            return from interfaceType in _interfaceTypes
-                   let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
-                   where messageTypeOfInterface.IsInstanceOfType(message)
-                   select (IMessageHandler<TMessage>) _factory.CreateMessageHandler(_classType);
+            if (IsAcceptedSource(_sources, source))
+            {
+                // This LINQ construct first selects all message handler interface definitions that are compatible with
+                // the specified message. Then it will dynamically create the correct message handler type for each match
+                // and return it.
+                //
+                // Example:
+                //   When the class implements both IMessageHandler<object> and IMessageHandler<SomeMessage>, then if
+                //   TMessage is of type SomeMessage, two message-handler instances are returned, one for each
+                //   implementation.
+                return from interfaceType in _interfaceTypes
+                       let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
+                       where messageTypeOfInterface.IsInstanceOfType(message)
+                       select (IMessageHandler<TMessage>)_factory.CreateMessageHandler(_classType);
+            }
+            return Enumerable.Empty<IMessageHandler<TMessage>>();
+        }
+
+        private static bool IsAcceptedSource(MessageSources sources, MessageSources source)
+        {
+            return (sources & source) == source;
         }
 
         public override string ToString()
@@ -68,9 +79,9 @@ namespace System.ComponentModel.Server
 
         public static bool TryRegisterIn(MessageHandlerFactory container, Type type, Func<Type, bool> predicate, out MessageHandlerClass handler)
         {
-            InstanceLifetime lifetime;
+            MessageHandlerAttribute attribute;
 
-            if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !HasMessageHandlerAttribute(type, out lifetime) || !SatisfiesPredicate(type, predicate))
+            if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !HasMessageHandlerAttribute(type, out attribute) || !SatisfiesPredicate(type, predicate))
             {
                 handler = null;
                 return false;
@@ -81,20 +92,20 @@ namespace System.ComponentModel.Server
                 handler = null;
                 return false;
             }
-            handler = new MessageHandlerClass(container, type, interfaceTypes);
-            handler.Register(lifetime);
+            handler = new MessageHandlerClass(container, type, interfaceTypes, attribute.Sources);
+            handler.Register(attribute.Lifetime);
             return true;
         }
 
-        private static bool HasMessageHandlerAttribute(Type classType, out InstanceLifetime lifetime)
+        private static bool HasMessageHandlerAttribute(Type classType, out MessageHandlerAttribute attribute)
         {
             var attributes = classType.GetCustomAttributes(typeof(MessageHandlerAttribute), true);
             if (attributes.Length == 0)
             {
-                lifetime = InstanceLifetime.PerResolve;
+                attribute = null;
                 return false;
             }
-            lifetime = attributes.Cast<MessageHandlerAttribute>().Single().Lifetime;
+            attribute = attributes.Cast<MessageHandlerAttribute>().Single();
             return true;
         }        
 

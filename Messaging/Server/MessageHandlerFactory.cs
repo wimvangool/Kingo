@@ -106,16 +106,16 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        internal IEnumerable<IMessageHandler<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message) where TMessage : class
+        internal IEnumerable<IMessageHandler<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message, MessageSources source) where TMessage : class
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
             return from handlerClass in _messageHandlers
-                let handlers = handlerClass.CreateInstancesInEveryRoleFor(message)
-                from handler in handlers
-                select handler;
+                   let handlers = handlerClass.CreateInstancesInEveryRoleFor(message, source)
+                   from handler in handlers
+                   select handler;
         }        
 
         /// <summary>

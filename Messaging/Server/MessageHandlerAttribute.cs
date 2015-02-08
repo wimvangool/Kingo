@@ -8,6 +8,7 @@
     public sealed class MessageHandlerAttribute : Attribute
     {
         private readonly InstanceLifetime _lifetime;
+        private readonly MessageSources _sources;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerAttribute" /> class.
@@ -16,6 +17,18 @@
         public MessageHandlerAttribute(InstanceLifetime lifetime)
         {
             _lifetime = lifetime;
+            _sources = MessageSources.Any;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageHandlerAttribute" /> class.
+        /// </summary>
+        /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
+        /// <param name="sources">Specifies which source(s) the message is accepted from.</param>
+        public MessageHandlerAttribute(InstanceLifetime lifetime, MessageSources sources)
+        {
+            _lifetime = lifetime;
+            _sources = sources;
         }
 
         /// <summary>
@@ -24,6 +37,14 @@
         public InstanceLifetime Lifetime
         {
             get { return _lifetime; }
+        }
+
+        /// <summary>
+        /// Specifies which source(s) the message is accepted from.
+        /// </summary>
+        public MessageSources Sources
+        {
+            get { return _sources; }
         }
     }
 }

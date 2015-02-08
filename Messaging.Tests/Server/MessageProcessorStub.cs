@@ -9,7 +9,7 @@
             _factory = new MessageHandlerFactoryForUnity();
         }
 
-        protected override MessageHandlerFactory MessageHandlerFactory
+        protected internal override MessageHandlerFactory MessageHandlerFactory
         {
             get { return _factory; }
         }

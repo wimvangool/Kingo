@@ -7,7 +7,7 @@
     public abstract class MessageHandlerPipelineModule<TMessage> : MessageHandler<TMessage> where TMessage : class
     {
         /// <summary>
-        /// Returns the next <see cref="IMessageHandler{TMessage}" /> to invoke.
+        /// The next <see cref="IMessageHandler{TMessage}" /> to invoke.
         /// </summary>
         protected abstract IMessageHandler<TMessage> Handler
         {

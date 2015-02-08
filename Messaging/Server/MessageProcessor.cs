@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace System.ComponentModel.Server
 {
@@ -13,109 +14,7 @@ namespace System.ComponentModel.Server
     /// Represents a handler of arbitrary messages.
     /// </summary>    
     public abstract class MessageProcessor : IMessageProcessor
-    {        
-        #region [====== MessageDispatcherPipeline ======]
-
-        private sealed class MessageDispatcherPipeline<TMessage> : IMessageHandler<TMessage> where TMessage : class
-        {            
-            private readonly IMessageHandler<TMessage> _handler;
-            private readonly MessageProcessor _processor;
-
-            internal MessageDispatcherPipeline(IMessageHandler<TMessage> handler, MessageProcessor processor)
-            {                
-                _handler = handler;
-                _processor = processor;
-            } 
-           
-            public void Handle(TMessage message)
-            {
-                _processor.MessagePointer.ThrowIfCancellationRequested();
-
-                using (var scope = new UnitOfWorkScope(_processor.DomainEventBus))
-                {
-                    HandleMessage(message);                    
-
-                    scope.Complete();
-                }
-                _processor.MessagePointer.ThrowIfCancellationRequested(); 
-            }
-
-            private void HandleMessage(TMessage message)
-            {
-                if (_handler == null)
-                {
-                    if (_processor.MessageHandlerFactory == null)
-                    {
-                        return;
-                    }
-                    foreach (var handler in _processor.MessageHandlerFactory.CreateMessageHandlersFor(message))
-                    {
-                        HandleMessage(message, handler);
-                    }
-                }
-                else
-                {
-                    HandleMessage(message, _handler);
-                }
-            }
-
-            private void HandleMessage(TMessage message, IMessageHandler<TMessage> handler)
-            {                
-                _processor.CreatePerMessageHandlerPipeline(handler).Handle(message);
-                _processor.MessagePointer.ThrowIfCancellationRequested();
-            }
-        }
-
-        #endregion        
-
-        #region [====== QueryDispatcherPipeline ======]
-
-        internal sealed class QueryDispatcherPipeline<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn> where TMessageIn : class, IMessage<TMessageIn>         
-        {
-            private readonly IQuery<TMessageIn, TMessageOut> _query;
-            private readonly MessageProcessor _processor;
-
-            internal QueryDispatcherPipeline(IQuery<TMessageIn, TMessageOut> query, MessageProcessor processor)
-            {
-                if (query == null)
-                {
-                    throw new ArgumentNullException("query");
-                }
-                _query = query;
-                _processor = processor;
-            }
-
-            internal TMessageOut Result
-            {
-                get;
-                private set;
-            }
-
-            void IMessageHandler<TMessageIn>.Handle(TMessageIn message)
-            {
-                _processor.MessagePointer.ThrowIfCancellationRequested();
-
-                using (var scope = new UnitOfWorkScope(_processor.DomainEventBus))
-                {
-                    Result = Execute(message);
-
-                    scope.Complete();
-                }
-                _processor.MessagePointer.ThrowIfCancellationRequested();
-            }
-
-            private TMessageOut Execute(TMessageIn message)
-            {
-                var result = _processor.CreateQueryPipeline(_query).Execute(message);
-
-                _processor.MessagePointer.ThrowIfCancellationRequested();
-
-                return result;
-            }
-        }
-
-        #endregion
-
+    {                             
         private readonly IMessageProcessorBus _domainEventBus;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -146,7 +45,7 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Returns the <see cref="MessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected abstract MessageHandlerFactory MessageHandlerFactory
+        protected internal abstract MessageHandlerFactory MessageHandlerFactory
         {
             get;
         }
@@ -226,8 +125,8 @@ namespace System.ComponentModel.Server
 
             try
             {
-                handler = new MessageDispatcherPipeline<TMessage>(handler, this);
-                handler = CreatePerMessagePipeline(handler, validator);
+                handler = new MessageDispatcherModule<TMessage>(handler, this);
+                handler = CreatePerMessagePipeline(validator).CreateMessageHandlerPipeline(handler);
                 handler.Handle(message);
             }
             finally
@@ -273,11 +172,11 @@ namespace System.ComponentModel.Server
 
             try
             {
-                var pipeline = new QueryDispatcherPipeline<TMessageIn, TMessageOut>(query, this);
+                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(query, this);
 
-                CreatePerMessagePipeline(pipeline, validator).Handle(message);
+                CreatePerMessagePipeline(validator).CreateMessageHandlerPipeline(handler).Handle(message);
 
-                return pipeline.Result;
+                return handler.Result;
             }
             finally
             {
@@ -302,51 +201,44 @@ namespace System.ComponentModel.Server
         }        
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageHandler{TMessage}" /> pipeline on top of all handlers that will
-        /// be invoked for a specific message.
+        /// Creates and returns a <see cref="IMessageHandlerPipelineFactory{TMessage}" /> that will be used to
+        /// create a pipeline for every incoming message.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-        /// <param name="handler">The handler to decorate.</param>
+        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>        
         /// <param name="validator">Optional validator of the message.</param>
-        /// <returns>A pipeline that will handle a message.</returns>        
-        protected virtual IMessageHandler<TMessage> CreatePerMessagePipeline<TMessage>(IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator) where TMessage : class, IMessage
+        /// <returns>A new <see cref="IMessageHandlerPipelineFactory{TMessage}" />.</returns>        
+        protected virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessagePipeline<TMessage>(IMessageValidator<TMessage> validator) where TMessage : class, IMessage
         {
             return new MessageHandlerPipelineFactory<TMessage>()
             {
-                h => new ThreadNameModule<TMessage>(h),
-                h => new MessageValidationModule<TMessage>(h, validator)
-            }.CreateMessageHandlerPipeline(handler); 
+                handler => new ThreadNameModule<TMessage>(handler),
+                handler => new MessageValidationModule<TMessage>(handler, validator),
+                handler => new TransactionScopeModule<TMessage>(handler)
+            };
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageHandler{TMessage}" /> pipeline on top of each handler that will be
-        /// invoked for a specific message.
+        /// Creates and returns a <see cref="IMessageHandlerPipelineFactory{TMessage}" /> that will be used to
+        /// create a pipeline for every <see cref="IMessageHandler{TMessage}" /> handling a certain message.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-        /// <param name="handler">The handler to decorate.</param>
-        /// <returns>A pipeline that will handle a message.</returns>
-        /// <remarks>
-        /// The default implementation simply returns the specified <paramref name="handler"/>.
-        /// </remarks>
-        protected virtual IMessageHandler<TMessage> CreatePerMessageHandlerPipeline<TMessage>(IMessageHandler<TMessage> handler) where TMessage : class
+        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>        
+        /// <returns>A pipeline that will handle a message.</returns>        
+        protected internal virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessageHandlerPipeline<TMessage>() where TMessage : class
         {
-            return handler;
+            return new MessageHandlerPipelineFactory<TMessage>();
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="IQuery{TMessageIn, TMessageOut}"/> pipeline on top of each query that will be executed.
+        /// Creates and returns a <see cref="IQueryPipelineFactory{TMessageIn, TMessageOut}"/> that will be used to
+        /// create a pipeline for every query that is executed.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>       
-        /// <param name="query">The query to execute.</param>
-        /// <returns>A query pipeline.</returns>
-        /// <remarks>
-        /// The default implementation simply returns the specified <paramref name="query"/>.
-        /// </remarks>
-        protected virtual IQuery<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query)
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>               
+        /// <returns>A query pipeline.</returns>        
+        protected internal virtual IQueryPipelineFactory<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>()
             where TMessageIn : class, IMessage<TMessageIn>           
         {
-            return query;
+            return new QueryPipelineFactory<TMessageIn, TMessageOut>();
         }        
 
         private static IMessageHandler<TMessage> NullHandler<TMessage>() where TMessage : class
@@ -418,6 +310,59 @@ namespace System.ComponentModel.Server
         private static Attribute[] GetDeclaredAttributesOn(Type messageType)
         {
             return messageType.GetCustomAttributes(true).Cast<Attribute>().ToArray();
+        }
+
+        #endregion
+
+        #region [====== TransactionQueue ======]
+
+        /// <summary>
+        /// Invokes the specified <paramref name="action"/> when the current transaction
+        /// has completed succesfully, or immediately if no transaction is active.
+        /// </summary>
+        /// <param name="action">The action to invoke.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="action"/> is <c>null</c>.
+        /// </exception>
+        public static void Enqueue(Action action)
+        {
+            Enqueue(action, Transaction.Current);
+        }
+
+        /// <summary>
+        /// Invokes the specified <paramref name="action"/> when the specified <paramref name="transaction"/>
+        /// has completed succesfully, or immediately if <paramref name="transaction"/> is <c>null</c>.
+        /// </summary>
+        /// <param name="action">The action to invoke.</param>
+        /// <param name="transaction">The transaction to observe.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="action"/> is <c>null</c>.
+        /// </exception>
+        public static void Enqueue(Action action, Transaction transaction)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }            
+            if (transaction == null || HasCommitted(transaction))
+            {
+                action.Invoke();
+            }
+            else
+            {
+                transaction.TransactionCompleted += (s, e) =>
+                {
+                    if (HasCommitted(e.Transaction))
+                    {
+                        action.Invoke();
+                    }
+                };
+            }
+        }
+
+        private static bool HasCommitted(Transaction transaction)
+        {
+            return transaction.TransactionInformation.Status == TransactionStatus.Committed;
         }
 
         #endregion

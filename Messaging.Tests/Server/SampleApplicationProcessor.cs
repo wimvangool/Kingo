@@ -9,7 +9,7 @@
             _messageHandlerFactory = messageHandlerFactory;
         }
 
-        protected override MessageHandlerFactory MessageHandlerFactory
+        protected internal override MessageHandlerFactory MessageHandlerFactory
         {
             get { return _messageHandlerFactory; }
         }

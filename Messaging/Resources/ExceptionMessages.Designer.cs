@@ -214,6 +214,24 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid query cache kind specified: {0}..
+        /// </summary>
+        internal static string QueryCacheOptions_InvalidKindSpecified {
+            get {
+                return ResourceManager.GetString("QueryCacheOptions_InvalidKindSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid timeout specified: {0}..
+        /// </summary>
+        internal static string QueryCacheOptions_InvalidTimeoutSpecified {
+            get {
+                return ResourceManager.GetString("QueryCacheOptions_InvalidTimeoutSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot change this collection because it is read-only..
         /// </summary>
         internal static string ReadOnlyDictionary_NotSupported {

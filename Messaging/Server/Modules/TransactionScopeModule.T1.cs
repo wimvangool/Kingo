@@ -1,4 +1,6 @@
-﻿using System.Transactions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Transactions;
 
 namespace System.ComponentModel.Server.Modules
 {
@@ -18,7 +20,7 @@ namespace System.ComponentModel.Server.Modules
     /// when creating a new <see cref="Transaction" /> and the <see cref="IsolationLevel" /> was not explicitly specified.
     /// </para>
     /// </remarks>
-    public class TransactionScopeModule<TMessage> : SingleAttributeBasedModule<TMessage, TransactionScopeAttribute> where TMessage : class
+    public class TransactionScopeModule<TMessage> : MessageHandlerPipelineModule<TMessage, TransactionScopeAttribute> where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;
         private readonly TransactionScopeFactory _transactionScopeFactory;
@@ -94,9 +96,14 @@ namespace System.ComponentModel.Server.Modules
             get { return _handler; }
         }
 
-        protected override void Handle(TMessage message, TransactionScopeAttribute attribute)
+        /// <summary>
+        /// Wraps the invocation of the next <see cre="Handler" /> in a newl created <see cref="TransactionScope" />.
+        /// </summary>
+        /// <param name="message">The message to handle.</param>
+        /// <param name="attributes">All attributes of type <see cref="TransactionScopeAttribute" />. declared on <paramref name="message"/>.</param>
+        protected override void Handle(TMessage message, IEnumerable<TransactionScopeAttribute> attributes)
         {
-            using (var scope = CreateTransactionScope(attribute))
+            using (var scope = CreateTransactionScope(attributes.SingleOrDefault()))
             {
                 Handler.Handle(message);
 

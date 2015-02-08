@@ -7,13 +7,13 @@ namespace System.ComponentModel.Server.Modules
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
     /// <typeparam name="TAttribute">Type of the attribute(s) to collect from a message.</typeparam>
-    public abstract class MessageAttributeBasedModule<TMessage, TAttribute> : MessageHandlerPipelineModule<TMessage>
+    public abstract class MessageHandlerPipelineModule<TMessage, TAttribute> : MessageHandlerPipelineModule<TMessage>
         where TMessage : class
         where TAttribute : class
     {
         /// <summary>
         /// Retrieves all attributes of type <typeparamref name="TAttribute"/> declared on <paramref name="message"/>
-        /// and invokes <see cref="Handle(TMessage, IEnumerable{TAttribute}" />.
+        /// and invokes <see cref="Handle(TMessage, IEnumerable{TAttribute})" />.
         /// </summary>
         /// <param name="message">The message to handle.</param>
         protected override void Handle(TMessage message)

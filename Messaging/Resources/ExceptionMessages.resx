@@ -192,4 +192,10 @@
   <data name="ReadOnlyDictionary_NotSupported" xml:space="preserve">
     <value>Cannot change this collection because it is read-only.</value>
   </data>
+  <data name="QueryCacheOptions_InvalidKindSpecified" xml:space="preserve">
+    <value>Invalid query cache kind specified: {0}.</value>
+  </data>
+  <data name="QueryCacheOptions_InvalidTimeoutSpecified" xml:space="preserve">
+    <value>Invalid timeout specified: {0}.</value>
+  </data>
 </root>
