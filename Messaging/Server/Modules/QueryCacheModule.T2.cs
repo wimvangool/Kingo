@@ -8,7 +8,7 @@ namespace System.ComponentModel.Server.Modules
     /// </summary>
     /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
     /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
-    public class QueryCacheModule<TMessageIn, TMessageOut> : QueryPipelineModule<TMessageIn, TMessageOut, QueryCacheOptionsAttribute>
+    public class QueryCacheModule<TMessageIn, TMessageOut> : QueryModule<TMessageIn, TMessageOut, QueryCacheOptionsAttribute>
         where TMessageIn : class, IMessage<TMessageIn>
     {
         private readonly IQuery<TMessageIn, TMessageOut> _query;

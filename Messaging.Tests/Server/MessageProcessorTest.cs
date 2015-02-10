@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Server.SampleApplication.Messages;
+using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Server
@@ -174,5 +175,52 @@ namespace System.ComponentModel.Server
         }
 
         #endregion                
+
+        #region [====== InvokePostCommit ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void InvokePostCommit_Throws_IfActionIsNull()
+        {
+            MessageProcessor.InvokePostCommit(null);
+        }
+
+        [TestMethod]
+        public void InvokePostCommit_InvokesSpecifiedActionImmediately_IfNoTransactionIsActive()
+        {
+            bool hasBeenInvoked = false;
+
+            MessageProcessor.InvokePostCommit(isPostCommit =>
+            {
+                hasBeenInvoked = true;
+
+                Assert.IsFalse(isPostCommit);
+            });
+
+            Assert.IsTrue(hasBeenInvoked);
+        }
+
+        [TestMethod]
+        public void InvokePostCommit_InvokesSpecifiedActionWhenTransactionHasCommitted_IfTransactionIsActive()
+        {
+            bool hasBeenInvoked = false;
+
+            using (var scope = new TransactionScope())
+            {
+                MessageProcessor.InvokePostCommit(isPostCommit =>
+                {
+                    hasBeenInvoked = true;
+
+                    Assert.IsTrue(isPostCommit);
+                });
+
+                Assert.IsFalse(hasBeenInvoked);
+
+                scope.Complete();
+            }
+            Assert.IsTrue(hasBeenInvoked);
+        } 
+
+        #endregion
     }
 }

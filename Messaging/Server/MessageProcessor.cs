@@ -1,8 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel.Server.Modules;
+﻿using System.ComponentModel.Server.Modules;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -288,57 +285,37 @@ namespace System.ComponentModel.Server
                 : Task<TMessageOut>.Factory.StartNew(query);
         }
 
-        #endregion
-
-        #region [====== Message Attribute Cache ======]
-
-        private static readonly ConcurrentDictionary<Type, Attribute[]> _MessageAttributeCache;
-
-        static MessageProcessor()
-        {
-            _MessageAttributeCache = new ConcurrentDictionary<Type, Attribute[]>();
-        }
-
-        internal static IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>(Type messageType) where TAttribute : class
-        {
-            return from attribute in _MessageAttributeCache.GetOrAdd(messageType, GetDeclaredAttributesOn)
-                   let targetAttribute = attribute as TAttribute
-                   where targetAttribute != null
-                   select targetAttribute;
-        }
-
-        private static Attribute[] GetDeclaredAttributesOn(Type messageType)
-        {
-            return messageType.GetCustomAttributes(true).Cast<Attribute>().ToArray();
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== TransactionQueue ======]
 
         /// <summary>
         /// Invokes the specified <paramref name="action"/> when the current transaction
         /// has completed succesfully, or immediately if no transaction is active.
+        /// The passed in boolean indicates whether or invocation was postponed until
+        /// an active transaction committed.
         /// </summary>
         /// <param name="action">The action to invoke.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="action"/> is <c>null</c>.
         /// </exception>
-        public static void Enqueue(Action action)
+        public static void InvokePostCommit(Action<bool> action)
         {
-            Enqueue(action, Transaction.Current);
+            InvokePostCommit(action, Transaction.Current);
         }
 
         /// <summary>
         /// Invokes the specified <paramref name="action"/> when the specified <paramref name="transaction"/>
         /// has completed succesfully, or immediately if <paramref name="transaction"/> is <c>null</c>.
+        /// The passed in boolean indicates whether or invocation was postponed until
+        /// an active transaction committed.
         /// </summary>
         /// <param name="action">The action to invoke.</param>
         /// <param name="transaction">The transaction to observe.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="action"/> is <c>null</c>.
         /// </exception>
-        public static void Enqueue(Action action, Transaction transaction)
+        public static void InvokePostCommit(Action<bool> action, Transaction transaction)
         {
             if (action == null)
             {
@@ -346,7 +323,7 @@ namespace System.ComponentModel.Server
             }            
             if (transaction == null || HasCommitted(transaction))
             {
-                action.Invoke();
+                action.Invoke(false);
             }
             else
             {
@@ -354,7 +331,7 @@ namespace System.ComponentModel.Server
                 {
                     if (HasCommitted(e.Transaction))
                     {
-                        action.Invoke();
+                        action.Invoke(true);
                     }
                 };
             }

@@ -7,7 +7,7 @@ namespace System.ComponentModel.Server.Modules
     /// a message is invalid.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-    public class MessageValidationModule<TMessage> : MessageHandlerPipelineModule<TMessage> where TMessage : class, IMessage
+    public class MessageValidationModule<TMessage> : MessageHandlerModule<TMessage> where TMessage : class, IMessage
     {
         #region [====== DefaultValidator ======]
 

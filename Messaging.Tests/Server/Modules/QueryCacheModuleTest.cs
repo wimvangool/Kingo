@@ -98,7 +98,7 @@ namespace System.ComponentModel.Server.Modules
 
         #region [====== DictionaryCacheManager ======]
 
-        private sealed class DictionaryCacheManager : IQueryCacheManager
+        private sealed class DictionaryCacheManager : QueryCacheManager
         {
             private readonly Dictionary<object, object> _cache;
 
@@ -107,7 +107,7 @@ namespace System.ComponentModel.Server.Modules
                 _cache = new Dictionary<object, object>();
             }
 
-            public TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class
+            protected override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
             {
                 object cachedResult;
 
@@ -122,12 +122,12 @@ namespace System.ComponentModel.Server.Modules
                 return result;
             }
 
-            public TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class
+            protected override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
             {
                 throw new NotSupportedException();
             }
 
-            public void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate) where TMessageIn : class
+            protected override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
             {
                 throw new NotSupportedException();
             }

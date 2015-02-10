@@ -8,9 +8,9 @@ namespace System.ComponentModel.Server.Modules
     /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
     /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
     /// <typeparam name="TAttribute">Type of the attribute(s) to collect from a message.</typeparam>
-    public abstract class QueryPipelineModule<TMessageIn, TMessageOut, TAttribute> : QueryPipelineModule<TMessageIn, TMessageOut>
-        where TMessageIn : class 
-        where TAttribute : Attribute
+    public abstract class QueryModule<TMessageIn, TMessageOut, TAttribute> : QueryModule<TMessageIn, TMessageOut>
+        where TMessageIn : class
+        where TAttribute : MessageHandlerModuleAttribute
     {
         /// <summary>
         /// Retrieves all attributes of type <typeparamref name="TAttribute"/> declared on <paramref name="message"/>
@@ -19,7 +19,7 @@ namespace System.ComponentModel.Server.Modules
         /// <param name="message">>Message containing the parameters of this query.</param>
         protected override TMessageOut Execute(TMessageIn message)
         {
-            return Execute(message, MessageProcessor.SelectAttributesOfType<TAttribute>(message.GetType()));
+            return Execute(message, MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(message.GetType()));
         }
 
         /// <summary>

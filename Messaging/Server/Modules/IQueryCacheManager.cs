@@ -9,7 +9,7 @@ namespace System.ComponentModel.Server.Modules
     /// Notes to implementers: all instance members of the class implementing this interface must be made thread-safe,
     /// because the instance will be shared and accessed among requests.
     /// </remarks>
-    public interface IQueryCacheManager
+    public interface IQueryCacheManager : IDisposable
     {        
         /// <summary>
         /// Retrieves the cached result for <paramref name="message"/> from the application cache. If the
@@ -23,10 +23,14 @@ namespace System.ComponentModel.Server.Modules
         /// <param name="slidingExpiration">Optional timeout value that causes the cached result to expire after a certain amount of unused time.</param>
         /// <param name="query">The query to execute when a new cache item is to be added.</param>
         /// <returns>The (cached) result of <paramref name="query"/>.</returns>
+        /// <exception cref="ObjectDisposedException">
+        /// The current instance has already been disposed.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class;
+        TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
         /// Retrieves the cached result for <paramref name="message"/> from the session cache. If the
@@ -40,10 +44,14 @@ namespace System.ComponentModel.Server.Modules
         /// <param name="slidingExpiration">Optional timeout value that causes the cached result to expire after a certain amount of unused time.</param>
         /// <param name="query">The query to execute when a new cache item is to be added.</param>
         /// <returns>The (cached) result of <paramref name="query"/>.</returns>
+        /// <exception cref="ObjectDisposedException">
+        /// The current instance has already been disposed.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query) where TMessageIn : class;
+        TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
         /// Detects if any results of the specified <typeparamref name="TMessageIn"/> were changed,
@@ -55,9 +63,12 @@ namespace System.ComponentModel.Server.Modules
         /// function returns <c>true</c>, the related cached result is invalidated as soon as any
         /// existing <see cref="Transaction" /> has committed; otherwise, nothing happens.
         /// </param>
+        /// <exception cref="ObjectDisposedException">
+        /// The current instance has already been disposed.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="mustInvalidate"/> is <c>null</c>.
         /// </exception>
-        void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate) where TMessageIn : class;
+        void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate) where TMessageIn : class;        
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace System.ComponentModel.Server.Modules
 {
-    internal sealed class MessageDispatcherModule<TMessage> : MessageHandlerPipelineModule<TMessage> where TMessage : class
+    internal sealed class MessageDispatcherModule<TMessage> : MessageHandlerModule<TMessage> where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;
         private readonly MessageProcessor _processor;

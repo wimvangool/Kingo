@@ -6,7 +6,7 @@ namespace System.ComponentModel.Server.Modules
     /// This pipeline changes the name of the current thread so that it can easily be identified in the debugger.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-    public class ThreadNameModule<TMessage> : MessageHandlerPipelineModule<TMessage> where TMessage : class
+    public class ThreadNameModule<TMessage> : MessageHandlerModule<TMessage> where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;        
 

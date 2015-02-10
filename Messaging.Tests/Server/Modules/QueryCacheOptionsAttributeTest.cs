@@ -23,7 +23,7 @@ namespace System.ComponentModel.Server.Modules
             }
         }
 
-        private sealed class QueryCacheManagerSpy : IQueryCacheManager
+        private sealed class QueryCacheManagerSpy : QueryCacheManager
         {
             private QueryCacheKind? _kind;
             private object _message;
@@ -59,7 +59,7 @@ namespace System.ComponentModel.Server.Modules
 
             #region [====== QueryCacheManager ======]
 
-            TMessageOut IQueryCacheManager.GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            protected override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
             {
                 _kind = QueryCacheKind.Application;
                 _message = message;
@@ -70,7 +70,7 @@ namespace System.ComponentModel.Server.Modules
                 return query.Execute(message);
             }
 
-            TMessageOut IQueryCacheManager.GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            protected override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
             {
                 _kind = QueryCacheKind.Session;
                 _message = message;
@@ -81,12 +81,12 @@ namespace System.ComponentModel.Server.Modules
                 return query.Execute(message);
             }
 
-            void IQueryCacheManager.InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
+            protected override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
             {
                 throw new NotSupportedException();
             }
 
-            #endregion
+            #endregion            
         }
 
         #endregion

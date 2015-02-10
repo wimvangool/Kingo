@@ -7,7 +7,7 @@ namespace System.ComponentModel.Server.Modules
     /// that it's results are to be cached.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class QueryCacheOptionsAttribute : Attribute
+    public sealed class QueryCacheOptionsAttribute : MessageHandlerModuleAttribute
     {
         private readonly QueryCacheKind _kind;        
 
