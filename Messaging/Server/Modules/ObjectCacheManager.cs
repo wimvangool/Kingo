@@ -2,88 +2,50 @@
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
-using System.Transactions;
 
 namespace System.ComponentModel.Server.Modules
 {
-    /// <summary>
-    /// Provides a base implementation of the <see cref="IQueryCacheManager" /> interface 
-    /// </summary>
-    public abstract class ObjectCacheManager : QueryCacheManager
+    internal sealed class ObjectCacheManager : IDisposable
     {
+        private readonly ObjectCacheController _cacheManager;
         private readonly ReaderWriterLockSlim _cacheLock;
         private readonly Dictionary<object, QueryCacheEntryMonitor> _cacheEntryMonitors;
-
-        protected ObjectCacheManager()
+        private readonly ObjectCache _cache;
+        private bool _isDisposed;
+        
+        internal ObjectCacheManager(ObjectCacheController cacheManager, ObjectCache cache)
         {
+            if (cache == null)
+            {
+                throw new ArgumentNullException("cache");
+            }
+            _cacheManager = cacheManager;
+            _cache = cache;
             _cacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
             _cacheEntryMonitors = new Dictionary<object, QueryCacheEntryMonitor>();
-        }
+        }        
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            if (IsDisposed)
+            if (_isDisposed)
             {
                 return;
             }
-            if (disposing)
-            {
-                _cacheLock.Dispose();
+            // Note that we deliberately do not Dispose of the ObjectCache itself,
+            // since that's the responsibility of the component that created that instance.
+            // Also note that because of early disposal of ObjectCacheManagers, 
+            // multiple Managers may be created for a single ObjectCache-instance during
+            // the lifetime of the application.
+            _cacheLock.Dispose();
 
-                foreach (var monitor in _cacheEntryMonitors.Values)
-                {
-                    monitor.Dispose();
-                }
-                _cacheEntryMonitors.Clear();
-            }
-            base.Dispose(disposing);
+            foreach (var monitor in _cacheEntryMonitors.Values)
+            {
+                monitor.Dispose();
+            }            
+            _isDisposed = true;
         }
 
-        /// <inheritdoc />
-        protected override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
-        {            
-            ObjectCache cache;
-
-            if (TryGetApplicationCache(out cache))
-            {
-                return GetOrAddToCache(message, absoluteExpiration, slidingExpiration, query, cache);
-            }
-            return query.Execute(message);
-        }
-
-        /// <summary>
-        /// Attempts to retrieve the <see cref="ObjectCache" /> that is used as the application cache.
-        /// </summary>
-        /// <param name="cache">
-        /// If the application cache is available in the current context, this parameter will refer to the
-        /// application after this method returns; otherwise, it will be <c>null</c>.
-        /// </param>
-        /// <returns><c>true</c> is the application cache is available; otherwise <c>false</c>.</returns>
-        protected abstract bool TryGetApplicationCache(out ObjectCache cache);
-
-        /// <inheritdoc />
-        protected override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
-        {            
-            ObjectCache cache;
-
-            if (TryGetSessionCache(out cache))
-            {
-                return GetOrAddToCache(message, absoluteExpiration, slidingExpiration, query, cache);
-            }
-            return query.Execute(message);
-        }
-
-        /// <summary>
-        /// Attempts to retrieve the <see cref="ObjectCache" /> that is used as the session cache.
-        /// </summary>
-        /// <param name="cache">
-        /// If the session cache is available in the current context, this parameter will refer to the
-        /// application after this method returns; otherwise, it will be <c>null</c>.
-        /// </param>
-        /// <returns><c>true</c> is the application cache is available; otherwise <c>false</c>.</returns>
-        protected abstract bool TryGetSessionCache(out ObjectCache cache);
-
-        private TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query, ObjectCache cache)
+        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
             where TMessageIn : class, IMessage<TMessageIn>
         {
             // First, an attempt is made to just read the result from cache.
@@ -93,7 +55,7 @@ namespace System.ComponentModel.Server.Modules
             {
                 object cachedResult;
 
-                if (TryGetCachedValue(cache, message, out cachedResult))
+                if (TryGetCachedValue(message, out cachedResult))
                 {
                     return (TMessageOut) cachedResult;
                 }
@@ -102,7 +64,7 @@ namespace System.ComponentModel.Server.Modules
             {
                 _cacheLock.ExitReadLock();
             }
-            
+
             // If the cached value was not found, we try again, but this time with an upgradeable lock.
             // Note that since we released the read lock, another request may have just added our wanted
             // result into the cache.
@@ -112,42 +74,42 @@ namespace System.ComponentModel.Server.Modules
             {
                 object cachedResult;
 
-                if (TryGetCachedValue(cache, message, out cachedResult))
+                if (TryGetCachedValue(message, out cachedResult))
                 {
-                    return (TMessageOut) cachedResult;
+                    return (TMessageOut)cachedResult;
                 }
                 var messageOut = query.Execute(message);
-                
-                AddToCache(cache, absoluteExpiration, slidingExpiration, message.Copy(), messageOut);
+
+                AddToCache(absoluteExpiration, slidingExpiration, message.Copy(), messageOut);
 
                 return messageOut;
             }
             finally
             {
                 _cacheLock.ExitUpgradeableReadLock();
-            }                                            
+            }           
         }
 
-        private bool TryGetCachedValue(ObjectCache cache, object messageIn, out object messageOut)
+        private bool TryGetCachedValue(object messageIn, out object messageOut)
         {
             QueryCacheEntryMonitor changeMonitor;
 
             if (_cacheEntryMonitors.TryGetValue(messageIn, out changeMonitor))
             {
-                messageOut = cache.Get(changeMonitor.UniqueId);
+                messageOut = _cache.Get(changeMonitor.UniqueId);
                 return messageOut != null;
             }
             messageOut = null;
             return false;
         }
 
-        private void AddToCache(ObjectCache cache, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, object messageIn, object messageOut)
+        private void AddToCache(TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, object messageIn, object messageOut)
         {
             // The cache entry is only added if no transaction is active or if the active transaction commits.
             MessageProcessor.InvokePostCommit(isPostCommit =>
-            {                
+            {
                 _cacheLock.EnterWriteLock();
-                
+
                 try
                 {
                     // If this code is running after an active transaction has committed, we are no longer holding
@@ -157,24 +119,24 @@ namespace System.ComponentModel.Server.Modules
                     {
                         return;
                     }
-                    var changeMonitor = CreateQueryCacheEntryMonitor();
+                    var changeMonitor = new QueryCacheEntryMonitor();
                     var policy = CreateCacheItemPolicy(messageIn, absoluteExpiration, slidingExpiration, changeMonitor);
 
-                    cache.Add(changeMonitor.UniqueId, messageOut, policy);
-
+                    _cache.Add(changeMonitor.UniqueId, messageOut, policy);
                     _cacheEntryMonitors.Add(messageIn, changeMonitor);
                 }
                 finally
                 {
                     _cacheLock.ExitWriteLock();
-                }    
-                OnCacheItemAdded(messageIn, messageOut, cache);
-            });            
+                }
+                _cacheManager.OnCacheItemAdded(messageIn, messageOut, _cache);
+            });
         }
 
         private CacheItemPolicy CreateCacheItemPolicy(object messageIn, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, ChangeMonitor changeMonitor)
         {
-            var policy = CreateCacheItemPolicy(absoluteExpiration, slidingExpiration);
+            var policy = _cacheManager.CreateCacheItemPolicy(absoluteExpiration, slidingExpiration);
+
             policy.ChangeMonitors.Add(changeMonitor);
             policy.RemovedCallback += args =>
             {
@@ -190,62 +152,16 @@ namespace System.ComponentModel.Server.Modules
                 {
                     _cacheLock.ExitWriteLock();
                 }
-                OnCacheItemRemoved(messageIn, args.CacheItem.Value, args.Source, args.RemovedReason);
+                _cacheManager.OnCacheItemRemoved(messageIn, args.CacheItem.Value, args.Source, args.RemovedReason);
             };
             return policy;
         }        
 
-        /// <summary>
-        /// Creates and returns a new <see cref="CacheItemPolicy" /> that will be used to store a new <see cref="IQuery{T, S}" />-result
-        /// into cache.
-        /// </summary>
-        /// <param name="absoluteExpiration">The configured absolute expiration for this policy.</param>
-        /// <param name="slidingExpiration">The configured sliding expiration for this policy.</param>
-        /// <returns>A new <see cref="CacheItemPolicy" />.</returns>
-        protected virtual CacheItemPolicy CreateCacheItemPolicy(TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration)
-        {
-            var policy = new CacheItemPolicy();
-            
-            if (absoluteExpiration.HasValue)
-            {
-                // NB: We explicitly use DateTimeOffSet.Now since the built-in cache always refers
-                // to the physical Date and Time of the current machine. There is no way we could
-                // mock out this behavior by using Clock.Current().
-                policy.AbsoluteExpiration = DateTimeOffset.Now.Add(absoluteExpiration.Value);
-            }
-            if (slidingExpiration.HasValue)
-            {
-                policy.SlidingExpiration = slidingExpiration.Value;
-            }
-            return policy;
-        }
-
-        private static QueryCacheEntryMonitor CreateQueryCacheEntryMonitor()
-        {
-            // A change monitor is created that is immediately invalidated when
-            // any active transaction is not completed succesfully.
-            var changeMonitor = new QueryCacheEntryMonitor();
-
-            var transaction = Transaction.Current;
-            if (transaction != null)
-            {
-                transaction.TransactionCompleted += (s, e) =>
-                {
-                    if (e.Transaction.TransactionInformation.Status != TransactionStatus.Committed)
-                    {
-                        changeMonitor.RemoveCacheEntry();
-                    }
-                };
-            }
-            return changeMonitor;
-        }
-
-        /// <inheritdoc />
-        protected override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
+        internal void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate) where TMessageIn : class
         {
             var monitorsToNotify = new List<QueryCacheEntryMonitor>();
 
-            foreach (var cacheItem in ObtainChangeMonitorsFor<TMessageIn>())
+            foreach (var cacheItem in AllChangeMonitorsFor<TMessageIn>())
             {
                 if (mustInvalidate.Invoke(cacheItem.Key))
                 {
@@ -261,7 +177,7 @@ namespace System.ComponentModel.Server.Modules
             });
         }
 
-        private IEnumerable<KeyValuePair<TMessageIn, QueryCacheEntryMonitor>> ObtainChangeMonitorsFor<TMessageIn>() where TMessageIn : class
+        private IEnumerable<KeyValuePair<TMessageIn, QueryCacheEntryMonitor>> AllChangeMonitorsFor<TMessageIn>() where TMessageIn : class
         {
             _cacheLock.EnterReadLock();
 
@@ -280,22 +196,5 @@ namespace System.ComponentModel.Server.Modules
                 _cacheLock.ExitReadLock();
             }
         }
-
-        /// <summary>
-        /// Occurs when the result of a query has been added to one of the caches.
-        /// </summary>        
-        /// <param name="messageIn">Message containing the parameters of the query.</param>
-        /// <param name="messageOut">The (stored) result of the query.</param>       
-        /// <param name="cache">The cache the result was originally stored in.</param>         
-        protected virtual void OnCacheItemAdded(object messageIn, object messageOut, ObjectCache cache) { }
-
-        /// <summary>
-        /// Occurs when the result of a query has been evicted from one of the caches.
-        /// </summary>        
-        /// <param name="messageIn">Message containing the parameters of the query.</param>
-        /// <param name="messageOut">The (evicted) result of the query.</param>   
-        /// <param name="cache">The cache the result was originally stored in.</param>
-        /// <param name="reason">The reason of why the result was evicted.</param>     
-        protected virtual void OnCacheItemRemoved(object messageIn, object messageOut, ObjectCache cache, CacheEntryRemovedReason reason) { }
     }
 }

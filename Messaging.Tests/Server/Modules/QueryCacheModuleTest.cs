@@ -98,7 +98,7 @@ namespace System.ComponentModel.Server.Modules
 
         #region [====== DictionaryCacheManager ======]
 
-        private sealed class DictionaryCacheManager : QueryCacheManager
+        private sealed class DictionaryCacheManager : QueryCacheController
         {
             private readonly Dictionary<object, object> _cache;
 

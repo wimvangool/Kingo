@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel.Server.Modules
 {
     [TestClass]
-    public sealed class ObjectCacheManagerTest
+    public sealed class ObjectCacheControllerTest
     {
         #region [====== Nested Types ======]
 
@@ -76,12 +76,12 @@ namespace System.ComponentModel.Server.Modules
             }            
         }
 
-        private sealed class ObjectCacheManagerSpy : ObjectCacheManager
+        private sealed class ObjectCacheControllerSpy : ObjectCacheController
         {
             private readonly ManualResetEventSlim _evictionHandle;
             private readonly MemoryCache _applicationCache;                        
 
-            internal ObjectCacheManagerSpy(bool hasApplicationCache)
+            internal ObjectCacheControllerSpy(bool hasApplicationCache)
             {
                 _evictionHandle = new ManualResetEventSlim();
                 _applicationCache = hasApplicationCache ? new MemoryCache("ApplicationCache") : null;
@@ -131,7 +131,7 @@ namespace System.ComponentModel.Server.Modules
                 }
             }
 
-            protected override void OnCacheItemRemoved(object messageIn, object messageOut, ObjectCache cache, CacheEntryRemovedReason reason)
+            protected internal override void OnCacheItemRemoved(object messageIn, object messageOut, ObjectCache cache, CacheEntryRemovedReason reason)
             {
                 _evictionHandle.Set();
                 
@@ -276,9 +276,9 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsRemovedAfterSpecifiedPeriod_IfAbsoluteExpirationIsSet()
         {            
-            using (var cacheManagerSpy = new ObjectCacheManagerSpy(true))
+            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
             {
-                IQueryCacheManager cacheManager = cacheManagerSpy;
+                IQueryCacheController cacheManager = cacheManagerSpy;
                 long resultOne = cacheManager.GetOrAddToApplicationCache(_message, TimeSpan.FromSeconds(5), null, _query);
 
                 cacheManagerSpy.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
@@ -294,9 +294,9 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsRemovedAfterSpecifiedPeriod_IfSlidingExpirationIsSet()
         {
-            using (var cacheManagerSpy = new ObjectCacheManagerSpy(true))
+            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
             {
-                IQueryCacheManager cacheManager = cacheManagerSpy;
+                IQueryCacheController cacheManager = cacheManagerSpy;
                 long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, TimeSpan.FromSeconds(5), _query);
 
                 cacheManagerSpy.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
@@ -312,9 +312,9 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsRemoved_IfItemIsInvalidatedManuallyAndNoTransactionIsActive()
         {
-            using (var cacheManagerSpy = new ObjectCacheManagerSpy(true))
+            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
             {
-                IQueryCacheManager cacheManager = cacheManagerSpy;
+                IQueryCacheController cacheManager = cacheManagerSpy;
                 long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
 
                 cacheManager.InvalidateIfRequired<RequestMessage>(message => true);
@@ -331,9 +331,9 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsRemoved_IfItemIsInvalidatedManuallyAndTransactionCommits()
         {
-            using (var cacheManagerSpy = new ObjectCacheManagerSpy(true))
+            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
             {
-                IQueryCacheManager cacheManager = cacheManagerSpy;
+                IQueryCacheController cacheManager = cacheManagerSpy;
                 long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
 
                 using (var transactionScope = new TransactionScope())
@@ -355,9 +355,9 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsNotRemoved_IfItemIsInvalidatedManuallyAndTransactionDoesNotCommit()
         {
-            using (var cacheManagerSpy = new ObjectCacheManagerSpy(true))
+            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
             {
-                IQueryCacheManager cacheManager = cacheManagerSpy;
+                IQueryCacheController cacheManager = cacheManagerSpy;
                 long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
 
                 using (new TransactionScope())
@@ -376,9 +376,9 @@ namespace System.ComponentModel.Server.Modules
 
         #endregion
 
-        private static IQueryCacheManager CreateQueryCacheManager(bool hasApplicationCache)
+        private static IQueryCacheController CreateQueryCacheManager(bool hasApplicationCache)
         {
-            return new ObjectCacheManagerSpy(hasApplicationCache);
+            return new ObjectCacheControllerSpy(hasApplicationCache);
         }
     }
 }

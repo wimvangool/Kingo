@@ -23,7 +23,7 @@ namespace System.ComponentModel.Server.Modules
             }
         }
 
-        private sealed class QueryCacheManagerSpy : QueryCacheManager
+        private sealed class QueryCacheManagerSpy : QueryCacheController
         {
             private QueryCacheKind? _kind;
             private object _message;

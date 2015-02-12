@@ -90,7 +90,7 @@
     <Compile Include="Server\MessageProcessorBusTest.cs" />
     <Compile Include="Server\MessageProcessorStub.cs" />
     <Compile Include="Server\Modules\MessageValidationPipelineTest.cs" />
-    <Compile Include="Server\Modules\ObjectCacheManagerTest.cs" />
+    <Compile Include="Server\Modules\ObjectCacheControllerTest.cs" />
     <Compile Include="Server\Modules\QueryCacheModuleTest.cs" />
     <Compile Include="Server\Modules\QueryCacheOptionsAttributeTest.cs" />
     <Compile Include="Server\Modules\TransactionScopeModuleTest.cs" />

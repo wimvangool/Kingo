@@ -12,7 +12,7 @@ namespace System.ComponentModel.Server.Modules
         where TMessageIn : class, IMessage<TMessageIn>
     {
         private readonly IQuery<TMessageIn, TMessageOut> _query;
-        private readonly IQueryCacheManager _cacheManager;
+        private readonly IQueryCacheController _cacheManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryCacheModule{TMessageIn, TMessageOut}" /> class.
@@ -22,7 +22,7 @@ namespace System.ComponentModel.Server.Modules
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="cacheManager"/> is <c>null</c>.
         /// </exception>        
-        public QueryCacheModule(IQuery<TMessageIn, TMessageOut> query, IQueryCacheManager cacheManager)
+        public QueryCacheModule(IQuery<TMessageIn, TMessageOut> query, IQueryCacheController cacheManager)
         {
             if (query == null)
             {
@@ -45,7 +45,7 @@ namespace System.ComponentModel.Server.Modules
         /// <summary>
         /// The manager that is used to manage the cahces that are used.
         /// </summary>
-        protected virtual IQueryCacheManager CacheManager
+        protected virtual IQueryCacheController CacheManager
         {
             get { return _cacheManager; }
         }

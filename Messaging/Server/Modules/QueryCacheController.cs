@@ -3,9 +3,9 @@
 namespace System.ComponentModel.Server.Modules
 {
     /// <summary>
-    /// Provides a base implementation of the <see cref="IQueryCacheManager" /> interface.
+    /// Provides a base implementation of the <see cref="IQueryCacheController" /> interface.
     /// </summary>
-    public abstract class QueryCacheManager : IQueryCacheManager
+    public abstract class QueryCacheController : IQueryCacheController
     {
         #region [====== Dispose ======]
 
@@ -39,7 +39,7 @@ namespace System.ComponentModel.Server.Modules
 
         #region [====== Caching ======]
 
-        TMessageOut IQueryCacheManager.GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+        TMessageOut IQueryCacheController.GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
         {
             if (IsDisposed)
             {
@@ -56,7 +56,7 @@ namespace System.ComponentModel.Server.Modules
             return GetOrAddToApplicationCache(message, absoluteExpiration, slidingExpiration, query);
         }
 
-        TMessageOut IQueryCacheManager.GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+        TMessageOut IQueryCacheController.GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
         {
             if (IsDisposed)
             {
@@ -73,7 +73,7 @@ namespace System.ComponentModel.Server.Modules
             return GetOrAddToSessionCache(message, absoluteExpiration, slidingExpiration, query);
         }
 
-        void IQueryCacheManager.InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
+        void IQueryCacheController.InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
         {
             if (IsDisposed)
             {

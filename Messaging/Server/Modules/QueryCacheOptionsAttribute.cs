@@ -46,7 +46,7 @@ namespace System.ComponentModel.Server.Modules
             set;
         }    
     
-        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IQueryCacheManager cacheManager) where TMessageIn : class, IMessage<TMessageIn>
+        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IQueryCacheController cacheManager) where TMessageIn : class, IMessage<TMessageIn>
         {
             var absoluteExpiration = ParseTimeout(AbsoluteExpiration);
             var slidingExpiration = ParseTimeout(SlidingExpiration);

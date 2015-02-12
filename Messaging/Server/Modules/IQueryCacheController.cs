@@ -9,7 +9,7 @@ namespace System.ComponentModel.Server.Modules
     /// Notes to implementers: all instance members of the class implementing this interface must be made thread-safe,
     /// because the instance will be shared and accessed among requests.
     /// </remarks>
-    public interface IQueryCacheManager : IDisposable
+    public interface IQueryCacheController : IDisposable
     {        
         /// <summary>
         /// Retrieves the cached result for <paramref name="message"/> from the application cache. If the
