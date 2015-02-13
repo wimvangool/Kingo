@@ -170,7 +170,8 @@ namespace System.ComponentModel.Server
         /// <param name="validator">
         /// Optional custom validator of the message.
         /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
-        /// </param> 
+        /// </param>
+        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
@@ -178,7 +179,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -190,7 +191,8 @@ namespace System.ComponentModel.Server
         /// <param name="validator">
         /// Optional custom validator of the message.
         /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
-        /// </param> 
+        /// </param>
+        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
@@ -198,7 +200,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -211,6 +213,7 @@ namespace System.ComponentModel.Server
         /// Optional custom validator of the message.
         /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
         /// </param> 
+        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param>  
@@ -225,7 +228,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -238,6 +241,7 @@ namespace System.ComponentModel.Server
         /// Optional custom validator of the message.
         /// If <c>null</c>, the default validator provided by the <paramref name="message" /> is used.
         /// </param> 
+        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param>  
@@ -252,7 +256,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
        
         #endregion        
     }

@@ -137,29 +137,29 @@ namespace System.ComponentModel.Server
         #region [====== Queries ======]
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
         {
-            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, token);
+            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, options, token);
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            return Start(() => Execute(message, query, validator, token), message.GetType(), token);
+            return Start(() => Execute(message, query, validator, options, token), message.GetType(), token);
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
         {
-            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, token);
+            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, options, token);
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
         {
             if (message == null)
             {
@@ -169,7 +169,7 @@ namespace System.ComponentModel.Server
 
             try
             {
-                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(query, this);
+                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(query, options, this);
 
                 CreatePerMessagePipeline(validator).CreateMessageHandlerPipeline(handler).Handle(message);
 
@@ -232,9 +232,9 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>               
         /// <returns>A query pipeline.</returns>        
-        protected internal virtual IQueryPipelineFactory<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>()
+        protected internal virtual IQueryPipelineFactory<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>(QueryExecutionOptions options)
             where TMessageIn : class, IMessage<TMessageIn>           
-        {
+        {            
             return new QueryPipelineFactory<TMessageIn, TMessageOut>();
         }        
 

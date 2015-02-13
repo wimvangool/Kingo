@@ -154,12 +154,14 @@ namespace System.ComponentModel.Server.Modules
         #region [====== ApplicationCache ======]
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void GetOrAddToApplicationCache_Throws_IfMessageIsNull()
         {
-            using (var cacheManager = CreateQueryCacheManager(false))
+            var message = new QueryRequestMessage<RequestMessage>(null, QueryExecutionOptions.Default, null, null);
+
+            using (var cacheController = CreateQueryCacheManager(false))
             {
-                cacheManager.GetOrAddToApplicationCache(null, null, null, _query);
+                cacheController.GetOrAddToApplicationCache(message, _query);
             }
         }
 
@@ -167,9 +169,9 @@ namespace System.ComponentModel.Server.Modules
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetOrAddToApplicationCache_Throws_IfQueryIsNull()
         {
-            using (var cacheManager = CreateQueryCacheManager(false))
+            using (var cacheController = CreateQueryCacheManager(false))
             {
-                cacheManager.GetOrAddToApplicationCache(_message, null, null, null as Query);    
+                cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), null as Query);    
             }            
         }
 
@@ -178,9 +180,9 @@ namespace System.ComponentModel.Server.Modules
         {
             long result;
 
-            using (var cacheManager = CreateQueryCacheManager(false))
+            using (var cacheController = CreateQueryCacheManager(false))
             {
-                result = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                result = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
             }  
             _query.VerifyThatInvocationCountIs(1);
             _query.VerifyLastResultIs(result);
@@ -191,9 +193,9 @@ namespace System.ComponentModel.Server.Modules
         {
             long result;
 
-            using (var cacheManager = CreateQueryCacheManager(true))
+            using (var cacheController = CreateQueryCacheManager(true))
             {
-                result = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                result = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
             }
             _query.VerifyThatInvocationCountIs(1);
             _query.VerifyLastResultIs(result);
@@ -205,10 +207,10 @@ namespace System.ComponentModel.Server.Modules
             long resultOne;
             long resultTwo;
 
-            using (var cacheManager = CreateQueryCacheManager(true))
+            using (var cacheController = CreateQueryCacheManager(true))
             {
-                resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
-                resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
             }
             _query.VerifyThatInvocationCountIs(1);
             _query.VerifyLastResultIs(resultOne);
@@ -218,7 +220,7 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void GetOrAddToApplicationCache_WritesToCache_WhenActiveTransactionCommits()
         {
-            using (var cacheManager = CreateQueryCacheManager(true))
+            using (var cacheController = CreateQueryCacheManager(true))
             {
                 long resultOne;
                 long resultTwo;                
@@ -228,8 +230,8 @@ namespace System.ComponentModel.Server.Modules
                     // Since two consecutive calls are made inside the same transaction, the
                     // cache has not yet had a chance to store the result of the first into cache,
                     // and so the second call executes the query again.
-                    resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
-                    resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                    resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                    resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                     _query.VerifyThatInvocationCountIs(2);
 
@@ -237,7 +239,7 @@ namespace System.ComponentModel.Server.Modules
                 }
                 // At this point, however, the transaction completed succesfully, and now the result is fetched
                 // from cache.
-                long resultThree = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                long resultThree = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
   
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -249,19 +251,19 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void GetOrAddToApplicationCache_DoesNotWriteToCache_IfActiveTransactionDoesNotCommit()
         {
-            using (var cacheManager = CreateQueryCacheManager(true))
+            using (var cacheController = CreateQueryCacheManager(true))
             {
                 long resultOne;                
 
                 using (new TransactionScope())
-                {                    
-                    resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                {
+                    resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                     _query.VerifyThatInvocationCountIs(1);                    
                 }
                 // At this point, the transaction has rolled back, so the result
                 // of the previous execution was not added to the cache.
-                long resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -271,19 +273,18 @@ namespace System.ComponentModel.Server.Modules
 
         #endregion
 
-        #region [====== CacheItem Invalidation and Removal ======]
+        #region [====== ApplicationCache - CacheItem Invalidation and Removal ======]
 
         [TestMethod]
         public void CacheItem_IsRemovedAfterSpecifiedPeriod_IfAbsoluteExpirationIsSet()
         {            
-            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
-            {
-                IQueryCacheController cacheManager = cacheManagerSpy;
-                long resultOne = cacheManager.GetOrAddToApplicationCache(_message, TimeSpan.FromSeconds(5), null, _query);
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {                
+                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(TimeSpan.FromSeconds(5), null), _query);
 
-                cacheManagerSpy.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
+                cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
 
-                long resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -294,14 +295,13 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsRemovedAfterSpecifiedPeriod_IfSlidingExpirationIsSet()
         {
-            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
-            {
-                IQueryCacheController cacheManager = cacheManagerSpy;
-                long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, TimeSpan.FromSeconds(5), _query);
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {                
+                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, TimeSpan.FromSeconds(5)), _query);
 
-                cacheManagerSpy.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
+                cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
 
-                long resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -312,15 +312,14 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsRemoved_IfItemIsInvalidatedManuallyAndNoTransactionIsActive()
         {
-            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
-            {
-                IQueryCacheController cacheManager = cacheManagerSpy;
-                long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {                
+                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
-                cacheManager.InvalidateIfRequired<RequestMessage>(message => true);
-                cacheManagerSpy.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
+                cacheController.InvalidateIfRequired<RequestMessage>(message => true);
+                cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
 
-                long resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -331,20 +330,19 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsRemoved_IfItemIsInvalidatedManuallyAndTransactionCommits()
         {
-            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
-            {
-                IQueryCacheController cacheManager = cacheManagerSpy;
-                long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {                
+                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 using (var transactionScope = new TransactionScope())
                 {                                        
-                    cacheManager.InvalidateIfRequired<RequestMessage>(message => true);
+                    cacheController.InvalidateIfRequired<RequestMessage>(message => true);
 
                     transactionScope.Complete();
                 }
-                cacheManagerSpy.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
+                cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
 
-                long resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -355,18 +353,17 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void CacheItem_IsNotRemoved_IfItemIsInvalidatedManuallyAndTransactionDoesNotCommit()
         {
-            using (var cacheManagerSpy = new ObjectCacheControllerSpy(true))
-            {
-                IQueryCacheController cacheManager = cacheManagerSpy;
-                long resultOne = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {                
+                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 using (new TransactionScope())
                 {
-                    cacheManager.InvalidateIfRequired<RequestMessage>(message => true);                    
+                    cacheController.InvalidateIfRequired<RequestMessage>(message => true);                    
                 }
-                cacheManagerSpy.WaitForCacheItemEviction(TimeSpan.FromSeconds(10), false);
+                cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(10), false);
 
-                long resultTwo = cacheManager.GetOrAddToApplicationCache(_message, null, null, _query);
+                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(1);
                 _query.VerifyLastResultIs(resultOne);
@@ -375,6 +372,114 @@ namespace System.ComponentModel.Server.Modules
         }
 
         #endregion
+
+        #region [====== ApplicationCache - QueryExecutionOptions ======]
+
+        [TestMethod]
+        public void GetOrAddToCache_DoesNotWriteToCache_IfAllowCacheWriteIsFalse()
+        {
+            var messageAllowRead = CreateRequestMessage(null, null, QueryExecutionOptions.AllowCacheRead);
+            var messageDefault = CreateRequestMessage(null, null);
+
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {
+                // The first call executes the query, but does not store its result into the cache.
+                var resultOne = cacheController.GetOrAddToApplicationCache(messageAllowRead, _query);
+
+                _query.VerifyThatInvocationCountIs(1);
+                _query.VerifyLastResultIs(resultOne);
+
+                // The second call executes the query again, because the result was not cached; but this time,
+                // the result is stored into the cache.
+                var resultTwo = cacheController.GetOrAddToApplicationCache(messageDefault, _query);                
+
+                _query.VerifyThatInvocationCountIs(2);
+                _query.VerifyLastResultIs(resultTwo);
+
+                // The third call does not execute the query but simply returns the cached result.
+                var resultThree = cacheController.GetOrAddToApplicationCache(messageAllowRead, _query);
+
+                _query.VerifyThatInvocationCountIs(2);
+                _query.VerifyLastResultIs(resultThree);
+            }
+        }
+
+        [TestMethod]
+        public void GetOrAddToCache_DoesNotWriteOrReadFromCache_IfAllowCacheWriteAndAllowCacheReadAreFalse()
+        {
+            var messageNone = CreateRequestMessage(null, null, QueryExecutionOptions.None);
+            var messageDefault = CreateRequestMessage(null, null);
+
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {
+                // The first call executes the query, but does not store its result into the cache.
+                var resultOne = cacheController.GetOrAddToApplicationCache(messageNone, _query);
+
+                _query.VerifyThatInvocationCountIs(1);
+                _query.VerifyLastResultIs(resultOne);
+
+                // The second call executes the query again, because the result was not cached; but this time,
+                // the result is stored into the cache.
+                var resultTwo = cacheController.GetOrAddToApplicationCache(messageDefault, _query);
+
+                _query.VerifyThatInvocationCountIs(2);
+                _query.VerifyLastResultIs(resultTwo);
+
+                // The third call executes the query yet again, because the cached result is ignored and then removed.
+                var resultThree = cacheController.GetOrAddToApplicationCache(messageNone, _query);
+
+                _query.VerifyThatInvocationCountIs(3);
+                _query.VerifyLastResultIs(resultThree);
+
+                // The fourth call executes the query again, because the previous call effectively cleared the cache.                
+                var resultFour = cacheController.GetOrAddToApplicationCache(messageDefault, _query);
+
+                _query.VerifyThatInvocationCountIs(4);
+                _query.VerifyLastResultIs(resultFour);
+            }
+        }
+
+        [TestMethod]
+        public void GetOrAddToCache_DoesNotReadFromCache_IfAllowCacheReadIsFalse()
+        {
+            var messageAllowWrite = CreateRequestMessage(null, null, QueryExecutionOptions.AllowCacheWrite);
+            var messageDefault = CreateRequestMessage(null, null);
+
+            using (var cacheController = new ObjectCacheControllerSpy(true))
+            {
+                // The first call executes the query and stores its result into the cache.
+                var resultOne = cacheController.GetOrAddToApplicationCache(messageAllowWrite, _query);
+
+                _query.VerifyThatInvocationCountIs(1);
+                _query.VerifyLastResultIs(resultOne);
+
+                // The second call simply retrieves the result from the cache.
+                var resultTwo = cacheController.GetOrAddToApplicationCache(messageDefault, _query);
+
+                _query.VerifyThatInvocationCountIs(1);
+                _query.VerifyLastResultIs(resultTwo);
+
+                // The third call executes the query again because it is not allowed to read the cached value.
+                // However, because it is allowed to write to the cache, it updates the cache with the new value.
+                var resultThree = cacheController.GetOrAddToApplicationCache(messageAllowWrite, _query);
+
+                _query.VerifyThatInvocationCountIs(2);
+                _query.VerifyLastResultIs(resultThree);
+
+                // The fourth call simply retrieves the result from the cache again.
+                var resultFour = cacheController.GetOrAddToApplicationCache(messageDefault, _query);
+
+                _query.VerifyThatInvocationCountIs(2);
+                _query.VerifyLastResultIs(resultFour);
+            }
+        }
+
+        #endregion
+
+        private QueryRequestMessage<RequestMessage> CreateRequestMessage(TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, QueryExecutionOptions options = QueryExecutionOptions.Default)
+        {
+            return new QueryRequestMessage<RequestMessage>(_message, options, absoluteExpiration, slidingExpiration);
+        }
 
         private static IQueryCacheController CreateQueryCacheManager(bool hasApplicationCache)
         {

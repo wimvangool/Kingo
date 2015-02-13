@@ -198,4 +198,7 @@
   <data name="QueryCacheOptions_InvalidTimeoutSpecified" xml:space="preserve">
     <value>Invalid timeout specified: {0}.</value>
   </data>
+  <data name="ObjectCacheController_MissingMessageParameters" xml:space="preserve">
+    <value>The message containing the parameters of the query has not been set.</value>
+  </data>
 </root>

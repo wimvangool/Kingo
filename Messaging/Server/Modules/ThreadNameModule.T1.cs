@@ -33,8 +33,12 @@ namespace System.ComponentModel.Server.Modules
         }
 
         /// <inheritdoc />
-        protected override void Handle(TMessage message)
+        public override void Handle(TMessage message)
         {            
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
             var currentThread = Thread.CurrentThread;
             if (currentThread.Name == null)
             {

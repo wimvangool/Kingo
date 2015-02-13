@@ -8,9 +8,10 @@ namespace System.ComponentModel.Server.Modules
     internal sealed class ObjectCacheManager : IDisposable
     {
         private readonly ObjectCacheController _cacheManager;
-        private readonly ReaderWriterLockSlim _cacheLock;
-        private readonly Dictionary<object, QueryCacheEntryMonitor> _cacheEntryMonitors;
         private readonly ObjectCache _cache;
+
+        private readonly ReaderWriterLockSlim _cacheLock;
+        private readonly Dictionary<object, QueryCacheEntryMonitor> _cacheEntryMonitors;        
         private bool _isDisposed;
         
         internal ObjectCacheManager(ObjectCacheController cacheManager, ObjectCache cache)
@@ -21,6 +22,7 @@ namespace System.ComponentModel.Server.Modules
             }
             _cacheManager = cacheManager;
             _cache = cache;
+
             _cacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
             _cacheEntryMonitors = new Dictionary<object, QueryCacheEntryMonitor>();
         }        
@@ -45,43 +47,65 @@ namespace System.ComponentModel.Server.Modules
             _isDisposed = true;
         }
 
-        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             where TMessageIn : class, IMessage<TMessageIn>
         {
-            // First, an attempt is made to just read the result from cache.
-            _cacheLock.EnterReadLock();
+            // First, an attempt is made to just read the result from cache, if allowed.
+            var messageIn = message.Parameters;
+            if (message.AllowCacheRead)
+            {                
+                _cacheLock.EnterReadLock();
 
-            try
-            {
-                object cachedResult;
-
-                if (TryGetCachedValue(message, out cachedResult))
+                try
                 {
-                    return (TMessageOut) cachedResult;
+                    object cachedResult;
+
+                    if (TryGetCachedValue(messageIn, out cachedResult))
+                    {
+                        return (TMessageOut)cachedResult;
+                    }
+                }
+                finally
+                {
+                    _cacheLock.ExitReadLock();
                 }
             }
-            finally
-            {
-                _cacheLock.ExitReadLock();
-            }
 
-            // If the cached value was not found, we try again, but this time with an upgradeable lock.
+            // If the cached value was not found, we try again, but this time with an upgradeable lock,
+            // because we may want to upgrade to a write to manupulate the cache.
+
             // Note that since we released the read lock, another request may have just added our wanted
             // result into the cache.
             _cacheLock.EnterUpgradeableReadLock();
 
             try
             {
-                object cachedResult;
+                // If a cache-read is allowed, and a cached result was found, we can return the cached value.
+                // Otherwise, we have to remove or update the cache later.
+                object cachedMessageOut;
 
-                if (TryGetCachedValue(message, out cachedResult))
+                if (TryGetCachedValue(messageIn, out cachedMessageOut) && message.AllowCacheRead)
                 {
-                    return (TMessageOut)cachedResult;
+                    return (TMessageOut) cachedMessageOut;
                 }
-                var messageOut = query.Execute(message);
 
-                AddToCache(absoluteExpiration, slidingExpiration, message.Copy(), messageOut);
+                // Since no cached value could be returned, we execute the query.
+                var messageOut = query.Execute(messageIn);
 
+                // If we are allowed to store the result into cache, we update the cache.
+                // Otherwise, we remove any existing entry, since it has become stale.
+                if (message.AllowCacheWrite && cachedMessageOut == null)
+                {
+                    InsertCacheEntry(messageIn.Copy(), messageOut, message.AbsoluteExpiration, message.SlidingExpiration);
+                }
+                else if (message.AllowCacheWrite)
+                {
+                    UpdateCacheEntry(messageIn, messageOut, message.AbsoluteExpiration, message.SlidingExpiration);
+                }
+                else if (cachedMessageOut != null)
+                {
+                    DeleteCacheEntry(messageIn);
+                }
                 return messageOut;
             }
             finally
@@ -103,7 +127,7 @@ namespace System.ComponentModel.Server.Modules
             return false;
         }
 
-        private void AddToCache(TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, object messageIn, object messageOut)
+        private void InsertCacheEntry(object messageIn, object messageOut, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration)
         {
             // The cache entry is only added if no transaction is active or if the active transaction commits.
             MessageProcessor.InvokePostCommit(isPostCommit =>
@@ -130,6 +154,53 @@ namespace System.ComponentModel.Server.Modules
                     _cacheLock.ExitWriteLock();
                 }
                 _cacheManager.OnCacheItemAdded(messageIn, messageOut, _cache);
+            });
+        }
+
+        private void UpdateCacheEntry(object messageIn, object messageOut, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration)
+        {
+            // The cache entry is only updated if no transaction is active or if the active transaction commits.
+            MessageProcessor.InvokePostCommit(isPostCommit =>
+            {
+                _cacheLock.EnterWriteLock();
+
+                try
+                {
+                    QueryCacheEntryMonitor monitor;
+
+                    if (_cacheEntryMonitors.TryGetValue(messageIn, out monitor))
+                    {
+                        _cache.Set(monitor.UniqueId, messageOut, CreateCacheItemPolicy(messageIn, absoluteExpiration, slidingExpiration, monitor.Copy()));
+                    }
+                }
+                finally
+                {
+                    _cacheLock.ExitWriteLock();
+                }
+            });
+        }
+
+        private void DeleteCacheEntry(object messageIn)
+        {
+            // The cache entry is only removed if no transaction is active or if the active transaction commits.
+            MessageProcessor.InvokePostCommit(isPostCommit =>
+            {
+                _cacheLock.EnterWriteLock();
+
+                try
+                {
+                    QueryCacheEntryMonitor monitor;
+
+                    if (_cacheEntryMonitors.TryGetValue(messageIn, out monitor))
+                    {
+                        _cacheEntryMonitors.Remove(messageIn);
+                        _cache.Remove(monitor.UniqueId);
+                    }                                        
+                }
+                finally
+                {
+                    _cacheLock.ExitWriteLock();
+                }               
             });
         }
 

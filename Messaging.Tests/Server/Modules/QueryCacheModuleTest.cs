@@ -107,7 +107,7 @@ namespace System.ComponentModel.Server.Modules
                 _cache = new Dictionary<object, object>();
             }
 
-            protected override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            public override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             {
                 object cachedResult;
 
@@ -115,19 +115,19 @@ namespace System.ComponentModel.Server.Modules
                 {
                     return (TMessageOut) cachedResult;
                 }
-                var result = query.Execute(message);
+                var result = query.Execute(message.Parameters);
 
                 _cache.Add(message, result);
 
                 return result;
             }
 
-            protected override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            public override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             {
                 throw new NotSupportedException();
             }
 
-            protected override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
+            public override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
             {
                 throw new NotSupportedException();
             }
@@ -149,7 +149,7 @@ namespace System.ComponentModel.Server.Modules
             var message = new NonCachedMessage();
             var query = new QuerySpy<NonCachedMessage>();
 
-            IQuery<NonCachedMessage, string> module = new QueryCacheModule<NonCachedMessage, string>(query, _cacheManager);
+            IQuery<NonCachedMessage, string> module = new QueryCacheModule<NonCachedMessage, string>(query, QueryExecutionOptions.Default, _cacheManager);
 
             var result = module.Execute(message);
 
@@ -163,7 +163,7 @@ namespace System.ComponentModel.Server.Modules
             var message = new CachedMessage();
             var query = new QuerySpy<CachedMessage>();
 
-            IQuery<CachedMessage, string> module = new QueryCacheModule<CachedMessage, string>(query, _cacheManager);
+            IQuery<CachedMessage, string> module = new QueryCacheModule<CachedMessage, string>(query, QueryExecutionOptions.Default, _cacheManager);
 
             var result = module.Execute(message);
 
@@ -177,7 +177,7 @@ namespace System.ComponentModel.Server.Modules
             var message = new CachedMessage();
             var query = new QuerySpy<CachedMessage>();
 
-            IQuery<CachedMessage, string> module = new QueryCacheModule<CachedMessage, string>(query, _cacheManager);
+            IQuery<CachedMessage, string> module = new QueryCacheModule<CachedMessage, string>(query, QueryExecutionOptions.Default, _cacheManager);
 
             var resultOne = module.Execute(message);
             var resultTwo = module.Execute(message);            

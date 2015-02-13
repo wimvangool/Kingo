@@ -18,18 +18,21 @@ namespace System.ComponentModel.Server.Modules
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
-        /// <param name="message">Message containing the parameters of <paramref name="query"/>.</param>
-        /// <param name="absoluteExpiration">Optional timeout value that causes the cached result to expire after a fixed amount of time.</param>
-        /// <param name="slidingExpiration">Optional timeout value that causes the cached result to expire after a certain amount of unused time.</param>
+        /// <param name="message">
+        /// Message containing the parameters of the <paramref name="query"/> and all other execution options.
+        /// </param>        
         /// <param name="query">The query to execute when a new cache item is to be added.</param>
         /// <returns>The (cached) result of <paramref name="query"/>.</returns>
         /// <exception cref="ObjectDisposedException">
         /// The current instance has already been disposed.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+        /// <exception cref="ArgumentException">
+        /// <see cref="QueryRequestMessage{TMessageIn}.Parameters" /> of <paramref name="message"/> has not been set to an instance of an object.
+        /// </exception>
+        TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>
@@ -39,18 +42,21 @@ namespace System.ComponentModel.Server.Modules
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
-        /// <param name="message">Message containing the parameters of <paramref name="query"/>.</param>
-        /// <param name="absoluteExpiration">Optional timeout value that causes the cached result to expire after a fixed amount of time.</param>
-        /// <param name="slidingExpiration">Optional timeout value that causes the cached result to expire after a certain amount of unused time.</param>
+        /// <param name="message">
+        /// Message containing the parameters of the <paramref name="query"/> and all other execution options.
+        /// </param>        
         /// <param name="query">The query to execute when a new cache item is to be added.</param>
         /// <returns>The (cached) result of <paramref name="query"/>.</returns>
         /// <exception cref="ObjectDisposedException">
         /// The current instance has already been disposed.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+        /// <exception cref="ArgumentException">
+        /// <see cref="QueryRequestMessage{TMessageIn}.Parameters" /> of <paramref name="message"/> has not been set to an instance of an object.
+        /// </exception>
+        TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             where TMessageIn : class, IMessage<TMessageIn>;
 
         /// <summary>

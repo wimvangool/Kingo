@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Resources;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
@@ -17,6 +18,9 @@ namespace System.ComponentModel.Server.Modules
         private readonly Timer _timer;
         private readonly HashSet<ObjectCache> _emptyCaches;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectCacheController" /> class.
+        /// </summary>
         protected ObjectCacheController()
         {
             _cacheManagerLock = new ReaderWriterLockSlim();
@@ -26,6 +30,15 @@ namespace System.ComponentModel.Server.Modules
             _timer.AutoReset = false;
             _timer.Elapsed += (s, e) => RemoveEmptyCacheManagers();
             _emptyCaches = new HashSet<ObjectCache>();
+        }
+
+        /// <summary>
+        /// Gets or sets the timeout that is maintained to clean up caches once one is detected to be empty.
+        /// </summary>
+        protected TimeSpan EmptyCacheCleanupInterval
+        {
+            get { return TimeSpan.FromMilliseconds(_timer.Interval); }
+            set { _timer.Interval = value.TotalMilliseconds; }
         }
 
         /// <inheritdoc />
@@ -48,16 +61,30 @@ namespace System.ComponentModel.Server.Modules
             base.Dispose(disposing);
         }
 
+        #region [====== Getting or Adding Cache Entries ======]
+
         /// <inheritdoc />
-        protected override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
-        {            
+        public override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
+        {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }            
+            if (query == null)
+            {
+                throw new ArgumentNullException("query");
+            }
+            if (message.Parameters == null)
+            {
+                throw NewMissingMessageParametersException("message");
+            }
             ObjectCache cache;
 
             if (TryGetApplicationCache(out cache))
             {
-                return GetOrAddObjectCacheManager(cache).GetOrAddToCache(message, absoluteExpiration, slidingExpiration, query);
+                return GetOrAddObjectCacheManager(cache).GetOrAddToCache(message, query);
             }
-            return query.Execute(message);
+            return query.Execute(message.Parameters);
         }
 
         /// <summary>
@@ -71,15 +98,27 @@ namespace System.ComponentModel.Server.Modules
         protected abstract bool TryGetApplicationCache(out ObjectCache cache);
 
         /// <inheritdoc />
-        protected override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
-        {            
+        public override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
+        {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }            
+            if (query == null)
+            {
+                throw new ArgumentNullException("query");
+            }
+            if (message.Parameters == null)
+            {
+                throw NewMissingMessageParametersException("message");
+            }
             ObjectCache cache;
 
             if (TryGetSessionCache(out cache))
             {
-                return GetOrAddObjectCacheManager(cache).GetOrAddToCache(message, absoluteExpiration, slidingExpiration, query);
+                return GetOrAddObjectCacheManager(cache).GetOrAddToCache(message, query);
             }
-            return query.Execute(message);
+            return query.Execute(message.Parameters);
         }
 
         private ObjectCacheManager GetOrAddObjectCacheManager(ObjectCache cache)
@@ -170,11 +209,28 @@ namespace System.ComponentModel.Server.Modules
                 policy.SlidingExpiration = slidingExpiration.Value;
             }
             return policy;
-        }        
+        }
+
+        private static Exception NewMissingMessageParametersException(string paramName)
+        {
+            return new ArgumentException(ExceptionMessages.ObjectCacheController_MissingMessageParameters, paramName);
+        }
+
+        #endregion
+
+        #region [====== Invalidation and Removal of Cache Entries ======]
 
         /// <inheritdoc />
-        protected override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
+        public override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
         {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }
+            if (mustInvalidate == null)
+            {
+                throw new ArgumentNullException("mustInvalidate");
+            }
             foreach (var cacheManager in AllCacheInstances())
             {
                 cacheManager.InvalidateIfRequired(mustInvalidate);
@@ -232,7 +288,7 @@ namespace System.ComponentModel.Server.Modules
         }
 
         private void RemoveEmptyCacheManagers()
-        {
+        {            
             foreach (var emptyCache in AllEmptyCaches())
             {                
                 _cacheManagerLock.EnterWriteLock();
@@ -261,5 +317,7 @@ namespace System.ComponentModel.Server.Modules
                 return caches.Where(cache => cache.GetCount() == 0L);
             }
         }
+
+        #endregion
     }
 }

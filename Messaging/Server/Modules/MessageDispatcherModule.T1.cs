@@ -16,7 +16,7 @@
             get { return _handler; }
         }
 
-        protected override void Handle(TMessage message)
+        public override void Handle(TMessage message)
         {
             _processor.MessagePointer.ThrowIfCancellationRequested();
 

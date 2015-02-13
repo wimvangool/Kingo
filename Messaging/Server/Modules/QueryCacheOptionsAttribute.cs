@@ -46,18 +46,19 @@ namespace System.ComponentModel.Server.Modules
             set;
         }    
     
-        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IQueryCacheController cacheManager) where TMessageIn : class, IMessage<TMessageIn>
-        {
+        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options, IQueryCacheController cacheManager) where TMessageIn : class, IMessage<TMessageIn>
+        {           
             var absoluteExpiration = ParseTimeout(AbsoluteExpiration);
             var slidingExpiration = ParseTimeout(SlidingExpiration);
+            var requestMessage = new QueryRequestMessage<TMessageIn>(message, options, absoluteExpiration, slidingExpiration);
             
             if (Kind == QueryCacheKind.Application)
             {
-                return cacheManager.GetOrAddToApplicationCache(message, absoluteExpiration, slidingExpiration, query);
+                return cacheManager.GetOrAddToApplicationCache(requestMessage, query);
             }
             if (Kind == QueryCacheKind.Session)
             {
-                return cacheManager.GetOrAddToSessionCache(message, absoluteExpiration, slidingExpiration, query);
+                return cacheManager.GetOrAddToSessionCache(requestMessage, query);
             }
             throw NewInvalidKindSpecifiedException(Kind);
         }        

@@ -16,8 +16,12 @@ namespace System.ComponentModel.Server.Modules
         /// and invokes <see cref="Handle(TMessage, IEnumerable{TAttribute})" />.
         /// </summary>
         /// <param name="message">The message to handle.</param>
-        protected override void Handle(TMessage message)
+        public override void Handle(TMessage message)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
             Handle(message, MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(message.GetType()));
         }
 

@@ -13,6 +13,13 @@ namespace System.ComponentModel.Server.Modules
             InitializationComplete();
         }
 
+        private QueryCacheEntryMonitor(string uniqueId)
+        {
+            _uniqueId = uniqueId;
+
+            InitializationComplete();
+        }
+
         protected override void Dispose(bool disposing) { }
 
         public override string UniqueId
@@ -23,6 +30,11 @@ namespace System.ComponentModel.Server.Modules
         internal void RemoveCacheEntry()
         {
             OnChanged(null);
+        }
+
+        internal QueryCacheEntryMonitor Copy()
+        {
+            return new QueryCacheEntryMonitor(_uniqueId);
         }
     }
 }

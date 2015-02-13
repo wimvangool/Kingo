@@ -59,29 +59,29 @@ namespace System.ComponentModel.Server.Modules
 
             #region [====== QueryCacheManager ======]
 
-            protected override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            public override TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             {
                 _kind = QueryCacheKind.Application;
-                _message = message;
-                _absoluteExpiration = absoluteExpiration;
-                _slidingExpiration = slidingExpiration;
+                _message = message.Parameters;
+                _absoluteExpiration = message.AbsoluteExpiration;
+                _slidingExpiration = message.SlidingExpiration;
                 _query = query;
 
-                return query.Execute(message);
+                return query.Execute(message.Parameters);
             }
 
-            protected override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, IQuery<TMessageIn, TMessageOut> query)
+            public override TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             {
                 _kind = QueryCacheKind.Session;
-                _message = message;
-                _absoluteExpiration = absoluteExpiration;
-                _slidingExpiration = slidingExpiration;
+                _message = message.Parameters;
+                _absoluteExpiration = message.AbsoluteExpiration;
+                _slidingExpiration = message.SlidingExpiration;
                 _query = query;
 
-                return query.Execute(message);
+                return query.Execute(message.Parameters);
             }
 
-            protected override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
+            public override void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate)
             {
                 throw new NotSupportedException();
             }
@@ -109,7 +109,7 @@ namespace System.ComponentModel.Server.Modules
         {
             var attribute = new QueryCacheOptionsAttribute((QueryCacheKind) 10);
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
         }
 
         [TestMethod]
@@ -121,7 +121,7 @@ namespace System.ComponentModel.Server.Modules
                 AbsoluteExpiration = "abc"
             };
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
         }
 
         [TestMethod]
@@ -133,7 +133,7 @@ namespace System.ComponentModel.Server.Modules
                 SlidingExpiration = "abc"
             };
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
         }        
 
         [TestMethod]
@@ -141,7 +141,7 @@ namespace System.ComponentModel.Server.Modules
         {
             var attribute = new QueryCacheOptionsAttribute(QueryCacheKind.Application);
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
 
             _cacheManager.VerifyThatCorrectKindWasInvoked(QueryCacheKind.Application);
             _cacheManager.VerifyThatMessageWas(_message);
@@ -158,7 +158,7 @@ namespace System.ComponentModel.Server.Modules
                 AbsoluteExpiration = "00:01:22"
             };
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
 
             _cacheManager.VerifyThatCorrectKindWasInvoked(QueryCacheKind.Application);
             _cacheManager.VerifyThatMessageWas(_message);
@@ -175,7 +175,7 @@ namespace System.ComponentModel.Server.Modules
                 SlidingExpiration = "00:33:16"
             };
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
 
             _cacheManager.VerifyThatCorrectKindWasInvoked(QueryCacheKind.Application);
             _cacheManager.VerifyThatMessageWas(_message);
@@ -189,7 +189,7 @@ namespace System.ComponentModel.Server.Modules
         {
             var attribute = new QueryCacheOptionsAttribute(QueryCacheKind.Session);
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
 
             _cacheManager.VerifyThatCorrectKindWasInvoked(QueryCacheKind.Session);
             _cacheManager.VerifyThatMessageWas(_message);
@@ -206,7 +206,7 @@ namespace System.ComponentModel.Server.Modules
                 AbsoluteExpiration = "00:01:22"
             };
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
 
             _cacheManager.VerifyThatCorrectKindWasInvoked(QueryCacheKind.Session);
             _cacheManager.VerifyThatMessageWas(_message);
@@ -223,7 +223,7 @@ namespace System.ComponentModel.Server.Modules
                 SlidingExpiration = "00:33:16"
             };
 
-            attribute.GetOrAddToCache(_message, _query, _cacheManager);
+            attribute.GetOrAddToCache(_message, _query, QueryExecutionOptions.Default, _cacheManager);
 
             _cacheManager.VerifyThatCorrectKindWasInvoked(QueryCacheKind.Session);
             _cacheManager.VerifyThatMessageWas(_message);

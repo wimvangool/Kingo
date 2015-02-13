@@ -71,12 +71,19 @@ namespace System.ComponentModel.Server.Modules
         /// <summary>
         /// Validates the specified <paramref name="message"/> before it is passed to the next <see cref="Handler"/>.
         /// </summary>
-        /// <param name="message">The message to handle.</param>        
+        /// <param name="message">The message to handle.</param>  
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>      
         /// <exception cref="InvalidMessageException">
         /// <paramref name="message"/> is invalid.
         /// </exception>
-        protected override void Handle(TMessage message)
+        public override void Handle(TMessage message)
         {            
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
             ValidationErrorTree errors;
 
             if (Validator.TryGetValidationErrors(message, out errors))
