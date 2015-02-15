@@ -81,6 +81,7 @@
     <Compile Include="Server\MessageHandler.T1.cs" />
     <Compile Include="Server\MessageSources.cs" />
     <Compile Include="Server\Modules\IQueryCacheController.cs" />
+    <Compile Include="Server\Modules\MemoryCacheController.cs" />
     <Compile Include="Server\Modules\MessageDispatcherModule.T1.cs" />
     <Compile Include="Server\Modules\MessageHandlerModuleAttribute.cs" />
     <Compile Include="Server\Modules\MessageHandlerModule.T2.cs" />

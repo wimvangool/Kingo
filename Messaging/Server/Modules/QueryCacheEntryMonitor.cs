@@ -8,7 +8,7 @@ namespace System.ComponentModel.Server.Modules
 
         internal QueryCacheEntryMonitor()
         {
-            _uniqueId = Guid.NewGuid().ToString();
+            _uniqueId = Guid.NewGuid().ToString("N");
 
             InitializationComplete();
         }
