@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.Server;
 
 namespace System.ComponentModel.Client
 {
@@ -9,59 +8,49 @@ namespace System.ComponentModel.Client
     /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
     public class QueryDelegate<TMessageOut> : QueryDispatcher<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>
     {
-        private readonly Func<CancellationToken?, TMessageOut> _method;
-        private readonly Func<Func<TMessageOut>, Task<TMessageOut>> _taskFactory;
+        private readonly IMessageProcessor _processor;
+        private readonly Func<TMessageOut> _method;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryDelegate{T}" /> class.
         /// </summary>
-        /// <param name="method">The method that is used to execute the query.</param>
+        /// <param name="processor">The processor that is used to execute the request.</param>
+        /// <param name="method">The method that will be invoked by this dispatcher to execute the command.</param>         
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="method"/> is <c>null</c>.
-        /// </exception>
-        public QueryDelegate(Func<CancellationToken?, TMessageOut> method)
-            : this(method, null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="QueryDelegate{T}" /> class.
-        /// </summary>
-        /// <param name="method">The method that is used to execute the query.</param>
-        /// <param name="taskFactory">Optional factory to create the <see cref="Task{T}" /> that will execute this query asynchronously.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="method"/> is <c>null</c>.
-        /// </exception>
-        public QueryDelegate(Func<CancellationToken?, TMessageOut> method, Func<Func<TMessageOut>, Task<TMessageOut>> taskFactory)
+        /// <paramref name="processor"/> or <paramref name="method"/> is <c>null</c>.
+        /// </exception> 
+        public QueryDelegate(IMessageProcessor processor, Func<TMessageOut> method)
         {
+            if (processor == null)
+            {
+                throw new ArgumentNullException("processor");
+            }
             if (method == null)
             {
                 throw new ArgumentNullException("method");
             }
+            _processor = processor;
             _method = method;
-            _taskFactory = taskFactory;
+        }
+
+        /// <inheritdoc />
+        protected override IMessageProcessor Processor
+        {
+            get { return _processor; }
         }
 
         /// <summary>
         /// The method that is used to execute this query.
         /// </summary>
-        protected Func<CancellationToken?, TMessageOut> Method
+        protected Func<TMessageOut> Method
         {
             get { return _method; }
-        }
+        }        
 
         /// <inheritdoc />
-        protected override Task<TMessageOut> Start(Func<TMessageOut> query)
+        protected override TMessageOut Execute()
         {
-            if (_taskFactory == null)
-            {
-                return base.Start(query);
-            }
-            return _taskFactory.Invoke(query);
-        }
-
-        /// <inheritdoc />
-        protected override TMessageOut Execute(CancellationToken? token)
-        {
-            return Method.Invoke(token);
+            return Method.Invoke();
         }
     }
 }

@@ -137,13 +137,17 @@ namespace System.ComponentModel.Server
         #region [====== Queries ======]
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, options, token);
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             if (message == null)
             {
@@ -153,13 +157,17 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, options, token);
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             if (message == null)
             {

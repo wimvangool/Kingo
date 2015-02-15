@@ -49,6 +49,7 @@ namespace System.ComponentModel.Server.Modules
 
         internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
             where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
         {
             // First, an attempt is made to just read the result from cache, if allowed.
             var messageIn = message.Parameters;
@@ -62,7 +63,7 @@ namespace System.ComponentModel.Server.Modules
 
                     if (TryGetCachedValue(messageIn, out cachedResult))
                     {
-                        return (TMessageOut)cachedResult;
+                        return ((TMessageOut) cachedResult).Copy();
                     }
                 }
                 finally
@@ -86,7 +87,7 @@ namespace System.ComponentModel.Server.Modules
 
                 if (TryGetCachedValue(messageIn, out cachedMessageOut) && message.AllowCacheRead)
                 {
-                    return (TMessageOut) cachedMessageOut;
+                    return ((TMessageOut) cachedMessageOut).Copy();
                 }
 
                 // Since no cached value could be returned, we execute the query.
@@ -96,11 +97,11 @@ namespace System.ComponentModel.Server.Modules
                 // Otherwise, we remove any existing entry, since it has become stale.
                 if (message.AllowCacheWrite && cachedMessageOut == null)
                 {
-                    InsertCacheEntry(messageIn.Copy(), messageOut, message.AbsoluteExpiration, message.SlidingExpiration);
+                    InsertCacheEntry(messageIn.Copy(), messageOut.Copy(), message.AbsoluteExpiration, message.SlidingExpiration);
                 }
                 else if (message.AllowCacheWrite)
                 {
-                    UpdateCacheEntry(messageIn, messageOut, message.AbsoluteExpiration, message.SlidingExpiration);
+                    UpdateCacheEntry(messageIn, messageOut.Copy(), message.AbsoluteExpiration, message.SlidingExpiration);
                 }
                 else if (cachedMessageOut != null)
                 {

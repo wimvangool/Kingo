@@ -53,7 +53,22 @@ namespace System.ComponentModel.Server.Modules
             }
         }
 
-        private sealed class Query : Query<RequestMessage, long>
+        private sealed class ResponseMessage : Message<ResponseMessage>
+        {
+            internal readonly long Value;
+
+            internal ResponseMessage(long value)
+            {
+                Value = value;
+            }
+
+            public override ResponseMessage Copy()
+            {
+                return new ResponseMessage(Value);
+            }
+        }
+
+        private sealed class Query : Query<RequestMessage, ResponseMessage>
         {
             private int _invocationCount;
             private long _lastResult;
@@ -63,16 +78,16 @@ namespace System.ComponentModel.Server.Modules
                 Assert.AreEqual(invocationCount, _invocationCount);
             }
 
-            internal void VerifyLastResultIs(long result)
+            internal void VerifyLastResultIs(ResponseMessage result)
             {
-                Assert.AreEqual(result, _lastResult);
+                Assert.AreEqual(result.Value, _lastResult);
             }
 
-            protected override long Execute(RequestMessage message)
+            public override ResponseMessage Execute(RequestMessage message)
             {
                 _invocationCount++;
 
-                return _lastResult = message.Value;
+                return new ResponseMessage(_lastResult = message.Value);
             }            
         }
 
@@ -178,7 +193,7 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void GetOrAddToApplicationCache_ExecutesQuery_IfCacheWasNotFound()
         {
-            long result;
+            ResponseMessage result;
 
             using (var cacheController = CreateQueryCacheManager(false))
             {
@@ -191,7 +206,7 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void GetOrAddToApplicationCache_ExecutesQuery_IfResultHadNotBeenCached()
         {
-            long result;
+            ResponseMessage result;
 
             using (var cacheController = CreateQueryCacheManager(true))
             {
@@ -204,8 +219,8 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void GetOrAddToApplicationCache_RetrievesCachedResult_IfResultHadBeenCached()
         {
-            long resultOne;
-            long resultTwo;
+            ResponseMessage resultOne;
+            ResponseMessage resultTwo;
 
             using (var cacheController = CreateQueryCacheManager(true))
             {
@@ -222,8 +237,8 @@ namespace System.ComponentModel.Server.Modules
         {
             using (var cacheController = CreateQueryCacheManager(true))
             {
-                long resultOne;
-                long resultTwo;                
+                ResponseMessage resultOne;
+                ResponseMessage resultTwo;                
 
                 using (var transactionScope = new TransactionScope())
                 {
@@ -239,7 +254,7 @@ namespace System.ComponentModel.Server.Modules
                 }
                 // At this point, however, the transaction completed succesfully, and now the result is fetched
                 // from cache.
-                long resultThree = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultThree = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
   
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -253,7 +268,7 @@ namespace System.ComponentModel.Server.Modules
         {
             using (var cacheController = CreateQueryCacheManager(true))
             {
-                long resultOne;                
+                ResponseMessage resultOne;                
 
                 using (new TransactionScope())
                 {
@@ -263,7 +278,7 @@ namespace System.ComponentModel.Server.Modules
                 }
                 // At this point, the transaction has rolled back, so the result
                 // of the previous execution was not added to the cache.
-                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -280,11 +295,11 @@ namespace System.ComponentModel.Server.Modules
         {            
             using (var cacheController = new ObjectCacheControllerSpy(true))
             {                
-                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(TimeSpan.FromSeconds(5), null), _query);
+                ResponseMessage resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(TimeSpan.FromSeconds(5), null), _query);
 
                 cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
 
-                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -297,11 +312,11 @@ namespace System.ComponentModel.Server.Modules
         {
             using (var cacheController = new ObjectCacheControllerSpy(true))
             {                
-                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, TimeSpan.FromSeconds(5)), _query);
+                ResponseMessage resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, TimeSpan.FromSeconds(5)), _query);
 
                 cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
 
-                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -314,12 +329,12 @@ namespace System.ComponentModel.Server.Modules
         {
             using (var cacheController = new ObjectCacheControllerSpy(true))
             {                
-                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 cacheController.InvalidateIfRequired<RequestMessage>(message => true);
                 cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
 
-                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -332,7 +347,7 @@ namespace System.ComponentModel.Server.Modules
         {
             using (var cacheController = new ObjectCacheControllerSpy(true))
             {                
-                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 using (var transactionScope = new TransactionScope())
                 {                                        
@@ -342,7 +357,7 @@ namespace System.ComponentModel.Server.Modules
                 }
                 cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
 
-                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(2);
                 _query.VerifyLastResultIs(resultOne);
@@ -355,7 +370,7 @@ namespace System.ComponentModel.Server.Modules
         {
             using (var cacheController = new ObjectCacheControllerSpy(true))
             {                
-                long resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultOne = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 using (new TransactionScope())
                 {
@@ -363,7 +378,7 @@ namespace System.ComponentModel.Server.Modules
                 }
                 cacheController.WaitForCacheItemEviction(TimeSpan.FromSeconds(10), false);
 
-                long resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
+                ResponseMessage resultTwo = cacheController.GetOrAddToApplicationCache(CreateRequestMessage(null, null), _query);
 
                 _query.VerifyThatInvocationCountIs(1);
                 _query.VerifyLastResultIs(resultOne);

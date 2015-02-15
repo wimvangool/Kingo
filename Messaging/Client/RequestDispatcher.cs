@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Server;
+using System.Threading;
 
 namespace System.ComponentModel.Client
 {
@@ -8,6 +9,14 @@ namespace System.ComponentModel.Client
     public abstract class RequestDispatcher : AsyncObject, IRequestDispatcher
     {
         internal RequestDispatcher() { }
+
+        /// <summary>
+        /// Returns the processor that is used to execute the request.
+        /// </summary>
+        protected abstract IMessageProcessor Processor
+        {
+            get;
+        }
 
         #region [====== ExecutionStarted ======]
 

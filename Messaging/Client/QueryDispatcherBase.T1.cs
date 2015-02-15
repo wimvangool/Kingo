@@ -1,4 +1,4 @@
-﻿using System.Runtime.Caching;
+﻿using System.ComponentModel.Server;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,84 +45,19 @@ namespace System.ComponentModel.Client
 
         #endregion
 
-        #region [====== Execution ======]
-
-        /// <summary>
-        /// Returns the cache that is used to store the results of this query.
-        /// </summary>
-        protected virtual ObjectCache Cache
-        {
-            get { return null; }
-        }
+        #region [====== Execution ======]        
 
         /// <inheritdoc />
-        public abstract TMessageOut Execute(Guid requestId);            
+        public abstract TMessageOut Execute(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default);            
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync(Guid requestId)
-        {
-            return ExecuteAsync(requestId, null);
-        }                
-
-        /// <inheritdoc />
-        public abstract Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token);
+        public abstract Task<TMessageOut> ExecuteAsync(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null);                       
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()
         {
             return new QueryExecutionTask<TMessageOut>(this);
-        }
-
-        /// <summary>
-        /// Attempts to create a <see cref="CacheItemPolicy" /> for a new result to store in cache.
-        /// </summary>
-        /// <param name="policy">
-        /// When this method returns <c>true</c>, this paremeter will contain the newly created policy;
-        /// otherwise it will be <c>null</c>.
-        /// </param>
-        /// <returns><c>true</c> if the policy was created; otherwise <c>false</c>.</returns>
-        /// <remarks>
-        /// The default implementation creates a <see cref="CacheItemPolicy" /> with a sliding window expiration
-        /// of 1 minute. Implementers can change this behavior by overridding this method to create another
-        /// policy, or return <c>false</c> if they do not want the result to be cached at all.
-        /// </remarks>
-        protected virtual bool TryCreateCacheItemPolicy(out CacheItemPolicy policy)
-        {
-            policy = new CacheItemPolicy()
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(1)
-            };
-            return true;
-        }
-
-        /// <summary>
-        /// Attempts to retrieve a cached value from the cache, if <see cref="Cache" /> is not <c>null</c>.
-        /// </summary>                
-        /// <param name="key">The key of the cached value.</param>        
-        /// <param name="result">
-        /// If the method returns <c>true</c>, this parameter will contain the cached value after the method completes;
-        /// will have the default value if this method returns <c>false</c>.
-        /// </param>
-        /// <returns><c>true</c> if the value was successfully retrieved from the cache; otherwise <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidCastException">
-        /// The value retrieved from the cache could not be cast to <typeparamref name="TMessageOut"/>.
-        /// </exception>
-        protected bool TryGetFromCache(object key, out TMessageOut result)
-        {
-            if (key == null)
-            {
-                throw new ArgumentNullException("key");
-            }
-            if (Cache == null)
-            {
-                result = default(TMessageOut);
-                return false;
-            }
-            return Cache.TryGetValue(key, out result);
-        }
+        }                
 
         /// <summary>
         /// Creates and returns a task that is marked completed and returns the specified <paramref name="result"/>.

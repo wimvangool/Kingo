@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Server.Modules
@@ -9,62 +8,55 @@ namespace System.ComponentModel.Server.Modules
     {
         #region [====== Messages ======]
 
-        private abstract class RequestMessage<TMessage> : Message<TMessage> where TMessage : RequestMessage<TMessage>
+        private sealed class RequestMessage : Message<RequestMessage>
         {
-            internal abstract long Value
+            internal readonly long Value;
+
+            internal RequestMessage()
             {
-                get;
+                Value = Clock.Current.UtcDateAndTime().Ticks;
+            }
+
+            private RequestMessage(long value)
+            {
+                Value = value;
+            }
+
+            public override RequestMessage Copy()
+            {
+                return new RequestMessage(Value);
             }
         }
 
-        private sealed class NonCachedMessage : RequestMessage<NonCachedMessage>
+        private abstract class ResponseMessage<TMessage> : Message<TMessage> where TMessage : ResponseMessage<TMessage>
         {
-            private readonly long _value;
-
-            public NonCachedMessage()
+            internal long Value
             {
-                _value = Clock.Current.UtcDateAndTime().Ticks;
+                get;
+                set;
             }
+        }
 
-            public NonCachedMessage(long value)
-            {
-                _value = value;
-            }
-
-            internal override long Value
-            {
-                get { return _value; }
-            }
-
+        private sealed class NonCachedMessage : ResponseMessage<NonCachedMessage>
+        {            
             public override NonCachedMessage Copy()
             {
-                return new NonCachedMessage(_value);
+                return new NonCachedMessage()
+                {
+                    Value = Value
+                };
             }
         }
 
         [QueryCacheOptions(QueryCacheKind.Application)]
-        private sealed class CachedMessage : RequestMessage<CachedMessage>
-        {
-            private readonly long _value;
-
-            public CachedMessage()
-            {
-                _value = Clock.Current.UtcDateAndTime().Ticks;
-            }
-
-            public CachedMessage(long value)
-            {
-                _value = value;
-            }
-
-            internal override long Value
-            {
-                get { return _value; }
-            }
-
+        private sealed class CachedMessage : ResponseMessage<CachedMessage>
+        {            
             public override CachedMessage Copy()
             {
-                return new CachedMessage(_value);
+                return new CachedMessage()
+                {
+                    Value = Value
+                };
             }
         }
 
@@ -72,7 +64,7 @@ namespace System.ComponentModel.Server.Modules
 
         #region [====== Query ======]
 
-        private sealed class QuerySpy<TMessage> : Query<TMessage, string> where TMessage : RequestMessage<TMessage>
+        private sealed class QuerySpy<TMessage> : Query<RequestMessage, TMessage> where TMessage : ResponseMessage<TMessage>, new()
         {
             internal int InvocationCount
             {
@@ -80,17 +72,21 @@ namespace System.ComponentModel.Server.Modules
                 private set;
             }
 
-            internal string LastResult
+            internal long LastResult
             {
                 get;
                 private set;
             }
 
-            protected override string Execute(TMessage message)
+            public override TMessage Execute(RequestMessage message)
             {
-                LastResult = message.Value.ToString(CultureInfo.InvariantCulture);
+                LastResult = message.Value;
                 InvocationCount++;
-                return LastResult;
+
+                return new TMessage()
+                {
+                    Value = message.Value
+                };
             }
         }
 
@@ -146,45 +142,42 @@ namespace System.ComponentModel.Server.Modules
         [TestMethod]
         public void Module_ExecutesQuery_IfQueryCacheOptionsAttributeHasNotBeenSpecified()
         {            
-            var message = new NonCachedMessage();
+            var message = new RequestMessage();
             var query = new QuerySpy<NonCachedMessage>();
 
-            IQuery<NonCachedMessage, string> module = new QueryCacheModule<NonCachedMessage, string>(query, QueryExecutionOptions.Default, _cacheManager);
-
+            var module = new QueryCacheModule<RequestMessage, NonCachedMessage>(query, QueryExecutionOptions.Default, _cacheManager);
             var result = module.Execute(message);
 
             Assert.AreEqual(1, query.InvocationCount);
-            Assert.AreEqual(query.LastResult, result);
+            Assert.AreEqual(query.LastResult, result.Value);
         }
 
         [TestMethod]
         public void Module_ExecutesQuery_IfResultWasNotFoundInCache()
         {
-            var message = new CachedMessage();
+            var message = new RequestMessage();
             var query = new QuerySpy<CachedMessage>();
 
-            IQuery<CachedMessage, string> module = new QueryCacheModule<CachedMessage, string>(query, QueryExecutionOptions.Default, _cacheManager);
-
+            var module = new QueryCacheModule<RequestMessage, CachedMessage>(query, QueryExecutionOptions.Default, _cacheManager);
             var result = module.Execute(message);
 
             Assert.AreEqual(1, query.InvocationCount);
-            Assert.AreEqual(query.LastResult, result);
+            Assert.AreEqual(query.LastResult, result.Value);
         }
 
         [TestMethod]
         public void Module_RetrievesResultFromCache_IfResultHasBeenCached()
         {
-            var message = new CachedMessage();
+            var message = new RequestMessage();
             var query = new QuerySpy<CachedMessage>();
 
-            IQuery<CachedMessage, string> module = new QueryCacheModule<CachedMessage, string>(query, QueryExecutionOptions.Default, _cacheManager);
-
+            var module = new QueryCacheModule<RequestMessage, CachedMessage>(query, QueryExecutionOptions.Default, _cacheManager);
             var resultOne = module.Execute(message);
             var resultTwo = module.Execute(message);            
 
             Assert.AreEqual(1, query.InvocationCount);
-            Assert.AreEqual(resultOne, resultTwo);
-            Assert.AreEqual(query.LastResult, resultOne);
+            Assert.AreEqual(resultOne.Value, resultTwo.Value);
+            Assert.AreEqual(query.LastResult, resultOne.Value);
         }
     }
 }

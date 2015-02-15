@@ -15,11 +15,19 @@ namespace System.ComponentModel.Server.Modules
             }
         }
 
-        private sealed class Query : Query<RequestMessage, object>
+        private sealed class ResponseMessage : Message<ResponseMessage>
         {
-            protected override object Execute(RequestMessage message)
+            public override ResponseMessage Copy()
             {
-                return message;
+                return new ResponseMessage();
+            }
+        }
+
+        private sealed class Query : Query<RequestMessage, ResponseMessage>
+        {
+            public override ResponseMessage Execute(RequestMessage message)
+            {
+                return new ResponseMessage();
             }
         }
 

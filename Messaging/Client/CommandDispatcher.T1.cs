@@ -43,16 +43,19 @@ namespace System.ComponentModel.Client
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));            
 
-            try
+            Processor.Handle(message, msg =>
             {
-                Execute(message, null);
-            }
-            catch (Exception exception)
-            {
-                OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception));
-                throw;
-            }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId, message));
+                try
+                {
+                    Execute(message);
+                }
+                catch (Exception exception)
+                {
+                    OnExecutionFailed(new ExecutionFailedEventArgs(requestId, message, exception));
+                    throw;
+                }
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId, message));    
+            });            
         }
 
         /// <inheritdoc />
@@ -62,11 +65,11 @@ namespace System.ComponentModel.Client
 
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId, message));
 
-            return Start(() =>
+            return Processor.HandleAsync(message, msg =>
             {
                 try
                 {
-                    Execute(message, token);
+                    Execute(message);
                 }
                 catch (OperationCanceledException exception)
                 {
@@ -80,37 +83,16 @@ namespace System.ComponentModel.Client
                 }
                 Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId, message)));
             });
-        }
-
-        /// <summary>
-        /// Creates, starts and returns a new <see cref="Task" /> that is used to execute this command.
-        /// </summary>
-        /// <param name="command">The action that will be invoked on the background thread.</param>
-        /// <returns>The newly created task.</returns>
-        /// <remarks>
-        /// The default implementation uses the <see cref="TaskFactory.StartNew(Action)">StartNew</see>-method
-        /// to start and return a new <see cref="Task" />. You may want to override this method to specify
-        /// more options when creating this task.
-        /// </remarks>
-        protected virtual Task Start(Action command)
-        {
-            return Task.Factory.StartNew(command);
-        }        
+        }               
 
         /// <summary>
         /// Executes the command.
         /// </summary>        
-        /// <param name="message">The execution-parameter.</param>
-        /// <param name="token">
-        /// Optional token that can be used to cancel the execution of this command.
-        /// </param>                         
-        /// <exception cref="OperationCanceledException">
-        /// <paramref name="token"/> was specified and used to cancel the execution.
-        /// </exception>        
+        /// <param name="message">The execution-parameter.</param>              
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract void Execute(TMessage message, CancellationToken? token);                
+        protected abstract void Execute(TMessage message);                
 
         #endregion
     }

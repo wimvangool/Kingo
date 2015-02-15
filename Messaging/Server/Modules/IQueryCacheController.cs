@@ -33,7 +33,8 @@ namespace System.ComponentModel.Server.Modules
         /// <see cref="QueryRequestMessage{TMessageIn}.Parameters" /> of <paramref name="message"/> has not been set to an instance of an object.
         /// </exception>
         TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>;
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
 
         /// <summary>
         /// Retrieves the cached result for <paramref name="message"/> from the session cache. If the
@@ -57,7 +58,8 @@ namespace System.ComponentModel.Server.Modules
         /// <see cref="QueryRequestMessage{TMessageIn}.Parameters" /> of <paramref name="message"/> has not been set to an instance of an object.
         /// </exception>
         TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>;
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
 
         /// <summary>
         /// Detects if any results of the specified <typeparamref name="TMessageIn"/> were changed,

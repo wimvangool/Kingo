@@ -179,7 +179,9 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -200,7 +202,9 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -228,7 +232,9 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -256,7 +262,9 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null) where TMessageIn : class, IMessage<TMessageIn>;
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
        
         #endregion        
     }

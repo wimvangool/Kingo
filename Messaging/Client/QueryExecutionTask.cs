@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.ComponentModel.Server;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client
@@ -33,6 +34,15 @@ namespace System.ComponentModel.Client
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="QueryExecutionOptions" /> of the query to execute.
+        /// </summary>
+        public QueryExecutionOptions ExecutionOptions
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// If the task has been started, returns the associated <see cref="Task" /> instance of this task.
         /// </summary>
         protected Task<TMessageOut> Task
@@ -44,7 +54,7 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         protected override void Execute(CancellationToken token)
         {
-            Task = _dispatcher.ExecuteAsync(RequestId, token);
+            Task = _dispatcher.ExecuteAsync(RequestId, ExecutionOptions, token);
         }
     }
 }

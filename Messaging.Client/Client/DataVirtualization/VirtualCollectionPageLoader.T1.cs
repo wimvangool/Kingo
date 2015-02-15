@@ -212,7 +212,7 @@ namespace System.ComponentModel.Client.DataVirtualization
 
         private bool TryGetPageFromCache(int pageIndex, out IList<T> page)
         {
-            return PageCache.TryGetValue(CreateCachedPageKey(pageIndex), out page);
+            return (page = PageCache.Get(CreateCachedPageKey(pageIndex)) as IList<T>) != null;                      
         }
 
         private bool HasCachedPage(int pageIndex)

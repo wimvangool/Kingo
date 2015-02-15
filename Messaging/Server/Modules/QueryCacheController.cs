@@ -35,15 +35,17 @@
 
         #endregion
 
-        #region [====== Caching ======]                        
+        #region [====== Caching ======]
 
         /// <inheritdoc /> 
         public abstract TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>;
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
 
         /// <inheritdoc />       
         public abstract TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(QueryRequestMessage<TMessageIn> message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>;
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>;
 
         /// <inheritdoc />      
         public abstract void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate) where TMessageIn : class;

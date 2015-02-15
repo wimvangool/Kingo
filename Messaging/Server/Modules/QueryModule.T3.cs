@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace System.ComponentModel.Server.Modules
 {
@@ -14,12 +15,22 @@ namespace System.ComponentModel.Server.Modules
     {
         /// <summary>
         /// Retrieves all attributes of type <typeparamref name="TAttribute"/> declared on <paramref name="message"/>
-        /// and invokes <see cref="Execute(TMessageIn, IEnumerable{TAttribute})" />.
+        /// and <typeparamref name="TMessageOut"/> and invokes <see cref="Execute(TMessageIn, IEnumerable{TAttribute})" />.
         /// </summary>
-        /// <param name="message">>Message containing the parameters of this query.</param>
-        protected override TMessageOut Execute(TMessageIn message)
-        {
-            return Execute(message, MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(message.GetType()));
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        public override TMessageOut Execute(TMessageIn message)
+        {            
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            var requestMessageAttributes = MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(message.GetType());
+            var responseMessageAttributes = MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(typeof(TMessageOut));
+
+            return Execute(message, requestMessageAttributes.Concat(responseMessageAttributes));
         }
 
         /// <summary>

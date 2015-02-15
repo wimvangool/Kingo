@@ -10,6 +10,7 @@ namespace System.ComponentModel.Server.Modules
     /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
     public class QueryCacheModule<TMessageIn, TMessageOut> : QueryModule<TMessageIn, TMessageOut, QueryCacheOptionsAttribute>
         where TMessageIn : class, IMessage<TMessageIn>
+        where TMessageOut : class, IMessage<TMessageOut>
     {
         private readonly IQuery<TMessageIn, TMessageOut> _query;
         private readonly QueryExecutionOptions _options;

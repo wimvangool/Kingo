@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.Server;
 
 namespace System.ComponentModel.Client
 {
@@ -8,77 +7,49 @@ namespace System.ComponentModel.Client
     /// </summary>
     public class CommandDelegate<TMessage> : CommandDispatcher<TMessage> where TMessage : class, IMessage<TMessage>, new()
     {
-        private readonly Action<TMessage, CancellationToken?> _method;
-        private readonly Func<Action, Task> _taskFactory;
+        private readonly IMessageProcessor _processor;
+        private readonly Action<TMessage> _method;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandDelegate{T}" /> class.
         /// </summary>        
-        /// <param name="method">The method that will be invoked by this dispatcher to execute the command.</param>        
-        public CommandDelegate(Action<TMessage, CancellationToken?> method)
-            : this(method, null, null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommandDelegate{T}" /> class.
-        /// </summary>
-        /// <param name="method">The method that will be invoked by this dispatcher to execute the command.</param>
-        /// <param name="message">The message that serves as the execution-parameter of this command.</param>        
+        /// <param name="processor">The processor that is used to execute the request.</param>
+        /// <param name="method">The method that will be invoked by this dispatcher to execute the command.</param>         
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="method"/> is <c>null</c>.
-        /// </exception>
-        public CommandDelegate(Action<TMessage, CancellationToken?> method, TMessage message)
-            : this(method, message, null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommandDelegate{T}" /> class.
-        /// </summary>        
-        /// <param name="method">The method that will be invoked by this dispatcher to execute the command.</param>
-        /// <param name="taskFactory">Optional factory to create the <see cref="Task" /> that will execute this command asynchronously.</param>        
-        public CommandDelegate(Action<TMessage, CancellationToken?> method, Func<Action, Task> taskFactory)
-            : this(method, null, taskFactory) { }        
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommandDelegate{T}" /> class.
-        /// </summary>
-        /// <param name="method">The method that will be invoked by this dispatcher to execute the command.</param>
-        /// <param name="message">The message that serves as the execution-parameter of this command.</param>        
-        /// <param name="taskFactory">Optional factory to create the <see cref="Task" /> that will execute this command asynchronously.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="method"/> is <c>null</c>.
-        /// </exception>
-        public CommandDelegate(Action<TMessage, CancellationToken?> method, TMessage message, Func<Action, Task> taskFactory)
-            : base(message ?? new TMessage())
+        /// <paramref name="processor"/> or <paramref name="method"/> is <c>null</c>.
+        /// </exception>       
+        public CommandDelegate(IMessageProcessor processor, Action<TMessage> method) : base(new TMessage())
         {
+            if (processor == null)
+            {
+                throw new ArgumentNullException("processor");
+            }
             if (method == null)
             {
                 throw new ArgumentNullException("method");
             }
+            _processor = processor;
             _method = method;
-            _taskFactory = taskFactory;
+        }
+
+        /// <inheritdoc />
+        protected override IMessageProcessor Processor
+        {
+            get { return _processor; }
         }
 
         /// <summary>
         /// The method that is used to execute the command.
         /// </summary>
-        protected Action<TMessage, CancellationToken?> Method
+        protected Action<TMessage> Method
         {
             get { return _method; }
-        }
+        }        
 
         /// <inheritdoc />
-        protected override Task Start(Action command)
+        protected override void Execute(TMessage message)
         {
-            if (_taskFactory == null)
-            {
-                return base.Start(command);
-            }
-            return _taskFactory.Invoke(command);
-        }
-
-        /// <inheritdoc />
-        protected override void Execute(TMessage message, CancellationToken? token)
-        {
-            Method.Invoke(message, token);
+            Method.Invoke(message);
         }
     }
 }

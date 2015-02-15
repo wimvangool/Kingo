@@ -1,4 +1,4 @@
-﻿using System.Runtime.Caching;
+﻿using System.ComponentModel.Server;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,47 +8,46 @@ namespace System.ComponentModel.Client
     /// Represents a query that has no execution-parameter(s).
     /// </summary>
     /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
-    public abstract class QueryDispatcher<TMessageOut> : QueryDispatcherBase<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>       
+    public abstract class QueryDispatcher<TMessageOut> : QueryDispatcherBase<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>
     {        
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TMessageOut Execute(Guid requestId)
+        public override TMessageOut Execute(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default)
         {                        
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
-            TMessageOut result;
 
-            try
-            {                
-                result = ExecuteQuery(null);                
-            }
-            catch (Exception exception)
+            return Processor.Execute(new RequestMessage(typeof(TMessageOut)), msg =>
             {
-                OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception));
-                throw;
-            }            
-            OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, result));
+                TMessageOut result;
 
-            return result;
+                try
+                {
+                    result = Execute();
+                }
+                catch (Exception exception)
+                {
+                    OnExecutionFailed(new ExecutionFailedEventArgs(requestId, exception));
+                    throw;
+                }
+                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, result));
+
+                return result;
+            }, null, options);            
         }
 
         /// <inheritdoc />
-        public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token)
+        public override Task<TMessageOut> ExecuteAsync(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
         {                                   
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
-            TMessageOut result;
 
-            if (TryGetFromCache(GetType(), out result))
+            return Processor.ExecuteAsync(new RequestMessage(typeof(TMessageOut)), msg =>
             {
-                OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, result));
+                TMessageOut result;
 
-                return CreateCompletedTask(result);
-            }
-            return Start(() =>
-            {
                 try
                 {
-                    result = ExecuteQuery(token);
+                    result = Execute();
                 }
                 catch (OperationCanceledException exception)
                 {
@@ -63,46 +62,17 @@ namespace System.ComponentModel.Client
                 Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, result)));
 
                 return result;
-            });
-        }
-
-        /// <summary>
-        /// Creates, starts and returns a new <see cref="Task{T}" /> that is used to execute this command.
-        /// </summary>
-        /// <param name="query">The action that will be invoked on the background thread.</param>
-        /// <returns>The newly created task.</returns>
-        /// <remarks>
-        /// The default implementation uses the <see cref="TaskFactory{T}.StartNew(Func{T})">StartNew</see>-method
-        /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
-        /// more options when creating this task.
-        /// </remarks>
-        protected virtual Task<TMessageOut> Start(Func<TMessageOut> query)
-        {
-            return Task<TMessageOut>.Factory.StartNew(query);
-        }
-
-        private TMessageOut ExecuteQuery(CancellationToken? token)
-        {
-            CacheItemPolicy policy;
-
-            if (Cache == null || !TryCreateCacheItemPolicy(out policy))
-            {
-                return (TMessageOut) Execute(token).Copy();
-            }
-            return (TMessageOut) Cache.GetOrAdd(GetType(), () => Execute(token), policy).Copy();
-        }        
+            }, null, options, token);            
+        }             
 
         /// <summary>
         /// Executes this query.
-        /// </summary>        
-        /// <param name="token">
-        /// Token that can be used to cancel the task.
-        /// </param>        
+        /// </summary>                    
         /// <returns>The result of this query.</returns>       
         /// <remarks>
         /// Note that this method may be invoked from any thread, so access to any shared resources must be thread-safe.
         /// </remarks>
-        protected abstract TMessageOut Execute(CancellationToken? token);
+        protected abstract TMessageOut Execute();        
 
         #endregion        
     }
