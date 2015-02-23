@@ -214,15 +214,6 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The message containing the parameters of the query has not been set..
-        /// </summary>
-        internal static string ObjectCacheController_MissingMessageParameters {
-            get {
-                return ResourceManager.GetString("ObjectCacheController_MissingMessageParameters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invalid query cache kind specified: {0}..
         /// </summary>
         internal static string QueryCacheOptions_InvalidKindSpecified {

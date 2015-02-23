@@ -58,6 +58,7 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -89,12 +90,12 @@
     <Compile Include="Server\MessageHandlerSpy.cs" />
     <Compile Include="Server\MessageProcessorBusTest.cs" />
     <Compile Include="Server\MessageProcessorStub.cs" />
-    <Compile Include="Server\Modules\MemoryCacheControllerTest.cs" />
-    <Compile Include="Server\Modules\MessageValidationPipelineTest.cs" />
-    <Compile Include="Server\Modules\ObjectCacheControllerTest.cs" />
-    <Compile Include="Server\Modules\QueryCacheModuleTest.cs" />
-    <Compile Include="Server\Modules\QueryCacheOptionsAttributeTest.cs" />
-    <Compile Include="Server\Modules\TransactionScopeModuleTest.cs" />
+    <Compile Include="Server\Caching\AspNetCacheProviderTest.cs" />
+    <Compile Include="Server\Caching\MemoryCacheProviderTest.cs" />
+    <Compile Include="Server\MessageValidationPipelineTest.cs" />
+    <Compile Include="Server\Caching\ObjectCacheProviderTest.cs" />
+    <Compile Include="Server\Caching\QueryCacheModuleTest.cs" />
+    <Compile Include="Server\TransactionScopeModuleTest.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
     <Compile Include="Server\MessageHandlerClassTest.cs" />

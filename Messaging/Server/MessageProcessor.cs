@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Server.Modules;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -215,8 +214,7 @@ namespace System.ComponentModel.Server
         protected virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessagePipeline<TMessage>(IMessageValidator<TMessage> validator) where TMessage : class, IMessage
         {
             return new MessageHandlerPipelineFactory<TMessage>()
-            {
-                handler => new ThreadNameModule<TMessage>(handler),
+            {                
                 handler => new MessageValidationModule<TMessage>(handler, validator),
                 handler => new TransactionScopeModule<TMessage>(handler)
             };
@@ -350,6 +348,6 @@ namespace System.ComponentModel.Server
             return transaction.TransactionInformation.Status == TransactionStatus.Committed;
         }
 
-        #endregion
+        #endregion        
     }
 }
