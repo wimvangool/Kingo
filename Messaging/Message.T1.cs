@@ -108,5 +108,19 @@ namespace System.ComponentModel
         }
 
         #endregion
+
+        #region [====== Attributes ======]
+
+        IEnumerable<TAttribute> IMessage.SelectAttributesOfType<TAttribute>()
+        {
+            return SelectAttributesOfType<TAttribute>();
+        }
+
+        internal virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : MessageAttribute
+        {
+            return MessageAttribute.SelectAttributesOfType<TAttribute>(GetType());
+        }
+
+        #endregion
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace System.ComponentModel.Server
 {
@@ -10,8 +9,8 @@ namespace System.ComponentModel.Server
     /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
     /// <typeparam name="TAttribute">Type of the attribute(s) to collect from a message.</typeparam>
     public abstract class QueryModule<TMessageIn, TMessageOut, TAttribute> : QueryModule<TMessageIn, TMessageOut>
-        where TMessageIn : class
-        where TAttribute : MessageHandlerModuleAttribute
+        where TMessageIn : class, IMessage<TMessageIn>
+        where TAttribute : MessageAttribute
     {
         /// <summary>
         /// Retrieves all attributes of type <typeparamref name="TAttribute"/> declared on <paramref name="message"/>
@@ -26,11 +25,8 @@ namespace System.ComponentModel.Server
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            }
-            var requestMessageAttributes = MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(message.GetType());
-            var responseMessageAttributes = MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(typeof(TMessageOut));
-
-            return Execute(message, requestMessageAttributes.Concat(responseMessageAttributes));
+            }            
+            return Execute(message, message.SelectAttributesOfType<TAttribute>());
         }
 
         /// <summary>

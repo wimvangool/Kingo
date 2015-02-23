@@ -20,7 +20,8 @@ namespace System.ComponentModel.Server
     /// when creating a new <see cref="Transaction" /> and the <see cref="IsolationLevel" /> was not explicitly specified.
     /// </para>
     /// </remarks>
-    public class TransactionScopeModule<TMessage> : MessageHandlerModule<TMessage, TransactionScopeAttribute> where TMessage : class
+    public class TransactionScopeModule<TMessage> : MessageHandlerModule<TMessage, TransactionScopeAttribute>
+        where TMessage : class, IMessage<TMessage>
     {
         private readonly IMessageHandler<TMessage> _handler;
         private readonly TransactionScopeFactory _transactionScopeFactory;

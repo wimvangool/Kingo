@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Server;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Server;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace System.ComponentModel.Client
     /// Represents a query that has no execution-parameter(s).
     /// </summary>
     /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
-    public abstract class QueryDispatcher<TMessageOut> : QueryDispatcherBase<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>
+    public abstract class QueryDispatcher<TMessageOut> : QueryDispatcherBase<TMessageOut>, IRequestMessageDispatcher where TMessageOut : class, IMessage<TMessageOut>
     {        
         #region [====== Execution ======]
 
@@ -17,7 +18,7 @@ namespace System.ComponentModel.Client
         {                        
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
 
-            return Processor.Execute(new RequestMessage(typeof(TMessageOut)), msg =>
+            return Processor.Execute(new RequestMessage(this), msg =>
             {
                 TMessageOut result;
 
@@ -41,7 +42,7 @@ namespace System.ComponentModel.Client
         {                                   
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
 
-            return Processor.ExecuteAsync(new RequestMessage(typeof(TMessageOut)), msg =>
+            return Processor.ExecuteAsync(new RequestMessage(this), msg =>
             {
                 TMessageOut result;
 
@@ -75,5 +76,25 @@ namespace System.ComponentModel.Client
         protected abstract TMessageOut Execute();        
 
         #endregion        
+
+        #region [====== RequestMessageDispatcher ======]
+
+        IEnumerable<TAttribute> IRequestMessageDispatcher.SelectAttributesOfType<TAttribute>()
+        {
+            return SelectAttributesOfType<TAttribute>();
+        }
+
+        /// <summary>
+        /// Returns a collection of <see cref="MessageAttribute">MessageAttributes</see> that are
+        /// declared on this dispatcher and are an instance of <typeparamref name="TAttribute"/>.
+        /// </summary>
+        /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>        
+        /// <returns>A collection of <see cref="MessageAttribute">MessageAttributes</see>.</returns>
+        protected virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : MessageAttribute
+        {
+            return MessageAttribute.SelectAttributesOfType<TAttribute>(GetType());
+        }
+
+        #endregion   
     }
 }

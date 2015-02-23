@@ -8,8 +8,8 @@ namespace System.ComponentModel.Server
     /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
     /// <typeparam name="TAttribute">Type of the attribute(s) to collect from a message.</typeparam>
     public abstract class MessageHandlerModule<TMessage, TAttribute> : MessageHandlerModule<TMessage>
-        where TMessage : class
-        where TAttribute : MessageHandlerModuleAttribute
+        where TMessage : class, IMessage<TMessage>
+        where TAttribute : MessageAttribute
     {
         /// <summary>
         /// Retrieves all attributes of type <typeparamref name="TAttribute"/> declared on <paramref name="message"/>
@@ -22,7 +22,7 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            Handle(message, MessageHandlerModuleAttribute.SelectAttributesOfType<TAttribute>(message.GetType()));
+            Handle(message, message.SelectAttributesOfType<TAttribute>());
         }
 
         /// <summary>

@@ -154,6 +154,15 @@ namespace System.ComponentModel
 
         #endregion
 
+        #region [====== Attributes ======]
+
+        IEnumerable<TAttribute> IMessage.SelectAttributesOfType<TAttribute>()
+        {
+            return MessageAttribute.SelectAttributesOfType<TAttribute>(GetType());
+        }        
+
+        #endregion
+
         #region [====== Service Provider ======]
 
         /// <summary>
@@ -384,7 +393,7 @@ namespace System.ComponentModel
 
         #endregion        
 
-        #region [====== Validation ======]        
+        #region [====== Validation ======]
 
         string IDataErrorInfo.this[string columnName]
         {

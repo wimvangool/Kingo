@@ -2,36 +2,39 @@
 {
     internal sealed class RequestMessage : Message<RequestMessage>
     {
-        private readonly Type _returnType;
+        private readonly IRequestMessageDispatcher _dispatcher;
 
-        internal RequestMessage(Type returnType)
+        internal RequestMessage(IRequestMessageDispatcher dispatcher)
         {
-            _returnType = returnType;
+            _dispatcher = dispatcher;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(obj, this))
-            {
-                return true;
-            }
-            var other = obj as RequestMessage;
+            return Equals(obj as RequestMessage);
+        }
 
+        private bool Equals(RequestMessage other)
+        {
             if (ReferenceEquals(other, null))
             {
                 return false;
             }
-            return _returnType == other._returnType;
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+            return Equals(_dispatcher, other._dispatcher);
         }
 
         public override int GetHashCode()
         {
-            return _returnType.GetHashCode();
+            return _dispatcher.GetType().GetHashCode();
         }
 
         public override RequestMessage Copy()
         {
-            return new RequestMessage(_returnType);
+            return new RequestMessage(_dispatcher);
         }
     }
 }

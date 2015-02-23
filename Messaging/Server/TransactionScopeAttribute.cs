@@ -7,7 +7,7 @@ namespace System.ComponentModel.Server
     /// This attribute can be applied to messages to specify how a <see cref="TransactionScope" /> should be created.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public sealed class TransactionScopeAttribute : MessageHandlerModuleAttribute
+    public sealed class TransactionScopeAttribute : MessageAttribute
     {
         private readonly TransactionScopeFactory _transactionScopeFactory;
 

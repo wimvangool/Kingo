@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel
+﻿using System.Collections.Generic;
+
+namespace System.ComponentModel
 {
     /// <summary>
     /// Represents a message that can validate itself.
@@ -14,5 +16,13 @@
         /// <returns><c>true</c> if any errors were found during validation; otherwise <c>false</c>.
         /// </returns>   
         bool TryGetValidationErrors(out ValidationErrorTree errorTree);
+
+        /// <summary>
+        /// Returns a collection of <see cref="MessageAttribute">MessageAttributes</see> that are
+        /// declared on this message and are an instance of <typeparamref name="TAttribute"/>.
+        /// </summary>
+        /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>        
+        /// <returns>A collection of <see cref="MessageAttribute">MessageAttributes</see>.</returns>
+        IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : MessageAttribute;        
     }
 }

@@ -64,6 +64,7 @@
     <Compile Include="Client\CommandExecutionTask.cs" />
     <Compile Include="Client\IAsyncExecutionTask.cs" />
     <Compile Include="Client\INotifyIsBusy.cs" />
+    <Compile Include="Client\IRequestMessageDispatcher.cs" />
     <Compile Include="Client\QueryDelegate.T1.cs" />
     <Compile Include="Client\QueryDelegate.T2.cs" />
     <Compile Include="Client\RequestMessage.cs" />
@@ -93,7 +94,7 @@
     <Compile Include="Server\Caching\IQueryCacheProvider.cs" />
     <Compile Include="Server\Caching\MemoryCacheProvider.cs" />
     <Compile Include="Server\MessageDispatcherModule.T1.cs" />
-    <Compile Include="Server\MessageHandlerModuleAttribute.cs" />
+    <Compile Include="MessageAttribute.cs" />
     <Compile Include="Server\MessageHandlerModule.T2.cs" />
     <Compile Include="Server\MessageHandlerModule.T1.cs" />
     <Compile Include="Server\Caching\ObjectCacheEntry.cs" />

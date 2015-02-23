@@ -55,22 +55,50 @@ namespace System.ComponentModel.Server
         #endregion
 
         #region [====== Messages ======]
+        
+        private sealed class DefaultMessage : Message<DefaultMessage>
+        {
+            public override DefaultMessage Copy()
+            {
+                return new DefaultMessage();
+            }
+        }
+
+        [TransactionScope(TransactionScopeOption.Required)]
+        private sealed class RequiredMessage : Message<RequiredMessage>
+        {
+            public override RequiredMessage Copy()
+            {
+                return new RequiredMessage();
+            }
+        }
 
         [TransactionScope(TransactionScopeOption.RequiresNew)]
-        private sealed class RequiresNewMessage { }
+        private sealed class RequiresNewMessage : Message<RequiresNewMessage>
+        {
+            public override RequiresNewMessage Copy()
+            {
+                return new RequiresNewMessage();
+            }
+        }
 
         [TransactionScope(TransactionScopeOption.Suppress, "00:20")]
-        private sealed class SuppressMessage { }
+        private sealed class SuppressMessage : Message<SuppressMessage>
+        {
+            public override SuppressMessage Copy()
+            {
+                return new SuppressMessage();
+            }
+        }
 
         #endregion
 
         [TestMethod]
         public void Module_CreatesNewTransaction_IfOptionIsRequiredAndNoTransactionIsActive()
         {
-            var messageSink = new TransactionSpy<object>();
-            var message = new object();
-
-            IMessageHandler<object> module = new TransactionScopeModule<object>(messageSink);
+            var messageSink = new TransactionSpy<DefaultMessage>();
+            var message = new DefaultMessage();
+            var module = new TransactionScopeModule<DefaultMessage>(messageSink);
             
             Assert.IsNull(Transaction.Current);
             module.Handle(message);
@@ -84,11 +112,11 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void Module_KeepsExistingTransaction_IfOptionIsRequiredAndTransactionIsAlreadyActive()
         {
-            var messageSink = new TransactionSpy<object>();
-            var message = new object();
-            Transaction transaction;
+            var messageSink = new TransactionSpy<RequiredMessage>();
+            var message = new RequiredMessage();            
+            var module = new TransactionScopeModule<RequiredMessage>(messageSink);
 
-            IMessageHandler<object> module = new TransactionScopeModule<object>(messageSink);
+            Transaction transaction;
 
             using (var scope = new TransactionScope())
             {
@@ -108,10 +136,9 @@ namespace System.ComponentModel.Server
         [ExpectedException(typeof(ArgumentException))]
         public void Module_ThrowsException_IfSpecifiedIsolationLevelIsNotEqualToExistingIsolationLevel()
         {
-            var messageSink = new TransactionSpy<object>();
-            var message = new object();            
-
-            IMessageHandler<object> module = new TransactionScopeModule<object>(messageSink, TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted);
+            var messageSink = new TransactionSpy<DefaultMessage>();
+            var message = new DefaultMessage();            
+            var module = new TransactionScopeModule<DefaultMessage>(messageSink, TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted);
 
             using (var scope = new TransactionScope())
             {                

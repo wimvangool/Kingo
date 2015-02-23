@@ -211,7 +211,8 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessage">Type of the message to handle.</typeparam>        
         /// <param name="validator">Optional validator of the message.</param>
         /// <returns>A new <see cref="IMessageHandlerPipelineFactory{TMessage}" />.</returns>        
-        protected virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessagePipeline<TMessage>(IMessageValidator<TMessage> validator) where TMessage : class, IMessage
+        protected virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessagePipeline<TMessage>(IMessageValidator<TMessage> validator)
+            where TMessage : class, IMessage<TMessage>
         {
             return new MessageHandlerPipelineFactory<TMessage>()
             {                

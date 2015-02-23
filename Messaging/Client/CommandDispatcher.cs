@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client
@@ -6,7 +7,7 @@ namespace System.ComponentModel.Client
     /// <summary>
     /// Represents a command that has no execution-parameter(s).
     /// </summary>
-    public abstract class CommandDispatcher : CommandDispatcherBase
+    public abstract class CommandDispatcher : CommandDispatcherBase, IRequestMessageDispatcher
     {                       
         #region [====== Execution ======]
 
@@ -15,7 +16,7 @@ namespace System.ComponentModel.Client
         {                        
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));            
 
-            Processor.Handle(new RequestMessage(null), msg =>
+            Processor.Handle(new RequestMessage(this), msg =>
             {
                 try
                 {
@@ -35,7 +36,7 @@ namespace System.ComponentModel.Client
         {                                    
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
 
-            return Processor.HandleAsync(new RequestMessage(null), msg =>
+            return Processor.HandleAsync(new RequestMessage(this), msg =>
             {
                 try
                 {
@@ -64,5 +65,25 @@ namespace System.ComponentModel.Client
         protected abstract void Execute();
 
         #endregion
+
+        #region [====== RequestMessageDispatcher ======]
+
+        IEnumerable<TAttribute> IRequestMessageDispatcher.SelectAttributesOfType<TAttribute>()
+        {
+            return SelectAttributesOfType<TAttribute>();
+        }
+
+        /// <summary>
+        /// Returns a collection of <see cref="MessageAttribute">MessageAttributes</see> that are
+        /// declared on this dispatcher and are an instance of <typeparamref name="TAttribute"/>.
+        /// </summary>
+        /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>        
+        /// <returns>A collection of <see cref="MessageAttribute">MessageAttributes</see>.</returns>
+        protected virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : MessageAttribute
+        {
+            return MessageAttribute.SelectAttributesOfType<TAttribute>(GetType());
+        }
+
+        #endregion        
     }
 }
