@@ -1,6 +1,8 @@
 ﻿namespace System.ComponentModel.Server
 {
-    internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn> where TMessageIn : class, IMessage<TMessageIn>
+    internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn>
+        where TMessageIn : class, IMessage<TMessageIn>
+        where TMessageOut : class, IMessage<TMessageOut>
     {
         private readonly IQuery<TMessageIn, TMessageOut> _query;
         private readonly QueryExecutionOptions _options;

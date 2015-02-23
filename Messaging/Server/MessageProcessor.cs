@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.Server.Caching;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace System.ComponentModel.Server
     /// <summary>
     /// Represents a handler of arbitrary messages.
     /// </summary>    
-    public abstract class MessageProcessor : IMessageProcessor
+    public class MessageProcessor : IMessageProcessor
     {                             
         private readonly IMessageProcessorBus _domainEventBus;
         
@@ -41,9 +42,9 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Returns the <see cref="MessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected internal abstract MessageHandlerFactory MessageHandlerFactory
+        protected internal virtual MessageHandlerFactory MessageHandlerFactory
         {
-            get;
+            get { return null; }
         }
 
         /// <inheritdoc />
@@ -95,7 +96,23 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            return Start(() => Handle(message, handler, validator, token), message.GetType(), token);
+            var callerContext = SynchronizationContext.Current;
+
+            return Start(() =>
+            {
+                var previousContext = SynchronizationContext.Current;
+
+                SynchronizationContext.SetSynchronizationContext(callerContext);
+
+                try
+                {
+                    Handle(message, handler, validator, token);
+                }
+                finally
+                {
+                    SynchronizationContext.SetSynchronizationContext(previousContext);
+                }                
+            }, message.GetType(), token);
         }
 
         /// <inheritdoc />
@@ -152,7 +169,23 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            return Start(() => Execute(message, query, validator, options, token), message.GetType(), token);
+            var callerContext = SynchronizationContext.Current;
+
+            return Start(() =>
+            {
+                var previousContext = SynchronizationContext.Current;
+
+                SynchronizationContext.SetSynchronizationContext(callerContext);
+
+                try
+                {
+                    return Execute(message, query, validator, options, token);
+                }
+                finally
+                {
+                    SynchronizationContext.SetSynchronizationContext(previousContext);
+                }                
+            }, message.GetType(), token);
         }
 
         /// <inheritdoc />
@@ -210,7 +243,11 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <typeparam name="TMessage">Type of the message to handle.</typeparam>        
         /// <param name="validator">Optional validator of the message.</param>
-        /// <returns>A new <see cref="IMessageHandlerPipelineFactory{TMessage}" />.</returns>        
+        /// <returns>A new <see cref="IMessageHandlerPipelineFactory{TMessage}" />.</returns>    
+        /// <remarks>
+        /// The default pipeline contains the <see cref="MessageValidationModule{TMessage}"/> and the
+        /// <see cref="TransactionScopeModule{TMessage}" />.
+        /// </remarks>    
         protected virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessagePipeline<TMessage>(IMessageValidator<TMessage> validator)
             where TMessage : class, IMessage<TMessage>
         {
@@ -226,7 +263,10 @@ namespace System.ComponentModel.Server
         /// create a pipeline for every <see cref="IMessageHandler{TMessage}" /> handling a certain message.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message to handle.</typeparam>        
-        /// <returns>A pipeline that will handle a message.</returns>        
+        /// <returns>A pipeline that will handle a message.</returns>     
+        /// <remarks>
+        /// The default pipeline is empty.
+        /// </remarks>   
         protected internal virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessageHandlerPipeline<TMessage>() where TMessage : class
         {
             return new MessageHandlerPipelineFactory<TMessage>();
@@ -238,11 +278,19 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>               
-        /// <returns>A query pipeline.</returns>        
+        /// <returns>A query pipeline.</returns>   
+        /// <remarks>
+        /// The default pipeline contains the <see cref="QueryCacheModule{TMessageIn, TMessageOut}" /> based on the
+        /// <see cref="MemoryCacheProvider" />.
+        /// </remarks>     
         protected internal virtual IQueryPipelineFactory<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>(QueryExecutionOptions options)
-            where TMessageIn : class, IMessage<TMessageIn>           
-        {            
-            return new QueryPipelineFactory<TMessageIn, TMessageOut>();
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut> 
+        {
+            return new QueryPipelineFactory<TMessageIn, TMessageOut>()
+            {
+                query => new QueryCacheModule<TMessageIn, TMessageOut>(query, QueryExecutionOptions.Default, new MemoryCacheProvider())
+            };
         }        
 
         private static IMessageHandler<TMessage> NullHandler<TMessage>() where TMessage : class
