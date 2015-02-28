@@ -7,7 +7,7 @@ namespace System.ComponentModel.Server.Caching
     /// that it's results are to be cached.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class QueryCacheOptionsAttribute : MessageAttribute
+    public sealed class QueryCacheOptionsAttribute : Attribute
     {
         private readonly QueryCacheKind _kind;        
 
@@ -44,23 +44,20 @@ namespace System.ComponentModel.Server.Caching
         {
             get;
             set;
-        }    
-    
-        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options, IQueryCacheProvider cacheManager)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+        }
+
+        internal TMessageOut GetOrAddToCache<TMessageOut>(IQuery<TMessageOut> query, QueryCacheModule module) where TMessageOut : class, IMessage<TMessageOut>
         {           
             var absoluteExpiration = ParseTimeout(AbsoluteExpiration);
-            var slidingExpiration = ParseTimeout(SlidingExpiration);
-            var policy = new QueryCachePolicy(options, absoluteExpiration, slidingExpiration);
+            var slidingExpiration = ParseTimeout(SlidingExpiration);            
             
             if (Kind == QueryCacheKind.Application)
             {
-                return cacheManager.GetOrAddToApplicationCache(message, query, policy);
+                return module.GetOrAddToApplicationCache(query, absoluteExpiration, slidingExpiration);
             }
             if (Kind == QueryCacheKind.Session)
             {
-                return cacheManager.GetOrAddToSessionCache(message, query, policy);
+                return module.GetOrAddToSessionCache(query, absoluteExpiration, slidingExpiration);
             }
             throw NewInvalidKindSpecifiedException(Kind);
         }        

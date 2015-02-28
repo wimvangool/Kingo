@@ -7,24 +7,24 @@ namespace System.ComponentModel.Server.Caching
 {
     internal sealed class ObjectCacheManager : QueryCacheManager
     {
-        private readonly ObjectCacheProvider _cacheProvider;
+        private readonly ObjectCacheModule _cacheModule;
         private readonly ObjectCache _cache;       
         private readonly Dictionary<object, ObjectCacheEntryMonitor> _cacheEntryMonitors;                
         
-        internal ObjectCacheManager(ObjectCache cache, ObjectCacheProvider cacheProvider) : base(LockRecursionPolicy.NoRecursion)
+        internal ObjectCacheManager(ObjectCache cache, ObjectCacheModule cacheModule) : base(LockRecursionPolicy.NoRecursion)
         {
             if (cache == null)
             {
                 throw new ArgumentNullException("cache");
             }
-            _cacheProvider = cacheProvider;
+            _cacheModule = cacheModule;
             _cache = cache;            
             _cacheEntryMonitors = new Dictionary<object, ObjectCacheEntryMonitor>();
         }               
 
-        protected override QueryCacheProvider CacheProvider
+        protected override QueryCacheModule CacheProvider
         {
-            get { return _cacheProvider; }
+            get { return _cacheModule; }
         }
 
         protected override void Dispose(bool disposing)
@@ -107,7 +107,7 @@ namespace System.ComponentModel.Server.Caching
         private CacheItemPolicy CreateCacheItemPolicy(object messageIn, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration, ChangeMonitor monitor)
         {
             var firstMonitor =  new [] { monitor };
-            var otherMonitors = _cacheProvider.CreateChangeMonitors(messageIn);
+            var otherMonitors = _cacheModule.CreateChangeMonitors(messageIn);
             var allMonitors = firstMonitor.Concat(otherMonitors);
 
             return CreateCacheItemPolicy(messageIn, absoluteExpiration, slidingExpiration, allMonitors);

@@ -8,6 +8,12 @@ namespace System.ComponentModel
     public interface IMessage
     {
         /// <summary>
+        /// Creates and returns a copy of this message.
+        /// </summary>
+        /// <returns>The copy of this message.</returns>
+        IMessage Copy();
+
+        /// <summary>
         /// Validates all values of this message and returns whether or not any errors were found.
         /// </summary>        
         /// <param name="errorTree">
@@ -18,11 +24,11 @@ namespace System.ComponentModel
         bool TryGetValidationErrors(out ValidationErrorTree errorTree);
 
         /// <summary>
-        /// Returns a collection of <see cref="MessageAttribute">MessageAttributes</see> that are
+        /// Returns a collection of <see cref="Attribute">MessageAttributes</see> that are
         /// declared on this message and are an instance of <typeparamref name="TAttribute"/>.
         /// </summary>
         /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>        
-        /// <returns>A collection of <see cref="MessageAttribute">MessageAttributes</see>.</returns>
-        IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : MessageAttribute;        
+        /// <returns>A collection of <see cref="Attribute">MessageAttributes</see>.</returns>
+        IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : Attribute;        
     }
 }

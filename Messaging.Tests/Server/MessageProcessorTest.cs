@@ -176,6 +176,21 @@ namespace System.ComponentModel.Server
 
         #endregion                
 
+        #region [====== Query Tests ======]
+
+        [TestMethod]
+        public void Processor_ReturnsQueryResult_IfQueryExecutesCorrectly()
+        {
+            var requestMessage = new BasicMessage<long>(Clock.Current.UtcDateAndTime().Ticks);
+            var responseMessage = Processor.Execute(requestMessage, msg => new BasicMessage<long>(msg.Value));
+
+            Assert.IsNotNull(responseMessage);
+            Assert.AreNotSame(requestMessage, responseMessage);
+            Assert.AreEqual(requestMessage, responseMessage);
+        }
+
+        #endregion
+
         #region [====== InvokePostCommit ======]
 
         [TestMethod]

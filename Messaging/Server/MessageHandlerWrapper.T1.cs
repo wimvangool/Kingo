@@ -1,0 +1,47 @@
+﻿namespace System.ComponentModel.Server
+{
+    /// <summary>
+    /// Represents a wrapper of a message and it's handler to serve as a <see cref="IMessageHandler" />
+    /// that can be used within a <see cref="IMessageProcessor" />'s pipeline.
+    /// </summary>
+    /// <typeparam name="TMessage">Type of message to handle.</typeparam>
+    public sealed class MessageHandlerWrapper<TMessage> : IMessageHandler where TMessage : class, IMessage<TMessage>
+    {
+        private readonly TMessage _message;
+        private readonly IMessageHandler<TMessage> _handler;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageHandlerWrapper{TMessage}" /> class.
+        /// </summary>
+        /// <param name="message">The message to handle.</param>
+        /// <param name="handler">The handler to invoke.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> or <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
+        public MessageHandlerWrapper(TMessage message, IMessageHandler<TMessage> handler)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+            _message = message;
+            _handler = handler;
+        }
+
+        /// <inheritdoc />
+        public IMessage Message
+        {
+            get { return _message; }
+        }
+
+        /// <inheritdoc />
+        public void Invoke()
+        {
+            _handler.Handle(_message);
+        }
+    }
+}

@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel.Server.Caching
 {
     [TestClass]
-    public sealed class MemoryCacheProviderTest
+    public sealed class MemoryCacheModuleTest
     {
         #region [====== Nested Types ======]
 
@@ -111,31 +111,36 @@ namespace System.ComponentModel.Server.Caching
         #endregion
 
         private RequestMessage _message;
-        private Query _query;
-        private MemoryCacheProvider _controller;
+        private Query _querySpy;
+        private MemoryCacheModule _module;
 
         [TestInitialize]
         public void Setup()
         {
             _message = new RequestMessage(); ;
-            _query = new Query();
-            _controller = new MemoryCacheProvider();
+            _querySpy = new Query();
+            _module = new MemoryCacheModule();
         }
 
         [TestCleanup]
         public void TearDown()
         {
-            _controller.Dispose();
+            _module.Dispose();
         }
 
+        private IQuery<ResponseMessage> CreateQuery()
+        {
+            return new QueryWrapper<RequestMessage, ResponseMessage>(_message, _querySpy, QueryExecutionOptions.Default);
+        }
+            
         [TestMethod]
         public void GetOrAddToSessionCache_ReturnsCachedResult_IfResultWasCachedForCurrentSession()
         {
-            var policy = CreateCachePolicy();
-            var resultOne = _controller.GetOrAddToSessionCache(_message, _query, policy);
-            var resultTwo = _controller.GetOrAddToSessionCache(_message, _query, policy);
+            var query = CreateQuery();
+            var resultOne = _module.GetOrAddToSessionCache(query, null, null);
+            var resultTwo = _module.GetOrAddToSessionCache(query, null, null);
 
-            Assert.AreEqual(1, _query.InvocationCount);
+            Assert.AreEqual(1, _querySpy.InvocationCount);
             Assert.IsNotNull(resultOne);
             Assert.IsNotNull(resultTwo);
             Assert.AreNotSame(resultOne, resultTwo);
@@ -145,25 +150,20 @@ namespace System.ComponentModel.Server.Caching
         [TestMethod]
         public void GetOrAddToSessionCache_DoesNotReturnCachedResult_IfResultWasCachedForAnotherSession()
         {
-            var policy = CreateCachePolicy();
-            var resultOne = _controller.GetOrAddToSessionCache(_message, _query, policy);
+            var query = CreateQuery();
+            var resultOne = _module.GetOrAddToSessionCache(query, null, null);
             
             using (new IdentityScope("TestUser"))
             {
-                var resultTwo = _controller.GetOrAddToSessionCache(_message, _query, policy);
-                var resultThree = _controller.GetOrAddToSessionCache(_message, _query, policy);
+                var resultTwo = _module.GetOrAddToSessionCache(query, null, null);
+                var resultThree = _module.GetOrAddToSessionCache(query, null, null);
 
-                Assert.AreEqual(2, _query.InvocationCount);                
+                Assert.AreEqual(2, _querySpy.InvocationCount);                
                 Assert.AreNotSame(resultOne, resultTwo);
                 Assert.AreNotSame(resultTwo, resultThree);
                 Assert.AreEqual(resultOne.Value, resultTwo.Value);
                 Assert.AreEqual(resultTwo.Value, resultThree.Value);
             }
-        }
-
-        private static QueryCachePolicy CreateCachePolicy()
-        {
-            return new QueryCachePolicy(QueryExecutionOptions.Default, null, null);
-        }
+        }        
     }
 }

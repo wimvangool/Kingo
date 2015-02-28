@@ -1,62 +1,34 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 namespace System.ComponentModel.Server.Caching
 {
     /// <summary>
-    /// Provides a base implementation of the <see cref="IQueryCacheProvider" /> interface.
+    /// Provides a base implementation of the <see cref="IQueryCacheModule" /> interface.
     /// </summary>
-    public abstract class QueryCacheProvider : IQueryCacheProvider
+    public abstract class QueryCacheModule : QueryModule<QueryCacheOptionsAttribute>, IQueryCacheModule
     {
         private readonly ReaderWriterLockSlim _cacheManagerLock;
         private readonly Dictionary<object, QueryCacheManager> _cacheManagers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="QueryCacheProvider" /> class.
+        /// Initializes a new instance of the <see cref="QueryCacheModule" /> class.
         /// </summary>
         /// <param name="recursionPolicy">
         /// The lock recursion policy that is used for the <see cref="CacheManagerLock" />.
         /// </param>
-        protected QueryCacheProvider(LockRecursionPolicy recursionPolicy)
+        protected QueryCacheModule(LockRecursionPolicy recursionPolicy)
         {
             _cacheManagerLock = new ReaderWriterLockSlim(recursionPolicy);
             _cacheManagers = new Dictionary<object, QueryCacheManager>();
         }
 
-        #region [====== Dispose ======]
+        #region [====== Dispose ======]        
 
-        /// <summary>
-        /// Indicates whether or not the current instance has been disposed.
-        /// </summary>
-        protected bool IsDisposed
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        /// <param name="disposing">
-        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
-        /// (<c>false</c>).
-        /// </param>
-        /// <remarks>
-        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
-        /// Otherwise, only unmanaged resources will be released.
-        /// </remarks>
-        protected virtual void Dispose(bool disposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
         {
             if (IsDisposed)
             {
@@ -66,19 +38,21 @@ namespace System.ComponentModel.Server.Caching
             {
                 CacheManagerLock.Dispose();
             }
-            IsDisposed = true;
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="ObjectDisposedException" />.
-        /// </summary>
-        /// <returns>A new <see cref="ObjectDisposedException" />.</returns>
-        protected ObjectDisposedException NewObjectDisposedException()
-        {
-            return new ObjectDisposedException(GetType().Name);
-        }
+            base.Dispose(disposing);
+        }        
 
         #endregion
+
+        /// <inheritdoc />
+        protected override TMessageOut InvokeQuery<TMessageOut>(IQuery<TMessageOut> query, IEnumerable<QueryCacheOptionsAttribute> attributes)
+        {
+            var attribute = attributes.SingleOrDefault();
+            if (attribute == null)
+            {
+                return query.Invoke();
+            }
+            return attribute.GetOrAddToCache(query, this);
+        }
 
         #region [====== Caching ======]
 
@@ -90,30 +64,16 @@ namespace System.ComponentModel.Server.Caching
             get { return _cacheManagerLock; }
         }
 
-        /// <inheritdoc /> 
-        public TMessageOut GetOrAddToApplicationCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryCachePolicy policy)
-            where TMessageIn : class, IMessage<TMessageIn>
+        internal TMessageOut GetOrAddToApplicationCache<TMessageOut>(IQuery<TMessageOut> query, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration)            
             where TMessageOut : class, IMessage<TMessageOut>
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            if (query == null)
-            {
-                throw new ArgumentNullException("query");
-            }
+        {            
             IQueryCacheManagerFactory cacheManagerFactory;
 
             if (TryGetApplicationCacheFactory(out cacheManagerFactory))
             {
-                return GetOrAddCacheManager(cacheManagerFactory).GetOrAddToCache(message, query, policy);
+                return GetOrAddCacheManager(cacheManagerFactory).GetOrAddToCache(query, absoluteExpiration, slidingExpiration);
             }
-            return query.Execute(message);
+            return query.Invoke();
         }
 
         /// <summary>
@@ -128,29 +88,16 @@ namespace System.ComponentModel.Server.Caching
         protected abstract bool TryGetApplicationCacheFactory(out IQueryCacheManagerFactory applicationCacheManagerFactory);
 
         /// <inheritdoc />       
-        public TMessageOut GetOrAddToSessionCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryCachePolicy policy)
-            where TMessageIn : class, IMessage<TMessageIn>
+        public TMessageOut GetOrAddToSessionCache<TMessageOut>(IQuery<TMessageOut> query, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration)            
             where TMessageOut : class, IMessage<TMessageOut>
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            if (query == null)
-            {
-                throw new ArgumentNullException("query");
-            }
+        {            
             IQueryCacheManagerFactory cacheManagerFactory;
 
             if (TryGetSessionCacheFactory(out cacheManagerFactory))
             {
-                return GetOrAddCacheManager(cacheManagerFactory).GetOrAddToCache(message, query, policy);
+                return GetOrAddCacheManager(cacheManagerFactory).GetOrAddToCache(query, absoluteExpiration, slidingExpiration);
             }
-            return query.Execute(message);
+            return query.Invoke();
         }
 
         /// <summary>

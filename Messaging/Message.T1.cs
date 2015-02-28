@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace System.ComponentModel
 {
@@ -9,10 +7,8 @@ namespace System.ComponentModel
     /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
     [Serializable]
-    public abstract class Message<TMessage> : IMessage<TMessage>, IExtensibleDataObject where TMessage : Message<TMessage>
-    {
-        private ExtensionDataObject _extensionData;
-
+    public abstract class Message<TMessage> : Message, IMessage<TMessage> where TMessage : Message<TMessage>
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="Message{TMessage}" /> class.
         /// </summary>
@@ -26,26 +22,14 @@ namespace System.ComponentModel
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         protected Message(TMessage message)
+            : base(message) { }        
+
+        #region [====== Copy ======]   
+
+        internal override IMessage CopyMessage()
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            _extensionData = message._extensionData;
+            return Copy();
         }
-
-        #region [====== ExtensibleObject ======]
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        ExtensionDataObject IExtensibleDataObject.ExtensionData
-        {
-            get { return _extensionData; }
-            set { _extensionData = value; }
-        }
-
-        #endregion
-
-        #region [====== Copy ======]
 
         TMessage IMessage<TMessage>.Copy()
         {
@@ -86,12 +70,12 @@ namespace System.ComponentModel
 
         #region [====== Validation ======]
 
-        bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
+        internal override bool TryGetValidationErrors(out ValidationErrorTree errorTree)
         {
             var validator = CreateValidator();
             if (validator != null)
             {
-                return validator.TryGetValidationErrors((TMessage) this, out errorTree);
+                return validator.TryGetValidationErrors((TMessage)this, out errorTree);
             }
             errorTree = null;
             return false;
@@ -107,20 +91,6 @@ namespace System.ComponentModel
             return null;
         }
 
-        #endregion
-
-        #region [====== Attributes ======]
-
-        IEnumerable<TAttribute> IMessage.SelectAttributesOfType<TAttribute>()
-        {
-            return SelectAttributesOfType<TAttribute>();
-        }
-
-        internal virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : MessageAttribute
-        {
-            return MessageAttribute.SelectAttributesOfType<TAttribute>(GetType());
-        }
-
-        #endregion
+        #endregion        
     }
 }

@@ -6,24 +6,24 @@ using System.Threading;
 namespace System.ComponentModel.Server.Caching
 {
     /// <summary>
-    /// Provides a base implementation of the <see cref="IQueryCacheProvider" /> interface 
+    /// Provides a base implementation of the <see cref="IQueryCacheModule" /> interface 
     /// </summary>
-    public abstract class ObjectCacheProvider : QueryCacheProvider
+    public abstract class ObjectCacheModule : QueryCacheModule
     {
         #region [====== ObjectCacheManagerFactory ======]
 
         private sealed class ObjectCacheManagerFactory : QueryCacheManagerFactory<ObjectCache>
         {
-            private readonly ObjectCacheProvider _cacheProvider;
+            private readonly ObjectCacheModule _cacheModule;
 
-            internal ObjectCacheManagerFactory(ObjectCache cache, ObjectCacheProvider cacheProvider) : base(cache)
+            internal ObjectCacheManagerFactory(ObjectCache cache, ObjectCacheModule cacheModule) : base(cache)
             {
-                _cacheProvider = cacheProvider;
+                _cacheModule = cacheModule;
             }
 
             public override QueryCacheManager CreateCacheManager()
             {
-                return new ObjectCacheManager(Cache, _cacheProvider);
+                return new ObjectCacheManager(Cache, _cacheModule);
             }
         }
 
@@ -32,12 +32,12 @@ namespace System.ComponentModel.Server.Caching
         #region [====== Getting or Adding Cache Entries ======]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ObjectCacheProvider" /> class.
+        /// Initializes a new instance of the <see cref="ObjectCacheModule" /> class.
         /// </summary>
         /// <param name="recursionPolicy">
-        /// The lock recursion policy that is used for the <see cref="QueryCacheProvider.CacheManagerLock" />.
+        /// The lock recursion policy that is used for the <see cref="QueryCacheModule.CacheManagerLock" />.
         /// </param>
-        protected ObjectCacheProvider(LockRecursionPolicy recursionPolicy)
+        protected ObjectCacheModule(LockRecursionPolicy recursionPolicy)
             : base(recursionPolicy) { }
 
         /// <inheritdoc />

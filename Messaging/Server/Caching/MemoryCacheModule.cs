@@ -4,19 +4,19 @@ using System.Threading;
 namespace System.ComponentModel.Server.Caching
 {
     /// <summary>
-    /// Represents a <see cref="ObjectCacheProvider" /> that is based on <see cref="MemoryCache" /> instances
+    /// Represents a <see cref="ObjectCacheModule" /> that is based on <see cref="MemoryCache" /> instances
     /// and associates sessions with the <see cref="Thread.CurrentPrincipal" />.
     /// </summary>
-    public class MemoryCacheProvider : ObjectCacheProvider
+    public class MemoryCacheModule : ObjectCacheModule
     {
         private readonly Lazy<MemoryCache> _applicationCache;
         private readonly ReaderWriterLockSlim _applicationCacheLock;
         private readonly string _sessionCacheKeyFormat;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryCacheProvider" /> class.
+        /// Initializes a new instance of the <see cref="MemoryCacheModule" /> class.
         /// </summary>        
-        public MemoryCacheProvider(LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) : base(recursionPolicy)
+        public MemoryCacheModule(LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) : base(recursionPolicy)
         {
             _applicationCache = new Lazy<MemoryCache>(CreateApplicationCache, LazyThreadSafetyMode.ExecutionAndPublication);
             _applicationCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);

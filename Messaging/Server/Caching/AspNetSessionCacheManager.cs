@@ -9,8 +9,8 @@ namespace System.ComponentModel.Server.Caching
         private readonly HttpSessionState _cache;
         private readonly Timer _expirationTimer;
 
-        private AspNetSessionCacheManager(AspNetCacheProvider cacheProvider, HttpSessionState cache)
-            : base(cacheProvider)
+        private AspNetSessionCacheManager(AspNetCacheModule cacheModule, HttpSessionState cache)
+            : base(cacheModule)
         {
             _cache = cache;
             _expirationTimer = new Timer(TimerIntervalFromMinutes(cache.Timeout));
@@ -92,21 +92,21 @@ namespace System.ComponentModel.Server.Caching
 
         private sealed class SessionCacheManagerFactory : QueryCacheManagerFactory<HttpSessionState>
         {
-            private readonly AspNetCacheProvider _cacheProvider;
+            private readonly AspNetCacheModule _cacheModule;
 
-            internal SessionCacheManagerFactory(HttpSessionState cache, AspNetCacheProvider cacheProvider)
+            internal SessionCacheManagerFactory(HttpSessionState cache, AspNetCacheModule cacheModule)
                 : base(cache)
             {
-                _cacheProvider = cacheProvider;
+                _cacheModule = cacheModule;
             }
 
             public override QueryCacheManager CreateCacheManager()
             {
-                return new AspNetSessionCacheManager(_cacheProvider, Cache);
+                return new AspNetSessionCacheManager(_cacheModule, Cache);
             }
         }
 
-        internal static bool TryCreateFactory(AspNetCacheProvider cacheProvider, out IQueryCacheManagerFactory cacheManagerFactory)
+        internal static bool TryCreateFactory(AspNetCacheModule cacheModule, out IQueryCacheManagerFactory cacheManagerFactory)
         {
             var httpContext = HttpContext.Current;
             if (httpContext == null)
@@ -114,7 +114,7 @@ namespace System.ComponentModel.Server.Caching
                 cacheManagerFactory = null;
                 return false;
             }
-            cacheManagerFactory = new SessionCacheManagerFactory(httpContext.Session, cacheProvider);
+            cacheManagerFactory = new SessionCacheManagerFactory(httpContext.Session, cacheModule);
             return true;
         }
 

@@ -198,4 +198,7 @@
   <data name="QueryCacheOptions_InvalidTimeoutSpecified" xml:space="preserve">
     <value>Invalid timeout specified: {0}.</value>
   </data>
+  <data name="MessageOut_InvalidMessageType" xml:space="preserve">
+    <value>A module in the query execution pipeline returned an invalid result. Expected result of type '{0}' but was '{1}'.</value>
+  </data>
 </root>

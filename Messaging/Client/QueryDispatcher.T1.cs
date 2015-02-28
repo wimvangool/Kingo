@@ -85,14 +85,14 @@ namespace System.ComponentModel.Client
         }
 
         /// <summary>
-        /// Returns a collection of <see cref="MessageAttribute">MessageAttributes</see> that are
+        /// Returns a collection of <see cref="Attribute">MessageAttributes</see> that are
         /// declared on this dispatcher and are an instance of <typeparamref name="TAttribute"/>.
         /// </summary>
         /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>        
-        /// <returns>A collection of <see cref="MessageAttribute">MessageAttributes</see>.</returns>
-        protected virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : MessageAttribute
+        /// <returns>A collection of <see cref="Attribute">MessageAttributes</see>.</returns>
+        protected virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : Attribute
         {
-            return MessageAttribute.SelectAttributesOfType<TAttribute>(GetType());
+            return Message.AttributesOfType<TAttribute>(GetType());
         }
 
         #endregion   

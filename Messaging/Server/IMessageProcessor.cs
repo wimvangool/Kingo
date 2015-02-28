@@ -6,7 +6,7 @@ namespace System.ComponentModel.Server
     /// <summary>
     /// When implemented by a class, represents a handler of any message.
     /// </summary>
-    public interface IMessageProcessor
+    public interface IMessageProcessor : IDisposable
     {
         /// <summary>
         /// Returns the <see cref="IMessageProcessorBus" /> of this processor.

@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.Server.Caching;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,20 +12,109 @@ namespace System.ComponentModel.Server
     /// Represents a handler of arbitrary messages.
     /// </summary>    
     public class MessageProcessor : IMessageProcessor
-    {                             
-        private readonly IMessageProcessorBus _domainEventBus;
-        
+    {        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                            
+        private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                 
+        private readonly IMessageProcessorBus _domainEventBus;
+
+        private readonly Lazy<MessageHandlerPipeline> _genericMessageHandlerPipeline;
+        private readonly Lazy<MessageHandlerPipeline> _specificMessageHandlerPipeline;
+        private readonly Lazy<QueryPipeline> _queryPipeline;               
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
         /// </summary>        
         protected MessageProcessor()
-        {
-            _domainEventBus = new MessageProcessorBus(this);
+        {           
             _currentMessagePointer = new ThreadLocal<MessagePointer>();
-        }        
+            _domainEventBus = new MessageProcessorBus(this);
+            
+            _genericMessageHandlerPipeline = new Lazy<MessageHandlerPipeline>(CreateGenericMessageHandlerPipeline, true);
+            _specificMessageHandlerPipeline = new Lazy<MessageHandlerPipeline>(CreateSpecificMessageHandlerPipeline, true);
+            _queryPipeline = new Lazy<QueryPipeline>(CreateQueryPipeline, true);
+        }
+
+        internal MessageHandlerPipeline GenericMessageHandlerPipeline
+        {
+            get { return _genericMessageHandlerPipeline.Value; }
+        }
+
+        internal MessageHandlerPipeline SpecificMessageHandlerPipeline
+        {
+            get { return _specificMessageHandlerPipeline.Value; }
+        }
+
+        internal QueryPipeline QueryPipeline
+        {
+            get { return _queryPipeline.Value; }
+        }
+
+        #region [====== Dispose ======]
+
+        /// <summary>
+        /// Indicates whether not this instance has been disposed.
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
+        /// (<c>false</c>).
+        /// </param>
+        /// <remarks>
+        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
+        /// Otherwise, only unmanaged resources will be released.
+        /// </remarks>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+            if (disposing)
+            {
+                if (_genericMessageHandlerPipeline.IsValueCreated)
+                {
+                    _genericMessageHandlerPipeline.Value.Dispose();
+                }
+                if (_specificMessageHandlerPipeline.IsValueCreated)
+                {
+                    _specificMessageHandlerPipeline.Value.Dispose();
+                }
+                if (_queryPipeline.IsValueCreated)
+                {
+                    _queryPipeline.Value.Dispose();
+                }
+            }
+            IsDisposed = true;
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="ObjectDisposedException" />.
+        /// </summary>
+        /// <returns>A new <see cref="ObjectDisposedException" />.</returns>
+        protected ObjectDisposedException NewObjectDisposedException()
+        {
+            return new ObjectDisposedException(GetType().Name);
+        }
+
+        #endregion
 
         /// <inheritdoc />
         public virtual IMessageProcessorBus DomainEventBus
@@ -92,6 +182,10 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />
         public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }
             if (message == null)
             {
                 throw new ArgumentNullException("message");
@@ -130,6 +224,10 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }
             if (message == null)
             {
                 throw new ArgumentNullException("message");
@@ -138,9 +236,10 @@ namespace System.ComponentModel.Server
 
             try
             {
-                handler = new MessageDispatcherModule<TMessage>(handler, this);
-                handler = CreatePerMessagePipeline(validator).CreateMessageHandlerPipeline(handler);
-                handler.Handle(message);
+                var dispatcher = new MessageHandlerDispatcher<TMessage>(message, validator, handler, this);
+                var pipeline = GenericMessageHandlerPipeline.ConnectTo(dispatcher);
+
+                pipeline.Invoke();              
             }
             finally
             {
@@ -165,6 +264,10 @@ namespace System.ComponentModel.Server
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }
             if (message == null)
             {
                 throw new ArgumentNullException("message");
@@ -201,6 +304,10 @@ namespace System.ComponentModel.Server
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
+            if (IsDisposed)
+            {
+                throw NewObjectDisposedException();
+            }
             if (message == null)
             {
                 throw new ArgumentNullException("message");
@@ -209,11 +316,11 @@ namespace System.ComponentModel.Server
 
             try
             {
-                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(query, options, this);
+                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, options, this);
+                
+                GenericMessageHandlerPipeline.ConnectTo(handler).Invoke();
 
-                CreatePerMessagePipeline(validator).CreateMessageHandlerPipeline(handler).Handle(message);
-
-                return handler.Result;
+                return handler.MessageOut;
             }
             finally
             {
@@ -235,62 +342,55 @@ namespace System.ComponentModel.Server
         private void PopMessage()
         {
             MessagePointer = MessagePointer.ParentPointer;
-        }        
+        }               
 
-        /// <summary>
-        /// Creates and returns a <see cref="IMessageHandlerPipelineFactory{TMessage}" /> that will be used to
-        /// create a pipeline for every incoming message.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>        
-        /// <param name="validator">Optional validator of the message.</param>
-        /// <returns>A new <see cref="IMessageHandlerPipelineFactory{TMessage}" />.</returns>    
-        /// <remarks>
-        /// The default pipeline contains the <see cref="MessageValidationModule{TMessage}"/> and the
-        /// <see cref="TransactionScopeModule{TMessage}" />.
-        /// </remarks>    
-        protected virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessagePipeline<TMessage>(IMessageValidator<TMessage> validator)
-            where TMessage : class, IMessage<TMessage>
+        private MessageHandlerPipeline CreateGenericMessageHandlerPipeline()
         {
-            return new MessageHandlerPipelineFactory<TMessage>()
-            {                
-                handler => new MessageValidationModule<TMessage>(handler, validator),
-                handler => new TransactionScopeModule<TMessage>(handler)
-            };
+            return new MessageHandlerPipeline(CreateGenericMessageHandlerModules()); ;
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageHandlerPipelineFactory{TMessage}" /> that will be used to
-        /// create a pipeline for every <see cref="IMessageHandler{TMessage}" /> handling a certain message.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>        
-        /// <returns>A pipeline that will handle a message.</returns>     
-        /// <remarks>
-        /// The default pipeline is empty.
-        /// </remarks>   
-        protected internal virtual IMessageHandlerPipelineFactory<TMessage> CreatePerMessageHandlerPipeline<TMessage>() where TMessage : class
+        /// Creates and returns a collection of <see cref="IMessageHandlerModule">modules</see>
+        /// that will be used to create a pipeline for every incoming message.
+        /// </summary>                
+        /// <returns>A collection of <see cref="IMessageHandlerModule">modules</see>.</returns>              
+        protected virtual IEnumerable<IMessageHandlerModule> CreateGenericMessageHandlerModules()            
         {
-            return new MessageHandlerPipelineFactory<TMessage>();
-        }
-
-        /// <summary>
-        /// Creates and returns a <see cref="IQueryPipelineFactory{TMessageIn, TMessageOut}"/> that will be used to
-        /// create a pipeline for every query that is executed.
-        /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>               
-        /// <returns>A query pipeline.</returns>   
-        /// <remarks>
-        /// The default pipeline contains the <see cref="QueryCacheModule{TMessageIn, TMessageOut}" /> based on the
-        /// <see cref="MemoryCacheProvider" />.
-        /// </remarks>     
-        protected internal virtual IQueryPipelineFactory<TMessageIn, TMessageOut> CreateQueryPipeline<TMessageIn, TMessageOut>(QueryExecutionOptions options)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut> 
-        {
-            return new QueryPipelineFactory<TMessageIn, TMessageOut>()
+            return new IMessageHandlerModule[]
             {
-                query => new QueryCacheModule<TMessageIn, TMessageOut>(query, QueryExecutionOptions.Default, new MemoryCacheProvider())
+                new MessageValidationModule(),
+                new TransactionScopeModule(), 
             };
+        }
+
+        private MessageHandlerPipeline CreateSpecificMessageHandlerPipeline()
+        {
+            return new MessageHandlerPipeline(CreateSpecificMessageHandlerModules());
+        }
+
+        /// <summary>
+        /// Creates and returns a collection of <see cref="IMessageHandlerModule">modules</see> that will be used to
+        /// create a pipeline for every <see cref="IMessageHandler{TMessage}" /> handling a certain message.
+        /// </summary>               
+        /// <returns>A pipeline that will handle a message.</returns>              
+        protected internal virtual IEnumerable<IMessageHandlerModule> CreateSpecificMessageHandlerModules()
+        {
+            return Enumerable.Empty<IMessageHandlerModule>();
+        }
+
+        private QueryPipeline CreateQueryPipeline()
+        {
+            return new QueryPipeline(CreateQueryModules());
+        }
+
+        /// <summary>
+        /// Creates and returns a collection of <see cref="IQueryModule">modules</see> that will be used to
+        /// create a pipeline for every query that is executed.
+        /// </summary>                     
+        /// <returns>A query pipeline.</returns>             
+        protected virtual IEnumerable<IQueryModule> CreateQueryModules()            
+        {
+            return Enumerable.Empty<IQueryModule>();
         }        
 
         private static IMessageHandler<TMessage> NullHandler<TMessage>() where TMessage : class

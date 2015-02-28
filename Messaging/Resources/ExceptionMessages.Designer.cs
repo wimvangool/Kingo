@@ -205,6 +205,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A module in the query execution pipeline returned an invalid result. Expected result of type &apos;{0}&apos; but was &apos;{1}&apos;..
+        /// </summary>
+        internal static string MessageOut_InvalidMessageType {
+            get {
+                return ResourceManager.GetString("MessageOut_InvalidMessageType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The message is invalid. See ErrorTree for details..
         /// </summary>
         internal static string MessageProcessor_InvalidMessage {

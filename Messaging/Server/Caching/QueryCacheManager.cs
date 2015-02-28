@@ -91,19 +91,18 @@ namespace System.ComponentModel.Server.Caching
         }
 
         /// <summary>
-        /// Returns the <see cref="QueryCacheProvider" /> that created this manager.
+        /// Returns the <see cref="QueryCacheModule" /> that created this manager.
         /// </summary>
-        protected abstract QueryCacheProvider CacheProvider
+        protected abstract QueryCacheModule CacheProvider
         {
             get;
         }
-        
-        internal TMessageOut GetOrAddToCache<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryCachePolicy policy)
-            where TMessageIn : class, IMessage<TMessageIn>
+
+        internal TMessageOut GetOrAddToCache<TMessageOut>(IQuery<TMessageOut> query, TimeSpan? absoluteExpiration, TimeSpan? slidingExpiration)            
             where TMessageOut : class, IMessage<TMessageOut>
         {            
             // First, an attempt is made to just read the result from cache, if allowed.            
-            if (policy.AllowCacheRead)
+            if (query.AllowCacheRead)
             {
                 CacheLock.EnterReadLock();
 
@@ -111,7 +110,7 @@ namespace System.ComponentModel.Server.Caching
                 {
                     object cachedResult;
 
-                    if (TryGetCacheEntry(message, out cachedResult))
+                    if (TryGetCacheEntry(query.MessageIn, out cachedResult))
                     {
                         return ((TMessageOut) cachedResult).Copy();
                     }
@@ -134,27 +133,27 @@ namespace System.ComponentModel.Server.Caching
                 // Otherwise, we have to remove or update the cache later.
                 object cachedMessageOut;
 
-                if (TryGetCacheEntry(message, out cachedMessageOut) && policy.AllowCacheRead)
+                if (TryGetCacheEntry(query.MessageIn, out cachedMessageOut) && query.AllowCacheRead)
                 {
                     return ((TMessageOut) cachedMessageOut).Copy();
                 }
 
                 // Since no cached value could be returned, we execute the query.
-                var messageOut = query.Execute(message);
+                var messageOut = query.Invoke();
 
                 // If we are allowed to store the result into cache, we update the cache.
                 // Otherwise, we remove any existing entry, since it has become stale.
-                if (policy.AllowCacheWrite && cachedMessageOut == null)
+                if (query.AllowCacheWrite && cachedMessageOut == null)
                 {
-                    InsertCacheEntryPostCommit(message.Copy(), messageOut.Copy(), policy.AbsoluteExpiration, policy.SlidingExpiration);
+                    InsertCacheEntryPostCommit(query.MessageIn.Copy(), messageOut.Copy(), absoluteExpiration, slidingExpiration);
                 }
-                else if (policy.AllowCacheWrite)
+                else if (query.AllowCacheWrite)
                 {
-                    UpdateCacheEntryPostCommit(message, messageOut.Copy(), policy.AbsoluteExpiration, policy.SlidingExpiration);
+                    UpdateCacheEntryPostCommit(query.MessageIn, messageOut.Copy(), absoluteExpiration, slidingExpiration);
                 }
                 else if (cachedMessageOut != null)
                 {
-                    DeleteCacheEntryPostCommit(message);
+                    DeleteCacheEntryPostCommit(query.MessageIn);
                 }
                 return messageOut;
             }

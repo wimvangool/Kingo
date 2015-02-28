@@ -91,18 +91,21 @@ namespace System.ComponentModel.Server
             }
         }
 
-        #endregion
+        #endregion        
 
         [TestMethod]
         public void Module_CreatesNewTransaction_IfOptionIsRequiredAndNoTransactionIsActive()
         {
             var messageSink = new TransactionSpy<DefaultMessage>();
             var message = new DefaultMessage();
-            var module = new TransactionScopeModule<DefaultMessage>(messageSink);
-            
-            Assert.IsNull(Transaction.Current);
-            module.Handle(message);
-            Assert.IsNull(Transaction.Current);
+            var handler = new MessageHandlerWrapper<DefaultMessage>(message, messageSink);
+
+            using (var module = new TransactionScopeModule())
+            {
+                Assert.IsNull(Transaction.Current);
+                module.Invoke(handler);
+                Assert.IsNull(Transaction.Current);
+            }
 
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWasNotNull();
@@ -113,19 +116,22 @@ namespace System.ComponentModel.Server
         public void Module_KeepsExistingTransaction_IfOptionIsRequiredAndTransactionIsAlreadyActive()
         {
             var messageSink = new TransactionSpy<RequiredMessage>();
-            var message = new RequiredMessage();            
-            var module = new TransactionScopeModule<RequiredMessage>(messageSink);
+            var message = new RequiredMessage();
+            var handler = new MessageHandlerWrapper<RequiredMessage>(message, messageSink);
 
             Transaction transaction;
 
-            using (var scope = new TransactionScope())
+            using (var module = new TransactionScopeModule())
             {
-                Assert.IsNotNull(transaction = Transaction.Current);
-                module.Handle(message);
-                Assert.AreSame(transaction, Transaction.Current);
+                using (var scope = new TransactionScope())
+                {
+                    Assert.IsNotNull(transaction = Transaction.Current);
+                    module.Invoke(handler);
+                    Assert.AreSame(transaction, Transaction.Current);
 
-                scope.Complete();
-            }            
+                    scope.Complete();
+                }
+            }
 
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWas(transaction);
@@ -137,15 +143,18 @@ namespace System.ComponentModel.Server
         public void Module_ThrowsException_IfSpecifiedIsolationLevelIsNotEqualToExistingIsolationLevel()
         {
             var messageSink = new TransactionSpy<DefaultMessage>();
-            var message = new DefaultMessage();            
-            var module = new TransactionScopeModule<DefaultMessage>(messageSink, TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted);
+            var message = new DefaultMessage();
+            var handler = new MessageHandlerWrapper<DefaultMessage>(message, messageSink);
 
-            using (var scope = new TransactionScope())
-            {                
-                module.Handle(message);                
+            using (var module = new TransactionScopeModule(TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted))
+            {
+                using (var scope = new TransactionScope())
+                {
+                    module.Invoke(handler);
 
-                scope.Complete();
-            }  
+                    scope.Complete();
+                }
+            }
         }
 
         [TestMethod]
@@ -153,19 +162,21 @@ namespace System.ComponentModel.Server
         {
             var messageSink = new TransactionSpy<RequiresNewMessage>();
             var message = new RequiresNewMessage();
+            var handler = new MessageHandlerWrapper<RequiresNewMessage>(message, messageSink);
+
             Transaction transaction;
 
-            IMessageHandler<RequiresNewMessage> module = new TransactionScopeModule<RequiresNewMessage>(messageSink);
-
-            using (var scope = new TransactionScope())
+            using (var module = new TransactionScopeModule())
             {
-                Assert.IsNotNull(transaction = Transaction.Current);
-                module.Handle(message);
-                Assert.AreSame(transaction, Transaction.Current);
+                using (var scope = new TransactionScope())
+                {
+                    Assert.IsNotNull(transaction = Transaction.Current);
+                    module.Invoke(handler);
+                    Assert.AreSame(transaction, Transaction.Current);
 
-                scope.Complete();                
+                    scope.Complete();
+                }
             }
-
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWasNot(transaction);
             messageSink.VerifyIsolationLevelWas(IsolationLevel.ReadCommitted);
@@ -175,16 +186,17 @@ namespace System.ComponentModel.Server
         public void Module_HidesTransaction_IfTransactionExistsAndMessageSuppressesTransaction()
         {
             var messageSink = new TransactionSpy<SuppressMessage>();
-            var message = new SuppressMessage();            
+            var message = new SuppressMessage();
+            var handler = new MessageHandlerWrapper<SuppressMessage>(message, messageSink);
 
-            IMessageHandler<SuppressMessage> module = new TransactionScopeModule<SuppressMessage>(messageSink);
-
-            using (var scope = new TransactionScope())
-            {                
-                module.Handle(message);             
-                scope.Complete();
+            using (var module = new TransactionScopeModule())
+            {
+                using (var scope = new TransactionScope())
+                {
+                    module.Invoke(handler);
+                    scope.Complete();
+                }
             }
-
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWasNull();            
         }

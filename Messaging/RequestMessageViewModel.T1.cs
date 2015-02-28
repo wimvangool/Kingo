@@ -123,7 +123,12 @@ namespace System.ComponentModel
 
         #endregion
 
-        #region [====== Message Copying ======]
+        #region [====== Copy ======]
+
+        IMessage IMessage.Copy()
+        {
+            return Copy(true);
+        }
 
         TMessage IMessage<TMessage>.Copy()
         {
@@ -158,7 +163,7 @@ namespace System.ComponentModel
 
         IEnumerable<TAttribute> IMessage.SelectAttributesOfType<TAttribute>()
         {
-            return MessageAttribute.SelectAttributesOfType<TAttribute>(GetType());
+            return Message.AttributesOfType<TAttribute>(GetType());
         }        
 
         #endregion

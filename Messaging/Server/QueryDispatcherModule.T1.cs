@@ -1,50 +1,50 @@
 ﻿namespace System.ComponentModel.Server
 {
-    internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : IMessageHandler<TMessageIn>
+    internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : IMessageHandler
         where TMessageIn : class, IMessage<TMessageIn>
         where TMessageOut : class, IMessage<TMessageOut>
     {
-        private readonly IQuery<TMessageIn, TMessageOut> _query;
-        private readonly QueryExecutionOptions _options;
+        private readonly IQuery<TMessageOut> _query;        
         private readonly MessageProcessor _processor;
 
-        internal QueryDispatcherModule(IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options, MessageProcessor processor)
+        internal QueryDispatcherModule(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options, MessageProcessor processor)
         {
-            if (query == null)
-            {
-                throw new ArgumentNullException("query");
-            }
-            _query = query;
-            _options = options;
+            _query = new QueryWrapper<TMessageIn, TMessageOut>(message, query, options);
             _processor = processor;
         }
 
-        internal TMessageOut Result
+        IMessage IMessageHandler.Message
+        {
+            get { return _query.MessageIn; }
+        }
+
+        internal TMessageOut MessageOut
         {
             get;
             private set;
         }
 
-        void IMessageHandler<TMessageIn>.Handle(TMessageIn message)
+        void IMessageHandler.Invoke()
         {
             _processor.MessagePointer.ThrowIfCancellationRequested();
 
             using (var scope = new UnitOfWorkScope(_processor.DomainEventBus))
             {
-                Result = Execute(message);
+                MessageOut = ExecuteQuery();
 
                 scope.Complete();
             }
             _processor.MessagePointer.ThrowIfCancellationRequested();
         }
 
-        private TMessageOut Execute(TMessageIn message)
+        private TMessageOut ExecuteQuery()
         {
-            var result = _processor.CreateQueryPipeline<TMessageIn, TMessageOut>(_options).CreateQueryPipeline(_query).Execute(message);
+            var pipeline = _processor.QueryPipeline.ConnectTo(_query);
+            var messageOut = pipeline.Invoke();
 
             _processor.MessagePointer.ThrowIfCancellationRequested();
 
-            return result;
-        }
+            return messageOut;
+        }        
     }
 }

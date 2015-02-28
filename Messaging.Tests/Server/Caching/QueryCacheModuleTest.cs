@@ -118,11 +118,11 @@ namespace System.ComponentModel.Server.Caching
 
         #endregion
 
-        #region [====== DictionaryCacheManager ======]
+        #region [====== DictionaryCacheModule ======]
 
-        private sealed class DictionaryCacheProvider : QueryCacheProvider
+        private sealed class DictionaryCacheModule : QueryCacheModule
         {            
-            public DictionaryCacheProvider() : base(LockRecursionPolicy.NoRecursion) { }            
+            public DictionaryCacheModule() : base(LockRecursionPolicy.NoRecursion) { }            
 
             protected override bool TryGetApplicationCacheFactory(out IQueryCacheManagerFactory applicationCacheFactory)
             {
@@ -140,18 +140,18 @@ namespace System.ComponentModel.Server.Caching
 
         private sealed class DictionaryCacheManager : QueryCacheManager
         {
-            private readonly DictionaryCacheProvider _cacheProvider;
+            private readonly DictionaryCacheModule _cacheModule;
             private readonly Dictionary<object, object> _cache;
 
-            internal DictionaryCacheManager(DictionaryCacheProvider cacheProvider, Dictionary<object, object> cache) : base(LockRecursionPolicy.NoRecursion)
+            internal DictionaryCacheManager(DictionaryCacheModule cacheModule, Dictionary<object, object> cache) : base(LockRecursionPolicy.NoRecursion)
             {
-                _cacheProvider = cacheProvider;
+                _cacheModule = cacheModule;
                 _cache = cache;
             }            
 
-            protected override QueryCacheProvider CacheProvider
+            protected override QueryCacheModule CacheProvider
             {
-                get { return _cacheProvider; }
+                get { return _cacheModule; }
             }
 
             protected override bool TryGetCacheEntry(object messageIn, out object messageOut)
@@ -188,69 +188,72 @@ namespace System.ComponentModel.Server.Caching
 
         private sealed class DictionaryCacheManagerFactory : QueryCacheManagerFactory<Dictionary<object, object>>
         {
-            private readonly DictionaryCacheProvider _cacheProvider;
+            private readonly DictionaryCacheModule _cacheModule;
 
-            internal DictionaryCacheManagerFactory(Dictionary<object, object> cache, DictionaryCacheProvider cacheProvider)
+            internal DictionaryCacheManagerFactory(Dictionary<object, object> cache, DictionaryCacheModule cacheModule)
                 : base(cache)
             {
-                _cacheProvider = cacheProvider;
+                _cacheModule = cacheModule;
             }
 
             public override QueryCacheManager CreateCacheManager()
             {
-                return new DictionaryCacheManager(_cacheProvider, Cache);
+                return new DictionaryCacheManager(_cacheModule, Cache);
             }
         }
 
         #endregion     
 
-        private DictionaryCacheProvider _cacheProvider;
+        private DictionaryCacheModule _cacheModule;
 
         [TestInitialize]
         public void Setup()
         {
-            _cacheProvider = new DictionaryCacheProvider();
+            _cacheModule = new DictionaryCacheModule();
+        }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+            _cacheModule.Dispose();
         }
         
         [TestMethod]
         public void Module_ExecutesQuery_IfQueryCacheOptionsAttributeHasNotBeenSpecified()
-        {            
-            var message = new NonCachedMessage();
-            var query = new QuerySpy<NonCachedMessage>();
+        {                        
+            var querySpy = new QuerySpy<NonCachedMessage>();
+            var query = new QueryWrapper<NonCachedMessage, ResponseMessage>(new NonCachedMessage(), querySpy, QueryExecutionOptions.Default);
 
-            var module = new QueryCacheModule<NonCachedMessage, ResponseMessage>(query, QueryExecutionOptions.Default, _cacheProvider);
-            var result = module.Execute(message);
+            var result = _cacheModule.GetOrAddToApplicationCache(query, null, null);
 
-            Assert.AreEqual(1, query.InvocationCount);
-            Assert.AreEqual(query.LastResult, result.Value);
+            Assert.AreEqual(1, querySpy.InvocationCount);
+            Assert.AreEqual(querySpy.LastResult, result.Value);
         }
 
         [TestMethod]
         public void Module_ExecutesQuery_IfResultWasNotFoundInCache()
         {
-            var message = new CachedMessage();
-            var query = new QuerySpy<CachedMessage>();
+            var querySpy = new QuerySpy<CachedMessage>();
+            var query = new QueryWrapper<CachedMessage, ResponseMessage>(new CachedMessage(), querySpy, QueryExecutionOptions.Default);            
 
-            var module = new QueryCacheModule<CachedMessage, ResponseMessage>(query, QueryExecutionOptions.Default, _cacheProvider);
-            var result = module.Execute(message);
+            var result = _cacheModule.GetOrAddToApplicationCache(query, null, null);
 
-            Assert.AreEqual(1, query.InvocationCount);
-            Assert.AreEqual(query.LastResult, result.Value);
+            Assert.AreEqual(1, querySpy.InvocationCount);
+            Assert.AreEqual(querySpy.LastResult, result.Value);
         }
 
         [TestMethod]
         public void Module_RetrievesResultFromCache_IfResultHasBeenCached()
         {
-            var message = new CachedMessage();
-            var query = new QuerySpy<CachedMessage>();
+            var querySpy = new QuerySpy<CachedMessage>();
+            var query = new QueryWrapper<CachedMessage, ResponseMessage>(new CachedMessage(), querySpy, QueryExecutionOptions.Default);
 
-            var module = new QueryCacheModule<CachedMessage, ResponseMessage>(query, QueryExecutionOptions.Default, _cacheProvider);
-            var resultOne = module.Execute(message);
-            var resultTwo = module.Execute(message);            
+            var resultOne = _cacheModule.GetOrAddToApplicationCache(query, null, null);
+            var resultTwo = _cacheModule.GetOrAddToApplicationCache(query, null, null);           
 
-            Assert.AreEqual(1, query.InvocationCount);
-            Assert.AreEqual(resultOne.Value, resultTwo.Value);
-            Assert.AreEqual(query.LastResult, resultOne.Value);
+            Assert.AreEqual(1, querySpy.InvocationCount);            
+            Assert.AreEqual(querySpy.LastResult, resultOne.Value);
+            Assert.AreEqual(querySpy.LastResult, resultTwo.Value);
         }
     }
 }

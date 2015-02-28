@@ -71,13 +71,13 @@ namespace System.ComponentModel.Server.Caching
         #endregion
 
         private static readonly TimeSpan _ExpirationTimerLockWaitTimeout = TimeSpan.FromMilliseconds(5);
-        private readonly AspNetCacheProvider _cacheProvider;
+        private readonly AspNetCacheModule _cacheModule;
         private readonly Dictionary<object, AspNetCacheEntry> _cacheEntryKeys;
         private readonly Timer _cacheEntryExpirationTimer;
 
-        protected AspNetCacheManager(AspNetCacheProvider cacheProvider) : base(LockRecursionPolicy.NoRecursion)
+        protected AspNetCacheManager(AspNetCacheModule cacheModule) : base(LockRecursionPolicy.NoRecursion)
         {
-            _cacheProvider = cacheProvider;
+            _cacheModule = cacheModule;
             _cacheEntryKeys = new Dictionary<object, AspNetCacheEntry>();
             _cacheEntryExpirationTimer = new Timer(TimeSpan.FromSeconds(5).TotalMilliseconds);
             _cacheEntryExpirationTimer.AutoReset = true;
@@ -85,9 +85,9 @@ namespace System.ComponentModel.Server.Caching
             _cacheEntryExpirationTimer.Start();
         }
 
-        protected override QueryCacheProvider CacheProvider
+        protected override QueryCacheModule CacheProvider
         {
-            get { return _cacheProvider; }
+            get { return _cacheModule; }
         }
 
         protected override void Dispose(bool disposing)

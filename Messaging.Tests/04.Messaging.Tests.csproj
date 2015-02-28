@@ -90,10 +90,10 @@
     <Compile Include="Server\MessageHandlerSpy.cs" />
     <Compile Include="Server\MessageProcessorBusTest.cs" />
     <Compile Include="Server\MessageProcessorStub.cs" />
-    <Compile Include="Server\Caching\AspNetCacheProviderTest.cs" />
-    <Compile Include="Server\Caching\MemoryCacheProviderTest.cs" />
-    <Compile Include="Server\MessageValidationPipelineTest.cs" />
-    <Compile Include="Server\Caching\ObjectCacheProviderTest.cs" />
+    <Compile Include="Server\Caching\AspNetCacheModuleTest.cs" />
+    <Compile Include="Server\Caching\MemoryCacheModuleTest.cs" />
+    <Compile Include="Server\MessageValidationModuleTest.cs" />
+    <Compile Include="Server\Caching\ObjectCacheModuleTest.cs" />
     <Compile Include="Server\Caching\QueryCacheModuleTest.cs" />
     <Compile Include="Server\TransactionScopeModuleTest.cs" />
     <Compile Include="StopwatchClockTest.cs" />

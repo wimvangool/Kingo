@@ -5,18 +5,18 @@ using System.Web.SessionState;
 namespace System.ComponentModel.Server.Caching
 {
     /// <summary>
-    /// Represents a <see cref="ObjectCacheProvider" /> implementation that is based on ASP.NET's
+    /// Represents a <see cref="ObjectCacheModule" /> implementation that is based on ASP.NET's
     /// <see cref="HttpApplicationState" /> and <see cref="HttpSessionState" /> instances.
     /// </summary>
-    public class AspNetCacheProvider : QueryCacheProvider
+    public class AspNetCacheModule : QueryCacheModule
     {        
         /// <summary>
-        /// Initializes a new instance of the <see cref="AspNetCacheProvider" /> class.
+        /// Initializes a new instance of the <see cref="AspNetCacheModule" /> class.
         /// </summary>
         /// <param name="recursionPolicy">
-        /// The lock recursion policy that is used for the <see cref="QueryCacheProvider.CacheManagerLock" />.
+        /// The lock recursion policy that is used for the <see cref="QueryCacheModule.CacheManagerLock" />.
         /// </param>
-        public AspNetCacheProvider(LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion)
+        public AspNetCacheModule(LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion)
             : base(recursionPolicy) { }
 
         /// <inheritdoc />

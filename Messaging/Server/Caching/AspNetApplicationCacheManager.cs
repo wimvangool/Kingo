@@ -8,17 +8,17 @@ namespace System.ComponentModel.Server.Caching
 
         private sealed class ApplicationCacheManagerFactory : QueryCacheManagerFactory<HttpApplicationState>
         {
-            private readonly AspNetCacheProvider _cacheProvider;
+            private readonly AspNetCacheModule _cacheModule;
 
-            internal ApplicationCacheManagerFactory(HttpApplicationState cache, AspNetCacheProvider cacheProvider)
+            internal ApplicationCacheManagerFactory(HttpApplicationState cache, AspNetCacheModule cacheModule)
                 : base(cache)
             {
-                _cacheProvider = cacheProvider;
+                _cacheModule = cacheModule;
             }
 
             public override QueryCacheManager CreateCacheManager()
             {
-                return new AspNetApplicationCacheManager(_cacheProvider, Cache);
+                return new AspNetApplicationCacheManager(_cacheModule, Cache);
             }
         }
 
@@ -26,8 +26,8 @@ namespace System.ComponentModel.Server.Caching
 
         private readonly HttpApplicationState _cache;
 
-        private AspNetApplicationCacheManager(AspNetCacheProvider cacheProvider, HttpApplicationState cache)
-            : base(cacheProvider)
+        private AspNetApplicationCacheManager(AspNetCacheModule cacheModule, HttpApplicationState cache)
+            : base(cacheModule)
         {
             _cache = cache;
         }        
@@ -57,7 +57,7 @@ namespace System.ComponentModel.Server.Caching
             _cache.Remove(key);
         }        
 
-        internal static bool TryCreateFactory(AspNetCacheProvider cacheProvider, out IQueryCacheManagerFactory cacheManagerFactory)
+        internal static bool TryCreateFactory(AspNetCacheModule cacheModule, out IQueryCacheManagerFactory cacheManagerFactory)
         {
             var httpContext = HttpContext.Current;
             if (httpContext == null)
@@ -65,7 +65,7 @@ namespace System.ComponentModel.Server.Caching
                 cacheManagerFactory = null;
                 return false;
             }            
-            cacheManagerFactory = new ApplicationCacheManagerFactory(httpContext.Application, cacheProvider);
+            cacheManagerFactory = new ApplicationCacheManagerFactory(httpContext.Application, cacheModule);
             return true;
         }
     }

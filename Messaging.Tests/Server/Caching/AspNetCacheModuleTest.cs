@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel.Server.Caching
 {
     [TestClass]
-    public sealed class AspNetCacheProviderTest
+    public sealed class AspNetCacheModuleTest
     {
         #region [====== Nested Types ======]
 
@@ -179,7 +179,7 @@ namespace System.ComponentModel.Server.Caching
             }
         }
 
-        private sealed class AspNetCacheProviderSpy : AspNetCacheProvider
+        private sealed class AspNetCacheProviderSpy : AspNetCacheModule
         {
             private readonly ManualResetEventSlim _evictionHandle;
 
@@ -228,7 +228,7 @@ namespace System.ComponentModel.Server.Caching
         #endregion
 
         private RequestMessage _message;
-        private Query _query;
+        private Query _querySpy;
         private AspNetCacheProviderSpy _provider;
         private HttpContextScope _httpContextScope;
 
@@ -236,7 +236,7 @@ namespace System.ComponentModel.Server.Caching
         public void Setup()
         {
             _message = new RequestMessage();
-            _query = new Query();
+            _querySpy = new Query();
             _provider = new AspNetCacheProviderSpy();
             _httpContextScope = new HttpContextScope();
         }
@@ -248,14 +248,19 @@ namespace System.ComponentModel.Server.Caching
             _provider.Dispose();
         }
 
+        private IQuery<ResponseMessage> CreateQuery()
+        {
+            return new QueryWrapper<RequestMessage, ResponseMessage>(_message, _querySpy, QueryExecutionOptions.Default);
+        }
+            
         [TestMethod]
         public void GetOrAddToSessionCache_ReturnsCachedResult_IfResultWasCachedForCurrentSession()
         {
-            var policy = CreateCachePolicy();
-            var resultOne = _provider.GetOrAddToSessionCache(_message, _query, policy);
-            var resultTwo = _provider.GetOrAddToSessionCache(_message, _query, policy);
+            var query = CreateQuery();
+            var resultOne = _provider.GetOrAddToSessionCache(query, null, null);
+            var resultTwo = _provider.GetOrAddToSessionCache(query, null, null);
 
-            _query.VerifyThatInvocationCountIs(1);
+            _querySpy.VerifyThatInvocationCountIs(1);
 
             Assert.IsNotNull(resultOne);
             Assert.IsNotNull(resultTwo);
@@ -266,15 +271,15 @@ namespace System.ComponentModel.Server.Caching
         [TestMethod]
         public void GetOrAddToSessionCache_DoesNotReturnCachedResult_IfResultWasCachedForAnotherSession()
         {
-            var policy = CreateCachePolicy();
-            var resultOne = _provider.GetOrAddToSessionCache(_message, _query, policy);
+            var query = CreateQuery();
+            var resultOne = _provider.GetOrAddToSessionCache(query, null, null);
 
             using (new HttpContextScope())
             {
-                var resultTwo = _provider.GetOrAddToSessionCache(_message, _query, policy);
-                var resultThree = _provider.GetOrAddToSessionCache(_message, _query, policy);
+                var resultTwo = _provider.GetOrAddToSessionCache(query, null, null);
+                var resultThree = _provider.GetOrAddToSessionCache(query, null, null);
 
-                _query.VerifyThatInvocationCountIs(2);
+                _querySpy.VerifyThatInvocationCountIs(2);
 
                 Assert.AreNotSame(resultOne, resultTwo);
                 Assert.AreNotSame(resultTwo, resultThree);
@@ -296,51 +301,59 @@ namespace System.ComponentModel.Server.Caching
 
         [TestMethod]
         public void CacheItem_IsRemovedAfterSpecifiedPeriod_IfAbsoluteExpirationIsSet()
-        {            
-            ResponseMessage resultOne = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy(TimeSpan.FromSeconds(5)));
+        {
+            var query = CreateQuery();
+
+            var resultOne = _provider.GetOrAddToApplicationCache(query, TimeSpan.FromSeconds(5), null);
 
             _provider.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
 
-            ResponseMessage resultTwo = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+            var resultTwo = _provider.GetOrAddToApplicationCache(query, null, null);
 
-            _query.VerifyThatInvocationCountIs(2);
-            _query.VerifyLastResultIs(resultOne);
-            _query.VerifyLastResultIs(resultTwo);            
+            _querySpy.VerifyThatInvocationCountIs(2);
+            _querySpy.VerifyLastResultIs(resultOne);
+            _querySpy.VerifyLastResultIs(resultTwo);            
         }
 
         [TestMethod]
         public void CacheItem_IsRemovedAfterSpecifiedPeriod_IfSlidingExpirationIsSet()
-        {            
-            ResponseMessage resultOne = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy(null, TimeSpan.FromSeconds(5)));
+        {
+            var query = CreateQuery();
+
+            var resultOne = _provider.GetOrAddToApplicationCache(query, null, TimeSpan.FromSeconds(5));
 
             _provider.WaitForCacheItemEviction(TimeSpan.FromSeconds(30));
 
-            ResponseMessage resultTwo = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+            var resultTwo = _provider.GetOrAddToApplicationCache(query, null, null);
 
-            _query.VerifyThatInvocationCountIs(2);
-            _query.VerifyLastResultIs(resultOne);
-            _query.VerifyLastResultIs(resultTwo);            
+            _querySpy.VerifyThatInvocationCountIs(2);
+            _querySpy.VerifyLastResultIs(resultOne);
+            _querySpy.VerifyLastResultIs(resultTwo);            
         }
 
         [TestMethod]
         public void CacheItem_IsRemoved_IfItemIsInvalidatedManuallyAndNoTransactionIsActive()
-        {            
-            ResponseMessage resultOne = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+        {
+            var query = CreateQuery();
+
+            var resultOne = _provider.GetOrAddToApplicationCache(query, null, null);
 
             _provider.InvalidateIfRequired<RequestMessage>(message => true);
             _provider.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
 
-            ResponseMessage resultTwo = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+            var resultTwo = _provider.GetOrAddToApplicationCache(query, null, null);
 
-            _query.VerifyThatInvocationCountIs(2);
-            _query.VerifyLastResultIs(resultOne);
-            _query.VerifyLastResultIs(resultTwo);            
+            _querySpy.VerifyThatInvocationCountIs(2);
+            _querySpy.VerifyLastResultIs(resultOne);
+            _querySpy.VerifyLastResultIs(resultTwo);            
         }
 
         [TestMethod]
         public void CacheItem_IsRemoved_IfItemIsInvalidatedManuallyAndTransactionCommits()
-        {            
-            ResponseMessage resultOne = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+        {
+            var query = CreateQuery();
+
+            var resultOne = _provider.GetOrAddToApplicationCache(query, null, null);
 
             using (var transactionScope = new TransactionScope())
             {
@@ -350,17 +363,19 @@ namespace System.ComponentModel.Server.Caching
             }
             _provider.WaitForCacheItemEviction(TimeSpan.FromSeconds(10));
 
-            ResponseMessage resultTwo = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+            var resultTwo = _provider.GetOrAddToApplicationCache(query, null, null);
 
-            _query.VerifyThatInvocationCountIs(2);
-            _query.VerifyLastResultIs(resultOne);
-            _query.VerifyLastResultIs(resultTwo);            
+            _querySpy.VerifyThatInvocationCountIs(2);
+            _querySpy.VerifyLastResultIs(resultOne);
+            _querySpy.VerifyLastResultIs(resultTwo);            
         }
 
         [TestMethod]
         public void CacheItem_IsNotRemoved_IfItemIsInvalidatedManuallyAndTransactionDoesNotCommit()
-        {            
-            ResponseMessage resultOne = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+        {
+            var query = CreateQuery();
+
+            var resultOne = _provider.GetOrAddToApplicationCache(query, null, null);
 
             using (new TransactionScope())
             {
@@ -368,17 +383,12 @@ namespace System.ComponentModel.Server.Caching
             }
             _provider.WaitForCacheItemEviction(TimeSpan.FromSeconds(10), false);
 
-            ResponseMessage resultTwo = _provider.GetOrAddToApplicationCache(_message, _query, CreateCachePolicy());
+            var resultTwo = _provider.GetOrAddToApplicationCache(query, null, null);
 
-            _query.VerifyThatInvocationCountIs(1);
-            _query.VerifyLastResultIs(resultOne);
-            _query.VerifyLastResultIs(resultTwo);            
-        }
-
-        private static QueryCachePolicy CreateCachePolicy(TimeSpan? absoluteExpiration = null, TimeSpan? slidingExpiration = null)
-        {
-            return new QueryCachePolicy(QueryExecutionOptions.Default, absoluteExpiration, slidingExpiration);
-        }
+            _querySpy.VerifyThatInvocationCountIs(1);
+            _querySpy.VerifyLastResultIs(resultOne);
+            _querySpy.VerifyLastResultIs(resultTwo);            
+        }       
 
         #endregion
     }
