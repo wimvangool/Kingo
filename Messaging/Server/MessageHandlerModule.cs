@@ -5,15 +5,24 @@
     /// </summary>
     public abstract class MessageHandlerModule : IMessageHandlerModule
     {
+        private readonly DisposeLock _disposeLock;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageHandlerModule" /> class.
+        /// </summary>
+        protected MessageHandlerModule()
+        {
+            _disposeLock = new DisposeLock(this);
+        }
+
         #region [====== Dispose ======]
 
         /// <summary>
-        /// Indicates whether not this instance has been disposed.
+        /// Returns the lock that is used to manage safe disposal of this instance.
         /// </summary>
-        protected bool IsDisposed
+        protected IDisposeLock DisposeLock
         {
-            get;
-            private set;
+            get { return _disposeLock; }
         }
 
         /// <summary>
@@ -21,8 +30,16 @@
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            _disposeLock.EnterDispose();
 
+            try
+            {
+                Dispose(true);
+            }
+            finally
+            {
+                _disposeLock.ExitDispose();
+            }            
             GC.SuppressFinalize(this);
         }
 
@@ -37,42 +54,27 @@
         /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
         /// Otherwise, only unmanaged resources will be released.
         /// </remarks>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-            if (disposing)
-            {
-                // Dispose managed resources here...
-            }
-            IsDisposed = true;
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="ObjectDisposedException" />.
-        /// </summary>
-        /// <returns>A new <see cref="ObjectDisposedException" />.</returns>
-        protected ObjectDisposedException NewObjectDisposedException()
-        {
-            return new ObjectDisposedException(GetType().Name);
-        }
+        protected virtual void Dispose(bool disposing) { }     
 
         #endregion
 
         /// <inheritdoc />
         public void Invoke(IMessageHandler handler)
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
+        {            
             if (handler == null)
             {
                 throw new ArgumentNullException("handler");
             }
-            InvokeHandler(handler);
+            DisposeLock.EnterMethod();
+
+            try
+            {
+                InvokeHandler(handler);
+            }
+            finally
+            {
+                DisposeLock.ExitMethod();
+            }            
         }
 
         /// <summary>

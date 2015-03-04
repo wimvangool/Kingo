@@ -26,7 +26,7 @@ namespace System.ComponentModel.Server.Caching
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            if (IsDisposed)
+            if (DisposeLock.IsDisposed)
             {
                 return;
             }

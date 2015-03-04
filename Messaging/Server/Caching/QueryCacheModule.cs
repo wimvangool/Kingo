@@ -30,7 +30,7 @@ namespace System.ComponentModel.Server.Caching
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            if (IsDisposed)
+            if (DisposeLock.IsDisposed)
             {
                 return;
             }
@@ -168,15 +168,25 @@ namespace System.ComponentModel.Server.Caching
 
         /// <inheritdoc />      
         public void InvalidateIfRequired<TMessageIn>(Func<TMessageIn, bool> mustInvalidate) where TMessageIn : class
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
+        {            
             if (mustInvalidate == null)
             {
                 throw new ArgumentNullException("mustInvalidate");
             }
+            DisposeLock.EnterMethod();
+
+            try
+            {
+                InvalidateIfRequiredCore(mustInvalidate);
+            }
+            finally
+            {
+                DisposeLock.ExitMethod();
+            }
+        }
+
+        private void InvalidateIfRequiredCore<TMessageIn>(Func<TMessageIn, bool> mustInvalidate) where TMessageIn : class
+        {
             CacheManagerLock.EnterReadLock();
 
             try

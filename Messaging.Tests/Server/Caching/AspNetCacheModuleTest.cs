@@ -190,7 +190,7 @@ namespace System.ComponentModel.Server.Caching
 
             protected override void Dispose(bool disposing)
             {
-                if (IsDisposed)
+                if (DisposeLock.IsDisposed)
                 {
                     return;
                 }

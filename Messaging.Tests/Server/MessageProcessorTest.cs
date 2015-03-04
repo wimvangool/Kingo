@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Server.SampleApplication.Messages;
 using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace System.ComponentModel.Server
 {    
@@ -180,13 +181,16 @@ namespace System.ComponentModel.Server
 
         [TestMethod]
         public void Processor_ReturnsQueryResult_IfQueryExecutesCorrectly()
-        {
-            var requestMessage = new BasicMessage<long>(Clock.Current.UtcDateAndTime().Ticks);
-            var responseMessage = Processor.Execute(requestMessage, msg => new BasicMessage<long>(msg.Value));
+        {            
+            using (var processor = new MessageProcessor())
+            {
+                var requestMessage = new BasicMessage<long>(Clock.Current.UtcDateAndTime().Ticks);
+                var responseMessage = processor.Execute(requestMessage, msg => new BasicMessage<long>(msg.Value));
 
-            Assert.IsNotNull(responseMessage);
-            Assert.AreNotSame(requestMessage, responseMessage);
-            Assert.AreEqual(requestMessage, responseMessage);
+                Assert.IsNotNull(responseMessage);
+                Assert.AreNotSame(requestMessage, responseMessage);
+                Assert.AreEqual(requestMessage, responseMessage);
+            }
         }
 
         #endregion

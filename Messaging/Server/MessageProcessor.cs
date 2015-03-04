@@ -12,7 +12,9 @@ namespace System.ComponentModel.Server
     /// Represents a handler of arbitrary messages.
     /// </summary>    
     public class MessageProcessor : IMessageProcessor
-    {        
+    {
+        private readonly DisposeLock _disposeLock;
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                 
         private readonly IMessageProcessorBus _domainEventBus;
@@ -24,8 +26,9 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
         /// </summary>        
-        protected MessageProcessor()
+        public MessageProcessor()
         {           
+            _disposeLock = new DisposeLock(this);
             _currentMessagePointer = new ThreadLocal<MessagePointer>();
             _domainEventBus = new MessageProcessorBus(this);
             
@@ -52,12 +55,11 @@ namespace System.ComponentModel.Server
         #region [====== Dispose ======]
 
         /// <summary>
-        /// Indicates whether not this instance has been disposed.
+        /// Returns the lock that is used to manage safe disposal of this instance.
         /// </summary>
-        protected bool IsDisposed
+        protected IDisposeLock DisposeLock
         {
-            get;
-            private set;
+            get { return _disposeLock; }
         }
 
         /// <summary>
@@ -65,8 +67,16 @@ namespace System.ComponentModel.Server
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            _disposeLock.EnterDispose();
 
+            try
+            {
+                Dispose(true);
+            }
+            finally
+            {
+                _disposeLock.ExitDispose();
+            }            
             GC.SuppressFinalize(this);
         }
 
@@ -83,7 +93,7 @@ namespace System.ComponentModel.Server
         /// </remarks>
         protected virtual void Dispose(bool disposing)
         {
-            if (IsDisposed)
+            if (DisposeLock.IsDisposed)
             {
                 return;
             }
@@ -101,18 +111,8 @@ namespace System.ComponentModel.Server
                 {
                     _queryPipeline.Value.Dispose();
                 }
-            }
-            IsDisposed = true;
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="ObjectDisposedException" />.
-        /// </summary>
-        /// <returns>A new <see cref="ObjectDisposedException" />.</returns>
-        protected ObjectDisposedException NewObjectDisposedException()
-        {
-            return new ObjectDisposedException(GetType().Name);
-        }
+            }            
+        }        
 
         #endregion
 
@@ -182,31 +182,36 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />
         public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            var callerContext = SynchronizationContext.Current;
+            DisposeLock.EnterMethod();
 
-            return Start(() =>
+            try
+            {                
+                var callerContext = SynchronizationContext.Current;
+
+                return Start(() =>
+                {
+                    var previousContext = SynchronizationContext.Current;
+
+                    SynchronizationContext.SetSynchronizationContext(callerContext);
+
+                    try
+                    {
+                        Handle(message, handler, validator, token);
+                    }
+                    finally
+                    {
+                        SynchronizationContext.SetSynchronizationContext(previousContext);
+                    }
+                }, message.GetType(), token);
+            }
+            finally
             {
-                var previousContext = SynchronizationContext.Current;
-
-                SynchronizationContext.SetSynchronizationContext(callerContext);
-
-                try
-                {
-                    Handle(message, handler, validator, token);
-                }
-                finally
-                {
-                    SynchronizationContext.SetSynchronizationContext(previousContext);
-                }                
-            }, message.GetType(), token);
+                DisposeLock.ExitMethod();
+            }            
         }
 
         /// <inheritdoc />
@@ -223,15 +228,11 @@ namespace System.ComponentModel.Server
 
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
+        {            
             if (message == null)
             {
                 throw new ArgumentNullException("message");
-            }
+            }            
             PushMessage(ref message, token);
 
             try
@@ -263,32 +264,37 @@ namespace System.ComponentModel.Server
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
+        {            
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            var callerContext = SynchronizationContext.Current;
+            DisposeLock.EnterMethod();
 
-            return Start(() =>
+            try
             {
-                var previousContext = SynchronizationContext.Current;
+                var callerContext = SynchronizationContext.Current;
 
-                SynchronizationContext.SetSynchronizationContext(callerContext);
+                return Start(() =>
+                {
+                    var previousContext = SynchronizationContext.Current;
 
-                try
-                {
-                    return Execute(message, query, validator, options, token);
-                }
-                finally
-                {
-                    SynchronizationContext.SetSynchronizationContext(previousContext);
-                }                
-            }, message.GetType(), token);
+                    SynchronizationContext.SetSynchronizationContext(callerContext);
+
+                    try
+                    {
+                        return Execute(message, query, validator, options, token);
+                    }
+                    finally
+                    {
+                        SynchronizationContext.SetSynchronizationContext(previousContext);
+                    }
+                }, message.GetType(), token);
+            }
+            finally
+            {
+                DisposeLock.ExitMethod();
+            }            
         }
 
         /// <inheritdoc />
@@ -303,11 +309,7 @@ namespace System.ComponentModel.Server
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
+        {            
             if (message == null)
             {
                 throw new ArgumentNullException("message");
@@ -333,7 +335,9 @@ namespace System.ComponentModel.Server
         #region [====== Pipeline Factories ======]
 
         private void PushMessage<TMessage>(ref TMessage message, CancellationToken? token) where TMessage : class, IMessage<TMessage>
-        {                                    
+        {                   
+            DisposeLock.EnterMethod();
+     
             MessagePointer = MessagePointer == null ?
                 new MessagePointer(message = message.Copy(), token) :
                 MessagePointer.CreateChildPointer(message = message.Copy(), token);                        
@@ -342,6 +346,8 @@ namespace System.ComponentModel.Server
         private void PopMessage()
         {
             MessagePointer = MessagePointer.ParentPointer;
+
+            DisposeLock.ExitMethod();
         }               
 
         private MessageHandlerPipeline CreateGenericMessageHandlerPipeline()

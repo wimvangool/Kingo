@@ -142,6 +142,33 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot exit the Dispose() method because the thread has not invoked EnterDispose() on the lock..
+        /// </summary>
+        internal static string DisposeLock_EnterDisposeNotInvoked {
+            get {
+                return ResourceManager.GetString("DisposeLock_EnterDisposeNotInvoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot exit the method because the current thread has not invoked EnterMethod() on the lock..
+        /// </summary>
+        internal static string DisposeLock_EnterMethodNotInvoked {
+            get {
+                return ResourceManager.GetString("DisposeLock_EnterMethodNotInvoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot exit the Dispose() method because the current thread still hasn&apos;t exitted an instance method..
+        /// </summary>
+        internal static string DisposeLock_ExitMethodNotInvoked {
+            get {
+                return ResourceManager.GetString("DisposeLock_ExitMethodNotInvoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
         /// </summary>
         internal static string DomainModelException_CommandFailed {

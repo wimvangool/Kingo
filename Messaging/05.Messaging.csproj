@@ -69,6 +69,12 @@
     <Compile Include="Client\QueryDelegate.T1.cs" />
     <Compile Include="Client\QueryDelegate.T2.cs" />
     <Compile Include="Client\RequestMessage.cs" />
+    <Compile Include="DisposeLock.cs" />
+    <Compile Include="DisposeLockActiveState.cs" />
+    <Compile Include="DisposeLockDisposedState.cs" />
+    <Compile Include="DisposeLockDisposingState.cs" />
+    <Compile Include="DisposeLockState.cs" />
+    <Compile Include="IDisposeLock.cs" />
     <Compile Include="IMessage.cs" />
     <Compile Include="IMessageValidator.T1.cs" />
     <Compile Include="Server\IQuery.T1.cs" />

@@ -201,4 +201,13 @@
   <data name="MessageOut_InvalidMessageType" xml:space="preserve">
     <value>A module in the query execution pipeline returned an invalid result. Expected result of type '{0}' but was '{1}'.</value>
   </data>
+  <data name="DisposeLock_EnterDisposeNotInvoked" xml:space="preserve">
+    <value>Cannot exit the Dispose() method because the thread has not invoked EnterDispose() on the lock.</value>
+  </data>
+  <data name="DisposeLock_ExitMethodNotInvoked" xml:space="preserve">
+    <value>Cannot exit the Dispose() method because the current thread still hasn't exitted an instance method.</value>
+  </data>
+  <data name="DisposeLock_EnterMethodNotInvoked" xml:space="preserve">
+    <value>Cannot exit the method because the current thread has not invoked EnterMethod() on the lock.</value>
+  </data>
 </root>
