@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.Messaging.TestEngine", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Client.Tests", "Messaging.Client.Tests\02.Messaging.Client.Tests.csproj", "{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Client.WpfApplication", "Messaging.Client.WpfApplication\01.Messaging.Client.WpfApplication.csproj", "{2DEC2193-16A6-4F74-87B0-44096BBB0A26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Client.DataVirtualizationDemo", "Messaging.Client.DataVirtualizationDemo\01.Messaging.Client.DataVirtualizationDemo.csproj", "{2DEC2193-16A6-4F74-87B0-44096BBB0A26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D.ServiceTemplate", "D.ServiceTemplate", "{7B278F57-E6AB-42F6-8EE4-A17D334981AC}"
 EndProject

@@ -5,11 +5,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("System.ComponentModel.WpfApplication")]
+[assembly: AssemblyTitle("System.ComponentModel.Client")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Info Support")]
-[assembly: AssemblyProduct("System.ComponentModel.WpfApplication")]
+[assembly: AssemblyProduct("System.ComponentModel.Client")]
 [assembly: AssemblyCopyright("Copyright © Info Support 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

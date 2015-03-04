@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace System.ComponentModel.WpfApplication.Shell
+namespace System.ComponentModel.Client.Shell
 {
     public sealed class VirtualCollectionItemTemplateSelector : DataTemplateSelector
     {

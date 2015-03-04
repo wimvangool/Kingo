@@ -7,8 +7,8 @@
     <ProjectGuid>{2DEC2193-16A6-4F74-87B0-44096BBB0A26}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel.WpfApplication</RootNamespace>
-    <AssemblyName>System.ComponentModel.Messaging.WpfApplication</AssemblyName>
+    <RootNamespace>System.ComponentModel.Client</RootNamespace>
+    <AssemblyName>System.ComponentModel.Messaging.Client.DataVirtualizationDemo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

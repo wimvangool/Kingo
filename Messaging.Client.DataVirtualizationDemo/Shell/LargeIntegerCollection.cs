@@ -8,7 +8,7 @@ using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.WpfApplication.Shell
+namespace System.ComponentModel.Client.Shell
 {
     internal sealed class LargeIntegerCollection : VirtualCollection<int>
     {        

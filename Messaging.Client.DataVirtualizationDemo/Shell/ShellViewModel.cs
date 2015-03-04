@@ -3,7 +3,7 @@ using System.ComponentModel.Client.DataVirtualization;
 using System.Windows.Input;
 using Caliburn.Micro;
 
-namespace System.ComponentModel.WpfApplication.Shell
+namespace System.ComponentModel.Client.Shell
 {
     public sealed class ShellViewModel : Screen
     {
