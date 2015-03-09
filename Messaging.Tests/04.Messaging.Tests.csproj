@@ -77,7 +77,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="CommandStub.cs" />
-    <Compile Include="DisposeLockTest.cs" />
+    <Compile Include="InstanceLockTest.cs" />
     <Compile Include="InvalidMessageExceptionTest.cs" />
     <Compile Include="MessageStub.cs" />
     <Compile Include="RequestMessageAsEditableObjectTest.cs" />
@@ -96,7 +96,7 @@
     <Compile Include="Server\MessageValidationModuleTest.cs" />
     <Compile Include="Server\Caching\ObjectCacheModuleTest.cs" />
     <Compile Include="Server\Caching\QueryCacheModuleTest.cs" />
-    <Compile Include="Server\TransactionScopeModuleTest.cs" />
+    <Compile Include="Server\Transactions\TransactionScopeModuleTest.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
     <Compile Include="Server\MessageHandlerClassTest.cs" />

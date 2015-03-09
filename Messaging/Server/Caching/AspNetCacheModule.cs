@@ -12,12 +12,12 @@ namespace System.ComponentModel.Server.Caching
     {        
         /// <summary>
         /// Initializes a new instance of the <see cref="AspNetCacheModule" /> class.
-        /// </summary>
+        /// </summary>        
         /// <param name="recursionPolicy">
         /// The lock recursion policy that is used for the <see cref="QueryCacheModule.CacheManagerLock" />.
-        /// </param>
+        /// </param>        
         public AspNetCacheModule(LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion)
-            : base(recursionPolicy) { }
+            : base(recursionPolicy) { }        
 
         /// <inheritdoc />
         protected override bool TryGetApplicationCacheFactory(out IQueryCacheManagerFactory applicationCacheManagerFactory)

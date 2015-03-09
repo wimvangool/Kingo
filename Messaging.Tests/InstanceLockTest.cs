@@ -5,27 +5,103 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace System.ComponentModel
 {
     [TestClass]
-    public sealed class DisposeLockTest
+    public sealed class InstanceLockTest
     {
-        private DisposeLock _lock;
+        private InstanceLock _lock;
 
         [TestInitialize]
         public void Setup()
         {
-            _lock = new DisposeLock(new object());
+            _lock = new InstanceLock(new object(), true);
         }        
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfInstanceIsNull()
         {
-            new DisposeLock(null);
+            new InstanceLock(null);
         }
 
         private IDisposable Lock
         {
             get { return _lock; }
         }
+
+        #region [====== Start ======]
+
+        [TestMethod]
+        public void IsStarted_ReturnsFalse_IfStartHasNotYetBeenCalled()
+        {
+            using (var instanceLock = new InstanceLock(new object()))
+            {
+                Assert.IsFalse(instanceLock.IsStarted);
+            }
+        }
+
+        [TestMethod]
+        public void IsStarted_ReturnsTrue_IfStartHasBeenCalled()
+        {
+            using (var instanceLock = new InstanceLock(new object()))
+            {
+                instanceLock.Start();
+
+                Assert.IsTrue(instanceLock.IsStarted);    
+            }            
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Start_Throws_IfLockIsAlreadyInStartedState()
+        {
+            using (var instanceLock = new InstanceLock(new object()))
+            {
+                instanceLock.Start();
+                instanceLock.Start();
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public void Starte_Throws_IfLockIsInDisposingState()
+        {
+            var instanceLock = new InstanceLock(new object());
+
+            instanceLock.EnterDispose();
+            instanceLock.Start();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
+        public void Starte_Throws_IfLockIsInDisposedState()
+        {
+            var instanceLock = new InstanceLock(new object());
+
+            instanceLock.EnterDispose();
+            instanceLock.ExitDispose();
+            instanceLock.Start();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void EnterMethod_Throws_IfLockIsInNotStartedState()
+        {
+            using (var instanceLock = new InstanceLock(new object()))
+            {
+                instanceLock.EnterMethod();
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SynchronizationLockException))]
+        public void ExitMethod_Throws_IfLockIsInNotStartedState()
+        {
+            using (var instanceLock = new InstanceLock(new object()))
+            {
+                instanceLock.ExitMethod();
+            }
+        }
+
+        #endregion
 
         #region [====== EnterDispose / ExitDispose ======]
 
@@ -277,16 +353,19 @@ namespace System.ComponentModel
                 });
 
                 // We'll wait for _lock.EnterMethod() to be called.
-                waitHandle.WaitOne();
-                
-                // Then we will enter the dispose method, which will block the current thread
-                // because the other one still holds a read-lock.
-                _lock.EnterDispose();
+                if (waitHandle.WaitOne(TimeSpan.FromSeconds(5)))
+                {
+                    // Then we will enter the dispose method, which will block the current thread
+                    // because the other one still holds a read-lock.
+                    _lock.EnterDispose();
 
-                // Here, the other thread has finished it's work, and so we can completed Dispose().
-                _lock.ExitDispose();
+                    // Here, the other thread has finished it's work, and so we can completed Dispose().
+                    _lock.ExitDispose();
 
-                Task.WaitAll(task);
+                    Task.WaitAll(task);
+                    return;
+                }
+                Assert.Fail("EnterMethod() was not called in a timely fashion.");
             }
         }
 

@@ -7,9 +7,10 @@ namespace System.ComponentModel.Server.Caching
     /// that it's results are to be cached.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class QueryCacheOptionsAttribute : Attribute
+    public sealed class QueryCacheOptionsAttribute : Attribute, IQueryCacheStrategy
     {
-        private readonly QueryCacheKind _kind;        
+        private readonly Lazy<QueryCacheStrategy> _queryCacheStrategy;
+        private readonly QueryCacheKind _kind;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryCacheOptionsAttribute" /> class.
@@ -17,6 +18,7 @@ namespace System.ComponentModel.Server.Caching
         /// <param name="kind">Specifies which cache should be used to store the results in.</param>
         public QueryCacheOptionsAttribute(QueryCacheKind kind)
         {
+            _queryCacheStrategy = new Lazy<QueryCacheStrategy>(CreateQueryCacheStrategy, true);
             _kind = kind;
         }
 
@@ -46,20 +48,14 @@ namespace System.ComponentModel.Server.Caching
             set;
         }
 
-        internal TMessageOut GetOrAddToCache<TMessageOut>(IQuery<TMessageOut> query, QueryCacheModule module) where TMessageOut : class, IMessage<TMessageOut>
-        {           
-            var absoluteExpiration = ParseTimeout(AbsoluteExpiration);
-            var slidingExpiration = ParseTimeout(SlidingExpiration);            
-            
-            if (Kind == QueryCacheKind.Application)
-            {
-                return module.GetOrAddToApplicationCache(query, absoluteExpiration, slidingExpiration);
-            }
-            if (Kind == QueryCacheKind.Session)
-            {
-                return module.GetOrAddToSessionCache(query, absoluteExpiration, slidingExpiration);
-            }
-            throw NewInvalidKindSpecifiedException(Kind);
+        private QueryCacheStrategy CreateQueryCacheStrategy()
+        {
+            return new QueryCacheStrategy(Kind, ParseTimeout(AbsoluteExpiration), ParseTimeout(SlidingExpiration));
+        }
+
+        TMessageOut IQueryCacheStrategy.GetOrAddToCache<TMessageOut>(IQuery<TMessageOut> query, QueryCacheModule module)
+        {
+            return _queryCacheStrategy.Value.GetOrAddToCache(query, module);
         }        
 
         private static TimeSpan? ParseTimeout(string timeout)
@@ -76,18 +72,11 @@ namespace System.ComponentModel.Server.Caching
             {
                 throw NewInvalidTimeoutSpecifiedException(timeout, exception);
             }
-        }
-
-        private static Exception NewInvalidKindSpecifiedException(QueryCacheKind kind)
-        {
-            var messageFormat = ExceptionMessages.QueryCacheOptions_InvalidKindSpecified;
-            var message = string.Format(messageFormat, kind);
-            return new InvalidOperationException(message);
-        }
+        }        
 
         private static Exception NewInvalidTimeoutSpecifiedException(string timeout, Exception innerException)
         {
-            var messageFormat = ExceptionMessages.QueryCacheOptions_InvalidTimeoutSpecified;
+            var messageFormat = ExceptionMessages.QueryCacheOptionsAttribute_InvalidTimeoutSpecified;
             var message = string.Format(messageFormat, timeout);
             return new InvalidOperationException(message, innerException);
         }

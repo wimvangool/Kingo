@@ -1,7 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.Resources;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace System.ComponentModel
@@ -24,6 +26,32 @@ namespace System.ComponentModel
             }
             _extensionData = message._extensionData;
         }
+
+        #region [====== TypeId ======]
+
+        string IMessage.TypeId
+        {
+            get { return TypeIdOf(GetType()); }
+        }
+
+        /// <summary>
+        /// Returns the type-id of the specified <paramref name="messageType"/>.
+        /// </summary>
+        /// <param name="messageType">Type of a message.</param>
+        /// <returns>The type-id of the specified <paramref name="messageType"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageType"/> is <c>null</c>.
+        /// </exception>
+        public static string TypeIdOf(Type messageType)
+        {
+            if (messageType == null)
+            {
+                throw new ArgumentNullException("messageType");
+            }
+            return messageType.Name;
+        }
+
+        #endregion
 
         #region [====== ExtensibleObject ======]
 
@@ -49,6 +77,18 @@ namespace System.ComponentModel
 
         #region [====== Validation ======]
 
+        bool IMessage.TryGetValidationErrors(out InvalidMessageException exception)
+        {
+            ValidationErrorTree errorTree;
+
+            if (TryGetValidationErrors(out errorTree) && errorTree.TryCreateInvalidMessageException(this, out exception))
+            {
+                return true;
+            }
+            exception = null;
+            return false;
+        }
+
         bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
         {
             return TryGetValidationErrors(out errorTree);
@@ -58,17 +98,7 @@ namespace System.ComponentModel
 
         #endregion
 
-        #region [====== Attributes ======]
-
-        IEnumerable<TAttribute> IMessage.SelectAttributesOfType<TAttribute>()
-        {
-            return SelectAttributesOfType<TAttribute>();
-        }
-
-        internal virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : Attribute
-        {
-            return AttributesOfType<TAttribute>(GetType());
-        }        
+        #region [====== Attributes ======]                
 
         private static readonly ConcurrentDictionary<Type, Attribute[]> _MessageAttributeCache;
 
@@ -77,8 +107,63 @@ namespace System.ComponentModel
             _MessageAttributeCache = new ConcurrentDictionary<Type, Attribute[]>();
         }
 
-        internal static IEnumerable<TAttribute> AttributesOfType<TAttribute>(Type messageType) where TAttribute : Attribute
+        internal static bool TryGetStrategyFromAttribute<TStrategy>(object message, out TStrategy atribute) where TStrategy : class
         {
+            var messageType = message.GetType();
+            var attributes = SelectAttributesOfType<TStrategy>(messageType);
+
+            try
+            {
+                return (atribute = attributes.SingleOrDefault()) != null;
+            }
+            catch (InvalidOperationException)
+            {
+                throw NewAmbiguousAttributeMatchException(messageType, typeof(TStrategy));
+            }
+        }
+
+        private static Exception NewAmbiguousAttributeMatchException(Type messageType, Type attributeType)
+        {
+            var messageFormat = ExceptionMessages.Message_AmbiguousAttributeMatch;
+            var message = string.Format(messageFormat, messageType, attributeType);
+            return new AmbiguousMatchException(message);
+        }
+
+        /// <summary>
+        /// Returns the collections of <see cref="Attribute">Attributes</see> that are declared on the specified <paramref name="message"/>
+        /// and are assignable to <typeparamref name="TAttribute"/>.
+        /// </summary>
+        /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>
+        /// <param name="message">The message on which the attributes are declared.</param>
+        /// <returns>A collection of <typeparamref name="TAttribute"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        public static IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>(object message) where TAttribute : class
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            return SelectAttributesOfType<TAttribute>(message.GetType());
+        }
+
+        /// <summary>
+        /// Returns the collections of <see cref="Attribute">Attributes</see> that are declared on the specified <paramref name="messageType"/>
+        /// and are assignable to <typeparamref name="TAttribute"/>.
+        /// </summary>
+        /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>
+        /// <param name="messageType">The <see cref="Type" /> on which the attributes are declared.</param>
+        /// <returns>A collection of <typeparamref name="TAttribute"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageType"/> is <c>null</c>.
+        /// </exception>
+        public static IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>(Type messageType) where TAttribute : class
+        {
+            if (messageType == null)
+            {
+                throw new ArgumentNullException("messageType");
+            }
             return from attribute in _MessageAttributeCache.GetOrAdd(messageType, GetDeclaredAttributesOn)
                    let targetAttribute = attribute as TAttribute
                    where targetAttribute != null

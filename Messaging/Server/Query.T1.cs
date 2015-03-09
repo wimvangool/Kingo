@@ -3,9 +3,9 @@
     internal sealed class Query<TMessageOut> : IQuery<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>
     {
         private readonly IQuery<TMessageOut> _nextQuery;
-        private readonly IQueryModule _nextModule;
+        private readonly QueryModule _nextModule;
 
-        internal Query(IQuery<TMessageOut> nextQuery, IQueryModule nextModule)
+        internal Query(IQuery<TMessageOut> nextQuery, QueryModule nextModule)
         {
             _nextQuery = nextQuery;
             _nextModule = nextModule;

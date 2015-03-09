@@ -25,7 +25,8 @@ namespace System.ComponentModel.Server
             _nextHandlerMock.Setup(handler => handler.Handle(_command));
 
             using (var module = new MessageValidationModule())
-            {                
+            {         
+                module.Start();
                 module.Invoke(_handler); 
             }
             _nextHandlerMock.VerifyAll();
@@ -39,6 +40,7 @@ namespace System.ComponentModel.Server
 
             using (var module = new MessageValidationModule())
             {
+                module.Start();
                 module.Invoke(_handler);
             }
             _nextHandlerMock.VerifyAll();

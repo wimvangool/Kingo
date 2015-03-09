@@ -10,7 +10,24 @@ namespace System.ComponentModel.Client
     /// </summary>
     /// <typeparam name="TMessageOut">Type of the result of this query.</typeparam>
     public abstract class QueryDispatcher<TMessageOut> : QueryDispatcherBase<TMessageOut>, IRequestMessageDispatcher where TMessageOut : class, IMessage<TMessageOut>
-    {        
+    {
+        #region [====== RequestMessageDispatcher ======]
+
+        string IRequestMessageDispatcher.MessageTypeId
+        {
+            get { return MessageTypeId; }
+        }
+
+        /// <summary>
+        /// Returns the identifier of the message that is dispatched by this dispatcher.
+        /// </summary>
+        protected abstract string MessageTypeId
+        {
+            get;
+        }
+
+        #endregion
+
         #region [====== Execution ======]
 
         /// <inheritdoc />
@@ -75,26 +92,6 @@ namespace System.ComponentModel.Client
         /// </remarks>
         protected abstract TMessageOut Execute();        
 
-        #endregion        
-
-        #region [====== RequestMessageDispatcher ======]
-
-        IEnumerable<TAttribute> IRequestMessageDispatcher.SelectAttributesOfType<TAttribute>()
-        {
-            return SelectAttributesOfType<TAttribute>();
-        }
-
-        /// <summary>
-        /// Returns a collection of <see cref="Attribute">MessageAttributes</see> that are
-        /// declared on this dispatcher and are an instance of <typeparamref name="TAttribute"/>.
-        /// </summary>
-        /// <typeparam name="TAttribute">Type of the attributes to select.</typeparam>        
-        /// <returns>A collection of <see cref="Attribute">MessageAttributes</see>.</returns>
-        protected virtual IEnumerable<TAttribute> SelectAttributesOfType<TAttribute>() where TAttribute : Attribute
-        {
-            return Message.AttributesOfType<TAttribute>(GetType());
-        }
-
-        #endregion   
+        #endregion                
     }
 }

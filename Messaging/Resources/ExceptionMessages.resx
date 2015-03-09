@@ -186,28 +186,37 @@
   <data name="DependencyClass_AmbigiousMatch" xml:space="preserve">
     <value>More than one type found that could be used as an implementation of dependency '{0}': {1}.</value>
   </data>
-  <data name="MessageProcessor_InvalidMessage" xml:space="preserve">
+  <data name="InvalidMessageException_InvalidMessage" xml:space="preserve">
     <value>The message is invalid. See ErrorTree for details.</value>
   </data>
   <data name="ReadOnlyDictionary_NotSupported" xml:space="preserve">
     <value>Cannot change this collection because it is read-only.</value>
   </data>
-  <data name="QueryCacheOptions_InvalidKindSpecified" xml:space="preserve">
+  <data name="QueryCacheStrategy_InvalidKindSpecified" xml:space="preserve">
     <value>Invalid query cache kind specified: {0}.</value>
   </data>
-  <data name="QueryCacheOptions_InvalidTimeoutSpecified" xml:space="preserve">
+  <data name="QueryCacheOptionsAttribute_InvalidTimeoutSpecified" xml:space="preserve">
     <value>Invalid timeout specified: {0}.</value>
   </data>
   <data name="MessageOut_InvalidMessageType" xml:space="preserve">
     <value>A module in the query execution pipeline returned an invalid result. Expected result of type '{0}' but was '{1}'.</value>
   </data>
-  <data name="DisposeLock_EnterDisposeNotInvoked" xml:space="preserve">
+  <data name="InstanceLock_EnterDisposeNotInvoked" xml:space="preserve">
     <value>Cannot exit the Dispose() method because the thread has not invoked EnterDispose() on the lock.</value>
   </data>
-  <data name="DisposeLock_ExitMethodNotInvoked" xml:space="preserve">
+  <data name="InstanceLock_ExitMethodNotInvoked" xml:space="preserve">
     <value>Cannot exit the Dispose() method because the current thread still hasn't exitted an instance method.</value>
   </data>
-  <data name="DisposeLock_EnterMethodNotInvoked" xml:space="preserve">
+  <data name="InstanceLock_EnterMethodNotInvoked" xml:space="preserve">
     <value>Cannot exit the method because the current thread has not invoked EnterMethod() on the lock.</value>
+  </data>
+  <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
+    <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>
+  </data>
+  <data name="InstanceLock_AlreadyStarted" xml:space="preserve">
+    <value>The lock has already moved into the started state.</value>
+  </data>
+  <data name="InstanceLock_NotYetStarted" xml:space="preserve">
+    <value>Cannot enter method because the lock has not yet moved into the started state.</value>
   </data>
 </root>

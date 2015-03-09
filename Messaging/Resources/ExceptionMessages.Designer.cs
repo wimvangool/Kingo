@@ -142,33 +142,6 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot exit the Dispose() method because the thread has not invoked EnterDispose() on the lock..
-        /// </summary>
-        internal static string DisposeLock_EnterDisposeNotInvoked {
-            get {
-                return ResourceManager.GetString("DisposeLock_EnterDisposeNotInvoked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot exit the method because the current thread has not invoked EnterMethod() on the lock..
-        /// </summary>
-        internal static string DisposeLock_EnterMethodNotInvoked {
-            get {
-                return ResourceManager.GetString("DisposeLock_EnterMethodNotInvoked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot exit the Dispose() method because the current thread still hasn&apos;t exitted an instance method..
-        /// </summary>
-        internal static string DisposeLock_ExitMethodNotInvoked {
-            get {
-                return ResourceManager.GetString("DisposeLock_ExitMethodNotInvoked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
         /// </summary>
         internal static string DomainModelException_CommandFailed {
@@ -187,11 +160,74 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The lock has already moved into the started state..
+        /// </summary>
+        internal static string InstanceLock_AlreadyStarted {
+            get {
+                return ResourceManager.GetString("InstanceLock_AlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot exit the Dispose() method because the thread has not invoked EnterDispose() on the lock..
+        /// </summary>
+        internal static string InstanceLock_EnterDisposeNotInvoked {
+            get {
+                return ResourceManager.GetString("InstanceLock_EnterDisposeNotInvoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot exit the method because the current thread has not invoked EnterMethod() on the lock..
+        /// </summary>
+        internal static string InstanceLock_EnterMethodNotInvoked {
+            get {
+                return ResourceManager.GetString("InstanceLock_EnterMethodNotInvoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot exit the Dispose() method because the current thread still hasn&apos;t exitted an instance method..
+        /// </summary>
+        internal static string InstanceLock_ExitMethodNotInvoked {
+            get {
+                return ResourceManager.GetString("InstanceLock_ExitMethodNotInvoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot enter method because the lock has not yet moved into the started state..
+        /// </summary>
+        internal static string InstanceLock_NotYetStarted {
+            get {
+                return ResourceManager.GetString("InstanceLock_NotYetStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version cannot be negative: {0}..
         /// </summary>
         internal static string IntXXVersion_NegativeValue {
             get {
                 return ResourceManager.GetString("IntXXVersion_NegativeValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The message is invalid. See ErrorTree for details..
+        /// </summary>
+        internal static string InvalidMessageException_InvalidMessage {
+            get {
+                return ResourceManager.GetString("InvalidMessageException_InvalidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
+        /// </summary>
+        internal static string Message_AmbiguousAttributeMatch {
+            get {
+                return ResourceManager.GetString("Message_AmbiguousAttributeMatch", resourceCulture);
             }
         }
         
@@ -241,29 +277,20 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The message is invalid. See ErrorTree for details..
+        ///   Looks up a localized string similar to Invalid timeout specified: {0}..
         /// </summary>
-        internal static string MessageProcessor_InvalidMessage {
+        internal static string QueryCacheOptionsAttribute_InvalidTimeoutSpecified {
             get {
-                return ResourceManager.GetString("MessageProcessor_InvalidMessage", resourceCulture);
+                return ResourceManager.GetString("QueryCacheOptionsAttribute_InvalidTimeoutSpecified", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Invalid query cache kind specified: {0}..
         /// </summary>
-        internal static string QueryCacheOptions_InvalidKindSpecified {
+        internal static string QueryCacheStrategy_InvalidKindSpecified {
             get {
-                return ResourceManager.GetString("QueryCacheOptions_InvalidKindSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid timeout specified: {0}..
-        /// </summary>
-        internal static string QueryCacheOptions_InvalidTimeoutSpecified {
-            get {
-                return ResourceManager.GetString("QueryCacheOptions_InvalidTimeoutSpecified", resourceCulture);
+                return ResourceManager.GetString("QueryCacheStrategy_InvalidKindSpecified", resourceCulture);
             }
         }
         

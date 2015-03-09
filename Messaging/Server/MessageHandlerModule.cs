@@ -1,18 +1,32 @@
 ﻿namespace System.ComponentModel.Server
 {
     /// <summary>
-    /// Provides a base-implementation of the <see cref="IMessageHandlerModule" /> interface.
+    /// Serves as the base-class for all modules in a <see cref="IMessageHandler{TMessage}" /> pipeline.
     /// </summary>
-    public abstract class MessageHandlerModule : IMessageHandlerModule
+    public abstract class MessageHandlerModule : IMessageProcessorPipeline
     {
-        private readonly DisposeLock _disposeLock;
+        private readonly InstanceLock _disposeLock;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerModule" /> class.
         /// </summary>
         protected MessageHandlerModule()
         {
-            _disposeLock = new DisposeLock(this);
+            _disposeLock = new InstanceLock(this);
+        }        
+
+        /// <summary>
+        /// Starts the module.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// The module has already been started.
+        /// </exception>
+        /// <exception cref="ObjectDisposedException">
+        /// The module has already been disposed.
+        /// </exception>
+        public virtual void Start()
+        {
+            _disposeLock.Start();
         }
 
         #region [====== Dispose ======]
@@ -20,7 +34,7 @@
         /// <summary>
         /// Returns the lock that is used to manage safe disposal of this instance.
         /// </summary>
-        protected IDisposeLock DisposeLock
+        protected IInstanceLock InstanceLock
         {
             get { return _disposeLock; }
         }
@@ -56,16 +70,28 @@
         /// </remarks>
         protected virtual void Dispose(bool disposing) { }     
 
-        #endregion
+        #endregion        
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Invokes the specified <paramref name="handler"/> while adding specific pipeline logic.
+        /// </summary>
+        /// <param name="handler">The handler to invoke.</param>
+        /// <exception cref="InvalidOperationException">
+        /// The module has not yet been started.
+        /// </exception>
+        /// <exception cref="ObjectDisposedException">
+        /// This instance has been disposed.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="handler"/> is <c>null</c>.
+        /// </exception>
         public void Invoke(IMessageHandler handler)
         {            
             if (handler == null)
             {
                 throw new ArgumentNullException("handler");
             }
-            DisposeLock.EnterMethod();
+            InstanceLock.EnterMethod();
 
             try
             {
@@ -73,7 +99,7 @@
             }
             finally
             {
-                DisposeLock.ExitMethod();
+                InstanceLock.ExitMethod();
             }            
         }
 

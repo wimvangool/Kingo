@@ -100,11 +100,13 @@ namespace System.ComponentModel.Server.Caching
             {
                 _evictionHandle = new ManualResetEventSlim();
                 _applicationCache = hasApplicationCache ? new MemoryCache("ApplicationCache") : null;
+
+                Start();
             }
 
             protected override void Dispose(bool disposing)
             {
-                if (DisposeLock.IsDisposed)
+                if (InstanceLock.IsDisposed)
                 {
                     return;
                 }
@@ -181,7 +183,7 @@ namespace System.ComponentModel.Server.Caching
             ResponseMessage result;
 
             using (var cacheModule = new ObjectCacheModuleSpy(false))
-            {
+            {                
                 result = cacheModule.GetOrAddToApplicationCache(query, null, null);
             }  
             _querySpy.VerifyThatInvocationCountIs(1);
@@ -196,7 +198,7 @@ namespace System.ComponentModel.Server.Caching
             ResponseMessage result;
 
             using (var cacheModule = new ObjectCacheModuleSpy(true))
-            {
+            {                
                 result = cacheModule.GetOrAddToApplicationCache(query, null, null);
             }
             _querySpy.VerifyThatInvocationCountIs(1);
@@ -212,7 +214,7 @@ namespace System.ComponentModel.Server.Caching
             ResponseMessage resultTwo;
 
             using (var cacheModule = new ObjectCacheModuleSpy(true))
-            {
+            {                
                 resultOne = cacheModule.GetOrAddToApplicationCache(query, null, null);
                 resultTwo = cacheModule.GetOrAddToApplicationCache(query, null, null);
             }
@@ -227,7 +229,7 @@ namespace System.ComponentModel.Server.Caching
             var query = CreateQuery();
 
             using (var cacheModule = new ObjectCacheModuleSpy(true))
-            {
+            {                
                 ResponseMessage resultOne;
                 ResponseMessage resultTwo;                
 
@@ -260,7 +262,7 @@ namespace System.ComponentModel.Server.Caching
             var query = CreateQuery();
 
             using (var cacheModule = new ObjectCacheModuleSpy(true))
-            {
+            {                
                 ResponseMessage resultOne;                
 
                 using (new TransactionScope())
@@ -400,7 +402,7 @@ namespace System.ComponentModel.Server.Caching
             var queryDefault = CreateQuery();            
 
             using (var cacheModule = new ObjectCacheModuleSpy(true))
-            {
+            {                
                 // The first call executes the query, but does not store its result into the cache.
                 var resultOne = cacheModule.GetOrAddToApplicationCache(queryAllowCacheRead, null, null);
 
@@ -429,7 +431,7 @@ namespace System.ComponentModel.Server.Caching
             var queryDefault = CreateQuery();
 
             using (var cacheModule = new ObjectCacheModuleSpy(true))
-            {
+            {                
                 // The first call executes the query, but does not store its result into the cache.
                 var resultOne = cacheModule.GetOrAddToApplicationCache(queryNone, null, null);
 

@@ -8,25 +8,26 @@ namespace System.ComponentModel.Server.Caching
     /// and associates sessions with the <see cref="Thread.CurrentPrincipal" />.
     /// </summary>
     public class MemoryCacheModule : ObjectCacheModule
-    {
+    {        
         private readonly Lazy<MemoryCache> _applicationCache;
         private readonly ReaderWriterLockSlim _applicationCacheLock;
         private readonly string _sessionCacheKeyFormat;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryCacheModule" /> class.
-        /// </summary>        
+        /// </summary>         
+        /// <param name="recursionPolicy">The lock recursion policy that is used for the <see cref="QueryCacheModule.CacheManagerLock" />.</param>        
         public MemoryCacheModule(LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) : base(recursionPolicy)
-        {
+        {                     
             _applicationCache = new Lazy<MemoryCache>(CreateApplicationCache, LazyThreadSafetyMode.ExecutionAndPublication);
             _applicationCacheLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
             _sessionCacheKeyFormat = Guid.NewGuid().ToString("N") + "_{0}";            
-        }
+        }        
 
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            if (DisposeLock.IsDisposed)
+            if (InstanceLock.IsDisposed)
             {
                 return;
             }

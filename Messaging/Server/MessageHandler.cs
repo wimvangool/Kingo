@@ -3,9 +3,9 @@
     internal sealed class MessageHandler : IMessageHandler
     {
         private readonly IMessageHandler _nextHandler;
-        private readonly IMessageHandlerModule _nextModule;
+        private readonly MessageHandlerModule _nextModule;
 
-        internal MessageHandler(IMessageHandler nextHandler, IMessageHandlerModule nextModule)
+        internal MessageHandler(IMessageHandler nextHandler, MessageHandlerModule nextModule)
         {
             _nextHandler = nextHandler;
             _nextModule = nextModule;

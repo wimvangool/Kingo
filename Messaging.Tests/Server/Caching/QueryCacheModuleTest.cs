@@ -210,6 +210,7 @@ namespace System.ComponentModel.Server.Caching
         public void Setup()
         {
             _cacheModule = new DictionaryCacheModule();
+            _cacheModule.Start();
         }
 
         [TestCleanup]

@@ -1,7 +1,7 @@
 ﻿using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Server
+namespace System.ComponentModel.Server.Transactions
 {
     [TestClass]
     public sealed class TransactionScopeModuleTest
@@ -102,6 +102,8 @@ namespace System.ComponentModel.Server
 
             using (var module = new TransactionScopeModule())
             {
+                module.Start();
+
                 Assert.IsNull(Transaction.Current);
                 module.Invoke(handler);
                 Assert.IsNull(Transaction.Current);
@@ -123,6 +125,8 @@ namespace System.ComponentModel.Server
 
             using (var module = new TransactionScopeModule())
             {
+                module.Start();
+
                 using (var scope = new TransactionScope())
                 {
                     Assert.IsNotNull(transaction = Transaction.Current);
@@ -148,6 +152,8 @@ namespace System.ComponentModel.Server
 
             using (var module = new TransactionScopeModule(TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted))
             {
+                module.Start();
+
                 using (var scope = new TransactionScope())
                 {
                     module.Invoke(handler);
@@ -168,6 +174,8 @@ namespace System.ComponentModel.Server
 
             using (var module = new TransactionScopeModule())
             {
+                module.Start();
+
                 using (var scope = new TransactionScope())
                 {
                     Assert.IsNotNull(transaction = Transaction.Current);
@@ -191,6 +199,8 @@ namespace System.ComponentModel.Server
 
             using (var module = new TransactionScopeModule())
             {
+                module.Start();
+
                 using (var scope = new TransactionScope())
                 {
                     module.Invoke(handler);

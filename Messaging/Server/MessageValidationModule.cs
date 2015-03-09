@@ -17,11 +17,11 @@ namespace System.ComponentModel.Server
         /// </exception>
         protected override void InvokeHandler(IMessageHandler handler)
         {                        
-            ValidationErrorTree errors;
+            InvalidMessageException exception;
 
-            if (handler.Message.TryGetValidationErrors(out errors))
+            if (handler.Message.TryGetValidationErrors(out exception))
             {
-                throw new InvalidMessageException(handler, ExceptionMessages.MessageProcessor_InvalidMessage, errors);                
+                throw exception;               
             }            
             handler.Invoke();
         }

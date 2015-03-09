@@ -17,6 +17,11 @@ namespace System.ComponentModel.Server
                 _validator = validator;
             }
 
+            string IMessage.TypeId
+            {
+                get { return _message.TypeId; }
+            }
+
             public IMessage Copy()
             {
                 return _message.Copy();
@@ -27,18 +32,30 @@ namespace System.ComponentModel.Server
                 get { return _message; }
             }
 
+            bool IMessage.TryGetValidationErrors(out InvalidMessageException exception)
+            {
+                ValidationErrorTree errorTree;
+
+                if (TryGetValidationErrors(out errorTree) && errorTree.TryCreateInvalidMessageException(this, out exception))
+                {
+                    return true;
+                }
+                exception = null;
+                return false;
+            }
+
             bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
+            {
+                return TryGetValidationErrors(out errorTree);
+            }           
+
+            private bool TryGetValidationErrors(out ValidationErrorTree errorTree)
             {
                 if (_validator == null)
                 {
                     return _message.TryGetValidationErrors(out errorTree);
                 }
                 return _validator.TryGetValidationErrors(_message, out errorTree);
-            }
-
-            IEnumerable<TAttribute> IMessage.SelectAttributesOfType<TAttribute>()
-            {
-                return _message.SelectAttributesOfType<TAttribute>();
             }
         }
 

@@ -24,7 +24,7 @@ namespace System.ComponentModel
         protected Message(TMessage message)
             : base(message) { }        
 
-        #region [====== Copy ======]   
+        #region [====== Copy ======]
 
         internal override IMessage CopyMessage()
         {
@@ -72,23 +72,24 @@ namespace System.ComponentModel
 
         internal override bool TryGetValidationErrors(out ValidationErrorTree errorTree)
         {
-            var validator = CreateValidator();
-            if (validator != null)
+            errorTree = BuildErrorTree();
+
+            if (errorTree.TotalErrorCount == 0)
             {
-                return validator.TryGetValidationErrors((TMessage)this, out errorTree);
+                errorTree = null;
+                return false;
             }
-            errorTree = null;
-            return false;
-        }
+            return true;
+        }        
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message,
-        /// or <c>null</c> if this message does not require validation.
+        /// Creates and returns a <see cref="ValidationErrorTree" /> that contains all validation-errors of this message
+        /// and any child-messages.
         /// </summary>
-        /// <returns>A new <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.</returns>
-        protected virtual IMessageValidator<TMessage> CreateValidator()
+        /// <returns>A <see cref="ValidationErrorTree" /> that contains all validation-errors of this message and any child-messages.</returns>        
+        protected virtual ValidationErrorTree BuildErrorTree()
         {
-            return null;
+            return ValidationErrorTree.NoErrors(GetType());
         }
 
         #endregion        

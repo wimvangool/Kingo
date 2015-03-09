@@ -2,9 +2,9 @@
 
 namespace System.ComponentModel.Server
 {
-    internal sealed class QueryPipeline : MessageProcessorPipeline<IQueryModule>
+    internal sealed class QueryPipeline : MessageProcessorPipeline<QueryModule>
     {
-        internal QueryPipeline(IEnumerable<IQueryModule> modules)
+        internal QueryPipeline(IEnumerable<QueryModule> modules)
             : base(modules) { }
 
         internal IQuery<TMessageOut> ConnectTo<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage<TMessageOut>

@@ -45,7 +45,7 @@ namespace System.ComponentModel
         {           
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>();
-            _errorTree = ValidationErrorTree.NotYetValidated(GetType());
+            _errorTree = ValidationErrorTree.NoErrors(GetType());
             _isReadOnly = makeReadOnly;                        
         }                
 
@@ -65,7 +65,7 @@ namespace System.ComponentModel
             }
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>(message._services);
-            _errorTree = ValidationErrorTree.NotYetValidated(GetType());
+            _errorTree = ValidationErrorTree.NoErrors(GetType());
             _extensionData = message._extensionData;      
             _isReadOnly = makeReadOnly;                         
         }
@@ -80,8 +80,13 @@ namespace System.ComponentModel
         {
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>();
-            _errorTree = ValidationErrorTree.NotYetValidated(GetType());            
-        }                
+            _errorTree = ValidationErrorTree.NoErrors(GetType());            
+        }
+
+        string IMessage.TypeId
+        {
+            get { return GetType().Name; }
+        }
 
         /// <summary>
         /// Indicates whether or not this message is marked as read-only.
@@ -157,16 +162,7 @@ namespace System.ComponentModel
         /// </returns>
         public abstract TMessage Copy(bool makeReadOnly);                      
 
-        #endregion
-
-        #region [====== Attributes ======]
-
-        IEnumerable<TAttribute> IMessage.SelectAttributesOfType<TAttribute>()
-        {
-            return Message.AttributesOfType<TAttribute>(GetType());
-        }        
-
-        #endregion
+        #endregion        
 
         #region [====== Service Provider ======]
 
@@ -461,6 +457,18 @@ namespace System.ComponentModel
                 return _attachedMessages.All(message => message.IsValid);
             }
             return true;
+        }
+
+        bool IMessage.TryGetValidationErrors(out InvalidMessageException exception)
+        {
+            ValidationErrorTree errorTree;
+
+            if (TryGetValidationErrors(true, out errorTree) && errorTree.TryCreateInvalidMessageException(this, out exception))
+            {                
+                return true;
+            }
+            exception = null;
+            return false;
         }
 
         bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)

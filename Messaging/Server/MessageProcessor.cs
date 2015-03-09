@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Server.Transactions;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace System.ComponentModel.Server
     /// </summary>    
     public class MessageProcessor : IMessageProcessor
     {
-        private readonly DisposeLock _disposeLock;
+        private readonly InstanceLock _disposeLock;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                 
@@ -28,7 +29,7 @@ namespace System.ComponentModel.Server
         /// </summary>        
         public MessageProcessor()
         {           
-            _disposeLock = new DisposeLock(this);
+            _disposeLock = new InstanceLock(this, true);
             _currentMessagePointer = new ThreadLocal<MessagePointer>();
             _domainEventBus = new MessageProcessorBus(this);
             
@@ -57,7 +58,7 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Returns the lock that is used to manage safe disposal of this instance.
         /// </summary>
-        protected IDisposeLock DisposeLock
+        protected IInstanceLock InstanceLock
         {
             get { return _disposeLock; }
         }
@@ -93,7 +94,7 @@ namespace System.ComponentModel.Server
         /// </remarks>
         protected virtual void Dispose(bool disposing)
         {
-            if (DisposeLock.IsDisposed)
+            if (InstanceLock.IsDisposed)
             {
                 return;
             }
@@ -186,7 +187,7 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            DisposeLock.EnterMethod();
+            InstanceLock.EnterMethod();
 
             try
             {                
@@ -210,7 +211,7 @@ namespace System.ComponentModel.Server
             }
             finally
             {
-                DisposeLock.ExitMethod();
+                InstanceLock.ExitMethod();
             }            
         }
 
@@ -269,7 +270,7 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            DisposeLock.EnterMethod();
+            InstanceLock.EnterMethod();
 
             try
             {
@@ -293,7 +294,7 @@ namespace System.ComponentModel.Server
             }
             finally
             {
-                DisposeLock.ExitMethod();
+                InstanceLock.ExitMethod();
             }            
         }
 
@@ -336,7 +337,7 @@ namespace System.ComponentModel.Server
 
         private void PushMessage<TMessage>(ref TMessage message, CancellationToken? token) where TMessage : class, IMessage<TMessage>
         {                   
-            DisposeLock.EnterMethod();
+            InstanceLock.EnterMethod();
      
             MessagePointer = MessagePointer == null ?
                 new MessagePointer(message = message.Copy(), token) :
@@ -347,22 +348,24 @@ namespace System.ComponentModel.Server
         {
             MessagePointer = MessagePointer.ParentPointer;
 
-            DisposeLock.ExitMethod();
+            InstanceLock.ExitMethod();
         }               
 
         private MessageHandlerPipeline CreateGenericMessageHandlerPipeline()
         {
-            return new MessageHandlerPipeline(CreateGenericMessageHandlerModules()); ;
+            var pipeline = new MessageHandlerPipeline(CreateGenericMessageHandlerModules());
+            pipeline.Start();
+            return pipeline;
         }
 
         /// <summary>
-        /// Creates and returns a collection of <see cref="IMessageHandlerModule">modules</see>
+        /// Creates and returns a collection of <see cref="MessageHandlerModule">modules</see>
         /// that will be used to create a pipeline for every incoming message.
         /// </summary>                
-        /// <returns>A collection of <see cref="IMessageHandlerModule">modules</see>.</returns>              
-        protected virtual IEnumerable<IMessageHandlerModule> CreateGenericMessageHandlerModules()            
+        /// <returns>A collection of <see cref="MessageHandlerModule">modules</see>.</returns>              
+        protected virtual IEnumerable<MessageHandlerModule> CreateGenericMessageHandlerModules()            
         {
-            return new IMessageHandlerModule[]
+            return new MessageHandlerModule[]
             {
                 new MessageValidationModule(),
                 new TransactionScopeModule(), 
@@ -371,32 +374,36 @@ namespace System.ComponentModel.Server
 
         private MessageHandlerPipeline CreateSpecificMessageHandlerPipeline()
         {
-            return new MessageHandlerPipeline(CreateSpecificMessageHandlerModules());
+            var pipeline = new MessageHandlerPipeline(CreateSpecificMessageHandlerModules());
+            pipeline.Start();
+            return pipeline;
         }
 
         /// <summary>
-        /// Creates and returns a collection of <see cref="IMessageHandlerModule">modules</see> that will be used to
+        /// Creates and returns a collection of <see cref="MessageHandlerModule">modules</see> that will be used to
         /// create a pipeline for every <see cref="IMessageHandler{TMessage}" /> handling a certain message.
         /// </summary>               
         /// <returns>A pipeline that will handle a message.</returns>              
-        protected internal virtual IEnumerable<IMessageHandlerModule> CreateSpecificMessageHandlerModules()
+        protected internal virtual IEnumerable<MessageHandlerModule> CreateSpecificMessageHandlerModules()
         {
-            return Enumerable.Empty<IMessageHandlerModule>();
+            return Enumerable.Empty<MessageHandlerModule>();
         }
 
         private QueryPipeline CreateQueryPipeline()
         {
-            return new QueryPipeline(CreateQueryModules());
+            var pipeline = new QueryPipeline(CreateQueryModules());
+            pipeline.Start();
+            return pipeline;
         }
 
         /// <summary>
-        /// Creates and returns a collection of <see cref="IQueryModule">modules</see> that will be used to
+        /// Creates and returns a collection of <see cref="QueryModule">modules</see> that will be used to
         /// create a pipeline for every query that is executed.
         /// </summary>                     
         /// <returns>A query pipeline.</returns>             
-        protected virtual IEnumerable<IQueryModule> CreateQueryModules()            
+        protected virtual IEnumerable<QueryModule> CreateQueryModules()            
         {
-            return Enumerable.Empty<IQueryModule>();
+            return Enumerable.Empty<QueryModule>();
         }        
 
         private static IMessageHandler<TMessage> NullHandler<TMessage>() where TMessage : class

@@ -3,19 +3,24 @@ using System.Threading;
 
 namespace System.ComponentModel
 {
-    internal sealed class DisposeLockDisposingState : DisposeLockState
+    internal sealed class InstanceLockDisposingState : InstanceLockState
     {
         private readonly object _instance;
         private readonly ReaderWriterLockSlim _internalLock;
         private readonly ThreadLocal<bool> _isDisposing;
         private readonly ThreadLocal<int> _enterDisposeCount;
 
-        internal DisposeLockDisposingState(object instance, ReaderWriterLockSlim internalLock)
+        internal InstanceLockDisposingState(object instance, ReaderWriterLockSlim internalLock)
         {
             _instance = instance;
             _internalLock = internalLock;
             _isDisposing = new ThreadLocal<bool>() { Value = true };
             _enterDisposeCount = new ThreadLocal<int>() { Value = 1 };
+        }
+
+        internal override bool IsStarted
+        {
+            get { return false; }
         }
 
         internal override bool IsDisposed
@@ -26,9 +31,14 @@ namespace System.ComponentModel
         protected override object Instance
         {
             get { return _instance; }
-        }        
+        }
 
-        internal override void EnterDispose(ref DisposeLockState currentState)
+        internal override void Start(ref InstanceLockState currentState)
+        {
+            throw NewObjectDisposedException();
+        }
+
+        internal override void EnterDispose(ref InstanceLockState currentState)
         {
             // Only the thread that has already entered the write-lock is allowed
             // to enter it again (recursively).
@@ -39,7 +49,7 @@ namespace System.ComponentModel
             _enterDisposeCount.Value++;
         }
 
-        internal override void ExitDispose(ref DisposeLockState currentState)
+        internal override void ExitDispose(ref InstanceLockState currentState)
         {
             // Along the same lines, only the thread that already entered the write-lock
             // (possibly recursively) is allowed to exit the write-lock and move the lock
@@ -56,7 +66,7 @@ namespace System.ComponentModel
                 {
                     return;
                 }
-                TryMoveToState(ref currentState, new DisposeLockDisposedState(Instance, _enterDisposeCount));
+                TryMoveToState(ref currentState, new InstanceLockDisposedState(Instance, _enterDisposeCount));
 
                 _internalLock.Dispose();
             }
@@ -84,7 +94,7 @@ namespace System.ComponentModel
 
         private static Exception NewExitMethodNotInvokedException()
         {
-            return new SynchronizationLockException(ExceptionMessages.DisposeLock_ExitMethodNotInvoked);
+            return new SynchronizationLockException(ExceptionMessages.InstanceLock_ExitMethodNotInvoked);
         }
     }
 }

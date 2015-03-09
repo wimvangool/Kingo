@@ -6,8 +6,16 @@ namespace System.ComponentModel
     /// When implemented by a class, represents a lock that ensures instance methods of
     /// <see cref="IDisposable" /> instances are safely entered and exitted in multi-threaded context.
     /// </summary>
-    public interface IDisposeLock
+    public interface IInstanceLock
     {
+        /// <summary>
+        /// Indicates whether or not the lock is in the started state.
+        /// </summary>
+        bool IsStarted
+        {
+            get;
+        }
+
         /// <summary>
         /// Indicates whether or not the lock is in the disposed state.
         /// </summary>

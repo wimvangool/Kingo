@@ -190,7 +190,7 @@ namespace System.ComponentModel.Server.Caching
 
             protected override void Dispose(bool disposing)
             {
-                if (DisposeLock.IsDisposed)
+                if (InstanceLock.IsDisposed)
                 {
                     return;
                 }
@@ -238,6 +238,7 @@ namespace System.ComponentModel.Server.Caching
             _message = new RequestMessage();
             _querySpy = new Query();
             _provider = new AspNetCacheProviderSpy();
+            _provider.Start();
             _httpContextScope = new HttpContextScope();
         }
 

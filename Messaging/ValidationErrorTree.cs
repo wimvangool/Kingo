@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Resources;
 using System.Diagnostics;
 using System.Linq;
 
@@ -139,12 +140,14 @@ namespace System.ComponentModel
         #region [====== Factory Methods ======]
         
         /// <summary>
-        /// Creates and returns a new instance of <see cref="ValidationErrorTree" /> class without any errors that can be used
-        /// to mark a <see cref="RequestMessageViewModel{TMessage}" /> as invalid because it has not yet been validated.
+        /// Creates and returns a new instance of <see cref="ValidationErrorTree" /> class without any errors.
         /// </summary>
         /// <param name="messageType">Type of a message.</param>
         /// <returns>A new instance of the <see cref="ValidationErrorTree" /> class without any errors.</returns>
-        internal static ValidationErrorTree NotYetValidated(Type messageType)
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageType"/> is <c>null</c>.
+        /// </exception>
+        public static ValidationErrorTree NoErrors(Type messageType)
         {
             return new ValidationErrorTree(messageType, new ReadOnlyDictionary<string, string>(), null);
         }                        
@@ -161,6 +164,17 @@ namespace System.ComponentModel
                 return errorTree;
             }
             return new ValidationErrorTree(errorTree._messageType, errorTree._errors, childErrorTrees);
+        }
+
+        internal bool TryCreateInvalidMessageException(object message, out InvalidMessageException exception)
+        {
+            if (TotalErrorCount == 0)
+            {
+                exception = null;
+                return false;
+            }
+            exception = new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, this);
+            return true;
         }
 
         #endregion

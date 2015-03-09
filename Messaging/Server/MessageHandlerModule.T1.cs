@@ -1,24 +1,72 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Server;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace System.ComponentModel.Server
 {
     /// <summary>
-    /// Serves as a base class for all modules that base their behavior on some specific type of attribute declared on a message.
-    /// </summary>    
-    /// <typeparam name="TAttribute">Type of the attribute(s) to collect from a message.</typeparam>
-    public abstract class MessageHandlerModule<TAttribute> : MessageHandlerModule where TAttribute : Attribute
+    /// Server as a bas class for all <see cref="MessageHandlerModule">MessageHandlerModules</see> that associate
+    /// each message with a specific <typeparamref name="TStrategy"/>.
+    /// </summary>
+    /// <typeparam name="TStrategy">Type of the strategy to associate with each message.</typeparam>
+    public abstract class MessageHandlerModule<TStrategy> : MessageHandlerModule where TStrategy : class
     {
-        /// <inheritdoc />
-        protected override void InvokeHandler(IMessageHandler handler)
-        {            
-            InvokeHandler(handler, handler.Message.SelectAttributesOfType<TAttribute>());
+        private readonly MessageToStrategyMapping<TStrategy> _strategyMapping;        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageHandlerModule" /> class.
+        /// </summary>                
+        protected MessageHandlerModule()
+        {
+            _strategyMapping = new MessageToStrategyMapping<TStrategy>();
         }
 
         /// <summary>
-        /// Invokes the specified <paramref name="handler"/> while adding specific pipeline logic.
+        /// Returns the mapping of certain messages to specific strategies.
+        /// </summary>
+        public IMessageToStrategyMapping<TStrategy> StrategyMapping
+        {
+            get { return _strategyMapping; }
+        }
+
+        /// <summary>
+        /// The default strategy to use when the message being handled is not explicitly associated with a specific strategy.
+        /// </summary>
+        protected abstract TStrategy DefaultStrategy
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Attempts to retrieve the associated strategy for the message on the specified <paramref name="handler"/>
+        /// and then invokes <see cref="InvokeHandler(IMessageHandler, TStrategy)" />.
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>
-        /// <param name="attributes">All attributes of type <typeparamref name="TAttribute"/> declared on the incoming message.</param>
-        protected abstract void InvokeHandler(IMessageHandler handler, IEnumerable<TAttribute> attributes);        
+        protected override void InvokeHandler(IMessageHandler handler)
+        {
+            TStrategy strategy;
+
+            if (_strategyMapping.TryGetStrategy(handler.Message, out strategy))
+            {
+                InvokeHandler(handler, strategy);
+                return;
+            }
+            if (Message.TryGetStrategyFromAttribute(handler.Message, out strategy))
+            {
+                InvokeHandler(handler, strategy);
+                return;
+            }
+            InvokeHandler(handler, DefaultStrategy);
+        }
+
+        /// <summary>
+        /// Invokes the specified <paramref name="handler"/> using the specified <paramref name="strategy"/>.
+        /// </summary>
+        /// <param name="handler">The handler to invoke.</param>
+        /// <param name="strategy">The strategy to use.</param>
+        protected abstract void InvokeHandler(IMessageHandler handler, TStrategy strategy);
     }
 }

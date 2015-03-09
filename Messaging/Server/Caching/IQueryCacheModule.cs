@@ -5,7 +5,7 @@ namespace System.ComponentModel.Server.Caching
     /// <summary>
     /// When implemented by a class, manages the cache(s) that are maintained for queries.
     /// </summary>    
-    public interface IQueryCacheModule : IQueryModule
+    public interface IQueryCacheModule
     {                
         /// <summary>
         /// Detects if any results of the specified <typeparamref name="TMessageIn"/> were changed,

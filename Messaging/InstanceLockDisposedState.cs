@@ -3,15 +3,20 @@ using System.Threading;
 
 namespace System.ComponentModel
 {
-    internal sealed class DisposeLockDisposedState : DisposeLockState
+    internal sealed class InstanceLockDisposedState : InstanceLockState
     {
         private readonly object _instance;        
         private readonly ThreadLocal<int> _enterDisposeCount;
 
-        internal DisposeLockDisposedState(object instance, ThreadLocal<int> enterDisposeCount)
+        internal InstanceLockDisposedState(object instance, ThreadLocal<int> enterDisposeCount)
         {
             _instance = instance;            
             _enterDisposeCount = enterDisposeCount;
+        }
+
+        internal override bool IsStarted
+        {
+            get { return false; }
         }
 
         internal override bool IsDisposed
@@ -22,14 +27,19 @@ namespace System.ComponentModel
         protected override object Instance
         {
             get { return _instance; }
-        }        
+        }
 
-        internal override void EnterDispose(ref DisposeLockState currentState)
+        internal override void Start(ref InstanceLockState currentState)
+        {
+            throw NewObjectDisposedException();
+        }
+
+        internal override void EnterDispose(ref InstanceLockState currentState)
         {
             _enterDisposeCount.Value++;
         }
 
-        internal override void ExitDispose(ref DisposeLockState currentState)
+        internal override void ExitDispose(ref InstanceLockState currentState)
         {
             if (_enterDisposeCount.Value == 0)
             {
@@ -46,11 +56,6 @@ namespace System.ComponentModel
         internal override void ExitMethod()
         {
             throw NewEnterMethodNotInvokedException();
-        }
-
-        private static Exception NewEnterMethodNotInvokedException()
-        {
-            return new SynchronizationLockException(ExceptionMessages.DisposeLock_EnterMethodNotInvoked);
-        }
+        }        
     }
 }

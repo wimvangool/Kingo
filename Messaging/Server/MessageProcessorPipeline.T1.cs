@@ -2,13 +2,21 @@
 
 namespace System.ComponentModel.Server
 {
-    internal abstract class MessageProcessorPipeline<TModule> : IDisposable where TModule : IDisposable
+    internal abstract class MessageProcessorPipeline<TModule> : IMessageProcessorPipeline where TModule : IMessageProcessorPipeline
     {
         private readonly Stack<TModule> _modules;
 
         protected MessageProcessorPipeline(IEnumerable<TModule> modules)
         {
             _modules = PushModulesOnStack(modules);
+        }
+
+        public void Start()
+        {
+            foreach (var module in Modules)
+            {
+                module.Start();
+            }
         }
 
         #region [====== Dispose ======]
@@ -63,6 +71,6 @@ namespace System.ComponentModel.Server
                 stack.Push(module);
             }
             return stack;
-        }
+        }        
     }
 }

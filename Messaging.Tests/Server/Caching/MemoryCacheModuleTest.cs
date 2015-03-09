@@ -120,6 +120,7 @@ namespace System.ComponentModel.Server.Caching
             _message = new RequestMessage(); ;
             _querySpy = new Query();
             _module = new MemoryCacheModule();
+            _module.Start();
         }
 
         [TestCleanup]

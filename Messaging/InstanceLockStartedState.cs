@@ -2,12 +2,12 @@
 
 namespace System.ComponentModel
 {
-    internal sealed class DisposeLockActiveState : DisposeLockState
+    internal sealed class InstanceLockStartedState : InstanceLockState
     {
         private readonly object _instance;
         private readonly ReaderWriterLockSlim _internalLock;
 
-        internal DisposeLockActiveState(object instance)
+        internal InstanceLockStartedState(object instance)
         {
             if (instance == null)
             {
@@ -15,6 +15,17 @@ namespace System.ComponentModel
             }
             _instance = instance;
             _internalLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        }
+
+        internal InstanceLockStartedState(object instance, ReaderWriterLockSlim internalLock)
+        {            
+            _instance = instance;
+            _internalLock = internalLock;
+        }
+
+        internal override bool IsStarted
+        {
+            get { return true; }
         }
 
         internal override bool IsDisposed
@@ -25,15 +36,20 @@ namespace System.ComponentModel
         protected override object Instance
         {
             get { return _instance; }
-        }        
+        }
 
-        internal override void EnterDispose(ref DisposeLockState currentState)
+        internal override void Start(ref InstanceLockState currentState)
+        {
+            throw NewInstanceAlreadyStartedException();
+        }
+
+        internal override void EnterDispose(ref InstanceLockState currentState)
         {
             // Only the first thread that calls EnterDispose ever gets a hold of the WriteLock.
             // This has the advantage that other threads won't be blocked when also calling
             // EnterDispose and that only one thread 'owns' the lock so that it can safely
             // be disposed.
-            if (TryMoveToState(ref currentState, new DisposeLockDisposingState(Instance, _internalLock)))
+            if (TryMoveToState(ref currentState, new InstanceLockDisposingState(Instance, _internalLock)))
             {
                 _internalLock.EnterWriteLock();
             }
@@ -45,7 +61,7 @@ namespace System.ComponentModel
             }
         }
 
-        internal override void ExitDispose(ref DisposeLockState currentState)
+        internal override void ExitDispose(ref InstanceLockState currentState)
         {
             throw NewEnterDisposeNotInvokedException();
         }

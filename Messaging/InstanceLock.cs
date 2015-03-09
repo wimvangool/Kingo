@@ -6,26 +6,55 @@ namespace System.ComponentModel
     /// Represents a lock that can be used for mutli-threaded objects that implement <see cref="IDisposable" />
     /// to ensure <see cref="IDisposable.Dispose()" /> is implemented in a thread-safe manner.
     /// </summary>
-    public sealed class DisposeLock : IDisposeLock, IDisposable
+    public sealed class InstanceLock : IInstanceLock, IDisposable
     {                
-        private DisposeLockState _state;
+        private InstanceLockState _state;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DisposeLock" /> class.
+        /// Initializes a new instance of the <see cref="InstanceLock" /> class.
         /// </summary>
         /// <param name="instance">The instance for which this lock is used.</param>
+        /// <param name="startImmediately">Indicates whether or not the lock should move directly into the started state.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="instance"/> is <c>null</c>.
         /// </exception>
-        public DisposeLock(object instance)
-        {                       
-            _state = new DisposeLockActiveState(instance);
+        public InstanceLock(object instance, bool startImmediately = false)
+        {                 
+            if (startImmediately)
+            {
+                _state = new InstanceLockStartedState(instance);
+            }
+            else
+            {
+                _state = new InstanceLockNotStartedState(instance);
+            }            
+        }
+
+        /// <inheritdoc />
+        public bool IsStarted
+        {
+            get { return _state.IsStarted; }
         }
 
         /// <inheritdoc />
         public bool IsDisposed
         {
             get { return _state.IsDisposed; }
+        }
+
+        /// <summary>
+        /// Moves the lock into a state in which it is acceptable to call the
+        /// <see cref="EnterMethod()" /> and <see cref="ExitMethod()" /> methods.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// The lock is already in the started state.
+        /// </exception>
+        /// <exception cref="ObjectDisposedException">
+        /// The lock has already been disposed.
+        /// </exception>
+        public void Start()
+        {
+            _state.Start(ref _state);
         }
 
         void IDisposable.Dispose()
