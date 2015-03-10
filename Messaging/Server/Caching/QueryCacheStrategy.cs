@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Resources;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.Resources;
 
 namespace System.ComponentModel.Server.Caching
 {

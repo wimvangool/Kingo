@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Serves as a base class for all <see cref="QueryModule">QueryModules</see> that associate
@@ -36,6 +31,14 @@ namespace System.ComponentModel.Server
         protected abstract TStrategy DefaultStrategy
         {
             get;
+        }
+
+        /// <inheritdoc />
+        public override void Start()
+        {
+            base.Start();
+
+            _strategyMapping.SwitchToReadOnly();
         }
 
         /// <summary>

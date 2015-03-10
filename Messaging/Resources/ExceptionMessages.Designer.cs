@@ -277,6 +277,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot add a new mapping because the mapping has been switched to read-only state..
+        /// </summary>
+        internal static string MessageToStrategyMapping_IsReadOnly {
+            get {
+                return ResourceManager.GetString("MessageToStrategyMapping_IsReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid timeout specified: {0}..
         /// </summary>
         internal static string QueryCacheOptionsAttribute_InvalidTimeoutSpecified {

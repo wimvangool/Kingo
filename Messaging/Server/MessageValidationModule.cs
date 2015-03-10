@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Resources;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a module that validates a message and throws an <see cref="InvalidMessageException" /> if

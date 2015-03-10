@@ -133,7 +133,7 @@ namespace System.ComponentModel
 
         private static Exception NewReadOnlyException()
         {
-            return new NotSupportedException(ExceptionMessages.ReadOnlyDictionary_NotSupported);
+            return new InvalidOperationException(ExceptionMessages.ReadOnlyDictionary_NotSupported);
         }
     }
 }

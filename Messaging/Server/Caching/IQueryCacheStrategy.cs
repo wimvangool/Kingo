@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Server.Caching
+﻿namespace System.ComponentModel.Server.Caching
 {
     /// <summary>
     /// When implemented by a class, represents a strategy with which a query is executed and it's results are cached.

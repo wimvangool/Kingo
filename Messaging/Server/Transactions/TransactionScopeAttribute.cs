@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Transactions;
-using Microsoft.SqlServer.Server;
+﻿using System.Transactions;
 
 namespace System.ComponentModel.Server.Transactions
 {

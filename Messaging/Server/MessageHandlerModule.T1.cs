@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Server;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Server as a bas class for all <see cref="MessageHandlerModule">MessageHandlerModules</see> that associate
@@ -38,6 +31,14 @@ namespace System.ComponentModel.Server
         protected abstract TStrategy DefaultStrategy
         {
             get;
+        }
+
+        /// <inheritdoc />
+        public override void Start()
+        {
+            base.Start();
+
+            _strategyMapping.SwitchToReadOnly();
         }
 
         /// <summary>

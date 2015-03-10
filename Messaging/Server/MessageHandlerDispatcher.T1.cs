@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     internal sealed class MessageHandlerDispatcher<TMessage> : IMessageHandler where TMessage : class, IMessage<TMessage>
     {

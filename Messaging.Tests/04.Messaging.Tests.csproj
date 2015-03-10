@@ -93,6 +93,7 @@
     <Compile Include="Server\MessageProcessorStub.cs" />
     <Compile Include="Server\Caching\AspNetCacheModuleTest.cs" />
     <Compile Include="Server\Caching\MemoryCacheModuleTest.cs" />
+    <Compile Include="Server\MessageToStrategyMappingTest.cs" />
     <Compile Include="Server\MessageValidationModuleTest.cs" />
     <Compile Include="Server\Caching\ObjectCacheModuleTest.cs" />
     <Compile Include="Server\Caching\QueryCacheModuleTest.cs" />

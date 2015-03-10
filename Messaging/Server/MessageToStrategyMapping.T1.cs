@@ -1,30 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel.Server
+﻿namespace System.ComponentModel.Server
 {
     internal sealed class MessageToStrategyMapping<TStrategy> : IMessageToStrategyMapping<TStrategy> where TStrategy : class
     {
+        private MessageToStrategyMappingState<TStrategy> _state;
+
+        internal MessageToStrategyMapping()
+        {
+            _state = new WritableMappingState<TStrategy>();
+        }
+
         public void Add(IMessage message, TStrategy strategy)
         {
-            throw new NotImplementedException();
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            Add(message.TypeId, strategy);
         }
 
         public void Add(Type messageType, TStrategy strategy)
         {
-            throw new NotImplementedException();
+            Add(Message.TypeIdOf(messageType), strategy);
         }
 
         public void Add(string messageTypeId, TStrategy strategy)
         {
-            throw new NotImplementedException();
+            if (messageTypeId == null)
+            {
+                throw new ArgumentNullException("messageTypeId");
+            }
+            _state.Add(messageTypeId, strategy);
         }
 
-        internal void Commit()
+        internal void SwitchToReadOnly()
         {
-            throw new NotImplementedException();
+            _state.SwitchToReadOnly(ref _state);
         }
 
         public bool TryGetStrategy(IMessage message, out TStrategy strategy)
@@ -43,8 +53,11 @@ namespace System.ComponentModel.Server
 
         public bool TryGetStrategy(string messageTypeId, out TStrategy strategy)
         {
-            strategy = null;
-            return false;
+            if (messageTypeId == null)
+            {
+                throw new ArgumentNullException("messageTypeId");
+            }
+            return _state.TryGetStrategy(messageTypeId, out strategy);
         }
     }
 }

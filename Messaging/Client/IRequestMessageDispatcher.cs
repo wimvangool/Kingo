@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace System.ComponentModel.Client
+﻿namespace System.ComponentModel.Client
 {
     internal interface IRequestMessageDispatcher
     {

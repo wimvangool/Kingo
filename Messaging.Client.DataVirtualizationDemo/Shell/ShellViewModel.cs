@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Client;
-using System.ComponentModel.Client.DataVirtualization;
+﻿using System.ComponentModel.Client.DataVirtualization;
 using System.Windows.Input;
 using Caliburn.Micro;
 

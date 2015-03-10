@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.Server.SampleApplication.Messages;
 using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace System.ComponentModel.Server
 {    

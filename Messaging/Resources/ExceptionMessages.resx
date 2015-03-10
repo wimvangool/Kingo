@@ -219,4 +219,7 @@
   <data name="InstanceLock_NotYetStarted" xml:space="preserve">
     <value>Cannot enter method because the lock has not yet moved into the started state.</value>
   </data>
+  <data name="MessageToStrategyMapping_IsReadOnly" xml:space="preserve">
+    <value>Cannot add a new mapping because the mapping has been switched to read-only state.</value>
+  </data>
 </root>

@@ -125,12 +125,14 @@
     <Compile Include="Server\Caching\QueryCacheManager.cs" />
     <Compile Include="Server\Caching\QueryCacheOptionsAttribute.cs" />
     <Compile Include="Server\MessageToStrategyMapping.T1.cs" />
+    <Compile Include="Server\MessageToStrategyMappingState.T1.cs" />
     <Compile Include="Server\Query.T1.cs" />
     <Compile Include="Server\QueryDispatcherModule.T1.cs" />
     <Compile Include="Server\QueryModule.cs" />
     <Compile Include="Server\QueryModule.T1.cs" />
     <Compile Include="Server\QueryPipeline.cs" />
     <Compile Include="Server\QueryWrapper.T2.cs" />
+    <Compile Include="Server\ReadOnlyMappingState.T1.cs" />
     <Compile Include="Server\Security\AuthorizationModule.cs" />
     <Compile Include="Server\Transactions\ITransactionScopeFactory.cs" />
     <Compile Include="Server\Transactions\TransactionScopeAttribute.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Server\Transactions\TransactionScopeModule.cs" />
     <Compile Include="Server\Query.T2.cs" />
     <Compile Include="Server\QueryExecutionOptions.cs" />
+    <Compile Include="Server\WritableMappingState.T1.cs" />
     <Compile Include="ValidationErrorTree.cs" />
     <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">
