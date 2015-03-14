@@ -112,7 +112,8 @@ namespace System.ComponentModel
         }
 
         /// <summary>
-        /// Returns the errors that were detected on the message. The key represent a property, the value contains the error message.
+        /// Returns the errors that were detected on the message. The key represent a property or field,
+        /// the value contains the error message.
         /// </summary>
         public IDictionary<string, string> Errors
         {
