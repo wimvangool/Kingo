@@ -176,8 +176,27 @@ namespace System.ComponentModel
         {
             return TryGetValidationErrors(out errorTree);
         }
+        
+        private bool TryGetValidationErrors(out ValidationErrorTree errorTree)
+        {
+            var validationStrategy = CreateValidationStrategy();
+            if (validationStrategy == null)
+            {
+                errorTree = null;
+                return false;
+            }
+            return validationStrategy.TryGetValidationErrors(out errorTree);
+        }
 
-        internal abstract bool TryGetValidationErrors(out ValidationErrorTree errorTree);
+        /// <summary>
+        /// Creates and returns a <see cref="IMessageValidationStrategy" /> that can be used to validate this message,
+        /// or <c>null</c> if this message does not require validation.
+        /// </summary>
+        /// <returns>A new <see cref="IMessageValidationStrategy" /> that can be used to validate this message.</returns>
+        protected virtual IMessageValidationStrategy CreateValidationStrategy()
+        {
+            return null;
+        }
 
         #endregion
 

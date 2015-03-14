@@ -53,6 +53,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="AutomaticMessageValidator.T1.cs" />
+    <Compile Include="AutomaticValidationStrategy.T1.cs" />
     <Compile Include="BasicMessage.T1.cs" />
     <Compile Include="BusinessRuleViolationException.cs" />
     <Compile Include="Client\AsyncExecutionTask.T1.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Client\QueryDelegate.T1.cs" />
     <Compile Include="Client\QueryDelegate.T2.cs" />
     <Compile Include="Client\RequestMessage.cs" />
+    <Compile Include="IMessageValidationStrategy.cs" />
     <Compile Include="InstanceLock.cs" />
     <Compile Include="InstanceLockNotStartedState.cs" />
     <Compile Include="InstanceLockStartedState.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="InstanceLockState.cs" />
     <Compile Include="IInstanceLock.cs" />
     <Compile Include="IMessage.cs" />
+    <Compile Include="ManualValidationStrategy.T1.cs" />
     <Compile Include="Server\IMessageProcessorPipeline.cs" />
     <Compile Include="Server\IMessageToStrategyMapping.T1.cs" />
     <Compile Include="IMessageValidator.T1.cs" />

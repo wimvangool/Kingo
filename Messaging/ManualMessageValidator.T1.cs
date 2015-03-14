@@ -6,22 +6,22 @@
     /// <typeparam name="TMessage">Type of the message to validate.</typeparam>
     public sealed class ManualMessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class
     {
-        private readonly Func<TMessage, ValidationErrorTreeBuilder> _validateMethod;
+        private readonly Func<TMessage, ValidationErrorTreeBuilder> _builderFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualMessageValidator{TMessage}" /> class.
         /// </summary>
-        /// <param name="validateMethod">The method that is used to validate the message.</param>
+        /// <param name="builderFactory">The method that is used to validate the message.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="validateMethod"/> is <c>null</c>.
+        /// <paramref name="builderFactory"/> is <c>null</c>.
         /// </exception>
-        public ManualMessageValidator(Func<TMessage, ValidationErrorTreeBuilder> validateMethod)
+        public ManualMessageValidator(Func<TMessage, ValidationErrorTreeBuilder> builderFactory)
         {
-            if (validateMethod == null)
+            if (builderFactory == null)
             {
-                throw new ArgumentNullException("validateMethod");
+                throw new ArgumentNullException("builderFactory");
             }
-            _validateMethod = validateMethod;
+            _builderFactory = builderFactory;
         }
 
         /// <inheritdoc />
@@ -32,7 +32,7 @@
                 errorTree = null;
                 return false;
             }
-            return _validateMethod.Invoke(message).TryBuildErrorTree(out errorTree);
+            return _builderFactory.Invoke(message).TryBuildErrorTree(out errorTree);
         }        
     }
 }

@@ -66,32 +66,6 @@ namespace System.ComponentModel
             return message == null ? null : message.Copy();
         }
 
-        #endregion
-
-        #region [====== Validation ======]
-
-        internal override bool TryGetValidationErrors(out ValidationErrorTree errorTree)
-        {
-            errorTree = BuildErrorTree();
-
-            if (errorTree.TotalErrorCount == 0)
-            {
-                errorTree = null;
-                return false;
-            }
-            return true;
-        }        
-
-        /// <summary>
-        /// Creates and returns a <see cref="ValidationErrorTree" /> that contains all validation-errors of this message
-        /// and any child-messages.
-        /// </summary>
-        /// <returns>A <see cref="ValidationErrorTree" /> that contains all validation-errors of this message and any child-messages.</returns>        
-        protected virtual ValidationErrorTree BuildErrorTree()
-        {
-            return ValidationErrorTree.NoErrors(GetType());
-        }
-
-        #endregion        
+        #endregion               
     }
 }
