@@ -75,6 +75,89 @@ namespace System.ComponentModel
 
         #endregion
 
+        #region [====== Equals & GetHashCode ======]
+
+        /// <summary>
+        /// Determines whether two strings are equal or not.
+        /// </summary>
+        /// <param name="left">The left string.</param>
+        /// <param name="right">The right string.</param>
+        /// <returns><c>true</c>if the two specified strings are equal; otherwise <c>false</c>.</returns>
+        public static bool Equals(string left, string right)
+        {
+            return left == right;
+        }
+
+        /// <summary>
+        /// Determines whether two structures are equal or not.
+        /// </summary>
+        /// <typeparam name="T">Type of the structures to compare.</typeparam>
+        /// <param name="left">The left structure.</param>
+        /// <param name="right">The right structure.</param>
+        /// <returns><c>true</c> if the specified structures are equal; otherwise <c>false</c>.</returns>
+        public static bool Equals<T>(T left, T right) where T : struct, IEquatable<T>
+        {
+            return left.Equals(right);
+        }        
+
+        /// <summary>
+        /// Returns the hashcode of the specified instance, or <c>0</c> if <paramref name="a"/> is <c>null</c>.
+        /// </summary>
+        /// <param name="a">The instance to get the hashcode for.</param>
+        /// <returns>The hashcode of the specified instance.</returns>
+        public static int GetHashCode(object a)
+        {
+            return a == null ? 0 : a.GetHashCode();
+        }
+
+        /// <summary>
+        /// Returns the combined hashcode of the specified instances using a bitwise XOR operation.
+        /// </summary>
+        /// <param name="a">A certain instance.</param>
+        /// <param name="b">Another instance.</param>
+        /// <returns>A combined hashcode of the specified instances.</returns>
+        public static int GetHashCode(object a, object b)
+        {
+            return GetHashCode(a) ^ GetHashCode(b);
+        }
+
+        /// <summary>
+        /// Returns the combined hashcode of the specified instances using a bitwise XOR operation.
+        /// </summary>
+        /// <param name="a">A certain instance.</param>
+        /// <param name="b">Another instance.</param>
+        /// <param name="c">Yet another instance.</param>
+        /// <returns>A combined hashcode of the specified instances.</returns>
+        public static int GetHashCode(object a, object b, object c)
+        {
+            return GetHashCode(a) ^ GetHashCode(b) ^ GetHashCode(c);
+        }
+
+        /// <summary>
+        /// Returns the combined hashcode of the specified instances using a bitwise XOR operation.
+        /// </summary>
+        /// <param name="instances">A collection of instances.</param>
+        /// <returns>A combined hashcode of the specified instances.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="instances"/> is <c>null</c>.
+        /// </exception>
+        public static int GetHashCode(params object[] instances)
+        {
+            if (instances == null)
+            {
+                throw new ArgumentNullException("instances");
+            }
+            var hashCode = 0;
+
+            for (int index = 0; index < instances.Length; index++)
+            {
+                hashCode ^= GetHashCode(instances[index]);
+            }
+            return hashCode;
+        }
+
+        #endregion
+
         #region [====== Validation ======]
 
         bool IMessage.TryGetValidationErrors(out InvalidMessageException exception)
@@ -98,7 +181,7 @@ namespace System.ComponentModel
 
         #endregion
 
-        #region [====== Attributes ======]                
+        #region [====== Attributes ======]
 
         private static readonly ConcurrentDictionary<Type, Attribute[]> _MessageAttributeCache;
 
