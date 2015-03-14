@@ -105,7 +105,7 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="a">The instance to get the hashcode for.</param>
         /// <returns>The hashcode of the specified instance.</returns>
-        public static int GetHashCode(object a)
+        public static int GetHashCodeOf(object a)
         {
             return a == null ? 0 : a.GetHashCode();
         }
@@ -116,9 +116,9 @@ namespace System.ComponentModel
         /// <param name="a">A certain instance.</param>
         /// <param name="b">Another instance.</param>
         /// <returns>A combined hashcode of the specified instances.</returns>
-        public static int GetHashCode(object a, object b)
+        public static int GetHashCodeOf(object a, object b)
         {
-            return GetHashCode(a) ^ GetHashCode(b);
+            return GetHashCodeOf(a) ^ GetHashCodeOf(b);
         }
 
         /// <summary>
@@ -128,9 +128,9 @@ namespace System.ComponentModel
         /// <param name="b">Another instance.</param>
         /// <param name="c">Yet another instance.</param>
         /// <returns>A combined hashcode of the specified instances.</returns>
-        public static int GetHashCode(object a, object b, object c)
+        public static int GetHashCodeOf(object a, object b, object c)
         {
-            return GetHashCode(a) ^ GetHashCode(b) ^ GetHashCode(c);
+            return GetHashCodeOf(a) ^ GetHashCodeOf(b) ^ GetHashCodeOf(c);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="instances"/> is <c>null</c>.
         /// </exception>
-        public static int GetHashCode(params object[] instances)
+        public static int GetHashCodeOf(params object[] instances)
         {
             if (instances == null)
             {
@@ -151,7 +151,7 @@ namespace System.ComponentModel
 
             for (int index = 0; index < instances.Length; index++)
             {
-                hashCode ^= GetHashCode(instances[index]);
+                hashCode ^= GetHashCodeOf(instances[index]);
             }
             return hashCode;
         }
