@@ -55,18 +55,11 @@
 
         #endregion
 
-        #region [====== Validation ======]
+        #region [====== Validation ======]        
 
-        public bool TryGetValidationErrors(out InvalidMessageException exception)
+        public ValidationErrorTree Validate()
         {
-            exception = null;
-            return false;
-        }
-
-        public bool TryGetValidationErrors(out ValidationErrorTree errorTree)
-        {
-            errorTree = null;
-            return false;
+            return ValidationErrorTree.NoErrors(this);
         }
 
         #endregion

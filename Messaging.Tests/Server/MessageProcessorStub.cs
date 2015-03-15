@@ -1,4 +1,7 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace System.ComponentModel.Server
 {
     internal sealed class MessageProcessorStub : MessageProcessor
     {
@@ -12,6 +15,11 @@
         protected internal override MessageHandlerFactory MessageHandlerFactory
         {
             get { return _factory; }
+        }
+
+        protected override IEnumerable<MessageHandlerModule> CreatePrimaryPipelineModules()
+        {
+            return Enumerable.Empty<MessageHandlerModule>();
         }
     }
 }

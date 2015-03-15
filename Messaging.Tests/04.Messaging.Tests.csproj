@@ -85,7 +85,7 @@
     <Compile Include="MessageTwo.cs" />
     <Compile Include="ClockTest.cs" />
     <Compile Include="ClockWithOffsetTest.cs" />
-    <Compile Include="RequestMessageTryGetValidationErrorsTest.cs" />
+    <Compile Include="RequestMessageValidateTest.cs" />
     <Compile Include="RequestMessageWithChildCollectionsTest.cs" />
     <Compile Include="RequestMessageWithChildMessageTest.cs" />
     <Compile Include="Server\MessageHandlerSpy.cs" />

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.Server.SampleApplication.Messages;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Server.SampleApplication.Messages;
+using System.Linq;
 using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -178,13 +180,21 @@ namespace System.ComponentModel.Server
 
         #region [====== Query Tests ======]
 
+        private sealed class QueryProcessor : MessageProcessor
+        {
+            protected override IEnumerable<MessageHandlerModule> CreatePrimaryPipelineModules()
+            {
+                return Enumerable.Empty<MessageHandlerModule>();
+            }
+        }
+
         [TestMethod]
         public void Processor_ReturnsQueryResult_IfQueryExecutesCorrectly()
         {            
-            using (var processor = new MessageProcessor())
+            using (var processor = new QueryProcessor())
             {
-                var requestMessage = new BasicMessage<long>(Clock.Current.UtcDateAndTime().Ticks);
-                var responseMessage = processor.Execute(requestMessage, msg => new BasicMessage<long>(msg.Value));
+                var requestMessage = new ValueMessage<long>(Clock.Current.UtcDateAndTime().Ticks);
+                var responseMessage = processor.Execute(requestMessage, msg => new ValueMessage<long>(msg.Value));
 
                 Assert.IsNotNull(responseMessage);
                 Assert.AreNotSame(requestMessage, responseMessage);

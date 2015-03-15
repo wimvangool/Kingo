@@ -69,7 +69,7 @@ namespace System.ComponentModel.Client
                     throw;
                 }
                 Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId)));
-            }, null, token);
+            }, token);
         }             
 
         /// <summary>

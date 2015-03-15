@@ -7,24 +7,24 @@ namespace System.ComponentModel
     /// </summary>
     public class ValidationErrorTreeBuilder
     {
-        private readonly Type _messageType;
+        private readonly object _message;
         private readonly Dictionary<string, string> _errors;
         private readonly List<ValidationErrorTree> _childErrors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationErrorTreeBuilder" /> class.
         /// </summary>
-        /// <param name="messageType">Type of the message that is being validated.</param>
+        /// <param name="message">The message that is being validated.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageType"/> is <c>null</c>.
+        /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public ValidationErrorTreeBuilder(Type messageType)
+        public ValidationErrorTreeBuilder(object message)
         {
-            if (messageType == null)
+            if (message == null)
             {
-                throw new ArgumentNullException("messageType");
+                throw new ArgumentNullException("message");
             }
-            _messageType = messageType;
+            _message = message;
             _errors = new Dictionary<string, string>();
             _childErrors = new List<ValidationErrorTree>();
         }
@@ -98,7 +98,7 @@ namespace System.ComponentModel
         /// <returns>A new instance of the <see cref="ValidationErrorTree" /> class.</returns>
         public ValidationErrorTree BuildErrorTree()
         {
-            return new ValidationErrorTree(_messageType, _errors, _childErrors);
+            return new ValidationErrorTree(_message, _errors, _childErrors);
         }
     }
 }

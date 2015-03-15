@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace System.ComponentModel
 {
@@ -9,11 +10,13 @@ namespace System.ComponentModel
     /// Represents a collection of items that is attached to a parent message.
     /// </summary>
     /// <typeparam name="TValue">Type of the items in the collection.</typeparam>
+    [Serializable]
     public sealed class AttachedCollection<TValue> : RequestMessageViewModel<AttachedCollection<TValue>>, IList<TValue>, INotifyCollectionChanged
     {
         private readonly List<TValue> _items;
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [NonSerialized]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]       
         private readonly bool _isRequestMessageCollection;
 
         internal AttachedCollection(IEnumerable<TValue> collection, bool makeReadOnly) : base(makeReadOnly)
@@ -32,6 +35,19 @@ namespace System.ComponentModel
             Attach(_items);            
         }
 
+         /// <summary>
+        /// Initializes a new instance of the <see cref="AttachedCollection{TMessage}" /> class by deserializing it's contents
+        /// from a <see cref="SerializationInfo" /> instance.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
+        private AttachedCollection(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            _items = new List<TValue>();
+            _isRequestMessageCollection = IsRequestMessageViewModel(typeof(TValue));
+        }
+
         #region [====== Copy & Validation ======]
 
         /// <inheritdoc />
@@ -40,21 +56,17 @@ namespace System.ComponentModel
             return new AttachedCollection<TValue>(this, makeReadOnly);
         }
 
-        internal override bool TryGetValidationErrors(bool includeChildErrors, out ValidationErrorTree errorTree)
+        internal override ValidationErrorTree Validate(bool includeChildErrors)
         {
             if (includeChildErrors)
             {
                 var messages = _items as IEnumerable<IMessage>;
-                ICollection<ValidationErrorTree> childErrorTrees;
-
-                if (messages != null && TryGetValidationErrors(messages, out childErrorTrees))
+                if (messages != null)
                 {
-                    errorTree = ValidationErrorTree.Merge(typeof(AttachedCollection<TValue>), childErrorTrees);
-                    return true;
-                }
+                    return ValidationErrorTree.Merge(this, Validate(messages));
+                }                
             }
-            errorTree = null;
-            return false;
+            return ValidationErrorTree.NoErrors(this);
         }
 
         #endregion      

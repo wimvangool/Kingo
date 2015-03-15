@@ -1,4 +1,7 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace System.ComponentModel.Server
 {
     internal sealed class ScenarioTestProcessor : MessageProcessor
     {        
@@ -12,6 +15,11 @@
         protected override MessageHandlerFactory MessageHandlerFactory
         {
             get { return _messageHandlerFactory; }
+        }
+
+        protected override IEnumerable<MessageHandlerModule> CreatePrimaryPipelineModules()
+        {
+            return Enumerable.Empty<MessageHandlerModule>();
         }
 
         private static readonly Lazy<ScenarioTestProcessor> _Instance = new Lazy<ScenarioTestProcessor>(CreateProcessor, true);

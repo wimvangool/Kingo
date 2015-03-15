@@ -45,7 +45,7 @@ namespace System.ComponentModel
         {           
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>();
-            _errorTree = ValidationErrorTree.NoErrors(GetType());
+            _errorTree = ValidationErrorTree.NoErrors(this);
             _isReadOnly = makeReadOnly;                        
         }                
 
@@ -65,7 +65,7 @@ namespace System.ComponentModel
             }
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>(message._services);
-            _errorTree = ValidationErrorTree.NoErrors(GetType());
+            _errorTree = ValidationErrorTree.NoErrors(this);
             _extensionData = message._extensionData;      
             _isReadOnly = makeReadOnly;                         
         }
@@ -80,7 +80,7 @@ namespace System.ComponentModel
         {
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>();
-            _errorTree = ValidationErrorTree.NoErrors(GetType());            
+            _errorTree = ValidationErrorTree.NoErrors(this);            
         }
 
         string IMessage.TypeId
@@ -437,14 +437,26 @@ namespace System.ComponentModel
             if (validator != null)
             {
                 var oldValue = IsValid;
-                var newValue = !validator.TryGetValidationErrors((TMessage)this, out _errorTree) && ValidateAttachedMessages();
+                var newValue = !TryGetValidationErrors(validator, out _errorTree) && ValidateAttachedMessages();
 
                 if (oldValue != newValue)
                 {
                     OnIsValidChanged();
                 }    
             }            
-        }                              
+        }   
+        
+        private static bool TryGetValidationErrors(IMessageValidator validator, out ValidationErrorTree errorTree)
+        {
+            errorTree = validator.Validate();
+
+            if (errorTree.Errors.Count == 0)
+            {
+                errorTree = null;
+                return false;
+            }
+            return true;
+        }
 
         internal bool ValidateAttachedMessages()
         {
@@ -459,78 +471,39 @@ namespace System.ComponentModel
             return true;
         }
 
-        bool IMessage.TryGetValidationErrors(out InvalidMessageException exception)
+        ValidationErrorTree IMessage.Validate()
         {
-            ValidationErrorTree errorTree;
-
-            if (TryGetValidationErrors(true, out errorTree) && errorTree.TryCreateInvalidMessageException(this, out exception))
-            {                
-                return true;
-            }
-            exception = null;
-            return false;
+            return Validate(true);
         }
 
-        bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
-        {
-            return TryGetValidationErrors(true, out errorTree);
-        }
-
-        internal virtual bool TryGetValidationErrors(bool includeChildErrors, out ValidationErrorTree errorTree)
+        internal virtual ValidationErrorTree Validate(bool includeChildErrors)
         {            
             // First, we validate this message.
+            var errorTree = ValidationErrorTree.NoErrors(this);
+
             var validator = CreateValidator();
-            if (validator == null)
+            if (validator != null)
             {
-                errorTree = null;
-            }
-            else
-            {
-                validator.TryGetValidationErrors((TMessage) this, out errorTree);    
-            }            
+                errorTree = validator.Validate();
+            }                        
 
             // Second, if required, we validate all children and merge all errors into a single ValidationErrorTree.
-            ICollection<ValidationErrorTree> childErrorTrees;
-
-            if (includeChildErrors && TryGetValidationErrors(_attachedMessages, out childErrorTrees))
+            if (includeChildErrors)
             {
-                errorTree = errorTree == null
-                    ? ValidationErrorTree.Merge(GetType(), childErrorTrees)
-                    : ValidationErrorTree.Merge(errorTree, childErrorTrees);
-            }
-            return errorTree != null;
+                errorTree = ValidationErrorTree.Merge(errorTree, Validate(_attachedMessages));
+            }            
+            return errorTree;
         }
 
-        internal static bool TryGetValidationErrors(IEnumerable<IMessage> messages, out ICollection<ValidationErrorTree> childErrorTrees)
+        internal static IEnumerable<ValidationErrorTree> Validate(IEnumerable<IMessage> messages)
         {
-            var childErrorTreeList = new LinkedList<ValidationErrorTree>();
+            return messages.Select(message => message.Validate());
+        }        
 
-            foreach (var message in messages)
-            {
-                ValidationErrorTree childErrorTree;
-
-                if (message.TryGetValidationErrors(out childErrorTree))
-                {
-                    childErrorTreeList.AddLast(childErrorTree);
-                }
-            }
-            if (childErrorTreeList.Count == 0)
-            {
-                childErrorTrees = null;
-                return false;
-            }
-            childErrorTrees = childErrorTreeList;
-            return true;
-        }
-
-        /// <summary>
-        /// Creates and returns a <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message,
-        /// or <c>null</c> if no validation is required for this message.
-        /// </summary>
-        /// <returns>A new <see cref="IMessageValidator{TMessage}" /> that can be used to validate this message.</returns>
-        protected virtual IMessageValidator<TMessage> CreateValidator()
+        /// <inheritdoc />
+        protected virtual IMessageValidator CreateValidator()
         {
-            return new AutomaticMessageValidator<TMessage>(message => new ValidationContext(message, message, null));
+            return new AutomaticMessageValidator(this, () => new ValidationContext(this, this, null));
         }        
 
         #endregion

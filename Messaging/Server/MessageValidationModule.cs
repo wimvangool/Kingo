@@ -17,11 +17,11 @@
         {                        
             InvalidMessageException exception;
 
-            if (handler.Message.TryGetValidationErrors(out exception))
+            if (handler.Message.Validate().TryCreateInvalidMessageException(out exception))
             {
                 throw exception;               
             }            
             handler.Invoke();
-        }
+        }        
     }
 }

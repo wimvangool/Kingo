@@ -158,42 +158,25 @@ namespace System.ComponentModel
 
         #endregion
 
-        #region [====== Validation ======]
+        #region [====== Validation ======]        
 
-        bool IMessage.TryGetValidationErrors(out InvalidMessageException exception)
-        {
-            ValidationErrorTree errorTree;
-
-            if (TryGetValidationErrors(out errorTree) && errorTree.TryCreateInvalidMessageException(this, out exception))
-            {
-                return true;
-            }
-            exception = null;
-            return false;
-        }
-
-        bool IMessage.TryGetValidationErrors(out ValidationErrorTree errorTree)
-        {
-            return TryGetValidationErrors(out errorTree);
-        }
-        
-        private bool TryGetValidationErrors(out ValidationErrorTree errorTree)
+        /// <inheritdoc />
+        public ValidationErrorTree Validate()
         {
             var validationStrategy = CreateValidationStrategy();
             if (validationStrategy == null)
             {
-                errorTree = null;
-                return false;
+                return ValidationErrorTree.NoErrors(this);
             }
-            return validationStrategy.TryGetValidationErrors(out errorTree);
-        }
+            return validationStrategy.Validate();
+        }                
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageValidationStrategy" /> that can be used to validate this message,
+        /// Creates and returns a <see cref="IMessageValidator" /> that can be used to validate this message,
         /// or <c>null</c> if this message does not require validation.
         /// </summary>
-        /// <returns>A new <see cref="IMessageValidationStrategy" /> that can be used to validate this message.</returns>
-        protected virtual IMessageValidationStrategy CreateValidationStrategy()
+        /// <returns>A new <see cref="IMessageValidator" /> that can be used to validate this message.</returns>
+        protected virtual IMessageValidator CreateValidationStrategy()
         {
             return null;
         }

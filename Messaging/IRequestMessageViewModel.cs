@@ -25,6 +25,6 @@
         /// <summary>
         /// Validates all values of this message and then updates the validation-state.
         /// </summary>
-        void Validate();
+        new void Validate();
     }
 }

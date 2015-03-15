@@ -32,15 +32,7 @@ namespace System.ComponentModel.Server
         {
             get;
             private set;
-        }
-
-        /// <summary>
-        /// Returns the validator of the message.
-        /// </summary>
-        protected virtual IMessageValidator<TMessage> Validator
-        {
-            get { return Message as IMessageValidator<TMessage>; }
-        }
+        }        
 
         /// <summary>
         /// Returns a sequence of messages that are used to put the system into a desired state.
@@ -92,17 +84,17 @@ namespace System.ComponentModel.Server
             {
                 Message = When();
 
-                HandleMessage(processor, Message, Validator);
+                HandleMessage(processor, Message);
 
                 scope.Complete();
             }            
         }                       
 
-        internal virtual void HandleMessage(IMessageProcessor processor, TMessage message, IMessageValidator<TMessage> validator)
+        internal virtual void HandleMessage(IMessageProcessor processor, TMessage message)
         {
             try
             {
-                processor.Handle(message, validator); 
+                processor.Handle(message); 
             }
             catch (Exception exception)
             {

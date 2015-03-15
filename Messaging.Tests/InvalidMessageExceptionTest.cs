@@ -152,9 +152,8 @@ namespace System.ComponentModel
             message.AcceptChanges();
 
             var validator = message as IMessage<ParentMessage>;
-            ValidationErrorTree errorTree;
-            
-            Assert.IsTrue(validator.TryGetValidationErrors(out errorTree));
+            ValidationErrorTree errorTree = validator.Validate();
+                        
             Assert.IsNotNull(errorTree);
 
             var exception = new InvalidMessageException(message, "Message contains errors.", errorTree);
@@ -200,7 +199,7 @@ namespace System.ComponentModel
         private static void AssertEqualErrorTree(ValidationErrorTree errorTree, ValidationErrorTree errorTreeCopy)
         {
             Assert.IsNotNull(errorTreeCopy);
-            Assert.AreSame(errorTree.MessageType, errorTreeCopy.MessageType);
+            Assert.AreSame(errorTree.Message.GetType(), errorTreeCopy.Message.GetType());
             Assert.AreEqual(errorTree.TotalErrorCount, errorTreeCopy.TotalErrorCount);
 
             foreach (var error in errorTree.Errors)

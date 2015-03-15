@@ -63,7 +63,7 @@ namespace System.ComponentModel.Client
                 OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result));
 
                 return result;
-            }, null, options);            
+            }, options);            
         }
 
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace System.ComponentModel.Client
                 Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result)));
 
                 return result;
-            }, null, options, token);
+            }, options, token);
         }              
 
         /// <summary>

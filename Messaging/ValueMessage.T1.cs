@@ -4,15 +4,15 @@
     /// Represents a wrapper-message for simple value-types.
     /// </summary>
     /// <typeparam name="TValue">Type of the value carries by the message.</typeparam>
-    public sealed class BasicMessage<TValue> : Message<BasicMessage<TValue>> where TValue : struct, IEquatable<TValue>
+    public sealed class ValueMessage<TValue> : Message<ValueMessage<TValue>> where TValue : struct, IEquatable<TValue>
     {
         private readonly TValue _value;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicMessage{TValue}" /> class.
+        /// Initializes a new instance of the <see cref="ValueMessage{TValue}" /> class.
         /// </summary>
         /// <param name="value">The value carried by this message.</param>
-        public BasicMessage(TValue value)
+        public ValueMessage(TValue value)
         {
             _value = value;
         }
@@ -26,9 +26,9 @@
         }
 
         /// <inheritdoc />
-        public override BasicMessage<TValue> Copy()
+        public override ValueMessage<TValue> Copy()
         {
-            return new BasicMessage<TValue>(_value);
+            return new ValueMessage<TValue>(_value);
         }
 
         #region [====== Equals ======]
@@ -36,7 +36,7 @@
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return Equals(obj as BasicMessage<TValue>);
+            return Equals(obj as ValueMessage<TValue>);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@
         /// <returns>
         /// <c>true</c> if the specified object is equal to the current object; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(BasicMessage<TValue> other)
+        public bool Equals(ValueMessage<TValue> other)
         {
             if (ReferenceEquals(other, null))
             {

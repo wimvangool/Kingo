@@ -12,45 +12,45 @@ namespace System.ComponentModel.Server
     /// <summary>
     /// Represents a handler of arbitrary messages.
     /// </summary>    
-    public class MessageProcessor : IMessageProcessor
+    public abstract class MessageProcessor : IMessageProcessor
     {
-        private readonly InstanceLock _disposeLock;
+        private readonly InstanceLock _instanceLock;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                 
         private readonly IMessageProcessorBus _domainEventBus;
 
-        private readonly Lazy<MessageHandlerPipeline> _genericMessageHandlerPipeline;
-        private readonly Lazy<MessageHandlerPipeline> _specificMessageHandlerPipeline;
-        private readonly Lazy<QueryPipeline> _queryPipeline;               
+        private readonly Lazy<MessageHandlerPipeline> _primaryPipeline;
+        private readonly Lazy<MessageHandlerPipeline> _businessLogicPipeline;
+        private readonly Lazy<QueryPipeline> _dataAccessPipeline;               
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
         /// </summary>        
-        public MessageProcessor()
+        protected MessageProcessor()
         {           
-            _disposeLock = new InstanceLock(this, true);
+            _instanceLock = new InstanceLock(this, true);
             _currentMessagePointer = new ThreadLocal<MessagePointer>();
             _domainEventBus = new MessageProcessorBus(this);
             
-            _genericMessageHandlerPipeline = new Lazy<MessageHandlerPipeline>(CreateGenericMessageHandlerPipeline, true);
-            _specificMessageHandlerPipeline = new Lazy<MessageHandlerPipeline>(CreateSpecificMessageHandlerPipeline, true);
-            _queryPipeline = new Lazy<QueryPipeline>(CreateQueryPipeline, true);
+            _primaryPipeline = new Lazy<MessageHandlerPipeline>(CreatePrimaryPipeline, true);
+            _businessLogicPipeline = new Lazy<MessageHandlerPipeline>(CreateBusinessLogicPipeline, true);
+            _dataAccessPipeline = new Lazy<QueryPipeline>(CreateDataAccessPipeline, true);
         }
 
-        internal MessageHandlerPipeline GenericMessageHandlerPipeline
+        internal MessageHandlerPipeline PrimaryPipeline
         {
-            get { return _genericMessageHandlerPipeline.Value; }
+            get { return _primaryPipeline.Value; }
         }
 
-        internal MessageHandlerPipeline SpecificMessageHandlerPipeline
+        internal MessageHandlerPipeline BusinessLogicPipeline
         {
-            get { return _specificMessageHandlerPipeline.Value; }
+            get { return _businessLogicPipeline.Value; }
         }
 
-        internal QueryPipeline QueryPipeline
+        internal QueryPipeline DataAccessPipeline
         {
-            get { return _queryPipeline.Value; }
+            get { return _dataAccessPipeline.Value; }
         }
 
         #region [====== Dispose ======]
@@ -60,7 +60,7 @@ namespace System.ComponentModel.Server
         /// </summary>
         protected IInstanceLock InstanceLock
         {
-            get { return _disposeLock; }
+            get { return _instanceLock; }
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace System.ComponentModel.Server
         /// </summary>
         public void Dispose()
         {
-            _disposeLock.EnterDispose();
+            _instanceLock.EnterDispose();
 
             try
             {
@@ -76,7 +76,7 @@ namespace System.ComponentModel.Server
             }
             finally
             {
-                _disposeLock.ExitDispose();
+                _instanceLock.ExitDispose();
             }            
             GC.SuppressFinalize(this);
         }
@@ -100,17 +100,17 @@ namespace System.ComponentModel.Server
             }
             if (disposing)
             {
-                if (_genericMessageHandlerPipeline.IsValueCreated)
+                if (_primaryPipeline.IsValueCreated)
                 {
-                    _genericMessageHandlerPipeline.Value.Dispose();
+                    _primaryPipeline.Value.Dispose();
                 }
-                if (_specificMessageHandlerPipeline.IsValueCreated)
+                if (_businessLogicPipeline.IsValueCreated)
                 {
-                    _specificMessageHandlerPipeline.Value.Dispose();
+                    _businessLogicPipeline.Value.Dispose();
                 }
-                if (_queryPipeline.IsValueCreated)
+                if (_dataAccessPipeline.IsValueCreated)
                 {
-                    _queryPipeline.Value.Dispose();
+                    _dataAccessPipeline.Value.Dispose();
                 }
             }            
         }        
@@ -169,19 +169,19 @@ namespace System.ComponentModel.Server
         #region [====== Commands & Events ======]
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, NullHandler<TMessage>(), validator, token);
+            return HandleAsync(message, NullHandler<TMessage>(), token);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, (ActionDecorator<TMessage>) handler, validator, token);
+            return HandleAsync(message, (ActionDecorator<TMessage>) handler, token);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
             if (message == null)
             {
@@ -201,7 +201,7 @@ namespace System.ComponentModel.Server
 
                     try
                     {
-                        Handle(message, handler, validator, token);
+                        Handle(message, handler, token);
                     }
                     finally
                     {
@@ -216,19 +216,19 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, NullHandler<TMessage>(), validator, token);
+            Handle(message, NullHandler<TMessage>(), token);
         }
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, Action<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, (ActionDecorator<TMessage>) handler, validator, token);
+            Handle(message, (ActionDecorator<TMessage>) handler, token);
         }
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, IMessageValidator<TMessage> validator = null, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
         {            
             if (message == null)
             {
@@ -238,8 +238,8 @@ namespace System.ComponentModel.Server
 
             try
             {
-                var dispatcher = new MessageHandlerDispatcher<TMessage>(message, validator, handler, this);
-                var pipeline = GenericMessageHandlerPipeline.ConnectTo(dispatcher);
+                var dispatcher = new MessageHandlerDispatcher<TMessage>(message, handler, this);
+                var pipeline = PrimaryPipeline.ConnectTo(dispatcher);
 
                 pipeline.Invoke();              
             }
@@ -254,15 +254,15 @@ namespace System.ComponentModel.Server
         #region [====== Queries ======]
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, options, token);
+            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, options, token);
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {            
@@ -284,7 +284,7 @@ namespace System.ComponentModel.Server
 
                     try
                     {
-                        return Execute(message, query, validator, options, token);
+                        return Execute(message, query, options, token);
                     }
                     finally
                     {
@@ -299,15 +299,15 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, validator, options, token);
+            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, options, token);
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, IMessageValidator<TMessageIn> validator = null, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {            
@@ -321,7 +321,7 @@ namespace System.ComponentModel.Server
             {
                 var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, options, this);
                 
-                GenericMessageHandlerPipeline.ConnectTo(handler).Invoke();
+                PrimaryPipeline.ConnectTo(handler).Invoke();
 
                 return handler.MessageOut;
             }
@@ -351,9 +351,9 @@ namespace System.ComponentModel.Server
             InstanceLock.ExitMethod();
         }               
 
-        private MessageHandlerPipeline CreateGenericMessageHandlerPipeline()
+        private MessageHandlerPipeline CreatePrimaryPipeline()
         {
-            var pipeline = new MessageHandlerPipeline(CreateGenericMessageHandlerModules());
+            var pipeline = new MessageHandlerPipeline(CreatePrimaryPipelineModules());
             pipeline.Start();
             return pipeline;
         }
@@ -363,18 +363,11 @@ namespace System.ComponentModel.Server
         /// that will be used to create a pipeline for every incoming message.
         /// </summary>                
         /// <returns>A collection of <see cref="MessageHandlerModule">modules</see>.</returns>              
-        protected virtual IEnumerable<MessageHandlerModule> CreateGenericMessageHandlerModules()            
-        {
-            return new MessageHandlerModule[]
-            {
-                new MessageValidationModule(),
-                new TransactionScopeModule(), 
-            };
-        }
+        protected abstract IEnumerable<MessageHandlerModule> CreatePrimaryPipelineModules();
 
-        private MessageHandlerPipeline CreateSpecificMessageHandlerPipeline()
+        private MessageHandlerPipeline CreateBusinessLogicPipeline()
         {
-            var pipeline = new MessageHandlerPipeline(CreateSpecificMessageHandlerModules());
+            var pipeline = new MessageHandlerPipeline(CreateBusinessLogicPipelineModules());
             pipeline.Start();
             return pipeline;
         }
@@ -384,14 +377,14 @@ namespace System.ComponentModel.Server
         /// create a pipeline for every <see cref="IMessageHandler{TMessage}" /> handling a certain message.
         /// </summary>               
         /// <returns>A pipeline that will handle a message.</returns>              
-        protected internal virtual IEnumerable<MessageHandlerModule> CreateSpecificMessageHandlerModules()
+        protected internal virtual IEnumerable<MessageHandlerModule> CreateBusinessLogicPipelineModules()
         {
             return Enumerable.Empty<MessageHandlerModule>();
         }
 
-        private QueryPipeline CreateQueryPipeline()
+        private QueryPipeline CreateDataAccessPipeline()
         {
-            var pipeline = new QueryPipeline(CreateQueryModules());
+            var pipeline = new QueryPipeline(CreateDataAccessPipelineModules());
             pipeline.Start();
             return pipeline;
         }
@@ -401,7 +394,7 @@ namespace System.ComponentModel.Server
         /// create a pipeline for every query that is executed.
         /// </summary>                     
         /// <returns>A query pipeline.</returns>             
-        protected virtual IEnumerable<QueryModule> CreateQueryModules()            
+        protected virtual IEnumerable<QueryModule> CreateDataAccessPipelineModules()            
         {
             return Enumerable.Empty<QueryModule>();
         }        

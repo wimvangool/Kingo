@@ -39,7 +39,7 @@
 
         private TMessageOut ExecuteQuery()
         {
-            var pipeline = _processor.QueryPipeline.ConnectTo(_query);
+            var pipeline = _processor.DataAccessPipeline.ConnectTo(_query);
             var messageOut = pipeline.Invoke();
 
             _processor.MessagePointer.ThrowIfCancellationRequested();
