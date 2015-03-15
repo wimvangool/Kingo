@@ -158,12 +158,12 @@ namespace System.ComponentModel
 
         #endregion
 
-        #region [====== Validation ======]        
+        #region [====== Validation ======]
 
         /// <inheritdoc />
         public ValidationErrorTree Validate()
         {
-            var validationStrategy = CreateValidationStrategy();
+            var validationStrategy = CreateValidator();
             if (validationStrategy == null)
             {
                 return ValidationErrorTree.NoErrors(this);
@@ -176,7 +176,7 @@ namespace System.ComponentModel
         /// or <c>null</c> if this message does not require validation.
         /// </summary>
         /// <returns>A new <see cref="IMessageValidator" /> that can be used to validate this message.</returns>
-        protected virtual IMessageValidator CreateValidationStrategy()
+        protected virtual IMessageValidator CreateValidator()
         {
             return null;
         }
