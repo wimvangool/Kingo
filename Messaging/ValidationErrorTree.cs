@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Resources;
 using System.Diagnostics;
 using System.Linq;
 
@@ -10,12 +9,9 @@ namespace System.ComponentModel
     /// </summary>
     [Serializable]    
     public sealed class ValidationErrorTree : IDataErrorInfo
-    {
+    {        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly object _message;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ReadOnlyDictionary<string, string> _errors;
+        private readonly ReadOnlyDictionary<string, IList<string>> _errors;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Lazy<string> _error;
@@ -25,39 +21,25 @@ namespace System.ComponentModel
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationErrorTree" /> class.
-        /// </summary>
-        /// <param name="message">The message these errors were found on.</param>
-        /// <param name="errors">Error-messages indexed by property- or fieldname.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        public ValidationErrorTree(object message, IDictionary<string, string> errors)
-            : this(message, errors, null) { }
+        /// </summary>        
+        /// <param name="errors">Error-messages indexed by property- or fieldname.</param>                
+        public ValidationErrorTree(IDictionary<string, IList<string>> errors)
+            : this(errors, null) { }
  
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationErrorTree" /> class.
-        /// </summary>
-        /// <param name="message">The message these errors were found on.</param>
+        /// </summary>        
         /// <param name="errors">Error-messages indexed by property- or fieldname.</param>
-        /// <param name="childErrors">Trees containing errors for any child-messages of the specified <paramref name="message"/>.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        public ValidationErrorTree(object message, IDictionary<string, string> errors, IEnumerable<ValidationErrorTree> childErrors)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            _message = message;
-            _errors = new ReadOnlyDictionary<string, string>(errors);
+        /// <param name="childErrors">Trees containing errors for any child-messages.</param>        
+        public ValidationErrorTree(IDictionary<string, IList<string>> errors, IEnumerable<ValidationErrorTree> childErrors)
+        {            
+            _errors = new ReadOnlyDictionary<string, IList<string>>(errors);
             _error = new Lazy<string>(CreateError);
             _childErrorTrees = Trim(childErrors);
         }
 
-        private ValidationErrorTree(object message, ReadOnlyDictionary<string, string> errors, IEnumerable<ValidationErrorTree> childErrors)
-        {
-            _message = message;
+        private ValidationErrorTree(ReadOnlyDictionary<string, IList<string>> errors, IEnumerable<ValidationErrorTree> childErrors)
+        {            
             _errors = errors;
             _childErrorTrees = Trim(childErrors);
         }
@@ -68,11 +50,11 @@ namespace System.ComponentModel
         {
             get
             {
-                string errorMessage;
+                IList<string> errorMessages;
 
-                if (_errors.TryGetValue(columnName, out errorMessage))
+                if (_errors.TryGetValue(columnName, out errorMessages))
                 {
-                    return errorMessage;
+                    return Concatenate(errorMessages);
                 }
                 return null;
             }
@@ -85,7 +67,7 @@ namespace System.ComponentModel
 
         private string CreateError()
         {
-            return _errors.Count == 0 ? null : Concatenate(_errors.Values);
+            return _errors.Count == 0 ? null : Concatenate(_errors.Values.Select(Concatenate));
         }
 
         internal static string Concatenate(IEnumerable<string> errorMessages)
@@ -93,29 +75,21 @@ namespace System.ComponentModel
             return string.Join(Environment.NewLine, errorMessages.Where(error => !string.IsNullOrWhiteSpace(error)));
         }
 
-        #endregion
-
-        /// <summary>
-        /// Returns the message these errors relate to.
-        /// </summary>
-        public object Message
-        {
-            get { return _message; }
-        }        
+        #endregion               
 
         /// <summary>
         /// Returns the number of errors that were detected on the related message.
         /// </summary>
         public int TotalErrorCount
         {
-            get { return _errors.Count + ChildErrors.Sum(errorTree => errorTree.TotalErrorCount); }
+            get { return _errors.Values.Sum(errors => errors.Count) + ChildErrors.Sum(errorTree => errorTree.TotalErrorCount); }
         }
 
         /// <summary>
         /// Returns the errors that were detected on the message. The key represent a property or field,
         /// the value contains the error message.
         /// </summary>
-        public IDictionary<string, string> Errors
+        public IDictionary<string, IList<string>> Errors
         {
             get { return _errors; }
         }
@@ -132,8 +106,7 @@ namespace System.ComponentModel
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format("{0} contains {1} error(s) and {2} child error(s).",
-                _message.GetType().Name,
+            return string.Format("{0} error(s) and {1} child error(s).",                
                 _errors.Count,
                 _childErrorTrees.Sum(errorTree => errorTree.Errors.Count));
         }
@@ -141,21 +114,13 @@ namespace System.ComponentModel
         #region [====== Factory Methods ======]
         
         /// <summary>
-        /// Creates and returns a new instance of the <see cref="ValidationErrorTree" /> class without any errors.
-        /// </summary>
-        /// <param name="message">Type of a message.</param>
-        /// <returns>A new instance of the <see cref="ValidationErrorTree" /> class without any errors.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        public static ValidationErrorTree NoErrors(object message)
-        {
-            return new ValidationErrorTree(message, new ReadOnlyDictionary<string, string>(), null);
-        }                        
+        /// An instance of the <see cref="ValidationErrorTree" /> class without any errors.
+        /// </summary>       
+        public static readonly ValidationErrorTree NoErrors = new ValidationErrorTree(new ReadOnlyDictionary<string, IList<string>>(), null);                      
         
-        internal static ValidationErrorTree Merge(object message, IEnumerable<ValidationErrorTree> childErrors)
+        internal static ValidationErrorTree Merge(IEnumerable<ValidationErrorTree> childErrors)
         {
-            return new ValidationErrorTree(message, new ReadOnlyDictionary<string, string>(), childErrors);
+            return new ValidationErrorTree(new ReadOnlyDictionary<string, IList<string>>(), childErrors);
         }
 
         /// <summary>
@@ -173,19 +138,8 @@ namespace System.ComponentModel
             {
                 throw new ArgumentNullException("errorTree");
             }
-            return new ValidationErrorTree(errorTree._message, errorTree._errors, childErrors);
-        }
-
-        internal bool TryCreateInvalidMessageException(out InvalidMessageException exception)
-        {
-            if (TotalErrorCount == 0)
-            {
-                exception = null;
-                return false;
-            }
-            exception = new InvalidMessageException(_message, ExceptionMessages.InvalidMessageException_InvalidMessage, this);
-            return true;
-        }
+            return new ValidationErrorTree(errorTree._errors, childErrors);
+        }        
 
         private static ValidationErrorTree[] Trim(IEnumerable<ValidationErrorTree> childErrors)
         {

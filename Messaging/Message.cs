@@ -166,7 +166,7 @@ namespace System.ComponentModel
             var validationStrategy = CreateValidator();
             if (validationStrategy == null)
             {
-                return ValidationErrorTree.NoErrors(this);
+                return ValidationErrorTree.NoErrors;
             }
             return validationStrategy.Validate();
         }                

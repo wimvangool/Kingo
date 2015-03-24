@@ -222,4 +222,7 @@
   <data name="MessageToStrategyMapping_IsReadOnly" xml:space="preserve">
     <value>Cannot add a new mapping because the mapping has been switched to read-only state.</value>
   </data>
+  <data name="Range_InvalidRange" xml:space="preserve">
+    <value>The specified range is not valid: {0}.</value>
+  </data>
 </root>

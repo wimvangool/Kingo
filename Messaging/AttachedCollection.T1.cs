@@ -63,10 +63,10 @@ namespace System.ComponentModel
                 var messages = _items as IEnumerable<IMessage>;
                 if (messages != null)
                 {
-                    return ValidationErrorTree.Merge(this, Validate(messages));
+                    return ValidationErrorTree.Merge(Validate(messages));
                 }                
             }
-            return ValidationErrorTree.NoErrors(this);
+            return ValidationErrorTree.NoErrors;
         }
 
         #endregion      

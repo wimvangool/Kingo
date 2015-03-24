@@ -45,7 +45,7 @@ namespace System.ComponentModel
         {           
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>();
-            _errorTree = ValidationErrorTree.NoErrors(this);
+            _errorTree = ValidationErrorTree.NoErrors;
             _isReadOnly = makeReadOnly;                        
         }                
 
@@ -65,7 +65,7 @@ namespace System.ComponentModel
             }
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>(message._services);
-            _errorTree = ValidationErrorTree.NoErrors(this);
+            _errorTree = ValidationErrorTree.NoErrors;
             _extensionData = message._extensionData;      
             _isReadOnly = makeReadOnly;                         
         }
@@ -80,7 +80,7 @@ namespace System.ComponentModel
         {
             _attachedMessages = new LinkedList<IRequestMessageViewModel>();
             _services = new Dictionary<Type, object>();
-            _errorTree = ValidationErrorTree.NoErrors(this);            
+            _errorTree = ValidationErrorTree.NoErrors;            
         }
 
         string IMessage.TypeId
@@ -479,7 +479,7 @@ namespace System.ComponentModel
         internal virtual ValidationErrorTree Validate(bool includeChildErrors)
         {            
             // First, we validate this message.
-            var errorTree = ValidationErrorTree.NoErrors(this);
+            var errorTree = ValidationErrorTree.NoErrors;
 
             var validator = CreateValidator();
             if (validator != null)
@@ -503,7 +503,7 @@ namespace System.ComponentModel
         /// <inheritdoc />
         protected virtual IMessageValidator CreateValidator()
         {
-            return new AutomaticMessageValidator(this, () => new ValidationContext(this, this, null));
+            return new MessageValidator(this, () => new ValidationContext(this, this, null));
         }        
 
         #endregion

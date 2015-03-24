@@ -124,8 +124,7 @@ namespace System.ComponentModel
             var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree = validator.Validate();
 
-            Assert.IsNotNull(errorTree);            
-            Assert.AreEqual(typeof(ParentMessage), errorTree.Message.GetType());
+            Assert.IsNotNull(errorTree);                        
             Assert.AreEqual(1, errorTree.TotalErrorCount);
             Assert.IsTrue(errorTree.Errors.ContainsKey("Value"));
         }     
@@ -140,14 +139,12 @@ namespace System.ComponentModel
             var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree = validator.Validate();
             
-            Assert.IsNotNull(errorTree);
-            Assert.AreEqual(typeof(ParentMessage), errorTree.Message.GetType());
+            Assert.IsNotNull(errorTree);            
             Assert.AreEqual(1, errorTree.TotalErrorCount);
             Assert.AreEqual(1, errorTree.ChildErrors.Count());
 
             var childErrorTree = errorTree.ChildErrors.First();
-            
-            Assert.AreEqual(typeof(ChildMessage), childErrorTree.Message.GetType());
+                        
             Assert.AreEqual(1, childErrorTree.TotalErrorCount);
             Assert.IsTrue(childErrorTree.Errors.ContainsKey("Value"));
         }
@@ -162,28 +159,24 @@ namespace System.ComponentModel
             var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree = validator.Validate();
             
-            Assert.IsNotNull(errorTree);
-            Assert.AreEqual(typeof(ParentMessage), errorTree.Message.GetType());
+            Assert.IsNotNull(errorTree);            
             Assert.AreEqual(2, errorTree.TotalErrorCount);
             Assert.AreEqual(1, errorTree.ChildErrors.Count());
 
             var childErrorTree = errorTree.ChildErrors.First();
-
-            Assert.AreEqual(typeof(AttachedCollection<ChildMessage>), childErrorTree.Message.GetType());
+            
             Assert.AreEqual(2, childErrorTree.TotalErrorCount);
             Assert.AreEqual(2, childErrorTree.ChildErrors.Count());
 
             var childErrorTreeOne = childErrorTree.ChildErrors.ElementAt(0);
 
-            Assert.IsNotNull(childErrorTreeOne);
-            Assert.AreEqual(typeof(ChildMessage), childErrorTreeOne.Message.GetType());
+            Assert.IsNotNull(childErrorTreeOne);            
             Assert.AreEqual(1, childErrorTreeOne.TotalErrorCount);
             Assert.IsTrue(childErrorTreeOne.Errors.ContainsKey("Value"));
 
             var childErrorTreeTwo = childErrorTree.ChildErrors.ElementAt(1);
 
-            Assert.IsNotNull(childErrorTreeTwo);
-            Assert.AreEqual(typeof(ChildMessage), childErrorTreeTwo.Message.GetType());
+            Assert.IsNotNull(childErrorTreeTwo);            
             Assert.AreEqual(1, childErrorTreeTwo.TotalErrorCount);
             Assert.IsTrue(childErrorTreeTwo.Errors.ContainsKey("Value"));
         }
@@ -202,29 +195,25 @@ namespace System.ComponentModel
             var validator = message as IMessage<ParentMessage>;
             ValidationErrorTree errorTree = validator.Validate();
             
-            Assert.IsNotNull(errorTree);
-            Assert.AreEqual(typeof(ParentMessage), errorTree.Message.GetType());
+            Assert.IsNotNull(errorTree);            
             Assert.AreEqual(3, errorTree.TotalErrorCount);
             Assert.AreEqual(1, errorTree.ChildErrors.Count());
             Assert.IsTrue(errorTree.Errors.ContainsKey("Value"));
 
             var childErrorTree = errorTree.ChildErrors.First();
-
-            Assert.AreEqual(typeof(AttachedCollection<ChildMessage>), childErrorTree.Message.GetType());
+            
             Assert.AreEqual(2, childErrorTree.TotalErrorCount);
             Assert.AreEqual(2, childErrorTree.ChildErrors.Count());
 
             var childErrorTreeOne = childErrorTree.ChildErrors.ElementAt(0);
 
-            Assert.IsNotNull(childErrorTreeOne);
-            Assert.AreEqual(typeof(ChildMessage), childErrorTreeOne.Message.GetType());
+            Assert.IsNotNull(childErrorTreeOne);            
             Assert.AreEqual(1, childErrorTreeOne.TotalErrorCount);
             Assert.IsTrue(childErrorTreeOne.Errors.ContainsKey("Value"));
 
             var childErrorTreeTwo = childErrorTree.ChildErrors.ElementAt(1);
 
-            Assert.IsNotNull(childErrorTreeTwo);
-            Assert.AreEqual(typeof(ChildMessage), childErrorTreeTwo.Message.GetType());
+            Assert.IsNotNull(childErrorTreeTwo);            
             Assert.AreEqual(1, childErrorTreeTwo.TotalErrorCount);
             Assert.IsTrue(childErrorTreeTwo.Errors.ContainsKey("Value"));
         }        

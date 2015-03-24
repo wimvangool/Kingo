@@ -59,7 +59,7 @@
 
         public ValidationErrorTree Validate()
         {
-            return ValidationErrorTree.NoErrors(this);
+            return ValidationErrorTree.NoErrors;
         }
 
         #endregion

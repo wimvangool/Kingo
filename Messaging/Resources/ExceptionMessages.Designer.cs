@@ -304,6 +304,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified range is not valid: {0}..
+        /// </summary>
+        internal static string Range_InvalidRange {
+            get {
+                return ResourceManager.GetString("Range_InvalidRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot change this collection because it is read-only..
         /// </summary>
         internal static string ReadOnlyDictionary_NotSupported {

@@ -52,7 +52,27 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="AutomaticMessageValidator.cs" />
+    <Compile Include="FluentValidation\AndConstraint.cs" />
+    <Compile Include="FluentValidation\Comparable.T1.cs" />
+    <Compile Include="FluentValidation\Comparer.cs" />
+    <Compile Include="FluentValidation\Constraint.T1.cs" />
+    <Compile Include="FluentValidation\Equatable.T1.cs" />
+    <Compile Include="FluentValidation\ErrorMessage.cs" />
+    <Compile Include="FluentValidation\Constraint.cs" />
+    <Compile Include="FluentValidation\IErrorMessageConsumer.cs" />
+    <Compile Include="FluentValidation\IErrorMessageProducer.cs" />
+    <Compile Include="FluentValidation\IMember.cs" />
+    <Compile Include="FluentValidation\IMemberParent.cs" />
+    <Compile Include="FluentValidation\InternalRange.T1.cs" />
+    <Compile Include="FluentValidation\IRange.T1.cs" />
+    <Compile Include="FluentValidation\NullableMember.T1.cs" />
+    <Compile Include="FluentValidation\NullConstraint.cs" />
+    <Compile Include="FluentValidation\Range.T1.cs" />
+    <Compile Include="FluentValidation\RangeOptions.cs" />
+    <Compile Include="FluentValidation\ValidationErrorConsumer.cs" />
+    <Compile Include="FluentValidation\StringMemberExtensions.cs" />
+    <Compile Include="FluentValidation\Member.T1.cs" />
+    <Compile Include="MessageValidator.cs" />
     <Compile Include="ValueMessage.T1.cs" />
     <Compile Include="BusinessRuleViolationException.cs" />
     <Compile Include="Client\AsyncExecutionTask.T1.cs" />
@@ -78,7 +98,7 @@
     <Compile Include="InstanceLockState.cs" />
     <Compile Include="IInstanceLock.cs" />
     <Compile Include="IMessage.cs" />
-    <Compile Include="ManualMessageValidator.cs" />
+    <Compile Include="FluentValidation\FluentValidator.cs" />
     <Compile Include="Server\IMessageProcessorPipeline.cs" />
     <Compile Include="Server\IMessageToStrategyMapping.T1.cs" />
     <Compile Include="Server\Caching\IQueryCacheStrategy.cs" />
@@ -250,7 +270,7 @@
     <Compile Include="Server\UnitOfWorkItem.cs" />
     <Compile Include="DataAnnotations\RequiredConstraintAttribute.cs" />
     <Compile Include="DataAnnotations\StringConstraint.cs" />
-    <Compile Include="ValidationErrorTreeBuilder.cs" />
+    <Compile Include="FluentValidation\ValidationErrorTreeBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
@@ -268,6 +288,7 @@
     </None>
     <Compile Include="Server\Caching\AspNetCacheEntryLifetime.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"

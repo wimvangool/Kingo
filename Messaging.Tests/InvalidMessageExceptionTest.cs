@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -198,16 +199,20 @@ namespace System.ComponentModel
 
         private static void AssertEqualErrorTree(ValidationErrorTree errorTree, ValidationErrorTree errorTreeCopy)
         {
-            Assert.IsNotNull(errorTreeCopy);
-            Assert.AreSame(errorTree.Message.GetType(), errorTreeCopy.Message.GetType());
+            Assert.IsNotNull(errorTreeCopy);            
             Assert.AreEqual(errorTree.TotalErrorCount, errorTreeCopy.TotalErrorCount);
 
             foreach (var error in errorTree.Errors)
             {
-                string errorMessage;
+                IList<string> errorMessages;
 
-                Assert.IsTrue(errorTreeCopy.Errors.TryGetValue(error.Key, out errorMessage));
-                Assert.AreEqual(error.Value, errorMessage);
+                Assert.IsTrue(errorTreeCopy.Errors.TryGetValue(error.Key, out errorMessages));
+                Assert.AreEqual(error.Value.Count, errorMessages.Count);
+
+                for (int index = 0; index < error.Value.Count; index++)
+                {
+                    Assert.AreEqual(error.Value[index], errorMessages[index]);
+                }
             }
             var childErrors = errorTree.ChildErrors.ToArray();
             var childErrorsCopy = errorTreeCopy.ChildErrors.ToArray();

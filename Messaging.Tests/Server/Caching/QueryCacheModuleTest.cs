@@ -122,11 +122,24 @@ namespace System.ComponentModel.Server.Caching
 
         private sealed class DictionaryCacheModule : QueryCacheModule
         {            
-            public DictionaryCacheModule() : base(LockRecursionPolicy.NoRecursion) { }            
+            public DictionaryCacheModule() : base(LockRecursionPolicy.NoRecursion) { }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (InstanceLock.IsDisposed)
+                {
+                    return;
+                }
+                if (disposing)
+                {
+                    _ApplicationCache.Value.Clear();
+                }
+                base.Dispose(disposing);
+            }
 
             protected override bool TryGetApplicationCacheFactory(out IQueryCacheManagerFactory applicationCacheFactory)
             {
-                applicationCacheFactory = new DictionaryCacheManagerFactory(_ApplicationCache, this);
+                applicationCacheFactory = new DictionaryCacheManagerFactory(_ApplicationCache.Value, this);
                 return true;
             }
 
@@ -135,7 +148,8 @@ namespace System.ComponentModel.Server.Caching
                 throw new NotSupportedException();
             }
 
-            private static readonly Dictionary<object, object> _ApplicationCache = new Dictionary<object, object>();
+            private static readonly ThreadLocal<Dictionary<object, object>> _ApplicationCache =
+                new ThreadLocal<Dictionary<object, object>>(() => new Dictionary<object, object>());
         }
 
         private sealed class DictionaryCacheManager : QueryCacheManager

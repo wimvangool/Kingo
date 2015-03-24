@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace System.ComponentModel
+﻿namespace System.ComponentModel
 {
     /// <summary>
     /// When implemented by a class, represents a validator for a specific message.
