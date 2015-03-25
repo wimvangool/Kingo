@@ -5,9 +5,9 @@ namespace System.ComponentModel.FluentValidation
     /// <summary>
     /// Represents a builder that can be used to build new instances of the <see cref="ValidationErrorTree" /> class.
     /// </summary>
-    public class ValidationErrorTreeBuilder
+    public class ValidationErrorTreeBuilder : IErrorMessageConsumer
     {                
-        private readonly Dictionary<string, IList<string>> _errors;
+        private readonly Dictionary<string, string> _errors;
         private readonly List<ValidationErrorTree> _childErrors;
 
         /// <summary>
@@ -15,7 +15,7 @@ namespace System.ComponentModel.FluentValidation
         /// </summary>        
         public ValidationErrorTreeBuilder()
         {            
-            _errors = new Dictionary<string, IList<string>>();
+            _errors = new Dictionary<string, string>();
             _childErrors = new List<ValidationErrorTree>();
         }
 
@@ -83,6 +83,9 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="memberName"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>        
+        /// <exception cref="ArgumentException">
+        /// An error for the specified <paramref name="memberName"/> has already been added.
+        /// </exception>
         public void Add(string memberName, ErrorMessage errorMessage)
         {
             if (memberName == null)
@@ -93,13 +96,7 @@ namespace System.ComponentModel.FluentValidation
             {
                 throw new ArgumentNullException("errorMessage");
             }
-            IList<string> errors;
-
-            if (!_errors.TryGetValue(memberName, out errors))
-            {
-                _errors.Add(memberName, errors = new List<string>());
-            }
-            errors.Add(errorMessage.ToString());
+            _errors.Add(memberName, errorMessage.ToString());
         }
 
         /// <summary>

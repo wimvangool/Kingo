@@ -2,12 +2,12 @@
 {
     internal sealed class NullConstraint : Constraint
     {
-        internal override Constraint And(Constraint constraint)
+        internal override Constraint And(Constraint constraint, IErrorMessageConsumer consumer)
         {            
             return constraint;
         }
 
-        public override int Accept(IErrorMessageConsumer consumer)
+        public override int AddErrorMessagesTo(IErrorMessageConsumer consumer)
         {
             return 0;
         }

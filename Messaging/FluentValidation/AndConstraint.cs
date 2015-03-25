@@ -11,12 +11,12 @@
             _right = right;
         }        
 
-        public override int Accept(IErrorMessageConsumer consumer)
+        public override int AddErrorMessagesTo(IErrorMessageConsumer consumer)
         {
-            int errorCount = _left.Accept(consumer);
+            int errorCount = _left.AddErrorMessagesTo(consumer);
             if (errorCount == 0)
             {
-                errorCount = _right.Accept(consumer);
+                errorCount = _right.AddErrorMessagesTo(consumer);
             }
             return errorCount;
         }

@@ -67,9 +67,9 @@ namespace System.ComponentModel
             }
         }        
 
-        private static Dictionary<string, IList<string>> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)
+        private static Dictionary<string, string> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)
         {
-            var errorMessagesPerMember = new Dictionary<string, IList<string>>();
+            var errorMessagesPerMember = new Dictionary<string, string>();
 
             foreach (var result in validationResults)
             {
@@ -78,17 +78,20 @@ namespace System.ComponentModel
             return errorMessagesPerMember;
         }        
 
-        private static void AppendErrorMessage(IDictionary<string, IList<string>> errorMessageBuilder, ValidationResult result)
+        private static void AppendErrorMessage(IDictionary<string, string> errorMessageBuilder, ValidationResult result)
         {
             foreach (var memberName in result.MemberNames)
             {
-                IList<string> errorMessages;
+                string errorMessage;
 
-                if (!errorMessageBuilder.TryGetValue(memberName, out errorMessages))
+                if (errorMessageBuilder.TryGetValue(memberName, out errorMessage))
                 {
-                    errorMessageBuilder.Add(memberName, errorMessages = new List<string>());
+                    errorMessageBuilder[memberName] = errorMessage + Environment.NewLine + result.ErrorMessage;
                 }
-                errorMessages.Add(result.ErrorMessage);
+                else
+                {
+                    errorMessageBuilder.Add(memberName, result.ErrorMessage);
+                }
             }
         }
     }

@@ -5,7 +5,7 @@ namespace System.ComponentModel.FluentValidation
     /// <summary>
     /// Represents an error message with optional arguments for formatting.
     /// </summary>
-    public sealed class ErrorMessage : IErrorMessageProducer
+    public sealed class ErrorMessage
     {        
         private readonly string _errorMessageFormat;
         private readonly object[] _errorMessageArguments;
@@ -103,17 +103,6 @@ namespace System.ComponentModel.FluentValidation
                 return _errorMessageFormat;
             }
             return string.Format(provider, _errorMessageFormat, _errorMessageArguments);
-        }
-
-        /// <inheritdoc />
-        public int Accept(IErrorMessageConsumer consumer)
-        {
-            if (consumer == null)
-            {
-                return 0;
-            }
-            consumer.Add(this);
-            return 1;
-        }
+        }      
     }
 }

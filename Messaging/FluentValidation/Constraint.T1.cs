@@ -2,11 +2,11 @@
 {
     internal sealed class Constraint<TValue> : Constraint
     {
-        private readonly Member<TValue> _valueProvider;
+        private readonly Member<TValue> _member;
         private readonly Func<TValue, bool> _constraint;
         private readonly ErrorMessage _errorMessage;
 
-        internal Constraint(Member<TValue> valueProvider, Func<TValue, bool> constraint, ErrorMessage errorMessage)
+        internal Constraint(Member<TValue> member, Func<TValue, bool> constraint, ErrorMessage errorMessage)
         {
             if (constraint == null)
             {
@@ -16,18 +16,19 @@
             {
                 throw new ArgumentNullException("errorMessage");
             }
-            _valueProvider = valueProvider;
+            _member = member;
             _constraint = constraint;
             _errorMessage = errorMessage;
         }        
 
-        public override int Accept(IErrorMessageConsumer consumer)
+        public override int AddErrorMessagesTo(IErrorMessageConsumer consumer)
         {            
-            if (consumer == null || _constraint.Invoke(_valueProvider.Value))
+            if (consumer == null || _constraint.Invoke(_member.Value))
             {
                 return 0;
             }
-            return _errorMessage.Accept(consumer);
+            consumer.Add(_member.Name, _errorMessage);
+            return 1;
         }        
     }
 }

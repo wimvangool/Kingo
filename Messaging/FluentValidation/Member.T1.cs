@@ -9,57 +9,57 @@ namespace System.ComponentModel.FluentValidation
     /// <typeparam name="TValue">Type of the member's value.</typeparam>
     public class Member<TValue> : IMember
     {
-        private readonly IMemberParent _parent;
+        private readonly MemberSet _memberSet;
         private readonly string _name;
         private readonly Lazy<TValue> _value;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Member{TValue}" /> class.
-        /// </summary>
-        /// <param name="parent">The parent of this member.</param>
-        /// <param name="memberExpression">An expression that returns an instance of <typeparamref name="TValue"/>.</param>
+        /// </summary> 
+        /// <param name="memberSet">The set this member belongs to.</param>       
+        /// <param name="memberExpression">An expression that returns an instance of <typeparamref name="TValue"/>.</param>        
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="parent"/> or <paramref name="memberExpression"/> is <c>null</c>.
+        /// <paramref name="memberSet"/> or <paramref name="memberExpression"/> is <c>null</c>.
         /// </exception>
-        public Member(IMemberParent parent, Expression<Func<TValue>> memberExpression)
-        {
-            if (parent == null)
+        public Member(MemberSet memberSet, Expression<Func<TValue>> memberExpression)
+        {        
+            if (memberSet == null)
             {
-                throw new ArgumentNullException("parent");
+                throw new ArgumentNullException("memberSet");
             }
             if (memberExpression == null)
             {
                 throw new ArgumentNullException("memberExpression");
             }
-            _parent = parent;
+            _memberSet = memberSet;       
             _name = ExtractMemberNameOf(memberExpression);
-            _value = new Lazy<TValue>(memberExpression.Compile());
+            _value = new Lazy<TValue>(memberExpression.Compile());            
 
             Constraint = new NullConstraint();
         }
 
-        internal Member(IMemberParent parent, string name, Func<TValue> valueProvider, Constraint constraint)
+        internal Member(MemberSet memberSet, string name, Func<TValue> valueProvider, Constraint constraint)
         {
-            _parent = parent;
+            _memberSet = memberSet;
             _name = name;
-            _value = new Lazy<TValue>(valueProvider);
+            _value = new Lazy<TValue>(valueProvider);            
 
             Constraint = constraint;
-        }
+        }        
 
         /// <summary>
-        /// The parent of this member.
+        /// The set this member belongs to.
         /// </summary>
-        protected IMemberParent Parent
+        protected MemberSet MemberSet
         {
-            get { return _parent; }
+            get { return _memberSet; }
         }
 
         internal Constraint Constraint
         {
             get;
             private set;
-        }
+        }        
 
         #region [====== IMember & IErrorMessageProducer ======]
 
@@ -89,9 +89,9 @@ namespace System.ComponentModel.FluentValidation
             get { return _value.Value; }
         }
 
-        int IErrorMessageProducer.Accept(IErrorMessageConsumer consumer)
+        void IErrorMessageProducer.AddErrorMessagesTo(IErrorMessageConsumer consumer)
         {
-            return Constraint.Accept(consumer);
+            Constraint.AddErrorMessagesTo(consumer);
         }
 
         private static string ExtractMemberNameOf(Expression valueExpression)
@@ -483,9 +483,9 @@ namespace System.ComponentModel.FluentValidation
         private Member<TOther> CastMemberTo<TOther>(ErrorMessage errorMessage)
         {
             var constraint = IsInstanceOfConstraint(typeof(TOther), errorMessage);
-            var member = new Member<TOther>(Parent, Name, CastValueTo<TOther>, constraint);
+            var member = new Member<TOther>(MemberSet, Name, CastValueTo<TOther>, constraint);
 
-            Parent.ReplaceMember(_name, this, member);
+            MemberSet.Replace(this, member);
 
             return member;
         }
@@ -497,7 +497,7 @@ namespace System.ComponentModel.FluentValidation
 
         private Constraint IsInstanceOfConstraint(Type type, ErrorMessage errorMessage)
         {
-            return Constraint.And(this, value => IsInstanceOf(value, type), errorMessage);
+            return Constraint.And(this, value => IsInstanceOf(value, type), errorMessage, MemberSet.Consumer);
         }
 
         /// <summary>
@@ -2774,7 +2774,7 @@ namespace System.ComponentModel.FluentValidation
         /// </exception> 
         public Member<TValue> Satisfies(Func<TValue, bool> constraint, ErrorMessage errorMessage)
         {            
-            Constraint = Constraint.And(this, constraint, errorMessage);
+            Constraint = Constraint.And(this, constraint, errorMessage, MemberSet.Consumer);            
             return this;
         }
 

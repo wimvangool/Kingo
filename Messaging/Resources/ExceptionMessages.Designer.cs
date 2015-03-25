@@ -223,6 +223,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A member with name &apos;{0}&apos; has already been added to the set..
+        /// </summary>
+        internal static string MemberSet_MemberAlreadyAdded {
+            get {
+                return ResourceManager.GetString("MemberSet_MemberAlreadyAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
         /// </summary>
         internal static string Message_AmbiguousAttributeMatch {

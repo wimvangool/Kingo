@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace System.ComponentModel.FluentValidation
 {
@@ -7,16 +6,16 @@ namespace System.ComponentModel.FluentValidation
     /// Represents a <see cref="IMessageValidator" /> in which validation-errors are reported
     /// through a <see cref="ValidationErrorTreeBuilder" />.
     /// </summary>    
-    public sealed class FluentValidator : IMessageValidator, IMemberParent
+    public sealed class FluentValidator : IMessageValidator
     {        
-        private readonly Dictionary<string, List<IErrorMessageProducer>> _memberConstraints;
+        private readonly MemberSet _memberSet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FluentValidator" /> class.
         /// </summary>        
         public FluentValidator()
-        {           
-            _memberConstraints = new Dictionary<string, List<IErrorMessageProducer>>();
+        {                      
+            _memberSet = new MemberSet();
         }
 
         /// <summary>
@@ -33,13 +32,12 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="memberExpression"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="memberExpression"/> refers to a member that was already added.
+        /// </exception>
         public Member<TValue> VerifyThat<TValue>(Expression<Func<TValue>> memberExpression)
         {
-            var member = new Member<TValue>(this, memberExpression);
-
-            Add(member);
-
-            return member;
+            return _memberSet.Add(memberExpression);
         }
 
         /// <summary>
@@ -56,59 +54,22 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="memberExpression"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="memberExpression"/> refers to a member that was already added.
+        /// </exception>
         public NullableMember<TValue> VerifyThat<TValue>(Expression<Func<TValue?>> memberExpression) where TValue : struct
         {
-            var member = new NullableMember<TValue>(this, memberExpression);
-
-            Add(member);
-
-            return member;
-        }
-
-        private void Add(IMember member)
-        {
-            var memberName = member.Name;
-            List<IErrorMessageProducer> producers;
-
-            if (!_memberConstraints.TryGetValue(memberName, out producers))
-            {
-                _memberConstraints.Add(memberName, producers = new List<IErrorMessageProducer>());
-            }
-            producers.Add(member);            
-        }
-
-        void IMemberParent.ReplaceMember(string memberName, IErrorMessageProducer oldProducer, IErrorMessageProducer newProducer)
-        {
-            if (memberName == null)
-            {
-                throw new ArgumentNullException("memberName");
-            }
-            List<IErrorMessageProducer> producers;
-
-            if (_memberConstraints.TryGetValue(memberName, out producers) && producers.Remove(oldProducer))
-            {
-                producers.Add(newProducer);
-            }
-        }
+            return _memberSet.Add(memberExpression);
+        }        
 
         /// <inheritdoc />
         public ValidationErrorTree Validate()
         {
-            var builder = new ValidationErrorTreeBuilder();
+            var errorTreeBuilder = new ValidationErrorTreeBuilder();
 
-            foreach (var constraints in _memberConstraints)
-            {
-                var consumer = new ValidationErrorConsumer(builder, constraints.Key);
+            _memberSet.AddErrorMessagesTo(errorTreeBuilder);
 
-                foreach (var producer in constraints.Value)
-                {
-                    if (producer.Accept(consumer) > 0)
-                    {
-                        break;
-                    }
-                }
-            }
-            return builder.BuildErrorTree();
+            return errorTreeBuilder.BuildErrorTree();
         }        
     }
 }

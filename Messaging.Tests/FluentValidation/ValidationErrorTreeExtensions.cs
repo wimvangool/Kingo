@@ -14,7 +14,7 @@ namespace System.ComponentModel.FluentValidation
         {
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(1, errorTree.TotalErrorCount);
-            Assert.AreEqual(errorMessage, errorTree.Errors["Member"][0]);
+            Assert.AreEqual(errorMessage, errorTree.Errors["Member"]);
         }
     }
 }

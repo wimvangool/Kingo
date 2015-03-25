@@ -11,13 +11,13 @@ namespace System.ComponentModel.FluentValidation
         /// <summary>
         /// Initializes a new instance of the <see cref="NullableMember{TValue}" /> class.
         /// </summary>
-        /// <param name="parent">The parent of this member.</param>
-        /// <param name="memberExpression">An expression that returns a nullable instance of <typeparamref name="TValue"/>.</param>
+        /// <param name="memberSet">The set this member belongs to.</param>       
+        /// <param name="memberExpression">An expression that returns an instance of <typeparamref name="TValue"/>.</param>        
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="parent"/> or <paramref name="memberExpression"/> is <c>null</c>.
+        /// <paramref name="memberSet"/> or <paramref name="memberExpression"/> is <c>null</c>.
         /// </exception>
-        public NullableMember(IMemberParent parent, Expression<Func<TValue?>> memberExpression)
-            : base(parent, memberExpression) { }
+        public NullableMember(MemberSet memberSet, Expression<Func<TValue?>> memberExpression)
+            : base(memberSet, memberExpression) { }
 
         #region [====== IsNotNull ======]
 
@@ -87,17 +87,17 @@ namespace System.ComponentModel.FluentValidation
         
         private Member<TValue> ValueOfNullable(ErrorMessage errorMessage)
         {
-            var constraint = IsNotNullConstraint(errorMessage);
-            var member = new Member<TValue>(Parent, Name, GetValue, constraint);
+            var constraint = IsNotNullConstraint(errorMessage);            
+            var member = new Member<TValue>(MemberSet, Name, GetValue, constraint);
 
-            Parent.ReplaceMember(Name, this, member);
+            MemberSet.Replace(this, member);
 
             return member;
         }
 
         private Constraint IsNotNullConstraint(ErrorMessage errorMessage)
         {
-            return Constraint.And(this, value => value.HasValue, errorMessage);
+            return Constraint.And(this, value => value.HasValue, errorMessage, MemberSet.Consumer);
         }
 
         private TValue GetValue()

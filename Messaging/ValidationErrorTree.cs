@@ -11,7 +11,7 @@ namespace System.ComponentModel
     public sealed class ValidationErrorTree : IDataErrorInfo
     {        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ReadOnlyDictionary<string, IList<string>> _errors;
+        private readonly ReadOnlyDictionary<string, string> _errors;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Lazy<string> _error;
@@ -23,7 +23,7 @@ namespace System.ComponentModel
         /// Initializes a new instance of the <see cref="ValidationErrorTree" /> class.
         /// </summary>        
         /// <param name="errors">Error-messages indexed by property- or fieldname.</param>                
-        public ValidationErrorTree(IDictionary<string, IList<string>> errors)
+        public ValidationErrorTree(IDictionary<string, string> errors)
             : this(errors, null) { }
  
         /// <summary>
@@ -31,14 +31,14 @@ namespace System.ComponentModel
         /// </summary>        
         /// <param name="errors">Error-messages indexed by property- or fieldname.</param>
         /// <param name="childErrors">Trees containing errors for any child-messages.</param>        
-        public ValidationErrorTree(IDictionary<string, IList<string>> errors, IEnumerable<ValidationErrorTree> childErrors)
+        public ValidationErrorTree(IDictionary<string, string> errors, IEnumerable<ValidationErrorTree> childErrors)
         {            
-            _errors = new ReadOnlyDictionary<string, IList<string>>(errors);
+            _errors = new ReadOnlyDictionary<string, string>(errors);
             _error = new Lazy<string>(CreateError);
             _childErrorTrees = Trim(childErrors);
         }
 
-        private ValidationErrorTree(ReadOnlyDictionary<string, IList<string>> errors, IEnumerable<ValidationErrorTree> childErrors)
+        private ValidationErrorTree(ReadOnlyDictionary<string, string> errors, IEnumerable<ValidationErrorTree> childErrors)
         {            
             _errors = errors;
             _childErrorTrees = Trim(childErrors);
@@ -50,11 +50,11 @@ namespace System.ComponentModel
         {
             get
             {
-                IList<string> errorMessages;
+                string errorMessage;
 
-                if (_errors.TryGetValue(columnName, out errorMessages))
+                if (_errors.TryGetValue(columnName, out errorMessage))
                 {
-                    return Concatenate(errorMessages);
+                    return errorMessage;
                 }
                 return null;
             }
@@ -67,7 +67,7 @@ namespace System.ComponentModel
 
         private string CreateError()
         {
-            return _errors.Count == 0 ? null : Concatenate(_errors.Values.Select(Concatenate));
+            return _errors.Count == 0 ? null : Concatenate(_errors.Values);
         }
 
         internal static string Concatenate(IEnumerable<string> errorMessages)
@@ -82,14 +82,14 @@ namespace System.ComponentModel
         /// </summary>
         public int TotalErrorCount
         {
-            get { return _errors.Values.Sum(errors => errors.Count) + ChildErrors.Sum(errorTree => errorTree.TotalErrorCount); }
+            get { return _errors.Count + ChildErrors.Sum(errorTree => errorTree.TotalErrorCount); }
         }
 
         /// <summary>
         /// Returns the errors that were detected on the message. The key represent a property or field,
         /// the value contains the error message.
         /// </summary>
-        public IDictionary<string, IList<string>> Errors
+        public IDictionary<string, string> Errors
         {
             get { return _errors; }
         }
@@ -116,11 +116,11 @@ namespace System.ComponentModel
         /// <summary>
         /// An instance of the <see cref="ValidationErrorTree" /> class without any errors.
         /// </summary>       
-        public static readonly ValidationErrorTree NoErrors = new ValidationErrorTree(new ReadOnlyDictionary<string, IList<string>>(), null);                      
+        public static readonly ValidationErrorTree NoErrors = new ValidationErrorTree(new ReadOnlyDictionary<string, string>(), null);                      
         
         internal static ValidationErrorTree Merge(IEnumerable<ValidationErrorTree> childErrors)
         {
-            return new ValidationErrorTree(new ReadOnlyDictionary<string, IList<string>>(), childErrors);
+            return new ValidationErrorTree(new ReadOnlyDictionary<string, string>(), childErrors);
         }
 
         /// <summary>

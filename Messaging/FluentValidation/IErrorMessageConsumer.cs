@@ -8,7 +8,8 @@
         /// <summary>
         /// Adds an error message to the consumer.
         /// </summary>
+        /// <param name="memberName">Name of the member for which the <paramref name="errorMessage"/> was generated.</param>
         /// <param name="errorMessage">An error message.</param>
-        void Add(ErrorMessage errorMessage);
+        void Add(string memberName, ErrorMessage errorMessage);
     }
 }
