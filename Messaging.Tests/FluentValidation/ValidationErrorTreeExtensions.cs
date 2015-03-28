@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.FluentValidation
 {
@@ -12,9 +13,14 @@ namespace System.ComponentModel.FluentValidation
 
         internal static void AssertOneError(this ValidationErrorTree errorTree, string errorMessage)
         {
+            AssertOneError(errorTree, errorMessage, "Member");
+        }
+
+        internal static void AssertOneError(this ValidationErrorTree errorTree, string errorMessage, string memberName)
+        {
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(1, errorTree.TotalErrorCount);
-            Assert.AreEqual(errorMessage, errorTree.Errors["Member"]);
-        }
+            Assert.AreEqual(errorMessage, errorTree.Errors[memberName]);
+        }        
     }
 }

@@ -30,7 +30,7 @@ namespace System.ComponentModel.DataAnnotations
 
             private object _objectValue;
 
-            [RequiredConstraint]           
+            [RequiredMember]           
             public object ObjectValue
             {
                 get { return _objectValue; }
@@ -48,7 +48,7 @@ namespace System.ComponentModel.DataAnnotations
 
             private string _stringValueThatCannotBeEmpty;
 
-            [RequiredConstraint(StringConstraint = StringConstraint.NotNullOrEmpty)]           
+            [RequiredMember(StringConstraint = StringConstraint.NotNullOrEmpty)]           
             public string StringValueThatCannotBeEmpty
             {
                 get { return _stringValueThatCannotBeEmpty; }
@@ -66,7 +66,7 @@ namespace System.ComponentModel.DataAnnotations
 
             private String _stringValueThatCannotBeWhiteSpace;
 
-            [RequiredConstraint(StringConstraint = StringConstraint.NotNullOrWhiteSpace)]
+            [RequiredMember(StringConstraint = StringConstraint.NotNullOrWhiteSpace)]
             public string StringValueThatCannotBeWhiteSpace
             {
                 get { return _stringValueThatCannotBeWhiteSpace; }
@@ -84,7 +84,7 @@ namespace System.ComponentModel.DataAnnotations
 
             private int? _nullableIntValue;
 
-            [RequiredConstraint]
+            [RequiredMember]
             public int? NullableIntValue
             {
                 get { return _nullableIntValue; }
@@ -102,7 +102,7 @@ namespace System.ComponentModel.DataAnnotations
 
             private int _intValue;
 
-            [RequiredConstraint]
+            [RequiredMember]
             public int IntValue
             {
                 get { return _intValue; }
@@ -120,7 +120,7 @@ namespace System.ComponentModel.DataAnnotations
 
             private Guid _guidValue;
 
-            [RequiredConstraint]
+            [RequiredMember]
             public Guid GuidValue
             {
                 get { return _guidValue; }

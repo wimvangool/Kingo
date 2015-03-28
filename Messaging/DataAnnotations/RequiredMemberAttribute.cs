@@ -7,14 +7,14 @@ namespace System.ComponentModel.DataAnnotations
     /// When applied to a property, indicates that this property must be set to a non-null or non-zero value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public sealed class RequiredConstraintAttribute : ConstraintAttribute
+    public sealed class RequiredMemberAttribute : MemberValidationAttribute
     {
         private readonly Dictionary<Type, Func<object, ValidationContext, ValidationResult>> _validationMethods;    
 	
         /// <summary>
-        /// Initializes a new instance of the <see cref="RequiredConstraintAttribute" /> class.
+        /// Initializes a new instance of the <see cref="RequiredMemberAttribute" /> class.
         /// </summary>
-	    public RequiredConstraintAttribute()
+	    public RequiredMemberAttribute()
 	    {
             _validationMethods = new Dictionary<Type, Func<object, ValidationContext, ValidationResult>>()
 		    {
@@ -52,7 +52,7 @@ namespace System.ComponentModel.DataAnnotations
 		    {
 			    return result;
 		    }
-		    return Valid;
+		    return ValidResult;
 	    }	
 	
 	    private bool TryValidateKnownType(object value, ValidationContext validationContext, out ValidationResult result)
@@ -61,7 +61,7 @@ namespace System.ComponentModel.DataAnnotations
 		
 		    if (IsNullable(valueType))
 		    {
-			    result = Valid;
+			    result = ValidResult;
 			    return true;
 		    }
 		    Func<object, ValidationContext, ValidationResult> validationMethod;
@@ -85,13 +85,13 @@ namespace System.ComponentModel.DataAnnotations
 		    switch (constraint)
 		    {
 			    case StringConstraint.NotNull:
-				    return Valid;
+				    return ValidResult;
 			
 			    case StringConstraint.NotNullOrEmpty:
-				    return value.Length == 0 ? NotValid(validationContext) : Valid;
+				    return value.Length == 0 ? NotValid(validationContext) : ValidResult;
 				
 			    case StringConstraint.NotNullOrWhiteSpace:
-				    return string.IsNullOrWhiteSpace(value) ? NotValid(validationContext) : Valid;
+				    return string.IsNullOrWhiteSpace(value) ? NotValid(validationContext) : ValidResult;
 				
 			    default:
 				    throw NewInvalidStringConstraintException(constraint);
@@ -100,27 +100,27 @@ namespace System.ComponentModel.DataAnnotations
 
         private ValidationResult IsValidInteger(long value, ValidationContext validationContext)
 	    {            
-            return value == 0L ? NotValid(validationContext) : Valid;		    
+            return value == 0L ? NotValid(validationContext) : ValidResult;		    
 	    }
 
         private ValidationResult IsValidDouble(double value, ValidationContext validationContext)
 	    {
-            return (double.IsNaN(value) || double.IsInfinity(value) || value == 0.0) ? NotValid(validationContext) : Valid;
+            return (double.IsNaN(value) || double.IsInfinity(value) || value == 0.0) ? NotValid(validationContext) : ValidResult;
 	    }
 
         private ValidationResult IsValidDecimal(decimal value, ValidationContext validationContext)
 	    {            
-            return value == 0.0M ? NotValid(validationContext) : Valid;		    
+            return value == 0.0M ? NotValid(validationContext) : ValidResult;		    
 	    }
 
         private ValidationResult IsValidGuid(Guid value, ValidationContext validationContext)
 	    {
-            return value == Guid.Empty ? NotValid(validationContext) : Valid;		    
+            return value == Guid.Empty ? NotValid(validationContext) : ValidResult;		    
 	    }
 	  
         private ValidationResult NotValid(ValidationContext validationContext)
         {
-            return NotValid(validationContext, ValidationMessages.Required_MissingRequiredValue);
+            return InvalidResult(validationContext, ValidationMessages.RequiredMemberAttribute_MissingRequiredValue);
         }
 
         private static Exception NewInvalidStringConstraintException(StringConstraint constraint)

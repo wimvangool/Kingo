@@ -56,7 +56,7 @@ namespace System.ComponentModel
             private const string _ValueKey = "_value";            
             private int _value;
 
-            [RequiredConstraint]
+            [RequiredMember]
             public int Value
             {
                 get { return _value; }
@@ -127,7 +127,7 @@ namespace System.ComponentModel
             private const string _ValueKey = "_value";
             private int _value;
 
-            [RequiredConstraint]
+            [RequiredMember]
             public int Value
             {
                 get { return _value; }

@@ -7,6 +7,14 @@
     public interface IMember : IErrorMessageProducer
     {
         /// <summary>
+        /// The full name of this member.
+        /// </summary>
+        string FullName
+        {
+            get;
+        }
+
+        /// <summary>
         /// The name of this member.
         /// </summary>
         string Name

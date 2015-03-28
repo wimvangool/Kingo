@@ -228,4 +228,7 @@
   <data name="MemberSet_MemberAlreadyAdded" xml:space="preserve">
     <value>A member with name '{0}' has already been added to the set.</value>
   </data>
+  <data name="MemberSet_UnsupportedExpression" xml:space="preserve">
+    <value>Specified expression is not supported: '{0}'.</value>
+  </data>
 </root>

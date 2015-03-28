@@ -68,7 +68,7 @@ namespace System.ComponentModel
 
             private int _value;
 
-            [RequiredConstraint]           
+            [RequiredMember]           
             public int Value
             {
                 get { return _value; }

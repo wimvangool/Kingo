@@ -17,10 +17,10 @@
     /// to get the appropriate label.
     /// </para>
     /// </remarks>
-    public abstract class ConstraintAttribute : ValidationAttribute
+    public abstract class MemberValidationAttribute : ValidationAttribute
     {
         /// <inheritdoc />
-        protected virtual ValidationResult NotValid(ValidationContext validationContext, string errorMessage)
+        protected virtual ValidationResult InvalidResult(ValidationContext validationContext, string errorMessage)
         {
             if (validationContext == null)
             {
@@ -35,7 +35,7 @@
         /// <summary>
         /// The <see cref="ValidationResult" /> that indicates validation succeeded.
         /// </summary>
-        protected static readonly ValidationResult Valid = ValidationResult.Success;
+        protected static readonly ValidationResult ValidResult = ValidationResult.Success;
 
         /// <summary>
         /// Attempts to resolve a particular service using the specified <paramref name="serviceProvider"/>.

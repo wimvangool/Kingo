@@ -117,7 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Required_MissingRequiredValue" xml:space="preserve">
+  <data name="EnumerableMember_HasElementAt_Failed" xml:space="preserve">
+    <value>Member '{0}' has no element at index '{1}'.</value>
+  </data>
+  <data name="Member_HasValue_Failed" xml:space="preserve">
+    <value>Member '{0}' has no value.</value>
+  </data>
+  <data name="Member_IsEqualTo_Failed" xml:space="preserve">
+    <value>Member '{0}' is not equal to '{1}'.</value>
+  </data>
+  <data name="Member_IsGreaterThanOrEqualTo_Failed" xml:space="preserve">
+    <value>Member '{0}' is not greater than or equal to '{1}'.</value>
+  </data>
+  <data name="Member_IsGreaterThan_Failed" xml:space="preserve">
+    <value>Member '{0}' is not greater than '{1}'.</value>
+  </data>
+  <data name="Member_IsInstanceOf_Failed" xml:space="preserve">
+    <value>Member '{0}' is not an instance of '{1}'.</value>
+  </data>
+  <data name="Member_IsIsRange_Failed" xml:space="preserve">
+    <value>Member '{0}' is not in range of '{1}'.</value>
+  </data>
+  <data name="Member_IsNotEqualTo_Failed" xml:space="preserve">
+    <value>Member '{0}' is equal to '{1}'.</value>
+  </data>
+  <data name="Member_IsNotInRange_Failed" xml:space="preserve">
+    <value>Member '{0}' is in range of '{1}'.</value>
+  </data>
+  <data name="Member_IsNotInstanceOf_Failed" xml:space="preserve">
+    <value>Member '{0}' is an instance of '{1}'.</value>
+  </data>
+  <data name="Member_IsNotNull_Failed" xml:space="preserve">
+    <value>Member '{0}' is null.</value>
+  </data>
+  <data name="Member_IsNotSameInstanceAs_Failed" xml:space="preserve">
+    <value>Member '{0}' is the same instance as '{1}'.</value>
+  </data>
+  <data name="Member_IsNull_Failed" xml:space="preserve">
+    <value>Member '{0}' is not null.</value>
+  </data>
+  <data name="Member_IsSameInstanceAs_Failed" xml:space="preserve">
+    <value>Member '{0}' is not the same instance as '{1}'.</value>
+  </data>
+  <data name="Member_IsSmallerThanOrEqualTo_Failed" xml:space="preserve">
+    <value>Member '{0}' is not smaller than or equal to '{1}'.</value>
+  </data>
+  <data name="Member_IsSmallerThan_Failed" xml:space="preserve">
+    <value>Member '{0}' is not smaller than '{1}'.</value>
+  </data>
+  <data name="RequiredMemberAttribute_MissingRequiredValue" xml:space="preserve">
     <value>Property '{0}' is required but was not specified.</value>
   </data>
 </root>

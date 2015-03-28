@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.FluentValidation
@@ -89,6 +90,73 @@ namespace System.ComponentModel.FluentValidation
             validator.VerifyThat(() => message.Member).Satisfies(value => false, errorMessageFormat, arg0, arg1, arg2);
 
             validator.Validate().AssertOneError(string.Format(errorMessageFormat, arg0, arg1, arg2));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void VerifyThat_Throws_IfExpressionIsArrayIndexer()
+        {
+            var message = new ValidatedMessage<int[]>(new[] { 0, 1, 2, 3 });
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member[1]);
+        }
+
+        #endregion
+
+        #region [====== And ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void And_Throws_IfArgumentIsNull()
+        {
+            var message = new ValidatedMessage<object>(new object());
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage).And(null); ;
+        }
+
+        [TestMethod]
+        public void And_ReturnsNoErrors_IfChildValidationSucceeds()
+        {
+            var message = new ValidatedMessage<object>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member)
+                .IsNotNull(_errorMessage)
+                .IsInstanceOf<string>(_errorMessage)
+                .And(value => validator.VerifyThat(() => value.Length).IsEqualTo(10, _errorMessage));
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void And_ReturnsExpectedError_IfChildValidationFails()
+        {
+            var message = new ValidatedMessage<object>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member)
+                .IsNotNull(_errorMessage)
+                .IsInstanceOf<string>(_errorMessage)
+                .And(value => validator.VerifyThat(() => value.Length).IsNotEqualTo(10, _errorMessage));
+
+            validator.Validate().AssertOneError(_errorMessage, "Member.Length");
+        }
+
+        [TestMethod]
+        public void And_ReturnsExpectedError_IfChildOfChildValidationFails()
+        {
+            var message = new ValidatedMessage<ValidatedMessage<object>>(new ValidatedMessage<object>("Some value"));
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage).And(innerMessage =>            
+                validator.VerifyThat(() => innerMessage.Member).IsInstanceOf<string>().And(value =>                
+                    validator.VerifyThat(() => value.Length).IsNotEqualTo(10, _errorMessage)
+                )
+            );
+
+            validator.Validate().AssertOneError(_errorMessage, "Member.Member.Length");
         }
 
         #endregion
@@ -512,6 +580,84 @@ namespace System.ComponentModel.FluentValidation
                 .IsNotEqualTo(member + 1, _errorMessage);
 
             validator.Validate().AssertNoErrors();
+        }
+
+        #endregion
+
+        #region [====== IsNotSameInstanceAs ======]
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsExpectedError_IfBothObjectsAreNull()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsNotSameInstanceAs(null, _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsExpectedError_IfObjectsAreSameInstance()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsNotSameInstanceAs(member, _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsNoErrors_IfObjectsAreNotSameInstance()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsNotSameInstanceAs(new object(), _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        #endregion
+
+        #region [====== IsSameInstanceAs ======]
+
+        [TestMethod]
+        public void ValidateIsSameInstanceAs_ReturnsNoErrors_IfBothObjectsAreNull()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsSameInstanceAs(null, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSameInstanceAs_ReturnsNoErrors_IfObjectsAreSameInstance()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsSameInstanceAs(member, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSameInstanceAs_ReturnsExpectedError_IfObjectsAreNotSameInstance()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsSameInstanceAs(new object(), _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
         }
 
         #endregion

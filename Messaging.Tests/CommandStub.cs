@@ -15,7 +15,7 @@ namespace System.ComponentModel
 
         private string _value;
 
-        [RequiredConstraint]
+        [RequiredMember]
         public string Value
         {
             get { return _value; }

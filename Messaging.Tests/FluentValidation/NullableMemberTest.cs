@@ -21,7 +21,7 @@ namespace System.ComponentModel.FluentValidation
             var message = new ValidatedMessage<int?>(null);
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage);
+            validator.VerifyThat(() => message.Member).HasValue(_errorMessage);
 
             validator.Validate().AssertOneError(_errorMessage);
         }
@@ -33,7 +33,7 @@ namespace System.ComponentModel.FluentValidation
             var message = new ValidatedMessage<int?>(member);
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage);
+            validator.VerifyThat(() => message.Member).HasValue(_errorMessage);
 
             validator.Validate().AssertNoErrors();
         }
@@ -46,7 +46,7 @@ namespace System.ComponentModel.FluentValidation
             var validator = new FluentValidator();
 
             validator.VerifyThat(() => message.Member)
-                .IsNotNull(_errorMessage)
+                .HasValue(_errorMessage)
                 .IsEqualTo(member, _errorMessage);
 
             validator.Validate().AssertNoErrors();

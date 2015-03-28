@@ -56,6 +56,7 @@
     <Compile Include="FluentValidation\Comparable.T1.cs" />
     <Compile Include="FluentValidation\Comparer.cs" />
     <Compile Include="FluentValidation\Constraint.T1.cs" />
+    <Compile Include="FluentValidation\EnumerableMemberExtensions.cs" />
     <Compile Include="FluentValidation\MemberSet.cs" />
     <Compile Include="FluentValidation\Equatable.T1.cs" />
     <Compile Include="FluentValidation\ErrorMessage.cs" />
@@ -65,13 +66,18 @@
     <Compile Include="FluentValidation\IMember.cs" />
     <Compile Include="FluentValidation\InternalRange.T1.cs" />
     <Compile Include="FluentValidation\IRange.T1.cs" />
-    <Compile Include="FluentValidation\NullableMember.T1.cs" />
+    <Compile Include="FluentValidation\NullableMemberExtensions.cs" />
     <Compile Include="FluentValidation\NullConstraint.cs" />
     <Compile Include="FluentValidation\Range.T1.cs" />
     <Compile Include="FluentValidation\RangeOptions.cs" />
     <Compile Include="FluentValidation\StringMemberExtensions.cs" />
     <Compile Include="FluentValidation\Member.T1.cs" />
     <Compile Include="MessageValidator.cs" />
+    <Compile Include="Resources\ValidationMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValidationMessages.resx</DependentUpon>
+    </Compile>
     <Compile Include="ValueMessage.T1.cs" />
     <Compile Include="BusinessRuleViolationException.cs" />
     <Compile Include="Client\AsyncExecutionTask.T1.cs" />
@@ -162,11 +168,6 @@
     <Compile Include="Server\WritableMappingState.T1.cs" />
     <Compile Include="ValidationErrorTree.cs" />
     <Compile Include="RequestMessagePropertyChangedEventArgs.cs" />
-    <Compile Include="Resources\ValidationMessages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ValidationMessages.resx</DependentUpon>
-    </Compile>
     <Compile Include="AssemblySet.cs" />
     <Compile Include="SerializationInfoExtensions.cs" />
     <Compile Include="Server\ActionDecorator.T1.cs" />
@@ -247,7 +248,7 @@
     <Compile Include="IMessage.T1.cs" />
     <Compile Include="RequestMessageViewModel.T1.cs" />
     <Compile Include="PropertyChangedOption.cs" />
-    <Compile Include="DataAnnotations\ConstraintAttribute.cs" />
+    <Compile Include="DataAnnotations\MemberValidationAttribute.cs" />
     <Compile Include="DataAnnotations\RequestMessageLabelProvider.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="Server\UnitOfWorkCache.cs" />
@@ -267,7 +268,7 @@
     <Compile Include="Server\UnitOfWorkWrapper.cs" />
     <Compile Include="Server\UnitOfWorkGroup.cs" />
     <Compile Include="Server\UnitOfWorkItem.cs" />
-    <Compile Include="DataAnnotations\RequiredConstraintAttribute.cs" />
+    <Compile Include="DataAnnotations\RequiredMemberAttribute.cs" />
     <Compile Include="DataAnnotations\StringConstraint.cs" />
     <Compile Include="FluentValidation\ValidationErrorTreeBuilder.cs" />
   </ItemGroup>

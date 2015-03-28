@@ -1,7 +1,7 @@
 ﻿namespace System.ComponentModel.DataAnnotations
 {
     /// <summary>
-    /// Represents a value that can be used on the <see cref="RequiredConstraintAttribute" /> to indicate
+    /// Represents a value that can be used on the <see cref="RequiredMemberAttribute" /> to indicate
     /// what values of a string are interpreted as invalid.
     /// </summary>
     public enum StringConstraint

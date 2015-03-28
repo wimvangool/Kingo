@@ -232,6 +232,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
+        /// </summary>
+        internal static string MemberSet_UnsupportedExpression {
+            get {
+                return ResourceManager.GetString("MemberSet_UnsupportedExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
         /// </summary>
         internal static string Message_AmbiguousAttributeMatch {

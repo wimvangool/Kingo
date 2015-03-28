@@ -27,7 +27,7 @@
             {
                 return 0;
             }
-            consumer.Add(_member.Name, _errorMessage);
+            consumer.Add(_member.FullName, _errorMessage);
             return 1;
         }        
     }

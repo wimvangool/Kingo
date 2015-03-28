@@ -9,7 +9,7 @@ namespace System.ComponentModel.Server
     {
         #region [====== Nested Types ======]
 
-        private sealed class EmptyCommandSequence : IMessageSequence
+        private sealed class EmptyMessageSequence : IMessageSequence
         {
             public void ProcessWith(IMessageProcessor handler) { }
 
@@ -49,6 +49,6 @@ namespace System.ComponentModel.Server
         /// Represents a sequence with no elements.
         /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2104", Justification = "Exposed type is immutable.")]
-        public static readonly IMessageSequence EmptySequence = new EmptyCommandSequence();
+        public static readonly IMessageSequence EmptySequence = new EmptyMessageSequence();
     }
 }

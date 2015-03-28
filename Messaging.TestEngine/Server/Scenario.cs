@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.FluentValidation;
 using System.ComponentModel.Resources;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Threading;
 
 namespace System.ComponentModel.Server
@@ -11,37 +13,136 @@ namespace System.ComponentModel.Server
     /// by the Given-When-Then pattern.
     /// </summary>       
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
-    public abstract class Scenario : MessageSequence, IScenario
-    {        
-        private readonly VerificationStatement _statement;
+    public abstract class Scenario : MessageSequence, IErrorMessageConsumer
+    {
+        private readonly MemberSet _memberSet;
         private readonly List<object> _domainEvents;
-        private readonly DependencyCache _cache;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Scenario" /> class.
-        /// </summary>        
+        private readonly DependencyCache _cache;        
+                
         internal Scenario()
         {            
-            _statement = new VerificationStatement(this);
+            _memberSet = new MemberSet(this);
             _domainEvents = new List<object>();
-            _cache = new DependencyCache();
-        }                
+            _cache = new DependencyCache();            
+        }
+
+        #region [====== Verification ======]
 
         /// <summary>
-        /// Returns a statement that can be used to verify a certain value in the Then-phase.
+        /// Returns a <see cref="Member{Object}" /> instance that represents the event at the specified <paramref name="index"/>.
         /// </summary>
-        protected IVerificationStatement Verify
+        /// <param name="index">Index of the requested event.</param>
+        /// <returns>A <see cref="Member{Object}" /> instance representing the requested event.</returns>        
+        protected Member<object> VerifyThatEventAtIndex(int index)
         {
-            get { return _statement; }
+            return VerifyThat(() => DomainEvents).HasElementAt(index);            
+        }        
+
+        /// <summary>
+        /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the value to verify.</typeparam>
+        /// <param name="memberExpression">
+        /// An expression that returns an instance of <typeparamref name="TValue"/>.
+        /// </param>
+        /// <returns>A new <see cref="Member{TValue}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="memberExpression"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="memberExpression"/> refers to a member that was already added.
+        /// </exception>
+        protected Member<TValue> VerifyThat<TValue>(Expression<Func<TValue>> memberExpression)
+        {
+            return _memberSet.StartToAddConstraintsFor(memberExpression);
         }
 
         /// <summary>
-        /// Returns the number of collected domain-events.
+        /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
         /// </summary>
-        protected int DomainEventCount
+        /// <typeparam name="TValue">Type of the value to verify.</typeparam>
+        /// <param name="valueFactory">
+        /// A delegate that returns an instance of <typeparamref name="TValue"/>.
+        /// </param>
+        /// <param name="name">The name of the member to add constraints for.</param>
+        /// <returns>A new <see cref="Member{TValue}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="valueFactory"/> or <paramref name="name"/> is <c>null</c>.
+        /// </exception> 
+        public Member<TValue> Put<TValue>(Func<TValue> valueFactory, string name)
+        {
+            return _memberSet.StartToAddConstraintsFor(valueFactory, name);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the value to verify.</typeparam>
+        /// <param name="value">The value to add constraints for.</param>
+        /// <param name="name">The name of the member to add constraints for.</param>
+        /// <returns>A new <see cref="Member{TValue}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is <c>null</c>.
+        /// </exception> 
+        public Member<TValue> Put<TValue>(TValue value, string name)
+        {
+            return _memberSet.StartToAddConstraintsFor(value, name);
+        }       
+
+        void IErrorMessageConsumer.Add(string memberName, ErrorMessage errorMessage)
+        {
+            Fail(string.Format(CultureInfo.InvariantCulture, "{0} --> {1}", memberName, errorMessage));
+        }
+
+        /// <summary>
+        /// Marks this scenario as failed using the specified <paramref name="message"/>.
+        /// </summary>
+        /// <param name="message">The reason why the scenario failed.</param>
+        protected abstract void Fail(string message);
+
+        #endregion
+
+        #region [====== Domain Events ======]
+
+        /// <summary>
+        /// Returns the collection of domain events that were published.
+        /// </summary>
+        public IEnumerable<object> DomainEvents
+        {
+            get { return _domainEvents; }
+        }
+
+        /// <summary>
+        /// Returns the number of domain events that were published.
+        /// </summary>
+        public int DomainEventCount
         {
             get { return _domainEvents.Count; }
         }
+
+        /// <summary>
+        /// Returns the expected number of collected domain-events.
+        /// </summary>
+        protected abstract int ExpectedDomainEventCount
+        {
+            get;
+        }
+
+        internal void SaveDomainEvent(object domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }                
+
+        #endregion
 
         internal IDependencyCache InternalCache
         {
@@ -51,10 +152,9 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Indicates whether or not an exception is expected to be thrown during the When-phase.
         /// </summary>
-        protected bool ExceptionExpected
+        protected abstract bool ExceptionExpected
         {
             get;
-            set;
         }
 
         /// <summary>
@@ -84,6 +184,9 @@ namespace System.ComponentModel.Server
             try
             {
                 ProcessWith(MessageProcessor);
+
+                VerifyThat(() => DomainEventCount)
+                    .IsEqualTo(ExceptionExpected ? 0 : ExpectedDomainEventCount, FailureMessages.Scenario_UnexpectedDomainEventCount, DomainEventCount, ExpectedDomainEventCount);
             }
             finally
             {
@@ -97,82 +200,8 @@ namespace System.ComponentModel.Server
         public virtual void Complete()
         {
             _cache.Dispose();                      
-        }
+        }        
 
-        void IScenario.Fail()
-        {
-            Fail();
-        }
-
-        /// <summary>
-        /// Marks this scenario as failed.
-        /// </summary>
-        protected abstract void Fail();
-
-        void IScenario.Fail(string message)
-        {
-            Fail(message);
-        }
-
-        /// <summary>
-        /// Marks this scenario as failed using the specified <paramref name="message"/>.
-        /// </summary>
-        /// <param name="message">The reason why the scenario failed.</param>
-        protected abstract void Fail(string message);
-
-        void IScenario.Fail(string message, params object[] parameters)
-        {
-            Fail(message, parameters);
-        }
-
-        /// <summary>
-        /// Marks this scenario as failed using the specified <paramref name="message"/>.
-        /// </summary>
-        /// <param name="message">The reason why the scenario failed.</param>
-        /// <param name="parameters">An optional array of parameters to include in the message.</param>
-        protected abstract void Fail(string message, params object[] parameters);
-
-        internal void SaveDomainEvent(object domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-        }
-
-        /// <summary>
-        /// Returns the domain-event that was published at the specified moment.
-        /// </summary>
-        /// <param name="index">Index that indicates the moment the domain-event should have been published.</param>
-        /// <returns>The domain-event at the specified index.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is negative, or no domain-event was found at the specified index.
-        /// </exception>
-        protected object DomainEventAt(int index)
-        {
-            try
-            {
-                return _domainEvents[index];
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw NewNoDomainEventFoundAtIndexException(index);
-            }
-        }
-
-        /// <summary>
-        /// Returns the domain-event that was published at the specified moment.
-        /// </summary>
-        /// <param name="index">Index that indicates the moment the domain-event should have been published.</param>
-        /// <returns>The domain-event at the specified index.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is negative, or no domain-event was found at the specified index.
-        /// </exception>
-        /// <exception cref="InvalidCastException">
-        /// The domain-event at the specified index could not be cast to the specified type.
-        /// </exception>
-        protected TEvent DomainEventAt<TEvent>(int index) where TEvent : class
-        {
-            return (TEvent) DomainEventAt(index);
-        }  
-        
         /// <summary>
         /// Returns the cache that is associated to the <see cref="Scenario" /> that is currently being executed.
         /// </summary>

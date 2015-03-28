@@ -25,7 +25,7 @@ namespace System.ComponentModel
 
             private int _intValue;
 
-            [RequiredConstraint]            
+            [RequiredMember]            
             public int IntValue
             {
                 get { return _intValue; }

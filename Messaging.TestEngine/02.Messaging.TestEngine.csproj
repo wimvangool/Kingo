@@ -59,36 +59,25 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Server\BooleanOperandExtensions.cs" />
-    <Compile Include="Server\ConjunctionStatement.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Server\NullableOperandExtensions.cs" />
-    <Compile Include="Server\NullStatement.T1.cs" />
-    <Compile Include="Server\GlobalSuppressions.cs" />
-    <Compile Include="Server\IConjunctionStatement.T1.cs" />
-    <Compile Include="Server\MessageSequence.cs" />
-    <Compile Include="Server\MessageSequenceNode.T1.cs" />
-    <Compile Include="Server\MessageSequencePair.cs" />
-    <Compile Include="Server\ComparableOperandExtensions.cs" />
-    <Compile Include="Server\IVerificationStatement.cs" />
-    <Compile Include="Server\IMessageSequence.cs" />
-    <Compile Include="Server\IOperand.T1.cs" />
-    <Compile Include="Server\IScenario.cs" />
-    <Compile Include="Server\Operand.T1.cs" />
-    <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Server\Scenario.cs" />
-    <Compile Include="Server\Scenario.T1.cs" />
     <Compile Include="Resources\FailureMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FailureMessages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Server\GlobalSuppressions.cs" />
+    <Compile Include="Server\MessageSequence.cs" />
+    <Compile Include="Server\MessageSequenceNode.T1.cs" />
+    <Compile Include="Server\MessageSequencePair.cs" />
+    <Compile Include="Server\IMessageSequence.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Server\Scenario.cs" />
+    <Compile Include="Server\Scenario.T1.cs" />
     <Compile Include="Server\ScenarioCache.cs" />
-    <Compile Include="Server\VerificationStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\05.Messaging.csproj">
