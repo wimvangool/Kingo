@@ -120,7 +120,4 @@
   <data name="ScenarioClock_RequestNotFound" xml:space="preserve">
     <value>No request for a date or time was found at the specified index: {0}.</value>
   </data>
-  <data name="Scenario_DomainEventNotFound" xml:space="preserve">
-    <value>No domain-event was found at the specified index: {0}.</value>
-  </data>
 </root>

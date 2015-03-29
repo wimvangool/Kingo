@@ -61,11 +61,29 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected an exception of type &apos;{0}&apos; but no exception was thrown whatsoever..
+        /// </summary>
+        internal static string Scenario_NoExceptionWasThrown {
+            get {
+                return ResourceManager.GetString("Scenario_NoExceptionWasThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an exception of type &apos;{0}&apos; but an Exception of type &apos;{1}&apos; was thrown instead..
+        /// </summary>
+        internal static string Scenario_UnexpectedExceptionWasThrown {
+            get {
+                return ResourceManager.GetString("Scenario_UnexpectedExceptionWasThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of published events ({0}) did not match the expected amount ({1})..
         /// </summary>
-        internal static string Scenario_UnexpectedDomainEventCount {
+        internal static string Scenario_UnexpectedNumberOfPublishedEvents {
             get {
-                return ResourceManager.GetString("Scenario_UnexpectedDomainEventCount", resourceCulture);
+                return ResourceManager.GetString("Scenario_UnexpectedNumberOfPublishedEvents", resourceCulture);
             }
         }
     }

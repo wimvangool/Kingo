@@ -70,6 +70,8 @@
       <DependentUpon>FailureMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="Server\GlobalSuppressions.cs" />
+    <Compile Include="Server\IDomainEventList.cs" />
+    <Compile Include="Server\IDomainEventListFactory.cs" />
     <Compile Include="Server\MessageSequence.cs" />
     <Compile Include="Server\MessageSequenceNode.T1.cs" />
     <Compile Include="Server\MessageSequencePair.cs" />

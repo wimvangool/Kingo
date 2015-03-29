@@ -7,10 +7,15 @@
             return And(new Constraint<TValue>(valueProvider, constraint, errorMessage), consumer);
         }
 
-        internal virtual Constraint And(Constraint constraint, IErrorMessageConsumer consumer)
+        private Constraint And(Constraint constraint, IErrorMessageConsumer consumer)
         {            
             constraint.AddErrorMessagesTo(consumer);
 
+            return And(constraint);
+        }
+
+        protected virtual Constraint And(Constraint constraint)
+        {
             return new AndConstraint(this, constraint);
         }
 

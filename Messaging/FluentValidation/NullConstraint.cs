@@ -2,7 +2,7 @@
 {
     internal sealed class NullConstraint : Constraint
     {
-        internal override Constraint And(Constraint constraint, IErrorMessageConsumer consumer)
+        protected override Constraint And(Constraint constraint)
         {            
             return constraint;
         }
