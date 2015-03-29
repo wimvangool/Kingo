@@ -79,6 +79,7 @@
     <Compile Include="CommandStub.cs" />
     <Compile Include="FluentValidation\ComparerStub.T1.cs" />
     <Compile Include="FluentValidation\EqualityComparerStub.T1.cs" />
+    <Compile Include="FluentValidation\GuidMemberTest.cs" />
     <Compile Include="FluentValidation\NullableMemberTest.cs" />
     <Compile Include="FluentValidation\RangeTest.cs" />
     <Compile Include="FluentValidation\StringMemberTest.cs" />

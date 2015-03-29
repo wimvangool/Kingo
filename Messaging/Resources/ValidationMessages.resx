@@ -120,6 +120,12 @@
   <data name="EnumerableMember_HasElementAt_Failed" xml:space="preserve">
     <value>Member '{0}' has no element at index '{1}'.</value>
   </data>
+  <data name="Member_GuidIsEmpty_Failed" xml:space="preserve">
+    <value>Member '{0}' is not an empty Guid.</value>
+  </data>
+  <data name="Member_GuidIsNotEmpty_Failed" xml:space="preserve">
+    <value>Member '{0}' is an empty Guid.</value>
+  </data>
   <data name="Member_HasValue_Failed" xml:space="preserve">
     <value>Member '{0}' has no value.</value>
   </data>

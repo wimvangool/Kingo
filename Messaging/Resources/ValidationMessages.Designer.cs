@@ -70,6 +70,24 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is not an empty Guid..
+        /// </summary>
+        internal static string Member_GuidIsEmpty_Failed {
+            get {
+                return ResourceManager.GetString("Member_GuidIsEmpty_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is an empty Guid..
+        /// </summary>
+        internal static string Member_GuidIsNotEmpty_Failed {
+            get {
+                return ResourceManager.GetString("Member_GuidIsNotEmpty_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; has no value..
         /// </summary>
         internal static string Member_HasValue_Failed {

@@ -27,7 +27,7 @@ namespace System.ComponentModel.FluentValidation
             _constraint = constraint;
         }                               
 
-        #region [====== IMember & IErrorMessageProducer ======]               
+        #region [====== IMember & IErrorMessageProducer ======]
 
         /// <inheritdoc />
         public string FullName
@@ -64,7 +64,7 @@ namespace System.ComponentModel.FluentValidation
         /// <inheritdoc />
         public override string ToString()
         {
-            return FullName;
+            return string.Format("{0} ({1})", FullName, Value);
         }
 
         void IErrorMessageProducer.AddErrorMessagesTo(IErrorMessageConsumer consumer)
