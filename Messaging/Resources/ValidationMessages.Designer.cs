@@ -142,6 +142,24 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not match pattern &apos;{1}&apos;..
+        /// </summary>
+        internal static string Member_IsMatch_Failed {
+            get {
+                return ResourceManager.GetString("Member_IsMatch_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; matches pattern &apos;{1}&apos;..
+        /// </summary>
+        internal static string Member_IsNoMatch_Failed {
+            get {
+                return ResourceManager.GetString("Member_IsNoMatch_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is equal to &apos;{1}&apos;..
         /// </summary>
         internal static string Member_IsNotEqualTo_Failed {

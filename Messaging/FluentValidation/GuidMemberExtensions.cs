@@ -52,7 +52,7 @@ namespace System.ComponentModel.FluentValidation
         /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
         /// </exception>
         public static Member<Guid> IsNotEmpty(this Member<Guid> member, string errorMessageFormat, object arg0)
         {
@@ -70,7 +70,7 @@ namespace System.ComponentModel.FluentValidation
         /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
         /// </exception>
         public static Member<Guid> IsNotEmpty(this Member<Guid> member, string errorMessageFormat, object arg0, object arg1)
         {
@@ -87,7 +87,7 @@ namespace System.ComponentModel.FluentValidation
         /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
         /// </exception>
         public static Member<Guid> IsNotEmpty(this Member<Guid> member, string errorMessageFormat, params object[] arguments)
         {
@@ -151,7 +151,7 @@ namespace System.ComponentModel.FluentValidation
         /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
         /// </exception>
         public static Member<Guid> IsEmpty(this Member<Guid> member, string errorMessageFormat, object arg0)
         {
@@ -169,7 +169,7 @@ namespace System.ComponentModel.FluentValidation
         /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
         /// </exception>
         public static Member<Guid> IsEmpty(this Member<Guid> member, string errorMessageFormat, object arg0, object arg1)
         {
@@ -186,7 +186,7 @@ namespace System.ComponentModel.FluentValidation
         /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
         /// </exception>
         public static Member<Guid> IsEmpty(this Member<Guid> member, string errorMessageFormat, params object[] arguments)
         {

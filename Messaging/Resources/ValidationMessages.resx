@@ -144,6 +144,12 @@
   <data name="Member_IsIsRange_Failed" xml:space="preserve">
     <value>Member '{0}' is not in range of '{1}'.</value>
   </data>
+  <data name="Member_IsMatch_Failed" xml:space="preserve">
+    <value>Member '{0}' does not match pattern '{1}'.</value>
+  </data>
+  <data name="Member_IsNoMatch_Failed" xml:space="preserve">
+    <value>Member '{0}' matches pattern '{1}'.</value>
+  </data>
   <data name="Member_IsNotEqualTo_Failed" xml:space="preserve">
     <value>Member '{0}' is equal to '{1}'.</value>
   </data>
