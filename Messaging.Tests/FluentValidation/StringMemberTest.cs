@@ -451,6 +451,45 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion
 
+        #region [====== IsByte ======]
+
+        [TestMethod]
+        public void ValidateIsByte_ReturnsNoErrors_IfValueIsByte()
+        {            
+            var message = new ValidatedMessage<string>("255");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member)
+                .IsByte(_errorMessage)
+                .IsEqualTo(255, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsByte_ReturnsNoErrors_IfValueIsTooSmallForByte()
+        {
+            var message = new ValidatedMessage<string>("-1");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsByte(_errorMessage);                
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsByte_ReturnsNoErrors_IfValueIsTooLargeForByte()
+        {
+            var message = new ValidatedMessage<string>("256");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).IsByte(_errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        #endregion
+
         private static ValidatedMessage<string> NewValidatedMessage()
         {
             return new ValidatedMessage<string>(Guid.NewGuid().ToString("N"));

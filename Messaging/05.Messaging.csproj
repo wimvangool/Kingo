@@ -73,6 +73,7 @@
     <Compile Include="FluentValidation\RangeOptions.cs" />
     <Compile Include="FluentValidation\StringMemberExtensions.cs" />
     <Compile Include="FluentValidation\Member.T1.cs" />
+    <Compile Include="FluentValidation\StringToNumberConverter.T1.cs" />
     <Compile Include="MessageValidator.cs" />
     <Compile Include="Resources\ValidationMessages.Designer.cs">
       <AutoGen>True</AutoGen>

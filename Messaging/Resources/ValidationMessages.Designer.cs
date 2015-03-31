@@ -106,6 +106,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a byte..
+        /// </summary>
+        internal static string Member_IsByte_Failed {
+            get {
+                return ResourceManager.GetString("Member_IsByte_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is not equal to &apos;{1}&apos;..
         /// </summary>
         internal static string Member_IsEqualTo_Failed {

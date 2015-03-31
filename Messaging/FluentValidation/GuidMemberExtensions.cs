@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Resources;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.Resources;
 
 namespace System.ComponentModel.FluentValidation
 {
@@ -17,31 +13,22 @@ namespace System.ComponentModel.FluentValidation
         /// Verifies that the value is not an empty <see cref="Guid" />.
         /// </summary>
         /// <param name="member">A member.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsNotEmpty(this Member<Guid> member)
-        {
-            return IsNotEmpty(member, new ErrorMessage(ValidationMessages.Member_GuidIsNotEmpty_Failed, member));
-        }
-
-        /// <summary>
-        /// Verifies that the value is not an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
+        /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<Guid> IsNotEmpty(this Member<Guid> member, ErrorMessage errorMessage)
+        public static Member<Guid> IsNotEmpty(this Member<Guid> member, ErrorMessage errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_GuidIsNotEmpty_Failed, member);
             }
             return member.Satisfies(IsNotEmpty, errorMessage);
         }
@@ -59,31 +46,22 @@ namespace System.ComponentModel.FluentValidation
         /// Verifies that the value is an empty <see cref="Guid" />.
         /// </summary>
         /// <param name="member">A member.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsEmpty(this Member<Guid> member)
-        {
-            return IsEmpty(member, new ErrorMessage(ValidationMessages.Member_GuidIsEmpty_Failed, member));
-        }
-
-        /// <summary>
-        /// Verifies that the value is an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
+        /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<Guid> IsEmpty(this Member<Guid> member, ErrorMessage errorMessage)
+        public static Member<Guid> IsEmpty(this Member<Guid> member, ErrorMessage errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_GuidIsEmpty_Failed, member);
             }
             return member.Satisfies(IsEmpty, errorMessage);
         }

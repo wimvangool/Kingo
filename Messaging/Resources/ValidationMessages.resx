@@ -132,6 +132,9 @@
   <data name="Member_HasValue_Failed" xml:space="preserve">
     <value>Member '{0}' has no value.</value>
   </data>
+  <data name="Member_IsByte_Failed" xml:space="preserve">
+    <value>Member '{0}' could not be converted to a byte.</value>
+  </data>
   <data name="Member_IsEqualTo_Failed" xml:space="preserve">
     <value>Member '{0}' is not equal to '{1}'.</value>
   </data>
