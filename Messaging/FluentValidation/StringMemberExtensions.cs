@@ -369,7 +369,7 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion        
 
-        #region [====== IsByte ======]        
+        #region [====== IsByte ======]
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="byte"/>.
@@ -415,9 +415,559 @@ namespace System.ComponentModel.FluentValidation
             {
                 errorMessage = new ErrorMessage(ValidationMessages.Member_IsByte_Failed, member);
             }
-            var converter = new StringToNumberConverter<byte>(byte.TryParse);
+            return IsNumber<byte>(member, style, provider, errorMessage, byte.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsSByte ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="sbyte"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="byte"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<sbyte> IsSByte(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsSByte(member, NumberStyles.Integer | NumberStyles.AllowTrailingSign, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="sbyte"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="byte"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<sbyte> IsSByte(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsSByte_Failed, member);
+            }
+            return IsNumber<sbyte>(member, style, provider, errorMessage, sbyte.TryParse);            
+        }
+
+        #endregion
+
+        #region [====== IsChar ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="char"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The only character of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<char> IsChar(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsChar_Failed, member);
+            }
+            Func<string, bool> constraint = value => value != null && value.Length == 1;
+            Func<string, char> selector = value => value[0];
+
+            return member.Satisfies(constraint, selector, null, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== IsInt16 ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="short"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="short"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<short> IsInt16(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsInt16(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="short"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="short"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<short> IsInt16(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsInt16_Failed, member);
+            }
+            return IsNumber<short>(member, style, provider, errorMessage, short.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsUInt16 ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="ushort"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="ushort"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<ushort> IsUInt16(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsUInt16(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="ushort"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="ushort"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<ushort> IsUInt16(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsUInt16_Failed, member);
+            }
+            return IsNumber<ushort>(member, style, provider, errorMessage, ushort.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsInt32 ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="int"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="int"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<int> IsInt32(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsInt32(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="int"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="int"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<int> IsInt32(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsInt32_Failed, member);
+            }
+            return IsNumber<int>(member, style, provider, errorMessage, int.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsUInt32 ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="uint"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="uint"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<uint> IsUInt32(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsUInt32(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="uint"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="uint"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<uint> IsUInt32(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsUInt32_Failed, member);
+            }
+            return IsNumber<uint>(member, style, provider, errorMessage, uint.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsInt64 ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="long"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="long"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<long> IsInt64(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsInt64(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="long"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="long"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<long> IsInt64(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsInt64_Failed, member);
+            }
+            return IsNumber<long>(member, style, provider, errorMessage, long.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsUInt64 ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="ulong"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="ulong"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<ulong> IsUInt64(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsUInt64(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="ulong"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="ulong"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<ulong> IsUInt64(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsUInt64_Failed, member);
+            }
+            return IsNumber<ulong>(member, style, provider, errorMessage, ulong.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsSingle ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="float"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="float"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<float> IsSingle(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsSingle(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="float"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="float"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<float> IsSingle(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsSingle_Failed, member);
+            }
+            return IsNumber<float>(member, style, provider, errorMessage, float.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsDouble ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="double"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="double"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<double> IsDouble(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsDouble(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="double"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="double"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<double> IsDouble(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsDouble_Failed, member);
+            }
+            return IsNumber<double>(member, style, provider, errorMessage, double.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsDecimal ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="decimal"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="decimal"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<decimal> IsDecimal(this Member<string> member, ErrorMessage errorMessage = null)
+        {
+            return IsDecimal(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="decimal"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="style">
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present
+        /// in the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="provider">
+        /// An object that supplies culture-specific formatting information about the <paramref name="member"/>'s value.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="decimal"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<decimal> IsDecimal(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_IsDecimal_Failed, member);
+            }
+            return IsNumber<decimal>(member, style, provider, errorMessage, decimal.TryParse);
+        }
+
+        #endregion
+
+        #region [====== IsNumber ======]
+
+        private static Member<TValue> IsNumber<TValue>(Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage, TryConvertDelegate<TValue> tryConvert)
+        {
+            var converter = new StringToNumberConverter<TValue>(tryConvert);
             Func<string, bool> constraint = value => converter.TryConvertToNumber(value, style, provider);
-            Func<string, byte> selector = value => converter.Number;
+            Func<string, TValue> selector = value => converter.Number;
 
             return member.Satisfies(constraint, selector, null, errorMessage);
         }
