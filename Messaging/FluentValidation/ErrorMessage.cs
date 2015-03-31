@@ -104,5 +104,15 @@ namespace System.ComponentModel.FluentValidation
             }
             return string.Format(provider, _errorMessageFormat, _errorMessageArguments);
         }      
+
+        /// <summary>
+        /// Implicitly converts the specified value to a <see cref="ErrorMessage" /> instance.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>An <see cref="ErrorMessage" />.</returns>
+        public static implicit operator ErrorMessage(string value)
+        {
+            return value == null ? null : new ErrorMessage(value);
+        }
     }
 }

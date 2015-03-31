@@ -108,17 +108,17 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNotNull ======]
 
         /// <summary>
-        /// Verifies whether or not this member is not <c>null</c>.
+        /// Verifies whether or not this member's value is not <c>null</c>.
         /// </summary>        
         /// <returns>This member.</returns>        
         public Member<TValue> IsNotNull()
         {
-            return Satisfies(IsNotNull, new ErrorMessage(ValidationMessages.Member_IsNotNull_Failed, this));
+            return IsNotNull(new ErrorMessage(ValidationMessages.Member_IsNotNull_Failed, this));
         }
 
         /// <summary>
-        /// Verifies whether or not this member is not <c>null</c>.
-        /// </summary>
+        /// Verifies whether or not this member's value is not <c>null</c>.
+        /// </summary>        
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>
@@ -126,58 +126,9 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsNotNull(string errorMessage)
+        public Member<TValue> IsNotNull(ErrorMessage errorMessage)
         {
             return Satisfies(IsNotNull, errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies whether or not this member is not <c>null</c>.
-        /// </summary>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotNull(string errorMessageFormat, object arg0)
-        {
-            return Satisfies(IsNotNull, errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies whether or not this member is not <c>null</c>.
-        /// </summary>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>     
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>  
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotNull(string errorMessageFormat, object arg0, object arg1)
-        {
-            return Satisfies(IsNotNull, errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies whether or not this member is not <c>null</c>.
-        /// </summary>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotNull(string errorMessageFormat, params object[] arguments)
-        {
-            return Satisfies(IsNotNull, errorMessageFormat, arguments);
         }
 
         private static bool IsNotNull(TValue value)
@@ -190,71 +141,22 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNull ======]
 
         /// <summary>
-        /// Verifies whether or not this member is <c>null</c>.
+        /// Verifies whether or not this member's value is <c>null</c>.
         /// </summary>        
         public void IsNull()
         {
-            Satisfies(IsNull, new ErrorMessage(ValidationMessages.Member_IsNull_Failed, this));
+            IsNull(new ErrorMessage(ValidationMessages.Member_IsNull_Failed, this));
         }
 
         /// <summary>
-        /// Verifies whether or not this member is <c>null</c>.
-        /// </summary>
-        /// <param name="errorMessage">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>        
+        /// Verifies whether or not this member's value is <c>null</c>.
+        /// </summary> 
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public void IsNull(string errorMessage)
+        public void IsNull(ErrorMessage errorMessage)
         {
             Satisfies(IsNull, errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies whether or not this member is <c>null</c>.
-        /// </summary>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>               
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public void IsNull(string errorMessageFormat, object arg0)
-        {
-            Satisfies(IsNull, errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies whether or not this member is <c>null</c>.
-        /// </summary>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>     
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>          
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public void IsNull(string errorMessageFormat, object arg0, object arg1)
-        {
-            Satisfies(IsNull, errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies whether or not this member is <c>null</c>.
-        /// </summary>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>               
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public void IsNull(string errorMessageFormat, params object[] arguments)
-        {
-            Satisfies(IsNull, errorMessageFormat, arguments);
         }
 
         private static bool IsNull(TValue value)
@@ -267,7 +169,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNotInstanceOf ======]
 
         /// <summary>
-        /// Verifies that this member is not an instance of <typeparamref name="TOther"/>.
+        /// Verifies that this member's value is not an instance of <typeparamref name="TOther"/>.
         /// </summary>
         /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>        
         /// <returns>This member.</returns>        
@@ -277,7 +179,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is not an instance of <typeparamref name="TOther"/>.
+        /// Verifies that this member's value is not an instance of <typeparamref name="TOther"/>.
         /// </summary>
         /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
         /// <param name="errorMessage">
@@ -287,65 +189,13 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsNotInstanceOf<TOther>(string errorMessage)
+        public Member<TValue> IsNotInstanceOf<TOther>(ErrorMessage errorMessage)
         {
-            return IsNotInstanceOf(typeof(TOther), new ErrorMessage(errorMessage));
-        }
+            return IsNotInstanceOf(typeof(TOther), errorMessage);
+        }        
 
         /// <summary>
-        /// Verifies that this member is not an instance of <typeparamref name="TOther"/>.
-        /// </summary>
-        /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotInstanceOf<TOther>(string errorMessageFormat, object arg0)
-        {
-            return IsNotInstanceOf(typeof(TOther), new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not an instance of <typeparamref name="TOther"/>.
-        /// </summary>
-        /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>     
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>  
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotInstanceOf<TOther>(string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotInstanceOf(typeof(TOther), new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not an instance of <typeparamref name="TOther"/>.
-        /// </summary>
-        /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotInstanceOf<TOther>(string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotInstanceOf(typeof(TOther), new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not an instance of <paramref name="type"/>.
+        /// Verifies that this member's value is not an instance of <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to compare this member's type to.</param>        
         /// <returns>This member.</returns>
@@ -368,71 +218,14 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsNotInstanceOf(Type type, string errorMessage)
-        {
-            return IsNotInstanceOf(type, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not an instance of <paramref name="type"/>.
-        /// </summary>
-        /// <param name="type">The type to compare this member's type to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotInstanceOf(Type type, string errorMessageFormat, object arg0)
-        {
-            return IsNotInstanceOf(type, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not an instance of <paramref name="type"/>.
-        /// </summary>
-        /// <param name="type">The type to compare this member's type to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>     
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>  
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotInstanceOf(Type type, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotInstanceOf(type, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not an instance of <paramref name="type"/>.
-        /// </summary>
-        /// <param name="type">The type to compare this member's type to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotInstanceOf(Type type, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotInstanceOf(type, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsNotInstanceOf(Type type, ErrorMessage errorMessage)
+        public Member<TValue> IsNotInstanceOf(Type type, ErrorMessage errorMessage)
         {
             if (type == null)
             {
                 throw new ArgumentNullException("type");
             }
             return Satisfies(value => IsNotInstanceOf(value, type), errorMessage);
-        }
+        }                
 
         private static bool IsNotInstanceOf(TValue value, Type type)
         {
@@ -444,7 +237,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsInstanceOf ======]
 
         /// <summary>
-        /// Verifies that this member is an instance of <typeparamref name="TOther"/>.
+        /// Verifies that this member's value is an instance of <typeparamref name="TOther"/>.
         /// </summary>
         /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>        
         /// <returns>A member casted to <typeparamref name="TOther"/>.</returns>        
@@ -454,7 +247,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is an instance of <typeparamref name="TOther"/>.
+        /// Verifies that this member'value is an instance of <typeparamref name="TOther"/>.
         /// </summary>
         /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
         /// <param name="errorMessage">
@@ -464,70 +257,13 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TOther> IsInstanceOf<TOther>(string errorMessage)
+        public Member<TOther> IsInstanceOf<TOther>(ErrorMessage errorMessage)
         {
-            return IsInstanceOf<TOther>(new ErrorMessage(errorMessage));
+            return Satisfies(value => IsInstanceOf(value, typeof(TOther)), value => (TOther) (object) value, null, errorMessage);
         }
 
         /// <summary>
-        /// Verifies that this member is an instance of <typeparamref name="TOther"/>.
-        /// </summary>
-        /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>             
-        /// <returns>A member casted to <typeparamref name="TOther"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TOther> IsInstanceOf<TOther>(string errorMessageFormat, object arg0)
-        {
-            return IsInstanceOf<TOther>(new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is an instance of <typeparamref name="TOther"/>.
-        /// </summary>
-        /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>     
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>  
-        /// <returns>A member casted to <typeparamref name="TOther"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TOther> IsInstanceOf<TOther>(string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsInstanceOf<TOther>(new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is an instance of <typeparamref name="TOther"/>.
-        /// </summary>
-        /// <typeparam name="TOther">Type to compare this member's type to.</typeparam>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>             
-        /// <returns>A member casted to <typeparamref name="TOther"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TOther> IsInstanceOf<TOther>(string errorMessageFormat, params object[] arguments)
-        {
-            return IsInstanceOf<TOther>(new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TOther> IsInstanceOf<TOther>(ErrorMessage errorMessage)
-        {
-            return Satisfies(value => IsInstanceOf(value, typeof(TOther)), errorMessage, value => (TOther) (object) value);
-        }
-
-        /// <summary>
-        /// Verifies that this member is an instance of <paramref name="type"/>.
+        /// Verifies that this member's value is an instance of <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to compare this member's type to.</param>        
         /// <returns>This member.</returns>
@@ -540,7 +276,7 @@ namespace System.ComponentModel.FluentValidation
         }  
 
         /// <summary>
-        /// Verifies that this member is an instance of <paramref name="type"/>.
+        /// Verifies that this member's value is an instance of <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to compare this member's type to.</param>
         /// <param name="errorMessage">
@@ -550,71 +286,14 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsInstanceOf(Type type, string errorMessage)
-        {
-            return IsInstanceOf(type, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member is an instance of <paramref name="type"/>.
-        /// </summary>
-        /// <param name="type">The type to compare this member's type to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsInstanceOf(Type type, string errorMessageFormat, object arg0)
-        {
-            return IsInstanceOf(type, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is an instance of <paramref name="type"/>.
-        /// </summary>
-        /// <param name="type">The type to compare this member's type to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsInstanceOf(Type type, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsInstanceOf(type, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is an instance of <paramref name="type"/>.
-        /// </summary>
-        /// <param name="type">The type to compare this member's type to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsInstanceOf(Type type, string errorMessageFormat, params object[] arguments)
-        {
-            return IsInstanceOf(type, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsInstanceOf(Type type, ErrorMessage errorMessage)
+        public Member<TValue> IsInstanceOf(Type type, ErrorMessage errorMessage)
         {
             if (type == null)
             {
                 throw new ArgumentNullException("type");
             }
             return Satisfies(value => IsInstanceOf(value, type), errorMessage);
-        }
+        }               
 
         private static bool IsInstanceOf(TValue value, Type type)
         {            
@@ -626,7 +305,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNotSameInstanceAs ======]
 
         /// <summary>
-        /// Verifies that this member does not refer to the same instance as <paramref name="other"/>.
+        /// Verifies that this member's value does not refer to the same instance as <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's reference to.</param>        
         /// <returns>This member.</returns>        
@@ -636,7 +315,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member does not refer to the same instance as <paramref name="other"/>.
+        /// Verifies that this member's value does not refer to the same instance as <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's reference to.</param>
         /// <param name="errorMessage">
@@ -646,67 +325,10 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsNotSameInstanceAs(object other, string errorMessage)
-        {
-            return IsNotSameInstanceAs(other, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member does not refer to the same instance as <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's reference to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param> 
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotSameInstanceAs(object other, string errorMessageFormat, object arg0)
-        {
-            return IsNotSameInstanceAs(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member does not refer to the same instance as <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's reference to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param> 
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param> 
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotSameInstanceAs(object other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotSameInstanceAs(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member does not refer to the same instance as <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's reference to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param> 
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotSameInstanceAs(object other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotSameInstanceAs(other, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsNotSameInstanceAs(object other, ErrorMessage errorMessage)
+        public Member<TValue> IsNotSameInstanceAs(object other, ErrorMessage errorMessage)
         {
             return Satisfies(value => IsNotSameInstanceAs(value, other), errorMessage);
-        }
+        }        
 
         private static bool IsNotSameInstanceAs(TValue value, object other)
         {
@@ -718,7 +340,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsSameInstanceAs ======]
 
         /// <summary>
-        /// Verifies that this member refers to the same instance as <paramref name="other"/>.
+        /// Verifies that this member's value refers to the same instance as <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's reference to.</param>        
         /// <returns>This member.</returns>        
@@ -728,7 +350,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member refers to the same instance as <paramref name="other"/>.
+        /// Verifies that this member's value refers to the same instance as <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's reference to.</param>
         /// <param name="errorMessage">
@@ -738,64 +360,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsSameInstanceAs(object other, string errorMessage)
-        {
-            return IsSameInstanceAs(other, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member refers to the same instance as <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's reference to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param> 
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSameInstanceAs(object other, string errorMessageFormat, object arg0)
-        {
-            return IsSameInstanceAs(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member refers to the same instance as <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's reference to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param> 
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param> 
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSameInstanceAs(object other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsSameInstanceAs(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member refers to the same instance as <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's reference to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param> 
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSameInstanceAs(object other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsSameInstanceAs(other, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsSameInstanceAs(object other, ErrorMessage errorMessage)
+        public Member<TValue> IsSameInstanceAs(object other, ErrorMessage errorMessage)
         {
             return Satisfies(value => IsSameInstanceAs(value, other), errorMessage);
         }
@@ -810,7 +375,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNotEqualTo ======]
 
         /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
+        /// Verifies that this member's value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>               
         /// <returns>This member.</returns>        
@@ -820,7 +385,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
+        /// Verifies that this member's value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="errorMessage">
@@ -830,67 +395,10 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsNotEqualTo(object other, string errorMessage)
-        {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(object other, string errorMessageFormat, object arg0)
-        {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(object other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(object other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessageFormat, arguments));
-        }        
-       
-        private Member<TValue> IsNotEqualTo(object other, ErrorMessage errorMessage)
+        public Member<TValue> IsNotEqualTo(object other, ErrorMessage errorMessage)
         {
             return Satisfies(value => IsNotEqual(value, other), errorMessage);
-        }
+        }              
 
         private static bool IsNotEqual(TValue value, object other)
         {
@@ -898,7 +406,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
+        /// Verifies that this member's value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>            
@@ -909,7 +417,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
+        /// Verifies that this member's value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>
@@ -920,68 +428,13 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsNotEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsNotEqualTo(TValue other, IEqualityComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsNotEqualTo(new Equatable<TValue>(other, comparer), errorMessage);
-        }
+        }        
 
         /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsNotEqualTo(new Equatable<TValue>(other, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>    
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotEqualTo(new Equatable<TValue>(other, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotEqualTo(new Equatable<TValue>(other, comparer), errorMessageFormat, arguments);
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
+        /// Verifies that this member's value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>                   
         /// <returns>This member.</returns>             
@@ -991,7 +444,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
+        /// Verifies that this member's value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>        
         /// <param name="errorMessage">
@@ -1001,67 +454,10 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsNotEqualTo(IEquatable<TValue> other, string errorMessage)
+        public Member<TValue> IsNotEqualTo(IEquatable<TValue> other, ErrorMessage errorMessage)
         {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(IEquatable<TValue> other, string errorMessageFormat, object arg0)
-        {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(IEquatable<TValue> other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsNotEqualTo(IEquatable<TValue> other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotEqualTo(other, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsNotEqualTo(IEquatable<TValue> other, ErrorMessage errorMessage)
-        {
-            return Satisfies(value => IsNotEqual(value, other), errorMessage);
-        }
+            return Satisfies(value => IsNotEqual(value, other), errorMessage);  
+        }        
 
         private static bool IsNotEqual(TValue value, IEquatable<TValue> other)
         {
@@ -1073,7 +469,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsEqualTo ======]
 
         /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
+        /// Verifies that this member's value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>          
         /// <returns>This member.</returns>             
@@ -1083,7 +479,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
+        /// Verifies that this member's value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="errorMessage">
@@ -1093,67 +489,10 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsEqualTo(object other, string errorMessage)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(object other, string errorMessageFormat, object arg0)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(object other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(object other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessageFormat, arguments));
-        }   
-        
-        private Member<TValue> IsEqualTo(object other, ErrorMessage errorMessage)
+        public Member<TValue> IsEqualTo(object other, ErrorMessage errorMessage)
         {
             return Satisfies(value => IsEqual(value, other), errorMessage);
-        }
+        }        
 
         private static bool IsEqual(TValue value, object other)
         {
@@ -1161,7 +500,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
+        /// Verifies that this member's value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>                
@@ -1172,7 +511,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
+        /// Verifies that this member's value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>
@@ -1183,68 +522,13 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsEqualTo(TValue other, IEqualityComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsEqualTo(new Equatable<TValue>(other, comparer), errorMessage);
-        }
+        }        
 
         /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsEqualTo(new Equatable<TValue>(other, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsEqualTo(new Equatable<TValue>(other, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(TValue other, IEqualityComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsEqualTo(new Equatable<TValue>(other, comparer), errorMessageFormat, arguments);
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
+        /// Verifies that this member's value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>                 
         /// <returns>This member.</returns>               
@@ -1254,7 +538,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
+        /// Verifies that this member's value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>        
         /// <param name="errorMessage">
@@ -1264,67 +548,10 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsEqualTo(IEquatable<TValue> other, string errorMessage)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(IEquatable<TValue> other, string errorMessageFormat, object arg0)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(IEquatable<TValue> other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsEqualTo(IEquatable<TValue> other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsEqualTo(other, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsEqualTo(IEquatable<TValue> other, ErrorMessage errorMessage)
+        public Member<TValue> IsEqualTo(IEquatable<TValue> other, ErrorMessage errorMessage)
         {
             return Satisfies(value => IsEqual(value, other), errorMessage);
-        }
+        }                
 
         private static bool IsEqual(TValue value, IEquatable<TValue> other)
         {
@@ -1340,7 +567,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsSmallerThan ======]
 
         /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>         
@@ -1355,7 +582,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>
@@ -1370,80 +597,13 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
         /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsSmallerThan(TValue other, IComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsSmallerThan(TValue other, IComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsSmallerThan(new Comparable<TValue>(other, comparer), errorMessage);
-        }
+        }        
 
         /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsSmallerThan(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsSmallerThan(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsSmallerThan(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsSmallerThan(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsSmallerThan(TValue other, IComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsSmallerThan(new Comparable<TValue>(other, comparer), errorMessageFormat, arguments);
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>                
         /// <returns>This member.</returns>              
@@ -1453,7 +613,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>        
         /// <param name="errorMessage">
@@ -1463,74 +623,22 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsSmallerThan(IComparable<TValue> other, string errorMessage)
+        public Member<TValue> IsSmallerThan(IComparable<TValue> other, ErrorMessage errorMessage)
         {
-            return IsSmallerThan(other, new ErrorMessage(errorMessage));
+            return Satisfies(value => IsSmallerThan(value, other), errorMessage);            
+        }   
+        
+        private static bool IsSmallerThan(TValue value, IComparable<TValue> other)
+        {
+            return Comparer.IsSmallerThan(value, other);
         }
-
-        /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSmallerThan(IComparable<TValue> other, string errorMessageFormat, object arg0)
-        {
-            return IsSmallerThan(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSmallerThan(IComparable<TValue> other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsSmallerThan(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSmallerThan(IComparable<TValue> other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsSmallerThan(other, new ErrorMessage(errorMessageFormat, arguments));
-        }  
-
-        private Member<TValue> IsSmallerThan(IComparable<TValue> other, ErrorMessage errorMessage)
-        {
-            return Satisfies(value => Comparer.IsSmallerThan(value, other), errorMessage);            
-        }             
 
         #endregion
 
         #region [====== IsSmallerThanOrEqualTo ======]
 
         /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than or equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>           
@@ -1545,7 +653,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than or equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>
@@ -1560,80 +668,13 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
         /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsSmallerThanOrEqualTo(TValue other, IComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsSmallerThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessage);
-        }
+        }        
 
         /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsSmallerThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsSmallerThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsSmallerThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessageFormat, arguments);
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than or equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>                       
         /// <returns>This member.</returns>        
@@ -1643,7 +684,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
+        /// Verifies that this member's value is smaller than or equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="other">The instance to compare this member's value to.</param>        
         /// <param name="errorMessage">
@@ -1653,67 +694,15 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(IComparable<TValue> other, string errorMessage)
+        public Member<TValue> IsSmallerThanOrEqualTo(IComparable<TValue> other, ErrorMessage errorMessage)
         {
-            return IsSmallerThanOrEqualTo(other, new ErrorMessage(errorMessage));
+            return Satisfies(value => IsSmallerThanOrEqualTo(value, other), errorMessage);           
         }
 
-        /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(IComparable<TValue> other, string errorMessageFormat, object arg0)
+        private static bool IsSmallerThanOrEqualTo(TValue value, IComparable<TValue> other)
         {
-            return IsSmallerThanOrEqualTo(other, new ErrorMessage(errorMessageFormat, arg0));
+            return Comparer.IsSmallerThanOrEqualTo(value, other);
         }
-
-        /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(IComparable<TValue> other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsSmallerThanOrEqualTo(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is smaller than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsSmallerThanOrEqualTo(IComparable<TValue> other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsSmallerThanOrEqualTo(other, new ErrorMessage(errorMessageFormat, arguments));
-        }
-        
-        private Member<TValue> IsSmallerThanOrEqualTo(IComparable<TValue> other, ErrorMessage errorMessage)
-        {
-            return Satisfies(value => Comparer.IsSmallerThanOrEqualTo(value, other), errorMessage);           
-        }        
 
         #endregion
 
@@ -1750,77 +739,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
         /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsGreaterThan(TValue other, IComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsGreaterThan(TValue other, IComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsGreaterThan(new Comparable<TValue>(other, comparer), errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies that this member is greater than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsGreaterThan(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsGreaterThan(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member is greater than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsGreaterThan(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsGreaterThan(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member is greater than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsGreaterThan(TValue other, IComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsGreaterThan(new Comparable<TValue>(other, comparer), errorMessageFormat, arguments);
-        }
+        }        
 
         /// <summary>
         /// Verifies that this member is greater than <paramref name="other"/>.
@@ -1843,67 +765,15 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>        
-        public Member<TValue> IsGreaterThan(IComparable<TValue> other, string errorMessage)
+        public Member<TValue> IsGreaterThan(IComparable<TValue> other, ErrorMessage errorMessage)
         {
-            return IsGreaterThan(other, new ErrorMessage(errorMessage));
+            return Satisfies(value => IsGreaterThan(value, other), errorMessage);            
         }
 
-        /// <summary>
-        /// Verifies that this member is greater than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsGreaterThan(IComparable<TValue> other, string errorMessageFormat, object arg0)
+        private static bool IsGreaterThan(TValue value, IComparable<TValue> other)
         {
-            return IsGreaterThan(other, new ErrorMessage(errorMessageFormat, arg0));
+            return Comparer.IsGreaterThan(value, other);
         }
-
-        /// <summary>
-        /// Verifies that this member is greater than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsGreaterThan(IComparable<TValue> other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsGreaterThan(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is greater than <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsGreaterThan(IComparable<TValue> other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsGreaterThan(other, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsGreaterThan(IComparable<TValue> other, ErrorMessage errorMessage)
-        {
-            return Satisfies(value => Comparer.IsGreaterThan(value, other), errorMessage);            
-        }        
 
         #endregion
 
@@ -1940,77 +810,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
         /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsGreaterThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsGreaterThanOrEqualTo(TValue other, IComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsGreaterThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies that this member is greater than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsGreaterThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsGreaterThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member is greater than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsGreaterThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsGreaterThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member is greater than or equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="comparer"/> is <c>null</c> and <paramref name="other"/> does not implement the
-        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>        
-        public Member<TValue> IsGreaterThanOrEqualTo(TValue other, IComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsGreaterThanOrEqualTo(new Comparable<TValue>(other, comparer), errorMessageFormat, arguments);
-        }
+        }        
 
         /// <summary>
         /// Verifies that this member is equal to <paramref name="other"/>.
@@ -2033,71 +836,19 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public Member<TValue> IsGreaterThanOrEqualTo(IComparable<TValue> other, string errorMessage)
+        public Member<TValue> IsGreaterThanOrEqualTo(IComparable<TValue> other, ErrorMessage errorMessage)
         {
-            return IsGreaterThanOrEqualTo(other, new ErrorMessage(errorMessage));
+            return Satisfies(value => IsGreaterThanOrEqualTo(value, other), errorMessage);  
         }
 
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsGreaterThanOrEqualTo(IComparable<TValue> other, string errorMessageFormat, object arg0)
+        private static bool IsGreaterThanOrEqualTo(TValue value, IComparable<TValue> other)
         {
-            return IsGreaterThanOrEqualTo(other, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsGreaterThanOrEqualTo(IComparable<TValue> other, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsGreaterThanOrEqualTo(other, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The instance to compare this member's value to.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public Member<TValue> IsGreaterThanOrEqualTo(IComparable<TValue> other, string errorMessageFormat, params object[] arguments)
-        {
-            return IsGreaterThanOrEqualTo(other, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsGreaterThanOrEqualTo(IComparable<TValue> other, ErrorMessage errorMessage)
-        {
-            return Satisfies(value => Comparer.IsGreaterThanOrEqualTo(value, other), errorMessage);            
-        }       
+            return Comparer.IsGreaterThanOrEqualTo(value, other);
+        }             
 
         #endregion
 
-        #region [====== IsNotInRange (TValue, TValue) ======]
+        #region [====== IsNotInRange ======]
 
         /// <summary>
         /// Verifies that this member's value does not lie within the specified range.
@@ -2130,81 +881,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
         /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, string errorMessage)
+        public Member<TValue> IsNotInRange(TValue left, TValue right, ErrorMessage errorMessage)
         {
             return IsNotInRange(new InternalRange<TValue>(left, right), errorMessage);
         }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, string errorMessageFormat, object arg0)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsNotInRange (TValue, TValue, RangeOptions) ======]
 
         /// <summary>
         /// Verifies that this member's value does not lie within the specified range.
@@ -2243,90 +923,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
         /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, RangeOptions options, string errorMessage)
+        public Member<TValue> IsNotInRange(TValue left, TValue right, RangeOptions options, ErrorMessage errorMessage)
         {
             return IsNotInRange(new InternalRange<TValue>(left, right, null, options), errorMessage);
         }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, RangeOptions options, string errorMessageFormat, object arg0)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, null, options), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, RangeOptions options, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, options), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, RangeOptions options, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, options), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsNotInRange (TValue, TValue, IComparer<TValue>) ======]
 
         /// <summary>
         /// Verifies that this member's value does not lie within the specified range.
@@ -2361,84 +961,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
         /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsNotInRange(new InternalRange<TValue>(left, right, comparer), errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, comparer), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsNotInRange (TValue, TValue, IComparer<TValue>, RangeOptions) ======]
+        }                
 
         /// <summary>
         /// Verifies that this member's value does not lie within the specified range.
@@ -2479,93 +1005,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
         /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage)
+        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, ErrorMessage errorMessage)
         {
             return IsNotInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param> 
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessageFormat, object arg0)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param> 
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param> 
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsNotInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsNotInRange (IRange<TValue>) ======]
+        }               
 
         /// <summary>
         /// Verifies that this member's value does not lie within the specified <paramref name="range"/>.
@@ -2591,64 +1034,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="range"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>        
-        public Member<TValue> IsNotInRange(IRange<TValue> range, string errorMessage)
-        {
-            return IsNotInRange(range, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified <paramref name="range"/>.
-        /// </summary>
-        /// <param name="range">A range of values.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>      
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="range"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> IsNotInRange(IRange<TValue> range, string errorMessageFormat, object arg0)
-        {
-            return IsNotInRange(range, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified <paramref name="range"/>.
-        /// </summary>
-        /// <param name="range">A range of values.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="range"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> IsNotInRange(IRange<TValue> range, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotInRange(range, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member's value does not lie within the specified <paramref name="range"/>.
-        /// </summary>
-        /// <param name="range">A range of values.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>      
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="range"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> IsNotInRange(IRange<TValue> range, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotInRange(range, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsNotInRange(IRange<TValue> range, ErrorMessage errorMessage)
+        public Member<TValue> IsNotInRange(IRange<TValue> range, ErrorMessage errorMessage)
         {
             if (range == null)
             {
@@ -2664,7 +1050,7 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion
 
-        #region [====== IsInRange (TValue, TValue) ======]
+        #region [====== IsInRange ======]
 
         /// <summary>
         /// Verifies that this member's value lies within the specified range.
@@ -2697,81 +1083,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
         /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, string errorMessage)
+        public Member<TValue> IsInRange(TValue left, TValue right, ErrorMessage errorMessage)
         {
             return IsInRange(new InternalRange<TValue>(left, right), errorMessage);
         }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, string errorMessageFormat, object arg0)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, string errorMessageFormat, params object[] arguments)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsInRange (TValue, TValue, RangeOptions) ======]
 
         /// <summary>
         /// Verifies that this member's value lies within the specified range.
@@ -2810,90 +1125,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
         /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, RangeOptions options, string errorMessage)
+        public Member<TValue> IsInRange(TValue left, TValue right, RangeOptions options, ErrorMessage errorMessage)
         {
             return IsInRange(new InternalRange<TValue>(left, right, null, options), errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, RangeOptions options, string errorMessageFormat, object arg0)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, null, options), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, RangeOptions options, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, options), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param>        
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or neither of these values
-        /// implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, RangeOptions options, string errorMessageFormat, params object[] arguments)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, options), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsInRange (TValue, TValue, IComparer<TValue>) ======]
+        }                
 
         /// <summary>
         /// Verifies that this member's value lies within the specified range.
@@ -2928,84 +1163,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
         /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessage)
+        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, ErrorMessage errorMessage)
         {
             return IsInRange(new InternalRange<TValue>(left, right, comparer), errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessageFormat, object arg0)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, comparer), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, comparer), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, string errorMessageFormat, params object[] arguments)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, comparer), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsInRange (TValue, TValue, IComparer<TValue>, RangeOptions) ======]
+        }                
 
         /// <summary>
         /// Verifies that this member's value lies within the specified range.
@@ -3046,93 +1207,10 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
         /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
         /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage)
+        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, ErrorMessage errorMessage)
         {
             return IsInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessage);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param> 
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessageFormat, object arg0)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessageFormat, arg0);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param> 
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessageFormat, arg0, arg1);
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified range.
-        /// </summary>
-        /// <param name="left">The lower boundary of the range.</param>
-        /// <param name="right">The upper boundary of the range.</param>        
-        /// <param name="comparer">The comparer that is used to perform the comparison.</param>
-        /// <param name="options">
-        /// The options that define whether or not <paramref name="left"/> and/or <paramref name="right"/> ar part of the range themselves.
-        /// </param> 
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range,, or, if the default <paramref name="comparer"/>
-        /// is used, neither of these values implement the <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces.
-        /// </exception>
-        public Member<TValue> IsInRange(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessageFormat, params object[] arguments)
-        {
-            return IsInRange(new InternalRange<TValue>(left, right, comparer, options), errorMessageFormat, arguments);
-        }
-
-        #endregion
-
-        #region [====== IsInRange (IRange<TValue>) ======]
+        }                
 
         /// <summary>
         /// Verifies that this member's value lies within the specified <paramref name="range"/>.
@@ -3158,65 +1236,8 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="range"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception> 
-        public Member<TValue> IsInRange(IRange<TValue> range, string errorMessage)
+        public Member<TValue> IsInRange(IRange<TValue> range, ErrorMessage errorMessage)
         {
-            return IsInRange(range, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified <paramref name="range"/>.
-        /// </summary>
-        /// <param name="range">A range of values.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="range"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> IsInRange(IRange<TValue> range, string errorMessageFormat, object arg0)
-        {
-            return IsInRange(range, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified <paramref name="range"/>.
-        /// </summary>
-        /// <param name="range">A range of values.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>This member.</returns>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="range"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> IsInRange(IRange<TValue> range, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsInRange(range, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member's value lies within the specified <paramref name="range"/>.
-        /// </summary>
-        /// <param name="range">A range of values.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="range"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> IsInRange(IRange<TValue> range, string errorMessageFormat, params object[] arguments)
-        {
-            return IsInRange(range, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private Member<TValue> IsInRange(IRange<TValue> range, ErrorMessage errorMessage)
-        {           
             if (range == null)
             {
                 throw new ArgumentNullException("range");
@@ -3236,6 +1257,19 @@ namespace System.ComponentModel.FluentValidation
         /// <summary>
         /// Verifies that this member satisfies the specified <paramref name="constraint"/>.
         /// </summary>
+        /// <param name="constraint">A constraint or predicate for this member.</param>        
+        /// <returns>This member.</returns>       
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception> 
+        public Member<TValue> Satisfies(Func<TValue, bool> constraint)
+        {
+            return Satisfies(constraint, new ErrorMessage(ValidationMessages.Member_Satisfies_Failed, this));
+        }   
+
+        /// <summary>
+        /// Verifies that this member satisfies the specified <paramref name="constraint"/>.
+        /// </summary>
         /// <param name="constraint">A constraint or predicate for this member.</param>
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
@@ -3244,96 +1278,53 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception> 
-        public Member<TValue> Satisfies(Func<TValue, bool> constraint, string errorMessage)
-        {            
-            return Satisfies(constraint, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that this member satisfies the specified <paramref name="constraint"/>.
-        /// </summary>
-        /// <param name="constraint">A constraint or predicate for this member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>                     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> Satisfies(Func<TValue, bool> constraint, string errorMessageFormat, object arg0)
-        {
-            return Satisfies(constraint, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that this member satisfies the specified <paramref name="constraint"/>.
-        /// </summary>
-        /// <param name="constraint">A constraint or predicate for this member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>                     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> Satisfies(Func<TValue, bool> constraint, string errorMessageFormat, object arg0, object arg1)
-        {
-            return Satisfies(constraint, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that this member satisfies the specified <paramref name="constraint"/>.
-        /// </summary>
-        /// <param name="constraint">A constraint or predicate for this member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>       
-        /// <returns>This member.</returns>                     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> Satisfies(Func<TValue, bool> constraint, string errorMessageFormat, params object[] arguments)
-        {
-            return Satisfies(constraint, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        /// <summary>
-        /// Verifies that this member satisfies the specified <paramref name="constraint"/>.
-        /// </summary>
-        /// <param name="constraint">A constraint or predicate for this member.</param>
-        /// <param name="errorMessage">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>        
-        /// <returns>This member.</returns>                     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/> or <paramref name="errorMessage"/> is <c>null</c>.
-        /// </exception> 
         public Member<TValue> Satisfies(Func<TValue, bool> constraint, ErrorMessage errorMessage)
-        {            
-            _constraint = _constraint.And(this, constraint, errorMessage, _memberSet.Consumer);            
+        {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            if (errorMessage == null)
+            {
+                throw new ArgumentNullException("errorMessage");
+            }
+            _constraint = _constraint.And(this, constraint, errorMessage, _memberSet.Consumer);
             return this;
-        }        
+        }       
+        
+        /// <summary>
+        /// Verifies that this member satisfies the specified <paramref name="constraint"/> and converts this member into
+        /// an instance of <see cref="Member{TOther}" />.
+        /// </summary>
+        /// <typeparam name="TOther">Type of the converted value.</typeparam>
+        /// <param name="constraint">A constraint or predicate for this member.</param>             
+        /// <param name="selector">The delegate that is used to convert <see cref="Value" /> into an instance of <typeparamref name="TOther"/>.</param> 
+        /// <param name="newMemberName">If not <c>null</c>, specifies the name of the member that is returned by this method.</param>          
+        /// <returns>This member.</returns>                     
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> or <paramref name="selector"/> is <c>null</c>.
+        /// </exception> 
+        public Member<TOther> Satisfies<TOther>(Func<TValue, bool> constraint, Func<TValue, TOther> selector, string newMemberName = null)
+        {
+            return Satisfies(constraint, selector, newMemberName, new ErrorMessage(ValidationMessages.Member_Satisfies_Failed, this));
+        }
 
         /// <summary>
         /// Verifies that this member satisfies the specified <paramref name="constraint"/> and converts this member into
         /// an instance of <see cref="Member{TOther}" />.
         /// </summary>
         /// <typeparam name="TOther">Type of the converted value.</typeparam>
-        /// <param name="constraint">A constraint or predicate for this member.</param>
-        /// <param name="errorMessage">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>     
+        /// <param name="constraint">A constraint or predicate for this member.</param>             
         /// <param name="selector">The delegate that is used to convert <see cref="Value" /> into an instance of <typeparamref name="TOther"/>.</param> 
         /// <param name="newMemberName">If not <c>null</c>, specifies the name of the member that is returned by this method.</param>  
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
         /// <returns>This member.</returns>                     
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/>, <paramref name="errorMessage"/> or <paramref name="selector"/> is <c>null</c>.
+        /// <paramref name="constraint"/>, <paramref name="selector"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception> 
-        public Member<TOther> Satisfies<TOther>(Func<TValue, bool> constraint, ErrorMessage errorMessage, Func<TValue, TOther> selector, string newMemberName = null)
+        public Member<TOther> Satisfies<TOther>(Func<TValue, bool> constraint, Func<TValue, TOther> selector, string newMemberName, ErrorMessage errorMessage)
         {
             if (constraint == null)
             {

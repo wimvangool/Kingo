@@ -120,6 +120,9 @@
   <data name="EnumerableMember_HasElementAt_Failed" xml:space="preserve">
     <value>Member '{0}' has no element at index '{1}'.</value>
   </data>
+  <data name="Member_EndsWith_Failed" xml:space="preserve">
+    <value>Member '{0}' does not end with '{1}'.</value>
+  </data>
   <data name="Member_GuidIsEmpty_Failed" xml:space="preserve">
     <value>Member '{0}' is not an empty Guid.</value>
   </data>
@@ -159,6 +162,12 @@
   <data name="Member_IsNotInstanceOf_Failed" xml:space="preserve">
     <value>Member '{0}' is an instance of '{1}'.</value>
   </data>
+  <data name="Member_IsNotNullOrEmpty_Failed" xml:space="preserve">
+    <value>Member '{0}' is either null or empty.</value>
+  </data>
+  <data name="Member_IsNotNullOrWhiteSpace_Failed" xml:space="preserve">
+    <value>Member '{0}' is either null or contains only white space.</value>
+  </data>
   <data name="Member_IsNotNull_Failed" xml:space="preserve">
     <value>Member '{0}' is null.</value>
   </data>
@@ -176,6 +185,12 @@
   </data>
   <data name="Member_IsSmallerThan_Failed" xml:space="preserve">
     <value>Member '{0}' is not smaller than '{1}'.</value>
+  </data>
+  <data name="Member_Satisfies_Failed" xml:space="preserve">
+    <value>Member '{0}' does not satisfy the specified constraint.</value>
+  </data>
+  <data name="Member_StartsWith_Failed" xml:space="preserve">
+    <value>Member '{0}' does not start with '{1}'.</value>
   </data>
   <data name="RequiredMemberAttribute_MissingRequiredValue" xml:space="preserve">
     <value>Property '{0}' is required but was not specified.</value>

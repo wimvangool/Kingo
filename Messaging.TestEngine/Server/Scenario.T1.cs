@@ -166,13 +166,13 @@ namespace System.ComponentModel.Server
         protected IDomainEventListFactory TheNumberOfPublishedEventsIs(int count)
         {
             VerifyThat(_publishedEvents.Count, "NumberOfPublishedEvents")
-                .IsEqualTo(count, FailureMessages.Scenario_UnexpectedNumberOfPublishedEvents, _publishedEvents.Count, count);
+                .IsEqualTo(count, new ErrorMessage(FailureMessages.Scenario_UnexpectedNumberOfPublishedEvents, _publishedEvents.Count, count));
 
             return new DomainEventListFactory<TMessage>(this);
         }
 
         /// <summary>
-        /// Verifies that an <see cref="Exception" /> was thrown of the specified type (<typeparamref name="TException"/>)
+        /// Verifies that an <see cref="Exception" /> of the specified type (<typeparamref name="TException"/>) was thrown
         /// and returns an instance of this <see cref="Exception" /> in the form of a <see cref="Member{TValue}" /> such that
         /// more details about this exception can be verified.
         /// </summary>
@@ -181,8 +181,8 @@ namespace System.ComponentModel.Server
         protected Member<TException> TheExceptionThatWasThrownIsA<TException>()
         {
             return VerifyThat(_exception, "ExpectedException")
-                .IsNotNull(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException))
-                .IsInstanceOf<TException>(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType());
+                .IsNotNull(new ErrorMessage(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException)))
+                .IsInstanceOf<TException>(new ErrorMessage(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType()));
         }
 
         /// <summary>

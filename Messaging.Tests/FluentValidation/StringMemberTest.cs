@@ -217,6 +217,124 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion
 
+        #region [====== StartsWith ======]
+
+        [TestMethod]
+        public void ValidateStartsWith_ReturnsNoErrors_IfValueStartsWithSpecifiedPrefix()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).StartsWith("Some", _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateStartsWith_ReturnsExpectedError_IfValueIsNull()
+        {
+            var message = new ValidatedMessage<string>(null);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).StartsWith("SOME", _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateStartsWith_ReturnsExpectedError_IfValueDoesNotStartWithSpecifiedPrefix()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).StartsWith("SOME", _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateStartsWith_ReturnsNoErrors_IfValueStartsWithSpecifiedPrefix_OrdinalIgnoreCase()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).StartsWith("SOME", StringComparison.OrdinalIgnoreCase, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateStartsWith_ReturnsNoErrors_IfValueDoesNotStartWithSpecifiedPrefix_OrdinalIgnoreCase()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).StartsWith("value", StringComparison.OrdinalIgnoreCase, _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        #endregion
+
+        #region [====== EndsWith ======]
+
+        [TestMethod]
+        public void ValidateEndsWith_ReturnsNoErrors_IfValueEndsWithSpecifiedPostfix()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).EndsWith("value", _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateEndsWith_ReturnsExpectedError_IfValueIsNull()
+        {
+            var message = new ValidatedMessage<string>(null);
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).EndsWith("value", _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateEndsWith_ReturnsExpectedError_IfValueDoesNotEndWithSpecifiedPostfix()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).EndsWith("VALUE", _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateEndsWith_ReturnsNoErrors_IfValueEndsWithSpecifiedPostfix_OrdinalIgnoreCase()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).EndsWith("VALUE", StringComparison.OrdinalIgnoreCase, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateEndsWith_ReturnsNoErrors_IfValueDoesNotEndWithSpecifiedPostfix_OrdinalIgnoreCase()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).EndsWith("Some", StringComparison.OrdinalIgnoreCase, _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        #endregion
+
         #region [====== IsNoMatch ======]
 
         [TestMethod]

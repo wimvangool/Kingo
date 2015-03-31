@@ -35,66 +35,9 @@ namespace System.ComponentModel.FluentValidation
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessage" /> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<Guid> IsNotEmpty(this Member<Guid> member, string errorMessage)
-        {
-            return IsNotEmpty(member, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the value is not an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsNotEmpty(this Member<Guid> member, string errorMessageFormat, object arg0)
-        {
-            return IsNotEmpty(member, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value is not an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsNotEmpty(this Member<Guid> member, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotEmpty(member, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value is not an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsNotEmpty(this Member<Guid> member, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotEmpty(member, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<Guid> IsNotEmpty(Member<Guid> member, ErrorMessage errorMessage)
+        public static Member<Guid> IsNotEmpty(this Member<Guid> member, ErrorMessage errorMessage)
         {
             if (member == null)
             {
@@ -134,66 +77,9 @@ namespace System.ComponentModel.FluentValidation
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessage" /> is <c>null</c>.
+        /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<Guid> IsEmpty(this Member<Guid> member, string errorMessage)
-        {
-            return IsEmpty(member, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the value is an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsEmpty(this Member<Guid> member, string errorMessageFormat, object arg0)
-        {
-            return IsEmpty(member, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value is an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsEmpty(this Member<Guid> member, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsEmpty(member, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value is an empty <see cref="Guid" />.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat" /> is <c>null</c>.
-        /// </exception>
-        public static Member<Guid> IsEmpty(this Member<Guid> member, string errorMessageFormat, params object[] arguments)
-        {
-            return IsEmpty(member, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<Guid> IsEmpty(Member<Guid> member, ErrorMessage errorMessage)
+        public static Member<Guid> IsEmpty(this Member<Guid> member, ErrorMessage errorMessage)
         {
             if (member == null)
             {

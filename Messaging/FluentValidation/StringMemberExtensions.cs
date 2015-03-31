@@ -11,7 +11,20 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNotNullOrEmpty ======]
 
         /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or an empty string.
+        /// Verifies that the <paramref name="member" />'s value is not <c>null</c> or an empty string.
+        /// </summary>
+        /// <param name="member">A member.</param>        
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> IsNotNullOrEmpty(this Member<string> member)
+        {
+            return IsNotNullOrEmpty(member, new ErrorMessage(ValidationMessages.Member_IsNotNullOrEmpty_Failed, member));
+        }        
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value is not <c>null</c> or an empty string.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="errorMessage">
@@ -21,69 +34,12 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNotNullOrEmpty(this Member<string> member, string errorMessage)
-        {
-            return IsNotNullOrEmpty(member, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or an empty string.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>               
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotNullOrEmpty(this Member<string> member, string errorMessageFormat, object arg0)        
-        {
-            return IsNotNullOrEmpty(member, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or an empty string.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotNullOrEmpty(this Member<string> member, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotNullOrEmpty(member, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or an empty string.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>               
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotNullOrEmpty(this Member<string> member, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotNullOrEmpty(member, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<string> IsNotNullOrEmpty(Member<string> member, ErrorMessage errorMessage)
+        public static Member<string> IsNotNullOrEmpty(this Member<string> member, ErrorMessage errorMessage)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
-            }
+            }            
             return member.Satisfies(IsNotNullOrEmpty, errorMessage);
         }
 
@@ -97,7 +53,20 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNotNullOrWhiteSpace ======]
 
         /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or consists only of white space.
+        /// Verifies that the <paramref name="member" />'s value is not <c>null</c> or consists only of white space.
+        /// </summary>
+        /// <param name="member">A member.</param>        
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member)
+        {
+            return IsNotNullOrWhiteSpace(member, new ErrorMessage(ValidationMessages.Member_IsNotNullOrWhiteSpace_Failed, member));
+        }        
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value is not <c>null</c> or consists only of white space.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="errorMessage">
@@ -107,69 +76,12 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member, string errorMessage)
-        {
-            return IsNotNullOrWhiteSpace(member, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or consists only of white space.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>               
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member, string errorMessageFormat, object arg0)
-        {
-            return IsNotNullOrWhiteSpace(member, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or consists only of white space.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotNullOrWhiteSpace(member, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the specified <paramref name="member"/> is not <c>null</c> or consists only of white space.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>               
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotNullOrWhiteSpace(member, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<string> IsNotNullOrWhiteSpace(Member<string> member, ErrorMessage errorMessage)
+        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member, ErrorMessage errorMessage)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
-            }
+            }            
             return member.Satisfies(IsNotNullOrWhiteSpace, errorMessage);
         }
 
@@ -183,7 +95,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsNotEqualTo ======]
 
         /// <summary>
-        /// Verifies that the value is not equal to <paramref name="other"/>.
+        /// Verifies that the <paramref name="member" />'s value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="other">The value to compare.</param>
@@ -195,10 +107,10 @@ namespace System.ComponentModel.FluentValidation
         public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType)
         {
             return IsNotEqualTo(member, other, compareType, new ErrorMessage(ValidationMessages.Member_IsNotEqualTo_Failed, member, other));
-        }
+        }        
 
         /// <summary>
-        /// Verifies that the value is not equal to <paramref name="other"/>.
+        /// Verifies that the <paramref name="member" />'s value is not equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="other">The value to compare.</param>
@@ -210,70 +122,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessage)
-        {
-            return IsNotEqualTo(member, other, compareType, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the value is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="other">The value to compare.</param>
-        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessageFormat, object arg0)
-        {
-            return IsNotEqualTo(member, other, compareType, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="other">The value to compare.</param>
-        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNotEqualTo(member, other, compareType, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value is not equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="other">The value to compare.</param>
-        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNotEqualTo(member, other, compareType, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, ErrorMessage errorMessage)
+        public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, ErrorMessage errorMessage)
         {
             if (member == null)
             {
@@ -292,7 +141,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsEqualTo ======]
 
         /// <summary>
-        /// Verifies that the value is equal to <paramref name="other"/>.
+        /// Verifies that the <paramref name="member" />'s value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="other">The value to compare.</param>
@@ -307,7 +156,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that the value is equal to <paramref name="other"/>.
+        /// Verifies that the <paramref name="member" />'s value is equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="other">The value to compare.</param>
@@ -319,70 +168,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessage)
-        {
-            return IsEqualTo(member, other, compareType, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the value is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="other">The value to compare.</param>
-        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessageFormat, object arg0)
-        {
-            return IsEqualTo(member, other, compareType, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="other">The value to compare.</param>
-        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsEqualTo(member, other, compareType, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value is equal to <paramref name="other"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="other">The value to compare.</param>
-        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="errorMessageFormat"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, string errorMessageFormat, params object[] arguments)
-        {
-            return IsEqualTo(member, other, compareType, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, ErrorMessage errorMessage)
+        public static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, ErrorMessage errorMessage)
         {
             if (member == null)
             {
@@ -398,10 +184,172 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion
 
+        #region [====== StartsWith ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value starts with the specified <paramref name="prefix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="prefix">The prefix this value should start with.</param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="prefix"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> StartsWith(this Member<string> member, string prefix)
+        {
+            return StartsWith(member, prefix, StringComparison.Ordinal, new ErrorMessage(ValidationMessages.Member_StartsWith_Failed, member, prefix));
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value starts with the specified <paramref name="prefix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="prefix">The prefix this value should start with.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/>, <paramref name="prefix"/> or <paramref name="errorMessage"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> StartsWith(this Member<string> member, string prefix, ErrorMessage errorMessage)
+        {
+            return StartsWith(member, prefix, StringComparison.Ordinal, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value starts with the specified <paramref name="prefix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="prefix">The prefix this value should start with.</param>
+        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="prefix"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> StartsWith(this Member<string> member, string prefix, StringComparison compareType)
+        {
+            return StartsWith(member, prefix, compareType, new ErrorMessage(ValidationMessages.Member_StartsWith_Failed, member, prefix));
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value starts with the specified <paramref name="prefix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="prefix">The prefix this value should start with.</param>
+        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/>, <paramref name="prefix"/> or <paramref name="errorMessage"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> StartsWith(this Member<string> member, string prefix, StringComparison compareType, ErrorMessage errorMessage)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (prefix == null)
+            {
+                throw new ArgumentNullException("prefix");
+            }
+            return member.Satisfies(value => StartsWith(value, prefix, compareType), errorMessage);
+        }
+
+        private static bool StartsWith(string value, string prefix, StringComparison compareType)
+        {
+            return value != null && value.StartsWith(prefix, compareType);
+        }
+
+        #endregion
+
+        #region [====== EndsWith ======]
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value ends with the specified <paramref name="postfix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="postfix">The postfix this value should end with.</param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="postfix"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> EndsWith(this Member<string> member, string postfix)
+        {
+            return EndsWith(member, postfix, StringComparison.Ordinal, new ErrorMessage(ValidationMessages.Member_EndsWith_Failed, member, postfix));
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value ends with the specified <paramref name="postfix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="postfix">The postfix this value should end with.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/>, <paramref name="postfix"/> or <paramref name="errorMessage"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> EndsWith(this Member<string> member, string postfix, ErrorMessage errorMessage)
+        {
+            return EndsWith(member, postfix, StringComparison.Ordinal, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value ends with the specified <paramref name="postfix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="postfix">The postfix this value should end with.</param>
+        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="postfix"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> EndsWith(this Member<string> member, string postfix, StringComparison compareType)
+        {
+            return EndsWith(member, postfix, compareType, new ErrorMessage(ValidationMessages.Member_EndsWith_Failed, member, postfix));
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member" />'s value ends with the specified <paramref name="postfix"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="postfix">The postfix this value should end with.</param>
+        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The specified <paramref name="member"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/>, <paramref name="postfix"/> or <paramref name="errorMessage"/> is <c>null</c>.
+        /// </exception>
+        public static Member<string> EndsWith(this Member<string> member, string postfix, StringComparison compareType, ErrorMessage errorMessage)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (postfix == null)
+            {
+                throw new ArgumentNullException("postfix");
+            }
+            return member.Satisfies(value => EndsWith(value, postfix, compareType), errorMessage);
+        }
+
+        private static bool EndsWith(string value, string postfix, StringComparison compareType)
+        {
+            return value != null && value.EndsWith(postfix, compareType);
+        }
+
+        #endregion
+
         #region [====== IsNoMatch ======]
 
         /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value does not match the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -415,7 +363,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value does not match the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -424,70 +372,15 @@ namespace System.ComponentModel.FluentValidation
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
+        /// <paramref name="member"/>, <paramref name="pattern"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, string errorMessage)
+        public static Member<string> IsNoMatch(this Member<string> member, string pattern, ErrorMessage errorMessage)
         {
-            return IsNoMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessage));
+            return IsNoMatch(member, pattern, RegexOptions.None, errorMessage);
         }
 
         /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, string errorMessageFormat, object arg0)
-        {
-            return IsNoMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNoMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNoMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value does not match the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -502,7 +395,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value does not match the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -512,72 +405,9 @@ namespace System.ComponentModel.FluentValidation
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
+        /// <paramref name="member"/>, <paramref name="pattern"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessage)
-        {
-            return IsNoMatch(member, pattern, options, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessageFormat, object arg0)
-        {
-            return IsNoMatch(member, pattern, options, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsNoMatch(member, pattern, options, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value does not match the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsNoMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessageFormat, params object[] arguments)
-        {
-            return IsNoMatch(member, pattern, options, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<string> IsNoMatch(Member<string> member, string pattern, RegexOptions options, ErrorMessage errorMessage)
+        public static Member<string> IsNoMatch(this Member<string> member, string pattern, RegexOptions options, ErrorMessage errorMessage)
         {
             if (member == null)
             {
@@ -600,7 +430,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== IsMatch ======]
 
         /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value matches the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -614,7 +444,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value matches the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -623,70 +453,15 @@ namespace System.ComponentModel.FluentValidation
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
+        /// <paramref name="member"/>, <paramref name="pattern"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, string errorMessage)
+        public static Member<string> IsMatch(this Member<string> member, string pattern, ErrorMessage errorMessage)
         {
-            return IsMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessage));
-        }
+            return IsMatch(member, pattern, RegexOptions.None, errorMessage);
+        }        
 
         /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, string errorMessageFormat, object arg0)
-        {
-            return IsMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, string errorMessageFormat, params object[] arguments)
-        {
-            return IsMatch(member, pattern, RegexOptions.None, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value matches the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -701,7 +476,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
+        /// Verifies that the <paramref name="member" />'s value matches the specified <paramref name="pattern"/>.
         /// </summary>
         /// <param name="member">A member.</param>
         /// <param name="pattern">The pattern to match.</param>
@@ -711,72 +486,9 @@ namespace System.ComponentModel.FluentValidation
         /// </param>
         /// <returns>The specified <paramref name="member"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
+        /// <paramref name="member"/>, <paramref name="pattern"/> or <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessage)
-        {
-            return IsMatch(member, pattern, options, new ErrorMessage(errorMessage));
-        }
-
-        /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessageFormat, object arg0)
-        {
-            return IsMatch(member, pattern, options, new ErrorMessage(errorMessageFormat, arg0));
-        }
-
-        /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arg0">The first argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <param name="arg1">The second argument of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessageFormat, object arg0, object arg1)
-        {
-            return IsMatch(member, pattern, options, new ErrorMessage(errorMessageFormat, arg0, arg1));
-        }
-
-        /// <summary>
-        /// Verifies that the value matches the specified <paramref name="pattern"/>.
-        /// </summary>
-        /// <param name="member">A member.</param>
-        /// <param name="pattern">The pattern to match.</param>
-        /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
-        /// <param name="errorMessageFormat">
-        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
-        /// </param>
-        /// <param name="arguments">The arguments of <paramref name="errorMessageFormat"/>.</param>
-        /// <returns>The specified <paramref name="member"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
-        /// </exception>
-        public static Member<string> IsMatch(this Member<string> member, string pattern, RegexOptions options, string errorMessageFormat, params object[] arguments)
-        {
-            return IsMatch(member, pattern, options, new ErrorMessage(errorMessageFormat, arguments));
-        }
-
-        private static Member<string> IsMatch(Member<string> member, string pattern, RegexOptions options, ErrorMessage errorMessage)
+        public static Member<string> IsMatch(this Member<string> member, string pattern, RegexOptions options, ErrorMessage errorMessage)
         {
             if (member == null)
             {
@@ -794,6 +506,6 @@ namespace System.ComponentModel.FluentValidation
             return Regex.IsMatch(value, pattern, options);
         }
 
-        #endregion
+        #endregion        
     }
 }

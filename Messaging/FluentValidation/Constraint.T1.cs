@@ -7,15 +7,7 @@
         private readonly ErrorMessage _errorMessage;
 
         internal Constraint(Member<TValue> member, Func<TValue, bool> constraint, ErrorMessage errorMessage)
-        {
-            if (constraint == null)
-            {
-                throw new ArgumentNullException("constraint");
-            }
-            if (errorMessage == null)
-            {
-                throw new ArgumentNullException("errorMessage");
-            }
+        {            
             _member = member;
             _constraint = constraint;
             _errorMessage = errorMessage;

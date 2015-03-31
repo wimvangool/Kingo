@@ -70,6 +70,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not end with &apos;{1}&apos;..
+        /// </summary>
+        internal static string Member_EndsWith_Failed {
+            get {
+                return ResourceManager.GetString("Member_EndsWith_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is not an empty Guid..
         /// </summary>
         internal static string Member_GuidIsEmpty_Failed {
@@ -196,6 +205,24 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is either null or empty..
+        /// </summary>
+        internal static string Member_IsNotNullOrEmpty_Failed {
+            get {
+                return ResourceManager.GetString("Member_IsNotNullOrEmpty_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is either null or contains only white space..
+        /// </summary>
+        internal static string Member_IsNotNullOrWhiteSpace_Failed {
+            get {
+                return ResourceManager.GetString("Member_IsNotNullOrWhiteSpace_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is the same instance as &apos;{1}&apos;..
         /// </summary>
         internal static string Member_IsNotSameInstanceAs_Failed {
@@ -237,6 +264,24 @@ namespace System.ComponentModel.Resources {
         internal static string Member_IsSmallerThanOrEqualTo_Failed {
             get {
                 return ResourceManager.GetString("Member_IsSmallerThanOrEqualTo_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not satisfy the specified constraint..
+        /// </summary>
+        internal static string Member_Satisfies_Failed {
+            get {
+                return ResourceManager.GetString("Member_Satisfies_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not start with &apos;{1}&apos;..
+        /// </summary>
+        internal static string Member_StartsWith_Failed {
+            get {
+                return ResourceManager.GetString("Member_StartsWith_Failed", resourceCulture);
             }
         }
         
