@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EnumerableMember_HasElementAt_Failed" xml:space="preserve">
+  <data name="Member_CollectionElementAt_Failed" xml:space="preserve">
     <value>Member '{0}' has no element at index '{1}'.</value>
   </data>
   <data name="Member_EndsWith_Failed" xml:space="preserve">
@@ -230,5 +230,8 @@
   </data>
   <data name="RequiredMemberAttribute_MissingRequiredValue" xml:space="preserve">
     <value>Property '{0}' is required but was not specified.</value>
+  </data>
+  <data name="Member_CollectionIsNotNullOrEmpty_Failed" xml:space="preserve">
+    <value>Member '{0}' has no elements.</value>
   </data>
 </root>

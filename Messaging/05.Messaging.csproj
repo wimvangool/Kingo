@@ -53,11 +53,13 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="FluentValidation\AndConstraint.cs" />
+    <Compile Include="FluentValidation\CollectionMemberExtensions.cs" />
     <Compile Include="FluentValidation\Comparable.T1.cs" />
     <Compile Include="FluentValidation\Comparer.cs" />
     <Compile Include="FluentValidation\Constraint.T1.cs" />
     <Compile Include="FluentValidation\EnumerableMemberExtensions.cs" />
     <Compile Include="FluentValidation\GuidMemberExtensions.cs" />
+    <Compile Include="FluentValidation\ListMemberExtensions.cs" />
     <Compile Include="FluentValidation\MemberSet.cs" />
     <Compile Include="FluentValidation\Equatable.T1.cs" />
     <Compile Include="FluentValidation\ErrorMessage.cs" />

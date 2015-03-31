@@ -63,9 +63,18 @@ namespace System.ComponentModel.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; has no element at index &apos;{1}&apos;..
         /// </summary>
-        internal static string EnumerableMember_HasElementAt_Failed {
+        internal static string Member_CollectionElementAt_Failed {
             get {
-                return ResourceManager.GetString("EnumerableMember_HasElementAt_Failed", resourceCulture);
+                return ResourceManager.GetString("Member_CollectionElementAt_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; has no elements..
+        /// </summary>
+        internal static string Member_CollectionIsNotNullOrEmpty_Failed {
+            get {
+                return ResourceManager.GetString("Member_CollectionIsNotNullOrEmpty_Failed", resourceCulture);
             }
         }
         
