@@ -35,12 +35,12 @@
             {
                 return true;
             }
-            return object.Equals(Member, other.Member);
+            return Equals(Member, other.Member);
         }
 
         public override int GetHashCode()
         {
-            return GetHashCodeOf(Member);
+            return HashCode.Of(Member);
         }
     }   
 }

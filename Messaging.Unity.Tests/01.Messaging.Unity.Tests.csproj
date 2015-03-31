@@ -6,7 +6,7 @@
     <ProjectGuid>{1D19D39A-15C6-4FDE-90C5-93188F2FC644}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.Unity.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -67,10 +67,10 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="MessageStub.cs" />
+    <Compile Include="ComponentModel\MessageStub.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Server\PerUnitOfWorkLifetimeManagerTest.cs" />
-    <Compile Include="Server\UnityTestProcessor.cs" />
+    <Compile Include="ComponentModel\Server\PerUnitOfWorkLifetimeManagerTest.cs" />
+    <Compile Include="ComponentModel\Server\UnityTestProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\05.Messaging.csproj">

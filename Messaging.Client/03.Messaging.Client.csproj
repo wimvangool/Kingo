@@ -7,7 +7,7 @@
     <ProjectGuid>{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.Client</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -50,36 +50,36 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Client\ClientCommand.cs" />
-    <Compile Include="Client\AsyncExecutionTaskStartedEventArgs.cs" />
-    <Compile Include="Client\DataVirtualization\CollectionChangedEventThrottle.cs" />
-    <Compile Include="Client\DataVirtualization\CountLoadedEventArgs.cs" />
-    <Compile Include="Client\DataVirtualization\IndexSet.cs" />
-    <Compile Include="Client\DataVirtualization\IndexRange.cs" />
-    <Compile Include="Client\DataVirtualization\IVirtualCollectionItem.cs" />
-    <Compile Include="Client\DataVirtualization\PageLoadedEventArgs.T1.cs" />
-    <Compile Include="Client\DataVirtualization\PageFailedToLoadEventArgs.cs" />
-    <Compile Include="Client\DataVirtualization\ReadOnlyCollection.T1.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollection.T1.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionPageLoader.T1.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionItemStatus.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionPage.T1.cs" />
+    <Compile Include="ComponentModel\Client\ClientCommand.cs" />
+    <Compile Include="ComponentModel\Client\AsyncExecutionTaskStartedEventArgs.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\CollectionChangedEventThrottle.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\CountLoadedEventArgs.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\IndexSet.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\IndexRange.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\IVirtualCollectionItem.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\PageLoadedEventArgs.T1.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\PageFailedToLoadEventArgs.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\ReadOnlyCollection.T1.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollection.T1.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionPageLoader.T1.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionItemStatus.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionPage.T1.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Client\ClientEventBus.cs" />
-    <Compile Include="Client\ClientEventBusConnection.cs" />
-    <Compile Include="Client\ClientCommand.T1.cs" />
-    <Compile Include="Client\ClientCommandOptions.cs" />
-    <Compile Include="Client\HasChangesIndicator.cs" />
-    <Compile Include="Client\IsBusyIndicator.cs" />
-    <Compile Include="Client\IsValidIndicator.cs" />
-    <Compile Include="Client\INotifyIsExecuting.cs" />
-    <Compile Include="Client\ICompositeCommand.cs" />
-    <Compile Include="Client\OneToManyCommand.cs" />
-    <Compile Include="Client\OneToManyCommandConnection.cs" />
-    <Compile Include="Client\OneToOneCommand.cs" />
-    <Compile Include="Client\OneToOneCommandConnection.cs" />
-    <Compile Include="Client\RelayCommand.cs" />
-    <Compile Include="Client\RelayCommand.T1.cs" />
+    <Compile Include="ComponentModel\Client\ClientEventBus.cs" />
+    <Compile Include="ComponentModel\Client\ClientEventBusConnection.cs" />
+    <Compile Include="ComponentModel\Client\ClientCommand.T1.cs" />
+    <Compile Include="ComponentModel\Client\ClientCommandOptions.cs" />
+    <Compile Include="ComponentModel\Client\HasChangesIndicator.cs" />
+    <Compile Include="ComponentModel\Client\IsBusyIndicator.cs" />
+    <Compile Include="ComponentModel\Client\IsValidIndicator.cs" />
+    <Compile Include="ComponentModel\Client\INotifyIsExecuting.cs" />
+    <Compile Include="ComponentModel\Client\ICompositeCommand.cs" />
+    <Compile Include="ComponentModel\Client\OneToManyCommand.cs" />
+    <Compile Include="ComponentModel\Client\OneToManyCommandConnection.cs" />
+    <Compile Include="ComponentModel\Client\OneToOneCommand.cs" />
+    <Compile Include="ComponentModel\Client\OneToOneCommandConnection.cs" />
+    <Compile Include="ComponentModel\Client\RelayCommand.cs" />
+    <Compile Include="ComponentModel\Client\RelayCommand.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -100,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="02.Messaging.Client.nuspec" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionItem.T1.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionItem.T1.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

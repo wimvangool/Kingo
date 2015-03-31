@@ -8,7 +8,7 @@
     <ProjectGuid>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.TestEngine</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -69,17 +69,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FailureMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Server\GlobalSuppressions.cs" />
-    <Compile Include="Server\IDomainEventList.cs" />
-    <Compile Include="Server\IDomainEventListFactory.cs" />
-    <Compile Include="Server\MessageSequence.cs" />
-    <Compile Include="Server\MessageSequenceNode.T1.cs" />
-    <Compile Include="Server\MessageSequencePair.cs" />
-    <Compile Include="Server\IMessageSequence.cs" />
+    <Compile Include="ComponentModel\Server\GlobalSuppressions.cs" />
+    <Compile Include="ComponentModel\Server\IDomainEventList.cs" />
+    <Compile Include="ComponentModel\Server\IDomainEventListFactory.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequence.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequenceNode.T1.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequencePair.cs" />
+    <Compile Include="ComponentModel\Server\IMessageSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Server\Scenario.cs" />
-    <Compile Include="Server\Scenario.T1.cs" />
-    <Compile Include="Server\ScenarioCache.cs" />
+    <Compile Include="ComponentModel\Server\Scenario.cs" />
+    <Compile Include="ComponentModel\Server\Scenario.T1.cs" />
+    <Compile Include="ComponentModel\Server\ScenarioCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\05.Messaging.csproj">

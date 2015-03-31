@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel
+﻿namespace System
 {
     /// <summary>
     /// Contains extension-methods for raising events.

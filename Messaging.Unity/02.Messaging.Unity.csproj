@@ -7,7 +7,7 @@
     <ProjectGuid>{77F45326-E908-47EB-B924-A3BD26CAD6B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.Unity</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -54,13 +54,13 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Server\CacheBasedLifetimeManager.cs" />
+    <Compile Include="ComponentModel\Server\CacheBasedLifetimeManager.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Server\MessageHandlerFactoryForUnity.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerFactoryForUnity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="02.Messaging.Unity.nuspec" />

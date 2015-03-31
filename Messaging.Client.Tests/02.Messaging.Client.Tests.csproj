@@ -6,7 +6,7 @@
     <ProjectGuid>{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.Client.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -59,23 +59,23 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Client\DataVirtualization\IndexRangeTest.cs" />
-    <Compile Include="Client\DataVirtualization\IndexSetTest.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionSpy.cs" />
-    <Compile Include="Client\DataVirtualization\VirtualCollectionTest.cs" />
-    <Compile Include="Client\SynchronousContext.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\IndexRangeTest.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\IndexSetTest.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionSpy.cs" />
+    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionTest.cs" />
+    <Compile Include="ComponentModel\Client\SynchronousContext.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Client\ClientEventBusStub.cs" />
-    <Compile Include="Client\ClientEventBusTest.cs" />
-    <Compile Include="Client\HasChangesIndicatorTest.cs" />
-    <Compile Include="Client\IsBusyIndicatorTest.cs" />
-    <Compile Include="Client\IsValidIndicatorTest.cs" />
-    <Compile Include="Client\HasChangesIndicatorStub.cs" />
-    <Compile Include="Client\IsBusyIndicatorStub.cs" />
-    <Compile Include="Client\IsValidIndicatorStub.cs" />
-    <Compile Include="Client\OneToManyCommandTest.cs" />
-    <Compile Include="Client\OneToOneCommandTest.cs" />
-    <Compile Include="Client\RelayCommandOfT1.Test.cs" />
+    <Compile Include="ComponentModel\Client\ClientEventBusStub.cs" />
+    <Compile Include="ComponentModel\Client\ClientEventBusTest.cs" />
+    <Compile Include="ComponentModel\Client\HasChangesIndicatorTest.cs" />
+    <Compile Include="ComponentModel\Client\IsBusyIndicatorTest.cs" />
+    <Compile Include="ComponentModel\Client\IsValidIndicatorTest.cs" />
+    <Compile Include="ComponentModel\Client\HasChangesIndicatorStub.cs" />
+    <Compile Include="ComponentModel\Client\IsBusyIndicatorStub.cs" />
+    <Compile Include="ComponentModel\Client\IsValidIndicatorStub.cs" />
+    <Compile Include="ComponentModel\Client\OneToManyCommandTest.cs" />
+    <Compile Include="ComponentModel\Client\OneToOneCommandTest.cs" />
+    <Compile Include="ComponentModel\Client\RelayCommandOfT1.Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging.Client\03.Messaging.Client.csproj">

@@ -9,7 +9,7 @@
     <ProjectGuid>{4FE972F0-2046-4039-9461-45D0B7E6229F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.ComponentModel</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.TestEngine.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -72,12 +72,12 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Server\DomainEvent.cs" />
+    <Compile Include="ComponentModel\Server\DomainEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Server\ScenarioTest.cs" />
-    <Compile Include="Server\ScenarioTestProcessor.cs" />
-    <Compile Include="Server\TheCommand.cs" />
-    <Compile Include="Server\TheCommandHandler.cs" />
+    <Compile Include="ComponentModel\Server\ScenarioTest.cs" />
+    <Compile Include="ComponentModel\Server\ScenarioTestProcessor.cs" />
+    <Compile Include="ComponentModel\Server\TheCommand.cs" />
+    <Compile Include="ComponentModel\Server\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\05.Messaging.csproj">
