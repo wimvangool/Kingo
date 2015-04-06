@@ -8,7 +8,7 @@ namespace System.ComponentModel.FluentValidation
         #region [====== Constructor ======]
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_Throws_IfRangeIsNotValid()
         {
             var left = RandomValue();
@@ -18,7 +18,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_Throws_IfLeftAndRightAreEqual_And_OptionsIsLeftExclusive()
         {
             var value = RandomValue();
@@ -27,7 +27,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_Throws_IfLeftAndRightAreEqual_And_OptionsIsRightExclusive()
         {
             var value = RandomValue();

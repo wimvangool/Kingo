@@ -358,6 +358,15 @@ namespace System.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A length cannot be negative: {0}..
+        /// </summary>
+        internal static string StringMemberExtensions_NegativeLength {
+            get {
+                return ResourceManager.GetString("StringMemberExtensions_NegativeLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot complete this scope because it is not the current scope..
         /// </summary>
         internal static string TransactionScope_CannotCompleteScope {

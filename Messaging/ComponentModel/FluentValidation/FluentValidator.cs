@@ -55,7 +55,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="valueFactory"/> or <paramref name="name"/> is <c>null</c>.
         /// </exception> 
-        public Member<TValue> StartToAddConstraintsFor<TValue>(Func<TValue> valueFactory, string name)
+        public Member<TValue> VerifyThat<TValue>(Func<TValue> valueFactory, string name)
         {
             return _memberSet.StartToAddConstraintsFor(valueFactory, name);
         }
@@ -73,7 +73,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception> 
-        public Member<TValue> StartToAddConstraintsFor<TValue>(TValue value, string name)
+        public Member<TValue> VerifyThat<TValue>(TValue value, string name)
         {
             return _memberSet.StartToAddConstraintsFor(value, name);
         }

@@ -451,6 +451,84 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion
 
+        #region [====== Length ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ValidateHasLengthOf_Throws_IfLengthIsNegative()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).HasLengthOf(-1);
+        }
+
+        [TestMethod]        
+        public void ValidateHasLengthOf_ReturnsExpectedError_IfValueDoesNotHaveSpecifiedLength()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).HasLengthOf(9, _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateHasLengthOf_ReturnsNoErrors_IfValueHasSpecifiedLength()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).HasLengthOf(10, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ValidateHasLengthBetween_Throws_IfMaximumIsNegative()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).HasLengthBetween(-2, -1, _errorMessage);            
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ValidateHasLengthBetween_Throws_IfMaximumIsSmallerThanMinimum()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).HasLengthBetween(8, 7, _errorMessage);
+        }
+
+        [TestMethod]        
+        public void ValidateHasLengthBetween_ReturnsExpectedError_IfLengthOfValueIsNotInSpecifiedRange()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).HasLengthBetween(0, 9, _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateHasLengthBetween_ReturnsNoErrors_IfLengthOfValueIsInSpecifiedRange()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).HasLengthBetween(9, 11, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        #endregion
+
         #region [====== IsByte ======]
 
         [TestMethod]

@@ -369,6 +369,108 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion        
 
+        #region [====== Length ======]
+      
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value length is equal to <paramref name="length"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="length">The required length of the string.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="byte"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="length"/> is smaller than <c>0</c>.
+        /// </exception>
+        public static Member<string> HasLengthOf(this Member<string> member, int length, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (length < 0)
+            {
+                throw NewNegativeLengthException("length", length);
+            }
+            if (errorMessage == null)
+            {
+                errorMessage = new ErrorMessage(ValidationMessages.Member_HasLengthOf_Failed, length);
+            }
+            return member.HasLengthBetween(new Range<int>(length, length), errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value length is between <paramref name="minimum"/> and <paramref name="maximum"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="minimum">The minimum length of the string (inclusive).</param>
+        /// <param name="maximum">The maximum length of the string (inclusive).</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="byte"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maximum"/> is smaller than <paramref name="minimum"/> or smaller than <c>0</c>.
+        /// </exception>
+        public static Member<string> HasLengthBetween(this Member<string> member, int minimum, int maximum, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (maximum < 0)
+            {
+                throw NewNegativeLengthException("maximum", maximum);
+            }
+            return HasLengthBetween(member, new Range<int>(minimum, maximum), errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the <paramref name="member"/>'s value length is in the specified <paramref name="range"/>.
+        /// </summary>
+        /// <param name="member">A member.</param>
+        /// <param name="range">A range of allowable lengths.</param>
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>
+        /// <returns>The <see cref="byte"/> representation of the string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="range" /> is <c>null</c>.
+        /// </exception>        
+        public static Member<string> HasLengthBetween(this Member<string> member, IRange<int> range, ErrorMessage errorMessage = null)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            if (range == null)
+            {
+                throw new ArgumentNullException("range");
+            }            
+            return member.Satisfies(value => HasLengthBetween(value, range), errorMessage);
+        }
+
+        private static bool HasLengthBetween(string value, IRange<int> range)
+        {
+            return value != null && range.Contains(value.Length);
+        }
+
+        private static Exception NewNegativeLengthException(string paramName, int length)
+        {
+            var messageFormat = ExceptionMessages.StringMemberExtensions_NegativeLength;
+            var message = string.Format(messageFormat, length);
+            return new ArgumentOutOfRangeException(paramName, message);
+        }
+
+        #endregion
+
         #region [====== IsByte ======]
 
         /// <summary>

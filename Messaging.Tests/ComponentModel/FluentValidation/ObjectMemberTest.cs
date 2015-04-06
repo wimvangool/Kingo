@@ -105,58 +105,58 @@ namespace System.ComponentModel.FluentValidation
 
         #region [====== And ======]
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void And_Throws_IfArgumentIsNull()
-        {
-            var message = new ValidatedMessage<object>(new object());
-            var validator = new FluentValidator();
+        //[TestMethod]
+        //[ExpectedException(typeof(ArgumentNullException))]
+        //public void And_Throws_IfArgumentIsNull()
+        //{
+        //    var message = new ValidatedMessage<object>(new object());
+        //    var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage).And(null); ;
-        }
+        //    validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage).And(null); ;
+        //}
 
-        [TestMethod]
-        public void And_ReturnsNoErrors_IfChildValidationSucceeds()
-        {
-            var message = new ValidatedMessage<object>("Some value");
-            var validator = new FluentValidator();
+        //[TestMethod]
+        //public void And_ReturnsNoErrors_IfChildValidationSucceeds()
+        //{
+        //    var message = new ValidatedMessage<object>("Some value");
+        //    var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member)
-                .IsNotNull(_errorMessage)
-                .IsInstanceOf<string>(_errorMessage)
-                .And(value => validator.VerifyThat(() => value.Length).IsEqualTo(10, _errorMessage));
+        //    validator.VerifyThat(() => message.Member)
+        //        .IsNotNull(_errorMessage)
+        //        .IsInstanceOf<string>(_errorMessage)
+        //        .And(value => validator.VerifyThat(() => value.Length).IsEqualTo(10, _errorMessage));
 
-            validator.Validate().AssertNoErrors();
-        }
+        //    validator.Validate().AssertNoErrors();
+        //}
 
-        [TestMethod]
-        public void And_ReturnsExpectedError_IfChildValidationFails()
-        {
-            var message = new ValidatedMessage<object>("Some value");
-            var validator = new FluentValidator();
+        //[TestMethod]
+        //public void And_ReturnsExpectedError_IfChildValidationFails()
+        //{
+        //    var message = new ValidatedMessage<object>("Some value");
+        //    var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member)
-                .IsNotNull(_errorMessage)
-                .IsInstanceOf<string>(_errorMessage)
-                .And(value => validator.VerifyThat(() => value.Length).IsNotEqualTo(10, _errorMessage));
+        //    validator.VerifyThat(() => message.Member)
+        //        .IsNotNull(_errorMessage)
+        //        .IsInstanceOf<string>(_errorMessage)
+        //        .And(value => validator.VerifyThat(() => value.Length).IsNotEqualTo(10, _errorMessage));
 
-            validator.Validate().AssertOneError(_errorMessage, "Member.Length");
-        }
+        //    validator.Validate().AssertOneError(_errorMessage, "Member.Length");
+        //}
 
-        [TestMethod]
-        public void And_ReturnsExpectedError_IfChildOfChildValidationFails()
-        {
-            var message = new ValidatedMessage<ValidatedMessage<object>>(new ValidatedMessage<object>("Some value"));
-            var validator = new FluentValidator();
+        //[TestMethod]
+        //public void And_ReturnsExpectedError_IfChildOfChildValidationFails()
+        //{
+        //    var message = new ValidatedMessage<ValidatedMessage<object>>(new ValidatedMessage<object>("Some value"));
+        //    var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage).And(innerMessage =>            
-                validator.VerifyThat(() => innerMessage.Member).IsInstanceOf<string>().And(value =>                
-                    validator.VerifyThat(() => value.Length).IsNotEqualTo(10, _errorMessage)
-                )
-            );
+        //    validator.VerifyThat(() => message.Member).IsNotNull(_errorMessage).And(innerMessage =>            
+        //        validator.VerifyThat(() => innerMessage.Member).IsInstanceOf<string>().And(value =>                
+        //            validator.VerifyThat(() => value.Length).IsNotEqualTo(10, _errorMessage)
+        //        )
+        //    );
 
-            validator.Validate().AssertOneError(_errorMessage, "Member.Member.Length");
-        }
+        //    validator.Validate().AssertOneError(_errorMessage, "Member.Member.Length");
+        //}
 
         #endregion
 
@@ -1430,7 +1430,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ValidateIsNotInRange_Throws_IfRangeIsInvalid()
         {
             var member = Clock.Current.UtcDateAndTime().Millisecond;
@@ -1500,7 +1500,7 @@ namespace System.ComponentModel.FluentValidation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ValidateIsInRange_Throws_IfRangeIsInvalid()
         {
             var member = Clock.Current.UtcDateAndTime().Millisecond;

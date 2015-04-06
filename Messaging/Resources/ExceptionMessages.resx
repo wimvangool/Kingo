@@ -228,4 +228,7 @@
   <data name="Aggregate_NonMatchingKey" xml:space="preserve">
     <value>The AggregateKey of the specified event ({0}) does not match the aggregate's key it is applied to ({1}).</value>
   </data>
+  <data name="StringMemberExtensions_NegativeLength" xml:space="preserve">
+    <value>A length cannot be negative: {0}.</value>
+  </data>
 </root>

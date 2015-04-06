@@ -149,7 +149,7 @@ namespace System
         {
             var messageFormat = ExceptionMessages.Range_InvalidRange;
             var message = string.Format(messageFormat, ToString(left, right, options));
-            return new ArgumentException(message);
+            return new ArgumentOutOfRangeException(message);
         } 
 
         private static string ToString(TValue left, TValue right, RangeOptions options)

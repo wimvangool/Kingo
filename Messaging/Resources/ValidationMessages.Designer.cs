@@ -106,6 +106,15 @@ namespace System.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not have the required length of &apos;{1}&apos;..
+        /// </summary>
+        internal static string Member_HasLengthOf_Failed {
+            get {
+                return ResourceManager.GetString("Member_HasLengthOf_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; has no value..
         /// </summary>
         internal static string Member_HasValue_Failed {

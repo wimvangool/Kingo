@@ -234,4 +234,7 @@
   <data name="Member_CollectionIsNotNullOrEmpty_Failed" xml:space="preserve">
     <value>Member '{0}' has no elements.</value>
   </data>
+  <data name="Member_HasLengthOf_Failed" xml:space="preserve">
+    <value>Member '{0}' does not have the required length of '{1}'.</value>
+  </data>
 </root>
