@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.Domain
+﻿using System.Resources;
+
+namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an aggregate that is modeled as a stream of events.
@@ -7,7 +9,7 @@
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
     public abstract class Aggregate<TKey, TVersion> : IEventStream<TKey, TVersion>, IAggregate<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IAggregateVersion<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         private readonly MemoryEventStream<TKey, TVersion> _buffer;
 
@@ -55,7 +57,14 @@
         protected abstract TVersion Version
         {
             get;
+            set;
         }
+
+        /// <summary>
+        /// Increments the specified <paramref name="version"/> and returns the result.
+        /// </summary>
+        /// <returns>The incremented value.</returns>
+        protected abstract TVersion Increment(TVersion version);
 
         void IEventStream<TKey, TVersion>.FlushTo(IWritableEventStream<TKey, TVersion> stream)
         {
@@ -63,19 +72,60 @@
         }
 
         /// <summary>
-        /// Appends the specified event to this buffer.
+        /// Appends the event that is created using the specified <paramref name="eventFactory"/>
+        /// to the aggregate's buffer and publishes it.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event that is created and written.</typeparam>
+        /// <param name="eventFactory">The factory that is used to created the event.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="eventFactory"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
+        /// </exception>
+        protected void Publish<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        {
+            if (eventFactory == null)
+            {
+                throw new ArgumentNullException("eventFactory");
+            }
+            Publish(eventFactory.Invoke(Increment(Version)));
+        }
+
+        /// <summary>
+        /// Appends the specified event to the aggregate's buffer and publishes it.
         /// </summary>
         /// <typeparam name="TEvent">Type of the event to append.</typeparam>
-        /// <param name="event">The event to append.</param>
-        /// <returns><c>true</c> if the specified <paramref name="event"/> was also published through the <see cref="MessageProcessor" />.</returns>
+        /// <param name="event">The event to append.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        protected bool Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        /// <exception cref="InvalidOperationException">
+        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
+        /// </exception>
+        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
         {
-            _buffer.Write(@event);
+            if (@event == null)
+            {
+                throw new ArgumentNullException("event");
+            }
+            if (@event.AggregateKey.Equals(Key))
+            {
+                Version = @event.AggregateVersion;
 
-            return MessageProcessor.TryPublish(@event);
-        }        
+                _buffer.Write(@event);
+
+                MessageProcessor.Publish(@event);
+                return;
+            }
+            throw NewNonMatchingAggregateKeyException(@event);
+        }
+
+        internal Exception NewNonMatchingAggregateKeyException<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
+        {
+            var messageFormat = ExceptionMessages.Aggregate_NonMatchingKey;
+            var message = string.Format(messageFormat, Key, @event.AggregateKey);
+            return new ArgumentException(message, "event");
+        }
     }
 }

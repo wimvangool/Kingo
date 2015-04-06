@@ -120,9 +120,6 @@
   <data name="AggregateNotFoundException_Message" xml:space="preserve">
     <value>No aggregate of type '{0}' with the specified key ({1}) was found.</value>
   </data>
-  <data name="AggregateVersion_InvalidType" xml:space="preserve">
-    <value>Invalid type specified for comparison. Expected '{0}' but was '{1}'.</value>
-  </data>
   <data name="AsyncExecutionTask_TaskAlreadyStarted" xml:space="preserve">
     <value>Cannot execute this task because it was already executed or canceled.</value>
   </data>
@@ -227,5 +224,8 @@
   </data>
   <data name="MemberSet_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
+  </data>
+  <data name="Aggregate_NonMatchingKey" xml:space="preserve">
+    <value>The AggregateKey of the specified event ({0}) does not match the aggregate's key it is applied to ({1}).</value>
   </data>
 </root>

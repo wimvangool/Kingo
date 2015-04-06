@@ -5,17 +5,17 @@ using System.Linq;
 
 namespace System.ComponentModel.Server.SampleApplication
 {
-    public sealed class ShoppingCart : Aggregate<Guid, Int32Version>
+    public sealed class ShoppingCart : Aggregate<Guid, int>
     {
         private readonly Guid _id;
-        private Int32Version _version;
+        private int _version;
 
         private readonly List<ShoppingCartItem> _items;
 
         private ShoppingCart(Guid id)
         {
             _id = id;
-            _version = Int32Version.Zero;
+            _version = 0;
 
             _items = new List<ShoppingCartItem>(2);
         }
@@ -25,9 +25,15 @@ namespace System.ComponentModel.Server.SampleApplication
             get { return _id; }
         }
 
-        protected override Int32Version Version
+        protected override int Version
         {
             get { return _version; }
+            set { _version = value; }
+        }
+
+        protected override int Increment(int version)
+        {
+            return version + 1;
         }
 
         public void AddProduct(int productId, int quantity)
@@ -42,10 +48,10 @@ namespace System.ComponentModel.Server.SampleApplication
 
             item.AddQuantity(quantity);
 
-            Write(new ProductAddedToCartEvent
+            Publish(version => new ProductAddedToCartEvent
             {
                 ShoppingCartId = _id,
-                ShoppingCartVersion = Int32Version.Increment(ref _version),
+                ShoppingCartVersion = version,
                 ProductId = productId,
                 OldQuantity = oldQuantity,
                 NewQuantity = item.Quantity
@@ -61,10 +67,10 @@ namespace System.ComponentModel.Server.SampleApplication
         {
             var cart = new ShoppingCart(shoppingCartId);
 
-            cart.Write(new ShoppingCartCreatedEvent
+            cart.Publish(version => new ShoppingCartCreatedEvent
             {
                 ShoppingCartId = shoppingCartId,
-                ShoppingCartVersion = Int32Version.Increment(ref cart._version)
+                ShoppingCartVersion = version
             });
             return cart;
         }

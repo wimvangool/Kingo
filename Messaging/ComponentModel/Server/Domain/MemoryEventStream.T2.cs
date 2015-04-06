@@ -9,7 +9,7 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
     public sealed class MemoryEventStream<TKey, TVersion> : IEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         private readonly List<IEventBuffer<TKey, TVersion>> _buffer;
 

@@ -5,7 +5,7 @@ namespace System.ComponentModel.Server.Domain
 {
     internal sealed class AggregateSet<TKey, TVersion, TValue> : IEnumerable<AggregateVersionTracker<TKey, TVersion, TValue>>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TValue : class, IAggregate<TKey, TVersion>
     {
         private readonly Dictionary<TKey, AggregateVersionTracker<TKey, TVersion, TValue>> _aggregates;

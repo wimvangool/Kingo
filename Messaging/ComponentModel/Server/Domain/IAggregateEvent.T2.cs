@@ -7,7 +7,7 @@
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
     public interface IAggregateEvent<out TKey, out TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>
         /// Key of the associated aggregate.

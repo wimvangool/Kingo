@@ -200,15 +200,11 @@
     <Compile Include="ComponentModel\Server\Domain\Aggregate.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\AggregateVersionTracker.T3.cs" />
     <Compile Include="ComponentModel\Server\FuncDecorator.T2.cs" />
-    <Compile Include="ComponentModel\Server\Domain\IAggregateVersion.T1.cs" />
-    <Compile Include="ComponentModel\Server\Domain\DateTimeVersion.cs" />
     <Compile Include="ComponentModel\Server\IMessageProcessorBusConnection.cs" />
-    <Compile Include="ComponentModel\Server\Domain\Int64Version.cs" />
     <Compile Include="ComponentModel\Server\IQuery.T2.cs" />
     <Compile Include="ComponentModel\Server\PassThroughPipeline.T1.cs" />
     <Compile Include="ComponentModel\Server\MessageValidationModule.cs" />
     <Compile Include="ComponentModel\Server\Domain\Repository.T3.cs" />
-    <Compile Include="ComponentModel\Server\Domain\Int32Version.cs" />
     <Compile Include="ComponentModel\Server\Domain\DomainException.cs" />
     <Compile Include="ComponentModel\Server\Domain\IAggregate.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\EventSourcedAggregate.T2.cs" />

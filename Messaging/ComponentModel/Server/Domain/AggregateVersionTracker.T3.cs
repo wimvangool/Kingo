@@ -2,7 +2,7 @@
 {
     internal sealed class AggregateVersionTracker<TKey, TVersion, TAggregate>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IAggregate<TKey, TVersion>
     {
         private readonly TVersion _originalVersion;

@@ -11,7 +11,7 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
     public abstract class EventSourcedAggregate<TKey, TVersion> : Aggregate<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IAggregateVersion<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         private readonly Dictionary<Type, Action<IAggregateEvent<TKey, TVersion>>> _eventHandlers;
 
@@ -68,7 +68,34 @@ namespace System.ComponentModel.Server.Domain
             {
                 throw new ArgumentNullException("event");
             }
-            Handle(@event);
+            if (@event.AggregateKey.Equals(Key))
+            {
+                Handle(@event);
+                return;
+            }
+            throw NewNonMatchingAggregateKeyException(@event);
+        }
+
+        /// <summary>
+        /// Applies the event that was created using the specified <paramref name="eventFactory"/> to this aggregate.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event to apply.</typeparam>
+        /// <param name="eventFactory">A factory used to create the event..</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="eventFactory"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The created event's <see cref="IAggregateEvent{S, T}.AggregateKey" /> does not match
+        /// this aggregate's <see cref="Aggregate{S, T}.Key" />, or no handler for an event of the specified
+        /// type has been registered.
+        /// </exception>
+        protected void Apply<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        {
+            if (eventFactory == null)
+            {
+                throw new ArgumentNullException("eventFactory");
+            }
+            Apply(eventFactory.Invoke(Increment(Version)));
         }
 
         /// <summary>
@@ -80,7 +107,9 @@ namespace System.ComponentModel.Server.Domain
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// No handler for an event of the specified type has been registered.
+        /// The <paramref name="event"/>'s <see cref="IAggregateEvent{S, T}.AggregateKey" /> does not match
+        /// this aggregate's <see cref="Aggregate{S, T}.Key" />, or no handler for an event of the specified
+        /// type has been registered.
         /// </exception>
         protected void Apply<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
         {
@@ -88,8 +117,13 @@ namespace System.ComponentModel.Server.Domain
             {
                 throw new ArgumentNullException("event");
             }
-            Handle(@event);
-            Write(@event);
+            if (@event.AggregateKey.Equals(Key))
+            {
+                Handle(@event);
+                Publish(@event);
+                return;
+            }
+            throw NewNonMatchingAggregateKeyException(@event);            
         }
 
         private void Handle<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
@@ -104,7 +138,8 @@ namespace System.ComponentModel.Server.Domain
             {
                 throw NewMissingEventHandlerException(eventType);
             }
-        }
+            Version = @event.AggregateVersion;
+        }        
 
         private static Exception NewHandlerForTypeAlreadyRegisteredException(Type domainEventType)
         {

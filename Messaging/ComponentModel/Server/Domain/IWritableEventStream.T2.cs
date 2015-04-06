@@ -7,7 +7,7 @@
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
     public interface IWritableEventStream<in TKey, in TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>
         /// Writes the specified <paramref name="event"/> to the current stream.
