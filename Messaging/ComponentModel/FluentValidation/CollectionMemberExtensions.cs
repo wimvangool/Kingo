@@ -32,7 +32,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_CollectionIsNotNullOrEmpty_Failed, member);
+                errorMessage = new ErrorMessage(ValidationMessages.CollectionMember_IsNotNullOrEmpty_Failed, member);
             }
             return member.Satisfies(collection => collection != null && collection.Count > 0, errorMessage);
         }
@@ -62,7 +62,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_CollectionElementAt_Failed, member, index);
+                errorMessage = new ErrorMessage(ValidationMessages.CollectionMember_ElementAt_Failed, member, index);
             }
             Func<ICollection<TValue>, bool> constraint = collection => collection != null && 0 <= index && index < collection.Count;
             Func<ICollection<TValue>, TValue> selector = collection => collection.ElementAt(index);

@@ -117,31 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Member_CollectionElementAt_Failed" xml:space="preserve">
+  <data name="CollectionMember_ElementAt_Failed" xml:space="preserve">
     <value>Member '{0}' has no element at index '{1}'.</value>
   </data>
-  <data name="Member_EndsWith_Failed" xml:space="preserve">
+  <data name="StringMember_EndsWith_Failed" xml:space="preserve">
     <value>Member '{0}' does not end with '{1}'.</value>
   </data>
-  <data name="Member_GuidIsEmpty_Failed" xml:space="preserve">
+  <data name="GuidMember_IsEmpty_Failed" xml:space="preserve">
     <value>Member '{0}' is not an empty Guid.</value>
   </data>
-  <data name="Member_GuidIsNotEmpty_Failed" xml:space="preserve">
+  <data name="GuidMember_IsNotEmpty_Failed" xml:space="preserve">
     <value>Member '{0}' is an empty Guid.</value>
   </data>
   <data name="Member_HasValue_Failed" xml:space="preserve">
     <value>Member '{0}' has no value.</value>
   </data>
-  <data name="Member_IsByte_Failed" xml:space="preserve">
+  <data name="StringMember_IsByte_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a byte.</value>
   </data>
-  <data name="Member_IsChar_Failed" xml:space="preserve">
+  <data name="StringMember_IsChar_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a single character.</value>
   </data>
-  <data name="Member_IsDecimal_Failed" xml:space="preserve">
+  <data name="StringMember_IsDecimal_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a 96-bit decimal number.</value>
   </data>
-  <data name="Member_IsDouble_Failed" xml:space="preserve">
+  <data name="StringMember_IsDouble_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a 64-bit floating point number.</value>
   </data>
   <data name="Member_IsEqualTo_Failed" xml:space="preserve">
@@ -156,22 +156,22 @@
   <data name="Member_IsInstanceOf_Failed" xml:space="preserve">
     <value>Member '{0}' is not an instance of '{1}'.</value>
   </data>
-  <data name="Member_IsInt16_Failed" xml:space="preserve">
+  <data name="StringMember_IsInt16_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a 16-bit integer.</value>
   </data>
-  <data name="Member_IsInt32_Failed" xml:space="preserve">
+  <data name="StringMember_IsInt32_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a 32-bit integer.</value>
   </data>
-  <data name="Member_IsInt64_Failed" xml:space="preserve">
+  <data name="StringMember_IsInt64_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a 64-bit integer.</value>
   </data>
   <data name="Member_IsIsRange_Failed" xml:space="preserve">
     <value>Member '{0}' is not in range of '{1}'.</value>
   </data>
-  <data name="Member_IsMatch_Failed" xml:space="preserve">
+  <data name="StringMember_Matches_Failed" xml:space="preserve">
     <value>Member '{0}' does not match pattern '{1}'.</value>
   </data>
-  <data name="Member_IsNoMatch_Failed" xml:space="preserve">
+  <data name="StringMember_DoesNotMatch_Failed" xml:space="preserve">
     <value>Member '{0}' matches pattern '{1}'.</value>
   </data>
   <data name="Member_IsNotEqualTo_Failed" xml:space="preserve">
@@ -183,10 +183,10 @@
   <data name="Member_IsNotInstanceOf_Failed" xml:space="preserve">
     <value>Member '{0}' is an instance of '{1}'.</value>
   </data>
-  <data name="Member_IsNotNullOrEmpty_Failed" xml:space="preserve">
+  <data name="StringMember_IsNotNullOrEmpty_Failed" xml:space="preserve">
     <value>Member '{0}' is either null or empty.</value>
   </data>
-  <data name="Member_IsNotNullOrWhiteSpace_Failed" xml:space="preserve">
+  <data name="StringMember_IsNotNullOrWhiteSpace_Failed" xml:space="preserve">
     <value>Member '{0}' is either null or contains only white space.</value>
   </data>
   <data name="Member_IsNotNull_Failed" xml:space="preserve">
@@ -201,10 +201,10 @@
   <data name="Member_IsSameInstanceAs_Failed" xml:space="preserve">
     <value>Member '{0}' is not the same instance as '{1}'.</value>
   </data>
-  <data name="Member_IsSByte_Failed" xml:space="preserve">
+  <data name="StringMember_IsSByte_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a signed byte.</value>
   </data>
-  <data name="Member_IsSingle_Failed" xml:space="preserve">
+  <data name="StringMember_IsSingle_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to a 32-bit floating point number.</value>
   </data>
   <data name="Member_IsSmallerThanOrEqualTo_Failed" xml:space="preserve">
@@ -213,28 +213,34 @@
   <data name="Member_IsSmallerThan_Failed" xml:space="preserve">
     <value>Member '{0}' is not smaller than '{1}'.</value>
   </data>
-  <data name="Member_IsUInt16_Failed" xml:space="preserve">
+  <data name="StringMember_IsUInt16_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to an unsigned 16-bit integer.</value>
   </data>
-  <data name="Member_IsUInt32_Failed" xml:space="preserve">
+  <data name="StringMember_IsUInt32_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to an unsigned 32-bit integer.</value>
   </data>
-  <data name="Member_IsUInt64_Failed" xml:space="preserve">
+  <data name="StringMember_IsUInt64_Failed" xml:space="preserve">
     <value>Member '{0}' could not be converted to an unsigned 64-bit integer.</value>
   </data>
   <data name="Member_Satisfies_Failed" xml:space="preserve">
     <value>Member '{0}' does not satisfy the specified constraint.</value>
   </data>
-  <data name="Member_StartsWith_Failed" xml:space="preserve">
+  <data name="StringMember_StartsWith_Failed" xml:space="preserve">
     <value>Member '{0}' does not start with '{1}'.</value>
   </data>
   <data name="RequiredMemberAttribute_MissingRequiredValue" xml:space="preserve">
     <value>Property '{0}' is required but was not specified.</value>
   </data>
-  <data name="Member_CollectionIsNotNullOrEmpty_Failed" xml:space="preserve">
+  <data name="CollectionMember_IsNotNullOrEmpty_Failed" xml:space="preserve">
     <value>Member '{0}' has no elements.</value>
   </data>
   <data name="Member_HasLengthOf_Failed" xml:space="preserve">
     <value>Member '{0}' does not have the required length of '{1}'.</value>
+  </data>
+  <data name="StringMember_Contains_Failed" xml:space="preserve">
+    <value>Member '{0}' does not contain '{1}'.</value>
+  </data>
+  <data name="StringMember_DoesNotContain_Failed" xml:space="preserve">
+    <value>Member '{0}' contains '{1}'.</value>
   </data>
 </root>

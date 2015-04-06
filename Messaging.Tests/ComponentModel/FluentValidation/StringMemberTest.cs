@@ -335,116 +335,188 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion
 
-        #region [====== IsNoMatch ======]
+        #region [====== DoesNotContain ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ValidateIsNoMatch_Throws_IfPatternIsNull()
+        public void ValidateDoesNotContain_Throws_IfSpecifiedValueIsNull()
         {
             var message = new ValidatedMessage<string>("Some value");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNoMatch(null);
+            validator.VerifyThat(() => message.Member).DoesNotContain(null, _errorMessage);
         }
 
         [TestMethod]
-        public void ValidateIsNoMatch_ReturnsExpectedError_IfValueMatchesSpecifiedPattern()
+        public void ValidateDoesNotContain_ReturnsNoErrors_IfValueDoesNotContainSpecifiedValue()
         {
             var message = new ValidatedMessage<string>("Some value");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNoMatch("v.l", _errorMessage);
-
-            validator.Validate().AssertOneError(_errorMessage);
-        }
-
-        [TestMethod]
-        public void ValidateIsNoMatch_ReturnsNoErrors_IfValueDoesNotMatchSpecifiedPattern()
-        {
-            var message = new ValidatedMessage<string>("Some VALUE");
-            var validator = new FluentValidator();
-
-            validator.VerifyThat(() => message.Member).IsNoMatch("v.l", _errorMessage);
+            validator.VerifyThat(() => message.Member).DoesNotContain("xyz", _errorMessage);
 
             validator.Validate().AssertNoErrors();
         }
 
         [TestMethod]
-        public void ValidateIsNoMatch_ReturnsExpectedError_IfValueMatchesSpecifiedPattern_IgnoreCase()
+        public void ValidateDoesNotContain_ReturnsExpectedError_IfValueContainsValue()
         {
-            var message = new ValidatedMessage<string>("Some VALUE");
+            var message = new ValidatedMessage<string>("Some value");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNoMatch("v.l", RegexOptions.IgnoreCase, _errorMessage);
+            validator.VerifyThat(() => message.Member).DoesNotContain("e va", _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        #endregion
+
+        #region [====== Contains ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ValidateContains_Throws_IfSpecifiedValueIsNull()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).Contains(null, _errorMessage);
+        }
+
+        [TestMethod]       
+        public void ValidateContains_ReturnsExpectedError_IfValueDoesNotContainSpecifiedValue()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).Contains("xyz", _errorMessage);
 
             validator.Validate().AssertOneError(_errorMessage);
         }
 
         [TestMethod]
-        public void ValidateIsNoMatch_ReturnsNoErrors_IfValueDoesNotMatchSpecifiedPattern_IgnoreCase()
+        public void ValidateContains_ReturnsNoErrors_IfValueContainsSpecifiedValue()
         {
             var message = new ValidatedMessage<string>("Some value");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsNoMatch("valeu", RegexOptions.IgnoreCase, _errorMessage);
+            validator.VerifyThat(() => message.Member).Contains("e va", _errorMessage);
 
             validator.Validate().AssertNoErrors();
         }
 
         #endregion
 
-        #region [====== IsMatch ======]
+        #region [====== DoesNotMatch ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ValidateIsMatch_Throws_IfPatternIsNull()
+        public void ValidateDoesNotMatch_Throws_IfPatternIsNull()
         {
             var message = new ValidatedMessage<string>("Some value");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsMatch(null);
-        }
-
-        [TestMethod]        
-        public void ValidateIsMatch_ReturnsNoErrors_IfValueMatchesSpecifiedPattern()
-        {
-            var message = new ValidatedMessage<string>("Some value");
-            var validator = new FluentValidator();
-
-            validator.VerifyThat(() => message.Member).IsMatch("v.l", _errorMessage);
-
-            validator.Validate().AssertNoErrors();
+            validator.VerifyThat(() => message.Member).DoesNotMatch(null);
         }
 
         [TestMethod]
-        public void ValidateIsMatch_ReturnsExpectedError_IfValueDoesNotMatchSpecifiedPattern()
+        public void ValidateDoesNotMatch_ReturnsExpectedError_IfValueMatchesSpecifiedPattern()
         {
-            var message = new ValidatedMessage<string>("Some VALUE");
+            var message = new ValidatedMessage<string>("Some value");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsMatch("v.l", _errorMessage);
+            validator.VerifyThat(() => message.Member).DoesNotMatch("v.l", _errorMessage);
 
             validator.Validate().AssertOneError(_errorMessage);
         }
 
         [TestMethod]
-        public void ValidateIsMatch_ReturnsNoErrors_IfValueMatchesSpecifiedPattern_IgnoreCase()
+        public void ValidateDoesNotMatch_ReturnsNoErrors_IfValueDoesNotMatchSpecifiedPattern()
         {
             var message = new ValidatedMessage<string>("Some VALUE");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsMatch("v.l", RegexOptions.IgnoreCase, _errorMessage);
+            validator.VerifyThat(() => message.Member).DoesNotMatch("v.l", _errorMessage);
 
             validator.Validate().AssertNoErrors();
         }
 
         [TestMethod]
-        public void ValidateIsMatch_ReturnsExpectedError_IfValueDoesNotMatchSpecifiedPattern_IgnoreCase()
+        public void ValidateDoesNotMatch_ReturnsExpectedError_IfValueMatchesSpecifiedPattern_IgnoreCase()
+        {
+            var message = new ValidatedMessage<string>("Some VALUE");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).DoesNotMatch("v.l", RegexOptions.IgnoreCase, _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateDoesNotMatch_ReturnsNoErrors_IfValueDoesNotMatchSpecifiedPattern_IgnoreCase()
         {
             var message = new ValidatedMessage<string>("Some value");
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).IsMatch("valeu", RegexOptions.IgnoreCase, _errorMessage);
+            validator.VerifyThat(() => message.Member).DoesNotMatch("valeu", RegexOptions.IgnoreCase, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        #endregion
+
+        #region [====== Matches ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ValidateMatches_Throws_IfPatternIsNull()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).Matches(null);
+        }
+
+        [TestMethod]        
+        public void ValidateMatches_ReturnsNoErrors_IfValueMatchesSpecifiedPattern()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).Matches("v.l", _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateMatches_ReturnsExpectedError_IfValueDoesNotMatchSpecifiedPattern()
+        {
+            var message = new ValidatedMessage<string>("Some VALUE");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).Matches("v.l", _errorMessage);
+
+            validator.Validate().AssertOneError(_errorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateMatches_ReturnsNoErrors_IfValueMatchesSpecifiedPattern_IgnoreCase()
+        {
+            var message = new ValidatedMessage<string>("Some VALUE");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).Matches("v.l", RegexOptions.IgnoreCase, _errorMessage);
+
+            validator.Validate().AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateMatches_ReturnsExpectedError_IfValueDoesNotMatchSpecifiedPattern_IgnoreCase()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => message.Member).Matches("valeu", RegexOptions.IgnoreCase, _errorMessage);
 
             validator.Validate().AssertOneError(_errorMessage);
         }

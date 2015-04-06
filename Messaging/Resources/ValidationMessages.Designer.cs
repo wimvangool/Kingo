@@ -63,45 +63,36 @@ namespace System.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; has no element at index &apos;{1}&apos;..
         /// </summary>
-        internal static string Member_CollectionElementAt_Failed {
+        internal static string CollectionMember_ElementAt_Failed {
             get {
-                return ResourceManager.GetString("Member_CollectionElementAt_Failed", resourceCulture);
+                return ResourceManager.GetString("CollectionMember_ElementAt_Failed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; has no elements..
         /// </summary>
-        internal static string Member_CollectionIsNotNullOrEmpty_Failed {
+        internal static string CollectionMember_IsNotNullOrEmpty_Failed {
             get {
-                return ResourceManager.GetString("Member_CollectionIsNotNullOrEmpty_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not end with &apos;{1}&apos;..
-        /// </summary>
-        internal static string Member_EndsWith_Failed {
-            get {
-                return ResourceManager.GetString("Member_EndsWith_Failed", resourceCulture);
+                return ResourceManager.GetString("CollectionMember_IsNotNullOrEmpty_Failed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is not an empty Guid..
         /// </summary>
-        internal static string Member_GuidIsEmpty_Failed {
+        internal static string GuidMember_IsEmpty_Failed {
             get {
-                return ResourceManager.GetString("Member_GuidIsEmpty_Failed", resourceCulture);
+                return ResourceManager.GetString("GuidMember_IsEmpty_Failed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is an empty Guid..
         /// </summary>
-        internal static string Member_GuidIsNotEmpty_Failed {
+        internal static string GuidMember_IsNotEmpty_Failed {
             get {
-                return ResourceManager.GetString("Member_GuidIsNotEmpty_Failed", resourceCulture);
+                return ResourceManager.GetString("GuidMember_IsNotEmpty_Failed", resourceCulture);
             }
         }
         
@@ -120,42 +111,6 @@ namespace System.Resources {
         internal static string Member_HasValue_Failed {
             get {
                 return ResourceManager.GetString("Member_HasValue_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a byte..
-        /// </summary>
-        internal static string Member_IsByte_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsByte_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a single character..
-        /// </summary>
-        internal static string Member_IsChar_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsChar_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 96-bit decimal number..
-        /// </summary>
-        internal static string Member_IsDecimal_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsDecimal_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 64-bit floating point number..
-        /// </summary>
-        internal static string Member_IsDouble_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsDouble_Failed", resourceCulture);
             }
         }
         
@@ -196,56 +151,11 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 16-bit integer..
-        /// </summary>
-        internal static string Member_IsInt16_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsInt16_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 32-bit integer..
-        /// </summary>
-        internal static string Member_IsInt32_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsInt32_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 64-bit integer..
-        /// </summary>
-        internal static string Member_IsInt64_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsInt64_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is not in range of &apos;{1}&apos;..
         /// </summary>
         internal static string Member_IsIsRange_Failed {
             get {
                 return ResourceManager.GetString("Member_IsIsRange_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not match pattern &apos;{1}&apos;..
-        /// </summary>
-        internal static string Member_IsMatch_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsMatch_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; matches pattern &apos;{1}&apos;..
-        /// </summary>
-        internal static string Member_IsNoMatch_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsNoMatch_Failed", resourceCulture);
             }
         }
         
@@ -286,24 +196,6 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; is either null or empty..
-        /// </summary>
-        internal static string Member_IsNotNullOrEmpty_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsNotNullOrEmpty_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; is either null or contains only white space..
-        /// </summary>
-        internal static string Member_IsNotNullOrWhiteSpace_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsNotNullOrWhiteSpace_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is the same instance as &apos;{1}&apos;..
         /// </summary>
         internal static string Member_IsNotSameInstanceAs_Failed {
@@ -331,24 +223,6 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a signed byte..
-        /// </summary>
-        internal static string Member_IsSByte_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsSByte_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 32-bit floating point number..
-        /// </summary>
-        internal static string Member_IsSingle_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsSingle_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is not smaller than &apos;{1}&apos;..
         /// </summary>
         internal static string Member_IsSmallerThan_Failed {
@@ -367,33 +241,6 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to an unsigned 16-bit integer..
-        /// </summary>
-        internal static string Member_IsUInt16_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsUInt16_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to an unsigned 32-bit integer..
-        /// </summary>
-        internal static string Member_IsUInt32_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsUInt32_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to an unsigned 64-bit integer..
-        /// </summary>
-        internal static string Member_IsUInt64_Failed {
-            get {
-                return ResourceManager.GetString("Member_IsUInt64_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; does not satisfy the specified constraint..
         /// </summary>
         internal static string Member_Satisfies_Failed {
@@ -403,20 +250,191 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not start with &apos;{1}&apos;..
-        /// </summary>
-        internal static string Member_StartsWith_Failed {
-            get {
-                return ResourceManager.GetString("Member_StartsWith_Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Property &apos;{0}&apos; is required but was not specified..
         /// </summary>
         internal static string RequiredMemberAttribute_MissingRequiredValue {
             get {
                 return ResourceManager.GetString("RequiredMemberAttribute_MissingRequiredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not contain &apos;{1}&apos;..
+        /// </summary>
+        internal static string StringMember_Contains_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_Contains_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; contains &apos;{1}&apos;..
+        /// </summary>
+        internal static string StringMember_DoesNotContain_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_DoesNotContain_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; matches pattern &apos;{1}&apos;..
+        /// </summary>
+        internal static string StringMember_DoesNotMatch_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_DoesNotMatch_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not end with &apos;{1}&apos;..
+        /// </summary>
+        internal static string StringMember_EndsWith_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_EndsWith_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a byte..
+        /// </summary>
+        internal static string StringMember_IsByte_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsByte_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a single character..
+        /// </summary>
+        internal static string StringMember_IsChar_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsChar_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 96-bit decimal number..
+        /// </summary>
+        internal static string StringMember_IsDecimal_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsDecimal_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 64-bit floating point number..
+        /// </summary>
+        internal static string StringMember_IsDouble_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsDouble_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 16-bit integer..
+        /// </summary>
+        internal static string StringMember_IsInt16_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsInt16_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 32-bit integer..
+        /// </summary>
+        internal static string StringMember_IsInt32_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsInt32_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 64-bit integer..
+        /// </summary>
+        internal static string StringMember_IsInt64_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsInt64_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is either null or empty..
+        /// </summary>
+        internal static string StringMember_IsNotNullOrEmpty_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsNotNullOrEmpty_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is either null or contains only white space..
+        /// </summary>
+        internal static string StringMember_IsNotNullOrWhiteSpace_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsNotNullOrWhiteSpace_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a signed byte..
+        /// </summary>
+        internal static string StringMember_IsSByte_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsSByte_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to a 32-bit floating point number..
+        /// </summary>
+        internal static string StringMember_IsSingle_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsSingle_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to an unsigned 16-bit integer..
+        /// </summary>
+        internal static string StringMember_IsUInt16_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsUInt16_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to an unsigned 32-bit integer..
+        /// </summary>
+        internal static string StringMember_IsUInt32_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsUInt32_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; could not be converted to an unsigned 64-bit integer..
+        /// </summary>
+        internal static string StringMember_IsUInt64_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_IsUInt64_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not match pattern &apos;{1}&apos;..
+        /// </summary>
+        internal static string StringMember_Matches_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_Matches_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not start with &apos;{1}&apos;..
+        /// </summary>
+        internal static string StringMember_StartsWith_Failed {
+            get {
+                return ResourceManager.GetString("StringMember_StartsWith_Failed", resourceCulture);
             }
         }
     }

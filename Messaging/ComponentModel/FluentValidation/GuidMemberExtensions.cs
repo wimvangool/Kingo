@@ -28,7 +28,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_GuidIsNotEmpty_Failed, member);
+                errorMessage = new ErrorMessage(ValidationMessages.GuidMember_IsNotEmpty_Failed, member);
             }
             return member.Satisfies(IsNotEmpty, errorMessage);
         }
@@ -61,7 +61,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_GuidIsEmpty_Failed, member);
+                errorMessage = new ErrorMessage(ValidationMessages.GuidMember_IsEmpty_Failed, member);
             }
             return member.Satisfies(IsEmpty, errorMessage);
         }
