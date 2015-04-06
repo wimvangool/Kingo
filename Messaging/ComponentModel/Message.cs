@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.Resources;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.Serialization;
 
 namespace System.ComponentModel

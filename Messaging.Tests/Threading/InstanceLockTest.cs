@@ -1,8 +1,7 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel
+namespace System.Threading
 {
     [TestClass]
     public sealed class InstanceLockTest

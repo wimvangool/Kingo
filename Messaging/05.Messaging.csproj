@@ -78,7 +78,7 @@
     <Compile Include="ComponentModel\FluentValidation\Member.T1.cs" />
     <Compile Include="ComponentModel\FluentValidation\StringToNumberConverter.T1.cs" />
     <Compile Include="ComponentModel\MessageValidator.cs" />
-    <Compile Include="ComponentModel\Resources\ValidationMessages.Designer.cs">
+    <Compile Include="Resources\ValidationMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ValidationMessages.resx</DependentUpon>
@@ -265,7 +265,7 @@
     <Compile Include="ComponentModel\Server\DependencyCache.cs" />
     <Compile Include="ComponentModel\Server\UnitOfWorkScope.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ComponentModel\Resources\ExceptionMessages.Designer.cs">
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
@@ -278,11 +278,11 @@
     <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ComponentModel\Resources\ExceptionMessages.resx">
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="ComponentModel\Resources\ValidationMessages.resx">
+    <EmbeddedResource Include="Resources\ValidationMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>

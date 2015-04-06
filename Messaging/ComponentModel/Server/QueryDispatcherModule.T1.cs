@@ -26,15 +26,15 @@
 
         void IMessageHandler.Invoke()
         {
-            _processor.MessagePointer.ThrowIfCancellationRequested();
+            _processor.Message.ThrowIfCancellationRequested();
 
-            using (var scope = new UnitOfWorkScope(_processor.DomainEventBus))
+            using (var scope = _processor.CreateUnitOfWorkScope())
             {
                 MessageOut = ExecuteQuery();
 
                 scope.Complete();
             }
-            _processor.MessagePointer.ThrowIfCancellationRequested();
+            _processor.Message.ThrowIfCancellationRequested();
         }
 
         private TMessageOut ExecuteQuery()
@@ -42,7 +42,7 @@
             var pipeline = _processor.DataAccessPipeline.ConnectTo(_query);
             var messageOut = pipeline.Invoke();
 
-            _processor.MessagePointer.ThrowIfCancellationRequested();
+            _processor.Message.ThrowIfCancellationRequested();
 
             return messageOut;
         }        

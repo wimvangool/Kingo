@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.Resources;
-using System.Globalization;
+﻿using System.Globalization;
+using System.Resources;
 using System.Text.RegularExpressions;
 
 namespace System.ComponentModel.FluentValidation

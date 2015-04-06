@@ -158,8 +158,7 @@ namespace System.ComponentModel.Server.Domain
             {
                 _selectedAggregates.Add(aggregate);
 
-                UnitOfWorkContext.Enlist(this);
-
+                MessageProcessor.Enlist(this);
                 return true;
             }
             aggregate = null;
@@ -250,7 +249,7 @@ namespace System.ComponentModel.Server.Domain
             {
                 _insertedAggregates.Add(aggregate);
 
-                UnitOfWorkContext.Enlist(this);
+                MessageProcessor.Enlist(this);
             }
         }
 
@@ -302,7 +301,7 @@ namespace System.ComponentModel.Server.Domain
             {
                 _deletedAggregates.Add(aggregate);
 
-                UnitOfWorkContext.Enlist(this);                
+                MessageProcessor.Enlist(this);                
             }
         }
 

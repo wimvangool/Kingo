@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Resources;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.ComponentModel.Resources {
+namespace System.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace System.ComponentModel.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.ComponentModel.Resources.ExceptionMessages", typeof(ExceptionMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.Resources.ExceptionMessages", typeof(ExceptionMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -93,15 +93,6 @@ namespace System.ComponentModel.Resources {
         internal static string AsyncObject_ContextNotSet {
             get {
                 return ResourceManager.GetString("AsyncObject_ContextNotSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot publish event of type &apos;{0}&apos; because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope..
-        /// </summary>
-        internal static string BufferedEventBus_NoBusAvailable {
-            get {
-                return ResourceManager.GetString("BufferedEventBus_NoBusAvailable", resourceCulture);
             }
         }
         
@@ -295,6 +286,15 @@ namespace System.ComponentModel.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot publish event &apos;{0}&apos; because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope..
+        /// </summary>
+        internal static string MessageProcessor_NoEventBusAvailable {
+            get {
+                return ResourceManager.GetString("MessageProcessor_NoEventBusAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot add a new mapping because the mapping has been switched to read-only state..
         /// </summary>
         internal static string MessageToStrategyMapping_IsReadOnly {
@@ -372,15 +372,6 @@ namespace System.ComponentModel.Resources {
         internal static string TransactionScope_ScopeAlreadyCompleted {
             get {
                 return ResourceManager.GetString("TransactionScope_ScopeAlreadyCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to enlist &apos;{0}&apos; because no context was found..
-        /// </summary>
-        internal static string UnitOfWorkContext_FailedToEnlistUnitOfWork {
-            get {
-                return ResourceManager.GetString("UnitOfWorkContext_FailedToEnlistUnitOfWork", resourceCulture);
             }
         }
         

@@ -1,26 +1,24 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Resources;
 using System.Diagnostics;
-using System.Globalization;
 
 namespace System.ComponentModel.Server
-{
-    /// <summary>
-    /// Represents an in-memory event-bus that is flushed when the <see cref="UnitOfWorkScope" /> completes.
-    /// </summary>
-    public sealed class BufferedEventBus : IDomainEventBus, IUnitOfWork
-    {        
-        private readonly List<IEventBuffer> _buffer;
-        private readonly IDomainEventBus _domainEventBus;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+{    
+    internal sealed class BufferedEventBus : IDomainEventBus, IUnitOfWork
+    {
+        private readonly MessageProcessor _processor;        
         private readonly UnitOfWorkContext _context;
-
-        internal BufferedEventBus(IDomainEventBus domainEventBus, UnitOfWorkContext context)
-        {                        
-            _buffer = new List<IEventBuffer>();
-            _domainEventBus = domainEventBus;
+        private readonly List<IEventBuffer> _buffer;
+        
+        internal BufferedEventBus(MessageProcessor processor, UnitOfWorkContext context)
+        {
+            _processor = processor;
             _context = context;
+            _buffer = new List<IEventBuffer>();                       
+        }
+
+        internal MessageProcessor Processor
+        {
+            get { return _processor; }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -37,8 +35,8 @@ namespace System.ComponentModel.Server
 
         void IDomainEventBus.Publish<TMessage>(TMessage message)
         {            
-            _buffer.Add(new EventBuffer<TMessage>(_domainEventBus, message));
-            _context.EnlistUnitOfWork(this);
+            _buffer.Add(new EventBuffer<TMessage>(_processor.EventBus, message));
+            _context.Enlist(this);
         }
 
         bool IUnitOfWork.RequiresFlush()
@@ -59,35 +57,6 @@ namespace System.ComponentModel.Server
         public override string ToString()
         {
             return string.Format("{0} Event(s) Published", _buffer.Count);
-        }
-
-        /// <summary>
-        /// Publishes the specified event on the bus that is currently in scope.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message to publish.</typeparam>
-        /// <param name="message">The message to publish.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No instance is currrently in scope on which the message can be published.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message" /> is <c>null</c>.
-        /// </exception>
-        public static void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-        {
-            var context = UnitOfWorkContext.Current;
-            if (context != null)
-            {
-                context.PeekBus().Publish(message);
-                return;
-            }
-            throw NewNoBusAvailableException(typeof(TMessage));            
-        }
-
-        private static Exception NewNoBusAvailableException(Type messageType)
-        {
-            var messageFormat = ExceptionMessages.BufferedEventBus_NoBusAvailable;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, messageType.Name);
-            return new InvalidOperationException(message);
-        }        
+        }               
     }
 }

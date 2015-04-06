@@ -26,7 +26,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void MessagePointer_IsNull_WhenNoMessageIsBeingHandled()
         {
-            Assert.IsNull(Processor.MessagePointer);
+            Assert.IsNull(Processor.Message);
         }
 
         [TestMethod]
@@ -35,12 +35,12 @@ namespace System.ComponentModel.Server
             MessageStub messageA = new MessageStub();
             object messageB = null;
 
-            Processor.Handle(messageA, message => messageB = Processor.MessagePointer.Message);
+            Processor.Handle(messageA, message => messageB = Processor.Message.Message);
 
             Assert.IsNotNull(messageB);
             Assert.AreNotSame(messageA, messageB);
             Assert.AreSame(messageA.GetType(), messageB.GetType());
-            Assert.IsNull(Processor.MessagePointer);
+            Assert.IsNull(Processor.Message);
         }
 
         [TestMethod]
@@ -51,13 +51,13 @@ namespace System.ComponentModel.Server
             MessagePointer messagePointer = null;
 
             Processor.Handle(messageA, a =>            
-                Processor.Handle(messageB, b => messagePointer = Processor.MessagePointer)
+                Processor.Handle(messageB, b => messagePointer = Processor.Message)
             );
 
             Assert.IsNotNull(messagePointer);
             Assert.AreSame(messageB.GetType(), messagePointer.Message.GetType());
             Assert.AreSame(messageA.GetType(), messagePointer.ParentPointer.Message.GetType());
-            Assert.IsNull(Processor.MessagePointer);
+            Assert.IsNull(Processor.Message);
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace System.ComponentModel.Server
             Guid shoppingCartId = Guid.NewGuid();
             ShoppingCartCreatedEvent createdEvent = null;
 
-            using (Processor.DomainEventBus.ConnectThreadLocal<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
+            using (Processor.EventBus.ConnectThreadLocal<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
             {
                 Processor.Handle(new CreateShoppingCartCommand
                 {
@@ -114,7 +114,7 @@ namespace System.ComponentModel.Server
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);
 
-            using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (Processor.EventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {                
                 Processor.Handle(new AddProductToCartCommand
                 {
@@ -154,7 +154,7 @@ namespace System.ComponentModel.Server
             ProductAddedToCartEvent productAddedEvent = null;
             int extraQuantity = _random.Next(3, 6);
 
-            using (Processor.DomainEventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (Processor.EventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {
                 Processor.Handle(new AddProductToCartCommand
                 {

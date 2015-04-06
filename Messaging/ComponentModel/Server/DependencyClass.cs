@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Resources;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Text;
 
 namespace System.ComponentModel.Server

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Resources;
 using System.Linq.Expressions;
+using System.Resources;
 
 namespace System.ComponentModel.FluentValidation
 {

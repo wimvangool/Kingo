@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.Resources;
+﻿using System.Resources;
 
 namespace System.ComponentModel.Server
 {    
@@ -8,26 +8,15 @@ namespace System.ComponentModel.Server
     public sealed class UnitOfWorkScope : IDisposable
     {
         private readonly UnitOfWorkContext _context;
-        private readonly BufferedEventBus _bufferedEventBus;
+        private readonly BufferedEventBus _eventBus;
         private readonly bool _isContextOwner;
         private bool _hasCompleted;
         private bool _isDisposed;                            
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWorkScope" /> class.
-        /// </summary>
-        /// <param name="domainEventBus">Bus on which all domain-events will be published.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="domainEventBus"/> is <c>null</c>.
-        /// </exception>
-        public UnitOfWorkScope(IDomainEventBus domainEventBus)
-        {
-            if (domainEventBus == null)
-            {
-                throw new ArgumentNullException("domainEventBus");
-            }            
+                
+        internal UnitOfWorkScope(MessageProcessor processor)
+        {                      
             _isContextOwner = StartScope(out _context);
-            _bufferedEventBus = _context.PushBus(domainEventBus);
+            _eventBus = _context.StartScope(processor);
         }
 
         /// <summary>
@@ -91,8 +80,8 @@ namespace System.ComponentModel.Server
 
         private static void EndScope(UnitOfWorkScope scope)
         {            
-            var bufferedEventBus = scope._context.PopBus();
-            if (bufferedEventBus != scope._bufferedEventBus)
+            var eventBus = scope._context.EndScope();
+            if (eventBus != scope._eventBus)
             {
                 throw NewIncorrectNestingOrWrongThreadException();
             }

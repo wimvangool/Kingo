@@ -20,15 +20,15 @@
 
         public void Invoke()
         {
-            _processor.MessagePointer.ThrowIfCancellationRequested();
+            _processor.Message.ThrowIfCancellationRequested();
 
-            using (var scope = new UnitOfWorkScope(_processor.DomainEventBus))
+            using (var scope = _processor.CreateUnitOfWorkScope())
             {
                 HandleMessage(_message);
 
                 scope.Complete();
             }
-            _processor.MessagePointer.ThrowIfCancellationRequested();
+            _processor.Message.ThrowIfCancellationRequested();
         }
 
         private void HandleMessage(TMessage message)
@@ -39,7 +39,7 @@
                 {
                     return;
                 }
-                var source = _processor.MessagePointer.DetermineMessageSourceOf(message);
+                var source = _processor.Message.DetermineMessageSourceOf(message);
 
                 foreach (var handler in _processor.MessageHandlerFactory.CreateMessageHandlersFor(message, source))
                 {
@@ -57,7 +57,7 @@
             var messageHandler = new MessageHandlerWrapper<TMessage>(message, handler);
 
             _processor.BusinessLogicPipeline.ConnectTo(messageHandler).Invoke();                               
-            _processor.MessagePointer.ThrowIfCancellationRequested();
+            _processor.Message.ThrowIfCancellationRequested();
         }
     }
 }

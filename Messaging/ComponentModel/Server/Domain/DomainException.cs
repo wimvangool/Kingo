@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.Resources;
+﻿using System.Resources;
 using System.Runtime.Serialization;
 
 namespace System.ComponentModel.Server.Domain

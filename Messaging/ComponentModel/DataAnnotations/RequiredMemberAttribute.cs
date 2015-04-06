@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Resources;
+using System.Resources;
 
 namespace System.ComponentModel.DataAnnotations
 {

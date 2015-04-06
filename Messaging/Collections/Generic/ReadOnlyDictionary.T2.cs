@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.Resources;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Resources;
 using System.Text;
 
 namespace System.Collections.Generic

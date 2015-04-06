@@ -43,14 +43,14 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
         {            
             _carts.Add((cart as IAggregate<Guid, Int32Version>).Key, cart);           
 
-            UnitOfWorkContext.Enlist(this);
+            MessageProcessor.Enlist(this);
         }        
 
         public ShoppingCart GetById(Guid id)
         {            
             var cart = _carts[id];
 
-            UnitOfWorkContext.Enlist(this);
+            MessageProcessor.Enlist(this);
 
             return cart;
         }        

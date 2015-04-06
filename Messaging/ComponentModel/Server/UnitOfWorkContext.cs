@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Resources;
 using System.Diagnostics;
-using System.Globalization;
 using System.Threading;
 
 namespace System.ComponentModel.Server
@@ -25,7 +23,7 @@ namespace System.ComponentModel.Server
 
             public BufferedEventBus DomainEventBus
             {
-                get { return _context._bufferedEventBuses.Peek(); }
+                get { return _context._eventBusStack.Peek(); }
             }
 
             public UnitOfWorkController FlushController
@@ -41,14 +39,14 @@ namespace System.ComponentModel.Server
 
         #endregion
 
-        private readonly Stack<BufferedEventBus> _bufferedEventBuses;             
+        private readonly Stack<BufferedEventBus> _eventBusStack;             
         private readonly UnitOfWorkController _flushController;
         private readonly DependencyCache _cache;   
         private bool _isDisposed;
         
         internal UnitOfWorkContext()
         {                                    
-            _bufferedEventBuses = new Stack<BufferedEventBus>(3);                                
+            _eventBusStack = new Stack<BufferedEventBus>(3);                                
             _flushController = new UnitOfWorkController();
             _cache = new DependencyCache(); 
         }          
@@ -56,7 +54,17 @@ namespace System.ComponentModel.Server
         internal IDependencyCache InternalCache
         {
             get { return _cache; }
-        } 
+        }
+ 
+        internal MessageProcessor Processor
+        {
+            get { return _eventBusStack.Peek().Processor; }
+        }
+
+        internal IDomainEventBus EventBus
+        {
+            get { return _eventBusStack.Peek(); }
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -71,26 +79,26 @@ namespace System.ComponentModel.Server
             _isDisposed = true;
         }
 
-        internal BufferedEventBus PushBus(IDomainEventBus domainEventBus)
+        internal BufferedEventBus StartScope(MessageProcessor processor)
+        {            
+            var eventBus = new BufferedEventBus(processor, this);
+
+            _eventBusStack.Push(eventBus);
+
+            return eventBus;
+        }        
+
+        internal BufferedEventBus EndScope()
         {
-            var bufferedEventBus = new BufferedEventBus(domainEventBus, this);
-
-            _bufferedEventBuses.Push(bufferedEventBus);            
-
-            return bufferedEventBus;
+            return _eventBusStack.Pop();
         }
 
-        internal IDomainEventBus PeekBus()
+        internal void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
-            return _bufferedEventBuses.Peek();
+            EventBus.Publish(message);
         }
 
-        internal BufferedEventBus PopBus()
-        {
-            return _bufferedEventBuses.Pop();
-        }
-
-        internal void EnlistUnitOfWork(IUnitOfWork unitOfWork)
+        internal void Enlist(IUnitOfWork unitOfWork)
         {            
             _flushController.Enlist(unitOfWork);
         }
@@ -124,34 +132,6 @@ namespace System.ComponentModel.Server
         {
             get { return _Current.Value; }
             internal set { _Current.Value = value; }
-        }        
-
-        /// <summary>
-        /// Enlist the specified unit of work with the current context, if present.
-        /// </summary>
-        /// <param name="unitOfWork">Unit of work to enlist.</param>
-        /// <exception cref="InvalidOperationException">
-        /// <see cref="Current"/> has not been set to an instance of an object.
-        /// </exception>   
-        public static void Enlist(IUnitOfWork unitOfWork)
-        {
-            if (unitOfWork == null)
-            {
-                throw new ArgumentNullException("unitOfWork");
-            }
-            var context = _Current.Value;
-            if (context == null)
-            {
-                throw NewFailedToEnlistException(unitOfWork.GetType());
-            }
-            context.EnlistUnitOfWork(unitOfWork);            
-        }
-
-        private static Exception NewFailedToEnlistException(Type type)
-        {
-            var messageFormat = ExceptionMessages.UnitOfWorkContext_FailedToEnlistUnitOfWork;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, type);
-            return new InvalidOperationException(message);
-        }
+        }                
     }
 }

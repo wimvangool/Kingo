@@ -67,14 +67,15 @@
         /// </summary>
         /// <typeparam name="TEvent">Type of the event to append.</typeparam>
         /// <param name="event">The event to append.</param>
+        /// <returns><c>true</c> if the specified <paramref name="event"/> was also published through the <see cref="MessageProcessor" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        protected void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        protected bool Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
         {
             _buffer.Write(@event);
 
-            BufferedEventBus.Publish(@event);
+            return MessageProcessor.TryPublish(@event);
         }        
     }
 }

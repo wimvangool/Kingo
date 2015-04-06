@@ -11,7 +11,7 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Returns the <see cref="IMessageProcessorBus" /> of this processor.
         /// </summary>
-        IMessageProcessorBus DomainEventBus
+        IMessageProcessorBus EventBus
         {
             get;
         }
@@ -19,10 +19,16 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Returns a pointer to the message that is currently being handled by the processor.
         /// </summary>
-        MessagePointer MessagePointer
+        MessagePointer Message
         {
             get;
         }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="UnitOfWorkScope"/> for this processor.
+        /// </summary>
+        /// <returns>A new <see cref="UnitOfWorkScope" />.</returns>
+        UnitOfWorkScope CreateUnitOfWorkScope();
 
         #region [====== Commands & Events ======]
 

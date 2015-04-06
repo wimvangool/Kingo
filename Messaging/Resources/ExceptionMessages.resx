@@ -126,8 +126,8 @@
   <data name="AsyncExecutionTask_TaskAlreadyStarted" xml:space="preserve">
     <value>Cannot execute this task because it was already executed or canceled.</value>
   </data>
-  <data name="BufferedEventBus_NoBusAvailable" xml:space="preserve">
-    <value>Cannot publish event of type '{0}' because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope.</value>
+  <data name="MessageProcessor_NoEventBusAvailable" xml:space="preserve">
+    <value>Cannot publish event '{0}' because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope.</value>
   </data>
   <data name="CacheRelay_NotAvailable" xml:space="preserve">
     <value>Cannot perform the operation because the cache is currently not available.</value>
@@ -164,9 +164,6 @@
   </data>
   <data name="AsyncObject_ContextNotSet" xml:space="preserve">
     <value>Cannot execute this method because the current SynchronizationContext is null.</value>
-  </data>
-  <data name="UnitOfWorkContext_FailedToEnlistUnitOfWork" xml:space="preserve">
-    <value>Failed to enlist '{0}' because no context was found.</value>
   </data>
   <data name="UnitOfWorkScope_IncorrectNestingOrWrongThread" xml:space="preserve">
     <value>The scope was incorrectly nested or was called from a different thread than it was created on.</value>

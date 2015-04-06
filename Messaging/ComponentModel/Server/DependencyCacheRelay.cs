@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.Resources;
+﻿using System.Resources;
 
 namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a cache that relays to a another cache-implementation. This class can be useful
-    /// when a component wants to refer to a cache of which it's availability is context-dependent.
+    /// when a component wants to refer to a cache of which the availability is context-dependent.
     /// </summary>
     public abstract class DependencyCacheRelay : IDependencyCache
     {
@@ -39,7 +39,6 @@ namespace System.ComponentModel.Server
         /// </param>
         /// <returns><c>true</c> is the cache was available; otherwise <c>false</c>.</returns>
         protected abstract bool TryGetCache(out IDependencyCache cache);
-
         
         private static InvalidOperationException NewCacheNotAvailableException()
         {

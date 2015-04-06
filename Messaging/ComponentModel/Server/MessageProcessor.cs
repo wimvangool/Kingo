@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -117,13 +118,13 @@ namespace System.ComponentModel.Server
         #endregion
 
         /// <inheritdoc />
-        public virtual IMessageProcessorBus DomainEventBus
+        public virtual IMessageProcessorBus EventBus
         {
             get { return _domainEventBus; }
         }
 
         /// <inheritdoc />
-        public MessagePointer MessagePointer
+        public MessagePointer Message
         {
             get { return _currentMessagePointer.Value; }
             private set { _currentMessagePointer.Value = value; }
@@ -138,13 +139,21 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
+        public UnitOfWorkScope CreateUnitOfWorkScope()
+        {
+            return new UnitOfWorkScope(this);
+        }
+
+        #region [====== ToString ======]
+
+        /// <inheritdoc />
         public override string ToString()
         {
             var processorString = new StringBuilder(GetType().Name);
 
             processorString.AppendFormat(" ({0}, {1})",
                 ToString(MessageHandlerFactory),
-                ToString(MessagePointer));
+                ToString(Message));
             
             return processorString.ToString();
         }
@@ -164,6 +173,8 @@ namespace System.ComponentModel.Server
                     pointer.Message.GetType().Name,
                     Thread.CurrentThread.Name);
         }
+
+        #endregion
 
         #region [====== Commands & Events ======]
 
@@ -338,14 +349,14 @@ namespace System.ComponentModel.Server
         {                   
             InstanceLock.EnterMethod();
      
-            MessagePointer = MessagePointer == null ?
+            Message = Message == null ?
                 new MessagePointer(message = message.Copy(), token) :
-                MessagePointer.CreateChildPointer(message = message.Copy(), token);                        
+                Message.CreateChildPointer(message = message.Copy(), token);                        
         }
 
         private void PopMessage()
         {
-            MessagePointer = MessagePointer.ParentPointer;
+            Message = Message.ParentPointer;
 
             InstanceLock.ExitMethod();
         }               
@@ -446,6 +457,111 @@ namespace System.ComponentModel.Server
         }
 
         #endregion        
+
+        #region [====== CurrentMessage ======]
+
+        /// <summary>
+        /// Returns a <see cref="MessagePointer">pointer</see> to the message that is currently being handled.
+        /// </summary>
+        public static MessagePointer CurrentMessage
+        {
+            get
+            {
+                var context = UnitOfWorkContext.Current;
+                if (context == null)
+                {
+                    return null;
+                }
+                return context.Processor.Message;
+            }
+        }
+
+        #endregion
+
+        #region [====== Publish ======]
+
+        /// <summary>
+        /// Publishes the specified <paramref name="message"/> as part of the current Unit of Work.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message to publish.</typeparam>
+        /// <param name="message">The message to publish.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
+        /// </exception>
+        public static void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        {
+            if (TryPublish(message))
+            {
+                return;
+            }
+            throw NoEventBusAvailableException(message);
+        }        
+
+        /// <summary>
+        /// Publishes the specified <paramref name="message"/> as part of the current Unit of Work, if and only if
+        /// the method is being called inside a <see cref="UnitOfWorkScope" />.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message to publish.</typeparam>
+        /// <param name="message">The message to publish.</param>
+        /// <returns><c>true</c> if the message was published; otherwise <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        public static bool TryPublish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            var context = UnitOfWorkContext.Current;
+            if (context != null)
+            {
+                context.Publish(message);
+                return true;
+            }
+            return false;
+        }
+
+        private static Exception NoEventBusAvailableException(object theMessage)
+        {
+            var messageFormat = ExceptionMessages.MessageProcessor_NoEventBusAvailable;
+            var message = string.Format(messageFormat, theMessage);
+            return new InvalidOperationException(message);
+        }
+
+        #endregion
+
+        #region [====== Enlist ======]
+
+        /// <summary>
+        /// Enlists the specified <paramref name="unitOfWork"/> with the current unit of work, if it is present.
+        /// If no unit of work is present, the specified unit is flushed immediately if required.
+        /// </summary>
+        /// <param name="unitOfWork">The unit of work to enlist.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="unitOfWork"/> is <c>null</c>.
+        /// </exception>
+        public static void Enlist(IUnitOfWork unitOfWork)
+        {
+            if (unitOfWork == null)
+            {
+                throw new ArgumentNullException("unitOfWork");
+            }
+            var context = UnitOfWorkContext.Current;
+            if (context != null)
+            {
+                context.Enlist(unitOfWork);               
+            }
+            else if (unitOfWork.RequiresFlush())
+            {
+                unitOfWork.Flush();
+            }            
+        }        
+
+        #endregion
 
         #region [====== TransactionQueue ======]
 

@@ -87,8 +87,8 @@ namespace System.ComponentModel.Server
             Given().ProcessWith(processor);
 
             // This scenario must collect all events that are published during the When()-phase.
-            using (processor.DomainEventBus.ConnectThreadLocal<object>(OnEventPublished, true))
-            using (var scope = new UnitOfWorkScope(processor.DomainEventBus))
+            using (processor.EventBus.ConnectThreadLocal<object>(OnEventPublished, true))
+            using (var scope = processor.CreateUnitOfWorkScope())
             {
                 Message = When();
 

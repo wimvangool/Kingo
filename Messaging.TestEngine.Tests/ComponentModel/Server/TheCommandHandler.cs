@@ -14,7 +14,7 @@ namespace System.ComponentModel.Server
             {
                 foreach (var message in command.DomainEventsToPublish)
                 {
-                    ScenarioTestProcessor.Instance.DomainEventBus.Publish(message);
+                    ScenarioTestProcessor.Instance.EventBus.Publish(message);
                 }
             }
         }
