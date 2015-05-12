@@ -53,6 +53,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="ComponentModel\FluentValidation\AndConstraint.cs" />
+    <Compile Include="ComponentModel\FluentValidation\BooleanMemberExtensions.cs" />
     <Compile Include="ComponentModel\FluentValidation\CollectionMemberExtensions.cs" />
     <Compile Include="Comparable.T1.cs" />
     <Compile Include="Comparer.cs" />
@@ -61,8 +62,23 @@
     <Compile Include="ComponentModel\FluentValidation\GuidMemberExtensions.cs" />
     <Compile Include="ComponentModel\FluentValidation\ListMemberExtensions.cs" />
     <Compile Include="ComponentModel\FluentValidation\MemberSet.cs" />
+    <Compile Include="ComponentModel\IDependencyConfiguration.cs" />
+    <Compile Include="ComponentModel\Server\DependencyToConfigurationMapping.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateNotDeletedException.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateNotFoundByKeyException.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateNotFoundException.T1.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateNotInsertedException.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateNotUpdatedException.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\RepositoryException.T1.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateRoot.T1.cs" />
+    <Compile Include="ComponentModel\Server\Domain\BusinessRuleViolationException.cs" />
+    <Compile Include="ComponentModel\Server\Domain\IAggregateRoot.T1.cs" />
+    <Compile Include="ComponentModel\Server\IMessageHandlerConfiguration.cs" />
+    <Compile Include="ComponentModel\Server\InvalidEventException.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerConfiguration.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerToConfigurationMapping.cs" />
     <Compile Include="Equatable.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ErrorMessage.cs" />
+    <Compile Include="ErrorMessage.cs" />
     <Compile Include="ComponentModel\FluentValidation\Constraint.cs" />
     <Compile Include="ComponentModel\FluentValidation\IErrorMessageConsumer.cs" />
     <Compile Include="ComponentModel\FluentValidation\IErrorMessageProducer.cs" />
@@ -84,7 +100,7 @@
       <DependentUpon>ValidationMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="ComponentModel\ValueMessage.T1.cs" />
-    <Compile Include="ComponentModel\BusinessRuleViolationException.cs" />
+    <Compile Include="ComponentModel\CommandExecutionException.cs" />
     <Compile Include="ComponentModel\Client\AsyncExecutionTask.T1.cs" />
     <Compile Include="ComponentModel\Client\AsyncObject.cs" />
     <Compile Include="ComponentModel\Client\CommandDelegate.T1.cs" />
@@ -118,7 +134,7 @@
     <Compile Include="ComponentModel\IRequestMessageViewModel.T1.cs" />
     <Compile Include="ComponentModel\Message.cs" />
     <Compile Include="ComponentModel\Message.T1.cs" />
-    <Compile Include="ComponentModel\MessageDeniedException.cs" />
+    <Compile Include="ComponentModel\UnauthorizedMessageException.cs" />
     <Compile Include="ComponentModel\AttachedCollection.T1.cs" />
     <Compile Include="ComponentModel\FunctionalException.cs" />
     <Compile Include="Collections\Generic\ReadOnlyDictionary.T2.cs" />
@@ -180,7 +196,7 @@
     <Compile Include="ComponentModel\Server\DependencyClass.cs" />
     <Compile Include="ComponentModel\Client\QueryExecutionTask.cs" />
     <Compile Include="ComponentModel\Client\AsyncExecutionTaskStatus.cs" />
-    <Compile Include="ComponentModel\Server\Domain\AggregateNotFoundException.cs" />
+    <Compile Include="ComponentModel\Server\Domain\RepositoryException.cs" />
     <Compile Include="ComponentModel\Client\ExecutionCanceledEventArgs.cs" />
     <Compile Include="ComponentModel\Client\ExecutionCompletedEventArgs.cs" />
     <Compile Include="ComponentModel\Client\ExecutionFailedEventArgs.cs" />
@@ -195,10 +211,10 @@
     <Compile Include="ComponentModel\Client\QueryDispatcher.T2.cs" />
     <Compile Include="ComponentModel\Client\QueryDispatcherBase.T1.cs" />
     <Compile Include="ComponentModel\Client\RequestDispatcher.cs" />
-    <Compile Include="ComponentModel\Server\Domain\AggregateSet.T3.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateRootSet.T3.cs" />
     <Compile Include="ComponentModel\Server\Domain\EventBuffer.T3.cs" />
-    <Compile Include="ComponentModel\Server\Domain\Aggregate.T2.cs" />
-    <Compile Include="ComponentModel\Server\Domain\AggregateVersionTracker.T3.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateRoot.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateRootVersionTracker.T3.cs" />
     <Compile Include="ComponentModel\Server\FuncDecorator.T2.cs" />
     <Compile Include="ComponentModel\Server\IMessageProcessorBusConnection.cs" />
     <Compile Include="ComponentModel\Server\IQuery.T2.cs" />
@@ -206,11 +222,11 @@
     <Compile Include="ComponentModel\Server\MessageValidationModule.cs" />
     <Compile Include="ComponentModel\Server\Domain\Repository.T3.cs" />
     <Compile Include="ComponentModel\Server\Domain\DomainException.cs" />
-    <Compile Include="ComponentModel\Server\Domain\IAggregate.T2.cs" />
-    <Compile Include="ComponentModel\Server\Domain\EventSourcedAggregate.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\IAggregateRoot.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateEventStream.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\IEventBuffer.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\IEventStream.T2.cs" />
-    <Compile Include="ComponentModel\Server\Domain\IAggregateEvent.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\IAggregateRootEvent.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\IWritableEventStream.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\MemoryEventStream.T2.cs" />
     <Compile Include="ComponentModel\Server\EventBuffer.T1.cs" />
@@ -288,6 +304,7 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="ComponentModel\Server\Caching\AspNetCacheEntryLifetime.cs" />
+    <Compile Include="ComponentModel\Server\DependencyConfiguration.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

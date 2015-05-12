@@ -120,4 +120,10 @@
   <data name="ScenarioClock_RequestNotFound" xml:space="preserve">
     <value>No request for a date or time was found at the specified index: {0}.</value>
   </data>
+  <data name="Scenario_EventNotFound" xml:space="preserve">
+    <value>No event was found at the specified index ({0}).</value>
+  </data>
+  <data name="Scenario_EventNotOfSpecifiedType" xml:space="preserve">
+    <value>The event at index '{0}' of type '{1}' could not be cast to type '{2}'.</value>
+  </data>
 </root>

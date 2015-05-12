@@ -1,7 +1,7 @@
 ﻿namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
-    /// Represents a stream of <see cref="IAggregateEvent{T, S}" /> that can be written to.
+    /// Represents a stream of <see cref="IAggregateRootEvent{T, S}" /> that can be written to.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
@@ -17,6 +17,6 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>;
+        void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>;
     }
 }

@@ -5,7 +5,7 @@
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
-    public interface IAggregateEvent<out TKey, out TVersion>
+    public interface IAggregateRootEvent<out TKey, out TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {

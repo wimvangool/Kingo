@@ -51,7 +51,7 @@ namespace System.ComponentModel.Server
             _cache = new DependencyCache(); 
         }          
         
-        internal IDependencyCache InternalCache
+        internal IDependencyCache Cache
         {
             get { return _cache; }
         }
@@ -94,7 +94,7 @@ namespace System.ComponentModel.Server
         }
 
         internal void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-        {
+        {            
             EventBus.Publish(message);
         }
 
@@ -115,12 +115,7 @@ namespace System.ComponentModel.Server
         private Exception NewThreadAlreadyDisposedException()
         {
             return new ObjectDisposedException(GetType().FullName);
-        }        
-
-        /// <summary>
-        /// Represents the cache that is associated to the current <see cref="UnitOfWorkContext" />.
-        /// </summary>
-        public static readonly IDependencyCache Cache = new UnitOfWorkCache();
+        }                
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly ThreadLocal<UnitOfWorkContext> _Current = new ThreadLocal<UnitOfWorkContext>();

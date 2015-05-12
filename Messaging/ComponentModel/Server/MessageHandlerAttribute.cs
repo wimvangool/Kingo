@@ -5,7 +5,7 @@
     /// by the <see cref="MessageHandlerFactory" /> class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class MessageHandlerAttribute : Attribute
+    public sealed class MessageHandlerAttribute : Attribute, IMessageHandlerConfiguration
     {
         private readonly InstanceLifetime _lifetime;
         private readonly MessageSources _sources;

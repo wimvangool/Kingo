@@ -7,7 +7,7 @@ namespace System.ComponentModel
     /// </summary>
     public sealed class StopwatchClock : Clock
     {
-        private readonly DateTime _localDateAndTimeStart;
+        private readonly DateTimeOffset _startTime;
         private readonly Stopwatch _stopwatch;
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace System.ComponentModel
         /// Initializes a new instance of the <see cref="StopwatchClock" /> class.
         /// </summary>
         /// <param name="startTime">The initial date and time.</param>
-        public StopwatchClock(DateTime startTime)
+        public StopwatchClock(DateTimeOffset startTime)
         {
-            _localDateAndTimeStart = InitializeStartTime(startTime);
+            _startTime = startTime;
             _stopwatch = new Stopwatch();
         }        
 
@@ -101,22 +101,9 @@ namespace System.ComponentModel
         }
 
         /// <inheritdoc />
-        public override DateTime LocalDateAndTime()
+        public override DateTimeOffset LocalDateAndTime()
         {
-            return _localDateAndTimeStart.AddMilliseconds(_stopwatch.ElapsedMilliseconds);
-        }
-
-        private static DateTime InitializeStartTime(DateTime startTime)
-        {
-            if (startTime.Kind == DateTimeKind.Utc)
-            {
-                return startTime.ToLocalTime();
-            }
-            if (startTime.Kind == DateTimeKind.Unspecified)
-            {
-                return DateTime.SpecifyKind(startTime, DateTimeKind.Local);
-            }
-            return startTime;
-        }
+            return _startTime.AddMilliseconds(_stopwatch.ElapsedMilliseconds);
+        }        
     }
 }

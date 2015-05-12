@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace System.ComponentModel.FluentValidation
+namespace System
 {
     /// <summary>
     /// Represents an error message with optional arguments for formatting.

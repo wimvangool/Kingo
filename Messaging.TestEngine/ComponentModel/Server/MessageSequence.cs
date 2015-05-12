@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.ComponentModel.Server
 {
@@ -50,5 +51,18 @@ namespace System.ComponentModel.Server
         /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2104", Justification = "Exposed type is immutable.")]
         public static readonly IMessageSequence EmptySequence = new EmptyMessageSequence();
+
+        /// <summary>
+        /// Creates and returns a concatened sequence of messages.
+        /// </summary>
+        /// <param name="messages">The messages to concatenate.</param>
+        /// <returns>A concatened sequence of messages.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messages"/> is <c>null</c>.
+        /// </exception>
+        public static IMessageSequence Concatenate(IEnumerable<IMessageSequence> messages)
+        {
+            return new MessageSequenceConcatenation(messages);
+        }
     }
 }

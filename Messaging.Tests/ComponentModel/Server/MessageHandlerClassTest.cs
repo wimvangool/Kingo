@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Server
@@ -20,7 +21,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(IDisposable);
             MessageHandlerClass handlerClass;
 
-            Assert.IsFalse(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsFalse(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNull(handlerClass);
         }
 
@@ -30,7 +31,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(int);
             MessageHandlerClass handlerClass;
 
-            Assert.IsFalse(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsFalse(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNull(handlerClass);
         }
 
@@ -40,7 +41,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(AbstractMessageHandler);
             MessageHandlerClass handlerClass;
 
-            Assert.IsFalse(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsFalse(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNull(handlerClass);
         }
 
@@ -50,7 +51,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(GenericCommandHandler<>);
             MessageHandlerClass handlerClass;
 
-            Assert.IsFalse(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsFalse(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNull(handlerClass);
         }
 
@@ -60,7 +61,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(string);
             MessageHandlerClass handlerClass;
 
-            Assert.IsFalse(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsFalse(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNull(handlerClass);
         }
 
@@ -70,7 +71,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(MessageHandlerWithPerResolveLifetime);
             MessageHandlerClass handlerClass;
 
-            Assert.IsFalse(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, type => false, out handlerClass));
+            Assert.IsFalse(TryRegisterIn(_container, typeToRegister, type => false, out handlerClass));
             Assert.IsNull(handlerClass);
         }
 
@@ -80,7 +81,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(MessageHandlerWithPerResolveLifetime);
             MessageHandlerClass handlerClass;
 
-            Assert.IsTrue(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsTrue(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNotNull(handlerClass);
             Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.PerResolve));
         }
@@ -91,7 +92,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(MessageHandlerWithPerUnitOfWorkLifetime);
             MessageHandlerClass handlerClass;
 
-            Assert.IsTrue(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsTrue(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNotNull(handlerClass);
             Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.PerUnitOfWork));
         }
@@ -102,7 +103,7 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(MessageHandlerWithSingleLifetime);
             MessageHandlerClass handlerClass;
 
-            Assert.IsTrue(MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass));
+            Assert.IsTrue(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNotNull(handlerClass);
             Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.Singleton));
         }
@@ -114,7 +115,36 @@ namespace System.ComponentModel.Server
             Type typeToRegister = typeof(MessageHandlerWithInvalidLifetimeAttribute);
             MessageHandlerClass handlerClass;
 
-            MessageHandlerClass.TryRegisterIn(_container, typeToRegister, null, out handlerClass);
+            TryRegisterIn(_container, typeToRegister, null, out handlerClass);
+        }
+
+        private static readonly Lazy<MethodInfo> _TryRegisterInMethod = new Lazy<MethodInfo>(ResolveMethod, true);
+
+        private static MethodInfo ResolveMethod()
+        {
+            return typeof(MessageHandlerClass).GetMethod("TryRegisterIn", BindingFlags.NonPublic | BindingFlags.Static);
+        }
+
+        private static bool TryRegisterIn(MessageHandlerFactory factory, Type type, Func<Type, bool> typeSelector, out MessageHandlerClass handlerClass)
+        {
+            var arguments = new object[]
+            {
+                factory,
+                type,
+                typeSelector,
+                null,
+                null
+            };
+            try
+            {
+                var hasBeenRegistered = (bool) _TryRegisterInMethod.Value.Invoke(null, arguments);
+                handlerClass = (MessageHandlerClass) arguments[4];
+                return hasBeenRegistered;
+            }
+            catch (TargetInvocationException exception)
+            {
+                throw exception.InnerException;
+            }            
         }
     }
 }

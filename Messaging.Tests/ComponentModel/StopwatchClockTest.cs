@@ -19,8 +19,7 @@ namespace System.ComponentModel
         {
             var stopwatch = new StopwatchClock(2000, 1, 1, 6, 13, 57);
             var localDate = stopwatch.LocalDate();
-
-            Assert.AreEqual(DateTimeKind.Local, localDate.Kind);
+            
             Assert.AreEqual(2000, localDate.Year);
             Assert.AreEqual(1, localDate.Month);
             Assert.AreEqual(1, localDate.Day);
@@ -32,8 +31,7 @@ namespace System.ComponentModel
         {
             var stopwatch = new StopwatchClock(2000, 1, 1, 4, 20, 23);
             var localDateAndTime = stopwatch.LocalDateAndTime();
-
-            Assert.AreEqual(DateTimeKind.Local, localDateAndTime.Kind);
+            
             Assert.AreEqual(2000, localDateAndTime.Year);
             Assert.AreEqual(1, localDateAndTime.Month);
             Assert.AreEqual(1, localDateAndTime.Day);
@@ -55,8 +53,7 @@ namespace System.ComponentModel
         {
             var stopwatch = new StopwatchClock(2000, 1, 1, 2, 55, 12, DateTimeKind.Utc);
             var utcDate = stopwatch.UtcDate();
-
-            Assert.AreEqual(DateTimeKind.Utc, utcDate.Kind);
+            
             Assert.AreEqual(2000, utcDate.Year);
             Assert.AreEqual(1, utcDate.Month);
             Assert.AreEqual(1, utcDate.Day);
@@ -68,8 +65,7 @@ namespace System.ComponentModel
         {
             var stopwatch = new StopwatchClock(2000, 1, 1, 4, 20, 23, DateTimeKind.Utc);
             var utcDateAndTime = stopwatch.UtcDateAndTime();
-
-            Assert.AreEqual(DateTimeKind.Utc, utcDateAndTime.Kind);
+            
             Assert.AreEqual(2000, utcDateAndTime.Year);
             Assert.AreEqual(1, utcDateAndTime.Month);
             Assert.AreEqual(1, utcDateAndTime.Day);

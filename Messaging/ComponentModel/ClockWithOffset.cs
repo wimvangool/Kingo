@@ -8,16 +8,16 @@ namespace System.ComponentModel
         private readonly TimeSpan _offset;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Func<DateTime, TimeSpan, DateTime> _dateAndTimeCalculator;
+        private readonly Func<DateTimeOffset, TimeSpan, DateTimeOffset> _dateAndTimeCalculator;
 
-        private ClockWithOffset(IClock clock, TimeSpan offset, Func<DateTime, TimeSpan, DateTime> dateAndTimeCalculator)
+        private ClockWithOffset(IClock clock, TimeSpan offset, Func<DateTimeOffset, TimeSpan, DateTimeOffset> dateAndTimeCalculator)
         {
             _clock = clock;
             _offset = offset;
             _dateAndTimeCalculator = dateAndTimeCalculator;
         }
 
-        public override DateTime LocalDateAndTime()
+        public override DateTimeOffset LocalDateAndTime()
         {
             return _dateAndTimeCalculator.Invoke(_clock.LocalDateAndTime(), _offset);
         }
@@ -27,7 +27,7 @@ namespace System.ComponentModel
             return new ClockWithOffset(clock, offset, AddOffset);
         }
 
-        private static DateTime AddOffset(DateTime value, TimeSpan offset)
+        private static DateTimeOffset AddOffset(DateTimeOffset value, TimeSpan offset)
         {
             return value.Add(offset);
         }
@@ -37,7 +37,7 @@ namespace System.ComponentModel
             return new ClockWithOffset(clock, offset, SubtractOffset);
         }
 
-        private static DateTime SubtractOffset(DateTime value, TimeSpan offset)
+        private static DateTimeOffset SubtractOffset(DateTimeOffset value, TimeSpan offset)
         {
             return value.Subtract(offset);
         }        

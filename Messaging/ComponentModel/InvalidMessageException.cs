@@ -21,7 +21,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(object failedMessage, string message)
+        public InvalidMessageException(IMessage failedMessage, string message)
             : base(failedMessage, message) { }
 
         /// <summary>
@@ -29,12 +29,12 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="failedMessage">The invalid request.</param>  
         /// <param name="message">Message of the exception.</param>  
-        /// <param name="inner">Cause of this exception.</param>    
+        /// <param name="innerException">Cause of this exception.</param>    
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(object failedMessage, string message, Exception inner)
-            : base(failedMessage, message, inner) { }
+        public InvalidMessageException(IMessage failedMessage, string message, Exception innerException)
+            : base(failedMessage, message, innerException) { }
         
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
@@ -44,7 +44,7 @@ namespace System.ComponentModel
         /// <param name="errorTree">
         /// If specified, contains all the validation-errors of the <paramref name="failedMessage"/>.
         /// </param>
-        public InvalidMessageException(object failedMessage, string message, ValidationErrorTree errorTree)
+        public InvalidMessageException(IMessage failedMessage, string message, ValidationErrorTree errorTree)
             : base(failedMessage, message)
         {
             _errorTree = errorTree;

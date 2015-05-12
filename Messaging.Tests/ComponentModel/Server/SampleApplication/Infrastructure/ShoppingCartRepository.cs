@@ -41,7 +41,7 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 
         public void Add(ShoppingCart cart)
         {            
-            _carts.Add((cart as IAggregate<Guid, int>).Key, cart);           
+            _carts.Add((cart as IAggregateRoot<Guid, int>).Key, cart);           
 
             MessageProcessor.Enlist(this);
         }        

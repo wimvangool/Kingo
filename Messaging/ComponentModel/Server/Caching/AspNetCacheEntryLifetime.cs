@@ -9,10 +9,10 @@ namespace DefaultNamespace
 	[Serializable]
 	internal struct AspNetCacheEntryLifetime : IEquatable<AspNetCacheEntryLifetime>
 	{
-        private readonly DateTime _expirationTime;
+        private readonly DateTimeOffset _expirationTime;
         private readonly TimeSpan _lifetime;
         
-		private AspNetCacheEntryLifetime(DateTime expirationTime, TimeSpan lifetime)
+		private AspNetCacheEntryLifetime(DateTimeOffset expirationTime, TimeSpan lifetime)
 		{
             _expirationTime = expirationTime;
             _lifetime = lifetime;

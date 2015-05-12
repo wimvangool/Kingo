@@ -61,6 +61,24 @@ namespace System.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No event was found at the specified index ({0})..
+        /// </summary>
+        internal static string Scenario_EventNotFound {
+            get {
+                return ResourceManager.GetString("Scenario_EventNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The event at index &apos;{0}&apos; of type &apos;{1}&apos; could not be cast to type &apos;{2}&apos;..
+        /// </summary>
+        internal static string Scenario_EventNotOfSpecifiedType {
+            get {
+                return ResourceManager.GetString("Scenario_EventNotOfSpecifiedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No request for a date or time was found at the specified index: {0}..
         /// </summary>
         internal static string ScenarioClock_RequestNotFound {

@@ -111,13 +111,33 @@ namespace System.Reflection
             return string.Join(", ", _assemblies.Select(assembly => assembly.GetName().Name).OrderBy(name => name));
         }
 
+        #region [====== Factory Methods ======]
+
+        private const string _DefaultSearchPattern = "*.dll";        
+
         /// <summary>
-        /// Returns an <see cref="AssemblySet" /> that contains the current (calling) assembly.
+        /// Creates and returns a set of assemblies that are found in the directory in which the calling assembly
+        /// has been deployed.
         /// </summary>
-        /// <returns>An <see cref="AssemblySet" /> that contains the current (calling) assembly.</returns>
-        public static AssemblySet CurrentAssembly()
+        /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates whether or not only the top-level directory is to be searched.        
+        /// </param>
+        /// <returns>A set of assemblies that are found in the specified location(s).</returns>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public static AssemblySet FromCurrentDirectory(string searchPattern = _DefaultSearchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
-            return new AssemblySet { Assembly.GetCallingAssembly() };
+            return FromDirectory(CurrentDirectory(), searchPattern, searchOption);
+        }
+
+        private static string CurrentDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
         }
 
         /// <summary>
@@ -139,7 +159,7 @@ namespace System.Reflection
         /// </exception>
         public static AssemblySet FromDirectory(string path)
         {
-            return FromDirectory(path, "*.dll");
+            return FromDirectory(path, _DefaultSearchPattern);
         }
 
         /// <summary>
@@ -192,7 +212,7 @@ namespace System.Reflection
         public static AssemblySet FromDirectory(string path, string searchPattern, SearchOption searchOption)
         {
             return new AssemblySet(FindAssemblies(path, searchPattern, searchOption));
-        }
+        }        
 
         private static IEnumerable<Assembly> FindAssemblies(string path, string searchPattern, SearchOption searchOption)
         {
@@ -213,5 +233,24 @@ namespace System.Reflection
         {
             return new AssemblySet(sets.Where(set => set != null).SelectMany(set => set._assemblies));
         }
+
+        #endregion
+
+        #region [====== Operator Overloads ======]
+
+        /// <summary>
+        /// Casts the specified <paramref name="assembly"/> to an instance of the <see cref="AssemblySet" /> class.
+        /// </summary>
+        /// <param name="assembly">An assembly instance.</param>
+        /// <returns>
+        /// A new instance of the <see cref="AssemblySet" /> class containing the specified <paramref name="assembly"/>,
+        /// or <c>null</c> if <paramref name="assembly"/> is <c>null</c>.
+        /// </returns>
+        public static implicit operator AssemblySet(Assembly assembly)
+        {
+            return assembly == null ? null : new AssemblySet() { assembly };
+        }
+
+        #endregion
     }
 }

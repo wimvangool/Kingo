@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Resources;
 
 namespace System.ComponentModel.Server
 {    
@@ -34,7 +35,13 @@ namespace System.ComponentModel.Server
         }
 
         void IDomainEventBus.Publish<TMessage>(TMessage message)
-        {            
+        {
+            var messageCopy = message.Copy();
+            var errorTree = messageCopy.Validate();
+            if (errorTree.TotalErrorCount > 0)
+            {
+                throw NewInvalidEventException("message", messageCopy, errorTree);
+            }
             _buffer.Add(new EventBuffer<TMessage>(_processor.EventBus, message));
             _context.Enlist(this);
         }
@@ -57,6 +64,13 @@ namespace System.ComponentModel.Server
         public override string ToString()
         {
             return string.Format("{0} Event(s) Published", _buffer.Count);
-        }               
+        }
+
+        private static Exception NewInvalidEventException(string paramName, IMessage invalidEvent, ValidationErrorTree errorTree)
+        {
+            var messageFormat = ExceptionMessages.BufferedEventBus_InvalidMessage;
+            var message = string.Format(messageFormat, invalidEvent.GetType().Name);
+            return new InvalidEventException(paramName, invalidEvent, message, errorTree);
+        }
     }
 }

@@ -243,4 +243,10 @@
   <data name="StringMember_DoesNotContain_Failed" xml:space="preserve">
     <value>Member '{0}' contains '{1}'.</value>
   </data>
+  <data name="BooleanMember_IsFalse_Failed" xml:space="preserve">
+    <value>Member '{0}' is true.</value>
+  </data>
+  <data name="BooleanMember_IsTrue_Failed" xml:space="preserve">
+    <value>Member '{0}' is false.</value>
+  </data>
 </root>

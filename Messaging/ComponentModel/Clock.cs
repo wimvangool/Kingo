@@ -12,13 +12,13 @@
         }
 
         /// <inheritdoc />
-        public DateTime UtcDate()
+        public DateTimeOffset UtcDate()
         {
             return LocalDateAndTime().ToUniversalTime().Date;
         }
 
         /// <inheritdoc />
-        public DateTime UtcDateAndTime()
+        public DateTimeOffset UtcDateAndTime()
         {
             return LocalDateAndTime().ToUniversalTime();
         }
@@ -30,25 +30,19 @@
         }
 
         /// <inheritdoc />
-        public DateTime LocalDate()
+        public DateTimeOffset LocalDate()
         {
             return LocalDateAndTime().Date;
         }
 
         /// <inheritdoc />
-        public abstract DateTime LocalDateAndTime();
+        public abstract DateTimeOffset LocalDateAndTime();
 
         /// <inheritdoc />
         public IClock Add(TimeSpan offset)
         {
             return ClockWithOffset.AddOffset(this, offset);
-        }
-
-        /// <inheritdoc />
-        public IClock Subtract(TimeSpan offset)
-        {
-            return ClockWithOffset.SubtractOffset(this, offset);
-        }
+        }        
 
         /// <summary>
         /// Returns the clock that applies to the current thread.

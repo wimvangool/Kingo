@@ -1,17 +1,15 @@
 ﻿namespace System.ComponentModel.Server
 {
-    internal sealed class ScenarioCache : DependencyCacheRelay
+    /// <summary>
+    /// Represents a cache that can be used to store dependencies that have a lifetime that is bound to a
+    /// specific <see cref="Scenario" />.
+    /// </summary>
+    public sealed class ScenarioCache : DependencyCacheRelay
     {
+        /// <inheritdoc />
         protected override bool TryGetCache(out IDependencyCache cache)
         {
-            var scenario = Scenario.Current;
-            if (scenario == null)
-            {
-                cache = null;
-                return false;
-            }
-            cache = scenario.InternalCache;
-            return true;
+            return (cache = Scenario.Cache) != null;
         }
     }
 }

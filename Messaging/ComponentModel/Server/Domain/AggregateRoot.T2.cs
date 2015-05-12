@@ -1,4 +1,6 @@
 ﻿using System.Resources;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace System.ComponentModel.Server.Domain
 {
@@ -7,38 +9,55 @@ namespace System.ComponentModel.Server.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
-    public abstract class Aggregate<TKey, TVersion> : IEventStream<TKey, TVersion>, IAggregate<TKey, TVersion>
+    [Serializable]
+    public abstract class AggregateRoot<TKey, TVersion> : IEventStream<TKey, TVersion>, IAggregateRoot<TKey, TVersion>, ISerializable
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
+        private const string _BufferKey = "_buffer";
         private readonly MemoryEventStream<TKey, TVersion> _buffer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Aggregate{TKey, TVersion}" /> class.
+        /// Initializes a new instance of the <see cref="AggregateRoot{TKey, TVersion}" /> class.
         /// </summary>
-        protected Aggregate()
+        protected AggregateRoot()
         {
             _buffer = new MemoryEventStream<TKey, TVersion>();
+        }        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateRoot{T, K}" /> class.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected AggregateRoot(SerializationInfo info, StreamingContext context)            
+        {
+            _buffer = (MemoryEventStream<TKey, TVersion>) info.GetValue(_BufferKey, typeof(MemoryEventStream<TKey, TVersion>));
+        }
+
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            GetObjectData(info, context);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Aggregate{TKey, TVersion}" /> class.
+        /// Populates a <see cref="SerializationInfo" /> with the data needed to serialize the target object.
         /// </summary>
-        /// <param name="capacity">The initial capacity of the event-buffer.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="capacity"/> is negative.
-        /// </exception>
-        protected Aggregate(int capacity)
-        {
-            _buffer = new MemoryEventStream<TKey, TVersion>(capacity);
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {            
+            info.AddValue(_BufferKey, _buffer);
         }
 
-        TKey IAggregate<TKey, TVersion>.Key
+        TKey IAggregateRoot<TKey>.Key
         {
             get { return Key; }
         }
 
-        TVersion IAggregate<TKey, TVersion>.Version
+        TVersion IAggregateRoot<TKey, TVersion>.Version
         {
             get { return Version; }
         }
@@ -46,7 +65,7 @@ namespace System.ComponentModel.Server.Domain
         /// <summary>
         /// Returns the key of this aggregate.
         /// </summary>
-        public abstract TKey Key
+        protected abstract TKey Key
         {
             get;
         }
@@ -83,7 +102,7 @@ namespace System.ComponentModel.Server.Domain
         /// <exception cref="InvalidOperationException">
         /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
         /// </exception>
-        protected void Publish<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        protected void Publish<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
         {
             if (eventFactory == null)
             {
@@ -103,7 +122,7 @@ namespace System.ComponentModel.Server.Domain
         /// <exception cref="InvalidOperationException">
         /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
         /// </exception>
-        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
         {
             if (@event == null)
             {
@@ -121,7 +140,7 @@ namespace System.ComponentModel.Server.Domain
             throw NewNonMatchingAggregateKeyException(@event);
         }
 
-        internal Exception NewNonMatchingAggregateKeyException<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
+        internal Exception NewNonMatchingAggregateKeyException<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>
         {
             var messageFormat = ExceptionMessages.Aggregate_NonMatchingKey;
             var message = string.Format(messageFormat, Key, @event.AggregateKey);

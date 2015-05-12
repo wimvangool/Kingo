@@ -14,50 +14,49 @@
         }
 
         /// <inheritdoc />
-        public DateTime UtcDate()
+        public DateTimeOffset UtcDate()
         {
-            return DateTime.UtcNow.Date;
+            return StripTimeOfDay(DateTimeOffset.UtcNow);
         }
 
         /// <inheritdoc />
-        public DateTime UtcDateAndTime()
+        public DateTimeOffset UtcDateAndTime()
         {
-            return DateTime.UtcNow;
+            return DateTimeOffset.UtcNow;
         }
 
         /// <inheritdoc />
         public TimeSpan LocalTime()
         {
-            return DateTime.Now.TimeOfDay;
+            return DateTimeOffset.Now.TimeOfDay;
         }
 
         /// <inheritdoc />
-        public DateTime LocalDate()
+        public DateTimeOffset LocalDate()
         {
-            return DateTime.Today;
+            return StripTimeOfDay(DateTimeOffset.Now);
         }
 
         /// <inheritdoc />
-        public DateTime LocalDateAndTime()
+        public DateTimeOffset LocalDateAndTime()
         {
-            return DateTime.Now;
+            return DateTimeOffset.Now;
         }
 
         /// <inheritdoc />
         public IClock Add(TimeSpan offset)
         {
             return ClockWithOffset.AddOffset(this, offset);
-        }
-
-        /// <inheritdoc />
-        public IClock Subtract(TimeSpan offset)
-        {
-            return ClockWithOffset.SubtractOffset(this, offset);
-        }
+        }        
 
         /// <summary>
         /// The system-clock of the current system.
         /// </summary>
-        public static readonly SystemClock Instance = new SystemClock();        
+        public static readonly SystemClock Instance = new SystemClock();
+        
+        private static DateTimeOffset StripTimeOfDay(DateTimeOffset value)
+        {
+            return new DateTimeOffset(value.Year, value.Month, value.Day, 0, 0, 0, value.Offset);
+        }
     }
 }

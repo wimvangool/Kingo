@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Resources;
 
 namespace System.ComponentModel.Server
@@ -13,19 +14,19 @@ namespace System.ComponentModel.Server
         private readonly MessageHandlerFactory _factory;        
         private readonly Type _classType;
         private readonly Type[] _interfaceTypes;
-        private readonly MessageSources _sources;
+        private readonly IMessageHandlerConfiguration _configuration;
 
-        private MessageHandlerClass(MessageHandlerFactory factory, Type classType, Type[] interfaceTypes, MessageSources sources)
+        private MessageHandlerClass(MessageHandlerFactory factory, Type classType, Type[] interfaceTypes, IMessageHandlerConfiguration configuration)
         {
             _factory = factory;
             _classType = classType;
             _interfaceTypes = interfaceTypes;
-            _sources = sources;
+            _configuration = configuration;
         }                     
 
-        private void Register(InstanceLifetime lifetime)
+        private void Register()
         {
-            switch (lifetime)
+            switch (_configuration.Lifetime)
             {
                 case InstanceLifetime.PerResolve:                    
                     _factory.RegisterWithPerResolveLifetime(_classType);
@@ -40,13 +41,13 @@ namespace System.ComponentModel.Server
                     return;
                     
                 default:                    
-                    throw NewInvalidLifetimeModeSpecifiedException(_classType, lifetime);                    
+                    throw NewInvalidLifetimeModeSpecifiedException(_classType, _configuration.Lifetime);                    
             }
         }                       
 
         internal IEnumerable<IMessageHandler<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message, MessageSources source) where TMessage : class
         {
-            if (IsAcceptedSource(_sources, source))
+            if (IsAcceptedSource(_configuration.Sources, source))
             {
                 // This LINQ construct first selects all message handler interface definitions that are compatible with
                 // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -71,17 +72,35 @@ namespace System.ComponentModel.Server
 
         public override string ToString()
         {
-            return string.Format("{0} ({1} interface(s) implemented)", _classType.Name, _interfaceTypes.Length);
+            return string.Format("{0} ({1} interface(s) implemented) - Configuration = {2}", _classType.Name, _interfaceTypes.Length, _configuration);
         }
 
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
-        private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>);                       
-
-        public static bool TryRegisterIn(MessageHandlerFactory container, Type type, Func<Type, bool> predicate, out MessageHandlerClass handler)
+        private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>); 
+        
+        internal static IEnumerable<MessageHandlerClass> RegisterMessageHandlers(MessageHandlerFactory factory, AssemblySet assemblies, Func<Type, bool> typeSelector, MessageHandlerToConfigurationMapping configurationPerType)
         {
-            MessageHandlerAttribute attribute;
+            if (assemblies == null)
+            {
+                throw new ArgumentNullException("assemblies");
+            }
+            var messageHandlers = new List<MessageHandlerClass>();
 
-            if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !HasMessageHandlerAttribute(type, out attribute) || !SatisfiesPredicate(type, predicate))
+            foreach (var type in assemblies.GetTypes())
+            {
+                MessageHandlerClass handler;
+
+                if (TryRegisterIn(factory, type, typeSelector, configurationPerType, out handler))
+                {
+                    messageHandlers.Add(handler);
+                }
+            }
+            return messageHandlers;
+        }
+
+        private static bool TryRegisterIn(MessageHandlerFactory container, Type type, Func<Type, bool> predicate, MessageHandlerToConfigurationMapping configurationPerType, out MessageHandlerClass handler)
+        {            
+            if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !SatisfiesPredicate(type, predicate))
             {
                 handler = null;
                 return false;
@@ -92,12 +111,37 @@ namespace System.ComponentModel.Server
                 handler = null;
                 return false;
             }
-            handler = new MessageHandlerClass(container, type, interfaceTypes, attribute.Sources);
-            handler.Register(attribute.Lifetime);
-            return true;
+            var configuration = DetermineMessageHandlerConfiguration(type, configurationPerType);
+
+            handler = new MessageHandlerClass(container, type, interfaceTypes, configuration);
+            handler.Register();
+            return true;            
         }
 
-        private static bool HasMessageHandlerAttribute(Type classType, out MessageHandlerAttribute attribute)
+        private static IMessageHandlerConfiguration DetermineMessageHandlerConfiguration(Type type, MessageHandlerToConfigurationMapping configurationPerType)
+        {
+            IMessageHandlerConfiguration configuration;
+
+            if (configurationPerType == null)
+            {
+                if (TryGetMessageHandlerAttribute(type, out configuration))
+                {
+                    return configuration;
+                }
+                return MessageHandlerConfiguration.Default;
+            }
+            if (configurationPerType.TryGetValue(type, out configuration))
+            {
+                return configuration;
+            }
+            if (TryGetMessageHandlerAttribute(type, out configuration))
+            {
+                return configuration;
+            }
+            return configurationPerType.DefaultConfiguration;
+        }
+
+        private static bool TryGetMessageHandlerAttribute(Type classType, out IMessageHandlerConfiguration attribute)
         {
             var attributes = classType.GetCustomAttributes(typeof(MessageHandlerAttribute), true);
             if (attributes.Length == 0)

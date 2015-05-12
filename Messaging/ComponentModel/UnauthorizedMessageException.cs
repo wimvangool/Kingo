@@ -3,50 +3,51 @@
 namespace System.ComponentModel
 {
     /// <summary>
-    /// This exception is thrown when a business rule was violated while processing a <see cref="object" />.
+    /// This exception is thrown when the current user, typically the identity of the sender of a message,
+    /// has insufficient rights to process a specific message.
     /// </summary>
     [Serializable]
-    public class BusinessRuleViolationException : FunctionalException
-    {      
+    public class UnauthorizedMessageException : FunctionalException
+    {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BusinessRuleViolationException" /> class.
+        /// Initializes a new instance of the <see cref="UnauthorizedMessageException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public BusinessRuleViolationException(object failedMessage)
+        public UnauthorizedMessageException(IMessage failedMessage) 
             : base(failedMessage) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BusinessRuleViolationException" /> class.
+        /// Initializes a new instance of the <see cref="FunctionalException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <param name="message">Message of the exception.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public BusinessRuleViolationException(object failedMessage, string message)
+        public UnauthorizedMessageException(IMessage failedMessage, string message)
             : base(failedMessage, message) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BusinessRuleViolationException" /> class.
+        /// Initializes a new instance of the <see cref="FunctionalException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <param name="message">Message of the exception.</param>
-        /// <param name="inner">Cause of this exception.</param>
+        /// <param name="innerException">Cause of this exception.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public BusinessRuleViolationException(object failedMessage, string message, Exception inner)
-            : base(failedMessage, message, inner) {}
+        public UnauthorizedMessageException(IMessage failedMessage, string message, Exception innerException)
+            : base(failedMessage, message, innerException) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BusinessRuleViolationException" /> class.
+        /// Initializes a new instance of the <see cref="FunctionalException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected BusinessRuleViolationException(SerializationInfo info, StreamingContext context)
+        protected UnauthorizedMessageException(SerializationInfo info, StreamingContext context)
             : base(info, context) {}
     }
 }

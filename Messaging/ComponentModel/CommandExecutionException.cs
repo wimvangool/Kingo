@@ -3,51 +3,50 @@
 namespace System.ComponentModel
 {
     /// <summary>
-    /// This exception is thrown when the current user, typically the identity of the sender of a message,
-    /// has insufficient rights to process a specific message.
+    /// This exception is thrown when a business rule was violated while processing a command.
     /// </summary>
     [Serializable]
-    public class MessageDeniedException : FunctionalException
-    {
+    public class CommandExecutionException : FunctionalException
+    {      
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageDeniedException" /> class.
+        /// Initializes a new instance of the <see cref="CommandExecutionException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public MessageDeniedException(object failedMessage) 
+        public CommandExecutionException(IMessage failedMessage)
             : base(failedMessage) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionalException" /> class.
+        /// Initializes a new instance of the <see cref="CommandExecutionException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <param name="message">Message of the exception.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public MessageDeniedException(object failedMessage, string message)
+        public CommandExecutionException(IMessage failedMessage, string message)
             : base(failedMessage, message) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionalException" /> class.
+        /// Initializes a new instance of the <see cref="CommandExecutionException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <param name="message">Message of the exception.</param>
-        /// <param name="inner">Cause of this exception.</param>
+        /// <param name="innerException">Cause of this exception.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public MessageDeniedException(object failedMessage, string message, Exception inner)
-            : base(failedMessage, message, inner) {}
+        public CommandExecutionException(IMessage failedMessage, string message, Exception innerException)
+            : base(failedMessage, message, innerException) {}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionalException" /> class.
+        /// Initializes a new instance of the <see cref="CommandExecutionException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected MessageDeniedException(SerializationInfo info, StreamingContext context)
+        protected CommandExecutionException(SerializationInfo info, StreamingContext context)
             : base(info, context) {}
     }
 }

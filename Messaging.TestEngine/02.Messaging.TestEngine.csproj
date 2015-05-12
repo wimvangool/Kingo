@@ -58,6 +58,9 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="ComponentModel\Server\Domain\UnitTestRepository.T3.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequenceConcatenation.cs" />
+    <Compile Include="ComponentModel\Server\ScenarioCache.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -70,8 +73,6 @@
       <DependentUpon>FailureMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="ComponentModel\Server\GlobalSuppressions.cs" />
-    <Compile Include="ComponentModel\Server\IDomainEventList.cs" />
-    <Compile Include="ComponentModel\Server\IDomainEventListFactory.cs" />
     <Compile Include="ComponentModel\Server\MessageSequence.cs" />
     <Compile Include="ComponentModel\Server\MessageSequenceNode.T1.cs" />
     <Compile Include="ComponentModel\Server\MessageSequencePair.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="ComponentModel\Server\Scenario.cs" />
     <Compile Include="ComponentModel\Server\Scenario.T1.cs" />
-    <Compile Include="ComponentModel\Server\ScenarioCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\05.Messaging.csproj">

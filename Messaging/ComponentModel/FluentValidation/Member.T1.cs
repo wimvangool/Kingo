@@ -76,32 +76,32 @@ namespace System.ComponentModel.FluentValidation
 
         #region [====== And ======]
 
-        ///// <summary>
-        ///// Descends one level down in the validation-hierarchy.
-        ///// </summary>
-        ///// <param name="innerConstraintFactory">
-        ///// The delegate that is used to define constraint on the properties or children of this member's value.
-        ///// </param>
-        ///// <exception cref="ArgumentNullException">
-        ///// <paramref name="innerConstraintFactory"/> is <c>null</c>.
-        ///// </exception>
-        //public void And(Action<TValue> innerConstraintFactory)
-        //{
-        //    if (innerConstraintFactory == null)
-        //    {
-        //        throw new ArgumentNullException("innerConstraintFactory");
-        //    }
-        //    _memberSet.PushParent(_name);
+        /// <summary>
+        /// Descends one level down in the validation-hierarchy.
+        /// </summary>
+        /// <param name="innerConstraintFactory">
+        /// The delegate that is used to define constraint on the properties or children of this member's value.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="innerConstraintFactory"/> is <c>null</c>.
+        /// </exception>
+        public void And(Action<TValue> innerConstraintFactory)
+        {
+            if (innerConstraintFactory == null)
+            {
+                throw new ArgumentNullException("innerConstraintFactory");
+            }
+            _memberSet.PushParent(_name);
 
-        //    try
-        //    {
-        //        innerConstraintFactory.Invoke(Value);
-        //    }
-        //    finally
-        //    {
-        //        _memberSet.PopParent();
-        //    }
-        //}
+            try
+            {
+                innerConstraintFactory.Invoke(Value);
+            }
+            finally
+            {
+                _memberSet.PopParent();
+            }
+        }
 
         #endregion
 

@@ -19,7 +19,7 @@ namespace System.ComponentModel.Client.DataVirtualization
             {
                 _removedFromCacheLock = new ManualResetEventSlim();
 
-                AbsoluteExpiration = new DateTimeOffset(Clock.Current.LocalDateAndTime().Add(timeout));
+                AbsoluteExpiration = Clock.Current.LocalDateAndTime().Add(timeout);
                 RemovedCallback = NotifyRemovedFromCache;                
             }            
 

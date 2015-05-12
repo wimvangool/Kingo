@@ -5,7 +5,7 @@
     /// by the <see cref="MessageHandlerFactory" /> class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class DependencyAttribute : Attribute
+    public sealed class DependencyAttribute : Attribute, IDependencyConfiguration
     {
         private readonly InstanceLifetime _lifetime;
 

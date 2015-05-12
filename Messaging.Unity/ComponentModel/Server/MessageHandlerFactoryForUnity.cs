@@ -11,7 +11,7 @@ namespace System.ComponentModel.Server
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerFactoryForUnity" /> class.
-        /// </summary>
+        /// </summary>        
         /// <param name="container">The container to use.</param>
         public MessageHandlerFactoryForUnity(IUnityContainer container = null)
         {
@@ -56,20 +56,7 @@ namespace System.ComponentModel.Server
         {
             _container.RegisterType(concreteType, PerUnitOfWorkLifetime());
             _container.RegisterType(abstractType, concreteType);
-        }
-
-        /// <inheritdoc />
-        protected override void RegisterWithPerScenarioLifetime(Type concreteType)
-        {
-            _container.RegisterType(concreteType, PerScenarioLifetime());
-        }
-
-        /// <inheritdoc />
-        protected override void RegisterWithPerScenarioLifetime(Type concreteType, Type abstractType)
-        {
-            _container.RegisterType(concreteType, PerScenarioLifetime());
-            _container.RegisterType(abstractType, concreteType);
-        }
+        }        
 
         /// <inheritdoc />
         protected override void RegisterSingleton(Type type)
@@ -90,15 +77,10 @@ namespace System.ComponentModel.Server
             return _container.Resolve(type);
         }
 
-        private static LifetimeManager PerUnitOfWorkLifetime()
+        private LifetimeManager PerUnitOfWorkLifetime()
         {
-            return new CacheBasedLifetimeManager(UnitOfWorkContext.Cache);
-        }
-
-        private static LifetimeManager PerScenarioLifetime()
-        {
-            return new CacheBasedLifetimeManager(Scenario.Cache);
-        }
+            return new CacheBasedLifetimeManager(UnitOfWorkCache);
+        }        
 
         #endregion
     }

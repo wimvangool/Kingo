@@ -14,54 +14,7 @@ namespace System.ComponentModel.Server
     /// <typeparam name="TMessage">Type of the message that is executed on the When-phase.</typeparam>    
     public abstract class Scenario<TMessage> : Scenario, IErrorMessageConsumer where TMessage : class, IMessage<TMessage>
     {
-        #region [====== DomainEventListFactory ======]
-
-        private sealed class DomainEventListFactory<T> : IDomainEventListFactory where T : class, IMessage<T>
-        {
-            private readonly Scenario<T> _scenario;
-
-            internal DomainEventListFactory(Scenario<T> scenario)
-            {
-                _scenario = scenario;
-            }
-
-            public void And(Action<IDomainEventList> domainEventListHandler)
-            {
-                if (domainEventListHandler == null)
-                {
-                    throw new ArgumentNullException("domainEventListHandler");
-                }
-                domainEventListHandler.Invoke(new DomainEventList<T>(_scenario));
-            }
-        }
-
-        #endregion
-
-        #region [====== DomainEventList ======]
-
-        private sealed class DomainEventList<T> : IDomainEventList where T : class, IMessage<T>
-        {
-            private readonly Scenario<T> _scenario;
-
-            internal DomainEventList(Scenario<T> scenario)
-            {
-                _scenario = scenario;
-            }
-
-            public Member<object> this[int index]
-            {
-                get
-                {
-                    var domainEvent = _scenario._publishedEvents[index];
-                    var name = string.Format(CultureInfo.InvariantCulture, "DomainEvent[{0}]", index);
-
-                    return _scenario.VerifyThat(domainEvent, name);
-                }                
-            }
-        }
-
-        #endregion
-
+        private readonly Lazy<TMessage> _message;
         private readonly MemberSet _memberSet;                
         private readonly List<object> _publishedEvents;
         private Exception _exception;
@@ -71,52 +24,9 @@ namespace System.ComponentModel.Server
         /// </summary>
         protected Scenario()
         {
+            _message = new Lazy<TMessage>(When);
             _memberSet = new MemberSet(this);
             _publishedEvents = new List<object>();
-        }
-
-        /// <summary>
-        /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
-        /// </summary>        
-        public override void ProcessWith(IMessageProcessor processor)
-        {            
-            if (processor == null)
-            {
-                throw new ArgumentNullException("processor");
-            }
-            Given().ProcessWith(processor);
-
-            // This scenario must collect all events that are published during the When()-phase.
-            using (processor.EventBus.ConnectThreadLocal<object>(OnEventPublished, true))
-            using (var scope = processor.CreateUnitOfWorkScope())
-            {
-                Message = When();
-
-                if (HandleMessage(processor, Message))
-                {
-                    scope.Complete();
-                }
-            }            
-        }
-
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "By Design")]
-        private bool HandleMessage(IMessageProcessor processor, TMessage message)
-        {
-            try
-            {
-                processor.Handle(message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                _exception = exception;
-                return false;                
-            }                        
-        }
-
-        private void OnEventPublished(object domainEvent)
-        {
-            _publishedEvents.Add(domainEvent);
         }
 
         /// <summary>
@@ -124,9 +34,67 @@ namespace System.ComponentModel.Server
         /// </summary>
         public TMessage Message
         {
-            get;
-            private set;
-        }        
+            get { return _message.Value; }
+        }  
+
+        /// <summary>
+        /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
+        /// </summary>        
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "By Design")]
+        public override void ProcessWith(IMessageProcessor processor)
+        {            
+            if (processor == null)
+            {
+                throw new ArgumentNullException("processor");
+            }
+            CreateSetupSequence().ProcessWith(processor);
+
+            // This scenario must collect all events that are published during the When()-phase.
+            using (processor.EventBus.ConnectThreadLocal<object>(OnEventPublished, true))
+            using (var scope = processor.CreateUnitOfWorkScope())
+            {
+                try
+                {
+                    Handle(processor, Message.Copy());
+                    scope.Complete();
+                }
+                catch (Exception exception)
+                {
+                    _exception = exception;
+                }
+            }            
+        }    
+    
+        /// <summary>
+        /// Handles the specified <paramref name="message" /> by passing it to the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">A message processor.</param>
+        /// <param name="message">The message to handle.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="processor"/> or <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        protected virtual void Handle(IMessageProcessor processor, TMessage message)
+        {
+            if (processor == null)
+            {
+                throw new ArgumentNullException("processor");
+            }
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            processor.Handle(message);
+        }
+
+        private void OnEventPublished(object domainEvent)
+        {
+            _publishedEvents.Add(domainEvent);
+        } 
+        
+        private IMessageSequence CreateSetupSequence()
+        {
+            return Concatenate(Given());
+        }
 
         /// <summary>
         /// Returns a sequence of messages that are used to put the system into a desired state.
@@ -136,9 +104,9 @@ namespace System.ComponentModel.Server
         /// The default implementation returns an empty sequence. When overridden, this method should never return
         /// <c>null</c>.
         /// </remarks>
-        protected virtual IMessageSequence Given()
+        protected virtual IEnumerable<IMessageSequence> Given()
         {
-            return EmptySequence;
+            yield return EmptySequence;
         }
 
         /// <summary>
@@ -154,22 +122,104 @@ namespace System.ComponentModel.Server
         [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Then", Justification = "'Then' is part of the BDD-style naming convention.")]
         public abstract void Then();
 
+        #region [====== Domain Events ======]
+
+        /// <summary>
+        /// Returns all published events as a collection.
+        /// </summary>
+        protected IEnumerable<object> PublishedEvents
+        {
+            get { return _publishedEvents; }
+        }
+
+        /// <summary>
+        /// Returns the event at the specified <paramref name="index"/> as an instance of <typeparamref name="TEvent"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the requested event.</typeparam>
+        /// <param name="index">The index of the event.</param>
+        /// <returns>The event at the specified <paramref name="index"/> as an instance of <typeparamref name="TEvent"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> does not point to a valid index.
+        /// </exception>
+        /// <exception cref="InvalidCastException">
+        /// The event of the specified <paramref name="index"/> could not be cast to <typeparamref name="TEvent"/>.
+        /// </exception>
+        protected TEvent GetDomainEventAt<TEvent>(int index) where TEvent : class
+        {
+            var domainEvent = GetDomainEventAt(index);
+
+            try
+            {
+                return (TEvent) domainEvent;
+            }
+            catch (InvalidCastException)
+            {
+                throw NewUnexpectedEventTypeException(typeof(TEvent), domainEvent.GetType(), index);
+            }
+        }               
+
+        /// <summary>
+        /// Returns the event at the specified <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">The index of the event.</param>
+        /// <returns>The event at the specified <paramref name="index"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> does not point to a valid index.
+        /// </exception>
+        protected object GetDomainEventAt(int index)
+        {
+            try
+            {
+                return _publishedEvents[index];
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw NewEventNotFoundException(index);
+            }
+        }
+
+        [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
+        private static Exception NewUnexpectedEventTypeException(Type expectedType, Type actualType, int index)
+        {
+            var messageFormat = ExceptionMessages.Scenario_EventNotOfSpecifiedType;
+            var message = string.Format(messageFormat, index, actualType, expectedType);
+            return new InvalidCastException(message);
+        }
+
+        [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
+        private static Exception NewEventNotFoundException(int index)
+        {
+            var messageFormat = ExceptionMessages.Scenario_EventNotFound;
+            var message = string.Format(messageFormat, index);
+            return new ArgumentOutOfRangeException("index", message);
+        }
+
+        #endregion
+
         #region [====== Verification ======]
 
         /// <summary>
-        /// Verifies that the number of published domain events is equal to <paramref name="count" />
-        /// and returns a <see cref="IDomainEventListFactory" /> that can be used to verify the contents
-        /// of each event.
+        /// Returns the number of published domain events that can be verified with a fluent syntax.
         /// </summary>
-        /// <param name="count">The expected number of events that were published.</param>
-        /// <returns>A <see cref="IDomainEventListFactory" /> that can be used to verify the contents of each event.</returns>
-        protected IDomainEventListFactory TheNumberOfPublishedEventsIs(int count)
+        /// <returns>A <see cref="Member{T}" /> that can be used to verify the number of published domain events.</returns>        
+        protected Member<int> VerifyThatDomainEventCount()
         {
-            VerifyThat(_publishedEvents.Count, "NumberOfPublishedEvents")
-                .IsEqualTo(count, new ErrorMessage(FailureMessages.Scenario_UnexpectedNumberOfPublishedEvents, _publishedEvents.Count, count));
+            return VerifyThat(() => _publishedEvents.Count, "DomainEventCount");
+        }        
 
-            return new DomainEventListFactory<TMessage>(this);
-        }
+        /// <summary>
+        /// Returns the published domain event at the specified index that can be verified with a fluent syntax.
+        /// </summary>
+        /// <param name="index">The index of the published event.</param>
+        /// <returns>A <see cref="Member{T}" /> that can be used to verify the event.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> does not point to a valid index.
+        /// </exception>
+        [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
+        protected Member<object> VerifyThatDomainEventAtIndex(int index)
+        {
+            return VerifyThat(GetDomainEventAt(index), string.Format("DomainEvent[{0}]", index));
+        }        
 
         /// <summary>
         /// Verifies that an <see cref="Exception" /> of the specified type (<typeparamref name="TException"/>) was thrown
@@ -178,12 +228,12 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <typeparam name="TException">Type of the expected exception.</typeparam>
         /// <returns>A <see cref="Member{TValue}" /> referring to the exception that was thrown.</returns>
-        protected Member<TException> TheExceptionThatWasThrownIsA<TException>()
+        protected Member<TException> VerifyThatExceptionIsA<TException>()
         {
             return VerifyThat(_exception, "ExpectedException")
                 .IsNotNull(new ErrorMessage(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException)))
                 .IsInstanceOf<TException>(new ErrorMessage(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType()));
-        }
+        }        
 
         /// <summary>
         /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain

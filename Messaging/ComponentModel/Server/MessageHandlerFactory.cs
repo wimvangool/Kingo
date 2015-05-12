@@ -12,14 +12,24 @@ namespace System.ComponentModel.Server
     public abstract class MessageHandlerFactory
     {
         [DebuggerDisplay("Count = {_messageHandlers.Count}")]
-        private readonly List<MessageHandlerClass> _messageHandlers;        
-
+        private readonly List<MessageHandlerClass> _messageHandlers;
+        private readonly UnitOfWorkCache _unitOfWorkCache;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerFactory" /> class.
-        /// </summary>
+        /// </summary>        
         protected MessageHandlerFactory()
-        {                        
-            _messageHandlers = new List<MessageHandlerClass>();
+        {
+            _messageHandlers = new List<MessageHandlerClass>();    
+            _unitOfWorkCache = new UnitOfWorkCache();
+        }        
+
+        /// <summary>
+        /// Returns the cache that can be used to store dependencies with a lifetime of <see cref="InstanceLifetime.PerUnitOfWork" />.
+        /// </summary>
+        protected IDependencyCache UnitOfWorkCache
+        {
+            get { return _unitOfWorkCache; }
         }
 
         /// <summary>
@@ -28,43 +38,7 @@ namespace System.ComponentModel.Server
         public int MessageHandlerCount
         {
             get { return _messageHandlers.Count; }
-        }
-
-        /// <summary>
-        /// Gets or sets the set of assemblies that represent the Interface Layer.
-        /// </summary>
-        public AssemblySet InterfaceLayer
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the set of assemblies that represent the Application Layer.
-        /// </summary>
-        public AssemblySet ApplicationLayer
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the set of assemblies that represent the Domain Layer.
-        /// </summary>
-        public AssemblySet DomainLayer
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the set of assemblies that represent the Data Access Layer.
-        /// </summary>
-        public AssemblySet DataAccessLayer
-        {
-            get;
-            set;
-        }
+        }        
 
         /// <inheritdoc />
         public override string ToString()
@@ -75,35 +49,38 @@ namespace System.ComponentModel.Server
         #region [====== MessageHandlers ======]
 
         /// <summary>
-        /// Registers all message-handler types that are found in the Service Layer, Application Layer or Data Access Layer
-        /// that are marked with the <see cref="MessageHandlerAttribute" />.
-        /// </summary>        
-        public void RegisterMessageHandlers()
+        /// Registers all handlers found in the specified <paramref name="assemblies"/> with this factory.
+        /// </summary>
+        /// <param name="assemblies">A set of assemblies to search.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// </exception>
+        public void RegisterMessageHandlers(AssemblySet assemblies)
         {
-            RegisterMessageHandlers(null);
+            RegisterMessageHandlers(assemblies, null);
         }
 
         /// <summary>
-        /// Registers all message-handler types that are found in the Service Layer, Application Layer or Data Access Layer
-        /// that are marked with the <see cref="MessageHandlerAttribute" />.
+        /// Registers all handlers found in the specified <paramref name="assemblies"/> and satisfy
+        /// the specified <paramref name="typeSelector"/> with this factory.
         /// </summary>
-        /// <param name="predicate">A predicate that filters the requires message-handlers to register (optional).</param>        
-        public void RegisterMessageHandlers(Func<Type, bool> predicate)
+        /// <param name="assemblies">A set of assemblies to search.</param>
+        /// <param name="typeSelector">
+        /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes from the
+        /// complete set found in the specified <paramref name="assemblies"/>.
+        /// </param>
+        /// <param name="configurationPerType">
+        /// A mapping from certain <see cref="IMessageHandler{T}" /> classes to their own respective configurations.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// </exception>
+        public void RegisterMessageHandlers(AssemblySet assemblies, Func<Type, bool> typeSelector, MessageHandlerToConfigurationMapping configurationPerType = null)
         {
-            RegisterMessageHandlers(predicate, InterfaceLayer, ApplicationLayer, DataAccessLayer);
-        }
-
-        private void RegisterMessageHandlers(Func<Type, bool> predicate, params AssemblySet[] assemblies)
-        {            
-            foreach (var type in AssemblySet.Join(assemblies).GetTypes())
+            foreach (var messageHandler in MessageHandlerClass.RegisterMessageHandlers(this, assemblies, typeSelector, configurationPerType))
             {
-                MessageHandlerClass handler;
-
-                if (MessageHandlerClass.TryRegisterIn(this, type, predicate, out handler))
-                {
-                    _messageHandlers.Add(handler);
-                }
-            }           
+                _messageHandlers.Add(messageHandler);
+            }          
         }
 
         /// <inheritdoc />
@@ -136,20 +113,34 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Registers a set of types that are found in the InterfaceLayer and Data Access Layer as dependencies
         /// and are marked with the <see cref="DependencyAttribute"/>.
-        /// </summary>        
-        public void RegisterDependencies()
+        /// </summary>      
+        /// <param name="assemblies">A set of assemblies to search.</param>  
+        /// <param name="configurationPerType">
+        /// A mapping from certain dependencies to their own respective configurations.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// </exception>
+        public void RegisterDependencies(AssemblySet assemblies, DependencyToConfigurationMapping configurationPerType = null)
         {
-            RegisterDependencies(null);
+            RegisterDependencies(assemblies, null, configurationPerType);
         }
 
         /// <summary>
         /// Registers a set of types that are found in the InterfaceLayer and Data Access Layer as dependencies
         /// and are marked with the <see cref="DependencyAttribute"/>.
         /// </summary>
-        /// <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>       
-        public void RegisterDependencies(Func<Type, bool> concreteTypePredicate)
+        /// <param name="assemblies">A set of assemblies to search.</param>
+        /// <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>    
+        /// <param name="configurationPerType">
+        /// A mapping from certain dependencies to their own respective configurations.
+        /// </param>   
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// </exception>
+        public void RegisterDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
         {
-            DependencyClass.RegisterDependencies(this, concreteTypePredicate);
+            DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, configurationPerType);
         }        
 
         /// <summary>
@@ -157,17 +148,24 @@ namespace System.ComponentModel.Server
         /// implementations of certain abstract types (interfaces or abstract classes) that are found in the Application Layer
         /// or Domain Layer and are marked with the <see cref="DependencyAttribute"/>.
         /// </summary>
+        /// <param name="assemblies">A set of assemblies to search.</param>
         /// <param name="concreteTypePredicate">A predicate that identifies which concrete types should be registered as dependencies.</param>
         /// <param name="abstractTypePredicate">A predicate that identifies which abstract types should be registered as dependencies.</param>
+        /// <param name="configurationPerType">
+        /// A mapping from certain dependencies to their own respective configurations.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
         /// One or more types specified by <paramref name="abstractTypePredicate"/> match with multiple concrete implementations.
         /// </exception>
         /// <remarks>
         /// By default, all types will be registered with a <see cref="InstanceLifetime.PerUnitOfWork" /> lifetime.
         /// </remarks>
-        public void RegisterDependencies(Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate)
+        public void RegisterDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
         {
-            DependencyClass.RegisterDependencies(this, concreteTypePredicate, abstractTypePredicate);
+            DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, abstractTypePredicate, configurationPerType);
         }        
 
         #endregion
@@ -192,21 +190,7 @@ namespace System.ComponentModel.Server
         /// Registers a certain type to resolve with a lifetime that spans a single Unit of Work.
         /// </summary>
         /// <param name="concreteType">A concrete type.</param>        
-        protected internal abstract void RegisterWithPerUnitOfWorkLifetime(Type concreteType);
-
-        /// <summary>
-        /// Registers a certain type to resolve for a specified <paramref name="abstractType"/>
-        /// with a lifetime that spans a single Unit Test Scenario.
-        /// </summary>
-        /// <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
-        /// <param name="abstractType">An abstract type.</param>       
-        protected internal abstract void RegisterWithPerScenarioLifetime(Type concreteType, Type abstractType);
-
-        /// <summary>
-        /// Registers a certain type to resolve with a lifetime that spans a single Unit Test Scenario.
-        /// </summary>
-        /// <param name="concreteType">A concrete type.</param>        
-        protected internal abstract void RegisterWithPerScenarioLifetime(Type concreteType);
+        protected internal abstract void RegisterWithPerUnitOfWorkLifetime(Type concreteType);        
 
         /// <summary>
         /// Registers a certain type to resolve for a specified <paramref name="abstractType"/>

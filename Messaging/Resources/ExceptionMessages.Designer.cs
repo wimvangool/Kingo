@@ -70,11 +70,11 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No aggregate of type &apos;{0}&apos; with the specified key ({1}) was found..
+        ///   Looks up a localized string similar to The specified timestamp ({0}) cannot be incremented because it is newer than the system&apos;s current date and time ({1})..
         /// </summary>
-        internal static string AggregateNotFoundException_Message {
+        internal static string AggregateRoot_InvalidTimestampVersion {
             get {
-                return ResourceManager.GetString("AggregateNotFoundException_Message", resourceCulture);
+                return ResourceManager.GetString("AggregateRoot_InvalidTimestampVersion", resourceCulture);
             }
         }
         
@@ -93,6 +93,15 @@ namespace System.Resources {
         internal static string AsyncObject_ContextNotSet {
             get {
                 return ResourceManager.GetString("AsyncObject_ContextNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The message of type &apos;{0}&apos; could not be published because it is not valid. See ErrorTree for details..
+        /// </summary>
+        internal static string BufferedEventBus_InvalidMessage {
+            get {
+                return ResourceManager.GetString("BufferedEventBus_InvalidMessage", resourceCulture);
             }
         }
         
@@ -336,6 +345,42 @@ namespace System.Resources {
         internal static string ReadOnlyDictionary_NotSupported {
             get {
                 return ResourceManager.GetString("ReadOnlyDictionary_NotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while deleting aggregate of type &apos;{0}&apos;with key &apos;{1}&apos;..
+        /// </summary>
+        internal static string Repository_AggregateNotDeleted {
+            get {
+                return ResourceManager.GetString("Repository_AggregateNotDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No aggregate of type &apos;{0}&apos; with the specified key ({1}) was found..
+        /// </summary>
+        internal static string Repository_AggregateNotFoundByKey {
+            get {
+                return ResourceManager.GetString("Repository_AggregateNotFoundByKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while inserting aggregate of type &apos;{0}&apos;with key &apos;{1}&apos;..
+        /// </summary>
+        internal static string Repository_AggregateNotInserted {
+            get {
+                return ResourceManager.GetString("Repository_AggregateNotInserted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while updating aggregate of type &apos;{0}&apos;with key &apos;{1}&apos;..
+        /// </summary>
+        internal static string Repository_AggregateNotUpdated {
+            get {
+                return ResourceManager.GetString("Repository_AggregateNotUpdated", resourceCulture);
             }
         }
         

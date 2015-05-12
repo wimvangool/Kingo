@@ -20,7 +20,7 @@ namespace System.ComponentModel.Server
         private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                 
         private readonly IMessageProcessorBus _domainEventBus;
 
-        private readonly Lazy<MessageHandlerPipeline> _primaryPipeline;
+        private readonly Lazy<MessageHandlerPipeline> _messageEntryPipeline;
         private readonly Lazy<MessageHandlerPipeline> _businessLogicPipeline;
         private readonly Lazy<QueryPipeline> _dataAccessPipeline;               
 
@@ -33,14 +33,14 @@ namespace System.ComponentModel.Server
             _currentMessagePointer = new ThreadLocal<MessagePointer>();
             _domainEventBus = new MessageProcessorBus(this);
             
-            _primaryPipeline = new Lazy<MessageHandlerPipeline>(CreatePrimaryPipeline, true);
+            _messageEntryPipeline = new Lazy<MessageHandlerPipeline>(CreateMessageEntryPipeline, true);
             _businessLogicPipeline = new Lazy<MessageHandlerPipeline>(CreateBusinessLogicPipeline, true);
             _dataAccessPipeline = new Lazy<QueryPipeline>(CreateDataAccessPipeline, true);
         }
 
-        internal MessageHandlerPipeline PrimaryPipeline
+        internal MessageHandlerPipeline MessageEntryPipeline
         {
-            get { return _primaryPipeline.Value; }
+            get { return _messageEntryPipeline.Value; }
         }
 
         internal MessageHandlerPipeline BusinessLogicPipeline
@@ -100,9 +100,9 @@ namespace System.ComponentModel.Server
             }
             if (disposing)
             {
-                if (_primaryPipeline.IsValueCreated)
+                if (_messageEntryPipeline.IsValueCreated)
                 {
-                    _primaryPipeline.Value.Dispose();
+                    _messageEntryPipeline.Value.Dispose();
                 }
                 if (_businessLogicPipeline.IsValueCreated)
                 {
@@ -249,7 +249,7 @@ namespace System.ComponentModel.Server
             try
             {
                 var dispatcher = new MessageHandlerDispatcher<TMessage>(message, handler, this);
-                var pipeline = PrimaryPipeline.ConnectTo(dispatcher);
+                var pipeline = MessageEntryPipeline.ConnectTo(dispatcher);
 
                 pipeline.Invoke();              
             }
@@ -331,7 +331,7 @@ namespace System.ComponentModel.Server
             {
                 var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, options, this);
                 
-                PrimaryPipeline.ConnectTo(handler).Invoke();
+                MessageEntryPipeline.ConnectTo(handler).Invoke();
 
                 return handler.MessageOut;
             }
@@ -361,9 +361,9 @@ namespace System.ComponentModel.Server
             InstanceLock.ExitMethod();
         }               
 
-        private MessageHandlerPipeline CreatePrimaryPipeline()
+        private MessageHandlerPipeline CreateMessageEntryPipeline()
         {
-            var pipeline = new MessageHandlerPipeline(CreatePrimaryPipelineModules());
+            var pipeline = new MessageHandlerPipeline(CreateMessageEntryPipelineModules());
             pipeline.Start();
             return pipeline;
         }
@@ -373,7 +373,7 @@ namespace System.ComponentModel.Server
         /// that will be used to create a pipeline for every incoming message.
         /// </summary>                
         /// <returns>A collection of <see cref="MessageHandlerModule">modules</see>.</returns>              
-        protected abstract IEnumerable<MessageHandlerModule> CreatePrimaryPipelineModules();
+        protected abstract IEnumerable<MessageHandlerModule> CreateMessageEntryPipelineModules();
 
         private MessageHandlerPipeline CreateBusinessLogicPipeline()
         {
@@ -618,6 +618,6 @@ namespace System.ComponentModel.Server
             return transaction.TransactionInformation.Status == TransactionStatus.Committed;
         }
 
-        #endregion        
+        #endregion                    
     }
 }

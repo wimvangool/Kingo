@@ -17,7 +17,7 @@ namespace System.ComponentModel.Server
             get { return _factory; }
         }
 
-        protected override IEnumerable<MessageHandlerModule> CreatePrimaryPipelineModules()
+        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipelineModules()
         {
             return Enumerable.Empty<MessageHandlerModule>();
         }

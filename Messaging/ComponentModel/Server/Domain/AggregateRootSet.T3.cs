@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace System.ComponentModel.Server.Domain
 {
-    internal sealed class AggregateSet<TKey, TVersion, TValue> : IEnumerable<AggregateVersionTracker<TKey, TVersion, TValue>>
+    internal sealed class AggregateRootSet<TAggregate, TKey, TVersion> : IEnumerable<AggregateRootVersionTracker<TAggregate, TKey, TVersion>>
+        where TAggregate : class, IAggregateRoot<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TValue : class, IAggregate<TKey, TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
-        private readonly Dictionary<TKey, AggregateVersionTracker<TKey, TVersion, TValue>> _aggregates;
+        private readonly Dictionary<TKey, AggregateRootVersionTracker<TAggregate, TKey, TVersion>> _aggregates;
 
-        public AggregateSet()
+        public AggregateRootSet()
         {
-            _aggregates = new Dictionary<TKey, AggregateVersionTracker<TKey, TVersion, TValue>>(4);
+            _aggregates = new Dictionary<TKey, AggregateRootVersionTracker<TAggregate, TKey, TVersion>>();
         }
 
         public int Count
@@ -25,9 +25,9 @@ namespace System.ComponentModel.Server.Domain
             return _aggregates.ContainsKey(key);
         }
 
-        public bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(TKey key, out TAggregate value)
         {
-            AggregateVersionTracker<TKey, TVersion, TValue> aggregate;
+            AggregateRootVersionTracker<TAggregate, TKey, TVersion> aggregate;
 
             if (_aggregates.TryGetValue(key, out aggregate))
             {
@@ -38,9 +38,9 @@ namespace System.ComponentModel.Server.Domain
             return false;
         }
 
-        public void Add(TValue value)
+        public void Add(TAggregate value)
         {
-            _aggregates.Add(value.Key, new AggregateVersionTracker<TKey, TVersion, TValue>(value));
+            _aggregates.Add(value.Key, new AggregateRootVersionTracker<TAggregate, TKey, TVersion>(value));
         }
 
         public void Remove(TKey key)
@@ -48,7 +48,7 @@ namespace System.ComponentModel.Server.Domain
             _aggregates.Remove(key);
         }
 
-        public void MoveAggregateTo(TKey key, AggregateSet<TKey, TVersion, TValue> set)
+        public void MoveAggregateTo(TKey key, AggregateRootSet<TAggregate, TKey, TVersion> set)
         {            
             var source = _aggregates;
             var target = set._aggregates;
@@ -63,7 +63,7 @@ namespace System.ComponentModel.Server.Domain
             _aggregates.Clear();
         }
 
-        public IEnumerator<AggregateVersionTracker<TKey, TVersion, TValue>> GetEnumerator()
+        public IEnumerator<AggregateRootVersionTracker<TAggregate, TKey, TVersion>> GetEnumerator()
         {
             return _aggregates.Values.GetEnumerator();
         }

@@ -9,12 +9,12 @@
         /// Authorizes the current thread's identity to process a message.
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>        
-        /// <exception cref="MessageDeniedException">
+        /// <exception cref="UnauthorizedMessageException">
         /// The current thread's identity was not authorized to process the specified message.
         /// </exception>
         protected override void InvokeHandler(IMessageHandler handler)
         {                        
-            MessageDeniedException exception;
+            UnauthorizedMessageException exception;
 
             if (IsNotAuthorized(handler.Message, out exception))
             {
@@ -30,13 +30,13 @@
         /// <param name="message">The message being authorized.</param>    
         /// <param name="exception">
         /// If this method returns <c>true</c>, this parameter will refer to an instance of
-        /// the <see cref="MessageDeniedException" /> class that contains a message and
+        /// the <see cref="UnauthorizedMessageException" /> class that contains a message and
         /// information on why the current identity was not authorized.
         /// </param>   
         /// <returns>
         /// <c>true</c> if the current identity is not authorized to further process the specified
         /// <paramref name="message"/>; otherwise <c>false</c>.
         /// </returns>
-        protected abstract bool IsNotAuthorized(IMessage message, out MessageDeniedException exception);
+        protected abstract bool IsNotAuthorized(IMessage message, out UnauthorizedMessageException exception);
     }
 }

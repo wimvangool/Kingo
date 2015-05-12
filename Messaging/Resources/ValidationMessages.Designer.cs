@@ -61,6 +61,24 @@ namespace System.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is true..
+        /// </summary>
+        internal static string BooleanMember_IsFalse_Failed {
+            get {
+                return ResourceManager.GetString("BooleanMember_IsFalse_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is false..
+        /// </summary>
+        internal static string BooleanMember_IsTrue_Failed {
+            get {
+                return ResourceManager.GetString("BooleanMember_IsTrue_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; has no element at index &apos;{1}&apos;..
         /// </summary>
         internal static string CollectionMember_ElementAt_Failed {

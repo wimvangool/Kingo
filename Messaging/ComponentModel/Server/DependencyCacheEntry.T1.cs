@@ -13,7 +13,7 @@ namespace System.ComponentModel.Server
         private readonly T _value;              
         private bool _isDisposed;        
 
-        public DependencyCacheEntry(DependencyCache cache, T value, Action<T> valueInvalidatedCallback)
+        internal DependencyCacheEntry(DependencyCache cache, T value, Action<T> valueInvalidatedCallback)
         {            
             _cache = cache;
             _value = value;

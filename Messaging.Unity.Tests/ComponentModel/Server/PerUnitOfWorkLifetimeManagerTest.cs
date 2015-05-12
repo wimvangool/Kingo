@@ -12,7 +12,7 @@ namespace System.ComponentModel.Server
         [TestInitialize]
         public void Setup()
         {
-            _lifetimeManager = new CacheBasedLifetimeManager(UnitOfWorkContext.Cache);
+            _lifetimeManager = new CacheBasedLifetimeManager(new UnitOfWorkCache());
         }
 
         #endregion

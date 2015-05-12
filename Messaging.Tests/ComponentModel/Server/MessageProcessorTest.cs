@@ -182,7 +182,7 @@ namespace System.ComponentModel.Server
 
         private sealed class QueryProcessor : MessageProcessor
         {
-            protected override IEnumerable<MessageHandlerModule> CreatePrimaryPipelineModules()
+            protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipelineModules()
             {
                 return Enumerable.Empty<MessageHandlerModule>();
             }

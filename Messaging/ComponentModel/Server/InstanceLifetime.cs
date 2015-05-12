@@ -14,12 +14,7 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Specifies that the lifetime of the instance is bound to a single <see cref="UnitOfWorkContext" />.       
         /// </summary>        
-        PerUnitOfWork,
-
-        /// <summary>
-        /// Specified that the lifetime of the instance is bound to a single Unit Test Scenario.
-        /// </summary>
-        PerScenario,
+        PerUnitOfWork,        
 
         /// <summary>
         /// Specifies that only one instance of the handler is to be created by the container it was registered in.

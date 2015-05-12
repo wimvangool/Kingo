@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AggregateNotFoundException_Message" xml:space="preserve">
+  <data name="Repository_AggregateNotFoundByKey" xml:space="preserve">
     <value>No aggregate of type '{0}' with the specified key ({1}) was found.</value>
   </data>
   <data name="AsyncExecutionTask_TaskAlreadyStarted" xml:space="preserve">
@@ -230,5 +230,20 @@
   </data>
   <data name="StringMemberExtensions_NegativeLength" xml:space="preserve">
     <value>A length cannot be negative: {0}.</value>
+  </data>
+  <data name="BufferedEventBus_InvalidMessage" xml:space="preserve">
+    <value>The message of type '{0}' could not be published because it is not valid. See ErrorTree for details.</value>
+  </data>
+  <data name="AggregateRoot_InvalidTimestampVersion" xml:space="preserve">
+    <value>The specified timestamp ({0}) cannot be incremented because it is newer than the system's current date and time ({1}).</value>
+  </data>
+  <data name="Repository_AggregateNotDeleted" xml:space="preserve">
+    <value>An error occurred while deleting aggregate of type '{0}'with key '{1}'.</value>
+  </data>
+  <data name="Repository_AggregateNotInserted" xml:space="preserve">
+    <value>An error occurred while inserting aggregate of type '{0}'with key '{1}'.</value>
+  </data>
+  <data name="Repository_AggregateNotUpdated" xml:space="preserve">
+    <value>An error occurred while updating aggregate of type '{0}'with key '{1}'.</value>
   </data>
 </root>

@@ -12,7 +12,7 @@ namespace System.ComponentModel
     public abstract class FunctionalException : Exception
     {
         private const string _FailedMessageKey = "_failedMessage";
-        private readonly object _failedMessage;
+        private readonly IMessage _failedMessage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FunctionalException" /> class.
@@ -21,7 +21,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(object failedMessage)
+        protected FunctionalException(IMessage failedMessage)
         {
             if (failedMessage == null)
             {
@@ -38,7 +38,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(object failedMessage, string message)
+        protected FunctionalException(IMessage failedMessage, string message)
             : base(message)
         {
             if (failedMessage == null)
@@ -53,12 +53,12 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <param name="message">Message of the exception.</param>
-        /// <param name="inner">Cause of this exception.</param>
+        /// <param name="innerException">Cause of this exception.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(object failedMessage, string message, Exception inner)
-            : base(message, inner)
+        protected FunctionalException(IMessage failedMessage, string message, Exception innerException)
+            : base(message, innerException)
         {
             if (failedMessage == null)
             {
@@ -76,7 +76,7 @@ namespace System.ComponentModel
         protected FunctionalException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _failedMessage = info.GetValue(_FailedMessageKey, typeof(object));
+            _failedMessage = (IMessage) info.GetValue(_FailedMessageKey, typeof(IMessage));
         }
 
         /// <inheritdoc />
@@ -91,7 +91,7 @@ namespace System.ComponentModel
         /// <summary>
         /// The message that could not be processed.
         /// </summary>
-        public object FailedMessage
+        public IMessage FailedMessage
         {
             get { return _failedMessage; }
         }

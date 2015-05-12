@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace System.ComponentModel.Server.SampleApplication
 {
-    public sealed class ShoppingCart : Aggregate<Guid, int>
+    public sealed class ShoppingCart : AggregateRoot<Guid, int>
     {
         private readonly Guid _id;
         private int _version;
@@ -20,7 +20,7 @@ namespace System.ComponentModel.Server.SampleApplication
             _items = new List<ShoppingCartItem>(2);
         }
 
-        public override Guid Key
+        protected override Guid Key
         {
             get { return _id; }
         }

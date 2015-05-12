@@ -8,25 +8,30 @@ namespace System.ComponentModel
         [TestMethod]
         public void LocalDate_ReturnsDateInLocalTime()
         {
-            Assert.AreEqual(DateTimeKind.Local, SystemClock.Instance.LocalDate().Kind);
+            Assert.AreEqual(LocalTimeOffset(), SystemClock.Instance.LocalDate().Offset);
         }
 
         [TestMethod]
         public void LocalDateAndTime_ReturnsDateAndTimeInLocalTime()
         {
-            Assert.AreEqual(DateTimeKind.Local, SystemClock.Instance.LocalDateAndTime().Kind);
+            Assert.AreEqual(LocalTimeOffset(), SystemClock.Instance.LocalDateAndTime().Offset);
         }
 
         [TestMethod]
         public void UtcDate_ReturnsDateInUniversalTime()
         {
-            Assert.AreEqual(DateTimeKind.Utc, SystemClock.Instance.UtcDate().Kind);
+            Assert.AreEqual(TimeSpan.Zero, SystemClock.Instance.UtcDate().Offset);
         }
 
         [TestMethod]
         public void UtcDateAndTime_ReturnsDateAndTimeInUniversalTime()
         {
-            Assert.AreEqual(DateTimeKind.Utc, SystemClock.Instance.UtcDateAndTime().Kind);
+            Assert.AreEqual(TimeSpan.Zero, SystemClock.Instance.UtcDateAndTime().Offset);
+        }
+
+        private static TimeSpan LocalTimeOffset()
+        {
+            return DateTimeOffset.Now.Offset;
         }
     }
 }

@@ -9,31 +9,19 @@ namespace System.ComponentModel.Server.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
-    public abstract class EventSourcedAggregate<TKey, TVersion> : Aggregate<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
+    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
-        private readonly Dictionary<Type, Action<IAggregateEvent<TKey, TVersion>>> _eventHandlers;
+        private readonly Dictionary<Type, Action<IAggregateRootEvent<TKey, TVersion>>> _eventHandlers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventSourcedAggregate{TKey, TVersion}" /> class.
+        /// Initializes a new instance of the <see cref="AggregateEventStream{TKey, TVersion}" /> class.
         /// </summary>
-        protected EventSourcedAggregate()
+        protected AggregateEventStream()
         {
-            _eventHandlers = new Dictionary<Type, Action<IAggregateEvent<TKey, TVersion>>>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventSourcedAggregate{TKey, TVersion}" /> class.
-        /// </summary>
-        /// <param name="capacity">The initial capacity of the buffer.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="capacity"/> is negative.
-        /// </exception>
-        protected EventSourcedAggregate(int capacity) : base(capacity)
-        {
-            _eventHandlers = new Dictionary<Type, Action<IAggregateEvent<TKey, TVersion>>>();
-        }
+            _eventHandlers = new Dictionary<Type, Action<IAggregateRootEvent<TKey, TVersion>>>();
+        }        
 
         /// <summary>
         /// Registers a handler that is invoked when the aggregate writes an event of the specified type.
@@ -85,11 +73,11 @@ namespace System.ComponentModel.Server.Domain
         /// <paramref name="eventFactory"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The created event's <see cref="IAggregateEvent{S, T}.AggregateKey" /> does not match
-        /// this aggregate's <see cref="Aggregate{S, T}.Key" />, or no handler for an event of the specified
+        /// The created event's <see cref="IAggregateRootEvent{S, T}.AggregateKey" /> does not match
+        /// this aggregate's <see cref="AggregateRoot{S, T}.Key" />, or no handler for an event of the specified
         /// type has been registered.
         /// </exception>
-        protected void Apply<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        protected void Apply<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
         {
             if (eventFactory == null)
             {
@@ -107,11 +95,11 @@ namespace System.ComponentModel.Server.Domain
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The <paramref name="event"/>'s <see cref="IAggregateEvent{S, T}.AggregateKey" /> does not match
-        /// this aggregate's <see cref="Aggregate{S, T}.Key" />, or no handler for an event of the specified
+        /// The <paramref name="event"/>'s <see cref="IAggregateRootEvent{S, T}.AggregateKey" /> does not match
+        /// this aggregate's <see cref="AggregateRoot{S, T}.Key" />, or no handler for an event of the specified
         /// type has been registered.
         /// </exception>
-        protected void Apply<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>, IMessage<TEvent>
+        protected void Apply<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
         {
             if (@event == null)
             {
@@ -126,7 +114,7 @@ namespace System.ComponentModel.Server.Domain
             throw NewNonMatchingAggregateKeyException(@event);            
         }
 
-        private void Handle<TEvent>(TEvent @event) where TEvent : class, IAggregateEvent<TKey, TVersion>
+        private void Handle<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>
         {
             Type eventType = typeof(TEvent);
 

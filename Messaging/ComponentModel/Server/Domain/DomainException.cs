@@ -24,8 +24,8 @@ namespace System.ComponentModel.Server.Domain
         /// Initializes a new instance of the <see cref="DomainException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
-        /// <param name="inner">Cause of the exception.</param>
-        protected DomainException(string message, Exception inner) : base(message, inner) {}
+        /// <param name="innerException">Cause of the exception.</param>
+        protected DomainException(string message, Exception innerException) : base(message, innerException) {}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainException" /> class.
@@ -42,7 +42,7 @@ namespace System.ComponentModel.Server.Domain
         /// An instance of <see cref="InvalidMessageException" /> that wraps this exception and the inner
         /// exception.
         /// </returns>
-        public virtual InvalidMessageException AsInvalidMessageException(object failedMessage)
+        public virtual InvalidMessageException AsInvalidMessageException(IMessage failedMessage)
         {
             if (failedMessage == null)
             {
@@ -54,14 +54,14 @@ namespace System.ComponentModel.Server.Domain
         }
 
         /// <summary>
-        /// Converts this instance into an instance of <see cref="BusinessRuleViolationException" />.
+        /// Converts this instance into an instance of <see cref="CommandExecutionException" />.
         /// </summary>
         /// <param name="failedMessage">The message that caused the exception.</param>
         /// <returns>
-        /// An instance of <see cref="BusinessRuleViolationException" /> that wraps this exception and the inner
+        /// An instance of <see cref="CommandExecutionException" /> that wraps this exception and the inner
         /// exception.
         /// </returns>
-        public virtual BusinessRuleViolationException AsBusinessRuleViolationException(object failedMessage)
+        public virtual CommandExecutionException AsCommandExecutionException(IMessage failedMessage)
         {
             if (failedMessage == null)
             {
@@ -69,7 +69,7 @@ namespace System.ComponentModel.Server.Domain
             }
             var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
             var message = string.Format(messageFormat, failedMessage.GetType());
-            return new BusinessRuleViolationException(failedMessage, message, this);
+            return new CommandExecutionException(failedMessage, message, this);
         }        
     }
 }

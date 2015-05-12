@@ -23,18 +23,17 @@ namespace System.ComponentModel.Server
 
             public void VerifyThatEventsWerePublished(params object[] events)
             {
-                TheNumberOfPublishedEventsIs(events.Length).And(domainEventList =>
+                VerifyThatDomainEventCount().IsEqualTo(events.Length);
+
+                for (int index = 0; index < events.Length; index++)
                 {
-                    for (int index = 0; index < events.Length; index++ )
-                    {
-                        domainEventList[index].IsEqualTo(events[index]);
-                    }
-                });
+                    VerifyThatDomainEventAtIndex(index).IsEqualTo(events[index]);
+                }                
             }        
     
             public void VerifyThatExceptionWasThrown<TException>(TException exception) where TException : Exception
             {
-                TheExceptionThatWasThrownIsA<TException>().IsSameInstanceAs(exception);
+                VerifyThatExceptionIsA<TException>().IsSameInstanceAs(exception);
             }
         }
 
@@ -47,7 +46,7 @@ namespace System.ComponentModel.Server
                 _exceptionToThrow = exceptionToThrow;
             }
 
-            protected override IMessageSequence Given()
+            protected override IEnumerable<IMessageSequence> Given()
             {
                 throw _exceptionToThrow;
             }

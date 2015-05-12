@@ -19,12 +19,12 @@ namespace System.ComponentModel
             return CurrentClock.UtcTime();
         }
 
-        DateTime IClock.UtcDate()
+        DateTimeOffset IClock.UtcDate()
         {
             return CurrentClock.UtcDate();
         }
 
-        DateTime IClock.UtcDateAndTime()
+        DateTimeOffset IClock.UtcDateAndTime()
         {
             return CurrentClock.UtcDateAndTime();
         }
@@ -34,12 +34,12 @@ namespace System.ComponentModel
             return CurrentClock.LocalTime();
         }
 
-        DateTime IClock.LocalDate()
+        DateTimeOffset IClock.LocalDate()
         {
             return CurrentClock.LocalDate();
         }
 
-        DateTime IClock.LocalDateAndTime()
+        DateTimeOffset IClock.LocalDateAndTime()
         {
             return CurrentClock.LocalDateAndTime();
         }
@@ -47,12 +47,7 @@ namespace System.ComponentModel
         public IClock Add(TimeSpan offset)
         {
             return ClockWithOffset.AddOffset(this, offset);
-        }
-
-        public IClock Subtract(TimeSpan offset)
-        {
-            return ClockWithOffset.SubtractOffset(this, offset);
-        }
+        }        
 
         public static readonly StaticClockContext Instance = new StaticClockContext();        
     }

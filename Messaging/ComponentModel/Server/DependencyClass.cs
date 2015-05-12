@@ -11,17 +11,19 @@ namespace System.ComponentModel.Server
         #region [====== Instance Members ======]
 
         private readonly Type _concreteType;
-        private readonly Type _abstractType;         
+        private readonly Type _abstractType;
+        private readonly IDependencyConfiguration _configuration; 
 
-        private DependencyClass(Type concreteType, Type abstractType)
+        private DependencyClass(Type concreteType, Type abstractType, IDependencyConfiguration configuration)
         {
             _concreteType = concreteType;
-            _abstractType = abstractType;            
+            _abstractType = abstractType;
+            _configuration = configuration;
         }
 
-        private void RegisterIn(MessageHandlerFactory factory, InstanceLifetime lifetime)
+        private void RegisterIn(MessageHandlerFactory factory)
         {
-            switch (lifetime)
+            switch (_configuration.Lifetime)
             {
                 case InstanceLifetime.PerResolve:
                     RegisterPerResolve(factory);
@@ -29,18 +31,14 @@ namespace System.ComponentModel.Server
 
                 case InstanceLifetime.PerUnitOfWork:
                     RegisterPerUnitOfWork(factory);
-                    return;
-
-                case InstanceLifetime.PerScenario:
-                    RegisterPerScenario(factory);
-                    return;
+                    return;                
 
                 case InstanceLifetime.Singleton:
                     RegisterSingleton(factory);
                     return;
 
                 default:
-                    throw MessageHandlerClass.NewInvalidLifetimeModeSpecifiedException(_concreteType, lifetime);
+                    throw MessageHandlerClass.NewInvalidLifetimeModeSpecifiedException(_concreteType, _configuration.Lifetime);
             }
         }
 
@@ -66,19 +64,7 @@ namespace System.ComponentModel.Server
             {
                 factory.RegisterWithPerUnitOfWorkLifetime(_concreteType, _abstractType);
             }
-        }
-
-        private void RegisterPerScenario(MessageHandlerFactory factory)
-        {
-            if (_abstractType == null)
-            {
-                factory.RegisterWithPerScenarioLifetime(_concreteType);
-            }
-            else
-            {
-                factory.RegisterWithPerScenarioLifetime(_concreteType, _abstractType);
-            }
-        }
+        }        
 
         private void RegisterSingleton(MessageHandlerFactory factory)
         {
@@ -96,68 +82,54 @@ namespace System.ComponentModel.Server
 
         #region [====== Static Members ======]
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate)
-        {
-            var lifetimeCache = new Dictionary<Type, InstanceLifetime>();
-
-            foreach (var dependency in FindDependencies(factory, lifetimeCache, concreteTypePredicate))
-            {
-                dependency.RegisterIn(factory, lifetimeCache[dependency._concreteType]);
-            }
-        }
-
-        private static IEnumerable<DependencyClass> FindDependencies(MessageHandlerFactory factory, IDictionary<Type, InstanceLifetime> lifetimeCache, Func<Type, bool> concreteTypePredicate)
-        {
-            return from concreteType in FindConcreteTypes(factory, concreteTypePredicate)       
-                   where HasDependencyAttribute(concreteType, lifetimeCache)
-                   select new DependencyClass(concreteType, null);
-        }        
-
-        internal static void RegisterDependencies(MessageHandlerFactory factory, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate)
-        {
-            var lifetimeCache = new Dictionary<Type, InstanceLifetime>();
-
-            foreach (var dependency in FindDependencies(factory, lifetimeCache, concreteTypePredicate, abstractTypePredicate))
-            {
-                dependency.RegisterIn(factory, lifetimeCache[dependency._concreteType]);
-            }
-        }
-
-        private static IEnumerable<DependencyClass> FindDependencies(MessageHandlerFactory factory, IDictionary<Type, InstanceLifetime> lifetimeCache, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
         {            
-            return from abstractType in FindAbstractTypes(factory, abstractTypePredicate)
-                   from concreteType in FindConcreteTypes(factory, concreteTypePredicate)                   
-                   where abstractType.IsAssignableFrom(concreteType) && HasDependencyAttribute(concreteType, lifetimeCache)
+            if (assemblies == null)
+            {
+                throw new ArgumentNullException("assemblies");
+            }
+            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, configurationPerType))
+            {
+                dependency.RegisterIn(factory);
+            }
+        }
+
+        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        {
+            return from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)   
+                   let configuration = DetermineConfigurationOf(concreteType, configurationPerType)    
+                   select new DependencyClass(concreteType, null, configuration);
+        }
+
+        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        {
+            if (assemblies == null)
+            {
+                throw new ArgumentNullException("assemblies");
+            }
+            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, abstractTypePredicate, configurationPerType))
+            {
+                dependency.RegisterIn(factory);
+            }
+        }
+
+        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        {            
+            return from abstractType in FindAbstractTypes(assemblies, abstractTypePredicate)
+                   from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)                   
+                   where abstractType.IsAssignableFrom(concreteType)
                    group concreteType by abstractType into typeMapping
                    where typeMapping.Any()
-                   select CreateDependencyClass(typeMapping);                   
-        }
+                   select CreateDependencyClass(typeMapping, configurationPerType);                   
+        }        
 
-        private static bool HasDependencyAttribute(Type concreteType, IDictionary<Type, InstanceLifetime> lifetimeCache)
-        {
-            if (lifetimeCache.ContainsKey(concreteType))
-            {
-                return true;
-            }
-            var dependencyAttribute = concreteType
-                .GetCustomAttributes(typeof(DependencyAttribute), false)
-                .Cast<DependencyAttribute>()
-                .SingleOrDefault();
-
-            if (dependencyAttribute == null)
-            {
-                return false;
-            }
-            lifetimeCache.Add(concreteType, dependencyAttribute.Lifetime);
-            return true;
-        }
-
-        private static DependencyClass CreateDependencyClass(IGrouping<Type, Type> typeMapping)
+        private static DependencyClass CreateDependencyClass(IGrouping<Type, Type> typeMapping, DependencyToConfigurationMapping configurationPerType)
         {            
             var abstractType = typeMapping.Key;
-            var concreteType = GetConcreteType(typeMapping);            
+            var concreteType = GetConcreteType(typeMapping);
+            var configuration = DetermineConfigurationOf(concreteType, configurationPerType);
 
-            return new DependencyClass(concreteType, abstractType);
+            return new DependencyClass(concreteType, abstractType, configuration);
         }
 
         private static Type GetConcreteType(IGrouping<Type, Type> typeMapping)
@@ -170,7 +142,73 @@ namespace System.ComponentModel.Server
             {
                 throw NewAmbiguousMatchException(typeMapping.Key, typeMapping);
             }
-        }            
+        }
+
+        private static IEnumerable<Type> FindAbstractTypes(AssemblySet assemblies, Func<Type, bool> predicate)
+        {
+            return from type in assemblies.GetTypes()
+                   where IsPublicAbstractType(type) && SatisfiesPredicate(type, predicate)
+                   select type;            
+        }
+
+        private static bool IsPublicAbstractType(Type type)
+        {
+            return type.IsPublic && ((type.IsClass && type.IsAbstract) || type.IsInterface);
+        }
+
+        private static IEnumerable<Type> FindConcreteTypes(AssemblySet assemblies, Func<Type, bool> predicate)
+        {
+            return from type in assemblies.GetTypes()
+                   where IsPublicConcreteType(type) && SatisfiesPredicate(type, predicate)
+                   select type;           
+        }
+
+        private static bool IsPublicConcreteType(Type type)
+        {
+            return type.IsPublic && type.IsClass && !type.IsAbstract;
+        }
+
+        private static bool SatisfiesPredicate(Type type, Func<Type, bool> predicate)
+        {
+            return predicate == null || predicate.Invoke(type);
+        }
+
+        private static IDependencyConfiguration DetermineConfigurationOf(Type concreteType, DependencyToConfigurationMapping configurationPerType)
+        {
+            IDependencyConfiguration configuration;
+
+            if (configurationPerType == null)
+            {
+                if (TryGetDependencyAttribute(concreteType, out configuration))
+                {
+                    return configuration;
+                }
+                return DependencyConfiguration.Default;
+            }
+            if (configurationPerType.TryGetValue(concreteType, out configuration))
+            {
+                return configuration;
+            }
+            if (TryGetDependencyAttribute(concreteType, out configuration))
+            {
+                return configuration;
+            }
+            return configurationPerType.DefaultConfiguration;
+        }
+
+        private static bool TryGetDependencyAttribute(Type concreteType, out IDependencyConfiguration configuration)
+        {
+            configuration = concreteType
+                .GetCustomAttributes(typeof(DependencyAttribute), false)
+                .Cast<DependencyAttribute>()
+                .SingleOrDefault();
+
+            return configuration != null;
+        }
+
+        #endregion
+
+        #region [====== Exception Factory Methods ======]
 
         private static Exception NewAmbiguousMatchException(Type abstractType, IEnumerable<Type> concreteTypes)
         {
@@ -188,35 +226,6 @@ namespace System.ComponentModel.Server
                 types.AppendFormat("[{0}]", type.Name);
             }
             return types.ToString();
-        }
-
-        private static IEnumerable<Type> FindAbstractTypes(MessageHandlerFactory factory, Func<Type, bool> predicate)
-        {
-            return from type in AssemblySet.Join(factory.ApplicationLayer, factory.DomainLayer).GetTypes()
-                   where IsPublicAbstractType(type) && SatisfiesPredicate(type, predicate)
-                   select type;
-        }
-
-        private static bool IsPublicAbstractType(Type type)
-        {
-            return type.IsPublic && ((type.IsClass && type.IsAbstract) || type.IsInterface);
-        }
-
-        private static IEnumerable<Type> FindConcreteTypes(MessageHandlerFactory factory, Func<Type, bool> predicate)
-        {
-            return from type in AssemblySet.Join(factory.InterfaceLayer, factory.DataAccessLayer).GetTypes()
-                   where IsPublicConcreteType(type) && SatisfiesPredicate(type, predicate)
-                   select type;
-        }
-
-        private static bool IsPublicConcreteType(Type type)
-        {
-            return type.IsPublic && type.IsClass && !type.IsAbstract;
-        }
-
-        private static bool SatisfiesPredicate(Type type, Func<Type, bool> predicate)
-        {
-            return predicate == null || predicate.Invoke(type);
         }
 
         #endregion

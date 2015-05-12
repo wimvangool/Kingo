@@ -5,15 +5,13 @@ namespace System.ComponentModel.Server
     internal sealed class MessageHandlerFactoryStub : MessageHandlerFactory
     {
         private readonly List<Type> _perResolveLifetimeTypes;
-        private readonly List<Type> _perUnitOfWorkLifetimeTypes;
-        private readonly List<Type> _perScenarioLifetimeTypes;
+        private readonly List<Type> _perUnitOfWorkLifetimeTypes;        
         private readonly List<Type> _singleLifetimeTypes;
 
         public MessageHandlerFactoryStub()
         {
             _perResolveLifetimeTypes = new List<Type>();
-            _perUnitOfWorkLifetimeTypes = new List<Type>();
-            _perScenarioLifetimeTypes = new List<Type>();
+            _perUnitOfWorkLifetimeTypes = new List<Type>();            
             _singleLifetimeTypes = new List<Type>();
         }
 
@@ -25,10 +23,7 @@ namespace System.ComponentModel.Server
                     return _perResolveLifetimeTypes.Contains(type);
 
                 case InstanceLifetime.PerUnitOfWork:
-                    return _perUnitOfWorkLifetimeTypes.Contains(type);
-
-                case InstanceLifetime.PerScenario:
-                    return _perScenarioLifetimeTypes.Contains(type);
+                    return _perUnitOfWorkLifetimeTypes.Contains(type);                
 
                 case InstanceLifetime.Singleton:
                     return _singleLifetimeTypes.Contains(type);
@@ -56,17 +51,7 @@ namespace System.ComponentModel.Server
         protected internal override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType)
         {
             throw NewNotSupportedException();
-        }
-
-        protected internal override void RegisterWithPerScenarioLifetime(Type concreteType)
-        {
-            _perScenarioLifetimeTypes.Add(concreteType);
-        }
-
-        protected internal override void RegisterWithPerScenarioLifetime(Type concreteType, Type abstractType)
-        {
-            throw NewNotSupportedException();
-        }
+        }        
 
         protected internal override void RegisterSingleton(Type concreteType)
         {
