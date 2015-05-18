@@ -8,11 +8,7 @@ namespace System.ComponentModel.Server
             : base(modules) { }
 
         internal IMessageHandler ConnectTo(IMessageHandler handler)
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
+        {            
             foreach (var module in Modules)
             {
                 handler = new MessageHandler(handler, module);

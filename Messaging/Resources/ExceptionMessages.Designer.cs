@@ -61,20 +61,29 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The AggregateKey of the specified event ({0}) does not match the aggregate&apos;s key it is applied to ({1})..
+        ///   Looks up a localized string similar to No event-handler was specified for domain-event of type &apos;{0}&apos;..
         /// </summary>
-        internal static string Aggregate_NonMatchingKey {
+        internal static string AggregateEventStream_MissingEventHandler {
             get {
-                return ResourceManager.GetString("Aggregate_NonMatchingKey", resourceCulture);
+                return ResourceManager.GetString("AggregateEventStream_MissingEventHandler", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified timestamp ({0}) cannot be incremented because it is newer than the system&apos;s current date and time ({1})..
+        ///   Looks up a localized string similar to The key of the event ({0}) must match the key of the aggregate ({1})..
         /// </summary>
-        internal static string AggregateRoot_InvalidTimestampVersion {
+        internal static string AggregateRoot_InvalidKey {
             get {
-                return ResourceManager.GetString("AggregateRoot_InvalidTimestampVersion", resourceCulture);
+                return ResourceManager.GetString("AggregateRoot_InvalidKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version of the event ({0}) must be newer than the version of the aggregate ({1})..
+        /// </summary>
+        internal static string AggregateRoot_InvalidVersion {
+            get {
+                return ResourceManager.GetString("AggregateRoot_InvalidVersion", resourceCulture);
             }
         }
         
@@ -111,6 +120,15 @@ namespace System.Resources {
         internal static string CacheRelay_NotAvailable {
             get {
                 return ResourceManager.GetString("CacheRelay_NotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; is not assignable to type &apos;{1}&apos;..
+        /// </summary>
+        internal static string CatchAttribute_InvalidExceptionType {
+            get {
+                return ResourceManager.GetString("CatchAttribute_InvalidExceptionType", resourceCulture);
             }
         }
         
@@ -156,6 +174,33 @@ namespace System.Resources {
         internal static string EventSourcedAggregate_HandlerAlreadyRegistered {
             get {
                 return ResourceManager.GetString("EventSourcedAggregate_HandlerAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value &apos;{0}&apos; could not be incremented because it is equal to or larger than the current system&apos;s time ({1})..
+        /// </summary>
+        internal static string Incrementer_InvalidDateTimeOffset {
+            get {
+                return ResourceManager.GetString("Incrementer_InvalidDateTimeOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Integer versions are not allowed to be negative: {0}..
+        /// </summary>
+        internal static string Incrementer_NegativeNumber {
+            get {
+                return ResourceManager.GetString("Incrementer_NegativeNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version of type &apos;{0}&apos; with value &apos;{1}&apos; could not be incremented because no default incrementer exists for this type..
+        /// </summary>
+        internal static string Incrementer_NoIncrementerAvailable {
+            get {
+                return ResourceManager.GetString("Incrementer_NoIncrementerAvailable", resourceCulture);
             }
         }
         
@@ -349,38 +394,11 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while deleting aggregate of type &apos;{0}&apos;with key &apos;{1}&apos;..
-        /// </summary>
-        internal static string Repository_AggregateNotDeleted {
-            get {
-                return ResourceManager.GetString("Repository_AggregateNotDeleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No aggregate of type &apos;{0}&apos; with the specified key ({1}) was found..
         /// </summary>
         internal static string Repository_AggregateNotFoundByKey {
             get {
                 return ResourceManager.GetString("Repository_AggregateNotFoundByKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while inserting aggregate of type &apos;{0}&apos;with key &apos;{1}&apos;..
-        /// </summary>
-        internal static string Repository_AggregateNotInserted {
-            get {
-                return ResourceManager.GetString("Repository_AggregateNotInserted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while updating aggregate of type &apos;{0}&apos;with key &apos;{1}&apos;..
-        /// </summary>
-        internal static string Repository_AggregateNotUpdated {
-            get {
-                return ResourceManager.GetString("Repository_AggregateNotUpdated", resourceCulture);
             }
         }
         
@@ -435,15 +453,6 @@ namespace System.Resources {
         internal static string UnitOfWorkScope_IncorrectNestingOrWrongThread {
             get {
                 return ResourceManager.GetString("UnitOfWorkScope_IncorrectNestingOrWrongThread", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No event-handler was specified for domain-event of type &apos;{0}&apos;..
-        /// </summary>
-        internal static string WritableEventStream_MissingEventHandler {
-            get {
-                return ResourceManager.GetString("WritableEventStream_MissingEventHandler", resourceCulture);
             }
         }
     }

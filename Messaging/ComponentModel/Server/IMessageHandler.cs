@@ -12,10 +12,10 @@
         IMessage Message
         {
             get;
-        }
+        }        
 
         /// <summary>
-        /// Invokes the underlying  <see cref="IMessageHandler{TMessage}" /> with the <see cref="Message" />.
+        /// Invokes the underlying <see cref="IMessageHandler{TMessage}" /> with the <see cref="Message" />.
         /// </summary>
         void Invoke();
     }

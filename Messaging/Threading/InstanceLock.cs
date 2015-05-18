@@ -1,7 +1,7 @@
 ﻿namespace System.Threading
 {
     /// <summary>
-    /// Represents a lock that can be used for mutli-threaded objects that implement <see cref="IDisposable" />
+    /// Represents a lock that can be used for multi-threaded objects that implement <see cref="IDisposable" />
     /// to ensure <see cref="IDisposable.Dispose()" /> is implemented in a thread-safe manner.
     /// </summary>
     public sealed class InstanceLock : IInstanceLock, IDisposable

@@ -41,7 +41,7 @@ namespace System.ComponentModel.Server.Transactions
         }
 
         /// <inheritdoc />
-        protected override void InvokeHandler(IMessageHandler handler, ITransactionScopeFactory strategy)
+        protected override void Invoke(IMessageHandler handler, ITransactionScopeFactory strategy)
         {
             using (var transactionScope = strategy.CreateTransactionScope())
             {

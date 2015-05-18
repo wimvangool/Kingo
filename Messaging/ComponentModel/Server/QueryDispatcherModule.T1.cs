@@ -7,9 +7,9 @@
         private readonly IQuery<TMessageOut> _query;        
         private readonly MessageProcessor _processor;
 
-        internal QueryDispatcherModule(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options, MessageProcessor processor)
+        internal QueryDispatcherModule(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, MessageProcessor processor)
         {
-            _query = new QueryWrapper<TMessageIn, TMessageOut>(message, query, options);
+            _query = new QueryWrapper<TMessageIn, TMessageOut>(message, query);
             _processor = processor;
         }
 
@@ -38,9 +38,8 @@
         }
 
         private TMessageOut ExecuteQuery()
-        {
-            var pipeline = _processor.DataAccessPipeline.ConnectTo(_query);
-            var messageOut = pipeline.Invoke();
+        {            
+            var messageOut = _processor.BuildQueryExecutionPipeline().ConnectTo(_query).Invoke();
 
             _processor.Message.ThrowIfCancellationRequested();
 

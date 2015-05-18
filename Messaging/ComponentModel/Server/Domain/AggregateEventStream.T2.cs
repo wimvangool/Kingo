@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Resources;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace System.ComponentModel.Server.Domain
 {
@@ -9,19 +11,33 @@ namespace System.ComponentModel.Server.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
+    [Serializable]
     public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
-        private readonly Dictionary<Type, Action<IAggregateRootEvent<TKey, TVersion>>> _eventHandlers;
+        [NonSerialized]
+        private readonly Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> _eventHandlers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateEventStream{TKey, TVersion}" /> class.
         /// </summary>
         protected AggregateEventStream()
         {
-            _eventHandlers = new Dictionary<Type, Action<IAggregateRootEvent<TKey, TVersion>>>();
-        }        
+            _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateEventStream{TKey, TVersion}" /> class.
+        /// </summary>
+        /// <param name="info">The serialization info.</param>
+        /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected AggregateEventStream(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
+        }
 
         /// <summary>
         /// Registers a handler that is invoked when the aggregate writes an event of the specified type.
@@ -48,74 +64,17 @@ namespace System.ComponentModel.Server.Domain
             {
                 throw NewHandlerForTypeAlreadyRegisteredException(typeof(TEvent));
             }            
-        }
+        }        
 
         void IWritableEventStream<TKey, TVersion>.Write<TEvent>(TEvent @event)
         {
-            if (@event == null)
-            {
-                throw new ArgumentNullException("event");
-            }
-            if (@event.AggregateKey.Equals(Key))
-            {
-                Handle(@event);
-                return;
-            }
-            throw NewNonMatchingAggregateKeyException(@event);
+            Write(@event);
         }
 
-        /// <summary>
-        /// Applies the event that was created using the specified <paramref name="eventFactory"/> to this aggregate.
-        /// </summary>
-        /// <typeparam name="TEvent">Type of the event to apply.</typeparam>
-        /// <param name="eventFactory">A factory used to create the event..</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="eventFactory"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// The created event's <see cref="IAggregateRootEvent{S, T}.AggregateKey" /> does not match
-        /// this aggregate's <see cref="AggregateRoot{S, T}.Key" />, or no handler for an event of the specified
-        /// type has been registered.
-        /// </exception>
-        protected void Apply<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
+        internal override void Write<TEvent>(TEvent @event)
         {
-            if (eventFactory == null)
-            {
-                throw new ArgumentNullException("eventFactory");
-            }
-            Apply(eventFactory.Invoke(Increment(Version)));
-        }
+            base.Write(@event);
 
-        /// <summary>
-        /// Applies the specified event to this aggregate.
-        /// </summary>
-        /// <typeparam name="TEvent">Type of the event to apply.</typeparam>
-        /// <param name="event">The event to apply.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="event"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// The <paramref name="event"/>'s <see cref="IAggregateRootEvent{S, T}.AggregateKey" /> does not match
-        /// this aggregate's <see cref="AggregateRoot{S, T}.Key" />, or no handler for an event of the specified
-        /// type has been registered.
-        /// </exception>
-        protected void Apply<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
-        {
-            if (@event == null)
-            {
-                throw new ArgumentNullException("event");
-            }
-            if (@event.AggregateKey.Equals(Key))
-            {
-                Handle(@event);
-                Publish(@event);
-                return;
-            }
-            throw NewNonMatchingAggregateKeyException(@event);            
-        }
-
-        private void Handle<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>
-        {
             Type eventType = typeof(TEvent);
 
             try
@@ -125,8 +84,7 @@ namespace System.ComponentModel.Server.Domain
             catch (KeyNotFoundException)
             {
                 throw NewMissingEventHandlerException(eventType);
-            }
-            Version = @event.AggregateVersion;
+            }            
         }        
 
         private static Exception NewHandlerForTypeAlreadyRegisteredException(Type domainEventType)
@@ -138,7 +96,7 @@ namespace System.ComponentModel.Server.Domain
 
         private static Exception NewMissingEventHandlerException(Type domainEventType)
         {
-            var messageFormat = ExceptionMessages.WritableEventStream_MissingEventHandler;
+            var messageFormat = ExceptionMessages.AggregateEventStream_MissingEventHandler;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, domainEventType);
             return new ArgumentException(message);
         }        

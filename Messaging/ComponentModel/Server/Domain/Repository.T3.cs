@@ -11,7 +11,7 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
     public abstract class Repository<TAggregate, TKey, TVersion> : IUnitOfWork
-        where TAggregate : class, IAggregateRoot<TKey, TVersion>
+        where TAggregate : class, IVersionedObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
@@ -117,11 +117,11 @@ namespace System.ComponentModel.Server.Domain
         #region [====== Getting and Updating ======]
 
         /// <summary>
-        /// Retrieves an <see cref="IAggregateRoot{T, S}" /> by its key.
+        /// Retrieves an <see cref="IVersionedObject{T, S}" /> by its key.
         /// </summary>
         /// <param name="key">The key of the aggregate to return.</param>
         /// <returns>The aggregate with the specified <paramref name="key"/>.</returns>
-        /// <exception cref="RepositoryException{T}">
+        /// <exception cref="AggregateNotFoundException{T}">
         /// No aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/> was found.
         /// </exception>
         public virtual TAggregate GetByKey(TKey key)
@@ -185,28 +185,20 @@ namespace System.ComponentModel.Server.Domain
         {
             foreach (var aggregate in _selectedAggregates.Where(aggregate => HasBeenUpdated(aggregate.Aggregate, aggregate.OriginalVersion)))
             {
-                UpdateAggregate(aggregate.Aggregate, aggregate.OriginalVersion);
+                Update(aggregate.Aggregate, aggregate.OriginalVersion);
             }
             _selectedAggregates.Clear();
-        }
-
-        private void UpdateAggregate(TAggregate aggregate, TVersion originalVersion)
-        {
-            try
-            {
-                Update(aggregate, originalVersion);
-            }
-            catch (Exception exception)
-            {
-                throw NewAggregateNotUpdatedException(aggregate, exception);
-            }
-        }
+        }        
 
         /// <summary>
         /// Updates / overwrites a previous version with a new version.
         /// </summary>
         /// <param name="aggregate">The instance to update.</param>
         /// <param name="originalVersion">The version to overwrite.</param>
+        /// <exception cref="ConstraintViolationException">
+        /// The specified <paramref name="aggregate"/> could not be updated because it would violate a
+        /// data-constraint in the data store.
+        /// </exception>
         protected abstract void Update(TAggregate aggregate, TVersion originalVersion);
 
         /// <summary>
@@ -270,27 +262,19 @@ namespace System.ComponentModel.Server.Domain
         {
             foreach (var aggregate in _insertedAggregates)
             {
-                InsertAggregate(aggregate.Aggregate);
+                Insert(aggregate.Aggregate);
             }
             _insertedAggregates.Clear();
-        }
-
-        private void InsertAggregate(TAggregate aggregate)
-        {
-            try
-            {
-                Insert(aggregate);
-            }
-            catch (Exception exception)
-            {
-                throw NewAggregateNotInsertedException(aggregate, exception);
-            }
-        }
+        }        
 
         /// <summary>
         /// Inserts the specified instance into this DataStore.
         /// </summary>
-        /// <param name="aggregate">The instance to insert.</param>   
+        /// <param name="aggregate">The instance to insert.</param>  
+        /// <exception cref="ConstraintViolationException">
+        /// The specified <paramref name="aggregate"/> could not be inserted because it would violate a
+        /// data-constraint in the data store.
+        /// </exception> 
         protected abstract void Insert(TAggregate aggregate);
 
         #endregion
@@ -334,27 +318,19 @@ namespace System.ComponentModel.Server.Domain
         {
             foreach (var aggregate in _deletedAggregates)
             {
-                DeleteAggregate(aggregate.Aggregate);
+                Delete(aggregate.Aggregate);
             }
             _deletedAggregates.Clear();
-        }
-
-        private void DeleteAggregate(TAggregate aggregate)
-        {
-            try
-            {
-                Delete(aggregate);
-            }
-            catch (Exception exception)
-            {
-                throw NewAggregateNotDeletedException(aggregate, exception);
-            }
-        }
+        }        
 
         /// <summary>
         /// Deletes / removes a certain instance from this DataStore.
         /// </summary>
         /// <param name="aggregate">The instance to remove.</param>
+        /// <exception cref="ConstraintViolationException">
+        /// The specified <paramref name="aggregate"/> could not be deleted because it would violate a
+        /// data-constraint in the data store.
+        /// </exception>
         protected abstract void Delete(TAggregate aggregate);
 
         #endregion
@@ -367,55 +343,25 @@ namespace System.ComponentModel.Server.Domain
         /// </summary>
         /// <param name="key">Key of the aggregate that was not found.</param>
         /// <returns>A new <see cref="AggregateNotFoundByKeyException{T, K}" />.</returns>
-        protected virtual AggregateNotFoundByKeyException<TAggregate, TKey> NewAggregateNotFoundByKeyException(TKey key)
+        protected AggregateNotFoundByKeyException<TAggregate, TKey> NewAggregateNotFoundByKeyException(TKey key)
         {
             var messageFormat = ExceptionMessages.Repository_AggregateNotFoundByKey;
             var message = string.Format(messageFormat, typeof(TAggregate), key);
+            return NewAggregateNotFoundByKeyException(key, message);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="AggregateNotFoundByKeyException{T, K}" /> that indicates that this repository
+        /// was unable to retrieve an aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key">Key of the aggregate that was not found.</param>
+        /// <param name="message">Message of the exception.</param>
+        /// <returns>A new <see cref="AggregateNotFoundByKeyException{T, K}" />.</returns>
+        protected virtual AggregateNotFoundByKeyException<TAggregate, TKey> NewAggregateNotFoundByKeyException(TKey key, string message)
+        {            
             return new AggregateNotFoundByKeyException<TAggregate, TKey>(key, message);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="AggregateNotInsertedException{T, K}" /> that indicates that this repository
-        /// was unable to insert the specified <paramref name="aggregate"/> into the underlying data store.
-        /// </summary>
-        /// <param name="aggregate">The aggregate that failed to be inserted.</param>
-        /// <param name="innerException">Exception describing the cause of the failure.</param>
-        /// <returns>A new <see cref="AggregateNotInsertedException{T, K}" />.</returns>
-        protected virtual AggregateNotInsertedException<TAggregate, TKey> NewAggregateNotInsertedException(TAggregate aggregate, Exception innerException)
-        {
-            var messageFormat = ExceptionMessages.Repository_AggregateNotInserted;
-            var message = string.Format(messageFormat, typeof(TAggregate), aggregate.Key);
-            return new AggregateNotInsertedException<TAggregate, TKey>(aggregate, message, innerException);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="AggregateNotUpdatedException{T, K}" /> that indicates that this repository
-        /// was unable to update the specified <paramref name="aggregate"/> in the underlying data store.
-        /// </summary>
-        /// <param name="aggregate">The aggregate that failed to be updated.</param>
-        /// <param name="innerException">Exception describing the cause of the failure.</param>
-        /// <returns>A new <see cref="AggregateNotUpdatedException{T, K}" />.</returns>
-        protected virtual AggregateNotUpdatedException<TAggregate, TKey> NewAggregateNotUpdatedException(TAggregate aggregate, Exception innerException)
-        {
-            var messageFormat = ExceptionMessages.Repository_AggregateNotUpdated;
-            var message = string.Format(messageFormat, typeof(TAggregate), aggregate.Key);
-            return new AggregateNotUpdatedException<TAggregate, TKey>(aggregate, message, innerException);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="AggregateNotDeletedException{T, K}" /> that indicates that this repository
-        /// was unable to delete the specified <paramref name="aggregate"/> from the underlying data store.
-        /// </summary>
-        /// <param name="aggregate">The aggregate that failed to be deleted.</param>
-        /// <param name="innerException">Exception describing the cause of the failure.</param>
-        /// <returns>A new <see cref="AggregateNotDeletedException{T, K}" />.</returns>
-        protected virtual AggregateNotDeletedException<TAggregate, TKey> NewAggregateNotDeletedException(TAggregate aggregate, Exception innerException)
-        {
-            var messageFormat = ExceptionMessages.Repository_AggregateNotDeleted;
-            var message = string.Format(messageFormat, typeof(TAggregate), aggregate.Key);
-            return new AggregateNotDeletedException<TAggregate, TKey>(aggregate, message, innerException);
-        }
-
+        }  
+        
         #endregion
     }
 }

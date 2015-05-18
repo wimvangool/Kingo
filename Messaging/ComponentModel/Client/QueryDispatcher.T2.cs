@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Server;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client
@@ -41,7 +40,7 @@ namespace System.ComponentModel.Client
         #region [====== Execution ======]
 
         /// <inheritdoc />
-        public override TMessageOut Execute(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default)
+        public override TMessageOut Execute(Guid requestId)
         {                        
             var message = Message.Copy();
 
@@ -63,11 +62,11 @@ namespace System.ComponentModel.Client
                 OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result));
 
                 return result;
-            }, options);            
+            });            
         }
 
         /// <inheritdoc />
-        public override Task<TMessageOut> ExecuteAsync(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token = null)
         {                        
             var message = Message.Copy();            
 
@@ -94,7 +93,7 @@ namespace System.ComponentModel.Client
                 Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs<TMessageOut>(requestId, message, result)));
 
                 return result;
-            }, options, token);
+            }, token);
         }              
 
         /// <summary>

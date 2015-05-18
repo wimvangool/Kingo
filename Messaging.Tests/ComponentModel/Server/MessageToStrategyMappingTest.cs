@@ -44,28 +44,9 @@ namespace System.ComponentModel.Server
 
             _mapping.Add(messageTypeId, new object());
             _mapping.Add(messageTypeId, new object());
-        }
+        }        
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Add_Throws_IfMappingIsInReadOnlyState()
-        {
-            _mapping.SwitchToReadOnly();
-            _mapping.Add(Guid.NewGuid().ToString(), new object());
-        }
-
-        #endregion
-
-        #region [====== SwitchToReadOnly ======]
-
-        [TestMethod]       
-        public void SwitchToReadOnly_DoesNothing_IfMappingIsAlreadyInReadOnlyState()
-        {
-            _mapping.SwitchToReadOnly();
-            _mapping.SwitchToReadOnly();
-        }
-
-        #endregion
+        #endregion       
 
         #region [====== TryGetStrategy ======]
 
@@ -107,19 +88,7 @@ namespace System.ComponentModel.Server
 
             Assert.IsFalse(_mapping.TryGetStrategy(messageTypeId, out strategy));
             Assert.IsNull(strategy);
-        }
-
-        [TestMethod]
-        public void TryGetStrategy_ReturnsFalse_IfMappingIsNotFound_And_MappingIsInReadOnlyState()
-        {
-            var messageTypeId = Guid.NewGuid().ToString();
-            object strategy;
-
-            _mapping.SwitchToReadOnly();
-
-            Assert.IsFalse(_mapping.TryGetStrategy(messageTypeId, out strategy));
-            Assert.IsNull(strategy);
-        }
+        }        
 
         [TestMethod]
         public void TryGetStrategy_ReturnsTrue_IfMappingIsFound()
@@ -132,21 +101,7 @@ namespace System.ComponentModel.Server
 
             Assert.IsTrue(_mapping.TryGetStrategy(messageTypeId, out retrievedStrategy));
             Assert.AreSame(addedStrategy, retrievedStrategy);
-        }
-
-        [TestMethod]
-        public void TryGetStrategy_ReturnsTrue_IfMappingIsFound_And_MappingIsInReadOnlyState()
-        {
-            var messageTypeId = Guid.NewGuid().ToString();
-            object addedStrategy = new object();
-            object retrievedStrategy;
-
-            _mapping.Add(messageTypeId, addedStrategy);
-            _mapping.SwitchToReadOnly();
-
-            Assert.IsTrue(_mapping.TryGetStrategy(messageTypeId, out retrievedStrategy));
-            Assert.AreSame(addedStrategy, retrievedStrategy);
-        }
+        }        
 
         #endregion
     }

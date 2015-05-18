@@ -84,7 +84,7 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        internal IEnumerable<IMessageHandler<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message, MessageSources source) where TMessage : class
+        internal IEnumerable<MessageHandlerInstance<TMessage>> CreateMessageHandlersFor<TMessage>(TMessage message, MessageSources source) where TMessage : class
         {
             if (message == null)
             {

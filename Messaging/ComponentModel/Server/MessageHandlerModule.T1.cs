@@ -6,23 +6,25 @@
     /// </summary>
     /// <typeparam name="TStrategy">Type of the strategy to associate with each message.</typeparam>
     public abstract class MessageHandlerModule<TStrategy> : MessageHandlerModule where TStrategy : class
-    {
-        private readonly MessageToStrategyMapping<TStrategy> _strategyMapping;        
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessageHandlerModule" /> class.
-        /// </summary>                
-        protected MessageHandlerModule()
-        {
-            _strategyMapping = new MessageToStrategyMapping<TStrategy>();
-        }
+    {                
+        private static readonly MessageToStrategyMapping<TStrategy> _EmptyMapping = new MessageToStrategyMapping<TStrategy>();
 
         /// <summary>
         /// Returns the mapping of certain messages to specific strategies.
         /// </summary>
         public IMessageToStrategyMapping<TStrategy> StrategyMapping
         {
-            get { return _strategyMapping; }
+            get { return MessageToStrategyMapping.GetOrAdd(GetType(), CreateMessageToStrategyMapping); }
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="IMessageToStrategyMapping{T}" /> that contains a strategy
+        /// for certain messages or message types.
+        /// </summary>
+        /// <returns>A <see cref="IMessageToStrategyMapping{T}" />.</returns>
+        protected virtual IMessageToStrategyMapping<TStrategy> CreateMessageToStrategyMapping()
+        {
+            return _EmptyMapping;
         }
 
         /// <summary>
@@ -31,36 +33,32 @@
         protected abstract TStrategy DefaultStrategy
         {
             get;
-        }
-
-        /// <inheritdoc />
-        public override void Start()
-        {
-            base.Start();
-
-            _strategyMapping.SwitchToReadOnly();
-        }
+        }       
 
         /// <summary>
         /// Attempts to retrieve the associated strategy for the message on the specified <paramref name="handler"/>
-        /// and then invokes <see cref="InvokeHandler(IMessageHandler, TStrategy)" />.
+        /// and then invokes <see cref="Invoke(IMessageHandler, TStrategy)" />.
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>
-        protected override void InvokeHandler(IMessageHandler handler)
+        public override void Invoke(IMessageHandler handler)
         {
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
             TStrategy strategy;
 
-            if (_strategyMapping.TryGetStrategy(handler.Message, out strategy))
+            if (StrategyMapping.TryGetStrategy(handler.Message, out strategy))
             {
-                InvokeHandler(handler, strategy);
+                Invoke(handler, strategy);
                 return;
             }
             if (Message.TryGetStrategyFromAttribute(handler.Message, out strategy))
             {
-                InvokeHandler(handler, strategy);
+                Invoke(handler, strategy);
                 return;
             }
-            InvokeHandler(handler, DefaultStrategy);
+            Invoke(handler, DefaultStrategy);
         }
 
         /// <summary>
@@ -68,6 +66,6 @@
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
-        protected abstract void InvokeHandler(IMessageHandler handler, TStrategy strategy);
+        protected abstract void Invoke(IMessageHandler handler, TStrategy strategy);
     }
 }

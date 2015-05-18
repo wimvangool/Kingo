@@ -18,7 +18,7 @@ namespace System.ComponentModel.Server
             get { return _messageHandlerFactory; }
         }
 
-        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipelineModules()
+        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
         {
             return Enumerable.Empty<MessageHandlerModule>();
         }
@@ -32,7 +32,7 @@ namespace System.ComponentModel.Server
 
         private static SampleApplicationProcessor CreateProcessor()
         {
-            var factory = new MessageHandlerFactoryForUnity();
+            var factory = new UnityFactory();
             
             factory.RegisterMessageHandlers(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
             factory.RegisterDependencies(Assembly.GetExecutingAssembly(), null, IsRepositoryInterface);

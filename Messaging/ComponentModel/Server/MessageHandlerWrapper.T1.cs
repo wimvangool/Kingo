@@ -36,7 +36,7 @@
         public IMessage Message
         {
             get { return _message; }
-        }
+        }        
 
         /// <inheritdoc />
         public void Invoke()

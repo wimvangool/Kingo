@@ -14,13 +14,11 @@ namespace System.ComponentModel.Server.SampleApplication
 
         private ShoppingCart(Guid id)
         {
-            _id = id;
-            _version = 0;
-
+            _id = id;            
             _items = new List<ShoppingCartItem>(2);
         }
 
-        protected override Guid Key
+        public override Guid Id
         {
             get { return _id; }
         }
@@ -28,12 +26,12 @@ namespace System.ComponentModel.Server.SampleApplication
         protected override int Version
         {
             get { return _version; }
-            set { _version = value; }
+            set { SetVersion(ref _version, value); }
         }
 
-        protected override int Increment(int version)
+        protected override int NewVersion()
         {
-            return version + 1;
+            return _version + 1;
         }
 
         public void AddProduct(int productId, int quantity)
@@ -48,9 +46,9 @@ namespace System.ComponentModel.Server.SampleApplication
 
             item.AddQuantity(quantity);
 
-            Publish(version => new ProductAddedToCartEvent
+            Publish((id, version) => new ProductAddedToCartEvent
             {
-                ShoppingCartId = _id,
+                ShoppingCartId = id,
                 ShoppingCartVersion = version,
                 ProductId = productId,
                 OldQuantity = oldQuantity,
@@ -67,9 +65,9 @@ namespace System.ComponentModel.Server.SampleApplication
         {
             var cart = new ShoppingCart(shoppingCartId);
 
-            cart.Publish(version => new ShoppingCartCreatedEvent
+            cart.Publish((id, version) => new ShoppingCartCreatedEvent
             {
-                ShoppingCartId = shoppingCartId,
+                ShoppingCartId = id,
                 ShoppingCartVersion = version
             });
             return cart;

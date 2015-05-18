@@ -4,11 +4,11 @@ namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// This type of exception is thrown when a <see cref="Repository{T, S, U}" /> was unable to retrieve,
-    /// an <see cref="IAggregateRoot{T, S}" />.
+    /// an <see cref="IVersionedObject{T, S}" />.
     /// </summary>
     /// <typeparam name="TAggregate">Type of the aggregate.</typeparam>
     [Serializable]
-    public class AggregateNotFoundException<TAggregate> : RepositoryException<TAggregate> where TAggregate : class
+    public class AggregateNotFoundException<TAggregate> : AggregateNotFoundException where TAggregate : class
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException{T}" /> class.
@@ -37,5 +37,11 @@ namespace System.ComponentModel.Server.Domain
         /// <param name="context">The streaming context.</param>
         protected AggregateNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+
+        /// <inheritdoc />
+        public override Type AggregateType
+        {
+            get { return typeof(TAggregate); }
+        }
     }
 }

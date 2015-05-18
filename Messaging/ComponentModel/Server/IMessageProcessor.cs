@@ -148,8 +148,7 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
         /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>        
-        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
+        /// <param name="query">The query to execute.</param>                
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
@@ -157,7 +156,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>;
 
@@ -167,8 +166,7 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
         /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>        
-        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
+        /// <param name="query">The query to execute.</param>                
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
@@ -176,7 +174,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>;
 
@@ -186,8 +184,7 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
         /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>        
-        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
+        /// <param name="query">The query to execute.</param>                
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param>  
@@ -202,7 +199,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>;
 
@@ -212,8 +209,7 @@ namespace System.ComponentModel.Server
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
         /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
         /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>        
-        /// <param name="options">Specifies options for how the processor should execute the specified <paramref name="query"/>.</param>
+        /// <param name="query">The query to execute.</param>                
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param>  
@@ -228,7 +224,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="OperationCanceledException">
         /// <paramref name="token"/> was specified and used to cancel the execution.
         /// </exception>  
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>;
        

@@ -12,25 +12,7 @@
         IMessage MessageIn
         {
             get;
-        }
-
-        /// <summary>
-        /// Indicates whether or not it is allowed to consult the cache for
-        /// any previously stored result of the query.
-        /// </summary>
-        bool AllowCacheRead
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Indicates whether or not it is allowed to store any retrieved result
-        /// into the cache after the query has been executed.
-        /// </summary>
-        bool AllowCacheWrite
-        {
-            get;
-        }
+        }        
 
         /// <summary>
         /// Invokes the query and returns its result.

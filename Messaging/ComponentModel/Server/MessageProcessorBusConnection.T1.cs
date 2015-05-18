@@ -12,7 +12,7 @@ namespace System.ComponentModel.Server
         public MessageProcessorBusConnection(ICollection<IMessageProcessorBusConnection> connections, IMessageHandler<TMessage> handler)
         {                        
             _connections = connections;
-            _handler = new PassThroughPipeline<TMessage>(handler);
+            _handler = new MessageHandlerDecorator<TMessage>(handler);
         }
 
         internal MessageProcessorBusConnection(ICollection<IMessageProcessorBusConnection> connections, Action<TMessage> handler)

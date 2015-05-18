@@ -12,7 +12,7 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
     [SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public abstract class UnitTestRepository<TAggregate, TKey, TVersion> : Repository<TAggregate, TKey, TVersion>
-        where TAggregate : class, IAggregateRoot<TKey, TVersion>
+        where TAggregate : class, IVersionedObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
@@ -52,7 +52,7 @@ namespace System.ComponentModel.Server.Domain
         /// <summary>
         /// Creates and returns a new <see cref="IDictionary{K, A}" /> that will be used to store all aggregates.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A new <see cref="IDictionary{K, A}" />.</returns>
         protected abstract IDictionary<TKey, TAggregate> CreateAggregateDictionary();
 
         /// <inheritdoc />

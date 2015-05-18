@@ -45,7 +45,7 @@ namespace System.ComponentModel.Server
             }
         }                       
 
-        internal IEnumerable<IMessageHandler<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message, MessageSources source) where TMessage : class
+        internal IEnumerable<MessageHandlerInstance<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(TMessage message, MessageSources source) where TMessage : class
         {
             if (IsAcceptedSource(_configuration.Sources, source))
             {
@@ -60,9 +60,20 @@ namespace System.ComponentModel.Server
                 return from interfaceType in _interfaceTypes
                        let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                        where messageTypeOfInterface.IsInstanceOfType(message)
-                       select (IMessageHandler<TMessage>)_factory.CreateMessageHandler(_classType);
+                       select CreateMessageHandlerInstanceFor<TMessage>(interfaceType, messageTypeOfInterface);                       
             }
-            return Enumerable.Empty<IMessageHandler<TMessage>>();
+            return Enumerable.Empty<MessageHandlerInstance<TMessage>>();
+        }
+
+        private MessageHandlerInstance<TMessage> CreateMessageHandlerInstanceFor<TMessage>(Type interfaceType, Type messageTypeOfInterface) where TMessage : class
+        {            
+            var messageHandler = _factory.CreateMessageHandler(_classType);
+            var decoratorTypeDefinition = typeof(MessageHandlerDecorator<>);
+            var decoratorType = decoratorTypeDefinition.MakeGenericType(messageTypeOfInterface);
+            var decoratorConstructor = decoratorType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new [] { interfaceType }, null);
+            var decorator = (IMessageHandler<TMessage>) decoratorConstructor.Invoke(new [] { messageHandler });
+
+            return new MessageHandlerInstance<TMessage>(decorator, _classType, interfaceType);
         }
 
         private static bool IsAcceptedSource(MessageSources sources, MessageSources source)

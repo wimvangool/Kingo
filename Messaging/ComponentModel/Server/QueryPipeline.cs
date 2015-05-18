@@ -8,11 +8,7 @@ namespace System.ComponentModel.Server
             : base(modules) { }
 
         internal IQuery<TMessageOut> ConnectTo<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage<TMessageOut>
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
+        {            
             foreach (var module in Modules)
             {
                 query = new Query<TMessageOut>(query, module);

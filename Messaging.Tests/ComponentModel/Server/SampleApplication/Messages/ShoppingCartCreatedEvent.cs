@@ -2,17 +2,17 @@
 
 namespace System.ComponentModel.Server.SampleApplication.Messages
 {
-    internal sealed class ShoppingCartCreatedEvent : Message<ShoppingCartCreatedEvent>, IAggregateRootEvent<Guid, int>
+    internal sealed class ShoppingCartCreatedEvent : Message<ShoppingCartCreatedEvent>, IVersionedObject<Guid, int>
     {
         public Guid ShoppingCartId;
         public int ShoppingCartVersion;
 
-        Guid IAggregateRootEvent<Guid, int>.AggregateKey
+        Guid IKeyedObject<Guid>.Key
         {
             get { return ShoppingCartId; }
         }
 
-        int IAggregateRootEvent<Guid, int>.AggregateVersion
+        int IVersionedObject<Guid, int>.Version
         {
             get { return ShoppingCartVersion; }
         }

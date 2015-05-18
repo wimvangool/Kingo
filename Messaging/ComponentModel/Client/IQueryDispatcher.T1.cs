@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Server;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client
@@ -18,20 +17,18 @@ namespace System.ComponentModel.Client
         /// <summary>
         /// Executes the query synchronously.
         /// </summary>
-        /// <param name="requestId">Identifier of the request.</param>
-        /// <param name="options">Specifies options for how the query should be executed.</param> 
+        /// <param name="requestId">Identifier of the request.</param>        
         /// <returns>The result of this query.</returns>
-        TMessageOut Execute(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default);                               
+        TMessageOut Execute(Guid requestId);                               
 
         /// <summary>
         /// Executes the query asynchronously.
         /// </summary>  
-        /// <param name="requestId">Identifier of the request.</param>     
-        /// <param name="options">Specifies options for how the query should be executed.</param>       
+        /// <param name="requestId">Identifier of the request.</param>             
         /// <param name="token">
         /// Optional token that can be used to cancel the execution of this query.
         /// </param>        
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TMessageOut> ExecuteAsync(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null);
+        Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token = null);
     }
 }

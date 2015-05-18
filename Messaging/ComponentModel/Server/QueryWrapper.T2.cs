@@ -11,19 +11,17 @@
         where TMessageOut : class, IMessage<TMessageOut>
     {
         private readonly TMessageIn _message;
-        private readonly IQuery<TMessageIn, TMessageOut> _query;
-        private readonly QueryExecutionOptions _options;
+        private readonly IQuery<TMessageIn, TMessageOut> _query;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryWrapper{TMessageIn, TMessageOut}" /> class.
         /// </summary>
         /// <param name="message">Message containing the parameters of the query.</param>
-        /// <param name="query">The query to execute.</param>
-        /// <param name="options">The execution options.</param>
+        /// <param name="query">The query to execute.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public QueryWrapper(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options)
+        public QueryWrapper(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
         {
             if (message == null)
             {
@@ -34,32 +32,14 @@
                 throw new ArgumentNullException("query");
             }
             _message = message;
-            _query = query;
-            _options = options;
+            _query = query;            
         }
 
         /// <inheritdoc />
         public IMessage MessageIn
         {
             get { return _message; }
-        }
-
-        /// <inheritdoc />
-        public bool AllowCacheRead
-        {
-            get { return IsSet(QueryExecutionOptions.AllowCacheRead); }
-        }
-
-        /// <inheritdoc />
-        public bool AllowCacheWrite
-        {
-            get { return IsSet(QueryExecutionOptions.AllowCacheWrite); }
-        }
-
-        private bool IsSet(QueryExecutionOptions option)
-        {
-            return (_options & option) == option;
-        }
+        }        
 
         /// <inheritdoc />
         public TMessageOut Invoke()

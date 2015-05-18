@@ -4,7 +4,8 @@ namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
 {
     [MessageHandler(InstanceLifetime.PerUnitOfWork)]
     internal sealed class ShoppingCartHandler : IMessageHandler<AddProductToCartCommand>,
-                                                IMessageHandler<CreateShoppingCartCommand>
+                                                IMessageHandler<CreateShoppingCartCommand>,
+                                                IMessageHandler<object>
     {
         private readonly IShoppingCartRepository _carts;
 
@@ -16,7 +17,7 @@ namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
             }
             _carts = carts;
         }
-
+        
         public void Handle(CreateShoppingCartCommand message)
         {
             _carts.Add(ShoppingCart.CreateShoppingCart(message.ShoppingCartId));            
@@ -28,5 +29,7 @@ namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
 
             shoppingCart.AddProduct(message.ProductId, message.Quantity);
         }
+
+        public void Handle(object message) { }
     }
 }

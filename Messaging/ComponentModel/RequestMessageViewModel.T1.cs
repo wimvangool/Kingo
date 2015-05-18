@@ -109,7 +109,7 @@ namespace System.ComponentModel
 
         #region [====== Serialization ======]
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]        
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
@@ -124,6 +124,7 @@ namespace System.ComponentModel
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected virtual void GetObjectData(SerializationInfo info, StreamingContext context) { }
 
         #endregion

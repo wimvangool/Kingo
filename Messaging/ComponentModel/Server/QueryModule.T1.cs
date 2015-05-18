@@ -7,22 +7,24 @@
     /// <typeparam name="TStrategy">Type of the strategy to associate with each message.</typeparam>
     public abstract class QueryModule<TStrategy> : QueryModule where TStrategy : class
     {
-        private readonly MessageToStrategyMapping<TStrategy> _strategyMapping;        
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="QueryModule" /> class.
-        /// </summary>               
-        protected QueryModule()
-        {
-            _strategyMapping = new MessageToStrategyMapping<TStrategy>();
-        }
+        private static readonly MessageToStrategyMapping<TStrategy> _EmptyMapping = new MessageToStrategyMapping<TStrategy>();
 
         /// <summary>
         /// Returns the mapping of certain messages to specific strategies.
         /// </summary>
         public IMessageToStrategyMapping<TStrategy> StrategyMapping
         {
-            get { return _strategyMapping; }
+            get { return MessageToStrategyMapping.GetOrAdd(GetType(), CreateMessageToStrategyMapping); }
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="IMessageToStrategyMapping{T}" /> that contains a strategy
+        /// for certain messages or message types.
+        /// </summary>
+        /// <returns>A <see cref="IMessageToStrategyMapping{T}" />.</returns>
+        protected virtual IMessageToStrategyMapping<TStrategy> CreateMessageToStrategyMapping()
+        {
+            return _EmptyMapping;
         }
 
         /// <summary>
@@ -31,34 +33,30 @@
         protected abstract TStrategy DefaultStrategy
         {
             get;
-        }
-
-        /// <inheritdoc />
-        public override void Start()
-        {
-            base.Start();
-
-            _strategyMapping.SwitchToReadOnly();
-        }
+        }       
 
         /// <summary>
         /// Attempts to retrieve the associated strategy for the message on the specified <paramref name="query"/>
-        /// and then invokes <see cref="InvokeQuery{TMessageOut}(IQuery{TMessageOut}, TStrategy)" />.
+        /// and then invokes <see cref="Invoke{TMessageOut}(IQuery{TMessageOut}, TStrategy)" />.
         /// </summary>
         /// <param name="query">The query to invoke.</param>
-        protected override TMessageOut InvokeQuery<TMessageOut>(IQuery<TMessageOut> query)
+        public override TMessageOut Invoke<TMessageOut>(IQuery<TMessageOut> query)
         {
+            if (query == null)
+            {
+                throw new ArgumentNullException("query");
+            }
             TStrategy strategy;
 
             if (StrategyMapping.TryGetStrategy(query.MessageIn, out strategy))
             {
-                return InvokeQuery(query, strategy);
+                return Invoke(query, strategy);
             }
             if (Message.TryGetStrategyFromAttribute(query.MessageIn, out strategy))
             {
-                return InvokeQuery(query, strategy);
+                return Invoke(query, strategy);
             }
-            return InvokeQuery(query, DefaultStrategy);
+            return Invoke(query, DefaultStrategy);
         }
 
         /// <summary>
@@ -66,6 +64,6 @@
         /// </summary>
         /// <param name="query">The query to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
-        protected abstract TMessageOut InvokeQuery<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage<TMessageOut>;
+        protected abstract TMessageOut Invoke<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage<TMessageOut>;
     }
 }

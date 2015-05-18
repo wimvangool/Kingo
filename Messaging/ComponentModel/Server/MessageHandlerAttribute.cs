@@ -17,7 +17,7 @@
         public MessageHandlerAttribute(InstanceLifetime lifetime)
         {
             _lifetime = lifetime;
-            _sources = MessageSources.Any;
+            _sources = MessageSources.ExternalMessageBus;
         }
 
         /// <summary>

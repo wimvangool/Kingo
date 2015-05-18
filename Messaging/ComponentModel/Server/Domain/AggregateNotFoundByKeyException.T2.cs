@@ -5,13 +5,13 @@ namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
     /// This type of exception is thrown when a <see cref="Repository{T, S, U}" /> was unable to retrieve,
-    /// an <see cref="IAggregateRoot{T, S}" /> by its key.
+    /// an <see cref="IVersionedObject{T, S}" /> by its key.
     /// </summary>
     /// <typeparam name="TAggregate">Type of the aggregate.</typeparam>
     /// <typeparam name="TKey">Type of the key of the aggregate.</typeparam>
     [Serializable]
     public class AggregateNotFoundByKeyException<TAggregate, TKey> : AggregateNotFoundException<TAggregate>
-        where TAggregate : class, IAggregateRoot<TKey>
+        where TAggregate : class, IKeyedObject<TKey>
         where TKey : struct, IEquatable<TKey>
     {
         private const string _AggregateKeyKey = "_aggregateKey";

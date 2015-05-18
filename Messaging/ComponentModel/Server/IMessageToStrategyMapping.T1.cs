@@ -6,46 +6,7 @@
     /// </summary>
     /// <typeparam name="TStrategy"></typeparam>
     public interface IMessageToStrategyMapping<TStrategy> where TStrategy : class
-    {
-        /// <summary>
-        /// Adds a mapping between the specified <paramref name="message"/> and the specified <paramref name="strategy"/>.
-        /// </summary>
-        /// <param name="message">A message.</param>
-        /// <param name="strategy">A strategy.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="strategy"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The mapping has become a read-only collection.
-        /// </exception>
-        void Add(IMessage message, TStrategy strategy);
-
-        /// <summary>
-        /// Adds a mapping between the specified <paramref name="messageType"/> and the specified <paramref name="strategy"/>.
-        /// </summary>
-        /// <param name="messageType">A message type.</param>
-        /// <param name="strategy">A strategy.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageType"/> or <paramref name="strategy"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The mapping has become a read-only collection.
-        /// </exception>
-        void Add(Type messageType, TStrategy strategy);
-
-        /// <summary>
-        /// Adds a mapping between the specified <paramref name="messageTypeId"/> and the specified <paramref name="strategy"/>.
-        /// </summary>
-        /// <param name="messageTypeId">A message type-id.</param>
-        /// <param name="strategy">A strategy.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageTypeId"/> or <paramref name="strategy"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The mapping has become a read-only collection.
-        /// </exception>
-        void Add(string messageTypeId, TStrategy strategy);
-
+    {        
         /// <summary>
         /// Attempts to retrieve a mapped <paramref name="strategy"/> for the specified <paramref name="message"/>.
         /// </summary>

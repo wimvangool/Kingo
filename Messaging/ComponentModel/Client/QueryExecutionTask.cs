@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Server;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client
@@ -31,16 +30,7 @@ namespace System.ComponentModel.Client
         protected override IQueryDispatcher<TMessageOut> Dispatcher
         {
             get { return _dispatcher; }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="QueryExecutionOptions" /> of the query to execute.
-        /// </summary>
-        public QueryExecutionOptions ExecutionOptions
-        {
-            get;
-            set;
-        }
+        }        
 
         /// <summary>
         /// If the task has been started, returns the associated <see cref="Task" /> instance of this task.
@@ -54,7 +44,7 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         protected override void Execute(CancellationToken token)
         {
-            Task = _dispatcher.ExecuteAsync(RequestId, ExecutionOptions, token);
+            Task = _dispatcher.ExecuteAsync(RequestId, token);
         }
     }
 }

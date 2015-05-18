@@ -17,7 +17,7 @@ namespace System.ComponentModel.Server
             get { return _messageHandlerFactory; }
         }
 
-        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipelineModules()
+        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
         {
             return Enumerable.Empty<MessageHandlerModule>();
         }
@@ -31,7 +31,7 @@ namespace System.ComponentModel.Server
 
         private static UnityTestProcessor CreateProcessor()
         {
-            return new UnityTestProcessor(new MessageHandlerFactoryForUnity());
+            return new UnityTestProcessor(new UnityFactory());
         }
     }
 }

@@ -10,7 +10,7 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
     [Serializable]
-    public abstract class AggregateRoot<TKey, TVersion> : IEventStream<TKey, TVersion>, IAggregateRoot<TKey, TVersion>, ISerializable
+    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IReadableEventStream<TKey, TVersion>, IVersionedObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
@@ -31,15 +31,11 @@ namespace System.ComponentModel.Server.Domain
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected AggregateRoot(SerializationInfo info, StreamingContext context)            
+        protected AggregateRoot(SerializationInfo info, StreamingContext context)         
+            : base(info, context)
         {
             _buffer = (MemoryEventStream<TKey, TVersion>) info.GetValue(_BufferKey, typeof(MemoryEventStream<TKey, TVersion>));
-        }
-
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            GetObjectData(info, context);
-        }
+        }        
 
         /// <summary>
         /// Populates a <see cref="SerializationInfo" /> with the data needed to serialize the target object.
@@ -47,31 +43,20 @@ namespace System.ComponentModel.Server.Domain
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        protected override void GetObjectData(SerializationInfo info, StreamingContext context)
         {            
             info.AddValue(_BufferKey, _buffer);
         }
 
-        TKey IAggregateRoot<TKey>.Key
-        {
-            get { return Key; }
-        }
+        #region [====== Version ======]
 
-        TVersion IAggregateRoot<TKey, TVersion>.Version
+        TVersion IVersionedObject<TKey, TVersion>.Version
         {
             get { return Version; }
-        }
+        }        
 
         /// <summary>
-        /// Returns the key of this aggregate.
-        /// </summary>
-        protected abstract TKey Key
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Returns the version of this aggregate.
+        /// Gets or sets the version of this aggregate.
         /// </summary>
         protected abstract TVersion Version
         {
@@ -80,12 +65,33 @@ namespace System.ComponentModel.Server.Domain
         }
 
         /// <summary>
-        /// Increments the specified <paramref name="version"/> and returns the result.
+        /// Creates and returns a new version as compared to the current version of the aggregate.
         /// </summary>
-        /// <returns>The incremented value.</returns>
-        protected abstract TVersion Increment(TVersion version);
+        /// <returns>A new version.</returns>
+        protected abstract TVersion NewVersion();
+        
+        /// <summary>
+        /// Compares the specified <paramref name="version"/> with the <paramref name="newVersion"/>
+        /// and assigns the new version to <paramref name="version"/> if it is newer.
+        /// </summary>
+        /// <param name="version">The current version.</param>
+        /// <param name="newVersion">The new version.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="newVersion"/> is smaller than or equal to <paramref name="version"/>.
+        /// </exception>
+        protected static void SetVersion(ref TVersion version, TVersion newVersion)
+        {
+            if (version.CompareTo(newVersion) < 0)
+            {
+                version = newVersion;
+                return;
+            }
+            throw NewInvalidVersionException(newVersion, version);
+        }
 
-        void IEventStream<TKey, TVersion>.FlushTo(IWritableEventStream<TKey, TVersion> stream)
+        #endregion        
+
+        void IReadableEventStream<TKey, TVersion>.FlushTo(IWritableEventStream<TKey, TVersion> stream)
         {
             _buffer.FlushTo(stream);
         }
@@ -102,49 +108,60 @@ namespace System.ComponentModel.Server.Domain
         /// <exception cref="InvalidOperationException">
         /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
         /// </exception>
-        protected void Publish<TEvent>(Func<TVersion, TEvent> eventFactory) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
+        protected void Publish<TEvent>(Func<TKey, TVersion, TEvent> eventFactory) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
         {
             if (eventFactory == null)
             {
                 throw new ArgumentNullException("eventFactory");
             }
-            Publish(eventFactory.Invoke(Increment(Version)));
-        }
+            var @event = eventFactory.Invoke(Id, NewVersion());
 
-        /// <summary>
-        /// Appends the specified event to the aggregate's buffer and publishes it.
-        /// </summary>
-        /// <typeparam name="TEvent">Type of the event to append.</typeparam>
-        /// <param name="event">The event to append.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="event"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
-        /// </exception>
-        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>, IMessage<TEvent>
+            Write(@event);
+
+            MessageProcessor.Publish(@event);
+        }                
+
+        internal virtual void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>
         {
             if (@event == null)
             {
                 throw new ArgumentNullException("event");
             }
-            if (@event.AggregateKey.Equals(Key))
+            if (@event.Key.Equals(Id))
             {
-                Version = @event.AggregateVersion;
-
+                try
+                {
+                    Version = @event.Version;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    throw NewInvalidVersionException(@event, Version);
+                }                
                 _buffer.Write(@event);
-
-                MessageProcessor.Publish(@event);
                 return;
             }
-            throw NewNonMatchingAggregateKeyException(@event);
+            throw NewInvalidKeyException(@event, Id);                                  
         }
 
-        internal Exception NewNonMatchingAggregateKeyException<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>
+        private static Exception NewInvalidKeyException<TEvent>(TEvent @event, TKey aggregateKey) where TEvent : class, IVersionedObject<TKey, TVersion>
         {
-            var messageFormat = ExceptionMessages.Aggregate_NonMatchingKey;
-            var message = string.Format(messageFormat, Key, @event.AggregateKey);
+            var messageFormat = ExceptionMessages.AggregateRoot_InvalidKey;
+            var message = string.Format(messageFormat, @event.Key, aggregateKey);
             return new ArgumentException(message, "event");
         }
+
+        private static Exception NewInvalidVersionException(TVersion newVersion, TVersion oldVersion)
+        {
+            var messageFormat = ExceptionMessages.AggregateRoot_InvalidVersion;
+            var message = string.Format(messageFormat, newVersion, oldVersion);
+            return new ArgumentException(message, "newVersion");
+        } 
+
+        private static Exception NewInvalidVersionException<TEvent>(TEvent @event, TVersion aggregateVersion) where TEvent : class, IVersionedObject<TKey, TVersion>
+        {
+            var messageFormat = ExceptionMessages.AggregateRoot_InvalidVersion;
+            var message = string.Format(messageFormat, @event.Version, aggregateVersion);
+            return new ArgumentException(message, "event");
+        }        
     }
 }

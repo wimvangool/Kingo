@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace System.ComponentModel.Server.Domain
 {
     internal sealed class AggregateRootSet<TAggregate, TKey, TVersion> : IEnumerable<AggregateRootVersionTracker<TAggregate, TKey, TVersion>>
-        where TAggregate : class, IAggregateRoot<TKey, TVersion>
+        where TAggregate : class, IVersionedObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Server;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client
@@ -48,10 +47,10 @@ namespace System.ComponentModel.Client
         #region [====== Execution ======]        
 
         /// <inheritdoc />
-        public abstract TMessageOut Execute(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default);            
+        public abstract TMessageOut Execute(Guid requestId);            
 
         /// <inheritdoc />
-        public abstract Task<TMessageOut> ExecuteAsync(Guid requestId, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null);                       
+        public abstract Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token = null);                       
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()

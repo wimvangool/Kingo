@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Resources;
 using System.Text;
@@ -15,43 +14,18 @@ namespace System.ComponentModel.Server
     public abstract class MessageProcessor : IMessageProcessor
     {
         private readonly InstanceLock _instanceLock;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ThreadLocal<MessagePointer> _currentMessagePointer;                 
         private readonly IMessageProcessorBus _domainEventBus;
-
-        private readonly Lazy<MessageHandlerPipeline> _messageEntryPipeline;
-        private readonly Lazy<MessageHandlerPipeline> _businessLogicPipeline;
-        private readonly Lazy<QueryPipeline> _dataAccessPipeline;               
+        private readonly ThreadLocal<MessagePointer> _currentMessage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
         /// </summary>        
         protected MessageProcessor()
         {           
-            _instanceLock = new InstanceLock(this, true);
-            _currentMessagePointer = new ThreadLocal<MessagePointer>();
-            _domainEventBus = new MessageProcessorBus(this);
-            
-            _messageEntryPipeline = new Lazy<MessageHandlerPipeline>(CreateMessageEntryPipeline, true);
-            _businessLogicPipeline = new Lazy<MessageHandlerPipeline>(CreateBusinessLogicPipeline, true);
-            _dataAccessPipeline = new Lazy<QueryPipeline>(CreateDataAccessPipeline, true);
-        }
-
-        internal MessageHandlerPipeline MessageEntryPipeline
-        {
-            get { return _messageEntryPipeline.Value; }
-        }
-
-        internal MessageHandlerPipeline BusinessLogicPipeline
-        {
-            get { return _businessLogicPipeline.Value; }
-        }
-
-        internal QueryPipeline DataAccessPipeline
-        {
-            get { return _dataAccessPipeline.Value; }
-        }
+            _instanceLock = new InstanceLock(this, true);            
+            _domainEventBus = new MessageProcessorBus(this);   
+            _currentMessage = new ThreadLocal<MessagePointer>();        
+        }        
 
         #region [====== Dispose ======]
 
@@ -92,28 +66,7 @@ namespace System.ComponentModel.Server
         /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
         /// Otherwise, only unmanaged resources will be released.
         /// </remarks>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (InstanceLock.IsDisposed)
-            {
-                return;
-            }
-            if (disposing)
-            {
-                if (_messageEntryPipeline.IsValueCreated)
-                {
-                    _messageEntryPipeline.Value.Dispose();
-                }
-                if (_businessLogicPipeline.IsValueCreated)
-                {
-                    _businessLogicPipeline.Value.Dispose();
-                }
-                if (_dataAccessPipeline.IsValueCreated)
-                {
-                    _dataAccessPipeline.Value.Dispose();
-                }
-            }            
-        }        
+        protected virtual void Dispose(bool disposing) { }       
 
         #endregion
 
@@ -126,8 +79,8 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />
         public MessagePointer Message
         {
-            get { return _currentMessagePointer.Value; }
-            private set { _currentMessagePointer.Value = value; }
+            get { return _currentMessage.Value; }
+            private set { _currentMessage.Value = value; }
         }
 
         /// <summary>
@@ -200,24 +153,8 @@ namespace System.ComponentModel.Server
             InstanceLock.EnterMethod();
 
             try
-            {                
-                var callerContext = SynchronizationContext.Current;
-
-                return Start(() =>
-                {
-                    var previousContext = SynchronizationContext.Current;
-
-                    SynchronizationContext.SetSynchronizationContext(callerContext);
-
-                    try
-                    {
-                        Handle(message, handler, token);
-                    }
-                    finally
-                    {
-                        SynchronizationContext.SetSynchronizationContext(previousContext);
-                    }
-                }, message.GetType(), token);
+            {                                
+                return Start(() => Handle(message, handler, token), message.GetType(), token);
             }
             finally
             {
@@ -247,11 +184,10 @@ namespace System.ComponentModel.Server
             PushMessage(ref message, token);
 
             try
-            {
-                var dispatcher = new MessageHandlerDispatcher<TMessage>(message, handler, this);
-                var pipeline = MessageEntryPipeline.ConnectTo(dispatcher);
-
-                pipeline.Invoke();              
+            {                
+                BuildMessageEntryPipeline()
+                    .ConnectTo(new MessageHandlerDispatcher<TMessage>(message, handler, this))
+                    .Invoke();                                    
             }
             finally
             {
@@ -264,15 +200,15 @@ namespace System.ComponentModel.Server
         #region [====== Queries ======]
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, options, token);
+            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {            
@@ -283,24 +219,8 @@ namespace System.ComponentModel.Server
             InstanceLock.EnterMethod();
 
             try
-            {
-                var callerContext = SynchronizationContext.Current;
-
-                return Start(() =>
-                {
-                    var previousContext = SynchronizationContext.Current;
-
-                    SynchronizationContext.SetSynchronizationContext(callerContext);
-
-                    try
-                    {
-                        return Execute(message, query, options, token);
-                    }
-                    finally
-                    {
-                        SynchronizationContext.SetSynchronizationContext(previousContext);
-                    }
-                }, message.GetType(), token);
+            {                
+                return Start(() => Execute(message, query, token), message.GetType(), token);
             }
             finally
             {
@@ -309,15 +229,15 @@ namespace System.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, options, token);
+            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, QueryExecutionOptions options = QueryExecutionOptions.Default, CancellationToken? token = null)
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {            
@@ -329,9 +249,9 @@ namespace System.ComponentModel.Server
 
             try
             {
-                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, options, this);
+                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, this);
                 
-                MessageEntryPipeline.ConnectTo(handler).Invoke();
+                BuildMessageEntryPipeline().ConnectTo(handler).Invoke();
 
                 return handler.MessageOut;
             }
@@ -361,11 +281,9 @@ namespace System.ComponentModel.Server
             InstanceLock.ExitMethod();
         }               
 
-        private MessageHandlerPipeline CreateMessageEntryPipeline()
+        private MessageHandlerPipeline BuildMessageEntryPipeline()
         {
-            var pipeline = new MessageHandlerPipeline(CreateMessageEntryPipelineModules());
-            pipeline.Start();
-            return pipeline;
+            return new MessageHandlerPipeline(CreateMessageEntryPipeline());           
         }
 
         /// <summary>
@@ -373,13 +291,14 @@ namespace System.ComponentModel.Server
         /// that will be used to create a pipeline for every incoming message.
         /// </summary>                
         /// <returns>A collection of <see cref="MessageHandlerModule">modules</see>.</returns>              
-        protected abstract IEnumerable<MessageHandlerModule> CreateMessageEntryPipelineModules();
-
-        private MessageHandlerPipeline CreateBusinessLogicPipeline()
+        protected virtual IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
         {
-            var pipeline = new MessageHandlerPipeline(CreateBusinessLogicPipelineModules());
-            pipeline.Start();
-            return pipeline;
+            return Enumerable.Empty<MessageHandlerModule>();
+        }
+
+        internal MessageHandlerPipeline BuildCommandOrEventHandlerPipeline()
+        {
+            return new MessageHandlerPipeline(CreateCommandOrEventHandlerPipeline());            
         }
 
         /// <summary>
@@ -387,16 +306,14 @@ namespace System.ComponentModel.Server
         /// create a pipeline for every <see cref="IMessageHandler{TMessage}" /> handling a certain message.
         /// </summary>               
         /// <returns>A pipeline that will handle a message.</returns>              
-        protected internal virtual IEnumerable<MessageHandlerModule> CreateBusinessLogicPipelineModules()
+        protected virtual IEnumerable<MessageHandlerModule> CreateCommandOrEventHandlerPipeline()
         {
             return Enumerable.Empty<MessageHandlerModule>();
         }
 
-        private QueryPipeline CreateDataAccessPipeline()
+        internal QueryPipeline BuildQueryExecutionPipeline()
         {
-            var pipeline = new QueryPipeline(CreateDataAccessPipelineModules());
-            pipeline.Start();
-            return pipeline;
+            return new QueryPipeline(CreateQueryExecutionPipeline());            
         }
 
         /// <summary>
@@ -404,7 +321,7 @@ namespace System.ComponentModel.Server
         /// create a pipeline for every query that is executed.
         /// </summary>                     
         /// <returns>A query pipeline.</returns>             
-        protected virtual IEnumerable<QueryModule> CreateDataAccessPipelineModules()            
+        protected virtual IEnumerable<QueryModule> CreateQueryExecutionPipeline()            
         {
             return Enumerable.Empty<QueryModule>();
         }        

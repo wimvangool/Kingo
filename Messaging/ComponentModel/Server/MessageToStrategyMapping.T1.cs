@@ -1,12 +1,14 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Collections.Generic;
+
+namespace System.ComponentModel.Server
 {
-    internal sealed class MessageToStrategyMapping<TStrategy> : IMessageToStrategyMapping<TStrategy> where TStrategy : class
+    internal sealed class MessageToStrategyMapping<TStrategy> : MessageToStrategyMapping, IMessageToStrategyMapping<TStrategy> where TStrategy : class
     {
-        private MessageToStrategyMappingState<TStrategy> _state;
+        private readonly Dictionary<string, TStrategy> _mapping;
 
         internal MessageToStrategyMapping()
         {
-            _state = new WritableMappingState<TStrategy>();
+            _mapping = new Dictionary<string, TStrategy>();
         }
 
         public void Add(IMessage message, TStrategy strategy)
@@ -29,13 +31,8 @@
             {
                 throw new ArgumentNullException("messageTypeId");
             }
-            _state.Add(messageTypeId, strategy);
-        }
-
-        internal void SwitchToReadOnly()
-        {
-            _state.SwitchToReadOnly(ref _state);
-        }
+            _mapping.Add(messageTypeId, strategy);
+        }        
 
         public bool TryGetStrategy(IMessage message, out TStrategy strategy)
         {
@@ -57,7 +54,7 @@
             {
                 throw new ArgumentNullException("messageTypeId");
             }
-            return _state.TryGetStrategy(messageTypeId, out strategy);
+            return _mapping.TryGetValue(messageTypeId, out strategy);
         }
     }
 }

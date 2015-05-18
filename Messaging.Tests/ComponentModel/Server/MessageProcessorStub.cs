@@ -9,7 +9,7 @@ namespace System.ComponentModel.Server
 
         public MessageProcessorStub()
         {
-            _factory = new MessageHandlerFactoryForUnity();
+            _factory = new UnityFactory();
         }
 
         protected internal override MessageHandlerFactory MessageHandlerFactory
@@ -17,7 +17,7 @@ namespace System.ComponentModel.Server
             get { return _factory; }
         }
 
-        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipelineModules()
+        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
         {
             return Enumerable.Empty<MessageHandlerModule>();
         }

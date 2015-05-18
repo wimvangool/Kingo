@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Server.Domain;
 
 namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 {
@@ -41,7 +40,7 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 
         public void Add(ShoppingCart cart)
         {            
-            _carts.Add((cart as IAggregateRoot<Guid, int>).Key, cart);           
+            _carts.Add(cart.Id, cart);           
 
             MessageProcessor.Enlist(this);
         }        

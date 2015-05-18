@@ -168,7 +168,7 @@
   <data name="TransactionScope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
   </data>
-  <data name="WritableEventStream_MissingEventHandler" xml:space="preserve">
+  <data name="AggregateEventStream_MissingEventHandler" xml:space="preserve">
     <value>No event-handler was specified for domain-event of type '{0}'.</value>
   </data>
   <data name="RequiredAttribute_InvalidStringConstraint" xml:space="preserve">
@@ -225,25 +225,28 @@
   <data name="MemberSet_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
   </data>
-  <data name="Aggregate_NonMatchingKey" xml:space="preserve">
-    <value>The AggregateKey of the specified event ({0}) does not match the aggregate's key it is applied to ({1}).</value>
+  <data name="BufferedEventBus_InvalidMessage" xml:space="preserve">
+    <value>The message of type '{0}' could not be published because it is not valid. See ErrorTree for details.</value>
   </data>
   <data name="StringMemberExtensions_NegativeLength" xml:space="preserve">
     <value>A length cannot be negative: {0}.</value>
   </data>
-  <data name="BufferedEventBus_InvalidMessage" xml:space="preserve">
-    <value>The message of type '{0}' could not be published because it is not valid. See ErrorTree for details.</value>
+  <data name="AggregateRoot_InvalidKey" xml:space="preserve">
+    <value>The key of the event ({0}) must match the key of the aggregate ({1}).</value>
   </data>
-  <data name="AggregateRoot_InvalidTimestampVersion" xml:space="preserve">
-    <value>The specified timestamp ({0}) cannot be incremented because it is newer than the system's current date and time ({1}).</value>
+  <data name="AggregateRoot_InvalidVersion" xml:space="preserve">
+    <value>The version of the event ({0}) must be newer than the version of the aggregate ({1}).</value>
   </data>
-  <data name="Repository_AggregateNotDeleted" xml:space="preserve">
-    <value>An error occurred while deleting aggregate of type '{0}'with key '{1}'.</value>
+  <data name="Incrementer_InvalidDateTimeOffset" xml:space="preserve">
+    <value>Value '{0}' could not be incremented because it is equal to or larger than the current system's time ({1}).</value>
   </data>
-  <data name="Repository_AggregateNotInserted" xml:space="preserve">
-    <value>An error occurred while inserting aggregate of type '{0}'with key '{1}'.</value>
+  <data name="Incrementer_NegativeNumber" xml:space="preserve">
+    <value>Integer versions are not allowed to be negative: {0}.</value>
   </data>
-  <data name="Repository_AggregateNotUpdated" xml:space="preserve">
-    <value>An error occurred while updating aggregate of type '{0}'with key '{1}'.</value>
+  <data name="Incrementer_NoIncrementerAvailable" xml:space="preserve">
+    <value>Version of type '{0}' with value '{1}' could not be incremented because no default incrementer exists for this type.</value>
+  </data>
+  <data name="CatchAttribute_InvalidExceptionType" xml:space="preserve">
+    <value>Type '{0}' is not assignable to type '{1}'.</value>
   </data>
 </root>

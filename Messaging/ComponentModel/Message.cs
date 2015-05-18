@@ -109,14 +109,14 @@ namespace System.ComponentModel
             _MessageAttributeCache = new ConcurrentDictionary<Type, Attribute[]>();
         }
 
-        internal static bool TryGetStrategyFromAttribute<TStrategy>(object message, out TStrategy atribute) where TStrategy : class
+        internal static bool TryGetStrategyFromAttribute<TStrategy>(object message, out TStrategy attribute) where TStrategy : class
         {
             var messageType = message.GetType();
             var attributes = SelectAttributesOfType<TStrategy>(messageType);
 
             try
             {
-                return (atribute = attributes.SingleOrDefault()) != null;
+                return (attribute = attributes.SingleOrDefault()) != null;
             }
             catch (InvalidOperationException)
             {

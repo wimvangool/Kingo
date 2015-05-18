@@ -15,8 +15,12 @@ namespace System.ComponentModel.Server
         /// <exception cref="InvalidMessageException">
         /// <paramref name="handler"/> is invalid.
         /// </exception>
-        protected override void InvokeHandler(IMessageHandler handler)
-        {                        
+        public override void Invoke(IMessageHandler handler)
+        {                   
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
             InvalidMessageException exception;
 
             if (TryCreateInvalidMessageException(handler.Message, out exception))

@@ -5,7 +5,7 @@ using System.Security.Permissions;
 namespace System.ComponentModel
 {
     /// <summary>
-    /// This <see cref="Exception" /> is thrown when a message could not be processed by a <see cref="IMessageProcessor" />
+    /// This exception is thrown when a message could not be processed by a <see cref="IMessageProcessor" />
     /// for functional reasons, meaning that the (sender of the) message did not meet the preconditions for correct processing of this message.    
     /// </summary>
     [Serializable]

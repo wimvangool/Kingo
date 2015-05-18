@@ -24,9 +24,8 @@ namespace System.ComponentModel.Server
             _command.Value = "Some Value";
             _nextHandlerMock.Setup(handler => handler.Handle(_command));
 
-            using (var module = new MessageValidationModule())
-            {         
-                module.Start();
+            var module = new MessageValidationModule();
+            {                         
                 module.Invoke(_handler); 
             }
             _nextHandlerMock.VerifyAll();
@@ -35,12 +34,11 @@ namespace System.ComponentModel.Server
         [TestMethod]
         [ExpectedException(typeof(InvalidMessageException))]
         public void Module_Throws_IfValidatorIsSpecifiedAndMessageIsInvalid()
-        {                      
+        {
             _nextHandlerMock.Setup(handler => handler.Handle(_command));
 
-            using (var module = new MessageValidationModule())
+            var module = new MessageValidationModule();
             {
-                module.Start();
                 module.Invoke(_handler);
             }
             _nextHandlerMock.VerifyAll();

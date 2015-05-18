@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 [assembly: Guid("4669F913-79B7-4581-921A-78F32A0946C6")]
 [assembly: AssemblyTitle("System.ComponentModel")]
 [assembly: AssemblyDescription("Contains components to build applications based on messaging patterns.")]
-[assembly: AssemblyVersion("1.8.1.6")]
-[assembly: AssemblyFileVersion("1.8.1.6")]
-[assembly: AssemblyInformationalVersion("1.8.1.6")]
+[assembly: AssemblyVersion("1.8.2.1")]
+[assembly: AssemblyFileVersion("1.8.2.1")]
+[assembly: AssemblyInformationalVersion("1.8.2.1")]
 
 [assembly: InternalsVisibleTo("System.ComponentModel.Messaging.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +

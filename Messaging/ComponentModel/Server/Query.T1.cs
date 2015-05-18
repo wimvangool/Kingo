@@ -14,17 +14,7 @@
         public IMessage MessageIn
         {
             get { return _nextQuery.MessageIn; }
-        }
-
-        public bool AllowCacheRead
-        {
-            get { return _nextQuery.AllowCacheRead; }
-        }
-
-        public bool AllowCacheWrite
-        {
-            get { return _nextQuery.AllowCacheWrite; }
-        }
+        }        
 
         public TMessageOut Invoke()
         {

@@ -3,12 +3,12 @@
 namespace System.ComponentModel.Server.Domain
 {
     /// <summary>
-    /// Represents an in-memory stream of <see cref="IAggregateRootEvent{T, S}">aggregate events</see>.
+    /// Represents an in-memory stream of <see cref="IVersionedObject{T, S}">aggregate events</see>.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
     [Serializable]
-    public sealed class MemoryEventStream<TKey, TVersion> : IEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
+    public sealed class MemoryEventStream<TKey, TVersion> : IReadableEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
@@ -42,7 +42,7 @@ namespace System.ComponentModel.Server.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        public void Write<TEvent>(TEvent @event) where TEvent : class, IAggregateRootEvent<TKey, TVersion>
+        public void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>
         {
             if (@event == null)
             {

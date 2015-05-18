@@ -3,11 +3,11 @@
     internal sealed class EventBuffer<TKey, TVersion, TEvent> : IEventBuffer<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TEvent : class, IAggregateRootEvent<TKey, TVersion>
+        where TEvent : class, IVersionedObject<TKey, TVersion>
     {
         private readonly TEvent _domainEvent;
 
-        public EventBuffer(TEvent domainEvent)
+        internal EventBuffer(TEvent domainEvent)
         {            
             _domainEvent = domainEvent;
         }

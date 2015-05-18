@@ -100,14 +100,11 @@ namespace System.ComponentModel.Server.Transactions
             var message = new DefaultMessage();
             var handler = new MessageHandlerWrapper<DefaultMessage>(message, messageSink);
 
-            using (var module = new TransactionScopeModule())
-            {
-                module.Start();
-
-                Assert.IsNull(Transaction.Current);
-                module.Invoke(handler);
-                Assert.IsNull(Transaction.Current);
-            }
+            var module = new TransactionScopeModule();
+             
+            Assert.IsNull(Transaction.Current);
+            module.Invoke(handler);
+            Assert.IsNull(Transaction.Current);            
 
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWasNotNull();
@@ -123,19 +120,16 @@ namespace System.ComponentModel.Server.Transactions
 
             Transaction transaction;
 
-            using (var module = new TransactionScopeModule())
+            var module = new TransactionScopeModule();
+                       
+            using (var scope = new TransactionScope())
             {
-                module.Start();
+                Assert.IsNotNull(transaction = Transaction.Current);
+                module.Invoke(handler);
+                Assert.AreSame(transaction, Transaction.Current);
 
-                using (var scope = new TransactionScope())
-                {
-                    Assert.IsNotNull(transaction = Transaction.Current);
-                    module.Invoke(handler);
-                    Assert.AreSame(transaction, Transaction.Current);
-
-                    scope.Complete();
-                }
-            }
+                scope.Complete();
+            }            
 
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWas(transaction);
@@ -150,17 +144,14 @@ namespace System.ComponentModel.Server.Transactions
             var message = new DefaultMessage();
             var handler = new MessageHandlerWrapper<DefaultMessage>(message, messageSink);
 
-            using (var module = new TransactionScopeModule(TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted))
+            var module = new TransactionScopeModule(TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted);
+                            
+            using (var scope = new TransactionScope())
             {
-                module.Start();
+                module.Invoke(handler);
 
-                using (var scope = new TransactionScope())
-                {
-                    module.Invoke(handler);
-
-                    scope.Complete();
-                }
-            }
+                scope.Complete();
+            }            
         }
 
         [TestMethod]
@@ -172,19 +163,17 @@ namespace System.ComponentModel.Server.Transactions
 
             Transaction transaction;
 
-            using (var module = new TransactionScopeModule())
+            var module = new TransactionScopeModule();
+           
+            using (var scope = new TransactionScope())
             {
-                module.Start();
+                Assert.IsNotNull(transaction = Transaction.Current);
+                module.Invoke(handler);
+                Assert.AreSame(transaction, Transaction.Current);
 
-                using (var scope = new TransactionScope())
-                {
-                    Assert.IsNotNull(transaction = Transaction.Current);
-                    module.Invoke(handler);
-                    Assert.AreSame(transaction, Transaction.Current);
-
-                    scope.Complete();
-                }
+                scope.Complete();
             }
+            
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWasNot(transaction);
             messageSink.VerifyIsolationLevelWas(IsolationLevel.ReadCommitted);
@@ -197,16 +186,14 @@ namespace System.ComponentModel.Server.Transactions
             var message = new SuppressMessage();
             var handler = new MessageHandlerWrapper<SuppressMessage>(message, messageSink);
 
-            using (var module = new TransactionScopeModule())
+            var module = new TransactionScopeModule();
+            
+            using (var scope = new TransactionScope())
             {
-                module.Start();
-
-                using (var scope = new TransactionScope())
-                {
-                    module.Invoke(handler);
-                    scope.Complete();
-                }
+                module.Invoke(handler);
+                scope.Complete();
             }
+            
             messageSink.VerifyMessageWas(message);
             messageSink.VerifyTransactionWasNull();            
         }
