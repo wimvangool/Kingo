@@ -1,6 +1,8 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
-    internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : IMessageHandler
+    internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : MessageHandlerDispatcher
         where TMessageIn : class, IMessage<TMessageIn>
         where TMessageOut : class, IMessage<TMessageOut>
     {
@@ -13,7 +15,7 @@
             _processor = processor;
         }
 
-        IMessage IMessageHandler.Message
+        public override IMessage Message
         {
             get { return _query.MessageIn; }
         }
@@ -24,26 +26,22 @@
             private set;
         }
 
-        void IMessageHandler.Invoke()
+        public override async Task InvokeAsync()
         {
-            _processor.Message.ThrowIfCancellationRequested();
+            ThrowIfCancellationRequested();
 
             using (var scope = _processor.CreateUnitOfWorkScope())
             {
-                MessageOut = ExecuteQuery();
+                MessageOut = await ExecuteQueryAsync();
 
-                scope.Complete();
+                await scope.CompleteAsync();
             }
-            _processor.Message.ThrowIfCancellationRequested();
-        }
+            ThrowIfCancellationRequested();
+        }        
 
-        private TMessageOut ExecuteQuery()
+        private async Task<TMessageOut> ExecuteQueryAsync()
         {            
-            var messageOut = _processor.BuildQueryExecutionPipeline().ConnectTo(_query).Invoke();
-
-            _processor.Message.ThrowIfCancellationRequested();
-
-            return messageOut;
+            return await _processor.BuildQueryExecutionPipeline().ConnectTo(_query).InvokeAsync();            
         }        
     }
 }

@@ -21,7 +21,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(IMessage failedMessage)
+        internal FunctionalException(IMessage failedMessage)
         {
             if (failedMessage == null)
             {
@@ -38,7 +38,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(IMessage failedMessage, string message)
+        internal FunctionalException(IMessage failedMessage, string message)
             : base(message)
         {
             if (failedMessage == null)
@@ -57,7 +57,7 @@ namespace System.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected FunctionalException(IMessage failedMessage, string message, Exception innerException)
+        internal FunctionalException(IMessage failedMessage, string message, Exception innerException)
             : base(message, innerException)
         {
             if (failedMessage == null)
@@ -73,7 +73,7 @@ namespace System.ComponentModel
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected FunctionalException(SerializationInfo info, StreamingContext context)
+        internal FunctionalException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             _failedMessage = (IMessage) info.GetValue(_FailedMessageKey, typeof(IMessage));

@@ -1,4 +1,6 @@
 ﻿
+using System.Threading.Tasks;
+
 namespace System.ComponentModel.Server
 {
     /// <summary>
@@ -9,6 +11,6 @@ namespace System.ComponentModel.Server
         /// <summary>
         /// Flushes the event.
         /// </summary>
-        void Flush();
+        Task FlushAsync();
     }
 }

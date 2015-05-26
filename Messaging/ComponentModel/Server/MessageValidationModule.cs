@@ -1,4 +1,6 @@
 ﻿using System.Resources;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -15,41 +17,40 @@ namespace System.ComponentModel.Server
         /// <exception cref="InvalidMessageException">
         /// <paramref name="handler"/> is invalid.
         /// </exception>
-        public override void Invoke(IMessageHandler handler)
+        public override async Task InvokeAsync(IMessageHandler handler)
         {                   
             if (handler == null)
             {
                 throw new ArgumentNullException("handler");
             }
-            InvalidMessageException exception;
-
-            if (TryCreateInvalidMessageException(handler.Message, out exception))
+            var errorTree = await Validate(handler.Message);
+            if (errorTree.TotalErrorCount > 0)
             {
-                throw exception;               
-            }            
-            handler.Invoke();
+                throw NewInvalidMessageException(handler.Message, errorTree);
+            }
+            await handler.InvokeAsync();
         }
 
         /// <summary>
-        /// Validates the specified <paramref name="message"/> and creates a new <see cref="InvalidMessageException" />
-        /// containing all validation errors if any valdation errors were detected.
+        /// Validates the specified <paramref name="message" /> and returns the resulting <see cref="ValidationErrorTree" />.
         /// </summary>
         /// <param name="message">The message to validate.</param>
-        /// <param name="exception">
-        /// If <paramref name="message"/> has any validation errors, this parameter will refer to a new
-        /// <see cref="InvalidMessageException"/> instance.
-        /// </param>
-        /// <returns><c>true</c> if any validation errors were detected; otherwise <c>false</c>.</returns>
-        protected static bool TryCreateInvalidMessageException(IMessage message, out InvalidMessageException exception)
+        /// <returns>The resulting <see cref="ValidationErrorTree" />.</returns>
+        protected virtual Task<ValidationErrorTree> Validate(IMessage message)
         {
-            var errorTree = message.Validate();
-            if (errorTree.TotalErrorCount == 0)
-            {
-                exception = null;
-                return false;
-            }
-            exception = new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, errorTree);
-            return true;
+            return AsyncMethod.RunSynchronously(() => message.Validate());
+        }        
+
+        /// <summary>
+        /// Creates and returns a new <see cref="InvalidMessageException"/> indicating that the specified
+        /// <paramref name="message"/> is not valid.
+        /// </summary>
+        /// <param name="message">The invalid message.</param>
+        /// <param name="errorTree">The <see cref="ValidationErrorTree" /> containing all validation errors.</param>
+        /// <returns>A new <see cref="InvalidMessageException"/>.</returns>
+        protected virtual InvalidMessageException NewInvalidMessageException(IMessage message, ValidationErrorTree errorTree)
+        {
+            return new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, errorTree);
         }
     }
 }

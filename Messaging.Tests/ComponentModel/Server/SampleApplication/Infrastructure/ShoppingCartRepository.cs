@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Server.Domain;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 {
     [Dependency(InstanceLifetime.Singleton)]
-    public sealed class ShoppingCartRepository : IShoppingCartRepository, IUnitOfWork
+    public sealed class ShoppingCartRepository : Repository<ShoppingCart, Guid, int>, IShoppingCartRepository
     {        
         private readonly Dictionary<Guid, ShoppingCart> _carts;
         private int _flushCount;
@@ -11,6 +14,16 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
         public ShoppingCartRepository()
         {            
             _carts = new Dictionary<Guid, ShoppingCart>(4);
+        }        
+
+        void IShoppingCartRepository.Add(ShoppingCart cart)
+        {
+            Add(cart);
+        }
+
+        Task<ShoppingCart> IShoppingCartRepository.GetById(Guid id)
+        {
+            return GetByKey(id);
         }
 
         public int FlushCount
@@ -18,40 +31,31 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
             get { return _flushCount; }
         }
 
-        public int FlushGroupId
+        public override Task FlushAsync()
         {
-            get { return 0; }
+            Interlocked.Increment(ref _flushCount);
+
+            return base.FlushAsync();
         }
 
-        public bool CanBeFlushedAsynchronously
+        protected override Task<ShoppingCart> SelectByKey(Guid key)
         {
-            get { return false; }
+            return AsyncMethod.RunSynchronously(() => _carts[key]);
         }
 
-        bool IUnitOfWork.RequiresFlush()
+        protected override Task InsertAsync(ShoppingCart aggregate)
         {
-            return true;
+            return AsyncMethod.RunSynchronously(() => _carts.Add(aggregate.Id, aggregate));
         }
 
-        void IUnitOfWork.Flush()
-        {            
-            _flushCount++;
+        protected override Task UpdateAsync(ShoppingCart aggregate, int originalVersion)
+        {
+            return AsyncMethod.RunSynchronously(() => _carts[aggregate.Id] = aggregate);            
         }        
 
-        public void Add(ShoppingCart cart)
-        {            
-            _carts.Add(cart.Id, cart);           
-
-            MessageProcessor.Enlist(this);
-        }        
-
-        public ShoppingCart GetById(Guid id)
-        {            
-            var cart = _carts[id];
-
-            MessageProcessor.Enlist(this);
-
-            return cart;
+        protected override Task DeleteAsync(Guid key)
+        {
+            return AsyncMethod.RunSynchronously(() => _carts.Remove(key));
         }        
     }
 }

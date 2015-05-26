@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.Server.SampleApplication.Messages;
+﻿using System.ComponentModel.Server.Domain;
+using System.ComponentModel.Server.SampleApplication.Messages;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
 {
@@ -18,18 +21,24 @@ namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
             _carts = carts;
         }
         
-        public void Handle(CreateShoppingCartCommand message)
+        [Throws(typeof(ConstraintViolationException<ShoppingCart>))]
+        public Task HandleAsync(CreateShoppingCartCommand message)
         {
-            _carts.Add(ShoppingCart.CreateShoppingCart(message.ShoppingCartId));            
+            return AsyncMethod.RunSynchronously(() =>
+                _carts.Add(ShoppingCart.CreateShoppingCart(message.ShoppingCartId))
+            );            
         }
 
-        public void Handle(AddProductToCartCommand message)
+        public async Task HandleAsync(AddProductToCartCommand message)
         {
-            var shoppingCart = _carts.GetById(message.ShoppingCartId);
+            var shoppingCart = await _carts.GetById(message.ShoppingCartId);
 
-            shoppingCart.AddProduct(message.ProductId, message.Quantity);
+            shoppingCart.AddProduct(message.ProductId, message.Quantity);           
         }
 
-        public void Handle(object message) { }
+        public Task HandleAsync(object message)
+        {
+            return AsyncMethod.Void;
+        }
     }
 }

@@ -59,7 +59,7 @@ namespace System.ComponentModel.Client
         }
 
         /// <inheritdoc />
-        public override Task ExecuteAsync(Guid requestId, CancellationToken? token)
+        public override Task ExecuteAsync(Guid requestId, CancellationToken token)
         {                        
             var message = Message.Copy();            
 
@@ -82,7 +82,7 @@ namespace System.ComponentModel.Client
                     throw;
                 }
                 Post(() => OnExecutionSucceeded(new ExecutionSucceededEventArgs(requestId, message)));
-            });
+            }, token);
         }               
 
         /// <summary>

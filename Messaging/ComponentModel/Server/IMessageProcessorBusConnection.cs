@@ -1,7 +1,9 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     internal interface IMessageProcessorBusConnection : IConnection
     {
-        void Handle<TPublished>(IMessageProcessor processor, TPublished message) where TPublished : class, IMessage<TPublished>;
+        Task HandleAsync<TPublished>(IMessageProcessor processor, TPublished message) where TPublished : class, IMessage<TPublished>;
     }
 }

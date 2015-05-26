@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Resources;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server.Domain
 {
@@ -10,11 +12,12 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TKey">Type of the key that identifies an aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
-    public abstract class Repository<TAggregate, TKey, TVersion> : IUnitOfWork
+    public abstract class Repository<TAggregate, TKey, TVersion> : IUnitOfWork, IDisposable
         where TAggregate : class, IVersionedObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
+        private readonly SemaphoreSlim _lock;
         private readonly AggregateRootSet<TAggregate, TKey, TVersion> _selectedAggregates;
         private readonly AggregateRootSet<TAggregate, TKey, TVersion> _insertedAggregates;
         private readonly AggregateRootSet<TAggregate, TKey, TVersion> _deletedAggregates;
@@ -24,63 +27,94 @@ namespace System.ComponentModel.Server.Domain
         /// </summary>                
         protected Repository()
         {
+            _lock = new SemaphoreSlim(1);
             _selectedAggregates = new AggregateRootSet<TAggregate, TKey, TVersion>();
             _insertedAggregates = new AggregateRootSet<TAggregate, TKey, TVersion>();
             _deletedAggregates = new AggregateRootSet<TAggregate, TKey, TVersion>();
         }
 
-        #region [====== IUnitOfWork Implementation ======]
-
-        int IUnitOfWork.FlushGroupId
+        /// <summary>
+        /// Returns the lock that is used to synchronize reads and writes.
+        /// </summary>
+        protected SemaphoreSlim Lock
         {
-            get { return FlushGroupId; }
+            get { return _lock; }
+        }
+
+        #region [====== Dispose ======]
+
+        /// <summary>
+        /// Indicates whether not this instance has been disposed.
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get;
+            private set;
         }
 
         /// <summary>
-        /// Indicates which group this unit of work belongs to.
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
+        /// (<c>false</c>).
+        /// </param>
         /// <remarks>
-        /// The default implementation returns <c>0</c>, which
-        /// prevents this <see cref="Repository{S, T, U}" /> from grouping with other
-        /// <see cref="IUnitOfWork">units of work</see>.
+        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
+        /// Otherwise, only unmanaged resources will be released.
         /// </remarks>
-        protected virtual int FlushGroupId
+        protected virtual void Dispose(bool disposing)
         {
-            get { return 0; }
-        }
-
-        bool IUnitOfWork.CanBeFlushedAsynchronously
-        {
-            get { return CanBeFlushedAsynchronously; }
+            if (IsDisposed)
+            {
+                return;
+            }
+            if (disposing)
+            {
+                Lock.Dispose();
+            }
+            IsDisposed = true;
         }
 
         /// <summary>
-        /// Indicates whether or not the controller may flush this unit of work on a thread different than it was
-        /// created on.
+        /// Creates and returns a new <see cref="ObjectDisposedException" />.
         /// </summary>
-        /// <remarks>
-        /// The default implementation returns <c>false</c>.
-        /// </remarks>
-        protected virtual bool CanBeFlushedAsynchronously
+        /// <returns>A new <see cref="ObjectDisposedException" />.</returns>
+        protected ObjectDisposedException NewObjectDisposedException()
         {
-            get { return false; }
+            return new ObjectDisposedException(GetType().Name);
         }
 
-        bool IUnitOfWork.RequiresFlush()
+        #endregion
+
+        #region [====== IUnitOfWork ======]        
+
+        /// <summary>
+        /// Indicates whether or not this repository must enlist with the <see cref="MessageProcessor" />
+        /// automatically when (possible) changes are detected. Default is <c>true</c>.
+        /// </summary>
+        protected virtual bool EnlistAutomatically
         {
-            return RequiresFlush();
+            get { return true; }
         }
 
         /// <summary>
-        /// Indicates whether or not the unit of work maintains any changes that need to flushed.
+        /// Enlists this repository with the <see cref="MessageProcessor" /> to schedule it for a flush.
         /// </summary>
-        /// <returns>
-        /// <c>true</c> if the current instance needs to be flushed; otherwise <c>false</c>.
-        /// </returns>
-        protected virtual bool RequiresFlush()
+        protected virtual void Enlist()
         {
-            return HasAggregatesToDelete || HasAggregatesToUpdate || HasAggregateToInsert;
-        }
+            MessageProcessor.Enlist(this);
+        }        
 
         private bool HasAggregatesToDelete
         {
@@ -89,27 +123,37 @@ namespace System.ComponentModel.Server.Domain
 
         private bool HasAggregatesToUpdate
         {
-            get { return _selectedAggregates.Any(tracker => HasBeenUpdated(tracker.Aggregate, tracker.OriginalVersion)); }
+            get { return _selectedAggregates.Trackers.Any(tracker => HasBeenUpdated(tracker.Aggregate, tracker.OriginalVersion)); }
         }
 
         private bool HasAggregateToInsert
         {
             get { return _insertedAggregates.Count > 0; }
-        }
+        }               
 
-        void IUnitOfWork.Flush()
+        /// <inheritdoc />
+        public virtual bool RequiresFlush()
         {
-            Flush();
-        }
+            return HasAggregatesToDelete || HasAggregatesToUpdate || HasAggregateToInsert;
+        }              
 
         /// <summary>
         /// Flushes any pending changes to the underlying infrastructure.
         /// </summary>
-        protected virtual void Flush()
-        {
-            DeleteAggregates();
-            UpdateAggregates();
-            InsertAggregates();
+        public virtual async Task FlushAsync()
+        {            
+            await Lock.WaitAsync();
+
+            try
+            {
+                await DeleteAggregatesAsync();
+                await UpdateAggregatesAsync();
+                await InsertAggregatesAsync();
+            }
+            finally
+            {
+                Lock.Release();
+            }            
         }        
 
         #endregion
@@ -124,70 +168,65 @@ namespace System.ComponentModel.Server.Domain
         /// <exception cref="AggregateNotFoundException{T}">
         /// No aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/> was found.
         /// </exception>
-        public virtual TAggregate GetByKey(TKey key)
-        {
-            TAggregate aggregate;
+        public virtual async Task<TAggregate> GetByKey(TKey key)
+        {            
+            await Lock.WaitAsync();
 
-            if (TryGetByKey(key, out aggregate))
+            try
             {
-                return aggregate;
-            }
-            throw NewAggregateNotFoundByKeyException(key);
-        }        
+                TAggregate aggregate;
 
-        /// <summary>
-        /// Tries to retrieve and return an aggregate that has the specified <paramref name="key"/>.
-        /// </summary>
-        /// <param name="key">Key of the aggregate to find.</param>
-        /// <param name="aggregate">When found, this parameter will referenced the retrieved aggregate; otherwise <c>null</c>.</param>
-        /// <returns>
-        /// <c>true</c> if the aggregate with the specified <paramref name="key"/> was found; otherwise <c>false</c>.
-        /// </returns>
-        public virtual bool TryGetByKey(TKey key, out TAggregate aggregate)
-        {
-            // In order to return the desired aggregate, we first try to find it in the 'cache': the aggregates
-            // that have already been loaded or added in the current session. If so, we return that instance.
-            if (_selectedAggregates.TryGetValue(key, out aggregate) || _insertedAggregates.TryGetValue(key, out aggregate))
-            {
-                return true;
-            }
-            // If the desired aggregate was not selected or inserted, and it was not deleted (in which case it
-            // cannot be returned by definition), an attempt is made to retrieve it from the data store. If found,
-            // we add it to the selected-aggregate set and enlist this UnitOfWork with the controller because it
-            // might need to be flushed later.
-            if (!_deletedAggregates.Contains(key) && TrySelect(key, out aggregate))
-            {
-                _selectedAggregates.Add(aggregate);
+                // In order to return the desired aggregate, we first try to find it in the 'cache': the aggregates
+                // that have already been loaded or added in the current session. If so, we return that instance.
+                if (_selectedAggregates.TryGetValue(key, out aggregate) || _insertedAggregates.TryGetValue(key, out aggregate))
+                {
+                    return aggregate;
+                }
+                // If the desired aggregate was not selected or inserted, and it was not deleted (in which case it
+                // cannot be returned by definition), an attempt is made to retrieve it from the data store. If found,
+                // we add it to the selected-aggregate set and enlist this UnitOfWork with the controller because it
+                // might need to be flushed later.
+                if (!_deletedAggregates.Contains(key) && (aggregate = await SelectByKey(key)) != null)
+                {
+                    _selectedAggregates.Add(aggregate);
 
-                MessageProcessor.Enlist(this);
-                return true;
+                    if (EnlistAutomatically)
+                    {
+                        Enlist();
+                    }
+                    return aggregate;
+                }
+                throw NewAggregateNotFoundByKeyException(key);                
             }
-            aggregate = null;
-            return false;
-        }
+            finally
+            {
+                Lock.Release();
+            }            
+        }                
 
         /// <summary>
         /// Attempts to retrieve a specific Aggregate instance by its key. Returns <c>true</c>
         /// if found; returns <c>false</c> otherwise.
         /// </summary>
-        /// <param name="key">Key of the Aggregate instance to retrieve.</param>
-        /// <param name="aggregate">
-        /// This argument will be set to the retrieved instance if retrieval was succesful. Will
-        /// be set to <c>null</c> otherwise.
-        /// </param>
+        /// <param name="key">Key of the Aggregate instance to retrieve.</param>        
         /// <returns>
         /// <c>True</c> if this store contains an instance with the specified <paramref name="key"/>;
         /// otherwise <c>false</c>.
         /// </returns>
-        protected abstract bool TrySelect(TKey key, out TAggregate aggregate);
+        protected abstract Task<TAggregate> SelectByKey(TKey key);
 
-        private void UpdateAggregates()
+        private async Task UpdateAggregatesAsync()
         {
-            foreach (var aggregate in _selectedAggregates.Where(aggregate => HasBeenUpdated(aggregate.Aggregate, aggregate.OriginalVersion)))
+            var updates = from tracker in _selectedAggregates.Trackers
+                          where HasBeenUpdated(tracker.Aggregate, tracker.OriginalVersion)
+                          select UpdateAsync(tracker.Aggregate, tracker.OriginalVersion);
+
+            await Task.WhenAll(updates);
+
+            lock (_selectedAggregates)
             {
-                Update(aggregate.Aggregate, aggregate.OriginalVersion);
+                _selectedAggregates.CommitUpdates();
             }
-            _selectedAggregates.Clear();
         }        
 
         /// <summary>
@@ -199,7 +238,7 @@ namespace System.ComponentModel.Server.Domain
         /// The specified <paramref name="aggregate"/> could not be updated because it would violate a
         /// data-constraint in the data store.
         /// </exception>
-        protected abstract void Update(TAggregate aggregate, TVersion originalVersion);
+        protected abstract Task UpdateAsync(TAggregate aggregate, TVersion originalVersion);
 
         /// <summary>
         /// Determines whether or not the specified <paramref name="aggregate"/> has been updated.
@@ -237,33 +276,46 @@ namespace System.ComponentModel.Server.Domain
             {
                 throw new ArgumentNullException("aggregate");
             }
-            // When adding a new aggregate, we first check if it is not already present in cache. If so,
-            // we can ignore this operation.
-            if (_selectedAggregates.Contains(aggregate.Key) || _insertedAggregates.Contains(aggregate.Key))
+            Lock.Wait();
+
+            try
             {
-                return;
-            }
-            // If, by any chance, the aggregate that is now being added was deleted previously, it is
-            // restored again by moving it to the selected-aggregate set. In any other case, we add the
-            // aggregate to the inserted-aggregates set and enlist to the controller to mark a fresh change.
-            if (_deletedAggregates.Contains(aggregate.Key))
-            {
-                _deletedAggregates.MoveAggregateTo(aggregate.Key, _selectedAggregates);
-            }
-            else
-            {
+                // When adding a new aggregate, we first check if it is not already present in cache. If so,
+                // we can ignore this operation. However, if a different aggregate is added with a key that
+                // is already assigned to another aggregate, an exception is thrown.
+                if (_selectedAggregates.Contains(aggregate) || _insertedAggregates.Contains(aggregate))
+                {
+                    return;
+                }
+                else if (_selectedAggregates.Contains(aggregate.Key) || _insertedAggregates.Contains(aggregate.Key))
+                {
+                    throw NewDuplicateKeyException(aggregate.Key);
+                }
+                
                 _insertedAggregates.Add(aggregate);
 
-                MessageProcessor.Enlist(this);
+                if (EnlistAutomatically)
+                {
+                    Enlist();
+                }
             }
+            finally
+            {
+                Lock.Release();
+            }            
         }
 
-        private void InsertAggregates()
+        private async Task InsertAggregatesAsync()
         {
-            foreach (var aggregate in _insertedAggregates)
+            await Task.WhenAll(_insertedAggregates.Trackers.Select(tracker => InsertAsync(tracker.Aggregate)));
+
+            lock (_selectedAggregates)
             {
-                Insert(aggregate.Aggregate);
-            }
+                foreach (var insertedAggregate in _insertedAggregates.Trackers)
+                {
+                    _insertedAggregates.CopyAggregateTo(insertedAggregate.Aggregate.Key, _selectedAggregates);
+                }
+            }   
             _insertedAggregates.Clear();
         }        
 
@@ -275,63 +327,67 @@ namespace System.ComponentModel.Server.Domain
         /// The specified <paramref name="aggregate"/> could not be inserted because it would violate a
         /// data-constraint in the data store.
         /// </exception> 
-        protected abstract void Insert(TAggregate aggregate);
+        protected abstract Task InsertAsync(TAggregate aggregate);
 
         #endregion
 
-        #region [====== Removing and Deleting ======]
+        #region [====== Removing and Deleting ======]        
 
         /// <summary>
-        /// Marks the specified aggregate as 'deleted'.
+        /// Marks the aggregate with the specified <paramref name="key"/> as deleted.
         /// </summary>
-        /// <param name="aggregate">The aggregate to remove.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="aggregate"/> is <c>null</c>.
-        /// </exception>
-        public virtual void Remove(TAggregate aggregate)
+        /// <param name="key">Key of the aggregate to remove.</param>
+        public virtual void RemoveByKey(TKey key)
         {
-            if (aggregate == null)
-            {
-                throw new ArgumentNullException("aggregate");
-            }
-            // When removing an aggregate, we first check whether it has been loaded (selected) before, and if so,
-            // simply move it to the deleted-aggregates set. If it was inserted before (a very strange but possible
-            // situation), the previous insert is simply undone again. In any other case, the aggregate is first
-            // loaded into memory and then marked deleted.
-            if (_selectedAggregates.Contains(aggregate.Key))
-            {
-                _selectedAggregates.MoveAggregateTo(aggregate.Key, _deletedAggregates);
-            }
-            else if (_insertedAggregates.Contains(aggregate.Key))
-            {
-                _insertedAggregates.Remove(aggregate.Key);
-            }
-            else
-            {
-                _deletedAggregates.Add(aggregate);
+            Lock.Wait();
 
-                MessageProcessor.Enlist(this);                
+            try
+            {
+                // When removing an aggregate, we first check whether it has been loaded (selected) before, and if so,
+                // simply move it to the deleted-aggregates set. If it was inserted before (a very strange but possible
+                // situation), the previous insert is simply undone again. In any other case, the aggregate is first
+                // loaded into memory and then marked deleted.
+                if (_selectedAggregates.Contains(key))
+                {
+                    _selectedAggregates.CopyAggregateTo(key, _deletedAggregates);
+                    _selectedAggregates.Remove(key);
+                }
+                else if (_insertedAggregates.Contains(key))
+                {
+                    _insertedAggregates.Remove(key);
+                }
+                else
+                {
+                    _deletedAggregates.Add(key);
+
+                    if (EnlistAutomatically)
+                    {
+                        Enlist();
+                    }
+                }
             }
+            finally
+            {
+                Lock.Release();
+            }  
         }
 
-        private void DeleteAggregates()
+        private async Task DeleteAggregatesAsync()
         {
-            foreach (var aggregate in _deletedAggregates)
-            {
-                Delete(aggregate.Aggregate);
-            }
+            await Task.WhenAll(_deletedAggregates.Keys.Select(DeleteAsync));
+            
             _deletedAggregates.Clear();
         }        
 
         /// <summary>
         /// Deletes / removes a certain instance from this DataStore.
         /// </summary>
-        /// <param name="aggregate">The instance to remove.</param>
+        /// <param name="key">Key of the aggregate to remove.</param>
         /// <exception cref="ConstraintViolationException">
-        /// The specified <paramref name="aggregate"/> could not be deleted because it would violate a
+        /// The aggregate with specified <paramref name="key"/> could not be deleted because it would violate a
         /// data-constraint in the data store.
         /// </exception>
-        protected abstract void Delete(TAggregate aggregate);
+        protected abstract Task DeleteAsync(TKey key);
 
         #endregion
 
@@ -360,8 +416,15 @@ namespace System.ComponentModel.Server.Domain
         protected virtual AggregateNotFoundByKeyException<TAggregate, TKey> NewAggregateNotFoundByKeyException(TKey key, string message)
         {            
             return new AggregateNotFoundByKeyException<TAggregate, TKey>(key, message);
-        }  
-        
+        }
+
+        private static Exception NewDuplicateKeyException(TKey key)
+        {
+            var messageFormat = ExceptionMessages.Repository_DuplicateKey;
+            var message = string.Format(messageFormat, key);
+            return new DuplicateKeyException<TAggregate, TKey>(key, message);
+        }
+
         #endregion
     }
 }

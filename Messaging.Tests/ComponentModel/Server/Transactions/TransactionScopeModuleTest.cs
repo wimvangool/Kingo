@@ -1,4 +1,6 @@
-﻿using System.Transactions;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System.ComponentModel.Server.Transactions
@@ -14,11 +16,14 @@ namespace System.ComponentModel.Server.Transactions
             private Transaction _transaction;
             private IsolationLevel _isolationLevel;
 
-            public void Handle(TMessage message)
+            public Task HandleAsync(TMessage message)
             {
-                _message = message;
-                _transaction = Transaction.Current;
-                _isolationLevel = _transaction == null ? IsolationLevel.Unspecified : _transaction.IsolationLevel;
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _message = message;
+                    _transaction = Transaction.Current;
+                    _isolationLevel = _transaction == null ? IsolationLevel.Unspecified : _transaction.IsolationLevel;
+                });                
             }
 
             internal void VerifyMessageWas(TMessage message)
@@ -103,7 +108,7 @@ namespace System.ComponentModel.Server.Transactions
             var module = new TransactionScopeModule();
              
             Assert.IsNull(Transaction.Current);
-            module.Invoke(handler);
+            module.InvokeAsync(handler).Wait();
             Assert.IsNull(Transaction.Current);            
 
             messageSink.VerifyMessageWas(message);
@@ -125,7 +130,7 @@ namespace System.ComponentModel.Server.Transactions
             using (var scope = new TransactionScope())
             {
                 Assert.IsNotNull(transaction = Transaction.Current);
-                module.Invoke(handler);
+                module.InvokeAsync(handler).Wait();
                 Assert.AreSame(transaction, Transaction.Current);
 
                 scope.Complete();
@@ -136,9 +141,8 @@ namespace System.ComponentModel.Server.Transactions
             messageSink.VerifyIsolationLevelWas(IsolationLevel.Serializable);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Module_ThrowsException_IfSpecifiedIsolationLevelIsNotEqualToExistingIsolationLevel()
+        [TestMethod]        
+        public void Module_Throws_IfSpecifiedIsolationLevelIsNotEqualToExistingIsolationLevel()
         {
             var messageSink = new TransactionSpy<DefaultMessage>();
             var message = new DefaultMessage();
@@ -148,7 +152,7 @@ namespace System.ComponentModel.Server.Transactions
                             
             using (var scope = new TransactionScope())
             {
-                module.Invoke(handler);
+                module.InvokeAsync(handler).WaitAndHandle<ArgumentException>();
 
                 scope.Complete();
             }            
@@ -168,7 +172,7 @@ namespace System.ComponentModel.Server.Transactions
             using (var scope = new TransactionScope())
             {
                 Assert.IsNotNull(transaction = Transaction.Current);
-                module.Invoke(handler);
+                module.InvokeAsync(handler).Wait();
                 Assert.AreSame(transaction, Transaction.Current);
 
                 scope.Complete();
@@ -190,7 +194,7 @@ namespace System.ComponentModel.Server.Transactions
             
             using (var scope = new TransactionScope())
             {
-                module.Invoke(handler);
+                module.InvokeAsync(handler).Wait();
                 scope.Complete();
             }
             

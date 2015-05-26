@@ -52,11 +52,11 @@ namespace System.ComponentModel.Client
         /// <inheritdoc />
         public Task ExecuteAsync(Guid requestId)
         {
-            return ExecuteAsync(requestId, null);
+            return ExecuteAsync(requestId, CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public abstract Task ExecuteAsync(Guid requestId, CancellationToken? token);
+        public abstract Task ExecuteAsync(Guid requestId, CancellationToken token);
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()

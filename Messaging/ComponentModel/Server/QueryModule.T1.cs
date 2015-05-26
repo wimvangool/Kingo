@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Serves as a base class for all <see cref="QueryModule">QueryModules</see> that associate
@@ -37,10 +39,10 @@
 
         /// <summary>
         /// Attempts to retrieve the associated strategy for the message on the specified <paramref name="query"/>
-        /// and then invokes <see cref="Invoke{TMessageOut}(IQuery{TMessageOut}, TStrategy)" />.
+        /// and then invokes <see cref="InvokeAsync{TMessageOut}(IQuery{TMessageOut}, TStrategy)" />.
         /// </summary>
         /// <param name="query">The query to invoke.</param>
-        public override TMessageOut Invoke<TMessageOut>(IQuery<TMessageOut> query)
+        public override Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query)
         {
             if (query == null)
             {
@@ -50,13 +52,13 @@
 
             if (StrategyMapping.TryGetStrategy(query.MessageIn, out strategy))
             {
-                return Invoke(query, strategy);
+                return InvokeAsync(query, strategy);
             }
             if (Message.TryGetStrategyFromAttribute(query.MessageIn, out strategy))
             {
-                return Invoke(query, strategy);
+                return InvokeAsync(query, strategy);
             }
-            return Invoke(query, DefaultStrategy);
+            return InvokeAsync(query, DefaultStrategy);
         }
 
         /// <summary>
@@ -64,6 +66,6 @@
         /// </summary>
         /// <param name="query">The query to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
-        protected abstract TMessageOut Invoke<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage<TMessageOut>;
+        protected abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage<TMessageOut>;
     }
 }

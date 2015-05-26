@@ -66,7 +66,7 @@ namespace System.ComponentModel.Client
         }
 
         /// <inheritdoc />
-        public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token = null)
+        public override Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken token)
         {                        
             var message = Message.Copy();            
 

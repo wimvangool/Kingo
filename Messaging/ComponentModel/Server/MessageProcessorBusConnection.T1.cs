@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -36,14 +37,14 @@ namespace System.ComponentModel.Server
             _connections.Remove(this);
         }
 
-        public void Handle<TPublished>(IMessageProcessor processor, TPublished message) where TPublished : class, IMessage<TPublished>
+        public async Task HandleAsync<TPublished>(IMessageProcessor processor, TPublished message) where TPublished : class, IMessage<TPublished>
         {
             var handler = _handler as IMessageHandler<TPublished>;
             if (handler == null)
             {
                 return;
             }
-            processor.Handle(message, handler);
+            await processor.HandleAsync(message, handler);
         }
     }
 }

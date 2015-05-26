@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, represents a query that accepts a message
@@ -6,7 +8,7 @@
     /// </summary>
     /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
     /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
-    public interface IQuery<in TMessageIn, out TMessageOut> where TMessageIn : class
+    public interface IQuery<in TMessageIn, TMessageOut> where TMessageIn : class
     {
         /// <summary>
         /// Executes the query.
@@ -16,6 +18,6 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        TMessageOut Execute(TMessageIn message);
+        Task<TMessageOut> ExecuteAsync(TMessageIn message);
     }
 }

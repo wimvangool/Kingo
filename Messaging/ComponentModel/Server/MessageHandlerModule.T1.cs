@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Server as a bas class for all <see cref="MessageHandlerModule">MessageHandlerModules</see> that associate
@@ -37,10 +39,11 @@
 
         /// <summary>
         /// Attempts to retrieve the associated strategy for the message on the specified <paramref name="handler"/>
-        /// and then invokes <see cref="Invoke(IMessageHandler, TStrategy)" />.
+        /// and then invokes <see cref="InvokeAsync(IMessageHandler, TStrategy)" />.
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>
-        public override void Invoke(IMessageHandler handler)
+        /// <returns>A task carrying out the invocation.</returns>
+        public override Task InvokeAsync(IMessageHandler handler)
         {
             if (handler == null)
             {
@@ -48,17 +51,19 @@
             }
             TStrategy strategy;
 
+            if (MessageHandler.TryGetStrategyFromAttribute(handler, out strategy))
+            {
+                return InvokeAsync(handler, strategy);
+            }
             if (StrategyMapping.TryGetStrategy(handler.Message, out strategy))
             {
-                Invoke(handler, strategy);
-                return;
+                return InvokeAsync(handler, strategy);                
             }
             if (Message.TryGetStrategyFromAttribute(handler.Message, out strategy))
             {
-                Invoke(handler, strategy);
-                return;
+                return InvokeAsync(handler, strategy);                
             }
-            Invoke(handler, DefaultStrategy);
+            return InvokeAsync(handler, DefaultStrategy);
         }
 
         /// <summary>
@@ -66,6 +71,6 @@
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
-        protected abstract void Invoke(IMessageHandler handler, TStrategy strategy);
+        protected abstract Task InvokeAsync(IMessageHandler handler, TStrategy strategy);
     }
 }

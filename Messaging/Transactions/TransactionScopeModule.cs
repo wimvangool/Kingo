@@ -1,6 +1,7 @@
-﻿using System.Transactions;
+﻿using System.ComponentModel.Server;
+using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server.Transactions
+namespace System.Transactions
 {
     /// <summary>
     /// Represents a module that creates a <see cref="TransactionScope" /> before calling the next handler.
@@ -18,10 +19,9 @@ namespace System.ComponentModel.Server.Transactions
         /// The default <see cref="IsolationLevel" /> to use. If <see cref="IsolationLevel.Unspecified" /> is specified,
         /// the actual <see cref="IsolationLevel" /> applied will be that of any running <see cref="Transaction" /> or
         /// of the .NET Framework's default <see cref="IsolationLevel" /> setting, <see cref="IsolationLevel.Serializable"/>.
-        /// </param>        
-        /// <param name="interopOption">The default <see cref="EnterpriseServicesInteropOption" /> to use.</param> 
-        public TransactionScopeModule(TransactionScopeOption scopeOption, TimeSpan timeout, IsolationLevel isolationLevel = IsolationLevel.Unspecified, EnterpriseServicesInteropOption interopOption = EnterpriseServicesInteropOption.None)
-            : this(new TransactionScopeFactory(scopeOption, timeout, isolationLevel, interopOption)) { }
+        /// </param>                
+        public TransactionScopeModule(TransactionScopeOption scopeOption, TimeSpan timeout, IsolationLevel isolationLevel = IsolationLevel.Unspecified)
+            : this(new TransactionScopeFactory(scopeOption, timeout, isolationLevel)) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionScopeModule" /> class.
@@ -41,11 +41,12 @@ namespace System.ComponentModel.Server.Transactions
         }
 
         /// <inheritdoc />
-        protected override void Invoke(IMessageHandler handler, ITransactionScopeFactory strategy)
+        protected override async Task InvokeAsync(IMessageHandler handler, ITransactionScopeFactory strategy)
         {
             using (var transactionScope = strategy.CreateTransactionScope())
             {
-                handler.Invoke();
+                await handler.InvokeAsync();
+
                 transactionScope.Complete();
             }
         }        

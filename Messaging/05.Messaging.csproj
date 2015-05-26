@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -63,7 +63,10 @@
     <Compile Include="ComponentModel\FluentValidation\ListMemberExtensions.cs" />
     <Compile Include="ComponentModel\FluentValidation\MemberSet.cs" />
     <Compile Include="ComponentModel\IDependencyConfiguration.cs" />
-    <Compile Include="ComponentModel\Server\CatchAttribute.cs" />
+    <Compile Include="ComponentModel\Server\Domain\ConstraintViolationException.T1.cs" />
+    <Compile Include="ComponentModel\Server\Domain\DuplicateKeyException.T2.cs" />
+    <Compile Include="ComponentModel\Server\Domain\IExceptionFilter.cs" />
+    <Compile Include="ComponentModel\Server\Domain\ThrowsAttribute.cs" />
     <Compile Include="ComponentModel\Server\DependencyToConfigurationMapping.cs" />
     <Compile Include="ComponentModel\Server\Domain\AggregateNotFoundByKeyException.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\AggregateNotFoundException.T1.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="ComponentModel\Server\IMessageHandlerConfiguration.cs" />
     <Compile Include="ComponentModel\Server\InvalidEventException.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerConfiguration.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerDispatcher.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerInstance.T1.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerInstance.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerToConfigurationMapping.cs" />
@@ -118,13 +122,8 @@
     <Compile Include="ComponentModel\Client\QueryDelegate.T2.cs" />
     <Compile Include="ComponentModel\Client\RequestMessage.cs" />
     <Compile Include="ComponentModel\IMessageValidator.cs" />
-    <Compile Include="Threading\InstanceLock.cs" />
-    <Compile Include="Threading\InstanceLockNotStartedState.cs" />
-    <Compile Include="Threading\InstanceLockStartedState.cs" />
-    <Compile Include="Threading\InstanceLockDisposedState.cs" />
-    <Compile Include="Threading\InstanceLockDisposingState.cs" />
-    <Compile Include="Threading\InstanceLockState.cs" />
-    <Compile Include="Threading\IInstanceLock.cs" />
+    <Compile Include="Threading\AsyncMethod.cs" />
+    <Compile Include="Threading\AsyncLocal.T1.cs" />
     <Compile Include="ComponentModel\IMessage.cs" />
     <Compile Include="ComponentModel\FluentValidation\FluentValidator.cs" />
     <Compile Include="ComponentModel\Server\IMessageToStrategyMapping.T1.cs" />
@@ -133,10 +132,9 @@
     <Compile Include="ComponentModel\IRequestMessageViewModel.T1.cs" />
     <Compile Include="ComponentModel\Message.cs" />
     <Compile Include="ComponentModel\Message.T1.cs" />
-    <Compile Include="ComponentModel\UnauthorizedMessageException.cs" />
+    <Compile Include="Security\UnauthorizedMessageException.cs" />
     <Compile Include="ComponentModel\AttachedCollection.T1.cs" />
     <Compile Include="ComponentModel\FunctionalException.cs" />
-    <Compile Include="Collections\Generic\ReadOnlyDictionary.T2.cs" />
     <Compile Include="ComponentModel\RequestMessageViewModelEditScope.cs" />
     <Compile Include="ComponentModel\Server\DependencyAttribute.cs" />
     <Compile Include="ComponentModel\Server\IMessageHandler.cs" />
@@ -156,11 +154,11 @@
     <Compile Include="ComponentModel\Server\QueryModule.T1.cs" />
     <Compile Include="ComponentModel\Server\QueryPipeline.cs" />
     <Compile Include="ComponentModel\Server\QueryWrapper.T2.cs" />
-    <Compile Include="ComponentModel\Server\Security\AuthorizationModule.cs" />
-    <Compile Include="ComponentModel\Server\Transactions\ITransactionScopeFactory.cs" />
-    <Compile Include="ComponentModel\Server\Transactions\TransactionScopeAttribute.cs" />
-    <Compile Include="ComponentModel\Server\Transactions\TransactionScopeFactory.cs" />
-    <Compile Include="ComponentModel\Server\Transactions\TransactionScopeModule.cs" />
+    <Compile Include="Security\AuthorizationModule.cs" />
+    <Compile Include="Transactions\ITransactionScopeFactory.cs" />
+    <Compile Include="Transactions\TransactionScopeAttribute.cs" />
+    <Compile Include="Transactions\TransactionScopeFactory.cs" />
+    <Compile Include="Transactions\TransactionScopeModule.cs" />
     <Compile Include="ComponentModel\Server\Query.T2.cs" />
     <Compile Include="ComponentModel\ValidationErrorTree.cs" />
     <Compile Include="ComponentModel\RequestMessagePropertyChangedEventArgs.cs" />
@@ -206,7 +204,6 @@
     <Compile Include="ComponentModel\Server\EventBuffer.T1.cs" />
     <Compile Include="ComponentModel\Connection.cs" />
     <Compile Include="ComponentModel\IConnection.cs" />
-    <Compile Include="Threading\CancellationTokenExtensions.cs" />
     <Compile Include="ComponentModel\Server\IMessageHandler.T1.cs" />
     <Compile Include="ComponentModel\Server\IMessageProcessor.cs" />
     <Compile Include="ComponentModel\Server\IMessageProcessorBus.cs" />
@@ -226,7 +223,7 @@
     <Compile Include="IClockContext.cs" />
     <Compile Include="StaticClockContext.cs" />
     <Compile Include="StopwatchClock.cs" />
-    <Compile Include="ThreadStaticClockContext.cs" />
+    <Compile Include="AsyncLocalClockContext.cs" />
     <Compile Include="ComponentModel\Server\BufferedEventBus.cs" />
     <Compile Include="EventHandlerExtensions.cs" />
     <Compile Include="ComponentModel\Server\IEventBuffer.cs" />
@@ -256,9 +253,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="ComponentModel\Server\UnitOfWorkWrapper.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkGroup.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkItem.cs" />
     <Compile Include="ComponentModel\DataAnnotations\RequiredMemberAttribute.cs" />
     <Compile Include="ComponentModel\DataAnnotations\StringConstraint.cs" />
     <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeBuilder.cs" />
@@ -279,7 +273,9 @@
     </None>
     <Compile Include="ComponentModel\Server\DependencyConfiguration.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Runtime\Caching\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"

@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     internal sealed class Query<TMessageOut> : IQuery<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>
     {
@@ -16,9 +18,9 @@
             get { return _nextQuery.MessageIn; }
         }        
 
-        public TMessageOut Invoke()
+        public Task<TMessageOut> InvokeAsync()
         {
-            return _nextModule.Invoke(_nextQuery);
+            return _nextModule.InvokeAsync(_nextQuery);
         }        
     }
 }

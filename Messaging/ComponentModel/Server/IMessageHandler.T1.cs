@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {    
     /// <summary>
     /// When implemented by a class, handles messages of the specified <paramtyperef name="TMessage" />.
@@ -10,9 +12,7 @@
         /// Handles the specified <paramref name="message"/>.
         /// </summary>
         /// <param name="message">A message.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        void Handle(TMessage message);
+        /// <returns>A task carrying out the invocation.</returns>        
+        Task HandleAsync(TMessage message);
     }
 }

@@ -249,4 +249,7 @@
   <data name="BooleanMember_IsTrue_Failed" xml:space="preserve">
     <value>Member '{0}' is false.</value>
   </data>
+  <data name="AggregateExceptionMember_Contains_Failed" xml:space="preserve">
+    <value>Member '{0}' does not (only) contain an exception of type '{1}'.</value>
+  </data>
 </root>

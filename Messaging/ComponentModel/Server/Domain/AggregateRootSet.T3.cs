@@ -1,31 +1,46 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace System.ComponentModel.Server.Domain
 {
-    internal sealed class AggregateRootSet<TAggregate, TKey, TVersion> : IEnumerable<AggregateRootVersionTracker<TAggregate, TKey, TVersion>>
+    internal sealed class AggregateRootSet<TAggregate, TKey, TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
-        private readonly Dictionary<TKey, AggregateRootVersionTracker<TAggregate, TKey, TVersion>> _aggregates;
+        private Dictionary<TKey, AggregateRootVersionTracker<TAggregate, TKey, TVersion>> _aggregates;
 
-        public AggregateRootSet()
+        internal AggregateRootSet()
         {
             _aggregates = new Dictionary<TKey, AggregateRootVersionTracker<TAggregate, TKey, TVersion>>();
         }
 
-        public int Count
+        internal IEnumerable<TKey>  Keys
+        {
+            get { return _aggregates.Keys; }
+        }
+
+        internal IEnumerable<AggregateRootVersionTracker<TAggregate, TKey, TVersion>> Trackers
+        {
+            get { return _aggregates.Values; }
+        }
+
+        internal int Count
         {
             get { return _aggregates.Count; }
         }
 
-        public bool Contains(TKey key)
+        internal bool Contains(TKey key)
         {
             return _aggregates.ContainsKey(key);
         }
 
-        public bool TryGetValue(TKey key, out TAggregate value)
+        internal bool Contains(TAggregate aggregate)
+        {
+            return Trackers.Any(tracker => ReferenceEquals(tracker.Aggregate, aggregate));
+        }
+
+        internal bool TryGetValue(TKey key, out TAggregate value)
         {
             AggregateRootVersionTracker<TAggregate, TKey, TVersion> aggregate;
 
@@ -38,39 +53,48 @@ namespace System.ComponentModel.Server.Domain
             return false;
         }
 
-        public void Add(TAggregate value)
+        internal void Add(TAggregate value)
         {
             _aggregates.Add(value.Key, new AggregateRootVersionTracker<TAggregate, TKey, TVersion>(value));
         }
 
-        public void Remove(TKey key)
+        internal void Add(TKey key)
+        {
+            _aggregates.Add(key, null);
+        }
+
+        internal void Remove(TKey key)
         {
             _aggregates.Remove(key);
         }
 
-        public void MoveAggregateTo(TKey key, AggregateRootSet<TAggregate, TKey, TVersion> set)
+        internal void CopyAggregateTo(TKey key, AggregateRootSet<TAggregate, TKey, TVersion> set)
         {            
             var source = _aggregates;
             var target = set._aggregates;
 
-            target.Add(key, source[key]);
-
-            source.Remove(key);
+            target.Add(key, source[key]);            
         }
 
-        public void Clear()
+        internal void CommitUpdates()
+        {
+            _aggregates = CommitUpdatesOfAggregates();
+        }
+
+        private Dictionary<TKey, AggregateRootVersionTracker<TAggregate, TKey, TVersion>> CommitUpdatesOfAggregates()
+        {            
+            var updatedDictionary = new Dictionary<TKey, AggregateRootVersionTracker<TAggregate, TKey, TVersion>>();
+
+            foreach (var keyValuePair in _aggregates)
+            {
+                updatedDictionary.Add(keyValuePair.Key, keyValuePair.Value.CommitUpdates());
+            }
+            return updatedDictionary;
+        }
+
+        internal void Clear()
         {
             _aggregates.Clear();
-        }
-
-        public IEnumerator<AggregateRootVersionTracker<TAggregate, TKey, TVersion>> GetEnumerator()
-        {
-            return _aggregates.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }        
+        }              
     }
 }

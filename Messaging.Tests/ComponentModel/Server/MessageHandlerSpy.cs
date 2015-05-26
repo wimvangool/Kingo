@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -17,14 +18,18 @@ namespace System.ComponentModel.Server
             get { return _messageTwoCount; }
         }
 
-        void IMessageHandler<MessageOne>.Handle(MessageOne message)
+        Task IMessageHandler<MessageOne>.HandleAsync(MessageOne message)
         {
-            Interlocked.Increment(ref _messageOneCount);
+            return AsyncMethod.RunSynchronously(() =>
+                 Interlocked.Increment(ref _messageOneCount)
+            );            
         }
 
-        void IMessageHandler<MessageTwo>.Handle(MessageTwo message)
+        Task IMessageHandler<MessageTwo>.HandleAsync(MessageTwo message)
         {
-            Interlocked.Increment(ref _messageTwoCount);
+            return AsyncMethod.RunSynchronously(() =>
+                 Interlocked.Increment(ref _messageTwoCount)
+            );             
         }
     }
 }

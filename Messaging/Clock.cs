@@ -49,7 +49,7 @@
         /// </summary>
         public static IClock Current
         {
-            get { return ThreadStaticClockContext.Instance.CurrentClock; }
+            get { return AsyncLocalClockContext.Instance.CurrentClock; }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@
         /// </exception>
         public static IDisposable OverrideThreadStatic(IClock clock)
         {
-            return new ClockScope(ThreadStaticClockContext.Instance, clock);
+            return new ClockScope(AsyncLocalClockContext.Instance, clock);
         }
     }
 }

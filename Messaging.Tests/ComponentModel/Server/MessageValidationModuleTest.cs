@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace System.ComponentModel.Server
@@ -22,26 +23,24 @@ namespace System.ComponentModel.Server
         public void Module_InvokesNextHandler_IfMessageIsValid()
         {
             _command.Value = "Some Value";
-            _nextHandlerMock.Setup(handler => handler.Handle(_command));
+            _nextHandlerMock.Setup(handler => handler.HandleAsync(_command)).Returns(AsyncMethod.Void);
 
             var module = new MessageValidationModule();
             {                         
-                module.Invoke(_handler); 
+                module.InvokeAsync(_handler).Wait(); 
             }
             _nextHandlerMock.VerifyAll();
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidMessageException))]
+        [TestMethod]        
         public void Module_Throws_IfValidatorIsSpecifiedAndMessageIsInvalid()
         {
-            _nextHandlerMock.Setup(handler => handler.Handle(_command));
+            _nextHandlerMock.Setup(handler => handler.HandleAsync(_command));
 
             var module = new MessageValidationModule();
             {
-                module.Invoke(_handler);
-            }
-            _nextHandlerMock.VerifyAll();
+                module.InvokeAsync(_handler).WaitAndHandle<InvalidMessageException>();
+            }            
         }        
     }
 }

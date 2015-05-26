@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Serves as a base class for all <see cref="IMessageHandler{TMessage}">MessageHandlers</see>.
@@ -8,6 +10,6 @@
     public abstract class Query<TMessageIn, TMessageOut> : IQuery<TMessageIn, TMessageOut> where TMessageIn : class
     {
         /// <inheritdoc />     
-        public abstract TMessageOut Execute(TMessageIn message);
+        public abstract Task<TMessageOut> ExecuteAsync(TMessageIn message);
     }
 }

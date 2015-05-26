@@ -1,6 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel;
+using System.Runtime.Serialization;
 
-namespace System.ComponentModel
+namespace System.Security
 {
     /// <summary>
     /// This exception is thrown when the current user, typically the identity of the sender of a message,

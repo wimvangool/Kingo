@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// A generic implementation of the <see cref="IEventBuffer"/> interface that buffers
@@ -33,9 +35,9 @@
         }
 
         /// <inheritdoc />
-        public virtual void Flush()
+        public Task FlushAsync()
         {
-            _eventBus.Publish(_domainEvent);
+            return _eventBus.PublishAsync(_domainEvent);
         }
     }
 }

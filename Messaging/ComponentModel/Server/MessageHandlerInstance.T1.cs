@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     internal sealed class MessageHandlerInstance<TMessage> : MessageHandlerInstance, IMessageHandler<TMessage> where TMessage : class
     {
@@ -30,9 +32,9 @@
             get { return _interfaceType; }
         }
 
-        public void Handle(TMessage message)
+        public Task HandleAsync(TMessage message)
         {
-            _handler.Handle(message);
+            return _handler.HandleAsync(message);
         }        
     }
 }

@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System</RootNamespace>
     <AssemblyName>System.ComponentModel.Messaging.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -89,7 +89,6 @@
     <Compile Include="ComponentModel\FluentValidation\ObjectMemberTest.cs" />
     <Compile Include="ComponentModel\FluentValidation\ValidatedMessage.T1.cs" />
     <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeExtensions.cs" />
-    <Compile Include="Threading\InstanceLockTest.cs" />
     <Compile Include="ComponentModel\InvalidMessageExceptionTest.cs" />
     <Compile Include="ComponentModel\MessageStub.cs" />
     <Compile Include="ComponentModel\RequestMessageAsEditableObjectTest.cs" />
@@ -100,6 +99,10 @@
     <Compile Include="ComponentModel\RequestMessageValidateTest.cs" />
     <Compile Include="ComponentModel\RequestMessageWithChildCollectionsTest.cs" />
     <Compile Include="ComponentModel\RequestMessageWithChildMessageTest.cs" />
+    <Compile Include="ComponentModel\Server\Domain\RepositoryStub.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateStub.cs" />
+    <Compile Include="ComponentModel\Server\Domain\RepositoryTest.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerInstanceTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerSpy.cs" />
     <Compile Include="ComponentModel\Server\MessageProcessorBusTest.cs" />
     <Compile Include="ComponentModel\Server\MessageProcessorStub.cs" />
@@ -132,13 +135,8 @@
     <Compile Include="ComponentModel\Server\UnitOfWorkControllerTest.cs" />
     <Compile Include="ComponentModel\Server\UnitOfWorkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkStub.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkOneAsyncTest.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkOneSyncTest.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkTwoSyncTest.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkWrapperGroupTest.cs" />
-    <Compile Include="ComponentModel\Server\UnitOfWorkWrapperItemTest.cs" />
     <Compile Include="ComponentModel\DataAnnotations\RequiredAttributeTest.cs" />
+    <Compile Include="Threading\TaskExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\05.Messaging.csproj">

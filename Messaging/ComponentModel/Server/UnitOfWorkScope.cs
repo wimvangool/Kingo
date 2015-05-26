@@ -1,11 +1,12 @@
 ﻿using System.Resources;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {    
     /// <summary>
     /// Represents a scope that controls the lifetime of a <see cref="UnitOfWorkContext" />.
     /// </summary>        
-    public sealed class UnitOfWorkScope : IDisposable
+    internal sealed class UnitOfWorkScope : IDisposable
     {
         private readonly UnitOfWorkContext _context;
         private readonly BufferedEventBus _eventBus;
@@ -49,7 +50,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="InvalidOperationException">
         /// The scope has already been completed.
         /// </exception>
-        public void Complete()
+        internal async Task CompleteAsync()
         {
             if (_isDisposed)
             {
@@ -61,7 +62,7 @@ namespace System.ComponentModel.Server
             }            
             if (_isContextOwner)
             {
-                _context.Flush();
+                await _context.FlushAsync();                
             }
             _hasCompleted = true;                                       
         }        

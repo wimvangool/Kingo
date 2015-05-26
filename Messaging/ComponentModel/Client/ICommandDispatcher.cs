@@ -29,6 +29,6 @@ namespace System.ComponentModel.Client
         /// Optional token that can be used to cancel the execution of this command.
         /// </param>        
         /// <returns>The task that is responsible for executing this command.</returns>        
-        Task ExecuteAsync(Guid requestId, CancellationToken? token);
+        Task ExecuteAsync(Guid requestId, CancellationToken token);
     }
 }

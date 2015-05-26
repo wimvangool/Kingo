@@ -8,20 +8,25 @@
         private readonly TVersion _originalVersion;
         private readonly TAggregate _aggregate;
 
-        public AggregateRootVersionTracker(TAggregate aggregate)
+        internal AggregateRootVersionTracker(TAggregate aggregate)
         {
             _originalVersion = aggregate.Version;
             _aggregate = aggregate;
         }
 
-        public TVersion OriginalVersion
+        internal TVersion OriginalVersion
         {
             get { return _originalVersion; }
         }
 
-        public TAggregate Aggregate
+        internal TAggregate Aggregate
         {
             get { return _aggregate; }
-        }        
+        }
+        
+        internal AggregateRootVersionTracker<TAggregate, TKey, TVersion> CommitUpdates()
+        {
+            return new AggregateRootVersionTracker<TAggregate, TKey, TVersion>(_aggregate);
+        }
     }
 }

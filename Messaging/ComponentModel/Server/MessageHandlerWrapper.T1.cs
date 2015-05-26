@@ -1,4 +1,7 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a wrapper of a message and it's handler to serve as a <see cref="IMessageHandler" />
@@ -8,7 +11,7 @@
     public sealed class MessageHandlerWrapper<TMessage> : IMessageHandler where TMessage : class, IMessage<TMessage>
     {
         private readonly TMessage _message;
-        private readonly IMessageHandler<TMessage> _handler;
+        private readonly MessageHandlerInstance<TMessage> _handler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerWrapper{TMessage}" /> class.
@@ -29,7 +32,37 @@
                 throw new ArgumentNullException("handler");
             }
             _message = message;
+            _handler = new MessageHandlerInstance<TMessage>(handler);
+        }
+
+        internal MessageHandlerWrapper(TMessage message, MessageHandlerInstance<TMessage> handler)
+        {
+            _message = message;
             _handler = handler;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetClassAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
+        {
+            return _handler.TryGetClassAttributeOfType(out attribute);
+        }
+
+        /// <inheritdoc />
+        public bool TryGetMethodAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
+        {
+            return _handler.TryGetMethodAttributeOfType(out attribute);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TAttribute> GetClassAttributesOfType<TAttribute>() where TAttribute : class
+        {
+            return _handler.GetClassAttributesOfType<TAttribute>();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class
+        {
+            return _handler.GetMethodAttributesOfType<TAttribute>();
         }
 
         /// <inheritdoc />
@@ -39,9 +72,9 @@
         }        
 
         /// <inheritdoc />
-        public void Invoke()
+        public Task InvokeAsync()
         {
-            _handler.Handle(_message);
-        }
+            return _handler.HandleAsync(_message);
+        }        
     }
 }

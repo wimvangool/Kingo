@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.FluentValidation;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq.Expressions;
 using System.Resources;
 
@@ -17,7 +16,7 @@ namespace System.ComponentModel.Server
         private readonly Lazy<TMessage> _message;
         private readonly MemberSet _memberSet;                
         private readonly List<object> _publishedEvents;
-        private Exception _exception;
+        private FunctionalException _exception;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scenario{TMessage}" /> class.
@@ -50,20 +49,60 @@ namespace System.ComponentModel.Server
             CreateSetupSequence().ProcessWith(processor);
 
             // This scenario must collect all events that are published during the When()-phase.
-            using (processor.EventBus.ConnectThreadLocal<object>(OnEventPublished, true))
-            using (var scope = processor.CreateUnitOfWorkScope())
+            var connection = processor.EventBus.Connect<object>(OnEventPublished, true);
+            
+            try
             {
-                try
+                Handle(processor, Message.Copy());
+            }
+            catch (AggregateException exception)
+            {
+                // When handling an AggregateException, we expect only a single functional exception to be thrown,
+                // since we can only verify a single exception by design.
+                FunctionalException functionalException;
+
+                if (TryGetFunctionalExceptionFrom(exception, out functionalException))
                 {
-                    Handle(processor, Message.Copy());
-                    scope.Complete();
+                    _exception = functionalException;                    
                 }
-                catch (Exception exception)
+                else
                 {
-                    _exception = exception;
+                    throw;
+                }                
+            }        
+            catch (FunctionalException exception)
+            {
+                _exception = exception;
+            }
+            finally
+            {
+                connection.Dispose();
+            }
+        }
+    
+        private static bool TryGetFunctionalExceptionFrom(AggregateException aggregateException, out FunctionalException functionalException)
+        {
+            var functionalExceptions = new List<FunctionalException>();
+
+            aggregateException.Flatten().Handle(innerException =>
+            {
+                var exception = innerException as FunctionalException;
+                if (exception != null)
+                {
+                    functionalExceptions.Add(exception);
+                    return true;
                 }
-            }            
-        }    
+                return false;
+            });
+
+            if (functionalExceptions.Count == 1)
+            {
+                functionalException = functionalExceptions[0];
+                return true;
+            }
+            functionalException = null;
+            return false;
+        }
     
         /// <summary>
         /// Handles the specified <paramref name="message" /> by passing it to the specified <paramref name="processor"/>.
@@ -228,11 +267,11 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <typeparam name="TException">Type of the expected exception.</typeparam>
         /// <returns>A <see cref="Member{TValue}" /> referring to the exception that was thrown.</returns>
-        protected Member<TException> VerifyThatExceptionIsA<TException>()
-        {
+        protected Member<TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
+        {            
             return VerifyThat(_exception, "ExpectedException")
-                .IsNotNull(new ErrorMessage(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException)))
-                .IsInstanceOf<TException>(new ErrorMessage(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType()));
+                .IsNotNull(new ErrorMessage(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException)))              
+                .IsInstanceOf<TException>(new ErrorMessage(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType()));                
         }        
 
         /// <summary>
@@ -298,7 +337,35 @@ namespace System.ComponentModel.Server
 
         void IErrorMessageConsumer.Add(string memberName, ErrorMessage errorMessage)
         {
-            throw NewScenarioFailedException(string.Format(CultureInfo.InvariantCulture, "{0} --> {1}", memberName, errorMessage));
+            Fail(errorMessage);
+        }
+
+        /// <summary>
+        /// Marks this scenario as failed by throwing an exception.
+        /// </summary>
+        /// <param name="message">Message describing the reason why the scenario failed.</param>
+        /// <exception cref="Exception">
+        /// Always (by definition).
+        /// </exception>
+        protected void Fail(ErrorMessage message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            Fail(message.ToString());
+        }
+
+        /// <summary>
+        /// Marks this scenario as failed by throwing an exception.
+        /// </summary>
+        /// <param name="message">Message describing the reason why the scenario failed.</param>
+        /// <exception cref="Exception">
+        /// Always (by definition).
+        /// </exception>
+        protected virtual void Fail(string message)
+        {
+            throw NewScenarioFailedException(message);
         }
 
         /// <summary>

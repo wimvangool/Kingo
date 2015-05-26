@@ -246,7 +246,13 @@
   <data name="Incrementer_NoIncrementerAvailable" xml:space="preserve">
     <value>Version of type '{0}' with value '{1}' could not be incremented because no default incrementer exists for this type.</value>
   </data>
-  <data name="CatchAttribute_InvalidExceptionType" xml:space="preserve">
-    <value>Type '{0}' is not assignable to type '{1}'.</value>
+  <data name="MessageProcessor_EnlistFailed" xml:space="preserve">
+    <value>Could not enlist '{0}' to the current logical transaction because no such logical transaction is running.</value>
+  </data>
+  <data name="Repository_DuplicateKey" xml:space="preserve">
+    <value>Another aggregate with the same key already exists: '{0}'.</value>
+  </data>
+  <data name="MessageHandler_AmbiguousAttributeMatch" xml:space="preserve">
+    <value>Two or more attributes declared on MessageHandler '{0}' are assignable to '{1}'.</value>
   </data>
 </root>

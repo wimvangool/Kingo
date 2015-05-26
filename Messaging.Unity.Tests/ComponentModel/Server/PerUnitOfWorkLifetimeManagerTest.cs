@@ -7,11 +7,13 @@ namespace System.ComponentModel.Server
     {
         #region [====== Setup and Teardown ======]
 
+        private UnityTestProcessor _processor;
         private CacheBasedLifetimeManager _lifetimeManager;
 
         [TestInitialize]
         public void Setup()
         {
+            _processor = new UnityTestProcessor();
             _lifetimeManager = new CacheBasedLifetimeManager(new UnitOfWorkCache());
         }
 
@@ -28,7 +30,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void GetValue_ReturnsNull_IfNoValueHasBeenStored()
         {
-            Processor.Handle(new MessageStub(), message =>            
+            _processor.Handle(new MessageStub(), message =>            
                 Assert.IsNull(_lifetimeManager.GetValue())             
             );
         }
@@ -38,7 +40,7 @@ namespace System.ComponentModel.Server
         {
             var instance = new MessageStub();
 
-            Processor.Handle(instance, message =>
+            _processor.Handle(instance, message =>
             {
                 _lifetimeManager.SetValue(instance);
 
@@ -59,7 +61,7 @@ namespace System.ComponentModel.Server
         {
             var instance = new MessageStub();
 
-            Processor.Handle(instance, message =>
+            _processor.Handle(instance, message =>
             {
                 _lifetimeManager.SetValue(instance);
                 _lifetimeManager.RemoveValue();
@@ -76,11 +78,6 @@ namespace System.ComponentModel.Server
             _lifetimeManager.SetValue(new object());
         }
 
-        #endregion
-
-        private static UnityTestProcessor Processor
-        {
-            get { return UnityTestProcessor.Instance; }
-        }
+        #endregion        
     }
 }

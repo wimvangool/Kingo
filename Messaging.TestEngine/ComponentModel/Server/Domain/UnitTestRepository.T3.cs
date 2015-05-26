@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server.Domain
 {
@@ -56,27 +58,36 @@ namespace System.ComponentModel.Server.Domain
         protected abstract IDictionary<TKey, TAggregate> CreateAggregateDictionary();
 
         /// <inheritdoc />
-        protected override bool TrySelect(TKey key, out TAggregate aggregate)
+        protected override Task<TAggregate> SelectByKey(TKey key)
         {
-            return Aggregates.TryGetValue(key, out aggregate);
+            return AsyncMethod.RunSynchronously(() =>
+            {
+                TAggregate aggregate;
+
+                if (Aggregates.TryGetValue(key, out aggregate))
+                {
+                    return aggregate;
+                }
+                return null;
+            });
         }
 
         /// <inheritdoc />
-        protected override void Insert(TAggregate aggregate)
+        protected override Task InsertAsync(TAggregate aggregate)
         {
-            Aggregates.Add(aggregate.Key, aggregate);
+            return AsyncMethod.RunSynchronously(() => Aggregates.Add(aggregate.Key, aggregate));            
         }
 
         /// <inheritdoc />
-        protected override void Update(TAggregate aggregate, TVersion originalVersion)
+        protected override Task UpdateAsync(TAggregate aggregate, TVersion originalVersion)
         {
-            Aggregates[aggregate.Key] = aggregate;
+            return AsyncMethod.RunSynchronously(() => Aggregates[aggregate.Key] = aggregate);
         }
 
         /// <inheritdoc />
-        protected override void Delete(TAggregate aggregate)
+        protected override Task DeleteAsync(TKey key)
         {
-            Aggregates.Remove(aggregate.Key);
+            return AsyncMethod.RunSynchronously(() => Aggregates.Remove(key));
         }        
     }
 }

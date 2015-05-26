@@ -1,22 +1,28 @@
 ﻿
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace System.ComponentModel.Server
 {
     [MessageHandler(InstanceLifetime.PerUnitOfWork)]
-    internal sealed class TheCommandHandler : IMessageHandler<TheCommand>
+    internal sealed class TheCommandHandler : MessageHandler<TheCommand>
     {
-        public void Handle(TheCommand command)
+        public override Task HandleAsync(TheCommand command)
         {
-            if (command.ExceptionToThrow != null)
+            return AsyncMethod.RunSynchronously(() =>
             {
-                throw command.ExceptionToThrow;
-            }
-            if (command.DomainEventsToPublish != null)
-            {
-                foreach (var message in command.DomainEventsToPublish)
+                if (command.ExceptionToThrow != null)
                 {
-                    ScenarioTestProcessor.Instance.EventBus.Publish(message);
+                    throw command.ExceptionToThrow;
                 }
-            }
+                if (command.DomainEventsToPublish != null)
+                {
+                    foreach (var message in command.DomainEventsToPublish)
+                    {
+                        Publish(message);
+                    }
+                }
+            });                                 
         }
     }
 }

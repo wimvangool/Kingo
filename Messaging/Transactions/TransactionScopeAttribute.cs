@@ -1,6 +1,4 @@
-﻿using System.Transactions;
-
-namespace System.ComponentModel.Server.Transactions
+﻿namespace System.Transactions
 {
     /// <summary>
     /// This attribute can be applied to messages to specify how a <see cref="TransactionScope" /> should be created.
@@ -11,8 +9,7 @@ namespace System.ComponentModel.Server.Transactions
         private readonly Lazy<TransactionScopeFactory> _transactionScopeFactory;
         private readonly TransactionScopeOption _scopeOption;
         private readonly string _timeout;
-        private readonly IsolationLevel _isolationLevel;
-        private readonly EnterpriseServicesInteropOption _interopOption;
+        private readonly IsolationLevel _isolationLevel;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionScopeAttribute" /> class.
@@ -27,27 +24,25 @@ namespace System.ComponentModel.Server.Transactions
         /// <param name="scopeOption">The <see cref="TransactionScopeOption" /> to use.</param>
         /// <param name="timeout">The timeout for the transaction.</param>        
         public TransactionScopeAttribute(TransactionScopeOption scopeOption, string timeout)
-            : this(scopeOption, timeout, IsolationLevel.Unspecified, EnterpriseServicesInteropOption.None) { }
+            : this(scopeOption, timeout, IsolationLevel.Unspecified) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionScopeAttribute" /> class.
         /// </summary>
         /// <param name="scopeOption">The <see cref="TransactionScopeOption" /> to use.</param>
         /// <param name="timeout">The timeout for the transaction.</param>
-        /// <param name="isolationLevel">The <see cref="IsolationLevel" /> to use.</param>
-        /// <param name="interopOption">The <see cref="EnterpriseServicesInteropOption" /> to use.</param>
-        public TransactionScopeAttribute(TransactionScopeOption scopeOption, string timeout, IsolationLevel isolationLevel, EnterpriseServicesInteropOption interopOption)
+        /// <param name="isolationLevel">The <see cref="IsolationLevel" /> to use.</param>        
+        public TransactionScopeAttribute(TransactionScopeOption scopeOption, string timeout, IsolationLevel isolationLevel)
         {
             _transactionScopeFactory = new Lazy<TransactionScopeFactory>(CreateTransactionScopeFactory, true);
             _scopeOption = scopeOption;
             _timeout = timeout;
-            _isolationLevel = isolationLevel;
-            _interopOption = interopOption;
+            _isolationLevel = isolationLevel;            
         }
 
         private TransactionScopeFactory CreateTransactionScopeFactory()
         {
-            return new TransactionScopeFactory(ScopeOption, Parse(Timeout), IsolationLevel, InteropOption);
+            return new TransactionScopeFactory(ScopeOption, Parse(Timeout), IsolationLevel);
         }
 
         /// <summary>
@@ -72,15 +67,7 @@ namespace System.ComponentModel.Server.Transactions
         public IsolationLevel IsolationLevel
         {
             get { return _isolationLevel; }
-        }
-
-        /// <summary>
-        /// Returns the <see cref="EnterpriseServicesInteropOption" /> that is used for the <see cref="TransactionScope" /> to be created.
-        /// </summary>
-        public EnterpriseServicesInteropOption InteropOption
-        {
-            get { return _interopOption; }
-        }
+        }        
         
         TransactionScope ITransactionScopeFactory.CreateTransactionScope()
         {

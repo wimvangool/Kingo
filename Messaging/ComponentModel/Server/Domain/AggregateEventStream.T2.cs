@@ -12,11 +12,12 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
     [Serializable]
-    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
+    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IReadableEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
-        [NonSerialized]
+        private const string _BufferKey = "_buffer";
+        private readonly MemoryEventStream<TKey, TVersion> _buffer;        
         private readonly Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> _eventHandlers;
 
         /// <summary>
@@ -24,6 +25,7 @@ namespace System.ComponentModel.Server.Domain
         /// </summary>
         protected AggregateEventStream()
         {
+            _buffer = new MemoryEventStream<TKey, TVersion>();
             _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
         }
 
@@ -36,6 +38,7 @@ namespace System.ComponentModel.Server.Domain
         protected AggregateEventStream(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            _buffer = (MemoryEventStream<TKey, TVersion>) info.GetValue(_BufferKey, typeof(MemoryEventStream<TKey, TVersion>));
             _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
         }
 
@@ -64,28 +67,41 @@ namespace System.ComponentModel.Server.Domain
             {
                 throw NewHandlerForTypeAlreadyRegisteredException(typeof(TEvent));
             }            
-        }        
+        }
+
+        /// <inheritdoc />
+        protected override void Publish<TEvent>(TEvent @event)
+        {
+            base.Publish(@event);
+
+            _buffer.Write(@event);
+        }
 
         void IWritableEventStream<TKey, TVersion>.Write<TEvent>(TEvent @event)
         {
-            Write(@event);
+            Apply(@event);
         }
 
-        internal override void Write<TEvent>(TEvent @event)
+        internal override void Apply<TEvent>(TEvent @event)
         {
-            base.Write(@event);
+            base.Apply(@event);
 
             Type eventType = typeof(TEvent);
 
             try
             {
-                _eventHandlers[eventType].Invoke(@event);
+                _eventHandlers[eventType].Invoke(@event);                
             }
             catch (KeyNotFoundException)
             {
                 throw NewMissingEventHandlerException(eventType);
             }            
-        }        
+        }
+
+        void IReadableEventStream<TKey, TVersion>.FlushTo(IWritableEventStream<TKey, TVersion> stream)
+        {
+            _buffer.FlushTo(stream);
+        }
 
         private static Exception NewHandlerForTypeAlreadyRegisteredException(Type domainEventType)
         {

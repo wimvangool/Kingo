@@ -1,121 +1,163 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Server.Domain;
 using System.Linq;
+using System.Security;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
-    internal sealed class MessageHandlerDispatcher<TMessage> : IMessageHandler where TMessage : class, IMessage<TMessage>
+    internal sealed class MessageHandlerDispatcher<TMessage> : MessageHandlerDispatcher where TMessage : class, IMessage<TMessage>
     {       
         private readonly TMessage _message;
         private readonly IMessageHandler<TMessage> _handler;
-        private readonly MessageProcessor _processor;
-        private readonly List<CatchAttribute> _catchAttributes;
+        private readonly MessageProcessor _processor;        
 
         internal MessageHandlerDispatcher(TMessage message, IMessageHandler<TMessage> handler, MessageProcessor processor)
         {
             _message = message;
             _handler = handler;
-            _processor = processor;
-            _catchAttributes = new List<CatchAttribute>();
+            _processor = processor;            
         }
 
-        public IMessage Message
+        public override IMessage Message
         {
             get { return _message; }
         }
 
-        public void Invoke()
+        public async override Task InvokeAsync()
         {
-            try
-            {
-                HandleMessage();    
-            }
-            catch (AggregateException exception)
-            {
-                if (MatchesAll(exception, _catchAttributes))
-                {
-                    throw new CommandExecutionException(_message, null, exception);
-                }
-                throw;
-            }
-            catch (ConstraintViolationException exception)
-            {
-                if (Matches(exception, _catchAttributes))
-                {
-                    throw exception.AsCommandExecutionException(_message);
-                }
-                throw;
-            }
-            finally
-            {
-                _catchAttributes.Clear();
-            }
-        }        
-
-        private void HandleMessage()
-        {
-            _processor.Message.ThrowIfCancellationRequested();
+            ThrowIfCancellationRequested();
 
             using (var scope = _processor.CreateUnitOfWorkScope())
             {
-                HandleMessage(_message);
-
-                scope.Complete();
+                await InvokeAsync(_message);
+                await scope.CompleteAsync();
             }
-            _processor.Message.ThrowIfCancellationRequested();
-        }
+            ThrowIfCancellationRequested();
+        }                       
 
-        private void HandleMessage(TMessage message)
+        private async Task InvokeAsync(TMessage message)
         {
             if (_handler == null)
             {
-                if (_processor.MessageHandlerFactory == null)
+                var messageHandlerFactory = _processor.MessageHandlerFactory;
+                if (messageHandlerFactory == null)
                 {
                     return;
                 }
-                var source = _processor.Message.DetermineMessageSourceOf(message);
+                var source = MessageProcessor.CurrentMessage.DetermineMessageSourceOf(message);
 
-                foreach (var handler in _processor.MessageHandlerFactory.CreateMessageHandlersFor(message, source))
+                foreach (var handler in messageHandlerFactory.CreateMessageHandlersFor(message, source))
                 {
-                    HandleMessage(message, handler);
+                    await InvokeAsync(message, handler);
                 }
             }
             else
             {
-                HandleMessage(message, new MessageHandlerInstance<TMessage>(_handler));
-            }
+                await InvokeAsync(message, new MessageHandlerInstance<TMessage>(_handler));
+            }            
         }
 
-        private void HandleMessage(TMessage message, MessageHandlerInstance<TMessage> handler)
+        private async Task InvokeAsync(TMessage message, MessageHandlerInstance<TMessage> handler)
         {
-            var messageHandler = new MessageHandlerWrapper<TMessage>(message, handler);
+            var messageHandler = new MessageHandlerWrapper<TMessage>(message, handler);            
+            var pipeline = _processor.BuildCommandOrEventHandlerPipeline().ConnectTo(messageHandler);
 
-            foreach (var catchAttribute in handler.GetMethodAttributesOfType<CatchAttribute>())
+            try
             {
-                _catchAttributes.Add(catchAttribute);
+                await pipeline.InvokeAsync();
             }
-            _processor.BuildCommandOrEventHandlerPipeline().ConnectTo(messageHandler).Invoke();                               
-            _processor.Message.ThrowIfCancellationRequested();
+            catch (AggregateException exception)
+            {
+                FunctionalException functionalException;
+
+                if (TryConvertToFunctionalException(messageHandler, exception, out functionalException))
+                {
+                    throw functionalException;
+                }
+                throw;
+            }
+            catch (DomainException exception)
+            {
+                FunctionalException functionalException;
+
+                if (TryConvertToFunctionalException(messageHandler, exception, out functionalException))
+                {
+                    throw functionalException;
+                }
+                throw;
+            }
+            ThrowIfCancellationRequested();
+        }
+
+        private static bool TryConvertToFunctionalException(IMessageHandler handler, AggregateException exception, out FunctionalException functionalException)
+        {
+            var functionalExceptions = new List<FunctionalException>();
+
+            // NB: Handle will throw a new AggregateException if not all inner-exceptions are handled.
+            exception.Flatten().Handle(innerException =>
+            {
+                var domainException = innerException as DomainException;
+                if (domainException != null)
+                {
+                    FunctionalException convertedException;
+
+                    if (TryConvertToFunctionalException(handler, domainException, out convertedException))
+                    {
+                        functionalExceptions.Add(convertedException);
+                        return true;
+                    }
+                }                
+                return false;
+            });
+
+            // When one or more exceptions were converted into a FunctionalException, the most prominent
+            // one is returned.
+            if (functionalExceptions.Count == 0)
+            {
+                functionalException = null;
+                return false;
+            }
+            if (functionalExceptions.Count == 1)
+            {
+                functionalException = functionalExceptions[0];
+                return true;
+            }
+            return
+                TryGetFirst<UnauthorizedMessageException>(functionalExceptions, out functionalException) ||
+                TryGetFirst<InvalidMessageException>(functionalExceptions, out functionalException) ||
+                TryGetFirst<CommandExecutionException>(functionalExceptions, out functionalException);
+        }
+
+        private static bool TryGetFirst<TException>(IEnumerable<FunctionalException> functionalExceptions, out FunctionalException functionalException) where TException : FunctionalException
+        {
+            var exceptions = from exception in functionalExceptions
+                             let desiredException = exception as TException
+                             where desiredException != null
+                             select desiredException;
+
+            return (functionalException = exceptions.FirstOrDefault()) != null;
         }        
-
-        private static bool MatchesAll(AggregateException exception, IEnumerable<CatchAttribute> attributes)
-        {            
-            return
-                exception != null &&
-                exception.InnerExceptions.Count > 0 &&
-                exception.InnerExceptions.All(innerException => Matches(innerException, attributes));
+        
+        private static bool TryConvertToFunctionalException(IMessageHandler handler, DomainException exception, out FunctionalException functionalException)
+        {
+            foreach (var exceptionFilter in GetDomainExceptionFilters(handler))
+            {
+                if (exceptionFilter.TryConvertToFunctionalException(handler.Message, exception, out functionalException))
+                {
+                    return true;
+                }
+            }
+            functionalException = null;
+            return false;
         }
 
-        private static bool Matches(Exception exception, IEnumerable<CatchAttribute> attributes)
+        private static IEnumerable<IDomainExceptionFilter> GetDomainExceptionFilters(IMessageHandler handler)
         {
-            return
-                Matches(exception as ConstraintViolationException, attributes) ||
-                MatchesAll(exception as AggregateException, attributes);
-        }
+            var classAttributes = handler.GetClassAttributesOfType<IDomainExceptionFilter>();
+            var methodAttributes = handler.GetMethodAttributesOfType<IDomainExceptionFilter>();
 
-        private static bool Matches(ConstraintViolationException exception, IEnumerable<CatchAttribute> attributes)
-        {
-            return exception != null && attributes.Any(attribute => attribute.ExceptionType.IsInstanceOfType(exception));
+            return classAttributes.Concat(methodAttributes);
         }
     }
 }

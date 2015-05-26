@@ -2,13 +2,9 @@
 using System.Security.Permissions;
 
 namespace System.ComponentModel.Server
-{
-    /// <summary>
-    /// This exception or any derived type is thrown if a request was found to be invalid
-    /// when executing it.
-    /// </summary>
+{    
     [Serializable]
-    public sealed class InvalidEventException : ArgumentException
+    internal sealed class InvalidEventException : ArgumentException
     {
         private const string _InvalidEventKey = "_invalidEvent";
         private const string _ErrorTreeKey = "_errorTree";

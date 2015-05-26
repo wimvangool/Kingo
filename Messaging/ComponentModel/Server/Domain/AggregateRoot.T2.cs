@@ -10,43 +10,22 @@ namespace System.ComponentModel.Server.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
     [Serializable]
-    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IReadableEventStream<TKey, TVersion>, IVersionedObject<TKey, TVersion>
+    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IVersionedObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-    {
-        private const string _BufferKey = "_buffer";
-        private readonly MemoryEventStream<TKey, TVersion> _buffer;
+    {        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateRoot{K, V}" /> class.
+        /// </summary>
+        protected AggregateRoot() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{TKey, TVersion}" /> class.
         /// </summary>
-        protected AggregateRoot()
-        {
-            _buffer = new MemoryEventStream<TKey, TVersion>();
-        }        
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateRoot{T, K}" /> class.
-        /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected AggregateRoot(SerializationInfo info, StreamingContext context)         
-            : base(info, context)
-        {
-            _buffer = (MemoryEventStream<TKey, TVersion>) info.GetValue(_BufferKey, typeof(MemoryEventStream<TKey, TVersion>));
-        }        
-
-        /// <summary>
-        /// Populates a <see cref="SerializationInfo" /> with the data needed to serialize the target object.
-        /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {            
-            info.AddValue(_BufferKey, _buffer);
-        }
+        protected AggregateRoot(SerializationInfo info, StreamingContext context) { }
 
         #region [====== Version ======]
 
@@ -89,16 +68,10 @@ namespace System.ComponentModel.Server.Domain
             throw NewInvalidVersionException(newVersion, version);
         }
 
-        #endregion        
-
-        void IReadableEventStream<TKey, TVersion>.FlushTo(IWritableEventStream<TKey, TVersion> stream)
-        {
-            _buffer.FlushTo(stream);
-        }
+        #endregion                
 
         /// <summary>
-        /// Appends the event that is created using the specified <paramref name="eventFactory"/>
-        /// to the aggregate's buffer and publishes it.
+        /// Publishes the event that is created using the specified <paramref name="eventFactory"/>.        
         /// </summary>
         /// <typeparam name="TEvent">Type of the event that is created and written.</typeparam>
         /// <param name="eventFactory">The factory that is used to created the event.</param>
@@ -114,14 +87,32 @@ namespace System.ComponentModel.Server.Domain
             {
                 throw new ArgumentNullException("eventFactory");
             }
-            var @event = eventFactory.Invoke(Id, NewVersion());
+            Publish(eventFactory.Invoke(Id, NewVersion()));
+        }
 
-            Write(@event);
+        /// <summary>
+        /// Publishes the specified <paramref name="event"/>.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event that is published.</typeparam>
+        /// <param name="event">The event to publish.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="event"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
+        /// </exception>
+        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
+        {            
+            if (@event == null)
+            {
+                throw new ArgumentNullException("event");
+            }
+            Apply(@event);
 
             MessageProcessor.Publish(@event);
-        }                
+        }
 
-        internal virtual void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>
+        internal virtual void Apply<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>
         {
             if (@event == null)
             {
@@ -136,8 +127,7 @@ namespace System.ComponentModel.Server.Domain
                 catch (ArgumentOutOfRangeException)
                 {
                     throw NewInvalidVersionException(@event, Version);
-                }                
-                _buffer.Write(@event);
+                }                                
                 return;
             }
             throw NewInvalidKeyException(@event, Id);                                  

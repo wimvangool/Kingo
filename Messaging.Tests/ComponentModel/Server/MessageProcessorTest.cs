@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Server.SampleApplication.Messages;
-using System.Linq;
+﻿using System.ComponentModel.Server.SampleApplication.Messages;
+using System.Threading;
 using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,12 +9,14 @@ namespace System.ComponentModel.Server
     public sealed class MessageProcessorTest
     {        
         #region [====== Setup and Teardown ======]
-                
+
+        private SampleApplicationProcessor _processor;
         private Random _random;
 
         [TestInitialize]
         public void Setup()
         {                       
+            _processor = new SampleApplicationProcessor();
             _random = new Random();
         }                      
 
@@ -26,7 +27,7 @@ namespace System.ComponentModel.Server
         [TestMethod]
         public void MessagePointer_IsNull_WhenNoMessageIsBeingHandled()
         {
-            Assert.IsNull(Processor.Message);
+            Assert.IsNull(MessageProcessor.CurrentMessage);
         }
 
         [TestMethod]
@@ -35,12 +36,12 @@ namespace System.ComponentModel.Server
             MessageStub messageA = new MessageStub();
             object messageB = null;
 
-            Processor.Handle(messageA, message => messageB = Processor.Message.Message);
+            _processor.Handle(messageA, message => messageB = MessageProcessor.CurrentMessage.Message);
 
             Assert.IsNotNull(messageB);
             Assert.AreNotSame(messageA, messageB);
             Assert.AreSame(messageA.GetType(), messageB.GetType());
-            Assert.IsNull(Processor.Message);
+            Assert.IsNull(MessageProcessor.CurrentMessage);
         }
 
         [TestMethod]
@@ -50,14 +51,14 @@ namespace System.ComponentModel.Server
             MessageStub messageB = new MessageStub();
             MessagePointer messagePointer = null;
 
-            Processor.Handle(messageA, a =>            
-                Processor.Handle(messageB, b => messagePointer = Processor.Message)
+            _processor.Handle(messageA, a =>
+                _processor.Handle(messageB, b => messagePointer = MessageProcessor.CurrentMessage)
             );
 
             Assert.IsNotNull(messagePointer);
             Assert.AreSame(messageB.GetType(), messagePointer.Message.GetType());
             Assert.AreSame(messageA.GetType(), messagePointer.ParentPointer.Message.GetType());
-            Assert.IsNull(Processor.Message);
+            Assert.IsNull(MessageProcessor.CurrentMessage);
         }
 
         #endregion
@@ -70,9 +71,9 @@ namespace System.ComponentModel.Server
             Guid shoppingCartId = Guid.NewGuid();
             ShoppingCartCreatedEvent createdEvent = null;
 
-            using (Processor.EventBus.ConnectThreadLocal<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
+            using (_processor.EventBus.Connect<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
             {
-                Processor.Handle(new CreateShoppingCartCommand
+                _processor.Handle(new CreateShoppingCartCommand
                 {
                     ShoppingCartId = shoppingCartId
                 });
@@ -82,20 +83,19 @@ namespace System.ComponentModel.Server
             Assert.AreEqual(shoppingCartId, createdEvent.ShoppingCartId);            
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [TestMethod]        
         public void CreateShoppingCart_Throws_IfSameCartWasAlreadyCreated()
         {
             Guid shoppingCartId = Guid.NewGuid();
 
-            Processor.Handle(new CreateShoppingCartCommand
+            _processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            Processor.Handle(new CreateShoppingCartCommand
+            _processor.HandleAsync(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
-            });                       
+            }).WaitAndHandle<InvalidMessageException>();                       
         }
 
         [TestMethod]
@@ -104,7 +104,7 @@ namespace System.ComponentModel.Server
             // Ensure the cart exists before any product are added to it.
             Guid shoppingCartId = Guid.NewGuid();                        
 
-            Processor.Handle(new CreateShoppingCartCommand
+            _processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
@@ -114,9 +114,9 @@ namespace System.ComponentModel.Server
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);
 
-            using (Processor.EventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (_processor.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {                
-                Processor.Handle(new AddProductToCartCommand
+                _processor.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,
@@ -139,11 +139,11 @@ namespace System.ComponentModel.Server
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);            
 
-            Processor.Handle(new CreateShoppingCartCommand
+            _processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            Processor.Handle(new AddProductToCartCommand
+            _processor.Handle(new AddProductToCartCommand
             {
                 ShoppingCartId = shoppingCartId,
                 ProductId = productId,
@@ -154,9 +154,9 @@ namespace System.ComponentModel.Server
             ProductAddedToCartEvent productAddedEvent = null;
             int extraQuantity = _random.Next(3, 6);
 
-            using (Processor.EventBus.ConnectThreadLocal<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (_processor.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {
-                Processor.Handle(new AddProductToCartCommand
+                _processor.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,
@@ -169,37 +169,22 @@ namespace System.ComponentModel.Server
             Assert.AreEqual(productId, productAddedEvent.ProductId);
             Assert.AreEqual(quantity, productAddedEvent.OldQuantity);
             Assert.AreEqual(quantity + extraQuantity, productAddedEvent.NewQuantity);            
-        }
-
-        private static SampleApplicationProcessor Processor
-        {
-            get { return SampleApplicationProcessor.Instance; }
-        }
+        }        
 
         #endregion                
 
-        #region [====== Query Tests ======]
-
-        private sealed class QueryProcessor : MessageProcessor
-        {
-            protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
-            {
-                return Enumerable.Empty<MessageHandlerModule>();
-            }
-        }
+        #region [====== Query Tests ======]        
 
         [TestMethod]
         public void Processor_ReturnsQueryResult_IfQueryExecutesCorrectly()
-        {            
-            using (var processor = new QueryProcessor())
-            {
-                var requestMessage = new ValueMessage<long>(Clock.Current.UtcDateAndTime().Ticks);
-                var responseMessage = processor.Execute(requestMessage, msg => new ValueMessage<long>(msg.Value));
+        {
+            var processor = new MessageProcessor();            
+            var requestMessage = new ValueMessage<long>(Clock.Current.UtcDateAndTime().Ticks);
+            var responseMessage = processor.Execute(requestMessage, msg => new ValueMessage<long>(msg.Value));
 
-                Assert.IsNotNull(responseMessage);
-                Assert.AreNotSame(requestMessage, responseMessage);
-                Assert.AreEqual(requestMessage, responseMessage);
-            }
+            Assert.IsNotNull(responseMessage);
+            Assert.AreNotSame(requestMessage, responseMessage);
+            Assert.AreEqual(requestMessage, responseMessage);            
         }
 
         #endregion

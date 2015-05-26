@@ -61,6 +61,15 @@ namespace System.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; does not (only) contain an exception of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string AggregateExceptionMember_Contains_Failed {
+            get {
+                return ResourceManager.GetString("AggregateExceptionMember_Contains_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is true..
         /// </summary>
         internal static string BooleanMember_IsFalse_Failed {

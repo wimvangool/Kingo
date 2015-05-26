@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Resources;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {    
     internal sealed class BufferedEventBus : IDomainEventBus, IUnitOfWork
-    {
+    {        
         private readonly MessageProcessor _processor;        
         private readonly UnitOfWorkContext _context;
-        private readonly List<IEventBuffer> _buffer;
+        private List<IEventBuffer> _buffer;
         
         internal BufferedEventBus(MessageProcessor processor, UnitOfWorkContext context)
         {
@@ -20,44 +21,42 @@ namespace System.ComponentModel.Server
         internal MessageProcessor Processor
         {
             get { return _processor; }
-        }
+        }        
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        int IUnitOfWork.FlushGroupId
+        Task IDomainEventBus.PublishAsync<TMessage>(TMessage message)
         {
-            get { return 0; }
-        }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        bool IUnitOfWork.CanBeFlushedAsynchronously
-        {
-            get { return false; }
-        }
-
-        void IDomainEventBus.Publish<TMessage>(TMessage message)
-        {
-            var messageCopy = message.Copy();
-            var errorTree = messageCopy.Validate();
-            if (errorTree.TotalErrorCount > 0)
+            return AsyncMethod.RunSynchronously(() =>
             {
-                throw NewInvalidEventException("message", messageCopy, errorTree);
-            }
-            _buffer.Add(new EventBuffer<TMessage>(_processor.EventBus, message));
-            _context.Enlist(this);
-        }
+                var messageCopy = message.Copy();
+                var errorTree = messageCopy.Validate();
+                if (errorTree.TotalErrorCount > 0)
+                {
+                    throw NewInvalidEventException("message", messageCopy, errorTree);
+                }
+                lock (_buffer)
+                {
+                    _buffer.Add(new EventBuffer<TMessage>(_processor.EventBus, message));
+                }                
+                _context.Enlist(this);
+            });  
+        }        
 
         bool IUnitOfWork.RequiresFlush()
         {
             return _buffer.Count > 0;
         }
 
-        void IUnitOfWork.Flush()
+        Task IUnitOfWork.FlushAsync()
         {
-            foreach (var bufferedEvent in _buffer)
+            return FlushAsync(Interlocked.Exchange(ref _buffer, new List<IEventBuffer>()));
+        }
+
+        private static async Task FlushAsync(IEnumerable<IEventBuffer> events)
+        {
+            foreach (var bufferedEvent in events)
             {
-                bufferedEvent.Flush();
-            }            
-            _buffer.Clear();            
+                await bufferedEvent.FlushAsync();
+            }  
         }
 
         /// <inheritdoc />

@@ -19,7 +19,14 @@ namespace System.ComponentModel.Client
         /// </summary>
         /// <param name="requestId">Identifier of the request.</param>        
         /// <returns>The result of this query.</returns>
-        TMessageOut Execute(Guid requestId);                               
+        TMessageOut Execute(Guid requestId);
+
+        /// <summary>
+        /// Executes the query asynchronously.
+        /// </summary>  
+        /// <param name="requestId">Identifier of the request.</param>                             
+        /// <returns>The task that is responsible for executing this query.</returns>    
+        Task<TMessageOut> ExecuteAsync(Guid requestId);             
 
         /// <summary>
         /// Executes the query asynchronously.
@@ -29,6 +36,6 @@ namespace System.ComponentModel.Client
         /// Optional token that can be used to cancel the execution of this query.
         /// </param>        
         /// <returns>The task that is responsible for executing this query.</returns>    
-        Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token = null);
+        Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken token);
     }
 }

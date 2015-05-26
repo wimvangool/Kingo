@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// This type is used to support implicit type conversion from a <see cref="Func{TMessageIn, TMessageOut}" /> to a
@@ -26,13 +28,13 @@
             _query = query;
         }
 
-        TMessageOut IQuery<TMessageIn, TMessageOut>.Execute(TMessageIn message)
+        Task<TMessageOut> IQuery<TMessageIn, TMessageOut>.ExecuteAsync(TMessageIn message)
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            return _query.Invoke(message);
+            return Task<TMessageOut>.Factory.StartNew(() => _query.Invoke(message));
         }
 
         /// <summary>

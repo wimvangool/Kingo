@@ -1,4 +1,8 @@
-﻿namespace System.ComponentModel.Server.Security
+﻿using System.ComponentModel;
+using System.ComponentModel.Server;
+using System.Threading.Tasks;
+
+namespace System.Security
 {
     /// <summary>
     /// This module is used to authorize any further processing of messages based on the current thread's identity.
@@ -12,7 +16,7 @@
         /// <exception cref="UnauthorizedMessageException">
         /// The current thread's identity was not authorized to process the specified message.
         /// </exception>
-        public override void Invoke(IMessageHandler handler)
+        public override async Task InvokeAsync(IMessageHandler handler)
         {               
             if (handler == null)
             {
@@ -20,11 +24,11 @@
             }
             UnauthorizedMessageException exception;
 
-            if (IsNotAuthorized(handler.Message, out exception))
+            if (await IsNotAuthorized(handler.Message, out exception))
             {
                 throw exception;
             }
-            handler.Invoke();
+            await handler.InvokeAsync();
         }
 
         /// <summary>
@@ -41,6 +45,6 @@
         /// <c>true</c> if the current identity is not authorized to further process the specified
         /// <paramref name="message"/>; otherwise <c>false</c>.
         /// </returns>
-        protected abstract bool IsNotAuthorized(IMessage message, out UnauthorizedMessageException exception);
+        protected abstract Task<bool> IsNotAuthorized(IMessage message, out UnauthorizedMessageException exception);
     }
 }

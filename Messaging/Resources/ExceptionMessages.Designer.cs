@@ -124,15 +124,6 @@ namespace System.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type &apos;{0}&apos; is not assignable to type &apos;{1}&apos;..
-        /// </summary>
-        internal static string CatchAttribute_InvalidExceptionType {
-            get {
-                return ResourceManager.GetString("CatchAttribute_InvalidExceptionType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The connection is already closed..
         /// </summary>
         internal static string Connection_AlreadyClosed {
@@ -322,6 +313,15 @@ namespace System.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Two or more attributes declared on MessageHandler &apos;{0}&apos; are assignable to &apos;{1}&apos;..
+        /// </summary>
+        internal static string MessageHandler_AmbiguousAttributeMatch {
+            get {
+                return ResourceManager.GetString("MessageHandler_AmbiguousAttributeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid InstanceLifetime was specified on class &apos;{0}&apos;: {1}. .
         /// </summary>
         internal static string MessageHandlerClass_InvalidInstanceLifetimeMode {
@@ -336,6 +336,15 @@ namespace System.Resources {
         internal static string MessageOut_InvalidMessageType {
             get {
                 return ResourceManager.GetString("MessageOut_InvalidMessageType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not enlist &apos;{0}&apos; to the current logical transaction because no such logical transaction is running..
+        /// </summary>
+        internal static string MessageProcessor_EnlistFailed {
+            get {
+                return ResourceManager.GetString("MessageProcessor_EnlistFailed", resourceCulture);
             }
         }
         
@@ -399,6 +408,15 @@ namespace System.Resources {
         internal static string Repository_AggregateNotFoundByKey {
             get {
                 return ResourceManager.GetString("Repository_AggregateNotFoundByKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another aggregate with the same key already exists: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Repository_DuplicateKey {
+            get {
+                return ResourceManager.GetString("Repository_DuplicateKey", resourceCulture);
             }
         }
         

@@ -19,16 +19,16 @@ namespace System.ComponentModel.Server
         /// </summary>
         public readonly MessagePointer ParentPointer;
 
-        private readonly CancellationToken? _token;        
+        private readonly CancellationToken _token;        
         
-        internal MessagePointer(object message, CancellationToken? token)
+        internal MessagePointer(object message, CancellationToken token)
         {
             Message = message;
 
             _token = token;            
         }
 
-        private MessagePointer(object message, CancellationToken? token, MessagePointer parentPointer)
+        private MessagePointer(object message, CancellationToken token, MessagePointer parentPointer)
         {            
             Message = message;
             ParentPointer = parentPointer;
@@ -36,7 +36,7 @@ namespace System.ComponentModel.Server
             _token = token;            
         }
 
-        internal MessagePointer CreateChildPointer(object message, CancellationToken? token)
+        internal MessagePointer CreateChildPointer(object message, CancellationToken token)
         {
             return new MessagePointer(message, token, this);
         }
@@ -101,7 +101,7 @@ namespace System.ComponentModel.Server
             }
             pointerString.Append(pointerStack.Pop().Message.GetType().Name);
 
-            if (_token.HasValue && _token.Value.IsCancellationRequested)
+            if (_token.IsCancellationRequested)
             {
                 pointerString.Append(" (Cancellation Requested)");
             }

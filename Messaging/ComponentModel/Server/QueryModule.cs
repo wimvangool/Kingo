@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Serves as a base class for modules that are part of a <see cref="IQuery{TMessageIn, TMessageOut}" />-pipeline.
@@ -14,6 +16,6 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public abstract TMessageOut Invoke<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage<TMessageOut>;                
+        public abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage<TMessageOut>;                
     }
 }

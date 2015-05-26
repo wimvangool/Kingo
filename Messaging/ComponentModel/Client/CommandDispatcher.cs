@@ -48,7 +48,7 @@ namespace System.ComponentModel.Client
         }
 
         /// <inheritdoc />
-        public override Task ExecuteAsync(Guid requestId, CancellationToken? token)
+        public override Task ExecuteAsync(Guid requestId, CancellationToken token)
         {                                    
             OnExecutionStarted(new ExecutionStartedEventArgs(requestId));
 

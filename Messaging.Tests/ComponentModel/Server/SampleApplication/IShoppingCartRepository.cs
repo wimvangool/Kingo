@@ -1,9 +1,11 @@
-﻿namespace System.ComponentModel.Server.SampleApplication
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server.SampleApplication
 {
     public interface IShoppingCartRepository
     {
         void Add(ShoppingCart cart);
 
-        ShoppingCart GetById(Guid id);
+        Task<ShoppingCart> GetById(Guid id);
     }
 }

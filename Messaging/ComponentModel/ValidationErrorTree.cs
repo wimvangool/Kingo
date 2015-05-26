@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -116,11 +117,16 @@ namespace System.ComponentModel
         /// <summary>
         /// An instance of the <see cref="ValidationErrorTree" /> class without any errors.
         /// </summary>       
-        public static readonly ValidationErrorTree NoErrors = new ValidationErrorTree(new ReadOnlyDictionary<string, string>(), null);                      
+        public static readonly ValidationErrorTree NoErrors = new ValidationErrorTree(EmptyDictionary(), null);        
         
         internal static ValidationErrorTree Merge(IEnumerable<ValidationErrorTree> childErrors)
         {
-            return new ValidationErrorTree(new ReadOnlyDictionary<string, string>(), childErrors);
+            return new ValidationErrorTree(EmptyDictionary(), childErrors);
+        }
+
+        private static ReadOnlyDictionary<string, string> EmptyDictionary()
+        {
+            return new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());    
         }
 
         /// <summary>

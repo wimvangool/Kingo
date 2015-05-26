@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {    
     internal sealed class MessageHandlerDecorator<TMessage> : IMessageHandler<TMessage> where TMessage : class
     {
@@ -9,9 +11,9 @@
             _handler = handler;
         }              
        
-        public void Handle(TMessage message)
+        public Task HandleAsync(TMessage message)
         {
-            _handler.Handle(message);
+            return _handler.HandleAsync(message);
         }
     }
 }

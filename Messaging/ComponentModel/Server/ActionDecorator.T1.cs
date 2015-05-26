@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// This type is used to support implicit type conversion from a <see cref="Action{TMessage}" /> to a
@@ -25,9 +27,9 @@
             _handler = handler;
         }
 
-        void IMessageHandler<TMessage>.Handle(TMessage message)
+        Task IMessageHandler<TMessage>.HandleAsync(TMessage message)
         {
-            _handler.Invoke(message);
+            return Task.Factory.StartNew(() => _handler.Invoke(message));
         }
 
         /// <summary>

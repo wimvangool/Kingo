@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Server;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Client
 {
@@ -80,9 +81,9 @@ namespace System.ComponentModel.Client
         /// <param name="subscriber">The subscriber to unsubscribe.</param>
         protected internal abstract void Unsubscribe(object subscriber);
 
-        void IMessageHandler<object>.Handle(object message)
+        Task IMessageHandler<object>.HandleAsync(object message)
         {
-            Post(() => Publish(message));
+            return AsyncMethod.RunSynchronously(() => Post(() => Publish(message)));
         }               
 
         /// <summary>

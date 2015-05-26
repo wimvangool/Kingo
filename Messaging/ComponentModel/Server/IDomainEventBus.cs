@@ -1,4 +1,6 @@
 ﻿
+using System.Threading.Tasks;
+
 namespace System.ComponentModel.Server
 {
     /// <summary>
@@ -12,6 +14,6 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <typeparam name="TMessage">Type of event to publish.</typeparam>
         /// <param name="message">The event to publish.</param>                
-        void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
+        Task PublishAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
     }
 }

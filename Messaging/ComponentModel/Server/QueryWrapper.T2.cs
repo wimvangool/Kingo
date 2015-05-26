@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a wrapper of a message and it's handler to serve as a <see cref="IQuery{TMessageOut}" />
@@ -42,9 +44,9 @@
         }        
 
         /// <inheritdoc />
-        public TMessageOut Invoke()
+        public Task<TMessageOut> InvokeAsync()
         {
-            return _query.Execute(_message);
+            return _query.ExecuteAsync(_message);
         }
     }
 }

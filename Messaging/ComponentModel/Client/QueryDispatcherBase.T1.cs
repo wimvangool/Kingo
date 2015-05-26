@@ -44,31 +44,25 @@ namespace System.ComponentModel.Client
 
         #endregion
 
-        #region [====== Execution ======]        
+        #region [====== Execution ======]
 
         /// <inheritdoc />
-        public abstract TMessageOut Execute(Guid requestId);            
+        public abstract TMessageOut Execute(Guid requestId);
 
         /// <inheritdoc />
-        public abstract Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken? token = null);                       
+        public Task<TMessageOut> ExecuteAsync(Guid requestId)
+        {
+            return ExecuteAsync(requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public abstract Task<TMessageOut> ExecuteAsync(Guid requestId, CancellationToken token);                       
 
         /// <inheritdoc />
         public override IAsyncExecutionTask CreateAsyncExecutionTask()
         {
             return new QueryExecutionTask<TMessageOut>(this);
-        }                
-
-        /// <summary>
-        /// Creates and returns a task that is marked completed and returns the specified <paramref name="result"/>.
-        /// </summary>
-        /// <param name="result">The result is this query.</param>
-        /// <returns>A new and completed <see cref="Task{T}"/>.</returns>
-        internal static Task<TMessageOut> CreateCompletedTask(TMessageOut result)
-        {
-            var taskCompletionSource = new TaskCompletionSource<TMessageOut>();
-            taskCompletionSource.SetResult(result);
-            return taskCompletionSource.Task;
-        }
+        }                        
 
         #endregion
     }

@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Serves as a base class for all <see cref="IMessageHandler{TMessage}">MessageHandlers</see>.
@@ -7,7 +9,7 @@
     public abstract class MessageHandler<TMessage> : IMessageHandler<TMessage> where TMessage : class
     {
         /// <inheritdoc />               
-        public abstract void Handle(TMessage message);
+        public abstract Task HandleAsync(TMessage message);
 
         /// <summary>
         /// Publishes the specified <paramref name="message"/> as part of the current Unit of Work.

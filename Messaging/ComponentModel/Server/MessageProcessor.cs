@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Resources;
 using System.Text;
@@ -11,91 +13,50 @@ namespace System.ComponentModel.Server
     /// <summary>
     /// Represents a handler of arbitrary messages.
     /// </summary>    
-    public abstract class MessageProcessor : IMessageProcessor
-    {
-        private readonly InstanceLock _instanceLock;
-        private readonly IMessageProcessorBus _domainEventBus;
-        private readonly ThreadLocal<MessagePointer> _currentMessage;
+    public class MessageProcessor : IMessageProcessor
+    {        
+        private readonly IMessageProcessorBus _domainEventBus;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
         /// </summary>        
-        protected MessageProcessor()
-        {           
-            _instanceLock = new InstanceLock(this, true);            
-            _domainEventBus = new MessageProcessorBus(this);   
-            _currentMessage = new ThreadLocal<MessagePointer>();        
-        }        
-
-        #region [====== Dispose ======]
-
-        /// <summary>
-        /// Returns the lock that is used to manage safe disposal of this instance.
-        /// </summary>
-        protected IInstanceLock InstanceLock
-        {
-            get { return _instanceLock; }
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            _instanceLock.EnterDispose();
-
-            try
-            {
-                Dispose(true);
-            }
-            finally
-            {
-                _instanceLock.ExitDispose();
-            }            
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        /// <param name="disposing">
-        /// Indicates if the method was called by the application explicitly (<c>true</c>), or by the finalizer
-        /// (<c>false</c>).
-        /// </param>
-        /// <remarks>
-        /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
-        /// Otherwise, only unmanaged resources will be released.
-        /// </remarks>
-        protected virtual void Dispose(bool disposing) { }       
-
-        #endregion
+        public MessageProcessor()
+        {                       
+            _domainEventBus = new MessageProcessorBus(this);               
+        }                
 
         /// <inheritdoc />
         public virtual IMessageProcessorBus EventBus
         {
             get { return _domainEventBus; }
+        }        
+
+        internal UnitOfWorkScope CreateUnitOfWorkScope()
+        {
+            return new UnitOfWorkScope(this);
         }
 
-        /// <inheritdoc />
-        public MessagePointer Message
-        {
-            get { return _currentMessage.Value; }
-            private set { _currentMessage.Value = value; }
-        }
+        #region [====== MessageHandlerFactory ======]
+
+        private static readonly ConcurrentDictionary<Type, MessageHandlerFactory> _MessageHandlerFactories = new ConcurrentDictionary<Type, MessageHandlerFactory>();
 
         /// <summary>
         /// Returns the <see cref="MessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected internal virtual MessageHandlerFactory MessageHandlerFactory
+        protected internal MessageHandlerFactory MessageHandlerFactory
         {
-            get { return null; }
+            get { return _MessageHandlerFactories.GetOrAdd(GetType(), type => CreateMessageHandlerFactory()); }
         }
 
-        /// <inheritdoc />
-        public UnitOfWorkScope CreateUnitOfWorkScope()
+        /// <summary>
+        /// Creates and returns the <see cref="MessageHandlerFactory" /> of this processor.
+        /// </summary>
+        protected virtual MessageHandlerFactory CreateMessageHandlerFactory()
         {
-            return new UnitOfWorkScope(this);
+            return null;
         }
+
+        #endregion
 
         #region [====== ToString ======]
 
@@ -106,7 +67,7 @@ namespace System.ComponentModel.Server
 
             processorString.AppendFormat(" ({0}, {1})",
                 ToString(MessageHandlerFactory),
-                ToString(Message));
+                ToString(CurrentMessage));
             
             return processorString.ToString();
         }
@@ -132,128 +93,72 @@ namespace System.ComponentModel.Server
         #region [====== Commands & Events ======]
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        {
+            Handle(message, NullHandler<TMessage>());
+        }
+
+        /// <inheritdoc />
+        public void Handle<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            Handle(message, (ActionDecorator<TMessage>) handler);
+        }
+
+        /// <inheritdoc />
+        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            HandleAsync(message, handler, CancellationToken.None).Wait();
+        }
+
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, NullHandler<TMessage>(), CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, CancellationToken token) where TMessage : class, IMessage<TMessage>
         {
             return HandleAsync(message, NullHandler<TMessage>(), token);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, (ActionDecorator<TMessage>) handler, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
         {
             return HandleAsync(message, (ActionDecorator<TMessage>) handler, token);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, handler, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            InstanceLock.EnterMethod();
-
-            try
-            {                                
-                return Start(() => Handle(message, handler, token), message.GetType(), token);
-            }
-            finally
-            {
-                InstanceLock.ExitMethod();
-            }            
+            return HandleAsyncCore(message, handler, token);
         }
 
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
+        private async Task HandleAsyncCore<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, NullHandler<TMessage>(), token);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
-        {
-            Handle(message, (ActionDecorator<TMessage>) handler, token);
-        }
-
-        /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token = null) where TMessage : class, IMessage<TMessage>
-        {            
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }            
             PushMessage(ref message, token);
 
             try
-            {                
-                BuildMessageEntryPipeline()
+            {
+                await BuildMessageEntryPipeline()
                     .ConnectTo(new MessageHandlerDispatcher<TMessage>(message, handler, this))
-                    .Invoke();                                    
-            }
-            finally
-            {
-                PopMessage();
-            }
-        }
-
-        #endregion      
-  
-        #region [====== Queries ======]
-
-        /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token = null)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
-        {
-            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
-        }
-
-        /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
-        {            
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            InstanceLock.EnterMethod();
-
-            try
-            {                
-                return Start(() => Execute(message, query, token), message.GetType(), token);
-            }
-            finally
-            {
-                InstanceLock.ExitMethod();
-            }            
-        }
-
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken? token = null)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
-        {
-            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
-        }
-
-        /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
-        {            
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            PushMessage(ref message, token);
-
-            try
-            {
-                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, this);
-                
-                BuildMessageEntryPipeline().ConnectTo(handler).Invoke();
-
-                return handler.MessageOut;
+                    .InvokeAsync();
             }
             finally
             {
@@ -261,25 +166,85 @@ namespace System.ComponentModel.Server
             } 
         }
 
+        #endregion      
+  
+        #region [====== Queries ======]
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query);
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return ExecuteAsync(message, query, CancellationToken.None).Result;            
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return ExecuteAsync(message, query, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken token)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
+        }        
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {            
+            return ExecuteAsync(message, query, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {                        
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            return ExecuteAsyncCore(message, query, token);
+        }
+
+        private async Task<TMessageOut> ExecuteAsyncCore<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {            
+            PushMessage(ref message, token);
+
+            try
+            {
+                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, this);
+
+                await BuildMessageEntryPipeline().ConnectTo(handler).InvokeAsync();
+
+                return handler.MessageOut;
+            }
+            finally
+            {
+                PopMessage();
+            }
+        }  
+
         #endregion                      
 
         #region [====== Pipeline Factories ======]
-
-        private void PushMessage<TMessage>(ref TMessage message, CancellationToken? token) where TMessage : class, IMessage<TMessage>
-        {                   
-            InstanceLock.EnterMethod();
-     
-            Message = Message == null ?
-                new MessagePointer(message = message.Copy(), token) :
-                Message.CreateChildPointer(message = message.Copy(), token);                        
-        }
-
-        private void PopMessage()
-        {
-            Message = Message.ParentPointer;
-
-            InstanceLock.ExitMethod();
-        }               
 
         private MessageHandlerPipeline BuildMessageEntryPipeline()
         {
@@ -377,21 +342,29 @@ namespace System.ComponentModel.Server
 
         #region [====== CurrentMessage ======]
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private static readonly AsyncLocal<MessagePointer> _CurrentMessage = new AsyncLocal<MessagePointer>();
+
         /// <summary>
         /// Returns a <see cref="MessagePointer">pointer</see> to the message that is currently being handled.
         /// </summary>
         public static MessagePointer CurrentMessage
         {
-            get
-            {
-                var context = UnitOfWorkContext.Current;
-                if (context == null)
-                {
-                    return null;
-                }
-                return context.Processor.Message;
-            }
+            get { return _CurrentMessage.Value; }
+            private set { _CurrentMessage.Value = value; }
         }
+
+        private static void PushMessage<TMessage>(ref TMessage message, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        {
+            CurrentMessage = CurrentMessage == null ?
+                new MessagePointer(message = message.Copy(), token) :
+                CurrentMessage.CreateChildPointer(message = message.Copy(), token);
+        }
+
+        private static void PopMessage()
+        {
+            CurrentMessage = CurrentMessage.ParentPointer;
+        } 
 
         #endregion
 
@@ -461,6 +434,9 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="unitOfWork"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Enlistment failed because no message is currently being handled.
+        /// </exception>
         public static void Enlist(IUnitOfWork unitOfWork)
         {
             if (unitOfWork == null)
@@ -470,17 +446,22 @@ namespace System.ComponentModel.Server
             var context = UnitOfWorkContext.Current;
             if (context != null)
             {
-                context.Enlist(unitOfWork);               
+                context.Enlist(unitOfWork);
+                return;
             }
-            else if (unitOfWork.RequiresFlush())
-            {
-                unitOfWork.Flush();
-            }            
+            throw NewEnlistFailedException(unitOfWork);
+        }
+
+        private static Exception NewEnlistFailedException(IUnitOfWork unitOfWork)
+        {
+            var messageFormat = ExceptionMessages.MessageProcessor_EnlistFailed;
+            var message = string.Format(messageFormat, unitOfWork.GetType().Name);
+            return new InvalidOperationException(message);
         }        
 
         #endregion
 
-        #region [====== TransactionQueue ======]
+        #region [====== InvokePostCommit ======]
 
         /// <summary>
         /// Invokes the specified <paramref name="action"/> when the current transaction
@@ -535,6 +516,6 @@ namespace System.ComponentModel.Server
             return transaction.TransactionInformation.Status == TransactionStatus.Committed;
         }
 
-        #endregion                    
+        #endregion                      
     }
 }

@@ -152,7 +152,7 @@ namespace System.ComponentModel.Client
         [TestMethod]
         public void Publish_ImmediatelyPublishesMessage_IfNoTransactionIsActive()
         {
-            MessageHandler.Handle(new object());
+            MessageHandler.HandleAsync(new object());
 
             Assert.AreEqual(1, _eventBus.MessageCount);
         }        
