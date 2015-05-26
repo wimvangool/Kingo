@@ -63,6 +63,7 @@
     <Compile Include="ComponentModel\FluentValidation\ListMemberExtensions.cs" />
     <Compile Include="ComponentModel\FluentValidation\MemberSet.cs" />
     <Compile Include="ComponentModel\IDependencyConfiguration.cs" />
+    <Compile Include="ComponentModel\Server\ClassAndMethodAttributeProvider.cs" />
     <Compile Include="ComponentModel\Server\Domain\ConstraintViolationException.T1.cs" />
     <Compile Include="ComponentModel\Server\Domain\DuplicateKeyException.T2.cs" />
     <Compile Include="ComponentModel\Server\Domain\IExceptionFilter.cs" />
@@ -75,12 +76,12 @@
     <Compile Include="ComponentModel\Server\Domain\Entity.T1.cs" />
     <Compile Include="ComponentModel\Server\Domain\IKeyedObject.T1.cs" />
     <Compile Include="ComponentModel\Server\Domain\InvalidValueException.T1.cs" />
+    <Compile Include="ComponentModel\Server\IMessageHandlerOrQuery.cs" />
     <Compile Include="ComponentModel\Server\IMessageHandlerConfiguration.cs" />
     <Compile Include="ComponentModel\Server\InvalidEventException.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerConfiguration.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerDispatcher.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerInstance.T1.cs" />
-    <Compile Include="ComponentModel\Server\MessageHandlerInstance.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerToConfigurationMapping.cs" />
     <Compile Include="ComponentModel\Server\MessageToStrategyMapping.cs" />
     <Compile Include="Equatable.T1.cs" />

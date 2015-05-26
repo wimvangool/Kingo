@@ -1,35 +1,43 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
-    internal sealed class MessageHandlerInstance<TMessage> : MessageHandlerInstance, IMessageHandler<TMessage> where TMessage : class
+    internal sealed class MessageHandlerInstance<TMessage> : IMessageHandlerOrQuery, IMessageHandler<TMessage> where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;
-        private readonly Type _classType;
-        private readonly Type _interfaceType;
+        private readonly ClassAndMethodAttributeProvider _attributeProvider;
 
         internal MessageHandlerInstance(IMessageHandler<TMessage> handler)
         {
             _handler = handler;
-            _classType = handler.GetType();
-            _interfaceType = typeof(IMessageHandler<TMessage>);
+            _attributeProvider = new ClassAndMethodAttributeProvider(handler.GetType(), typeof(IMessageHandler<TMessage>));            
         }
 
         internal MessageHandlerInstance(IMessageHandler<TMessage> handler, Type classType, Type interfaceType)
         {
             _handler = handler;
-            _classType = classType;
-            _interfaceType = interfaceType;
+            _attributeProvider = new ClassAndMethodAttributeProvider(classType, interfaceType);
         }
 
-        protected override Type ClassType
+        public bool TryGetClassAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
         {
-            get { return _classType; }
+            return _attributeProvider.TryGetClassAttributeOfType(out attribute);
         }
 
-        protected override Type InterfaceType
+        public bool TryGetMethodAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
         {
-            get { return _interfaceType; }
+            return _attributeProvider.TryGetMethodAttributeOfType(out attribute);
+        }
+
+        public IEnumerable<TAttribute> GetClassAttributesOfType<TAttribute>() where TAttribute : class
+        {
+            return _attributeProvider.GetClassAttributesOfType<TAttribute>();
+        }
+
+        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class
+        {
+            return _attributeProvider.GetMethodAttributesOfType<TAttribute>();
         }
 
         public Task HandleAsync(TMessage message)

@@ -51,7 +51,7 @@ namespace System.ComponentModel.Server
             }
             TStrategy strategy;
 
-            if (MessageHandler.TryGetStrategyFromAttribute(handler, out strategy))
+            if (ClassAndMethodAttributeProvider.TryGetStrategyFromAttribute(handler, out strategy))
             {
                 return InvokeAsync(handler, strategy);
             }
@@ -71,6 +71,7 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
-        protected abstract Task InvokeAsync(IMessageHandler handler, TStrategy strategy);
+        /// <returns>A task carrying out the invocation.</returns>
+        protected abstract Task InvokeAsync(IMessageHandler handler, TStrategy strategy);         
     }
 }

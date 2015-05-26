@@ -42,6 +42,7 @@ namespace System.ComponentModel.Server
         /// and then invokes <see cref="InvokeAsync{TMessageOut}(IQuery{TMessageOut}, TStrategy)" />.
         /// </summary>
         /// <param name="query">The query to invoke.</param>
+        /// <returns>A task executing the query.</returns>
         public override Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query)
         {
             if (query == null)
@@ -50,6 +51,10 @@ namespace System.ComponentModel.Server
             }
             TStrategy strategy;
 
+            if (ClassAndMethodAttributeProvider.TryGetStrategyFromAttribute(query, out strategy))
+            {
+                return InvokeAsync(query, strategy);
+            }
             if (StrategyMapping.TryGetStrategy(query.MessageIn, out strategy))
             {
                 return InvokeAsync(query, strategy);
@@ -66,6 +71,7 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <param name="query">The query to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
+        /// <returns>A task executing the query.</returns>
         protected abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage<TMessageOut>;
     }
 }

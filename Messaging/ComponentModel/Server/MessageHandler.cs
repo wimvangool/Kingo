@@ -42,11 +42,6 @@ namespace System.ComponentModel.Server
         public Task InvokeAsync()
         {
             return _nextModule.InvokeAsync(_nextHandler);
-        }        
-
-        internal static bool TryGetStrategyFromAttribute<TAttribute>(IMessageHandler handler, out TAttribute attribute) where TAttribute : class
-        {
-            return handler.TryGetMethodAttributeOfType(out attribute) || handler.TryGetClassAttributeOfType(out attribute);
-        }        
+        }                      
     }
 }

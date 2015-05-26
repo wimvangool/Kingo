@@ -12,7 +12,7 @@ namespace System.ComponentModel.Server
         /// </summary>
         /// <typeparam name="TMessageOut">Type of the result of <paramref name="query"/>.</typeparam>
         /// <param name="query">The handler to execute.</param>        
-        /// <returns>The result of the <paramref name="query"/>.</returns>        
+        /// <returns>A task executing the query.</returns>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>

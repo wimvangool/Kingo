@@ -6,21 +6,20 @@ using System.Resources;
 
 namespace System.ComponentModel.Server
 {
-    internal abstract class MessageHandlerInstance : IEquatable<MessageHandlerInstance>
+    internal sealed class ClassAndMethodAttributeProvider : IEquatable<ClassAndMethodAttributeProvider>, IMessageHandlerOrQuery
     {
-        protected abstract Type ClassType
-        {
-            get;
-        }
+        private readonly Type _classType;
+        private readonly Type _interfaceType;
 
-        protected abstract Type InterfaceType
+        internal ClassAndMethodAttributeProvider(Type classType, Type interfaceType)
         {
-            get;
+            _classType = classType;
+            _interfaceType = interfaceType;
         }
 
         private InterfaceMapping GetInterfaceMapping()
         {
-            return ClassType.GetInterfaceMap(InterfaceType);
+            return _classType.GetInterfaceMap(_interfaceType);
         }
 
         #region [====== Equals & GetHashCode ======]
@@ -28,11 +27,11 @@ namespace System.ComponentModel.Server
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return Equals(obj as MessageHandlerInstance);
+            return Equals(obj as ClassAndMethodAttributeProvider);
         }
 
         /// <inheritdoc />
-        public bool Equals(MessageHandlerInstance other)
+        public bool Equals(ClassAndMethodAttributeProvider other)
         {
             if (ReferenceEquals(other, null))
             {
@@ -42,20 +41,20 @@ namespace System.ComponentModel.Server
             {
                 return true;
             }
-            return ClassType == other.ClassType && InterfaceType == other.InterfaceType;
+            return _classType == other._classType && _interfaceType == other._interfaceType;
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCode.Of(ClassType, InterfaceType);
+            return HashCode.Of(_classType, _interfaceType);
         }
 
         #endregion
 
         #region [====== Class Attributes ======]
 
-        internal bool TryGetClassAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
+        public bool TryGetClassAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
         {
             try
             {
@@ -63,14 +62,14 @@ namespace System.ComponentModel.Server
             }
             catch (InvalidOperationException)
             {
-                throw NewAmbiguousAttributeMatchException(ClassType, typeof(TAttribute));
+                throw NewAmbiguousAttributeMatchException(_classType, typeof(TAttribute));
             }
             return attribute != null;
         }
 
-        internal IEnumerable<TAttribute> GetClassAttributesOfType<TAttribute>() where TAttribute : class
+        public IEnumerable<TAttribute> GetClassAttributesOfType<TAttribute>() where TAttribute : class
         {
-            return from attribute in _ClassAttributes.GetOrAdd(ClassType, LoadClassAttributes)
+            return from attribute in _ClassAttributes.GetOrAdd(_classType, LoadClassAttributes)
                    let desiredAttribute = attribute as TAttribute
                    where desiredAttribute != null
                    select desiredAttribute;
@@ -88,7 +87,7 @@ namespace System.ComponentModel.Server
 
         #region [====== Method Attributes ======]
 
-        internal bool TryGetMethodAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
+        public bool TryGetMethodAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
         {
             try
             {
@@ -96,12 +95,12 @@ namespace System.ComponentModel.Server
             }
             catch (InvalidOperationException)
             {
-                throw NewAmbiguousAttributeMatchException(ClassType, typeof(TAttribute));
+                throw NewAmbiguousAttributeMatchException(_classType, typeof(TAttribute));
             }
             return attribute != null;
         }
 
-        internal IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class
+        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class
         {
             return from attribute in _MethodAttributes.GetOrAdd(this, LoadMethodAttributes)
                    let desiredAttribute = attribute as TAttribute
@@ -109,19 +108,24 @@ namespace System.ComponentModel.Server
                    select desiredAttribute;
         }
 
-        private static readonly ConcurrentDictionary<MessageHandlerInstance, Attribute[]> _MethodAttributes =
-            new ConcurrentDictionary<MessageHandlerInstance, Attribute[]>();
+        private static readonly ConcurrentDictionary<ClassAndMethodAttributeProvider, Attribute[]> _MethodAttributes =
+            new ConcurrentDictionary<ClassAndMethodAttributeProvider, Attribute[]>();
 
-        private static Attribute[] LoadMethodAttributes(MessageHandlerInstance instance)
+        private static Attribute[] LoadMethodAttributes(ClassAndMethodAttributeProvider provider)
         {
-            // TargetMethods[0] points to the Handle(TMessage) method.           
-            return instance.GetInterfaceMapping().TargetMethods[0]
+            // TargetMethods[0] points to the Handle(TMessage) or Execute(TMessage) method.           
+            return provider.GetInterfaceMapping().TargetMethods[0]
                 .GetCustomAttributes(true)
                 .Cast<Attribute>()
                 .ToArray();
         }
 
         #endregion
+
+        internal static bool TryGetStrategyFromAttribute<TAttribute>(IMessageHandlerOrQuery handler, out TAttribute attribute) where TAttribute : class
+        {
+            return handler.TryGetMethodAttributeOfType(out attribute) || handler.TryGetClassAttributeOfType(out attribute);
+        } 
 
         private static Exception NewAmbiguousAttributeMatchException(Type messageHandlerType, Type attributeType)
         {
