@@ -2,9 +2,39 @@
 
 namespace System.ComponentModel.Server
 {
-    internal sealed class SampleApplicationProcessor : MessageProcessor
-    {                
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+    /// <summary>
+    /// Represents a <see cref="MessageProcessor" />.
+    /// </summary>
+    public sealed class SampleApplicationProcessor : MessageProcessor
+    {
+        private readonly UnityFactory _messageHandlerFactory;
+
+        private SampleApplicationProcessor(UnityFactory messageHandlerFactory)
+        {
+            _messageHandlerFactory = messageHandlerFactory;
+        }
+
+        protected internal override MessageHandlerFactory MessageHandlerFactory
+        {
+            get { return _messageHandlerFactory; }
+        }
+
+        private static readonly Lazy<SampleApplicationProcessor> _Instance = new Lazy<SampleApplicationProcessor>(CreateProcessor, true);
+
+        /// <summary>
+        /// Returns the instance of <see cref="SampleApplicationProcessor" />.
+        /// </summary>
+        public static SampleApplicationProcessor Instance
+        {
+            get { return _Instance.Value; }
+        }
+
+        private static SampleApplicationProcessor CreateProcessor()
+        {
+            return new SampleApplicationProcessor(CreateMessageHandlerFactory());
+        }
+        
+        private static UnityFactory CreateMessageHandlerFactory()
         {
             var factory = new UnityFactory();
 
@@ -12,7 +42,7 @@ namespace System.ComponentModel.Server
             factory.RegisterDependencies(Assembly.GetExecutingAssembly(), null, IsRepositoryInterface);
 
             return factory;
-        }               
+        }
 
         private static bool IsHandlerForMessageProcessorTests(Type type)
         {

@@ -108,13 +108,13 @@
     <Compile Include="ComponentModel\Server\MessageProcessorStub.cs" />
     <Compile Include="ComponentModel\Server\MessageToStrategyMappingTest.cs" />
     <Compile Include="ComponentModel\Server\MessageValidationModuleTest.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplicationProcessor.cs" />
     <Compile Include="ComponentModel\Server\Transactions\TransactionScopeModuleTest.cs" />
     <Compile Include="StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerClassTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerFactoryStub.cs" />
     <Compile Include="ComponentModel\Server\MessageProcessorTest.cs" />
-    <Compile Include="ComponentModel\Server\SampleApplicationProcessor.cs" />
     <Compile Include="ComponentModel\Server\SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
     <Compile Include="ComponentModel\Server\SampleApplication\IShoppingCartRepository.cs" />
     <Compile Include="ComponentModel\Server\SampleApplication\MessageHandlers\ShoppingCartHandler.cs" />

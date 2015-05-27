@@ -73,9 +73,9 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="ComponentModel\Server\DomainEvent.cs" />
+    <Compile Include="ComponentModel\Server\ScenarioTestProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="ComponentModel\Server\ScenarioTest.cs" />
-    <Compile Include="ComponentModel\Server\ScenarioTestProcessor.cs" />
     <Compile Include="ComponentModel\Server\TheCommand.cs" />
     <Compile Include="ComponentModel\Server\TheCommandHandler.cs" />
   </ItemGroup>

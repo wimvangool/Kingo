@@ -105,36 +105,33 @@ namespace System.ComponentModel.Server
 
         [TestMethod]
         public void TheNumberOfPublishedEventsIs_Succeeds_IfAllExpectedDomainEventsWerePublished()
-        {
-            var processor = new ScenarioTestProcessor();
+        {            
             var messages = new[] { new DomainEvent(), new DomainEvent() };
             var scenario = new HappyFlowScenario(messages);
 
-            scenario.ProcessWith(processor);
+            scenario.ProcessWith(ScenarioTestProcessor.Instance);
             scenario.VerifyThatEventsWerePublished(messages[0], messages[1]);
         }
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
         public void TheNumberOfPublishedEventsIs_Fails_IfAnUnexpectedNumberOfDomainEventsWasPublished()
-        {
-            var processor = new ScenarioTestProcessor();
+        {            
             var messages = new[] { new DomainEvent(), new DomainEvent() };
             var scenario = new HappyFlowScenario(messages);
 
-            scenario.ProcessWith(processor);
+            scenario.ProcessWith(ScenarioTestProcessor.Instance);
             scenario.VerifyThatEventsWerePublished(messages[0]);            
         }
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
         public void TheNumberOfPublishedEventsIs_Fails_IfTheWrongDomainEventsWerePublished()
-        {
-            var processor = new ScenarioTestProcessor();
+        {            
             var messages = new[] { new DomainEvent(), new DomainEvent() };
             var scenario = new HappyFlowScenario(messages);
 
-            scenario.ProcessWith(processor);
+            scenario.ProcessWith(ScenarioTestProcessor.Instance);
             scenario.VerifyThatEventsWerePublished(messages[0], new DomainEvent());
         }
 
@@ -145,44 +142,40 @@ namespace System.ComponentModel.Server
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ProcessWith_Throws_IfExceptionWasThrownByGiven()
-        {
-            var processor = new ScenarioTestProcessor();
+        {            
             var exception = new InvalidOperationException();
             var scenario = new ErroneousScenario(exception);
 
-            scenario.ProcessWith(processor);            
+            scenario.ProcessWith(ScenarioTestProcessor.Instance);            
         }
 
         [TestMethod]        
         public void TheExceptionThatWasThrownIsOfType_Succeeds_IfExpectedExceptionWasThrownn()
-        {
-            var processor = new ScenarioTestProcessor();
+        {            
             var exception = NewInvalidMessageException();
             var scenario = new ExceptionalFlowScenario(exception);
 
-            scenario.ProcessWith(processor);
+            scenario.ProcessWith(ScenarioTestProcessor.Instance);
             scenario.VerifyThatExceptionWasThrown(exception);
         }
 
         [TestMethod]
         [ExpectedException(typeof(AggregateException))]
         public void TheExceptionThatWasThrownIsOfType_Fails_IfUnexpectedExceptionWasThrown()
-        {
-            var processor = new ScenarioTestProcessor();
+        {            
             var exception = new InvalidOperationException();
             var scenario = new ExceptionalFlowScenario(exception);
 
-            scenario.ProcessWith(processor);            
+            scenario.ProcessWith(ScenarioTestProcessor.Instance);            
         }
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
         public void TheExceptionThatWasThrownIsOfType_Fails_IfNoExceptionWasThrown()
-        {
-            var processor = new ScenarioTestProcessor();
+        {            
             var scenario = new HappyFlowScenario(Enumerable.Empty<DomainEvent>());
 
-            scenario.ProcessWith(processor);
+            scenario.ProcessWith(ScenarioTestProcessor.Instance);
             scenario.VerifyThatExceptionWasThrown(NewInvalidMessageException());
         }
 

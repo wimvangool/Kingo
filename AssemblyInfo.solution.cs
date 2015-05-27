@@ -3,9 +3,9 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCompany("YellowFlare")]
-[assembly: AssemblyProduct("YellowFlare MessageProcessing")]
-[assembly: AssemblyCopyright("Copyright © Wim van Gool 2014")]
+[assembly: AssemblyCompany("Open Source")]
+[assembly: AssemblyProduct("MessageProcessor Framework")]
+[assembly: AssemblyCopyright("Copyright © Wim van Gool 2015")]
 
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]

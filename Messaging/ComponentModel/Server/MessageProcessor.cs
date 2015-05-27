@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Resources;
@@ -36,27 +35,13 @@ namespace System.ComponentModel.Server
             return new UnitOfWorkScope(this);
         }
 
-        #region [====== MessageHandlerFactory ======]
-
-        private static readonly ConcurrentDictionary<Type, MessageHandlerFactory> _MessageHandlerFactories = new ConcurrentDictionary<Type, MessageHandlerFactory>();
-
         /// <summary>
         /// Returns the <see cref="MessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected internal MessageHandlerFactory MessageHandlerFactory
+        protected internal virtual MessageHandlerFactory MessageHandlerFactory
         {
-            get { return _MessageHandlerFactories.GetOrAdd(GetType(), type => CreateMessageHandlerFactory()); }
+            get { return null; }
         }
-
-        /// <summary>
-        /// Creates and returns the <see cref="MessageHandlerFactory" /> of this processor.
-        /// </summary>
-        protected virtual MessageHandlerFactory CreateMessageHandlerFactory()
-        {
-            return null;
-        }
-
-        #endregion
 
         #region [====== ToString ======]
 

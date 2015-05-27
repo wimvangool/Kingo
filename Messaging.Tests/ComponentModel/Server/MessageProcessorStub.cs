@@ -1,10 +1,17 @@
 ﻿namespace System.ComponentModel.Server
 {
     internal sealed class MessageProcessorStub : MessageProcessor
-    {        
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+    {
+        private readonly UnityFactory _messageHandlerFactory;
+
+        internal MessageProcessorStub()
         {
-            return new UnityFactory();
+            _messageHandlerFactory = new UnityFactory();
+        }
+
+        protected internal override MessageHandlerFactory MessageHandlerFactory
+        {
+            get { return _messageHandlerFactory; }
         }       
     }
 }

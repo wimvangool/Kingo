@@ -1,10 +1,17 @@
 ﻿namespace System.ComponentModel.Server
 {
     internal sealed class UnityTestProcessor : MessageProcessor
-    {                
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+    {
+        private readonly UnityFactory _messageHandlerFactory;
+
+        internal UnityTestProcessor()
         {
-            return new UnityFactory();
-        }        
+            _messageHandlerFactory = new UnityFactory();
+        }
+
+        protected override MessageHandlerFactory MessageHandlerFactory
+        {
+            get { return _messageHandlerFactory; }
+        }
     }
 }

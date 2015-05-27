@@ -9,14 +9,12 @@ namespace System.ComponentModel.Server
     public sealed class MessageProcessorTest
     {        
         #region [====== Setup and Teardown ======]
-
-        private SampleApplicationProcessor _processor;
+        
         private Random _random;
 
         [TestInitialize]
         public void Setup()
-        {                       
-            _processor = new SampleApplicationProcessor();
+        {                                   
             _random = new Random();
         }                      
 
@@ -36,7 +34,7 @@ namespace System.ComponentModel.Server
             MessageStub messageA = new MessageStub();
             object messageB = null;
 
-            _processor.Handle(messageA, message => messageB = MessageProcessor.CurrentMessage.Message);
+            SampleApplicationProcessor.Instance.Handle(messageA, message => messageB = MessageProcessor.CurrentMessage.Message);
 
             Assert.IsNotNull(messageB);
             Assert.AreNotSame(messageA, messageB);
@@ -51,8 +49,8 @@ namespace System.ComponentModel.Server
             MessageStub messageB = new MessageStub();
             MessagePointer messagePointer = null;
 
-            _processor.Handle(messageA, a =>
-                _processor.Handle(messageB, b => messagePointer = MessageProcessor.CurrentMessage)
+            SampleApplicationProcessor.Instance.Handle(messageA, a =>
+                SampleApplicationProcessor.Instance.Handle(messageB, b => messagePointer = MessageProcessor.CurrentMessage)
             );
 
             Assert.IsNotNull(messagePointer);
@@ -71,9 +69,9 @@ namespace System.ComponentModel.Server
             Guid shoppingCartId = Guid.NewGuid();
             ShoppingCartCreatedEvent createdEvent = null;
 
-            using (_processor.EventBus.Connect<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
+            using (SampleApplicationProcessor.Instance.EventBus.Connect<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
             {
-                _processor.Handle(new CreateShoppingCartCommand
+                SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
                 {
                     ShoppingCartId = shoppingCartId
                 });
@@ -88,11 +86,11 @@ namespace System.ComponentModel.Server
         {
             Guid shoppingCartId = Guid.NewGuid();
 
-            _processor.Handle(new CreateShoppingCartCommand
+            SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            _processor.HandleAsync(new CreateShoppingCartCommand
+            SampleApplicationProcessor.Instance.HandleAsync(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             }).WaitAndHandle<InvalidMessageException>();                       
@@ -104,7 +102,7 @@ namespace System.ComponentModel.Server
             // Ensure the cart exists before any product are added to it.
             Guid shoppingCartId = Guid.NewGuid();                        
 
-            _processor.Handle(new CreateShoppingCartCommand
+            SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
@@ -114,9 +112,9 @@ namespace System.ComponentModel.Server
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);
 
-            using (_processor.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (SampleApplicationProcessor.Instance.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {                
-                _processor.Handle(new AddProductToCartCommand
+                SampleApplicationProcessor.Instance.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,
@@ -139,11 +137,11 @@ namespace System.ComponentModel.Server
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);            
 
-            _processor.Handle(new CreateShoppingCartCommand
+            SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            _processor.Handle(new AddProductToCartCommand
+            SampleApplicationProcessor.Instance.Handle(new AddProductToCartCommand
             {
                 ShoppingCartId = shoppingCartId,
                 ProductId = productId,
@@ -154,9 +152,9 @@ namespace System.ComponentModel.Server
             ProductAddedToCartEvent productAddedEvent = null;
             int extraQuantity = _random.Next(3, 6);
 
-            using (_processor.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (SampleApplicationProcessor.Instance.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {
-                _processor.Handle(new AddProductToCartCommand
+                SampleApplicationProcessor.Instance.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,
@@ -173,7 +171,7 @@ namespace System.ComponentModel.Server
 
         #endregion                
 
-        #region [====== Query Tests ======]        
+        #region [====== Query Tests ======]
 
         [TestMethod]
         public void Processor_ReturnsQueryResult_IfQueryExecutesCorrectly()
