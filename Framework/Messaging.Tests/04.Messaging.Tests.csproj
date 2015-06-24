@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{303380DB-4167-4BB0-8B78-63C959B65C4B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>System.ComponentModel.Messaging.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\..\..\..\Program Files (x86)\JetBrains\ReSharper\v8.0\Bin\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="ComponentModel\CommandStub.cs" />
+    <Compile Include="ComponentModel\FluentValidation\CollectionMemberTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ComparerStub.T1.cs" />
+    <Compile Include="ComponentModel\FluentValidation\EnumerableMemberTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\EqualityComparerStub.T1.cs" />
+    <Compile Include="ComponentModel\FluentValidation\GuidMemberTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ListMemberTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\NullableMemberTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\RangeTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\StringMemberTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ObjectMemberTest.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ValidatedMessage.T1.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeExtensions.cs" />
+    <Compile Include="ComponentModel\InvalidMessageExceptionTest.cs" />
+    <Compile Include="ComponentModel\MessageStub.cs" />
+    <Compile Include="ComponentModel\RequestMessageAsEditableObjectTest.cs" />
+    <Compile Include="ComponentModel\MessageOne.cs" />
+    <Compile Include="ComponentModel\MessageTwo.cs" />
+    <Compile Include="ClockTest.cs" />
+    <Compile Include="ClockWithOffsetTest.cs" />
+    <Compile Include="ComponentModel\RequestMessageValidateTest.cs" />
+    <Compile Include="ComponentModel\RequestMessageWithChildCollectionsTest.cs" />
+    <Compile Include="ComponentModel\RequestMessageWithChildMessageTest.cs" />
+    <Compile Include="ComponentModel\Server\Domain\RepositoryStub.cs" />
+    <Compile Include="ComponentModel\Server\Domain\AggregateStub.cs" />
+    <Compile Include="ComponentModel\Server\Domain\RepositoryTest.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerInstanceTest.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerSpy.cs" />
+    <Compile Include="ComponentModel\Server\MessageProcessorBusTest.cs" />
+    <Compile Include="ComponentModel\Server\MessageProcessorStub.cs" />
+    <Compile Include="ComponentModel\Server\MessageToStrategyMappingTest.cs" />
+    <Compile Include="ComponentModel\Server\MessageValidationModuleTest.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplicationProcessor.cs" />
+    <Compile Include="ComponentModel\Server\Transactions\TransactionScopeModuleTest.cs" />
+    <Compile Include="StopwatchClockTest.cs" />
+    <Compile Include="SystemClockTest.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerClassTest.cs" />
+    <Compile Include="ComponentModel\Server\MessageHandlerFactoryStub.cs" />
+    <Compile Include="ComponentModel\Server\MessageProcessorTest.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\IShoppingCartRepository.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\MessageHandlers\ShoppingCartHandler.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\Messages\AddProductToCartCommand.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\Messages\CreateShoppingCartCommand.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\Messages\ProductAddedToCartEvent.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\Messages\ShoppingCartCreatedEvent.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\ShoppingCart.cs" />
+    <Compile Include="ComponentModel\Server\SampleApplication\ShoppingCartItem.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\Command.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\DomainEvent.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\ForTryRegisterInTests\AbstractMessageHandler.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\ForTryRegisterInTests\GenericMessageHandler.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\ForTryRegisterInTests\MessageHandlerWithInvalidLifetimeAttribute.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\ForTryRegisterInTests\MessageHandlerWithPerResolveLifetime.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\ForTryRegisterInTests\MessageHandlerWithPerUnitOfWorkLifetime.cs" />
+    <Compile Include="ComponentModel\Server\SampleHandlers\ForTryRegisterInTests\MessageHandlerWithSingleLifetime.cs" />
+    <Compile Include="ComponentModel\Server\UnitOfWorkControllerTest.cs" />
+    <Compile Include="ComponentModel\Server\UnitOfWorkCacheTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\RequiredAttributeTest.cs" />
+    <Compile Include="Threading\TaskExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Messaging\05.Messaging.csproj">
+      <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
+      <Name>05.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messaging.Unity\02.Messaging.Unity.csproj">
+      <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
+      <Name>02.Messaging.Unity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ComponentModel\packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

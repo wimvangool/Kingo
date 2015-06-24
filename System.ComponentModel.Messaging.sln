@@ -8,57 +8,53 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		AssemblyInfo.solution.cs = AssemblyInfo.solution.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Unity.Tests", "Messaging.Unity.Tests\01.Messaging.Unity.Tests.csproj", "{1D19D39A-15C6-4FDE-90C5-93188F2FC644}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Unity.Tests", "Framework\Messaging.Unity.Tests\01.Messaging.Unity.Tests.csproj", "{1D19D39A-15C6-4FDE-90C5-93188F2FC644}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Unity", "Messaging.Unity\02.Messaging.Unity.csproj", "{77F45326-E908-47EB-B924-A3BD26CAD6B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Unity", "Framework\Messaging.Unity\02.Messaging.Unity.csproj", "{77F45326-E908-47EB-B924-A3BD26CAD6B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.TestEngine.Tests", "Messaging.TestEngine.Tests\01.Messaging.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.TestEngine.Tests", "Framework\Messaging.TestEngine.Tests\01.Messaging.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.TestEngine", "Messaging.TestEngine\02.Messaging.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.TestEngine", "Framework\Messaging.TestEngine\02.Messaging.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.Messaging", "B.Messaging", "{72205C90-C23B-4086-8580-050201371032}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.Messaging.Containers", "C.Messaging.Containers", "{4B713399-4B91-4E00-AF1F-D103268F40DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Messaging", "Messaging\05.Messaging.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Messaging", "Framework\Messaging\05.Messaging.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Messaging.Tests", "Messaging.Tests\04.Messaging.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Messaging.Tests", "Framework\Messaging.Tests\04.Messaging.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Messaging.Client", "Messaging.Client\03.Messaging.Client.csproj", "{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Messaging.Client", "Framework\Messaging.Client\03.Messaging.Client.csproj", "{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.Messaging.TestEngine", "A.Messaging.TestEngine", "{C3F19C5E-9EAD-4324-9B07-129C32CFA05B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Client.Tests", "Messaging.Client.Tests\02.Messaging.Client.Tests.csproj", "{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Messaging.Client.Tests", "Framework\Messaging.Client.Tests\02.Messaging.Client.Tests.csproj", "{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Client.DataVirtualizationDemo", "Messaging.Client.DataVirtualizationDemo\01.Messaging.Client.DataVirtualizationDemo.csproj", "{2DEC2193-16A6-4F74-87B0-44096BBB0A26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Messaging.Client.DataVirtualizationDemo", "Framework\Messaging.Client.DataVirtualizationDemo\01.Messaging.Client.DataVirtualizationDemo.csproj", "{2DEC2193-16A6-4F74-87B0-44096BBB0A26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{CA698FFB-466B-4FB9-83F1-AE78BB5F6602}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChessApplication", "ChessApplication", "{DF86ABE4-CF9F-4D08-8168-FFBDCCADDB31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.ApplicationLayer.UnitTests", "ChessApplication.ApplicationLayer.UnitTests\03.ApplicationLayer.UnitTests.csproj", "{08B87FEE-BEB7-4ACF-95EE-1022A7CB60D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.BusinessLogicLayer.UnitTests", "ChessApplication\ChessApplication.BusinessLogicLayer.UnitTests\03.BusinessLogicLayer.UnitTests.csproj", "{08B87FEE-BEB7-4ACF-95EE-1022A7CB60D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.ApplicationLayer.MessageHandlers", "ChessApplication.ApplicationLayer.MessageHandlers\04.ApplicationLayer.MessageHandlers.csproj", "{42AF2C3E-3A00-4BD8-8AA5-D802A10F0C49}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.BusinessLogicLayer", "ChessApplication\ChessApplication.BusinessLogicLayer\04.BusinessLogicLayer.csproj", "{42AF2C3E-3A00-4BD8-8AA5-D802A10F0C49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.ApplicationLayer.Commands", "ChessApplication.ApplicationLayer.Commands\05.ApplicationLayer.Commands.csproj", "{8CC646BE-DA0D-4FDC-B21D-AAAA73079220}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.BusinessLogicLayer.Messages", "ChessApplication\ChessApplication.BusinessLogicLayer.Messages\05.BusinessLogicLayer.Messages.csproj", "{8CC646BE-DA0D-4FDC-B21D-AAAA73079220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.DomainLayer", "ChessApplication.DomainLayer\06.DomainLayer.csproj", "{8F007300-7894-4F5F-8BAC-B67EC4EBCD29}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.InterfaceLayer", "ChessApplication\ChessApplication.InterfaceLayer\02.InterfaceLayer.csproj", "{21FB26ED-6CC8-4D23-9746-61B253D103DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "07.DomainLayer.Events", "ChessApplication.DomainLayer.Events\07.DomainLayer.Events.csproj", "{619F8698-1DDE-4BCF-87C7-33B2F5A0FFA3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.InterfaceLayer", "ChessApplication.InterfaceLayer\02.InterfaceLayer.csproj", "{21FB26ED-6CC8-4D23-9746-61B253D103DC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.InterfaceLayer.IntegrationTests", "ChessApplication.InterfaceLayer.IntegrationTests\01.InterfaceLayer.IntegrationTests.csproj", "{F22DF996-022D-4A26-8CF2-6A7FCD7F0C63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.InterfaceLayer.IntegrationTests", "ChessApplication\ChessApplication.InterfaceLayer.IntegrationTests\01.InterfaceLayer.IntegrationTests.csproj", "{F22DF996-022D-4A26-8CF2-6A7FCD7F0C63}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Api", "Server.Api", "{567BEF95-5234-4B52-8809-FC54A1C6A87F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.BusinessLogic", "Server.BusinessLogic", "{C34B6B12-C107-4E75-AAD2-6C6EC1E11846}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.BusinessLogic", "ChessApplication\Server.BusinessLogic", "{C34B6B12-C107-4E75-AAD2-6C6EC1E11846}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.DataAccess", "Server.DataAccess", "{359C7385-9976-44ED-9A29-B67088A3564A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "08.DataAccessLayer", "ChessApplication.DataAccessLayer\08.DataAccessLayer.csproj", "{9099AF7E-67AC-4B00-A6BB-D9FF5B47D5B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "08.DataAccessLayer", "ChessApplication\ChessApplication.DataAccessLayer\08.DataAccessLayer.csproj", "{9099AF7E-67AC-4B00-A6BB-D9FF5B47D5B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "09.DataAccessLayer.Queries", "ChessApplication.DataAccessLayer.Queries\09.DataAccessLayer.Queries.csproj", "{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "09.DataAccessLayer.Messages", "ChessApplication\ChessApplication.DataAccessLayer.Messages\09.DataAccessLayer.Messages.csproj", "{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,14 +110,6 @@ Global
 		{8CC646BE-DA0D-4FDC-B21D-AAAA73079220}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CC646BE-DA0D-4FDC-B21D-AAAA73079220}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CC646BE-DA0D-4FDC-B21D-AAAA73079220}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F007300-7894-4F5F-8BAC-B67EC4EBCD29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F007300-7894-4F5F-8BAC-B67EC4EBCD29}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F007300-7894-4F5F-8BAC-B67EC4EBCD29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F007300-7894-4F5F-8BAC-B67EC4EBCD29}.Release|Any CPU.Build.0 = Release|Any CPU
-		{619F8698-1DDE-4BCF-87C7-33B2F5A0FFA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{619F8698-1DDE-4BCF-87C7-33B2F5A0FFA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{619F8698-1DDE-4BCF-87C7-33B2F5A0FFA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{619F8698-1DDE-4BCF-87C7-33B2F5A0FFA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{21FB26ED-6CC8-4D23-9746-61B253D103DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{21FB26ED-6CC8-4D23-9746-61B253D103DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21FB26ED-6CC8-4D23-9746-61B253D103DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -158,8 +146,6 @@ Global
 		{08B87FEE-BEB7-4ACF-95EE-1022A7CB60D2} = {C34B6B12-C107-4E75-AAD2-6C6EC1E11846}
 		{42AF2C3E-3A00-4BD8-8AA5-D802A10F0C49} = {C34B6B12-C107-4E75-AAD2-6C6EC1E11846}
 		{8CC646BE-DA0D-4FDC-B21D-AAAA73079220} = {C34B6B12-C107-4E75-AAD2-6C6EC1E11846}
-		{8F007300-7894-4F5F-8BAC-B67EC4EBCD29} = {C34B6B12-C107-4E75-AAD2-6C6EC1E11846}
-		{619F8698-1DDE-4BCF-87C7-33B2F5A0FFA3} = {C34B6B12-C107-4E75-AAD2-6C6EC1E11846}
 		{21FB26ED-6CC8-4D23-9746-61B253D103DC} = {567BEF95-5234-4B52-8809-FC54A1C6A87F}
 		{F22DF996-022D-4A26-8CF2-6A7FCD7F0C63} = {567BEF95-5234-4B52-8809-FC54A1C6A87F}
 		{567BEF95-5234-4B52-8809-FC54A1C6A87F} = {DF86ABE4-CF9F-4D08-8168-FFBDCCADDB31}
