@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Server;
 using System.ComponentModel.Server.Domain;
 using System.Threading.Tasks;
 
-namespace SummerBreeze.ChessApplication.Players
+namespace SummerBreeze.ChessApplication.Challenges
 {
     /// <summary>
     /// Represents an in-memory repository for Challenge instances.
     /// </summary>
     [MessageHandlerDependency(InstanceLifetime.PerUnitOfWork)]
-    public sealed class FakeChallengeRepository : FakeRepository<Challenge, Guid, DateTimeOffset>,
-        IChallengeRepository
+    public sealed class FakeChallengeRepository : FakeRepository<Challenge, Guid, DateTimeOffset>, IChallengeRepository
     {
-        Task<Challenge> IChallengeRepository.GetById(Guid id)
+        Task<Challenge> IChallengeRepository.GetByIdAsync(Guid id)
         {
-            return GetByKey(id);
+            return GetByKeyAsync(id);
         }
 
         void IChallengeRepository.Add(Challenge challenge)

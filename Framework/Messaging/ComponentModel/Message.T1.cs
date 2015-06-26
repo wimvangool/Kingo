@@ -50,7 +50,7 @@ namespace System.ComponentModel
         /// <returns>The copied collection, or <c>null</c> if <paramref name="messages" /> was <c>null</c>.</returns>
         public static IList<T> Copy<T>(IEnumerable<T> messages) where T : class, IMessage<T>
         {
-            return messages == null ? null : messages.Select(Copy).ToArray();
+            return messages == null ? null : messages.Select<T, T>(Copy).ToArray();
         }
 
         /// <summary>

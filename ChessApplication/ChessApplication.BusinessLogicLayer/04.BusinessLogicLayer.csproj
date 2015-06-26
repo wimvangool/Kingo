@@ -60,9 +60,10 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Players\Challenge.cs" />
+    <Compile Include="Challenges\AcceptChallengeCommandHandler.cs" />
+    <Compile Include="Challenges\Challenge.cs" />
     <Compile Include="Players\ChallengePlayerCommandHandler.cs" />
-    <Compile Include="Players\IChallengeRepository.cs" />
+    <Compile Include="Challenges\IChallengeRepository.cs" />
     <Compile Include="Players\InvalidPasswordException.cs" />
     <Compile Include="Players\InvalidUsernameException.cs" />
     <Compile Include="Players\IPlayerRepository.cs" />

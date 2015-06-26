@@ -2,7 +2,7 @@
 using System.ComponentModel.Server.Domain;
 using System.Threading.Tasks;
 
-namespace SummerBreeze.ChessApplication.Players
+namespace SummerBreeze.ChessApplication.Challenges
 {
     /// <summary>
     /// Manages the persistence of <see cref="Challenge" /> instances.
@@ -14,7 +14,7 @@ namespace SummerBreeze.ChessApplication.Players
         /// </summary>
         /// <param name="id">Unique identifier of the challenge.</param>
         /// <returns>A task that will retrieve the challenge.</returns>
-        Task<Challenge> GetById(Guid id);
+        Task<Challenge> GetByIdAsync(Guid id);
 
         /// <summary>
         /// Adds a challenge to the repository.
@@ -23,7 +23,7 @@ namespace SummerBreeze.ChessApplication.Players
         /// <exception cref="ArgumentNullException">
         /// <paramref name="challenge" /> is <c>null</c>.
         /// </exception>
-        /// <exception cref="DuplicateKeyException{T, S}">
+        /// <exception cref="DuplicateKeyException{TAggregate,TKey}">
         /// <paramref name="challenge" />'s id matches the id of another aggregate that
         /// was already added to this repository.
         /// </exception>

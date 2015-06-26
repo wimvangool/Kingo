@@ -14,7 +14,7 @@ namespace SummerBreeze.ChessApplication.Players
         /// </summary>
         /// <param name="id">Unique identifier of the player.</param>
         /// <returns>A task that will retrieve the player.</returns>
-        Task<Player> GetById(Guid id);
+        Task<Player> GetByIdAsync(Guid id);
 
         /// <summary>
         /// Adds a player to the repository.
@@ -23,7 +23,7 @@ namespace SummerBreeze.ChessApplication.Players
         /// <exception cref="ArgumentNullException">
         /// <paramref name="player" /> is <c>null</c>.
         /// </exception>
-        /// <exception cref="DuplicateKeyException{T, S}">
+        /// <exception cref="DuplicateKeyException{TAggregate,TKey}">
         /// <paramref name="player" />'s id matches the id of another aggregate that
         /// was already added to this repository.
         /// </exception>

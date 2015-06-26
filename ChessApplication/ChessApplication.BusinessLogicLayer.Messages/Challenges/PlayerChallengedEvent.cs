@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.Server.Domain;
 
-namespace SummerBreeze.ChessApplication.Players
+namespace SummerBreeze.ChessApplication.Challenges
 {
     /// <summary>
     /// Occurs when a player has challenged another player.

@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.FluentValidation;
-using System.ComponentModel.Server.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SummerBreeze.ChessApplication.Players

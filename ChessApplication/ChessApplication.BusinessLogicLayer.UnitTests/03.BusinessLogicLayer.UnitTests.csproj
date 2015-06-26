@@ -87,18 +87,20 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Challenges\ChallengeIsAcceptedScenario.cs" />
     <Compile Include="MessageTest.cs" />
+    <Compile Include="Challenges\AcceptedChallengeNotFoundScenario.cs" />
     <Compile Include="Players\ChallengePlayerCommandTest.cs" />
-    <Compile Include="Players\FakeChallengeRepository.cs" />
+    <Compile Include="Challenges\FakeChallengeRepository.cs" />
     <Compile Include="Players\FakePlayerRepository.cs" />
     <Compile Include="Players\InvalidPasswordScenario.cs" />
     <Compile Include="Players\InvalidUsernameScenario.cs" />
     <Compile Include="Players\PlayerIsChallengedScenario.cs" />
     <Compile Include="Players\PlayerIsRegisteredScenario.cs" />
     <Compile Include="Players\PlayerRegisteredEventTest.cs" />
-    <Compile Include="Players\ReceiverNotFoundScenario.cs" />
+    <Compile Include="Players\ChallengeReceiverNotFoundScenario.cs" />
     <Compile Include="Players\RegisterPlayerCommandTest.cs" />
-    <Compile Include="Players\SenderNotFoundScenario.cs" />
+    <Compile Include="Players\ChallengeSenderNotFoundScenario.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="UnitTestProcessor.cs" />
     <Compile Include="UnitTestScenario.cs" />

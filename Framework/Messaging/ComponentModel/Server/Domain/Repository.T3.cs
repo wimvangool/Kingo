@@ -97,7 +97,7 @@ namespace System.ComponentModel.Server.Domain
 
         #endregion
 
-        #region [====== IUnitOfWork ======]        
+        #region [====== IUnitOfWork ======]
 
         /// <summary>
         /// Indicates whether or not this repository must enlist with the <see cref="MessageProcessor" />
@@ -168,7 +168,7 @@ namespace System.ComponentModel.Server.Domain
         /// <exception cref="AggregateNotFoundException{T}">
         /// No aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/> was found.
         /// </exception>
-        public virtual async Task<TAggregate> GetByKey(TKey key)
+        public virtual async Task<TAggregate> GetByKeyAsync(TKey key)
         {            
             await Lock.WaitAsync();
 
@@ -186,7 +186,7 @@ namespace System.ComponentModel.Server.Domain
                 // cannot be returned by definition), an attempt is made to retrieve it from the data store. If found,
                 // we add it to the selected-aggregate set and enlist this UnitOfWork with the controller because it
                 // might need to be flushed later.
-                if (!_deletedAggregates.Contains(key) && (aggregate = await SelectByKey(key)) != null)
+                if (!_deletedAggregates.Contains(key) && (aggregate = await SelectByKeyAsync(key)) != null)
                 {
                     _selectedAggregates.Add(aggregate);
 
@@ -213,7 +213,7 @@ namespace System.ComponentModel.Server.Domain
         /// <c>True</c> if this store contains an instance with the specified <paramref name="key"/>;
         /// otherwise <c>false</c>.
         /// </returns>
-        protected abstract Task<TAggregate> SelectByKey(TKey key);
+        protected abstract Task<TAggregate> SelectByKeyAsync(TKey key);
 
         private async Task UpdateAggregatesAsync()
         {
@@ -331,7 +331,7 @@ namespace System.ComponentModel.Server.Domain
 
         #endregion
 
-        #region [====== Removing and Deleting ======]        
+        #region [====== Removing and Deleting ======]
 
         /// <summary>
         /// Marks the aggregate with the specified <paramref name="key"/> as deleted.

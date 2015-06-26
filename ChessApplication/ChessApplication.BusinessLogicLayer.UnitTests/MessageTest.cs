@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SummerBreeze.ChessApplication
@@ -11,7 +10,7 @@ namespace SummerBreeze.ChessApplication
     public abstract class MessageTest<TMessage>
         where TMessage : class, IMessage<TMessage>
     {
-        #region [====== Constructors & Copying ======]        
+        #region [====== Constructors & Copying ======]
 
         [TestMethod]
         public void Copy_ReturnsIdenticalCopyOfMessage()
@@ -41,22 +40,13 @@ namespace SummerBreeze.ChessApplication
             var message = CreateValidMessage();
 
             Assert.AreEqual(message, message);
-        }
-
-        [TestMethod]
-        public void Equals_ReturnsTrue_IfMessageIsComparedToEqualInstance()
-        {
-            var messageA = CreateValidMessage();
-            var messageB = CreateValidMessage();
-
-            Assert.AreEqual(messageA, messageB);
-        }
+        }        
 
         [TestMethod]
         public void Equals_ReturnsFalse_IfMessageIsComparedToUnequalInstance()
         {
             var messageA = CreateValidMessage();
-            var messageB = CreateUnequalCopyOf(messageA);
+            var messageB = Change(messageA.Copy());
 
             Assert.AreNotEqual(messageA, messageB);
         }
@@ -89,7 +79,7 @@ namespace SummerBreeze.ChessApplication
 
         protected abstract TMessage CreateValidMessage();
 
-        protected abstract TMessage CreateUnequalCopyOf(TMessage message);
+        protected abstract TMessage Change(TMessage message);
 
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Server.Domain;
+using SummerBreeze.ChessApplication.Challenges;
 
 namespace SummerBreeze.ChessApplication.Players
 {

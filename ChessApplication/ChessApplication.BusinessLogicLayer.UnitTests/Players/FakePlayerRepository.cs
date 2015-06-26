@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Server;
 using System.ComponentModel.Server.Domain;
 using System.Threading.Tasks;
@@ -12,9 +11,9 @@ namespace SummerBreeze.ChessApplication.Players
     [MessageHandlerDependency(InstanceLifetime.PerUnitOfWork)]
     public sealed class FakePlayerRepository : FakeRepository<Player, Guid, DateTimeOffset>, IPlayerRepository
     {
-        Task<Player> IPlayerRepository.GetById(Guid id)
+        Task<Player> IPlayerRepository.GetByIdAsync(Guid id)
         {
-            return GetByKey(id);
+            return GetByKeyAsync(id);
         }
 
         void IPlayerRepository.Add(Player player)

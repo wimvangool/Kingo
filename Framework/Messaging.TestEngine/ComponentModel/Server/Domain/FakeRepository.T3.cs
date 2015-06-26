@@ -19,7 +19,7 @@ namespace System.ComponentModel.Server.Domain
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {        
         /// <summary>
-        /// Returns a <see cref="IDictionary{K, A}" /> that contains all stored aggregates.
+        /// Returns a <see cref="IDictionary{TKey,TValue}" /> that contains all stored aggregates.
         /// </summary>
         protected IDictionary<TKey, TAggregate> Aggregates
         {
@@ -36,7 +36,7 @@ namespace System.ComponentModel.Server.Domain
         }
 
         /// <inheritdoc />
-        protected override Task<TAggregate> SelectByKey(TKey key)
+        protected override Task<TAggregate> SelectByKeyAsync(TKey key)
         {
             return AsyncMethod.RunSynchronously(() =>
             {

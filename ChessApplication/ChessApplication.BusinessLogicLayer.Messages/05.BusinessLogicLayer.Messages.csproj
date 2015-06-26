@@ -53,8 +53,10 @@
     <Compile Include="..\ChessApplication.BusinessLogicLayer\Constraints.cs">
       <Link>Constraints.cs</Link>
     </Compile>
+    <Compile Include="Challenges\AcceptChallengeCommand.cs" />
+    <Compile Include="Challenges\ChallengeAcceptedEvent.cs" />
     <Compile Include="Players\ChallengePlayerCommand.cs" />
-    <Compile Include="Players\PlayerChallengedEvent.cs" />
+    <Compile Include="Challenges\PlayerChallengedEvent.cs" />
     <Compile Include="Players\PlayerRegisteredEvent.cs" />
     <Compile Include="Players\RegisterPlayerCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />

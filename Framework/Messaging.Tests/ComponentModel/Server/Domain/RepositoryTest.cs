@@ -15,7 +15,7 @@ namespace System.ComponentModel.Server.Domain
             {
                 var key = Guid.NewGuid();                
                 
-                repository.GetByKey(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
+                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
                 
                 Assert.AreEqual(1, repository.SelectCountOf(key));
                 Assert.IsFalse(repository.WasEnlisted);
@@ -31,13 +31,13 @@ namespace System.ComponentModel.Server.Domain
             using (var repository = new RepositoryStub(existingAggregate))
             {
                 var key = existingAggregate.Id;
-                var retrievedAggregate = repository.GetByKey(key).Result;
+                var retrievedAggregate = repository.GetByKeyAsync(key).Result;
 
                 Assert.AreEqual(1, repository.SelectCountOf(key));
                 Assert.AreSame(existingAggregate, retrievedAggregate);
 
                 repository.RemoveByKey(key);
-                repository.GetByKey(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
+                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
 
                 Assert.IsTrue(repository.WasEnlisted);
                 Assert.IsTrue(repository.RequiresFlush());
@@ -54,13 +54,13 @@ namespace System.ComponentModel.Server.Domain
 
                 repository.Add(aggregate);
 
-                var retrievedAggregate = repository.GetByKey(key).Result;
+                var retrievedAggregate = repository.GetByKeyAsync(key).Result;
 
                 Assert.AreEqual(0, repository.SelectCountOf(key));
                 Assert.AreSame(aggregate, retrievedAggregate);
 
                 repository.RemoveByKey(key);
-                repository.GetByKey(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
+                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
 
                 Assert.IsTrue(repository.WasEnlisted);
                 Assert.IsFalse(repository.RequiresFlush());
@@ -75,7 +75,7 @@ namespace System.ComponentModel.Server.Domain
             using (var repository = new RepositoryStub(existingAggregate))
             {        
                 var key = existingAggregate.Id;        
-                var retrievedAggregate = repository.GetByKey(key).Result;
+                var retrievedAggregate = repository.GetByKeyAsync(key).Result;
 
                 Assert.AreEqual(1, repository.SelectCountOf(key));
                 Assert.AreSame(existingAggregate, retrievedAggregate);
@@ -95,7 +95,7 @@ namespace System.ComponentModel.Server.Domain
                 repository.RemoveByKey(key);
                 repository.Add(aggregate);
 
-                var retrievedAggregate = repository.GetByKey(key).Result;
+                var retrievedAggregate = repository.GetByKeyAsync(key).Result;
 
                 Assert.AreEqual(0, repository.SelectCountOf(key));
                 Assert.AreSame(aggregate, retrievedAggregate);
@@ -112,8 +112,8 @@ namespace System.ComponentModel.Server.Domain
             using (var repository = new RepositoryStub(existingAggregate))
             {
                 var key = existingAggregate.Id;
-                var retrievedAggregateA = repository.GetByKey(key).Result;
-                var retrievedAggregateB = repository.GetByKey(key).Result;
+                var retrievedAggregateA = repository.GetByKeyAsync(key).Result;
+                var retrievedAggregateB = repository.GetByKeyAsync(key).Result;
 
                 Assert.AreEqual(1, repository.SelectCountOf(key));
                 Assert.AreSame(existingAggregate, retrievedAggregateA);
@@ -133,8 +133,8 @@ namespace System.ComponentModel.Server.Domain
                 repository.Add(aggregate);
 
                 var key = aggregate.Id;
-                var retrievedAggregateA = repository.GetByKey(key).Result;
-                var retrievedAggregateB = repository.GetByKey(key).Result;
+                var retrievedAggregateA = repository.GetByKeyAsync(key).Result;
+                var retrievedAggregateB = repository.GetByKeyAsync(key).Result;
 
                 Assert.AreEqual(0, repository.SelectCountOf(key));
                 Assert.AreSame(aggregate, retrievedAggregateA);
@@ -155,8 +155,8 @@ namespace System.ComponentModel.Server.Domain
                 repository.RemoveByKey(key);
                 repository.Add(aggregate);
                 
-                var retrievedAggregateA = repository.GetByKey(key).Result;
-                var retrievedAggregateB = repository.GetByKey(key).Result;
+                var retrievedAggregateA = repository.GetByKeyAsync(key).Result;
+                var retrievedAggregateB = repository.GetByKeyAsync(key).Result;
 
                 Assert.AreEqual(0, repository.SelectCountOf(key));
                 Assert.AreSame(aggregate, retrievedAggregateA);
@@ -174,7 +174,7 @@ namespace System.ComponentModel.Server.Domain
             using (var repository = new RepositoryStub(existingAggregate))
             {
                 var key = existingAggregate.Id;
-                var retrievedAggregate = repository.GetByKey(key).Result;
+                var retrievedAggregate = repository.GetByKeyAsync(key).Result;
 
                 retrievedAggregate.Update();
 
@@ -191,7 +191,7 @@ namespace System.ComponentModel.Server.Domain
             using (var repository = new RepositoryStub(existingAggregate))
             {
                 var key = existingAggregate.Id;
-                var retrievedAggregate = repository.GetByKey(key).Result;
+                var retrievedAggregate = repository.GetByKeyAsync(key).Result;
 
                 retrievedAggregate.Update();
 
@@ -211,7 +211,7 @@ namespace System.ComponentModel.Server.Domain
             using (var repository = new RepositoryStub(existingAggregate))
             {
                 var key = existingAggregate.Id;
-                var retrievedAggregate = repository.GetByKey(key).Result;
+                var retrievedAggregate = repository.GetByKeyAsync(key).Result;
 
                 retrievedAggregate.Update();
 

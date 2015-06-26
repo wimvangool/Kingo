@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.FluentValidation;
 using System.ComponentModel.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SummerBreeze.ChessApplication.Challenges;
 
 namespace SummerBreeze.ChessApplication.Players
 {
@@ -17,6 +16,11 @@ namespace SummerBreeze.ChessApplication.Players
         {
             _senderIsRegistered = new PlayerIsRegisteredScenario();
             _receiverIsRegistered = new PlayerIsRegisteredScenario();
+        }
+
+        public PlayerChallengedEvent PlayerChallengedEvent
+        {
+            get { return GetDomainEventAt<PlayerChallengedEvent>(0); }
         }
 
         protected override IEnumerable<IMessageSequence> Given()

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Server.Domain;
 
-namespace SummerBreeze.ChessApplication.Players
+namespace SummerBreeze.ChessApplication.Challenges
 {
     /// <summary>
     /// Represents a challenge.
@@ -60,5 +60,10 @@ namespace SummerBreeze.ChessApplication.Players
         }
 
         #endregion
+
+        internal void Accept()
+        {
+            Publish((id, version) => new ChallengeAcceptedEvent(id, version));
+        }
     }
 }

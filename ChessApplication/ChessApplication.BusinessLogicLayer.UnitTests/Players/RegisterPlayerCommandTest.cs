@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SummerBreeze.ChessApplication.Players
 {
@@ -19,7 +18,7 @@ namespace SummerBreeze.ChessApplication.Players
             return new RegisterPlayerCommand(_ValidUsername, _ValidPassword);
         }
 
-        protected override RegisterPlayerCommand CreateUnequalCopyOf(RegisterPlayerCommand message)
+        protected override RegisterPlayerCommand Change(RegisterPlayerCommand message)
         {
             var username = message.Username + "#";
             var password = message.Password + "#";

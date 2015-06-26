@@ -23,7 +23,7 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
 
         Task<ShoppingCart> IShoppingCartRepository.GetById(Guid id)
         {
-            return GetByKey(id);
+            return GetByKeyAsync(id);
         }
 
         public int FlushCount
@@ -38,7 +38,7 @@ namespace System.ComponentModel.Server.SampleApplication.Infrastructure
             return base.FlushAsync();
         }
 
-        protected override Task<ShoppingCart> SelectByKey(Guid key)
+        protected override Task<ShoppingCart> SelectByKeyAsync(Guid key)
         {
             return AsyncMethod.RunSynchronously(() => _carts[key]);
         }

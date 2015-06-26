@@ -9,11 +9,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace SummerBreeze.ChessApplication.Players
 {
     [TestClass]
-    public sealed class SenderNotFoundScenario : UnitTestScenario<ChallengePlayerCommand>
+    public sealed class ChallengeSenderNotFoundScenario : UnitTestScenario<ChallengePlayerCommand>
     {
         private readonly PlayerIsRegisteredScenario _receiverIsRegistered;
 
-        public SenderNotFoundScenario()
+        public ChallengeSenderNotFoundScenario()
         {
             _receiverIsRegistered = new PlayerIsRegisteredScenario();
         }

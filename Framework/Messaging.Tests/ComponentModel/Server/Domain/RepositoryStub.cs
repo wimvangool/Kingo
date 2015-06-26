@@ -45,7 +45,7 @@ namespace System.ComponentModel.Server.Domain
             return CountOf(key, _selectedKeys);
         }
 
-        protected override Task<AggregateStub> SelectByKey(Guid key)
+        protected override Task<AggregateStub> SelectByKeyAsync(Guid key)
         {
             Add(key, _selectedKeys);
 

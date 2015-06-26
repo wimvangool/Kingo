@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.FluentValidation;
 
 namespace SummerBreeze.ChessApplication.Players
 {
@@ -80,7 +81,12 @@ namespace SummerBreeze.ChessApplication.Players
         /// <inheritdoc />
         protected override IMessageValidator CreateValidator()
         {
-            throw new NotImplementedException();
+            var validator = new FluentValidator();
+
+            validator.VerifyThat(() => SenderId).IsNotEmpty();
+            validator.VerifyThat(() => ReceiverId).IsNotEmpty();
+
+            return validator;
         }
 
         #endregion

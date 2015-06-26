@@ -23,7 +23,7 @@ namespace SummerBreeze.ChessApplication.Players
             };
         }
 
-        protected override PlayerRegisteredEvent CreateUnequalCopyOf(PlayerRegisteredEvent message)
+        protected override PlayerRegisteredEvent Change(PlayerRegisteredEvent message)
         {
             var messageCopy = message.Copy();
 

@@ -2,6 +2,7 @@
 using System.ComponentModel.Server;
 using System.ComponentModel.Server.Domain;
 using System.Threading.Tasks;
+using SummerBreeze.ChessApplication.Challenges;
 
 namespace SummerBreeze.ChessApplication.Players
 {
@@ -44,8 +45,11 @@ namespace SummerBreeze.ChessApplication.Players
             {
                 throw new ArgumentNullException("message");
             }
-            var sender = await _players.GetById(message.SenderId);
-            var receiver = await _players.GetById(message.ReceiverId);
+            var getSenderTask = _players.GetByIdAsync(message.SenderId);
+            var getReceiverTask = _players.GetByIdAsync(message.ReceiverId);
+
+            var sender = await getSenderTask;
+            var receiver = await getReceiverTask;
 
             _challenges.Add(sender.ChallengeOtherPlayer(message.ChallengeId, receiver));
         }
