@@ -85,6 +85,8 @@
     <Compile Include="ComponentModel\Server\MessageHandlerInstance.T1.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerToConfigurationMapping.cs" />
     <Compile Include="ComponentModel\Server\MessageToStrategyMapping.cs" />
+    <Compile Include="Diagnostics\HighResolutionClock.cs" />
+    <Compile Include="ComponentModel\Server\ClockModule.cs" />
     <Compile Include="Equatable.T1.cs" />
     <Compile Include="ComponentModel\FluentValidation\ErrorMessage.cs" />
     <Compile Include="ComponentModel\FluentValidation\Constraint.cs" />
@@ -224,7 +226,7 @@
     <Compile Include="ClockWithOffset.cs" />
     <Compile Include="IClockContext.cs" />
     <Compile Include="StaticClockContext.cs" />
-    <Compile Include="StopwatchClock.cs" />
+    <Compile Include="Diagnostics\StopwatchClock.cs" />
     <Compile Include="AsyncLocalClockContext.cs" />
     <Compile Include="ComponentModel\Server\BufferedEventBus.cs" />
     <Compile Include="EventHandlerExtensions.cs" />

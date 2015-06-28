@@ -88,6 +88,8 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Challenges\ChallengeIsAcceptedScenario.cs" />
+    <Compile Include="Challenges\ChallengeIsRejectedScenario.cs" />
+    <Compile Include="Challenges\RejectedChallengeNotFoundScenario.cs" />
     <Compile Include="MessageTest.cs" />
     <Compile Include="Challenges\AcceptedChallengeNotFoundScenario.cs" />
     <Compile Include="Players\ChallengePlayerCommandTest.cs" />

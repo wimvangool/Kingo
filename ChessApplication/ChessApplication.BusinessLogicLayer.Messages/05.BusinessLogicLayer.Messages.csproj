@@ -55,6 +55,8 @@
     </Compile>
     <Compile Include="Challenges\AcceptChallengeCommand.cs" />
     <Compile Include="Challenges\ChallengeAcceptedEvent.cs" />
+    <Compile Include="Challenges\ChallengeRejectedEvent.cs" />
+    <Compile Include="Challenges\RejectChallengeCommand.cs" />
     <Compile Include="Players\ChallengePlayerCommand.cs" />
     <Compile Include="Challenges\PlayerChallengedEvent.cs" />
     <Compile Include="Players\PlayerRegisteredEvent.cs" />

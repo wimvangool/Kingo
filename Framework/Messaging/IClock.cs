@@ -5,23 +5,7 @@
     /// </summary>
     public interface IClock
     {
-        /// <summary>
-        /// Returns the time of the day in UTC-time.
-        /// </summary>
-        /// <returns>Time of the day in UTC-time.</returns>
-        TimeSpan UtcTime();
-
-        /// <summary>
-        /// Returns the date in UTC-time.
-        /// </summary>
-        /// <returns>Date in UTC-time.</returns>
-        DateTimeOffset UtcDate();
-
-        /// <summary>
-        /// Returns the date and time in UTC-time.
-        /// </summary>
-        /// <returns>Date and time in UTC-time.</returns>
-        DateTimeOffset UtcDateAndTime();
+        #region [====== Local Time ======]
 
         /// <summary>
         /// Returns the time of the day in local time.
@@ -40,6 +24,30 @@
         /// </summary>
         /// <returns>The date and time in local time.</returns>
         DateTimeOffset LocalDateAndTime();
+
+        #endregion
+
+        #region [====== UTC Time ======]
+
+        /// <summary>
+        /// Returns the time of the day in UTC-time.
+        /// </summary>
+        /// <returns>Time of the day in UTC-time.</returns>
+        TimeSpan UtcTime();
+
+        /// <summary>
+        /// Returns the date in UTC-time.
+        /// </summary>
+        /// <returns>Date in UTC-time.</returns>
+        DateTimeOffset UtcDate();
+
+        /// <summary>
+        /// Returns the date and time in UTC-time.
+        /// </summary>
+        /// <returns>Date and time in UTC-time.</returns>
+        DateTimeOffset UtcDateAndTime();
+
+        #endregion
 
         /// <summary>
         /// Returns a clock that shows the time of the current clock, plus the given offset.

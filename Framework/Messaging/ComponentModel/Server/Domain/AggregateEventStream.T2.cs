@@ -70,7 +70,7 @@ namespace System.ComponentModel.Server.Domain
         }
 
         /// <inheritdoc />
-        protected override void Publish<TEvent>(TEvent @event)
+        internal override void Publish<TEvent>(TEvent @event)
         {
             base.Publish(@event);
 

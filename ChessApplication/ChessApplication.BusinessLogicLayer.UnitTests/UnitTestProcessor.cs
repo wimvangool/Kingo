@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Server;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace SummerBreeze.ChessApplication
@@ -14,6 +16,11 @@ namespace SummerBreeze.ChessApplication
         protected override MessageHandlerFactory MessageHandlerFactory
         {
             get { return _MessageHandlerFactory.Value; }
+        }
+
+        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
+        {
+            yield return new ClockModule(HighResolutionClock.Default);
         }
 
         private static UnityFactory CreateMessageHandlerFactory()

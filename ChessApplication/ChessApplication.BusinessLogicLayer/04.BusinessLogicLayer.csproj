@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="Challenges\AcceptChallengeCommandHandler.cs" />
     <Compile Include="Challenges\Challenge.cs" />
+    <Compile Include="Challenges\RejectChallengeCommandHandler.cs" />
     <Compile Include="Players\ChallengePlayerCommandHandler.cs" />
     <Compile Include="Challenges\IChallengeRepository.cs" />
     <Compile Include="Players\InvalidPasswordException.cs" />

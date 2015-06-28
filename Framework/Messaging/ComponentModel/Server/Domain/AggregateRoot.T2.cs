@@ -101,7 +101,7 @@ namespace System.ComponentModel.Server.Domain
         /// <exception cref="InvalidOperationException">
         /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
         /// </exception>
-        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
+        internal virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
         {            
             if (@event == null)
             {

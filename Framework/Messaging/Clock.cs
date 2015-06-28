@@ -5,23 +5,7 @@
     /// </summary>
     public abstract class Clock : IClock
     {
-        /// <inheritdoc />
-        public TimeSpan UtcTime()
-        {
-            return LocalDateAndTime().ToUniversalTime().TimeOfDay;
-        }
-
-        /// <inheritdoc />
-        public DateTimeOffset UtcDate()
-        {
-            return LocalDateAndTime().ToUniversalTime().Date;
-        }
-
-        /// <inheritdoc />
-        public DateTimeOffset UtcDateAndTime()
-        {
-            return LocalDateAndTime().ToUniversalTime();
-        }
+        #region [====== Local Time ======]
 
         /// <inheritdoc />
         public TimeSpan LocalTime()
@@ -32,11 +16,35 @@
         /// <inheritdoc />
         public DateTimeOffset LocalDate()
         {
-            return LocalDateAndTime().Date;
+            return StripTimeOfDay(LocalDateAndTime());
         }
 
         /// <inheritdoc />
-        public abstract DateTimeOffset LocalDateAndTime();
+        public virtual DateTimeOffset LocalDateAndTime()
+        {
+            return UtcDateAndTime().ToLocalTime();
+        }
+
+        #endregion
+
+        #region [====== UTC Time ======]
+
+        /// <inheritdoc />
+        public TimeSpan UtcTime()
+        {
+            return UtcDateAndTime().TimeOfDay;
+        }
+
+        /// <inheritdoc />
+        public DateTimeOffset UtcDate()
+        {
+            return StripTimeOfDay(UtcDateAndTime());
+        }
+
+        /// <inheritdoc />
+        public abstract DateTimeOffset UtcDateAndTime();        
+
+        #endregion
 
         /// <inheritdoc />
         public IClock Add(TimeSpan offset)
@@ -45,7 +53,7 @@
         }        
 
         /// <summary>
-        /// Returns the clock that applies to the current thread.
+        /// Returns the clock associated to the current thread.
         /// </summary>
         public static IClock Current
         {
@@ -76,6 +84,11 @@
         public static IDisposable OverrideThreadStatic(IClock clock)
         {
             return new ClockScope(AsyncLocalClockContext.Instance, clock);
+        }
+
+        private static DateTimeOffset StripTimeOfDay(DateTimeOffset value)
+        {
+            return new DateTimeOffset(value.Year, value.Month, value.Day, 0, 0, 0, value.Offset);
         }
     }
 }

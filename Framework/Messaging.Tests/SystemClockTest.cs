@@ -19,15 +19,15 @@ namespace System
 
         [TestMethod]
         public void UtcDate_ReturnsDateInUniversalTime()
-        {
-            Assert.AreEqual(TimeSpan.Zero, SystemClock.Instance.UtcDate().Offset);
+        {            
+            Assert.AreEqual(TimeSpan.Zero, SystemClock.Instance.UtcDate().Offset);            
         }
 
         [TestMethod]
         public void UtcDateAndTime_ReturnsDateAndTimeInUniversalTime()
         {
             Assert.AreEqual(TimeSpan.Zero, SystemClock.Instance.UtcDateAndTime().Offset);
-        }
+        }        
 
         private static TimeSpan LocalTimeOffset()
         {

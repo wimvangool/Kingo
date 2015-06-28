@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Diagnostics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace System
 {
@@ -8,29 +9,27 @@ namespace System
         [TestMethod]
         public void AddOffset_AddsSomeOffsetToSpecifiedClock()
         {
-            var stopwatch = new StopwatchClock(2000, 1, 1, DateTimeKind.Local);
-            var clock = ClockWithOffset.AddOffset(stopwatch, new TimeSpan(6, 4, 2, 0));
-            var dateAndTime = clock.LocalDateAndTime();
+            var startTime = DateTimeOffset.UtcNow;
+            var offset = new TimeSpan(6, 4, 2, 0);
 
-            Assert.AreEqual(2000, dateAndTime.Year);
-            Assert.AreEqual(1, dateAndTime.Month);
-            Assert.AreEqual(7, dateAndTime.Day);
-            Assert.AreEqual(4, dateAndTime.Hour);
-            Assert.AreEqual(2, dateAndTime.Minute);
+            var stopwatch = new StopwatchClock(startTime);
+            var clock = ClockWithOffset.AddOffset(stopwatch, offset);
+            var dateAndTime = clock.UtcDateAndTime();
+
+            Assert.AreEqual(startTime.Add(offset), dateAndTime);
         }
 
         [TestMethod]
         public void SubtractOffset_SubtractsSomeOffsetFromSpecifiedClock()
         {
-            var stopwatch = new StopwatchClock(2000, 1, 8, DateTimeKind.Local);
-            var clock = ClockWithOffset.SubtractOffset(stopwatch, new TimeSpan(6, 4, 2, 0));
-            var dateAndTime = clock.LocalDateAndTime();
+            var startTime = DateTimeOffset.UtcNow;
+            var offset = new TimeSpan(6, 4, 2, 0);
 
-            Assert.AreEqual(2000, dateAndTime.Year);
-            Assert.AreEqual(1, dateAndTime.Month);
-            Assert.AreEqual(1, dateAndTime.Day);
-            Assert.AreEqual(19, dateAndTime.Hour);
-            Assert.AreEqual(58, dateAndTime.Minute);
+            var stopwatch = new StopwatchClock(startTime);
+            var clock = ClockWithOffset.SubtractOffset(stopwatch, offset);
+            var dateAndTime = clock.UtcDateAndTime();
+
+            Assert.AreEqual(startTime.Subtract(offset), dateAndTime);
         }
     }
 }

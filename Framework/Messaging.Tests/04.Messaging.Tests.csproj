@@ -99,6 +99,7 @@
     <Compile Include="ComponentModel\RequestMessageValidateTest.cs" />
     <Compile Include="ComponentModel\RequestMessageWithChildCollectionsTest.cs" />
     <Compile Include="ComponentModel\RequestMessageWithChildMessageTest.cs" />
+    <Compile Include="ComponentModel\Server\ClockModuleTest.cs" />
     <Compile Include="ComponentModel\Server\Domain\RepositoryStub.cs" />
     <Compile Include="ComponentModel\Server\Domain\AggregateStub.cs" />
     <Compile Include="ComponentModel\Server\Domain\RepositoryTest.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="ComponentModel\Server\MessageValidationModuleTest.cs" />
     <Compile Include="ComponentModel\Server\SampleApplicationProcessor.cs" />
     <Compile Include="ComponentModel\Server\Transactions\TransactionScopeModuleTest.cs" />
-    <Compile Include="StopwatchClockTest.cs" />
+    <Compile Include="Diagnostics\StopwatchClockTest.cs" />
     <Compile Include="SystemClockTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerClassTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerFactoryStub.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="ComponentModel\DataAnnotations\RequiredAttributeTest.cs" />
     <Compile Include="Threading\TaskExtensions.cs" />
+    <Compile Include="Diagnostics\HighResolutionClockTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Messaging\05.Messaging.csproj">

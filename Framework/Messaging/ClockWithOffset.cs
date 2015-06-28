@@ -22,7 +22,12 @@ namespace System
             return _dateAndTimeCalculator.Invoke(_clock.LocalDateAndTime(), _offset);
         }
 
-        public static ClockWithOffset AddOffset(IClock clock, TimeSpan offset)
+        public override DateTimeOffset UtcDateAndTime()
+        {
+            return _dateAndTimeCalculator.Invoke(_clock.UtcDateAndTime(), _offset);
+        }
+
+        internal static ClockWithOffset AddOffset(IClock clock, TimeSpan offset)
         {            
             return new ClockWithOffset(clock, offset, AddOffset);
         }

@@ -65,5 +65,10 @@ namespace SummerBreeze.ChessApplication.Challenges
         {
             Publish((id, version) => new ChallengeAcceptedEvent(id, version));
         }
+
+        internal void Reject()
+        {
+            Publish((id, version) => new ChallengeRejectedEvent(id, version));
+        }
     }
 }

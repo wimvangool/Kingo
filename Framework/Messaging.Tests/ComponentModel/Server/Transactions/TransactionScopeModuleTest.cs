@@ -101,9 +101,9 @@ namespace System.ComponentModel.Server.Transactions
         [TestMethod]
         public void Module_CreatesNewTransaction_IfOptionIsRequiredAndNoTransactionIsActive()
         {
-            var messageSink = new TransactionSpy<DefaultMessage>();
+            var spy = new TransactionSpy<DefaultMessage>();
             var message = new DefaultMessage();
-            var handler = new MessageHandlerWrapper<DefaultMessage>(message, messageSink);
+            var handler = new MessageHandlerWrapper<DefaultMessage>(message, spy);
 
             var module = new TransactionScopeModule();
              
@@ -111,17 +111,17 @@ namespace System.ComponentModel.Server.Transactions
             module.InvokeAsync(handler).Wait();
             Assert.IsNull(Transaction.Current);            
 
-            messageSink.VerifyMessageWas(message);
-            messageSink.VerifyTransactionWasNotNull();
-            messageSink.VerifyIsolationLevelWas(IsolationLevel.ReadCommitted);
+            spy.VerifyMessageWas(message);
+            spy.VerifyTransactionWasNotNull();
+            spy.VerifyIsolationLevelWas(IsolationLevel.ReadCommitted);
         }
 
         [TestMethod]
         public void Module_KeepsExistingTransaction_IfOptionIsRequiredAndTransactionIsAlreadyActive()
         {
-            var messageSink = new TransactionSpy<RequiredMessage>();
+            var spy = new TransactionSpy<RequiredMessage>();
             var message = new RequiredMessage();
-            var handler = new MessageHandlerWrapper<RequiredMessage>(message, messageSink);
+            var handler = new MessageHandlerWrapper<RequiredMessage>(message, spy);
 
             Transaction transaction;
 
@@ -136,17 +136,17 @@ namespace System.ComponentModel.Server.Transactions
                 scope.Complete();
             }            
 
-            messageSink.VerifyMessageWas(message);
-            messageSink.VerifyTransactionWas(transaction);
-            messageSink.VerifyIsolationLevelWas(IsolationLevel.Serializable);
+            spy.VerifyMessageWas(message);
+            spy.VerifyTransactionWas(transaction);
+            spy.VerifyIsolationLevelWas(IsolationLevel.Serializable);
         }
 
         [TestMethod]        
         public void Module_Throws_IfSpecifiedIsolationLevelIsNotEqualToExistingIsolationLevel()
         {
-            var messageSink = new TransactionSpy<DefaultMessage>();
+            var spy = new TransactionSpy<DefaultMessage>();
             var message = new DefaultMessage();
-            var handler = new MessageHandlerWrapper<DefaultMessage>(message, messageSink);
+            var handler = new MessageHandlerWrapper<DefaultMessage>(message, spy);
 
             var module = new TransactionScopeModule(TransactionScopeOption.Required, TimeSpan.FromMinutes(1), IsolationLevel.ReadCommitted);
                             
@@ -161,9 +161,9 @@ namespace System.ComponentModel.Server.Transactions
         [TestMethod]
         public void Module_CreatesNewTransaction_IfTransactionExistsAndMessageRequiresNewTransaction()
         {
-            var messageSink = new TransactionSpy<RequiresNewMessage>();
+            var spy = new TransactionSpy<RequiresNewMessage>();
             var message = new RequiresNewMessage();
-            var handler = new MessageHandlerWrapper<RequiresNewMessage>(message, messageSink);
+            var handler = new MessageHandlerWrapper<RequiresNewMessage>(message, spy);
 
             Transaction transaction;
 
@@ -178,17 +178,17 @@ namespace System.ComponentModel.Server.Transactions
                 scope.Complete();
             }
             
-            messageSink.VerifyMessageWas(message);
-            messageSink.VerifyTransactionWasNot(transaction);
-            messageSink.VerifyIsolationLevelWas(IsolationLevel.ReadCommitted);
+            spy.VerifyMessageWas(message);
+            spy.VerifyTransactionWasNot(transaction);
+            spy.VerifyIsolationLevelWas(IsolationLevel.ReadCommitted);
         }
 
         [TestMethod]
         public void Module_HidesTransaction_IfTransactionExistsAndMessageSuppressesTransaction()
         {
-            var messageSink = new TransactionSpy<SuppressMessage>();
+            var spy = new TransactionSpy<SuppressMessage>();
             var message = new SuppressMessage();
-            var handler = new MessageHandlerWrapper<SuppressMessage>(message, messageSink);
+            var handler = new MessageHandlerWrapper<SuppressMessage>(message, spy);
 
             var module = new TransactionScopeModule();
             
@@ -198,8 +198,8 @@ namespace System.ComponentModel.Server.Transactions
                 scope.Complete();
             }
             
-            messageSink.VerifyMessageWas(message);
-            messageSink.VerifyTransactionWasNull();            
+            spy.VerifyMessageWas(message);
+            spy.VerifyTransactionWasNull();            
         }
     }
 }
