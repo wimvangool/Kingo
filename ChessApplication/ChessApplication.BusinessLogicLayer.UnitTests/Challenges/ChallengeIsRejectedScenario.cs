@@ -15,6 +15,11 @@ namespace SummerBreeze.ChessApplication.Challenges
             _playerIsChallenged = new PlayerIsChallengedScenario();
         }
 
+        internal ChallengeRejectedEvent ChallengeRejectedEvent
+        {
+            get { return GetDomainEventAt<ChallengeRejectedEvent>(0); }
+        }
+
         protected override IEnumerable<IMessageSequence> Given()
         {
             yield return _playerIsChallenged;

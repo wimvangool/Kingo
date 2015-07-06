@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System</RootNamespace>
-    <AssemblyName>System.ComponentModel.Messaging</AssemblyName>
+    <AssemblyName>System.ComponentModel.Messaging.Processing</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\System.ComponentModel.Messaging.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\System.ComponentModel.Messaging.Processing.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -52,17 +52,6 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="ComponentModel\FluentValidation\AndConstraint.cs" />
-    <Compile Include="ComponentModel\FluentValidation\BooleanMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\CollectionMemberExtensions.cs" />
-    <Compile Include="Comparable.T1.cs" />
-    <Compile Include="Comparer.cs" />
-    <Compile Include="ComponentModel\FluentValidation\Constraint.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\EnumerableMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\GuidMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IFluentValidator.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ListMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\MemberSet.cs" />
     <Compile Include="ComponentModel\IDependencyConfiguration.cs" />
     <Compile Include="ComponentModel\Server\ClassAndMethodAttributeProvider.cs" />
     <Compile Include="ComponentModel\Server\Domain\ConstraintViolationException.T1.cs" />
@@ -79,37 +68,18 @@
     <Compile Include="ComponentModel\Server\Domain\InvalidValueException.T1.cs" />
     <Compile Include="ComponentModel\Server\IMessageHandlerOrQuery.cs" />
     <Compile Include="ComponentModel\Server\IMessageHandlerConfiguration.cs" />
+    <Compile Include="ComponentModel\Server\IMessageSequence.cs" />
     <Compile Include="ComponentModel\Server\InvalidEventException.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerConfiguration.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerDispatcher.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerInstance.T1.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerToConfigurationMapping.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequence.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequenceConcatenation.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequenceNode.T1.cs" />
+    <Compile Include="ComponentModel\Server\MessageSequencePair.cs" />
     <Compile Include="ComponentModel\Server\MessageToStrategyMapping.cs" />
-    <Compile Include="Diagnostics\HighResolutionClock.cs" />
     <Compile Include="ComponentModel\Server\ClockModule.cs" />
-    <Compile Include="Equatable.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ErrorMessage.cs" />
-    <Compile Include="ComponentModel\FluentValidation\Constraint.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IErrorMessageConsumer.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IErrorMessageProducer.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IMember.cs" />
-    <Compile Include="ComponentModel\FluentValidation\InternalRange.T1.cs" />
-    <Compile Include="HashCode.cs" />
-    <Compile Include="IRange.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\NullableMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\NullConstraint.cs" />
-    <Compile Include="Range.T1.cs" />
-    <Compile Include="RangeOptions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\StringMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\Member.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\StringToNumberConverter.T1.cs" />
-    <Compile Include="ComponentModel\MessageValidator.cs" />
-    <Compile Include="Resources\ValidationMessages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ValidationMessages.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ComponentModel\ValueMessage.T1.cs" />
     <Compile Include="ComponentModel\CommandExecutionException.cs" />
     <Compile Include="ComponentModel\Client\AsyncExecutionTask.T1.cs" />
     <Compile Include="ComponentModel\Client\AsyncObject.cs" />
@@ -125,21 +95,10 @@
     <Compile Include="ComponentModel\Client\QueryDelegate.T1.cs" />
     <Compile Include="ComponentModel\Client\QueryDelegate.T2.cs" />
     <Compile Include="ComponentModel\Client\RequestMessage.cs" />
-    <Compile Include="ComponentModel\IMessageValidator.cs" />
-    <Compile Include="Threading\AsyncMethod.cs" />
-    <Compile Include="Threading\AsyncLocal.T1.cs" />
-    <Compile Include="ComponentModel\IMessage.cs" />
-    <Compile Include="ComponentModel\FluentValidation\FluentValidator.cs" />
     <Compile Include="ComponentModel\Server\IMessageToStrategyMapping.T1.cs" />
     <Compile Include="ComponentModel\Server\IQuery.T1.cs" />
-    <Compile Include="ComponentModel\IRequestMessageViewModel.cs" />
-    <Compile Include="ComponentModel\IRequestMessageViewModel.T1.cs" />
-    <Compile Include="ComponentModel\Message.cs" />
-    <Compile Include="ComponentModel\Message.T1.cs" />
     <Compile Include="Security\SenderNotAuthorizedException.cs" />
-    <Compile Include="ComponentModel\AttachedCollection.T1.cs" />
     <Compile Include="ComponentModel\FunctionalException.cs" />
-    <Compile Include="ComponentModel\RequestMessageViewModelEditScope.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerDependencyAttribute.cs" />
     <Compile Include="ComponentModel\Server\IMessageHandler.cs" />
     <Compile Include="ComponentModel\Server\MessageHandler.cs" />
@@ -164,10 +123,7 @@
     <Compile Include="Transactions\TransactionScopeFactory.cs" />
     <Compile Include="Transactions\TransactionScopeModule.cs" />
     <Compile Include="ComponentModel\Server\Query.T2.cs" />
-    <Compile Include="ComponentModel\ValidationErrorTree.cs" />
-    <Compile Include="ComponentModel\RequestMessagePropertyChangedEventArgs.cs" />
     <Compile Include="Reflection\AssemblySet.cs" />
-    <Compile Include="ComponentModel\SerializationInfoExtensions.cs" />
     <Compile Include="ComponentModel\Server\ActionDecorator.T1.cs" />
     <Compile Include="ComponentModel\Server\CompositeConnection.cs" />
     <Compile Include="ComponentModel\Server\DependencyClass.cs" />
@@ -221,33 +177,14 @@
     <Compile Include="ComponentModel\Server\MessagePointer.cs" />
     <Compile Include="ComponentModel\Server\DependencyCacheEntry.T1.cs" />
     <Compile Include="ComponentModel\Server\DependencyCacheRelay.cs" />
-    <Compile Include="Clock.cs" />
-    <Compile Include="ClockScope.cs" />
-    <Compile Include="ClockWithOffset.cs" />
-    <Compile Include="IClockContext.cs" />
-    <Compile Include="StaticClockContext.cs" />
-    <Compile Include="Diagnostics\StopwatchClock.cs" />
-    <Compile Include="AsyncLocalClockContext.cs" />
     <Compile Include="ComponentModel\Server\BufferedEventBus.cs" />
-    <Compile Include="EventHandlerExtensions.cs" />
     <Compile Include="ComponentModel\Server\IEventBuffer.cs" />
     <Compile Include="ComponentModel\Server\IDependencyCache.cs" />
     <Compile Include="ComponentModel\Server\IDependencyCacheEntry.T1.cs" />
     <Compile Include="ComponentModel\Server\IDomainEventBus.cs" />
-    <Compile Include="ComponentModel\IAsyncValidationService.cs" />
-    <Compile Include="ComponentModel\INotifyHasChanges.cs" />
-    <Compile Include="ComponentModel\INotifyIsValid.cs" />
-    <Compile Include="ComponentModel\IMessage.T1.cs" />
-    <Compile Include="ComponentModel\RequestMessageViewModel.T1.cs" />
-    <Compile Include="ComponentModel\PropertyChangedOption.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\MemberValidationAttribute.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\RequestMessageLabelProvider.cs" />
-    <Compile Include="ComponentModel\PropertyChangedBase.cs" />
     <Compile Include="ComponentModel\Server\UnitOfWorkCache.cs" />
     <Compile Include="ComponentModel\Server\UnitOfWorkController.cs" />
-    <Compile Include="IClock.cs" />
     <Compile Include="ComponentModel\Server\IUnitOfWork.cs" />
-    <Compile Include="SystemClock.cs" />
     <Compile Include="ComponentModel\Server\UnitOfWorkContext.cs" />
     <Compile Include="ComponentModel\Server\DependencyCache.cs" />
     <Compile Include="ComponentModel\Server\UnitOfWorkScope.cs" />
@@ -257,28 +194,27 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="ComponentModel\DataAnnotations\RequiredMemberAttribute.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\StringConstraint.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\ValidationMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="04.Messaging.nuspec">
+    <None Include="05.Messaging.Processing.nuspec">
       <SubType>Designer</SubType>
     </None>
     <Compile Include="ComponentModel\Server\DependencyConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Runtime\Caching\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Messaging\07.Messaging.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>07.Messaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

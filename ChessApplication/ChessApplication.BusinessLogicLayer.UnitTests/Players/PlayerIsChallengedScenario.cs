@@ -9,13 +9,13 @@ namespace SummerBreeze.ChessApplication.Players
     [TestClass]
     public sealed class PlayerIsChallengedScenario : UnitTestScenario<ChallengePlayerCommand>
     {
-        private readonly PlayerIsRegisteredScenario _senderIsRegistered;
-        private readonly PlayerIsRegisteredScenario _receiverIsRegistered;
+        public readonly PlayerIsRegisteredScenario SenderIsRegistered;
+        public readonly PlayerIsRegisteredScenario ReceiverIsRegistered;
 
         public PlayerIsChallengedScenario()
         {
-            _senderIsRegistered = new PlayerIsRegisteredScenario();
-            _receiverIsRegistered = new PlayerIsRegisteredScenario();
+            SenderIsRegistered = new PlayerIsRegisteredScenario();
+            ReceiverIsRegistered = new PlayerIsRegisteredScenario();
         }
 
         public PlayerChallengedEvent PlayerChallengedEvent
@@ -25,14 +25,14 @@ namespace SummerBreeze.ChessApplication.Players
 
         protected override IEnumerable<IMessageSequence> Given()
         {
-            yield return _senderIsRegistered;
-            yield return _receiverIsRegistered;
+            yield return SenderIsRegistered;
+            yield return ReceiverIsRegistered;
         }
 
         protected override ChallengePlayerCommand When()
         {
-            var senderId = _senderIsRegistered.PlayerRegisteredEvent.PlayerId;
-            var receiverId = _receiverIsRegistered.PlayerRegisteredEvent.PlayerId;
+            var senderId = SenderIsRegistered.PlayerRegisteredEvent.PlayerId;
+            var receiverId = ReceiverIsRegistered.PlayerRegisteredEvent.PlayerId;
 
             return new ChallengePlayerCommand(senderId, receiverId);
         }

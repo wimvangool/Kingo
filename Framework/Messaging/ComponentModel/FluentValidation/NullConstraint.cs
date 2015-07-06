@@ -7,9 +7,6 @@
             return constraint;
         }
 
-        public override int AddErrorMessagesTo(IErrorMessageConsumer consumer)
-        {
-            return 0;
-        }
+        public override void AddErrorMessagesTo(IErrorMessageConsumer consumer) { }
     }
 }

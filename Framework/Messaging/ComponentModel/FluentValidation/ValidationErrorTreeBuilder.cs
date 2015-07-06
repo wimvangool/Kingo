@@ -29,7 +29,7 @@ namespace System.ComponentModel.FluentValidation
         /// </exception>        
         public void Add(string memberName, string errorMessage)
         {
-            Add(memberName, new ErrorMessage(memberName, errorMessage));
+            Add(memberName, new FormattedString(memberName, errorMessage));
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace System.ComponentModel.FluentValidation
         /// </exception>        
         public void Add(string memberName, string errorMessageFormat, object arg0)
         {
-            Add(memberName, new ErrorMessage(memberName, errorMessageFormat, arg0));
+            Add(memberName, new FormattedString(memberName, errorMessageFormat, arg0));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace System.ComponentModel.FluentValidation
         /// </exception>        
         public void Add(string memberName, string errorMessageFormat, object arg0, object arg1)
         {
-            Add(memberName, new ErrorMessage(memberName, errorMessageFormat, arg0, arg1));
+            Add(memberName, new FormattedString(memberName, errorMessageFormat, arg0, arg1));
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace System.ComponentModel.FluentValidation
         /// </exception>        
         public void Add(string memberName, string errorMessageFormat, params object[] arguments)
         {
-            Add(memberName, new ErrorMessage(memberName, errorMessageFormat, arguments));
+            Add(memberName, new FormattedString(memberName, errorMessageFormat, arguments));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentException">
         /// An error for the specified <paramref name="memberName"/> has already been added.
         /// </exception>
-        public void Add(string memberName, ErrorMessage errorMessage)
+        public void Add(string memberName, FormattedString errorMessage)
         {
             if (memberName == null)
             {

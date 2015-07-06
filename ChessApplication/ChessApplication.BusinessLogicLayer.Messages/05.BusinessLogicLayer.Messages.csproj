@@ -41,9 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\Messaging\05.Messaging.csproj">
+    <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging</Name>
+      <Name>05.Messaging.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\Messaging\07.Messaging.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>07.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +61,7 @@
     <Compile Include="Challenges\ChallengeAcceptedEvent.cs" />
     <Compile Include="Challenges\ChallengeRejectedEvent.cs" />
     <Compile Include="Challenges\RejectChallengeCommand.cs" />
+    <Compile Include="Games\GameStartedEvent.cs" />
     <Compile Include="Players\ChallengePlayerCommand.cs" />
     <Compile Include="Challenges\PlayerChallengedEvent.cs" />
     <Compile Include="Players\PlayerRegisteredEvent.cs" />

@@ -33,22 +33,6 @@ namespace SummerBreeze.ChessApplication.Players
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>
         internal InvalidUsernameException(string value, string message, Exception innerException)
-            : base(value, message, innerException) {}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidUsernameException" /> class.
-        /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        private InvalidUsernameException(SerializationInfo info, StreamingContext context)
-            : base(info, context) {}
-
-        /// <inheritdoc />
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-        }
+            : base(value, message, innerException) { }        
     }
 }

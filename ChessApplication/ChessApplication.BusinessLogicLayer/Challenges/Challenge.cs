@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Server.Domain;
+using SummerBreeze.ChessApplication.Games;
 
 namespace SummerBreeze.ChessApplication.Challenges
 {
@@ -11,7 +12,9 @@ namespace SummerBreeze.ChessApplication.Challenges
         private readonly Guid _id;
         private readonly Guid _senderId;
         private readonly Guid _receiverId;
-        private DateTimeOffset _version;        
+        
+        private DateTimeOffset _version;
+        private ChallengeState _state;
 
         private Challenge(Guid id, Guid senderId, Guid receiverId)
         {
@@ -51,24 +54,54 @@ namespace SummerBreeze.ChessApplication.Challenges
         /// <inheritdoc />
         protected override DateTimeOffset NewVersion()
         {
-            return Timestamp();
-        }
-
-        private static DateTimeOffset Timestamp()
-        {
             return Clock.Current.UtcDateAndTime();
-        }
+        }        
 
         #endregion
 
         internal void Accept()
         {
-            Publish((id, version) => new ChallengeAcceptedEvent(id, version));
+            if (_state == ChallengeState.New)
+            {
+                _state = ChallengeState.Accepted;
+
+                Publish((id, version) => new ChallengeAcceptedEvent(id, version));
+            }
+            else if (_state == ChallengeState.Accepted)
+            {
+                throw new ChallengeAlreadyAcceptedException(Id);
+            }
+            else if (_state == ChallengeState.Rejected)
+            {
+                throw new ChallengeAlreadyRejectedException(Id);
+            }
         }
 
         internal void Reject()
         {
-            Publish((id, version) => new ChallengeRejectedEvent(id, version));
+            if (_state == ChallengeState.New)
+            {
+                _state = ChallengeState.Rejected;
+
+                Publish((id, version) => new ChallengeRejectedEvent(id, version));
+            }
+            else if (_state == ChallengeState.Accepted)
+            {
+                throw new ChallengeAlreadyAcceptedException(Id);
+            }
+            else if (_state == ChallengeState.Rejected)
+            {
+                throw new ChallengeAlreadyRejectedException(Id);
+            }
+        }
+
+        internal Game StartNewGame()
+        {
+            if (_state == ChallengeState.Accepted)
+            {
+                return Game.StartNewGame(_senderId, _receiverId);
+            }
+            throw new ChallengeNotAcceptedException(Id);
         }
     }
 }

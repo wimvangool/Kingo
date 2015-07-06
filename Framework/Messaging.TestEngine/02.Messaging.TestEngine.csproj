@@ -36,7 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <DocumentationFile>bin\Release\System.ComponentModel.Messaging.TestEngine.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
@@ -59,7 +59,6 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="ComponentModel\Server\Domain\FakeRepository.T3.cs" />
-    <Compile Include="ComponentModel\Server\MessageSequenceConcatenation.cs" />
     <Compile Include="ComponentModel\Server\ScenarioCache.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
@@ -73,18 +72,18 @@
       <DependentUpon>FailureMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="ComponentModel\Server\GlobalSuppressions.cs" />
-    <Compile Include="ComponentModel\Server\MessageSequence.cs" />
-    <Compile Include="ComponentModel\Server\MessageSequenceNode.T1.cs" />
-    <Compile Include="ComponentModel\Server\MessageSequencePair.cs" />
-    <Compile Include="ComponentModel\Server\IMessageSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="ComponentModel\Server\Scenario.cs" />
     <Compile Include="ComponentModel\Server\Scenario.T1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Messaging\05.Messaging.csproj">
+    <ProjectReference Include="..\Messaging.Processing\05.Messaging.Processing.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging</Name>
+      <Name>05.Messaging.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messaging\07.Messaging.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>07.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

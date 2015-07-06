@@ -252,4 +252,7 @@
   <data name="AggregateExceptionMember_Contains_Failed" xml:space="preserve">
     <value>Member '{0}' does not (only) contain an exception of type '{1}'.</value>
   </data>
+  <data name="Member_AllConstraintsFailed" xml:space="preserve">
+    <value>All specified constraints for member '{0}' failed.</value>
+  </data>
 </root>

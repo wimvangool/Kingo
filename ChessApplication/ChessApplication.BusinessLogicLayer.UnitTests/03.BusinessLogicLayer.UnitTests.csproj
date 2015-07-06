@@ -61,6 +61,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <ProjectReference Include="..\..\Framework\Messaging\07.Messaging.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>07.Messaging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\05.BusinessLogicLayer.Messages.csproj">
       <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
       <Name>05.BusinessLogicLayer.Messages</Name>
@@ -77,9 +81,9 @@
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
       <Name>02.Messaging.Unity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging\05.Messaging.csproj">
+    <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging</Name>
+      <Name>05.Messaging.Processing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
@@ -87,9 +91,15 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Challenges\RejectedChallengeAlreadyRejectedScenario.cs" />
+    <Compile Include="Challenges\RejectedChallengeAlreadyAcceptedScenario.cs" />
+    <Compile Include="Challenges\AcceptedChallengeAlreadyRejectedScenario.cs" />
+    <Compile Include="Challenges\AcceptedChallengeAlreadyAcceptedScenario.cs" />
     <Compile Include="Challenges\ChallengeIsAcceptedScenario.cs" />
     <Compile Include="Challenges\ChallengeIsRejectedScenario.cs" />
     <Compile Include="Challenges\RejectedChallengeNotFoundScenario.cs" />
+    <Compile Include="Games\FakeGameRepository.cs" />
+    <Compile Include="Games\GameIsStartedScenario.cs" />
     <Compile Include="MessageTest.cs" />
     <Compile Include="Challenges\AcceptedChallengeNotFoundScenario.cs" />
     <Compile Include="Players\ChallengePlayerCommandTest.cs" />

@@ -82,19 +82,19 @@ namespace SummerBreeze.ChessApplication.Players
             return validator;
         }        
 
-        private void VerifyUsername(IFluentValidator validator, int minLength, int maxLength, string regex)
+        private void VerifyUsername(IMemberConstraintSet validator, int minLength, int maxLength, string regex)
         {
             validator.VerifyThat(() => Username)
                 .IsNotNullOrWhiteSpace(ValidationErrorMessages.RegisterPlayerCommand_Username_NotSpecified)
-                .HasLengthBetween(minLength, maxLength, new ErrorMessage(ValidationErrorMessages.RegisterPlayerCommand_Username_InvalidLength, minLength, maxLength))
+                .HasLengthBetween(minLength, maxLength, new FormattedString(ValidationErrorMessages.RegisterPlayerCommand_Username_InvalidLength, minLength, maxLength))
                 .Matches(regex, ValidationErrorMessages.RegisterPlayerCommand_Username_IllegalCharacters);
         }
 
-        private void VerifyPassword(IFluentValidator validator, int minLength, int maxLength, string regex)
+        private void VerifyPassword(IMemberConstraintSet validator, int minLength, int maxLength, string regex)
         {
             validator.VerifyThat(() => Password)
                 .IsNotNullOrWhiteSpace(ValidationErrorMessages.RegisterPlayerCommand_Password_NotSpecified)
-                .HasLengthBetween(minLength, maxLength, new ErrorMessage(ValidationErrorMessages.RegisterPlayerCommand_Password_InvalidLength, minLength, maxLength))
+                .HasLengthBetween(minLength, maxLength, new FormattedString(ValidationErrorMessages.RegisterPlayerCommand_Password_InvalidLength, minLength, maxLength))
                 .Matches(regex, ValidationErrorMessages.RegisterPlayerCommand_Password_IllegalCharacters);
         }
 

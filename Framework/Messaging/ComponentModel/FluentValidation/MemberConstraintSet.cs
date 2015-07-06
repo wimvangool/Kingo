@@ -8,24 +8,36 @@ namespace System.ComponentModel.FluentValidation
     /// <summary>
     /// Represents a set of <see cref="IMember"/> instances that are validated by adding run-time constraints.
     /// </summary>
-    public class MemberSet : IFluentValidator, IErrorMessageProducer, IEnumerable<IMember>
+    public class MemberConstraintSet : IMemberConstraintSet, IErrorMessageProducer, IEnumerable<IMember>
     {
         private readonly IErrorMessageConsumer _consumer;        
         private readonly Dictionary<string, IMember> _members;
         private readonly LinkedList<string> _parentMembers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemberSet" /> class.
+        /// Initializes a new instance of the <see cref="MemberConstraintSet" /> class.
         /// </summary>
         /// <param name="consumer">
         /// An optional <see cref="IErrorMessageConsumer"/> that can be used to collect errors as
         /// new constraints are being added to certain members.
         /// </param>
-        public MemberSet(IErrorMessageConsumer consumer = null)
+        public MemberConstraintSet(IErrorMessageConsumer consumer = null)
         {            
             _consumer = consumer;            
             _members = new Dictionary<string, IMember>();
             _parentMembers = new LinkedList<string>();
+        }
+
+        private MemberConstraintSet(MemberConstraintSet constraintSet)
+        {
+            _consumer = null;
+            _members = new Dictionary<string, IMember>();
+            _parentMembers = new LinkedList<string>(constraintSet._parentMembers);
+        }
+
+        internal MemberConstraintSet Copy()
+        {
+            return new MemberConstraintSet(this);
         }
 
         /// <summary>
@@ -51,65 +63,20 @@ namespace System.ComponentModel.FluentValidation
 
         #endregion
 
-        #region [====== StartToAddConstraintsFor ======]
+        #region [====== VerifyThat ======]
 
-        Member<TValue> IFluentValidator.VerifyThat<TValue>(Expression<Func<TValue>> memberExpression)
+        /// <inheritdoc />
+        public Member<TValue> VerifyThat<TValue>(Expression<Func<TValue>> memberExpression)
         {
-            return StartToAddConstraintsFor(memberExpression);
-        }
-
-        Member<TValue> IFluentValidator.VerifyThat<TValue>(Func<TValue> valueFactory, string name)
-        {
-            return StartToAddConstraintsFor(valueFactory, name);
-        }
-
-        Member<TValue> IFluentValidator.VerifyThat<TValue>(TValue value, string name)
-        {
-            return StartToAddConstraintsFor(value, name);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain
-        /// constraints on <typeparamref name="TValue"/>.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the value to verify.</typeparam>
-        /// <param name="valueExpression">
-        /// An expression that returns an instance of <typeparamref name="TValue"/>.
-        /// </param>
-        /// <returns>A new <see cref="Member{TValue}"/> that can be used to define certain
-        /// constraints on <typeparamref name="TValue"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="valueExpression"/> is <c>null</c>.
-        /// </exception>        
-        /// <exception cref="ArgumentException">
-        /// <paramref name="valueExpression"/> is not a <see cref="MemberExpression" /> pointing to a field or property.
-        /// </exception>
-        public Member<TValue> StartToAddConstraintsFor<TValue>(Expression<Func<TValue>> valueExpression)
-        {
-            if (valueExpression == null)
+            if (memberExpression == null)
             {
-                throw new ArgumentNullException("valueExpression");
+                throw new ArgumentNullException("memberExpression");
             }
-            return StartToAddConstraintsFor(valueExpression.Compile(), ExtractMemberNameFrom(valueExpression));
-        }       
+            return VerifyThat(memberExpression.Compile(), ExtractMemberNameFrom(memberExpression));
+        }
 
-        /// <summary>
-        /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain
-        /// constraints on <typeparamref name="TValue"/>.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the value to verify.</typeparam>
-        /// <param name="valueFactory">
-        /// A delegate that returns an instance of <typeparamref name="TValue"/>.
-        /// </param>
-        /// <param name="name">The name of the member to add constraints for.</param>
-        /// <returns>A new <see cref="Member{TValue}"/> that can be used to define certain
-        /// constraints on <typeparamref name="TValue"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="valueFactory"/> or <paramref name="name"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> StartToAddConstraintsFor<TValue>(Func<TValue> valueFactory, string name)
+        /// <inheritdoc />
+        public Member<TValue> VerifyThat<TValue>(Func<TValue> valueFactory, string name)
         {
             if (valueFactory == null)
             {
@@ -126,23 +93,11 @@ namespace System.ComponentModel.FluentValidation
             return member;
         }
 
-        /// <summary>
-        /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain
-        /// constraints on <typeparamref name="TValue"/>.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the value to verify.</typeparam>
-        /// <param name="value">The value to add constraints for.</param>
-        /// <param name="name">The name of the member to add constraints for.</param>
-        /// <returns>A new <see cref="Member{TValue}"/> that can be used to define certain
-        /// constraints on <typeparamref name="TValue"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="name"/> is <c>null</c>.
-        /// </exception> 
-        public Member<TValue> StartToAddConstraintsFor<TValue>(TValue value, string name)
+        /// <inheritdoc />
+        public Member<TValue> VerifyThat<TValue>(TValue value, string name)
         {
-            return StartToAddConstraintsFor(() => value, name);
-        }
+            return VerifyThat(() => value, name);
+        }       
 
         private void Put(IMember newMember)
         {
@@ -191,7 +146,7 @@ namespace System.ComponentModel.FluentValidation
             return memberExpression != null;
         }
 
-        #endregion
+        #endregion        
 
         #region [====== Add, Remove & Replace ======]
 
@@ -307,6 +262,6 @@ namespace System.ComponentModel.FluentValidation
             var messageFormat = ExceptionMessages.MemberSet_UnsupportedExpression;
             var message = string.Format(messageFormat, valueExpression.NodeType);
             return new ArgumentException(message, "valueExpression");
-        }
+        }        
     }
 }

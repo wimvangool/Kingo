@@ -24,7 +24,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member "/> is <c>null</c>.
         /// </exception>
-        public static Member<IEnumerable<TValue>> IsNotNullOrEmpty<TValue>(this Member<IEnumerable<TValue>> member, ErrorMessage errorMessage = null)
+        public static Member<IEnumerable<TValue>> IsNotNullOrEmpty<TValue>(this Member<IEnumerable<TValue>> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -32,7 +32,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.CollectionMember_IsNotNullOrEmpty_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.CollectionMember_IsNotNullOrEmpty_Failed, member);
             }
             return member.Satisfies(collection => collection != null && collection.Any(), errorMessage);
         }
@@ -54,7 +54,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member "/> is <c>null</c>.
         /// </exception>
-        public static Member<TValue> ElementAt<TValue>(this Member<IEnumerable<TValue>> member, int index, ErrorMessage errorMessage = null)
+        public static Member<TValue> ElementAt<TValue>(this Member<IEnumerable<TValue>> member, int index, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -62,7 +62,7 @@ namespace System.ComponentModel.FluentValidation
             }            
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.CollectionMember_ElementAt_Failed, member, index);
+                errorMessage = new FormattedString(ValidationMessages.CollectionMember_ElementAt_Failed, member, index);
             }
             Func<IEnumerable<TValue>, bool> constraint = collection => collection != null && 0 <= index && index < collection.Count();
             Func<IEnumerable<TValue>, TValue> selector = collection => collection.ElementAt(index);

@@ -186,12 +186,12 @@ namespace System.ComponentModel
 
         private static Exception NewScopeAlreadyCompletedException()
         {
-            return new InvalidOperationException(ExceptionMessages.TransactionScope_ScopeAlreadyCompleted);
+            return new InvalidOperationException(ExceptionMessages.Scope_ScopeAlreadyCompleted);
         }
 
         private static Exception NewCannotCompleteScopeException()
         {
-            return new InvalidOperationException(ExceptionMessages.TransactionScope_CannotCompleteScope);
+            return new InvalidOperationException(ExceptionMessages.Scope_CannotCompleteScope);
         }
 
         private static Exception NewIncorrectNestingOfScopesException()

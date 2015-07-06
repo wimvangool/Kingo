@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// When implemented by a class, represent a certain member that can be validated and produces an
-    /// <see cref="ErrorMessage" /> if this validation fails.
+    /// <see cref="FormattedString" /> if this validation fails.
     /// </summary>
     public interface IMember : IErrorMessageProducer
     {

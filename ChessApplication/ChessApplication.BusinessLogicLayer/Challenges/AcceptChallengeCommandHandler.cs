@@ -31,6 +31,8 @@ namespace SummerBreeze.ChessApplication.Challenges
 
         /// <inheritdoc />
         [Throws(typeof(AggregateNotFoundByKeyException<Challenge, Guid>))]
+        [Throws(typeof(ChallengeAlreadyAcceptedException), ConvertToCommandExecutionException = true)]
+        [Throws(typeof(ChallengeAlreadyRejectedException), ConvertToCommandExecutionException = true)]
         public override async Task HandleAsync(AcceptChallengeCommand message)
         {
             if (message == null)

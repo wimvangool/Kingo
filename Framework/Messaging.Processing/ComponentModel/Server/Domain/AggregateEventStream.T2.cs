@@ -86,7 +86,7 @@ namespace System.ComponentModel.Server.Domain
         {
             base.Apply(@event);
 
-            Type eventType = typeof(TEvent);
+            var eventType = typeof(TEvent);
 
             try
             {

@@ -1,8 +1,21 @@
-﻿namespace System.ComponentModel.FluentValidation
+﻿using System.Collections.Generic;
+
+namespace System.ComponentModel.FluentValidation
 {
     internal abstract class Constraint : IErrorMessageProducer
     {
-        internal Constraint And<TValue>(Member<TValue> valueProvider, Func<TValue, bool> constraint, ErrorMessage errorMessage, IErrorMessageConsumer consumer)
+        #region [====== Or ======]
+
+        internal Constraint Or<TValue>(Member<TValue> valueProvider, Action<IMemberConstraintSet, TValue>[] constraints, FormattedString errorMessage, IErrorMessageConsumer consumer)
+        {
+            return And(new OrConstraint<TValue>(valueProvider, constraints, errorMessage), consumer);
+        }
+
+        #endregion 
+
+        #region [====== And ======]
+
+        internal Constraint And<TValue>(Member<TValue> valueProvider, Func<TValue, bool> constraint, FormattedString errorMessage, IErrorMessageConsumer consumer)
         {
             return And(new Constraint<TValue>(valueProvider, constraint, errorMessage), consumer);
         }
@@ -19,11 +32,8 @@
             return new AndConstraint(this, constraint);
         }
 
-        void IErrorMessageProducer.AddErrorMessagesTo(IErrorMessageConsumer consumer)
-        {
-            AddErrorMessagesTo(consumer);
-        }
+        #endregion               
 
-        public abstract int AddErrorMessagesTo(IErrorMessageConsumer consumer);        
+        public abstract void AddErrorMessagesTo(IErrorMessageConsumer consumer);        
     }
 }

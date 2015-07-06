@@ -13,7 +13,7 @@ namespace System.ComponentModel.Server
     public abstract class Scenario<TMessage> : Scenario, IErrorMessageConsumer where TMessage : class, IMessage<TMessage>
     {
         private readonly Lazy<TMessage> _message;
-        private readonly MemberSet _memberSet;                
+        private readonly MemberConstraintSet _memberSet;                
         private readonly List<object> _publishedEvents;
         private FunctionalException _exception;
 
@@ -23,7 +23,7 @@ namespace System.ComponentModel.Server
         protected Scenario()
         {
             _message = new Lazy<TMessage>(When);
-            _memberSet = new MemberSet(this);
+            _memberSet = new MemberConstraintSet(this);
             _publishedEvents = new List<object>();
         }
 
@@ -242,7 +242,7 @@ namespace System.ComponentModel.Server
         /// <returns>A <see cref="Member{T}" /> that can be used to verify the number of published domain events.</returns>        
         protected Member<int> VerifyThatDomainEventCount()
         {
-            return _memberSet.StartToAddConstraintsFor(() => _publishedEvents.Count, "DomainEventCount");
+            return _memberSet.VerifyThat(() => _publishedEvents.Count, "DomainEventCount");
         }        
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace System.ComponentModel.Server
         [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
         protected Member<object> VerifyThatDomainEventAtIndex(int index)
         {
-            return _memberSet.StartToAddConstraintsFor(GetDomainEventAt(index), string.Format("DomainEvent[{0}]", index));
+            return _memberSet.VerifyThat(GetDomainEventAt(index), string.Format("DomainEvent[{0}]", index));
         }        
 
         /// <summary>
@@ -268,12 +268,12 @@ namespace System.ComponentModel.Server
         /// <returns>A <see cref="Member{TValue}" /> referring to the exception that was thrown.</returns>
         protected Member<TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
         {            
-            return _memberSet.StartToAddConstraintsFor(_exception, "ExpectedException")
-                .IsNotNull(new ErrorMessage(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException)))              
-                .IsInstanceOf<TException>(new ErrorMessage(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType()));                
+            return _memberSet.VerifyThat(_exception, "ExpectedException")
+                .IsNotNull(new FormattedString(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException)))              
+                .IsInstanceOf<TException>(new FormattedString(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType()));                
         }                       
 
-        void IErrorMessageConsumer.Add(string memberName, ErrorMessage errorMessage)
+        void IErrorMessageConsumer.Add(string memberName, FormattedString errorMessage)
         {
             Fail(errorMessage);
         }
@@ -285,7 +285,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="Exception">
         /// Always (by definition).
         /// </exception>
-        protected void Fail(ErrorMessage message)
+        protected void Fail(FormattedString message)
         {
             if (message == null)
             {

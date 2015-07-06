@@ -20,7 +20,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<TValue> HasValue<TValue>(this Member<TValue?> member, ErrorMessage errorMessage = null) where TValue : struct
+        public static Member<TValue> HasValue<TValue>(this Member<TValue?> member, FormattedString errorMessage = null) where TValue : struct
         {
             if (member == null)
             {
@@ -28,7 +28,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_HasValue_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.Member_HasValue_Failed, member);
             }
             return member.Satisfies(value => value.HasValue, value => value.Value, null, errorMessage);
         }        

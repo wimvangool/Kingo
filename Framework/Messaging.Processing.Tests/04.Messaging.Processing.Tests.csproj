@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System</RootNamespace>
-    <AssemblyName>System.ComponentModel.Messaging.Tests</AssemblyName>
+    <AssemblyName>System.ComponentModel.Messaging.Processing.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -77,28 +77,10 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="ComponentModel\CommandStub.cs" />
-    <Compile Include="ComponentModel\FluentValidation\CollectionMemberTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ComparerStub.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\EnumerableMemberTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\EqualityComparerStub.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\GuidMemberTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ListMemberTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\NullableMemberTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\RangeTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\StringMemberTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ObjectMemberTest.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ValidatedMessage.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeExtensions.cs" />
     <Compile Include="ComponentModel\InvalidMessageExceptionTest.cs" />
     <Compile Include="ComponentModel\MessageStub.cs" />
-    <Compile Include="ComponentModel\RequestMessageAsEditableObjectTest.cs" />
     <Compile Include="ComponentModel\MessageOne.cs" />
     <Compile Include="ComponentModel\MessageTwo.cs" />
-    <Compile Include="ClockTest.cs" />
-    <Compile Include="ClockWithOffsetTest.cs" />
-    <Compile Include="ComponentModel\RequestMessageValidateTest.cs" />
-    <Compile Include="ComponentModel\RequestMessageWithChildCollectionsTest.cs" />
-    <Compile Include="ComponentModel\RequestMessageWithChildMessageTest.cs" />
     <Compile Include="ComponentModel\Server\ClockModuleTest.cs" />
     <Compile Include="ComponentModel\Server\Domain\RepositoryStub.cs" />
     <Compile Include="ComponentModel\Server\Domain\AggregateStub.cs" />
@@ -111,8 +93,6 @@
     <Compile Include="ComponentModel\Server\MessageValidationModuleTest.cs" />
     <Compile Include="ComponentModel\Server\SampleApplicationProcessor.cs" />
     <Compile Include="ComponentModel\Server\Transactions\TransactionScopeModuleTest.cs" />
-    <Compile Include="Diagnostics\StopwatchClockTest.cs" />
-    <Compile Include="SystemClockTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerClassTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerFactoryStub.cs" />
     <Compile Include="ComponentModel\Server\MessageProcessorTest.cs" />
@@ -136,18 +116,20 @@
     <Compile Include="ComponentModel\Server\UnitOfWorkControllerTest.cs" />
     <Compile Include="ComponentModel\Server\UnitOfWorkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\RequiredAttributeTest.cs" />
     <Compile Include="Threading\TaskExtensions.cs" />
-    <Compile Include="Diagnostics\HighResolutionClockTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Messaging\05.Messaging.csproj">
+    <ProjectReference Include="..\Messaging.Processing\05.Messaging.Processing.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging</Name>
+      <Name>05.Messaging.Processing</Name>
     </ProjectReference>
     <ProjectReference Include="..\Messaging.Unity\02.Messaging.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
       <Name>02.Messaging.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messaging\07.Messaging.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>07.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -80,9 +80,9 @@
     <Compile Include="ComponentModel\Server\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Messaging\05.Messaging.csproj">
+    <ProjectReference Include="..\Messaging.Processing\05.Messaging.Processing.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging</Name>
+      <Name>05.Messaging.Processing</Name>
     </ProjectReference>
     <ProjectReference Include="..\Messaging.Unity\02.Messaging.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
@@ -91,6 +91,10 @@
     <ProjectReference Include="..\Messaging.TestEngine\02.Messaging.TestEngine.csproj">
       <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>
       <Name>02.Messaging.TestEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messaging\07.Messaging.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>07.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

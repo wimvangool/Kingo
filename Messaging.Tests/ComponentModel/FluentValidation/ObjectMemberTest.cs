@@ -55,7 +55,7 @@ namespace System.ComponentModel.FluentValidation
             var message = new ValidatedMessage<object>(new object());
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).Satisfies(value => false, new ErrorMessage(errorMessageFormat, arg0));
+            validator.VerifyThat(() => message.Member).Satisfies(value => false, new FormattedString(errorMessageFormat, arg0));
 
             validator.Validate().AssertOneError(string.Format(errorMessageFormat, arg0));
         }
@@ -70,7 +70,7 @@ namespace System.ComponentModel.FluentValidation
             var message = new ValidatedMessage<object>(new object());
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).Satisfies(value => false, new ErrorMessage(errorMessageFormat, arg0, arg1));
+            validator.VerifyThat(() => message.Member).Satisfies(value => false, new FormattedString(errorMessageFormat, arg0, arg1));
 
             validator.Validate().AssertOneError(string.Format(errorMessageFormat, arg0, arg1));
         }
@@ -86,7 +86,7 @@ namespace System.ComponentModel.FluentValidation
             var message = new ValidatedMessage<object>(new object());
             var validator = new FluentValidator();
 
-            validator.VerifyThat(() => message.Member).Satisfies(value => false, new ErrorMessage(errorMessageFormat, arg0, arg1, arg2));
+            validator.VerifyThat(() => message.Member).Satisfies(value => false, new FormattedString(errorMessageFormat, arg0, arg1, arg2));
 
             validator.Validate().AssertOneError(string.Format(errorMessageFormat, arg0, arg1, arg2));
         }

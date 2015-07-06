@@ -8,21 +8,26 @@ namespace SummerBreeze.ChessApplication.Challenges
     [TestClass]
     public sealed class ChallengeIsAcceptedScenario : UnitTestScenario<AcceptChallengeCommand>
     {
-        private readonly PlayerIsChallengedScenario _playerIsChallenged;
+        public readonly PlayerIsChallengedScenario PlayerIsChallenged;
 
         public ChallengeIsAcceptedScenario()
         {
-            _playerIsChallenged = new PlayerIsChallengedScenario();
+            PlayerIsChallenged = new PlayerIsChallengedScenario();
+        }
+
+        internal ChallengeAcceptedEvent ChallengeAcceptedEvent
+        {
+            get { return GetDomainEventAt<ChallengeAcceptedEvent>(0); }
         }
 
         protected override IEnumerable<IMessageSequence> Given()
         {
-            yield return _playerIsChallenged;
+            yield return PlayerIsChallenged;
         }
 
         protected override AcceptChallengeCommand When()
         {
-            return new AcceptChallengeCommand(_playerIsChallenged.PlayerChallengedEvent.ChallengeId);
+            return new AcceptChallengeCommand(PlayerIsChallenged.PlayerChallengedEvent.ChallengeId);
         }
 
         [TestMethod]

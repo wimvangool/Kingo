@@ -11,14 +11,20 @@
             _right = right;
         }        
 
-        public override int AddErrorMessagesTo(IErrorMessageConsumer consumer)
+        public override void AddErrorMessagesTo(IErrorMessageConsumer consumer)
         {
-            int errorCount = _left.AddErrorMessagesTo(consumer);
-            if (errorCount == 0)
+            if (consumer == null)
             {
-                errorCount = _right.AddErrorMessagesTo(consumer);
+                return;
             }
-            return errorCount;
+            var errorCounter = new ErrorMessageCounter(consumer);
+
+            _left.AddErrorMessagesTo(errorCounter);
+
+            if (errorCounter.ErrorCount == 0)
+            {
+                _right.AddErrorMessagesTo(consumer);
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SummerBreeze.ChessApplication.Players
             VerifyThatExceptionIsA<InvalidMessageException>().And(ContainsExpectedInnerException);
         }
 
-        private static void ContainsExpectedInnerException(IFluentValidator validator, InvalidMessageException exception)
+        private static void ContainsExpectedInnerException(IMemberConstraintSet validator, InvalidMessageException exception)
         {
             validator.VerifyThat(() => exception.InnerException).IsInstanceOf<InvalidPasswordException>();
         }

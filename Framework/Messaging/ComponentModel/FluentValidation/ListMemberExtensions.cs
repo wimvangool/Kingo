@@ -24,7 +24,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member "/> is <c>null</c>.
         /// </exception>
-        public static Member<TValue> ElementAt<TValue>(this Member<IList<TValue>> member, int index, ErrorMessage errorMessage = null)
+        public static Member<TValue> ElementAt<TValue>(this Member<IList<TValue>> member, int index, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -32,7 +32,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.CollectionMember_ElementAt_Failed, member, index);
+                errorMessage = new FormattedString(ValidationMessages.CollectionMember_ElementAt_Failed, member, index);
             }
             Func<IList<TValue>, bool> constraint = collection => collection != null && 0 <= index && index < collection.Count;
             Func<IList<TValue>, TValue> selector = collection => collection[index];

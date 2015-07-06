@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, represents a sequence of messages, ready to be executed.
@@ -12,7 +14,7 @@
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/> is <c>null</c>.
         /// </exception>
-        void ProcessWith(IMessageProcessor processor);
+        void ProcessWith(IMessageProcessor processor);        
 
         /// <summary>
         /// Appends the specified sequence to the current sequence and returns the resulting sequence.

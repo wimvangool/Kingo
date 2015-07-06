@@ -20,7 +20,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<Guid> IsNotEmpty(this Member<Guid> member, ErrorMessage errorMessage = null)
+        public static Member<Guid> IsNotEmpty(this Member<Guid> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -28,7 +28,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.GuidMember_IsNotEmpty_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.GuidMember_IsNotEmpty_Failed, member);
             }
             return member.Satisfies(IsNotEmpty, errorMessage);
         }
@@ -53,7 +53,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<Guid> IsEmpty(this Member<Guid> member, ErrorMessage errorMessage = null)
+        public static Member<Guid> IsEmpty(this Member<Guid> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -61,7 +61,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.GuidMember_IsEmpty_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.GuidMember_IsEmpty_Failed, member);
             }
             return member.Satisfies(IsEmpty, errorMessage);
         }

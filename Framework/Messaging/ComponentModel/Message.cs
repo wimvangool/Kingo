@@ -109,8 +109,28 @@ namespace System.ComponentModel
             _MessageAttributeCache = new ConcurrentDictionary<Type, Attribute[]>();
         }
 
-        internal static bool TryGetStrategyFromAttribute<TStrategy>(object message, out TStrategy attribute) where TStrategy : class
+        /// <summary>
+        /// Attempts to retrieve a single attribute of type <typeparamref name="TStrategy"/> from a certain message.
+        /// </summary>
+        /// <typeparam name="TStrategy">Type of attribute to retrieve.</typeparam>
+        /// <param name="message">Message to retrieve the attribute from.</param>
+        /// <param name="attribute">
+        /// When this method returns <c>true</c>, refers to the attribute that was retrieved;
+        /// will be <c>null</c> otherwise.
+        /// </param>
+        /// <returns><c>true</c> if the attribute was retrieved; otherwise <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message" /> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Multiple attributes of type <typeparamref name="TStrategy"/> were found on the specified <paramref name="message"/>.
+        /// </exception>
+        public static bool TryGetStrategyFromAttribute<TStrategy>(object message, out TStrategy attribute) where TStrategy : class
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
             var messageType = message.GetType();
             var attributes = SelectAttributesOfType<TStrategy>(messageType);
 

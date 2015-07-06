@@ -3,11 +3,13 @@
 namespace System.ComponentModel.FluentValidation
 {
     /// <summary>
-    /// When implemented by a class, a <see cref="IFluentValidator" /> can be used to validate the values of
+    /// When implemented by a class, a <see cref="IMemberConstraintSet" /> can be used to validate the values of
     /// certain members of another instance.
     /// </summary>
-    public interface IFluentValidator
+    public interface IMemberConstraintSet
     {
+        #region [====== VerifyThat ======]
+
         /// <summary>
         /// Creates and returns a new <see cref="Member{TValue}"/> that can be used to define certain
         /// constraints on <typeparamref name="TValue"/>.
@@ -58,5 +60,7 @@ namespace System.ComponentModel.FluentValidation
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception> 
         Member<TValue> VerifyThat<TValue>(TValue value, string name);
+
+        #endregion        
     }
 }

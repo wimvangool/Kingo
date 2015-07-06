@@ -51,11 +51,6 @@ namespace SummerBreeze.ChessApplication.Players
         /// <inheritdoc />
         protected override DateTimeOffset NewVersion()
         {
-            return Timestamp();
-        }
-
-        private static DateTimeOffset Timestamp()
-        {
             return Clock.Current.UtcDateAndTime();
         }
 

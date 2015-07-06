@@ -18,7 +18,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member "/> is <c>null</c>.
         /// </exception>
-        public static void IsTrue(this Member<bool> member, ErrorMessage errorMessage = null)
+        public static void IsTrue(this Member<bool> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -26,7 +26,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.BooleanMember_IsTrue_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.BooleanMember_IsTrue_Failed, member);
             }
             member.Satisfies(value => value, errorMessage);
         }
@@ -42,7 +42,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member "/> is <c>null</c>.
         /// </exception>
-        public static void IsFalse(this Member<bool> member, ErrorMessage errorMessage = null)
+        public static void IsFalse(this Member<bool> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -50,7 +50,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.BooleanMember_IsFalse_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.BooleanMember_IsFalse_Failed, member);
             }
             member.Satisfies(value => !value, errorMessage);
         }

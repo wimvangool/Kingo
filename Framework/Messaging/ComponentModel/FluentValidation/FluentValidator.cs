@@ -6,35 +6,39 @@ namespace System.ComponentModel.FluentValidation
     /// Represents a <see cref="IMessageValidator" /> in which validation-errors are reported
     /// through a <see cref="ValidationErrorTreeBuilder" />.
     /// </summary>    
-    public sealed class FluentValidator : IMessageValidator, IFluentValidator
+    public sealed class FluentValidator : IMessageValidator, IMemberConstraintSet
     {        
-        private readonly MemberSet _memberSet;
+        private readonly MemberConstraintSet _memberSet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FluentValidator" /> class.
         /// </summary>        
         public FluentValidator()
         {                      
-            _memberSet = new MemberSet();
+            _memberSet = new MemberConstraintSet();
         }
+
+        #region [====== VerifyThat ======]
 
         /// <inheritdoc />
         public Member<TValue> VerifyThat<TValue>(Expression<Func<TValue>> memberExpression)
         {
-            return _memberSet.StartToAddConstraintsFor(memberExpression);
+            return _memberSet.VerifyThat(memberExpression);
         }
 
         /// <inheritdoc /> 
         public Member<TValue> VerifyThat<TValue>(Func<TValue> valueFactory, string name)
         {
-            return _memberSet.StartToAddConstraintsFor(valueFactory, name);
+            return _memberSet.VerifyThat(valueFactory, name);
         }
 
         /// <inheritdoc />
         public Member<TValue> VerifyThat<TValue>(TValue value, string name)
         {
-            return _memberSet.StartToAddConstraintsFor(value, name);
+            return _memberSet.VerifyThat(value, name);
         }
+
+        #endregion        
 
         /// <inheritdoc />
         public ValidationErrorTree Validate()

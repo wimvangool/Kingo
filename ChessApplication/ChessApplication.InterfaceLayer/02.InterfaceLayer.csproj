@@ -49,6 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Framework\Messaging\07.Messaging.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>07.Messaging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\05.BusinessLogicLayer.Messages.csproj">
       <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
       <Name>05.BusinessLogicLayer.Messages</Name>
@@ -65,9 +69,9 @@
       <Project>{9099af7e-67ac-4b00-a6bb-d9ff5b47d5b4}</Project>
       <Name>08.DataAccessLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging\05.Messaging.csproj">
+    <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging</Name>
+      <Name>05.Messaging.Processing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

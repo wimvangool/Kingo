@@ -4,23 +4,22 @@
     {
         private readonly Member<TValue> _member;
         private readonly Func<TValue, bool> _constraint;
-        private readonly ErrorMessage _errorMessage;
+        private readonly FormattedString _errorMessage;
 
-        internal Constraint(Member<TValue> member, Func<TValue, bool> constraint, ErrorMessage errorMessage)
+        internal Constraint(Member<TValue> member, Func<TValue, bool> constraint, FormattedString errorMessage)
         {            
             _member = member;
             _constraint = constraint;
             _errorMessage = errorMessage;
         }        
 
-        public override int AddErrorMessagesTo(IErrorMessageConsumer consumer)
+        public override void AddErrorMessagesTo(IErrorMessageConsumer consumer)
         {            
             if (consumer == null || _constraint.Invoke(_member.Value))
             {
-                return 0;
+                return;
             }
-            consumer.Add(_member.FullName, _errorMessage);
-            return 1;
+            consumer.Add(_member.FullName, _errorMessage);            
         }        
     }
 }

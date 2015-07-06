@@ -20,9 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.Messaging", "B.Messaging"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.Messaging.Containers", "C.Messaging.Containers", "{4B713399-4B91-4E00-AF1F-D103268F40DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Messaging", "Framework\Messaging\05.Messaging.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Messaging.Processing", "Framework\Messaging.Processing\05.Messaging.Processing.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Messaging.Tests", "Framework\Messaging.Tests\04.Messaging.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Messaging.Processing.Tests", "Framework\Messaging.Processing.Tests\04.Messaging.Processing.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Messaging.Client", "Framework\Messaging.Client\03.Messaging.Client.csproj", "{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}"
 EndProject
@@ -48,13 +48,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.InterfaceLayer.Integrati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Api", "Server.Api", "{567BEF95-5234-4B52-8809-FC54A1C6A87F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.BusinessLogic", "ChessApplication\Server.BusinessLogic", "{C34B6B12-C107-4E75-AAD2-6C6EC1E11846}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.BusinessLogic", "Server.BusinessLogic", "{C34B6B12-C107-4E75-AAD2-6C6EC1E11846}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.DataAccess", "Server.DataAccess", "{359C7385-9976-44ED-9A29-B67088A3564A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "08.DataAccessLayer", "ChessApplication\ChessApplication.DataAccessLayer\08.DataAccessLayer.csproj", "{9099AF7E-67AC-4B00-A6BB-D9FF5B47D5B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "09.DataAccessLayer.Messages", "ChessApplication\ChessApplication.DataAccessLayer.Messages\09.DataAccessLayer.Messages.csproj", "{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "07.Messaging", "Framework\Messaging\07.Messaging.csproj", "{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.Messaging.Tests", "Messaging.Tests\06.Messaging.Tests.csproj", "{9697EACA-8E8F-451B-AE46-CF081559E0ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -126,6 +130,14 @@ Global
 		{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +165,8 @@ Global
 		{359C7385-9976-44ED-9A29-B67088A3564A} = {DF86ABE4-CF9F-4D08-8168-FFBDCCADDB31}
 		{9099AF7E-67AC-4B00-A6BB-D9FF5B47D5B4} = {359C7385-9976-44ED-9A29-B67088A3564A}
 		{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA} = {359C7385-9976-44ED-9A29-B67088A3564A}
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0} = {72205C90-C23B-4086-8580-050201371032}
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED} = {72205C90-C23B-4086-8580-050201371032}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35

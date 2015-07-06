@@ -22,7 +22,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNotNullOrEmpty(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<string> IsNotNullOrEmpty(this Member<string> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -30,7 +30,7 @@ namespace System.ComponentModel.FluentValidation
             }            
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsNotNullOrEmpty_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsNotNullOrEmpty_Failed, member);
             }
             return member.Satisfies(IsNotNullOrEmpty, errorMessage);
         }
@@ -55,7 +55,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<string> IsNotNullOrWhiteSpace(this Member<string> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -63,7 +63,7 @@ namespace System.ComponentModel.FluentValidation
             }     
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsNotNullOrWhiteSpace_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsNotNullOrWhiteSpace_Failed, member);
             }
             return member.Satisfies(IsNotNullOrWhiteSpace, errorMessage);
         }
@@ -90,7 +90,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, ErrorMessage errorMessage = null)
+        public static Member<string> IsNotEqualTo(this Member<string> member, string other, StringComparison compareType, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -98,7 +98,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_IsNotEqualTo_Failed, member, other);
+                errorMessage = new FormattedString(ValidationMessages.Member_IsNotEqualTo_Failed, member, other);
             }
             return member.Satisfies(value => IsNotEqualTo(value, other, compareType), errorMessage);
         }
@@ -125,7 +125,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, ErrorMessage errorMessage = null)
+        public static Member<string> IsEqualTo(this Member<string> member, string other, StringComparison compareType, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -133,7 +133,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_IsEqualTo_Failed, member, other);
+                errorMessage = new FormattedString(ValidationMessages.Member_IsEqualTo_Failed, member, other);
             }
             return member.Satisfies(value => IsEqualTo(value, other, compareType), errorMessage);
         }
@@ -159,7 +159,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="prefix"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> StartsWith(this Member<string> member, string prefix, ErrorMessage errorMessage = null)
+        public static Member<string> StartsWith(this Member<string> member, string prefix, FormattedString errorMessage = null)
         {
             return StartsWith(member, prefix, StringComparison.Ordinal, errorMessage);
         }        
@@ -177,7 +177,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="prefix"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> StartsWith(this Member<string> member, string prefix, StringComparison compareType, ErrorMessage errorMessage = null)
+        public static Member<string> StartsWith(this Member<string> member, string prefix, StringComparison compareType, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -189,7 +189,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_StartsWith_Failed, member, prefix);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_StartsWith_Failed, member, prefix);
             }
             return member.Satisfies(value => StartsWith(value, prefix, compareType), errorMessage);
         }
@@ -215,7 +215,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="postfix"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> EndsWith(this Member<string> member, string postfix, ErrorMessage errorMessage = null)
+        public static Member<string> EndsWith(this Member<string> member, string postfix, FormattedString errorMessage = null)
         {
             return EndsWith(member, postfix, StringComparison.Ordinal, errorMessage);
         }        
@@ -233,7 +233,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="postfix"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> EndsWith(this Member<string> member, string postfix, StringComparison compareType, ErrorMessage errorMessage = null)
+        public static Member<string> EndsWith(this Member<string> member, string postfix, StringComparison compareType, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -245,7 +245,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_EndsWith_Failed, member, postfix);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_EndsWith_Failed, member, postfix);
             }
             return member.Satisfies(value => EndsWith(value, postfix, compareType), errorMessage);
         }
@@ -271,7 +271,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> DoesNotContain(this Member<string> member, char value, ErrorMessage errorMessage = null)
+        public static Member<string> DoesNotContain(this Member<string> member, char value, FormattedString errorMessage = null)
         {
             return DoesNotContain(member, value.ToString(CultureInfo.CurrentCulture), errorMessage);
         }
@@ -288,7 +288,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="value"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> DoesNotContain(this Member<string> member, string value, ErrorMessage errorMessage = null)
+        public static Member<string> DoesNotContain(this Member<string> member, string value, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -300,7 +300,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_DoesNotContain_Failed, value);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_DoesNotContain_Failed, value);
             }
             return member.Satisfies(memberValue => DoesNotContain(memberValue, value), errorMessage);
         }
@@ -326,7 +326,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> Contains(this Member<string> member, char value, ErrorMessage errorMessage = null)
+        public static Member<string> Contains(this Member<string> member, char value, FormattedString errorMessage = null)
         {
             return Contains(member, value.ToString(CultureInfo.CurrentCulture), errorMessage);
         }
@@ -343,7 +343,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="value"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> Contains(this Member<string> member, string value, ErrorMessage errorMessage = null)
+        public static Member<string> Contains(this Member<string> member, string value, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -355,7 +355,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_Contains_Failed, value);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_Contains_Failed, value);
             }
             return member.Satisfies(memberValue => Contains(memberValue, value), errorMessage);
         }
@@ -381,7 +381,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> DoesNotMatch(this Member<string> member, string pattern, ErrorMessage errorMessage = null)
+        public static Member<string> DoesNotMatch(this Member<string> member, string pattern, FormattedString errorMessage = null)
         {
             return DoesNotMatch(member, pattern, RegexOptions.None, errorMessage);
         }        
@@ -399,7 +399,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> DoesNotMatch(this Member<string> member, string pattern, RegexOptions options, ErrorMessage errorMessage = null)
+        public static Member<string> DoesNotMatch(this Member<string> member, string pattern, RegexOptions options, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -411,7 +411,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_DoesNotMatch_Failed, member, pattern);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_DoesNotMatch_Failed, member, pattern);
             }
             return member.Satisfies(value => DoesNotMatch(value, pattern, options), errorMessage);
         }
@@ -437,7 +437,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> Matches(this Member<string> member, string pattern, ErrorMessage errorMessage = null)
+        public static Member<string> Matches(this Member<string> member, string pattern, FormattedString errorMessage = null)
         {
             return Matches(member, pattern, RegexOptions.None, errorMessage);
         }                
@@ -455,7 +455,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
-        public static Member<string> Matches(this Member<string> member, string pattern, RegexOptions options, ErrorMessage errorMessage = null)
+        public static Member<string> Matches(this Member<string> member, string pattern, RegexOptions options, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -467,7 +467,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_Matches_Failed, member, pattern);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_Matches_Failed, member, pattern);
             }
             return member.Satisfies(value => Matches(value, pattern, options), errorMessage);
         }
@@ -496,7 +496,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> is smaller than <c>0</c>.
         /// </exception>
-        public static Member<string> HasLengthOf(this Member<string> member, int length, ErrorMessage errorMessage = null)
+        public static Member<string> HasLengthOf(this Member<string> member, int length, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -508,7 +508,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.Member_HasLengthOf_Failed, length);
+                errorMessage = new FormattedString(ValidationMessages.Member_HasLengthOf_Failed, length);
             }
             return member.HasLengthBetween(new Range<int>(length, length), errorMessage);
         }
@@ -529,7 +529,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maximum"/> is smaller than <paramref name="minimum"/> or smaller than <c>0</c>.
         /// </exception>
-        public static Member<string> HasLengthBetween(this Member<string> member, int minimum, int maximum, ErrorMessage errorMessage = null)
+        public static Member<string> HasLengthBetween(this Member<string> member, int minimum, int maximum, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -554,7 +554,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="range" /> is <c>null</c>.
         /// </exception>        
-        public static Member<string> HasLengthBetween(this Member<string> member, IRange<int> range, ErrorMessage errorMessage = null)
+        public static Member<string> HasLengthBetween(this Member<string> member, IRange<int> range, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -594,7 +594,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<byte> IsByte(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<byte> IsByte(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsByte(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }        
@@ -617,7 +617,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<byte> IsByte(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<byte> IsByte(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -625,7 +625,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsByte_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsByte_Failed, member);
             }
             return IsNumber<byte>(member, style, provider, errorMessage, byte.TryParse);
         }
@@ -645,7 +645,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<sbyte> IsSByte(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<sbyte> IsSByte(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsSByte(member, NumberStyles.Integer | NumberStyles.AllowTrailingSign, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -668,7 +668,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<sbyte> IsSByte(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<sbyte> IsSByte(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -676,7 +676,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsSByte_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsSByte_Failed, member);
             }
             return IsNumber<sbyte>(member, style, provider, errorMessage, sbyte.TryParse);            
         }
@@ -696,7 +696,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<char> IsChar(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<char> IsChar(this Member<string> member, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -704,7 +704,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsChar_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsChar_Failed, member);
             }
             Func<string, bool> constraint = value => value != null && value.Length == 1;
             Func<string, char> selector = value => value[0];
@@ -727,7 +727,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<short> IsInt16(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<short> IsInt16(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsInt16(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -750,7 +750,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<short> IsInt16(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<short> IsInt16(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -758,7 +758,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsInt16_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsInt16_Failed, member);
             }
             return IsNumber<short>(member, style, provider, errorMessage, short.TryParse);
         }
@@ -778,7 +778,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<ushort> IsUInt16(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<ushort> IsUInt16(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsUInt16(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -801,7 +801,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<ushort> IsUInt16(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<ushort> IsUInt16(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -809,7 +809,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsUInt16_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsUInt16_Failed, member);
             }
             return IsNumber<ushort>(member, style, provider, errorMessage, ushort.TryParse);
         }
@@ -829,7 +829,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<int> IsInt32(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<int> IsInt32(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsInt32(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -852,7 +852,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<int> IsInt32(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<int> IsInt32(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -860,7 +860,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsInt32_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsInt32_Failed, member);
             }
             return IsNumber<int>(member, style, provider, errorMessage, int.TryParse);
         }
@@ -880,7 +880,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<uint> IsUInt32(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<uint> IsUInt32(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsUInt32(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -903,7 +903,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<uint> IsUInt32(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<uint> IsUInt32(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -911,7 +911,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsUInt32_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsUInt32_Failed, member);
             }
             return IsNumber<uint>(member, style, provider, errorMessage, uint.TryParse);
         }
@@ -931,7 +931,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<long> IsInt64(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<long> IsInt64(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsInt64(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -954,7 +954,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<long> IsInt64(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<long> IsInt64(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -962,7 +962,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsInt64_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsInt64_Failed, member);
             }
             return IsNumber<long>(member, style, provider, errorMessage, long.TryParse);
         }
@@ -982,7 +982,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<ulong> IsUInt64(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<ulong> IsUInt64(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsUInt64(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1005,7 +1005,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<ulong> IsUInt64(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<ulong> IsUInt64(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -1013,7 +1013,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsUInt64_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsUInt64_Failed, member);
             }
             return IsNumber<ulong>(member, style, provider, errorMessage, ulong.TryParse);
         }
@@ -1033,7 +1033,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<float> IsSingle(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<float> IsSingle(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsSingle(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1056,7 +1056,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<float> IsSingle(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<float> IsSingle(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -1064,7 +1064,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsSingle_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsSingle_Failed, member);
             }
             return IsNumber<float>(member, style, provider, errorMessage, float.TryParse);
         }
@@ -1084,7 +1084,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<double> IsDouble(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<double> IsDouble(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsDouble(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1107,7 +1107,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<double> IsDouble(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<double> IsDouble(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -1115,7 +1115,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsDouble_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsDouble_Failed, member);
             }
             return IsNumber<double>(member, style, provider, errorMessage, double.TryParse);
         }
@@ -1135,7 +1135,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<decimal> IsDecimal(this Member<string> member, ErrorMessage errorMessage = null)
+        public static Member<decimal> IsDecimal(this Member<string> member, FormattedString errorMessage = null)
         {
             return IsDecimal(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1158,7 +1158,7 @@ namespace System.ComponentModel.FluentValidation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static Member<decimal> IsDecimal(this Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage = null)
+        public static Member<decimal> IsDecimal(this Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage = null)
         {
             if (member == null)
             {
@@ -1166,7 +1166,7 @@ namespace System.ComponentModel.FluentValidation
             }
             if (errorMessage == null)
             {
-                errorMessage = new ErrorMessage(ValidationMessages.StringMember_IsDecimal_Failed, member);
+                errorMessage = new FormattedString(ValidationMessages.StringMember_IsDecimal_Failed, member);
             }
             return IsNumber<decimal>(member, style, provider, errorMessage, decimal.TryParse);
         }
@@ -1175,7 +1175,7 @@ namespace System.ComponentModel.FluentValidation
 
         #region [====== IsNumber ======]
 
-        private static Member<TValue> IsNumber<TValue>(Member<string> member, NumberStyles style, IFormatProvider provider, ErrorMessage errorMessage, TryConvertDelegate<TValue> tryConvert)
+        private static Member<TValue> IsNumber<TValue>(Member<string> member, NumberStyles style, IFormatProvider provider, FormattedString errorMessage, TryConvertDelegate<TValue> tryConvert)
         {
             var converter = new StringToNumberConverter<TValue>(tryConvert);
             Func<string, bool> constraint = value => converter.TryConvertToNumber(value, style, provider);
