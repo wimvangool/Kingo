@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace System.ComponentModel.FluentValidation
+﻿namespace System.ComponentModel.FluentValidation
 {
     internal abstract class Constraint : IErrorMessageProducer
     {

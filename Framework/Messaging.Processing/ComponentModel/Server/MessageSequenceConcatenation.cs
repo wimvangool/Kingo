@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -16,11 +17,11 @@ namespace System.ComponentModel.Server
             _messages = messages;
         }
 
-        public override void ProcessWith(IMessageProcessor processor)
+        public override async Task ProcessWithAsync(IMessageProcessor processor)
         {
             foreach (var sequence in _messages.Where(sequence => sequence != null))
             {
-                sequence.ProcessWith(processor);
+                await sequence.ProcessWithAsync(processor);
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Resources;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -27,20 +28,29 @@ namespace System.ComponentModel.Server
         /// Executes this <see cref="Scenario" />.
         /// </summary>
         public void Execute()
-        {            
+        {
+            ExecuteAsync().Wait();
+        }
+
+        /// <summary>
+        /// Executes this <see cref="Scenario" /> asynchronously.
+        /// </summary>
+        /// <returns>A task carrying out this operation.</returns>
+        public async Task ExecuteAsync()
+        {
             var previousCache = Cache;
 
             Cache = new DependencyCache();
 
             try
             {
-                ProcessWith(MessageProcessor);                
+                await ProcessWithAsync(MessageProcessor);
             }
             finally
             {
                 Cache.Dispose();
                 Cache = previousCache;
-            }            
+            } 
         }
 
         #endregion

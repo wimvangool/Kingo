@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a pair of message sequences put together as a single sequence.
@@ -31,10 +33,10 @@
         }
 
         /// <inheritdoc />
-        public override void ProcessWith(IMessageProcessor processor)
+        public override async Task ProcessWithAsync(IMessageProcessor processor)
         {
-            _left.ProcessWith(processor);
-            _right.ProcessWith(processor);
+            await _left.ProcessWithAsync(processor);
+            await _right.ProcessWithAsync(processor);
         }
     }
 }

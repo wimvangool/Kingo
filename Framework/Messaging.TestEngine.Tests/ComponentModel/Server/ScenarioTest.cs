@@ -139,14 +139,23 @@ namespace System.ComponentModel.Server
 
         #region [====== Alternate Flow ======]
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]        
         public void ProcessWith_Throws_IfExceptionWasThrownByGiven()
         {            
             var exception = new InvalidOperationException();
             var scenario = new ErroneousScenario(exception);
 
-            scenario.ProcessWith(ScenarioTestProcessor.Instance);            
+            try
+            {
+                scenario.ProcessWith(ScenarioTestProcessor.Instance);
+
+                Assert.Fail("Expected exception of type '{0}' was not thrown.", exception.GetType().Name);
+            }
+            catch (AggregateException aggregateException)
+            {                
+                Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
+                Assert.AreSame(exception, aggregateException.InnerExceptions[0]);
+            }            
         }
 
         [TestMethod]        

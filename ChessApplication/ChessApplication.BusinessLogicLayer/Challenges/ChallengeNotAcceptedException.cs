@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Server.Domain;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace SummerBreeze.ChessApplication.Challenges
 {

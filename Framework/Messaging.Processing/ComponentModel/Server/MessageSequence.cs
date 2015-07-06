@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -14,6 +16,11 @@ namespace System.ComponentModel.Server
         {
             public void ProcessWith(IMessageProcessor handler) { }
 
+            public Task ProcessWithAsync(IMessageProcessor processor)
+            {
+                return AsyncMethod.Void;
+            }
+
             public IMessageSequence Append(IMessageSequence sequence)
             {
                 if (sequence == null)
@@ -26,13 +33,19 @@ namespace System.ComponentModel.Server
             public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
             {
                 return new MessageSequenceNode<TMessage>(message);
-            }
+            }            
         }
 
         #endregion
 
         /// <inheritdoc />
-        public abstract void ProcessWith(IMessageProcessor processor);
+        public virtual void ProcessWith(IMessageProcessor processor)
+        {
+            ProcessWithAsync(processor).Wait();
+        }
+
+        /// <inheritdoc />
+        public abstract Task ProcessWithAsync(IMessageProcessor processor);
 
         /// <inheritdoc />
         public virtual IMessageSequence Append(IMessageSequence sequence)
@@ -63,6 +76,6 @@ namespace System.ComponentModel.Server
         public static IMessageSequence Concatenate(IEnumerable<IMessageSequence> messages)
         {
             return new MessageSequenceConcatenation(messages);
-        }
+        }        
     }
 }

@@ -2,6 +2,7 @@
 using System.ComponentModel.FluentValidation;
 using System.Diagnostics.CodeAnalysis;
 using System.Resources;
+using System.Threading.Tasks;
 
 namespace System.ComponentModel.Server
 {
@@ -37,22 +38,17 @@ namespace System.ComponentModel.Server
 
         /// <summary>
         /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
-        /// </summary>        
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "By Design")]
-        public override void ProcessWith(IMessageProcessor processor)
-        {            
-            if (processor == null)
-            {
-                throw new ArgumentNullException("processor");
-            }
-            CreateSetupSequence().ProcessWith(processor);
+        /// </summary>                
+        public override async Task ProcessWithAsync(IMessageProcessor processor)
+        {                        
+            await CreateSetupSequence().ProcessWithAsync(processor);
 
             // This scenario must collect all events that are published during the When()-phase.
             var connection = processor.EventBus.Connect<object>(OnEventPublished, true);
             
             try
             {
-                Handle(processor, Message.Copy());
+                await HandleAsync(processor, Message.Copy());
             }
             catch (AggregateException exception)
             {
@@ -111,7 +107,7 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        protected virtual void Handle(IMessageProcessor processor, TMessage message)
+        protected virtual Task HandleAsync(IMessageProcessor processor, TMessage message)
         {
             if (processor == null)
             {
@@ -121,7 +117,7 @@ namespace System.ComponentModel.Server
             {
                 throw new ArgumentNullException("message");
             }
-            processor.Handle(message);
+            return processor.HandleAsync(message);
         }
 
         private void OnEventPublished(object domainEvent)

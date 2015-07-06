@@ -14,7 +14,17 @@ namespace System.ComponentModel.Server
         /// <exception cref="ArgumentNullException">
         /// <paramref name="processor"/> is <c>null</c>.
         /// </exception>
-        void ProcessWith(IMessageProcessor processor);        
+        void ProcessWith(IMessageProcessor processor);
+
+        /// <summary>
+        /// Processes all messages of this sequence using the specified processor asynchronously.
+        /// </summary>
+        /// <param name="processor">Processor that will be used to execute this sequence.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="processor"/> is <c>null</c>.
+        /// </exception>
+        /// <returns>A task carrying out this operation.</returns>
+        Task ProcessWithAsync(IMessageProcessor processor);
 
         /// <summary>
         /// Appends the specified sequence to the current sequence and returns the resulting sequence.

@@ -23,7 +23,7 @@ namespace SummerBreeze.ChessApplication.Games
         /// <exception cref="ArgumentNullException">
         /// <paramref name="game" /> is <c>null</c>.
         /// </exception>
-        /// <exception cref="DuplicateKeyException{T, S}">
+        /// <exception cref="DuplicateKeyException{TAggregate,TKey}">
         /// <paramref name="game" />'s id matches the id of another aggregate that
         /// was already added to this repository.
         /// </exception>

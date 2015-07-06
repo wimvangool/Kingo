@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System.Threading.Tasks;
+
+namespace System.ComponentModel.Server
 {
     /// <summary>
     /// Represents a sequence containing just a single message.
@@ -33,13 +35,13 @@
         }        
 
         /// <inheritdoc />
-        public override void ProcessWith(IMessageProcessor processor)
+        public override Task ProcessWithAsync(IMessageProcessor processor)
         {
             if (processor == null)
             {
                 throw new ArgumentNullException("processor");
             }
-            processor.Handle(_message);
+            return processor.HandleAsync(_message);
         }
     }
 }

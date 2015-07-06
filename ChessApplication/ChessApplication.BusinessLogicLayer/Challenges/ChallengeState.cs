@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SummerBreeze.ChessApplication.Challenges
+﻿namespace SummerBreeze.ChessApplication.Challenges
 {
     /// <summary>
     /// Represents the state a <see cref="Challenge" /> can be in.
