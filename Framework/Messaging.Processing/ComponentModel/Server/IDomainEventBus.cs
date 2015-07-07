@@ -1,7 +1,7 @@
 ﻿
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Represents an internal message-bus that can be used to publish domain events and let all subscribers,

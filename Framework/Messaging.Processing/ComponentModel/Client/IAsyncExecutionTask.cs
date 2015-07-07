@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Client
+﻿using System;
+
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Represents a task that encapsulates the asynchronous execution of a request.

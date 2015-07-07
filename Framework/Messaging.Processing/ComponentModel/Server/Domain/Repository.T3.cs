@@ -1,9 +1,10 @@
-﻿using System.Linq;
-using System.Resources;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Server.Domain
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents a UnitOfWork that can be flushed and comitted to a backing store. This class is a so-called

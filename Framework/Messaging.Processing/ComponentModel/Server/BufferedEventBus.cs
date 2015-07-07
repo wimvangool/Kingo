@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Resources;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Syztem.Resources;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {    
     internal sealed class BufferedEventBus : IDomainEventBus, IUnitOfWork
     {        

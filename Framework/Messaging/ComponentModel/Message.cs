@@ -1,12 +1,13 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.Serialization;
+using Syztem.Resources;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Provides a base-implementation of the <see cref="IMessage" /> interface.

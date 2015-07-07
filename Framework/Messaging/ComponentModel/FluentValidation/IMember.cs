@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.FluentValidation
+﻿namespace Syztem.ComponentModel.FluentValidation
 {
     /// <summary>
     /// When implemented by a class, represent a certain member that can be validated and produces an

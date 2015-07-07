@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Server.SampleApplication
+namespace Syztem.ComponentModel.Server.SampleApplication
 {
     public sealed class ShoppingCartItem
     {

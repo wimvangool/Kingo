@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Resources;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents a list of items that only allows read-operations.

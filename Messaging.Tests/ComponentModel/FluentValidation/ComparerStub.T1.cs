@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.FluentValidation
+namespace Syztem.ComponentModel.FluentValidation
 {
     internal sealed class ComparerStub<T> : IComparer<T>
     {

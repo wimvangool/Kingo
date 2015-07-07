@@ -1,6 +1,7 @@
-﻿using System.Resources;
+﻿using System;
+using Syztem.Resources;
 
-namespace System.ComponentModel.FluentValidation
+namespace Syztem.ComponentModel.FluentValidation
 {
     /// <summary>
     /// Contains a set of extension methods specific for members of type <see cref="Member{TValue}" />.

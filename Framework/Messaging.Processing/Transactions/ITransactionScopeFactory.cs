@@ -1,4 +1,6 @@
-﻿namespace System.Transactions
+﻿using System.Transactions;
+
+namespace Syztem.Transactions
 {
     /// <summary>
     /// When implemented by a class, represents a factory for <see cref="TransactionScope">TransactionScopes</see>.

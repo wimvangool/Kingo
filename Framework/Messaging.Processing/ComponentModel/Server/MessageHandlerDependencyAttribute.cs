@@ -1,10 +1,12 @@
-﻿namespace System.ComponentModel.Server
+﻿using System;
+
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// This attribute must be put on each dependency class to support auto-registration of it
     /// by the <see cref="MessageHandlerFactory" /> class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class MessageHandlerDependencyAttribute : Attribute, IDependencyConfiguration
     {
         private readonly InstanceLifetime _lifetime;

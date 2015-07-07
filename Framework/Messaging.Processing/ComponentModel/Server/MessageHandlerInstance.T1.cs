@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     internal sealed class MessageHandlerInstance<TMessage> : IMessageHandlerOrQuery, IMessageHandler<TMessage> where TMessage : class
     {

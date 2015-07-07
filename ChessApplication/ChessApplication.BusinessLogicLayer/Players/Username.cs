@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using SummerBreeze.ChessApplication.Resources;
+using Syztem;
 
 namespace SummerBreeze.ChessApplication.Players
 {

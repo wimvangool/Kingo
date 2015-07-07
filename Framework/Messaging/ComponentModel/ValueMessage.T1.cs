@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel
+﻿using System;
+
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Represents a wrapper-message for simple value-types.

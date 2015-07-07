@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, represents a provider of attributes that are declared

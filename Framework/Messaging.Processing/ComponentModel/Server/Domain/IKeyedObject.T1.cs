@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.Domain
+﻿using System;
+
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// When implemented by a class, represents an object that can be identified by a unique key.

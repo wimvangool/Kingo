@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("2.0.0.0")]
 [assembly: AssemblyInformationalVersion("2.0.0.0")]
 
-[assembly: InternalsVisibleTo("System.ComponentModel.Messaging.Tests")]
+[assembly: InternalsVisibleTo("Syztem.ComponentModel.Messaging.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +
 "PublicKey=002400000480000094000000060200000024000052534" +
 "1310004000001000100c547cac37abd99c8db225ef2f6c8a3602f3b" +

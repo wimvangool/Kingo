@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, represents a sequence of messages, ready to be executed.

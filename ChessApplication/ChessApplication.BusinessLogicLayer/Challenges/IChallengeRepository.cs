@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.Server.Domain;
 using System.Threading.Tasks;
 
 namespace SummerBreeze.ChessApplication.Challenges

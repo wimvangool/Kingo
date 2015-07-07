@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {    
     /// <summary>
     /// When implemented by a class, handles messages of the specified <paramtyperef name="TMessage" />.

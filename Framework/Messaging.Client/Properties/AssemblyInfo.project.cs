@@ -9,4 +9,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("2.0.0.0")]
 [assembly: AssemblyInformationalVersion("2.0.0.0")]
 
-[assembly: InternalsVisibleTo("System.ComponentModel.Messaging.Client.Tests")]
+[assembly: InternalsVisibleTo("Syztem.ComponentModel.Messaging.Client.Tests")]

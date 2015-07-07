@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Represents a <see cref="INotifyHasChanges" /> that is composed of other indicators.
@@ -48,7 +49,7 @@ namespace System.ComponentModel.Client
 
         private void OnHasChangesChanged()
         {
-            OnHasChangesChanged(this,EventArgs.Empty);
+            OnHasChangesChanged(this, EventArgs.Empty);
         }
 
         private void OnHasChangesChanged(object sender, EventArgs e)

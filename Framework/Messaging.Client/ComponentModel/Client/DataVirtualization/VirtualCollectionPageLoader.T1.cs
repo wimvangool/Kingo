@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Resources;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {    
     internal sealed class VirtualCollectionPageLoader<T> : AsyncObject
     {        

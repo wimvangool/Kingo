@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Client
+﻿using System;
+
+namespace Syztem.ComponentModel.Client
 {
     internal sealed class IsValidIndicatorStub : PropertyChangedBase, INotifyIsValid
     {

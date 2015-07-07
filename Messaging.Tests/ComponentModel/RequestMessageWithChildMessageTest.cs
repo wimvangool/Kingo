@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.ComponentModel.DataAnnotations;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     [TestClass]
     public sealed class RequestMessageWithChildMessageTest

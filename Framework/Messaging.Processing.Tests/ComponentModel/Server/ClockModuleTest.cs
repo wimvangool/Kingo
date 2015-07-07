@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.Diagnostics;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     [TestClass]
     public sealed class ClockModuleTest

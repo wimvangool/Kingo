@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Client
+﻿using System;
+
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Represents a command that delegates it's work to some specified functions.

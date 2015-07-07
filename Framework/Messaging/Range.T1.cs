@@ -1,7 +1,8 @@
-﻿using System.Resources;
+﻿using System;
 using System.Text;
+using Syztem.Resources;
 
-namespace System
+namespace Syztem
 {
     /// <summary>
     /// Represents a range or domain of values.

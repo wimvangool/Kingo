@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     internal sealed class UnitOfWorkController
     {

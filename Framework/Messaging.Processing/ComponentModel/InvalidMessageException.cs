@@ -1,7 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// This exception or any derived type is thrown if a request was found to be invalid

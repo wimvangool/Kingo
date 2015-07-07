@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Serves as a base class for all <see cref="QueryModule">QueryModules</see> that associate

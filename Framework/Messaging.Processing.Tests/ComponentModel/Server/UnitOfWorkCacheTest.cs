@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     [TestClass]
     public sealed class UnitOfWorkCacheTest

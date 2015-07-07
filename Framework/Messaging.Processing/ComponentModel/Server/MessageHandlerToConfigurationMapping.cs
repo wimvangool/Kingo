@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Represents a mapping of specific <see cref="IMessageHandler{T}">MessageHandler</see> types to

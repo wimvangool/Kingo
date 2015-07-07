@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
-    /// This type is used to support implicit type conversion from a <see cref="Action{TMessage}" /> to a
+    /// This type is used to support implicit type conversion from a <see cref="Action" /> to a
     /// <see cref="IMessageHandler{TMessage}" />.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is handled by this handler.</typeparam>

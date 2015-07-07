@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace System
+namespace Syztem
 {
     internal sealed class Comparable<TValue> : IEquatable<TValue>, IEquatable<Comparable<TValue>>, IComparable<TValue>, IComparable<Comparable<TValue>>
     {

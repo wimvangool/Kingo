@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System;
+
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Represents a cache to which items can be added.

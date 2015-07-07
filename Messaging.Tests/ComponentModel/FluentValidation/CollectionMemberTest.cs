@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.FluentValidation
+namespace Syztem.ComponentModel.FluentValidation
 {
     [TestClass]
     public sealed class CollectionMemberTest

@@ -1,9 +1,12 @@
-﻿namespace System.Transactions
+﻿using System;
+using System.Transactions;
+
+namespace Syztem.Transactions
 {
     /// <summary>
     /// This attribute can be applied to messages to specify how a <see cref="TransactionScope" /> should be created.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     public sealed class TransactionScopeAttribute : Attribute, ITransactionScopeFactory
     {
         private readonly Lazy<TransactionScopeFactory> _transactionScopeFactory;

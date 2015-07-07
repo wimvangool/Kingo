@@ -1,6 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
-namespace System.ComponentModel.FluentValidation
+namespace Syztem.ComponentModel.FluentValidation
 {
     /// <summary>
     /// When implemented by a class, a <see cref="IMemberConstraintSet" /> can be used to validate the values of

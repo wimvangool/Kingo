@@ -1,7 +1,7 @@
 ﻿
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
+namespace Syztem.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
 {
     [MessageHandler(InstanceLifetime.Singleton)]
     internal sealed class MessageHandlerWithSingleLifetime : IMessageHandler<Command>

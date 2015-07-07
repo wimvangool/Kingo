@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Resources;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Syztem.Resources;
 
-namespace System.ComponentModel.DataAnnotations
+namespace Syztem.ComponentModel.DataAnnotations
 {
     /// <summary>
     /// When applied to a property, indicates that this property must be set to a non-null or non-zero value.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Property)]
     public sealed class RequiredMemberAttribute : MemberValidationAttribute
     {
         private readonly Dictionary<Type, Func<object, ValidationContext, ValidationResult>> _validationMethods;    

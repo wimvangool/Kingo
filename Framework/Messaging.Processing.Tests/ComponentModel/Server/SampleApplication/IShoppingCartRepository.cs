@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server.SampleApplication
+namespace Syztem.ComponentModel.Server.SampleApplication
 {
     public interface IShoppingCartRepository
     {

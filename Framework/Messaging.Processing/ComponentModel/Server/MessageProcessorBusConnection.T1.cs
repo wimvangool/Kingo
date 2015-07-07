@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     internal sealed class MessageProcessorBusConnection<TMessage> : Connection, IMessageProcessorBusConnection where TMessage : class
     {

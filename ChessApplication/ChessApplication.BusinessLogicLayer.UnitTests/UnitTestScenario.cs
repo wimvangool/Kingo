@@ -1,7 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.Server;
 
 namespace SummerBreeze.ChessApplication
 {

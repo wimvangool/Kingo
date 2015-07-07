@@ -6,8 +6,8 @@
     <ProjectGuid>{9697EACA-8E8F-451B-AE46-CF081559E0ED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System</RootNamespace>
-    <AssemblyName>System.ComponentModel.Messaging.Tests</AssemblyName>
+    <RootNamespace>Syztem</RootNamespace>
+    <AssemblyName>Syztem.ComponentModel.Messaging.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

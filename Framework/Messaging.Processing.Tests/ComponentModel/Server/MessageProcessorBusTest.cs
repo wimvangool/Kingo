@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     [TestClass]
     public sealed class MessageProcessorBusTest

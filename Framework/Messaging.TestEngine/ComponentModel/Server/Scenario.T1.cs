@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.FluentValidation;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Resources;
 using System.Threading.Tasks;
+using Syztem.ComponentModel.FluentValidation;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Represents a scenario that follows the Behavior Driven Development (BDD) style, which is characterized

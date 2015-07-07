@@ -1,14 +1,14 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.Server.Domain;
+using Syztem;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.Server.Domain;
 
 namespace SummerBreeze.ChessApplication.Challenges
 {
     /// <summary>
     /// Occurs when a player has challenged another player.
     /// </summary>
-    public sealed class PlayerChallengedEvent : Message<PlayerChallengedEvent>,
-        IVersionedObject<Guid, DateTimeOffset>
+    public sealed class PlayerChallengedEvent : Message<PlayerChallengedEvent>, IVersionedObject<Guid, DateTimeOffset>
     {
         public readonly Guid ChallengeId;
         public readonly DateTimeOffset Version;

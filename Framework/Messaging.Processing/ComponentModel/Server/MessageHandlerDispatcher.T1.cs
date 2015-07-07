@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Server.Domain;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Security;
 using System.Threading.Tasks;
+using Syztem.ComponentModel.Server.Domain;
+using Syztem.Security;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     internal sealed class MessageHandlerDispatcher<TMessage> : MessageHandlerDispatcher where TMessage : class, IMessage<TMessage>
     {       

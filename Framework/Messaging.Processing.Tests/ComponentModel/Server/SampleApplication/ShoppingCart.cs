@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Server.Domain;
-using System.ComponentModel.Server.SampleApplication.Messages;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Syztem.ComponentModel.Server.Domain;
+using Syztem.ComponentModel.Server.SampleApplication.Messages;
 
-namespace System.ComponentModel.Server.SampleApplication
+namespace Syztem.ComponentModel.Server.SampleApplication
 {
     public sealed class ShoppingCart : AggregateRoot<Guid, int>
     {

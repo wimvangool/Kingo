@@ -7,8 +7,8 @@
     <ProjectGuid>{757D77D3-7B32-4F21-9617-88274D50B517}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System</RootNamespace>
-    <AssemblyName>System.ComponentModel.Messaging.Processing</AssemblyName>
+    <RootNamespace>Syztem</RootNamespace>
+    <AssemblyName>Syztem.ComponentModel.Messaging.Processing</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\System.ComponentModel.Messaging.Processing.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Syztem.ComponentModel.Messaging.Processing.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>

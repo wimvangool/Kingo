@@ -1,7 +1,8 @@
-﻿using System.Resources;
+﻿using System;
 using System.Threading.Tasks;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {    
     /// <summary>
     /// Represents a scope that controls the lifetime of a <see cref="UnitOfWorkContext" />.

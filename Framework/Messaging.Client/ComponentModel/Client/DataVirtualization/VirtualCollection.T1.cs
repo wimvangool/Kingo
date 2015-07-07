@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Resources;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents a read-only collection of items that is partially loaded in memory while items are accessed or iterated.

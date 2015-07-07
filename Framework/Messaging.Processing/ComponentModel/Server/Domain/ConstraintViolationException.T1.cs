@@ -1,7 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace System.ComponentModel.Server.Domain
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// This exception is thrown when a data-constraint is violated while inserting, updating or deleting

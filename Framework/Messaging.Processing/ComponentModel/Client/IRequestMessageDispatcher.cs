@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Client
+﻿namespace Syztem.ComponentModel.Client
 {
     internal interface IRequestMessageDispatcher
     {

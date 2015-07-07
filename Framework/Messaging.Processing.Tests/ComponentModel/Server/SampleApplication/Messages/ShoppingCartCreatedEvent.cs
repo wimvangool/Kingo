@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.Server.Domain;
+﻿using System;
+using Syztem.ComponentModel.Server.Domain;
 
-namespace System.ComponentModel.Server.SampleApplication.Messages
+namespace Syztem.ComponentModel.Server.SampleApplication.Messages
 {
     internal sealed class ShoppingCartCreatedEvent : Message<ShoppingCartCreatedEvent>, IVersionedObject<Guid, int>
     {

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Resources;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Server.Domain
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an aggregate that is modeled as a stream of events and can also be restored as such.

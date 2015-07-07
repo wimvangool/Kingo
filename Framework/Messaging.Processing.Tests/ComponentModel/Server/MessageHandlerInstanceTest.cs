@@ -1,15 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     [TestClass]
     public sealed class MessageHandlerInstanceTest
     {
-        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
         private sealed class SingleValueAttribute : Attribute
         {
             internal readonly int Value;

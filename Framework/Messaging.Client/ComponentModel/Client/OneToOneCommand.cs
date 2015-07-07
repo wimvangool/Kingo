@@ -1,7 +1,8 @@
-﻿using System.Resources;
+﻿using System;
 using System.Windows.Input;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Represents a command that can have at most one active connection at a time.

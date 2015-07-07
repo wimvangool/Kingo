@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Client
+﻿using System;
+
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyIsExecuting" /> interface.

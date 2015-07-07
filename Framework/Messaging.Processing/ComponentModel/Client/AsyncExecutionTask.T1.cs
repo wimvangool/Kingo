@@ -1,7 +1,8 @@
-﻿using System.Resources;
+﻿using System;
 using System.Threading;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Provides a base-class implementation of the <see cref="IAsyncExecutionTask" /> interface.

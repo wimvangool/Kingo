@@ -1,4 +1,6 @@
-﻿namespace System
+﻿using System;
+
+namespace Syztem
 {
     /// <summary>
     /// Represents the clock that is running on the local machine or system.

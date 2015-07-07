@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel
+﻿using System.ComponentModel;
+
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Provides some additional data for the <see cref="INotifyPropertyChanged.PropertyChanged" /> event.

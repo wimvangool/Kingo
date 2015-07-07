@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.Server;
+﻿using System;
 using System.Threading.Tasks;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.Server;
 
-namespace System.Security
+namespace Syztem.Security
 {
     /// <summary>
     /// This module is used to authorize any further processing of messages based on the current thread's identity.
@@ -24,7 +25,7 @@ namespace System.Security
             }
             SenderNotAuthorizedException exception;
 
-            if (await IsNotAuthorized(handler.Message, out exception))
+            if (await IsNotAuthorizedAsync(handler.Message, out exception))
             {
                 throw exception;
             }
@@ -45,6 +46,6 @@ namespace System.Security
         /// <c>true</c> if the current identity is not authorized to further process the specified
         /// <paramref name="message"/>; otherwise <c>false</c>.
         /// </returns>
-        protected abstract Task<bool> IsNotAuthorized(IMessage message, out SenderNotAuthorizedException exception);
+        protected abstract Task<bool> IsNotAuthorizedAsync(IMessage message, out SenderNotAuthorizedException exception);
     }
 }

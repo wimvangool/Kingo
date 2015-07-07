@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.Domain
+﻿using System;
+
+namespace Syztem.ComponentModel.Server.Domain
 {
     internal sealed class AggregateRootVersionTracker<TAggregate, TKey, TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>

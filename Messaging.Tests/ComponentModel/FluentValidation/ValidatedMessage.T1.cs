@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.FluentValidation
+﻿namespace Syztem.ComponentModel.FluentValidation
 {   
     internal sealed class ValidatedMessage<TValue> : Message<ValidatedMessage<TValue>>
     {

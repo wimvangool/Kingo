@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.Server.Domain;
-using System.ComponentModel.Server.SampleApplication.Messages;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
+using Syztem.ComponentModel.Server.Domain;
+using Syztem.ComponentModel.Server.SampleApplication.Messages;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server.SampleApplication.MessageHandlers
+namespace Syztem.ComponentModel.Server.SampleApplication.MessageHandlers
 {
     [MessageHandler(InstanceLifetime.PerUnitOfWork)]
     internal sealed class ShoppingCartHandler : IMessageHandler<AddProductToCartCommand>,

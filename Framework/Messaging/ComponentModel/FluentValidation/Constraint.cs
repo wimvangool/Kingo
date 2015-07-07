@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.FluentValidation
+﻿using System;
+
+namespace Syztem.ComponentModel.FluentValidation
 {
     internal abstract class Constraint : IErrorMessageProducer
     {

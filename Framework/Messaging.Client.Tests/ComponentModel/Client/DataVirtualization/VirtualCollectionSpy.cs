@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {
     internal sealed class VirtualCollectionSpy : VirtualCollection<int>
     {

@@ -1,7 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {    
     [Serializable]
     internal sealed class InvalidEventException : ArgumentException

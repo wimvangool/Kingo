@@ -1,6 +1,7 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
-namespace System
+namespace Syztem
 {
     /// <summary>
     /// Represents an error message with optional arguments for formatting.

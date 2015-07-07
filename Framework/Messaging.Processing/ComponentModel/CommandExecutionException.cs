@@ -1,6 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// This exception is thrown when a business rule was violated while processing a command.

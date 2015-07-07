@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace System.ComponentModel.Server.Domain
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an in-memory stream of <see cref="IVersionedObject{T, S}">aggregate events</see>.

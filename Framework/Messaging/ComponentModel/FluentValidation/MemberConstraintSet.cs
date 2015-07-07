@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Resources;
+using Syztem.Resources;
 
-namespace System.ComponentModel.FluentValidation
+namespace Syztem.ComponentModel.FluentValidation
 {
     /// <summary>
     /// Represents a set of <see cref="IMember"/> instances that are validated by adding run-time constraints.

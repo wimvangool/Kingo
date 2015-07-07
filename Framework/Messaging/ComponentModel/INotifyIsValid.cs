@@ -1,4 +1,7 @@
-﻿namespace System.ComponentModel
+﻿using System;
+using System.ComponentModel;
+
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Represents a component that can indicate whether or not it is valid.

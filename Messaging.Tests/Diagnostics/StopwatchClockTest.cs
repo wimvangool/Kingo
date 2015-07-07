@@ -1,7 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.Diagnostics
+namespace Syztem.Diagnostics
 {
     [TestClass]
     public sealed class StopwatchClockTest

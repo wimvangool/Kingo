@@ -1,6 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
-namespace System.ComponentModel.FluentValidation
+namespace Syztem.ComponentModel.FluentValidation
 {
     /// <summary>
     /// Represents a <see cref="IMessageValidator" /> in which validation-errors are reported

@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.Domain
+﻿using System;
+
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// When implemented by a class, represents a filter of <see cref="DomainException">DomainExceptions</see>

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel.Server;
-using System.ComponentModel.Server.Domain;
 using System.Threading.Tasks;
 using SummerBreeze.ChessApplication.Challenges;
+using Syztem.ComponentModel.Server;
+using Syztem.ComponentModel.Server.Domain;
 
 namespace SummerBreeze.ChessApplication.Players
 {

@@ -1,6 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.ComponentModel;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.DataAnnotations
+namespace Syztem.ComponentModel.DataAnnotations
 {
     [TestClass]
     public sealed class RequiredAttributeTest
@@ -64,7 +66,7 @@ namespace System.ComponentModel.DataAnnotations
                 get { return "[StringThatCannotBeWhiteSpace]"; }
             }
 
-            private String _stringValueThatCannotBeWhiteSpace;
+            private string _stringValueThatCannotBeWhiteSpace;
 
             [RequiredMember(StringConstraint = StringConstraint.NotNullOrWhiteSpace)]
             public string StringValueThatCannotBeWhiteSpace

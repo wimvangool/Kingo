@@ -1,7 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Represents a task that can execute a query asynchronously.

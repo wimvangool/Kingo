@@ -1,7 +1,7 @@
 ﻿
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
+namespace Syztem.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
 {    
     internal sealed class GenericCommandHandler<TMessage> : IMessageHandler<TMessage> where TMessage : class
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// The options that can be specified when a property of a <see cref="RequestMessageViewModel{TMessage}" /> has changed.

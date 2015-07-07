@@ -1,4 +1,6 @@
-﻿namespace System
+﻿using System;
+
+namespace Syztem
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IClock" /> interface.

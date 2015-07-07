@@ -1,8 +1,8 @@
-﻿<Window x:Class="System.ComponentModel.Client.Shell.ShellView"
+﻿<Window x:Class="Syztem.ComponentModel.Client.Shell.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
-        xmlns:DataVirtualization="clr-namespace:System.ComponentModel.Client.DataVirtualization;assembly=System.ComponentModel.Messaging.Client"
-        xmlns:Shell="clr-namespace:System.ComponentModel.Client.Shell"        
+        xmlns:DataVirtualization="clr-namespace:Syztem.ComponentModel.Client.DataVirtualization;assembly=Syztem.ComponentModel.Messaging.Client"
+        xmlns:Shell="clr-namespace:Syztem.ComponentModel.Client.Shell"        
         Height="300"
         Width="300">    
     <TabControl>

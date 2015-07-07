@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Threading;
+using Syztem.Threading;
 
-namespace System
+namespace Syztem
 {
     internal sealed class AsyncLocalClockContext : IClockContext
     {

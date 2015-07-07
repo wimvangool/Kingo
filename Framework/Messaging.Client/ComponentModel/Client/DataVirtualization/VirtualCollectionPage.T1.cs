@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {    
     internal sealed class VirtualCollectionPage<T> : ReadOnlyCollection<T>
     {

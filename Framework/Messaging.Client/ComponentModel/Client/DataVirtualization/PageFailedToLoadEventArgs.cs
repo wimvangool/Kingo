@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Client.DataVirtualization
+﻿using System;
+
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Arguments of the <see cref="VirtualCollection{T}.PageFailedToLoad" /> event.

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Syztem.ComponentModel.DataAnnotations;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     public sealed class CommandStub : RequestMessageViewModel<CommandStub>
     {

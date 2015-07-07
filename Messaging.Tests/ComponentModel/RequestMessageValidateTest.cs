@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.ComponentModel.DataAnnotations;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     [TestClass]
     public sealed class RequestMessageValidateTest

@@ -1,7 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.Diagnostics;
 
-namespace System
+namespace Syztem
 {
     [TestClass]
     public sealed class ClockTest

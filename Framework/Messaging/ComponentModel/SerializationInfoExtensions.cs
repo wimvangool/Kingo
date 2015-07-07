@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Contains extension-methods for the <see cref="SerializationInfo" /> class.

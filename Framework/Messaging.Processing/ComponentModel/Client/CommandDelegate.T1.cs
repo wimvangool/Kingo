@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.Server;
+﻿using System;
+using Syztem.ComponentModel.Server;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Represents a <see cref="ICommandDispatcher" /> that delegates it's implementation to another method.

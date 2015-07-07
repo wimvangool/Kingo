@@ -1,5 +1,6 @@
 ﻿using System;
-using System.ComponentModel.Server.Domain;
+using Syztem;
+using Syztem.ComponentModel.Server.Domain;
 
 namespace SummerBreeze.ChessApplication.Games
 {

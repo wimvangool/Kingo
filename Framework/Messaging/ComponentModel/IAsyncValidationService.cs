@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel
+﻿using System;
+
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Represents a service that is used to validate a certain property of a message and requires

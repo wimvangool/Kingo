@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Server;
-using System.Diagnostics;
 using System.Reflection;
+using Syztem.ComponentModel.Server;
+using Syztem.Diagnostics;
+using Syztem.Reflection;
 
 namespace SummerBreeze.ChessApplication
 {

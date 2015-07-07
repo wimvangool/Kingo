@@ -1,6 +1,7 @@
-﻿using System.Resources;
+﻿using System;
+using Syztem.Resources;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IConnection" /> interface and can be used

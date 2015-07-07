@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel
+﻿namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Represents a message that can validate itself.

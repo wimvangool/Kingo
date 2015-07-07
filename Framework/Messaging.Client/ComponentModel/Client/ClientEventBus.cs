@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.Server;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Syztem.ComponentModel.Server;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Represents an event-bus for client or front-end components that can be used within a <see cref="MessageProcessor" />

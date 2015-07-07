@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
-namespace System.Threading
+namespace Syztem.Threading
 {
     /// <summary>
     /// Contains several helper methods for async methods that need to run synchronously.

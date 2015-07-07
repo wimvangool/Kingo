@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     internal sealed class OneToOneCommandConnection : Connection
     {

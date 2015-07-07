@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     internal sealed class MessageToStrategyMapping<TStrategy> : MessageToStrategyMapping, IMessageToStrategyMapping<TStrategy> where TStrategy : class
     {

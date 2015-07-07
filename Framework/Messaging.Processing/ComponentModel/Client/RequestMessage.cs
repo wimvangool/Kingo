@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Client
+﻿using System;
+
+namespace Syztem.ComponentModel.Client
 {
     internal sealed class RequestMessage : IMessage<RequestMessage>, IEquatable<RequestMessage>
     {

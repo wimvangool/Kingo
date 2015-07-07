@@ -1,5 +1,5 @@
 ﻿
-namespace System.ComponentModel.Server.SampleHandlers
+namespace Syztem.ComponentModel.Server.SampleHandlers
 {
     internal sealed class DomainEvent {}
 }

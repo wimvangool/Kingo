@@ -1,7 +1,8 @@
-﻿using System.Threading;
+﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server.Domain
+namespace Syztem.ComponentModel.Server.Domain
 {
     [TestClass]
     public sealed class RepositoryTest

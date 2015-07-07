@@ -1,5 +1,7 @@
 ﻿
-namespace System
+using System;
+
+namespace Syztem
 {
     internal sealed class StaticClockContext : IClockContext, IClock
     {        

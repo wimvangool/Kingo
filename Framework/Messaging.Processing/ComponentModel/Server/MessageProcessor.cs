@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Resources;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Syztem.Resources;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Represents a handler of arbitrary messages.

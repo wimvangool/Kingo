@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.FluentValidation
+﻿namespace Syztem.ComponentModel.FluentValidation
 {
     /// <summary>
     /// When implemented by a class, represents a consumer of <see cref="FormattedString">error messages</see>.

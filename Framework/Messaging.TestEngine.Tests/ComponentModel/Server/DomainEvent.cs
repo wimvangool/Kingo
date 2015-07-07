@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server
+﻿using System;
+
+namespace Syztem.ComponentModel.Server
 {
     internal sealed class DomainEvent : Message<DomainEvent>       
     {

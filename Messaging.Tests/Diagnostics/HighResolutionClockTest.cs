@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.Diagnostics
+namespace Syztem.Diagnostics
 {
     [TestClass]
     public sealed class HighResolutionClockTest

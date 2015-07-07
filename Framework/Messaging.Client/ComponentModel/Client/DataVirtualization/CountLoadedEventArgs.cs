@@ -1,6 +1,7 @@
-﻿using System.Resources;
+﻿using System;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Arguments of the <see cref="VirtualCollection{T}.CountLoaded" /> event.

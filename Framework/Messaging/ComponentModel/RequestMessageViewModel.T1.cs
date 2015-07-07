@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Resources;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using Syztem.Resources;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Represents a basic implementation of the <see cref="IRequestMessageViewModel" /> interface, in which

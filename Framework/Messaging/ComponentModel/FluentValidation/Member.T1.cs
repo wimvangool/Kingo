@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Resources;
+using Syztem.Resources;
 
-namespace System.ComponentModel.FluentValidation
+namespace Syztem.ComponentModel.FluentValidation
 {
     /// <summary>
     /// Represent a certain member that can be validated and produces an <see cref="FormattedString" /> if this validation fails.

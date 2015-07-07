@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {
     internal sealed class IndexSet
     {

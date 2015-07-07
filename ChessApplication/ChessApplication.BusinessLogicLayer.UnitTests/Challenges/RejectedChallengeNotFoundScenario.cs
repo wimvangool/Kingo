@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.FluentValidation;
-using System.ComponentModel.Server.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.FluentValidation;
+using Syztem.ComponentModel.Server.Domain;
 
 namespace SummerBreeze.ChessApplication.Challenges
 {

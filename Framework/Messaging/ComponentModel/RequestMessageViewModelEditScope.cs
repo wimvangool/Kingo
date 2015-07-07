@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Threading;
+using Syztem.Resources;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Represents a scope in which changes can be made to a <see cref="IRequestMessageViewModel" /> that can be rolled back if required.

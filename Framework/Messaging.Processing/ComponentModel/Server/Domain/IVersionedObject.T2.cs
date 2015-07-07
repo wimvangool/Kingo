@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.Domain
+﻿using System;
+
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an Aggregate, following the definition of a Domain Driven Design.

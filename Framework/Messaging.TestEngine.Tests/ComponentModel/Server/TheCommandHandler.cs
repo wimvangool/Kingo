@@ -1,8 +1,8 @@
 ﻿
-using System.Threading;
 using System.Threading.Tasks;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     [MessageHandler(InstanceLifetime.PerUnitOfWork)]
     internal sealed class TheCommandHandler : MessageHandler<TheCommand>

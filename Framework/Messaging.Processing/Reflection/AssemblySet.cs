@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security;
 
-namespace System.Reflection
+namespace Syztem.Reflection
 {
     /// <summary>
     /// Represents a set of <see cref="Assembly">Assemblies</see>.

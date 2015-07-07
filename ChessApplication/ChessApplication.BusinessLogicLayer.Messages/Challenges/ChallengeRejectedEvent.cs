@@ -1,15 +1,15 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.FluentValidation;
-using System.ComponentModel.Server.Domain;
+using Syztem;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.FluentValidation;
+using Syztem.ComponentModel.Server.Domain;
 
 namespace SummerBreeze.ChessApplication.Challenges
 {
     /// <summary>
     /// Occurs when a challenge has been rejected.
     /// </summary>
-    public sealed class ChallengeRejectedEvent : Message<ChallengeRejectedEvent>,
-        IVersionedObject<Guid, DateTimeOffset>
+    public sealed class ChallengeRejectedEvent : Message<ChallengeRejectedEvent>, IVersionedObject<Guid, DateTimeOffset>
     {
         public readonly Guid ChallengeId;
         public readonly DateTimeOffset Version;

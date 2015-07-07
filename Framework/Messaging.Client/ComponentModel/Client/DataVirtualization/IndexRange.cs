@@ -1,6 +1,7 @@
-﻿using System.Resources;
+﻿using System;
+using Syztem.Resources;
 
-namespace System.ComponentModel.Client.DataVirtualization
+namespace Syztem.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents a range of indices that mark which items of a <see cref="VirtualCollection{T}" /> have failed to load.

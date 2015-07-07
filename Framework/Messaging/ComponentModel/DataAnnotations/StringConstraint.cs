@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.DataAnnotations
+﻿namespace Syztem.ComponentModel.DataAnnotations
 {
     /// <summary>
     /// Represents a value that can be used on the <see cref="RequiredMemberAttribute" /> to indicate

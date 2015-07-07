@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Represents a cache that can be used to store dependencies that have a lifetime that is bound to a

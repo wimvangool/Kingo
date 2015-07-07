@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.Client.DataVirtualization;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Syztem.ComponentModel.Client.DataVirtualization;
 
-namespace System.ComponentModel.Client.Shell
+namespace Syztem.ComponentModel.Client.Shell
 {
     public sealed class VirtualCollectionItemTemplateSelector : DataTemplateSelector
     {

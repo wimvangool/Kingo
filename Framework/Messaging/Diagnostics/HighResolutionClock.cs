@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using Timer = System.Timers.Timer;
 
-namespace System.Diagnostics
+namespace Syztem.Diagnostics
 {
     /// <summary>
     /// Represents a clock that uses a <see cref="Stopwatch" /> in combination with

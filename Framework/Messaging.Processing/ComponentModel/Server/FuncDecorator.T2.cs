@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
-    /// This type is used to support implicit type conversion from a <see cref="Func{TMessageIn, TMessageOut}" /> to a
+    /// This type is used to support implicit type conversion from a <see cref="Func{TResult}" /> to a
     /// <see cref="IQuery{TMessageIn, TMessageOut}" />.
     /// </summary>
     /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>

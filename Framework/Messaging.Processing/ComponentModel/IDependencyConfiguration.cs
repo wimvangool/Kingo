@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.Server;
+﻿using Syztem.ComponentModel.Server;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// When implemented by a class, contains all configuration settings for a dependency.

@@ -1,5 +1,5 @@
 ﻿
-namespace System
+namespace Syztem
 {
     internal interface IClockContext
     {

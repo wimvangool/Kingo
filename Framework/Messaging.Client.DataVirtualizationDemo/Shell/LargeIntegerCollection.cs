@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel.Client.DataVirtualization;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
+using Syztem.ComponentModel.Client.DataVirtualization;
 
-namespace System.ComponentModel.Client.Shell
+namespace Syztem.ComponentModel.Client.Shell
 {
     internal sealed class LargeIntegerCollection : VirtualCollection<int>
     {        

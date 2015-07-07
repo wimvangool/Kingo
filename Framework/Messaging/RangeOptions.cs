@@ -1,4 +1,6 @@
-﻿namespace System
+﻿using System;
+
+namespace Syztem
 {
     /// <summary>
     /// Represents a set of options that can be used to determine whether or not a <see cref="Range{TValue}" />'s

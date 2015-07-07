@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SummerBreeze.ChessApplication.Players;
+using Syztem.ComponentModel.Server;
 
 namespace SummerBreeze.ChessApplication.Challenges
 {

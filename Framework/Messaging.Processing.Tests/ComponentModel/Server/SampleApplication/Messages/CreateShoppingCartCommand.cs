@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.SampleApplication.Messages
+﻿using System;
+
+namespace Syztem.ComponentModel.Server.SampleApplication.Messages
 {
     internal class CreateShoppingCartCommand : Message<CreateShoppingCartCommand>
     {

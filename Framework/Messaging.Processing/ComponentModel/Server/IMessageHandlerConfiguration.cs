@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, contains all configuration settings for a <see cref="IMessageHandler{T}" />.

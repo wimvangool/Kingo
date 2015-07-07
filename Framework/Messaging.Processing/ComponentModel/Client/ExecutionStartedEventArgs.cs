@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Client
+﻿using System;
+
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// EventArgs for the <see cref="IRequestDispatcher.ExecutionStarted" /> event.

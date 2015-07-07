@@ -1,4 +1,7 @@
-﻿namespace System.ComponentModel.DataAnnotations
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Syztem.ComponentModel.DataAnnotations
 {
     /// <summary>
     /// Serves as a bass-class for all <see cref="ValidationAttribute">ValidationAttributes</see> that are

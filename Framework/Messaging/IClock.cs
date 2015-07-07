@@ -1,4 +1,6 @@
-﻿namespace System
+﻿using System;
+
+namespace Syztem
 {
     /// <summary>
     /// When implemented by a class, represents a service that provides the current date and time.

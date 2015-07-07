@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
-namespace System
+namespace Syztem
 {
     internal sealed class ClockWithOffset : Clock
     {

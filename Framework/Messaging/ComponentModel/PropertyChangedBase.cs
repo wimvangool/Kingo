@@ -1,6 +1,8 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
-namespace System.ComponentModel
+namespace Syztem.ComponentModel
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="INotifyPropertyChanged" /> interface.

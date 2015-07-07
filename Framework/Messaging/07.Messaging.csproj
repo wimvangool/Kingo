@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Syztem</RootNamespace>
+    <AssemblyName>Syztem.ComponentModel.Messaging</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="AsyncLocalClockContext.cs" />
+    <Compile Include="Clock.cs" />
+    <Compile Include="ClockScope.cs" />
+    <Compile Include="ClockWithOffset.cs" />
+    <Compile Include="Comparable.T1.cs" />
+    <Compile Include="Comparer.cs" />
+    <Compile Include="ComponentModel\AttachedCollection.T1.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\MemberValidationAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\RequestMessageLabelProvider.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\RequiredMemberAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\StringConstraint.cs" />
+    <Compile Include="ComponentModel\FluentValidation\AndConstraint.cs" />
+    <Compile Include="ComponentModel\FluentValidation\BooleanMemberExtensions.cs" />
+    <Compile Include="ComponentModel\FluentValidation\CollectionMemberExtensions.cs" />
+    <Compile Include="ComponentModel\FluentValidation\Constraint.cs" />
+    <Compile Include="ComponentModel\FluentValidation\Constraint.T1.cs" />
+    <Compile Include="ComponentModel\FluentValidation\EnumerableMemberExtensions.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ErrorMessageMerger.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ErrorMessageCounter.cs" />
+    <Compile Include="ComponentModel\FluentValidation\OrConstraint.T1.cs" />
+    <Compile Include="FormattedString.cs" />
+    <Compile Include="ComponentModel\FluentValidation\FluentValidator.cs" />
+    <Compile Include="ComponentModel\FluentValidation\GuidMemberExtensions.cs" />
+    <Compile Include="ComponentModel\FluentValidation\IErrorMessageConsumer.cs" />
+    <Compile Include="ComponentModel\FluentValidation\IErrorMessageProducer.cs" />
+    <Compile Include="ComponentModel\FluentValidation\IMemberConstraintSet.cs" />
+    <Compile Include="ComponentModel\FluentValidation\IMember.cs" />
+    <Compile Include="ComponentModel\FluentValidation\InternalRange.T1.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ListMemberExtensions.cs" />
+    <Compile Include="ComponentModel\FluentValidation\Member.T1.cs" />
+    <Compile Include="ComponentModel\FluentValidation\MemberConstraintSet.cs" />
+    <Compile Include="ComponentModel\FluentValidation\NullableMemberExtensions.cs" />
+    <Compile Include="ComponentModel\FluentValidation\NullConstraint.cs" />
+    <Compile Include="ComponentModel\FluentValidation\StringMemberExtensions.cs" />
+    <Compile Include="ComponentModel\FluentValidation\StringToNumberConverter.T1.cs" />
+    <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeBuilder.cs" />
+    <Compile Include="ComponentModel\IAsyncValidationService.cs" />
+    <Compile Include="ComponentModel\IMessage.cs" />
+    <Compile Include="ComponentModel\IMessage.T1.cs" />
+    <Compile Include="ComponentModel\IMessageValidator.cs" />
+    <Compile Include="ComponentModel\INotifyHasChanges.cs" />
+    <Compile Include="ComponentModel\INotifyIsValid.cs" />
+    <Compile Include="ComponentModel\IRequestMessageViewModel.cs" />
+    <Compile Include="ComponentModel\IRequestMessageViewModel.T1.cs" />
+    <Compile Include="ComponentModel\Message.cs" />
+    <Compile Include="ComponentModel\Message.T1.cs" />
+    <Compile Include="ComponentModel\MessageValidator.cs" />
+    <Compile Include="ComponentModel\PropertyChangedBase.cs" />
+    <Compile Include="ComponentModel\PropertyChangedOption.cs" />
+    <Compile Include="ComponentModel\RequestMessagePropertyChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\RequestMessageViewModel.T1.cs" />
+    <Compile Include="ComponentModel\RequestMessageViewModelEditScope.cs" />
+    <Compile Include="ComponentModel\SerializationInfoExtensions.cs" />
+    <Compile Include="ComponentModel\ValidationErrorTree.cs" />
+    <Compile Include="ComponentModel\ValueMessage.T1.cs" />
+    <Compile Include="Diagnostics\HighResolutionClock.cs" />
+    <Compile Include="Diagnostics\StopwatchClock.cs" />
+    <Compile Include="Equatable.T1.cs" />
+    <Compile Include="EventHandlerExtensions.cs" />
+    <Compile Include="HashCode.cs" />
+    <Compile Include="IClock.cs" />
+    <Compile Include="IClockContext.cs" />
+    <Compile Include="IRange.T1.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Range.T1.cs" />
+    <Compile Include="RangeOptions.cs" />
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ValidationMessages.Designer.cs">
+      <DependentUpon>ValidationMessages.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="StaticClockContext.cs" />
+    <Compile Include="SystemClock.cs" />
+    <Compile Include="Threading\AsyncLocal.T1.cs" />
+    <Compile Include="Threading\AsyncMethod.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ValidationMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="07.Messaging.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     internal interface IMessageProcessorBusConnection : IConnection
     {

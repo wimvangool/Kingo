@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : MessageHandlerDispatcher
         where TMessageIn : class, IMessage<TMessageIn>

@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Client
+﻿namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Indicates which status a certain <see cref="IAsyncExecutionTask" /> has.

@@ -6,8 +6,8 @@
     <ProjectGuid>{303380DB-4167-4BB0-8B78-63C959B65C4B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System</RootNamespace>
-    <AssemblyName>System.ComponentModel.Messaging.Processing.Tests</AssemblyName>
+    <RootNamespace>Syztem</RootNamespace>
+    <AssemblyName>Syztem.ComponentModel.Messaging.Processing.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -92,7 +92,7 @@
     <Compile Include="ComponentModel\Server\MessageToStrategyMappingTest.cs" />
     <Compile Include="ComponentModel\Server\MessageValidationModuleTest.cs" />
     <Compile Include="ComponentModel\Server\SampleApplicationProcessor.cs" />
-    <Compile Include="ComponentModel\Server\Transactions\TransactionScopeModuleTest.cs" />
+    <Compile Include="Transactions\TransactionScopeModuleTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerClassTest.cs" />
     <Compile Include="ComponentModel\Server\MessageHandlerFactoryStub.cs" />
     <Compile Include="ComponentModel\Server\MessageProcessorTest.cs" />

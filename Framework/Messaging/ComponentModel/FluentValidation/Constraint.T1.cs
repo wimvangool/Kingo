@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.FluentValidation
+﻿using System;
+
+namespace Syztem.ComponentModel.FluentValidation
 {
     internal sealed class Constraint<TValue> : Constraint
     {

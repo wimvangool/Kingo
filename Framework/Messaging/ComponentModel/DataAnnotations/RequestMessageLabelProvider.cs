@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace System.ComponentModel.DataAnnotations
+namespace Syztem.ComponentModel.DataAnnotations
 {
     internal sealed class RequestMessageLabelProvider
     {

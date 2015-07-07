@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel.Server
+﻿namespace Syztem.ComponentModel.Server
 {
     internal sealed class MessageProcessorStub : MessageProcessor
     {

@@ -1,7 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     /// <summary>
     /// Serves as the base-class for the <see cref="CommandDispatcher" /> and <see cref="CommandDispatcher{T}"/> classes,

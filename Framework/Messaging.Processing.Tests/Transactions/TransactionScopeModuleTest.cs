@@ -1,9 +1,12 @@
-﻿using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.Server;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server.Transactions
+namespace Syztem.Transactions
 {
     [TestClass]
     public sealed class TransactionScopeModuleTest

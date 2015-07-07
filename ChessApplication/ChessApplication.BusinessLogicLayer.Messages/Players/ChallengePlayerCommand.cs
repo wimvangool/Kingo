@@ -1,6 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.FluentValidation;
+using Syztem;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.FluentValidation;
 
 namespace SummerBreeze.ChessApplication.Players
 {

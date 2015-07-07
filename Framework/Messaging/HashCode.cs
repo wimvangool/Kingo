@@ -1,4 +1,6 @@
-﻿namespace System
+﻿using System;
+
+namespace Syztem
 {
     /// <summary>
     /// Contains specific methods for object to calculate a hashcode based on their (immutable) members.

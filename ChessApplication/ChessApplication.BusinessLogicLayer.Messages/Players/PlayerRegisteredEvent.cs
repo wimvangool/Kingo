@@ -1,16 +1,16 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.FluentValidation;
-using System.ComponentModel.Server.Domain;
 using SummerBreeze.ChessApplication.Resources;
+using Syztem;
+using Syztem.ComponentModel;
+using Syztem.ComponentModel.FluentValidation;
+using Syztem.ComponentModel.Server.Domain;
 
 namespace SummerBreeze.ChessApplication.Players
 {
     /// <summary>
     /// Occurs when a player has been registered.
     /// </summary>
-    public sealed class PlayerRegisteredEvent : Message<PlayerRegisteredEvent>,
-        IVersionedObject<Guid, DateTimeOffset>
+    public sealed class PlayerRegisteredEvent : Message<PlayerRegisteredEvent>, IVersionedObject<Guid, DateTimeOffset>
     {
         public readonly Guid PlayerId;
         public readonly DateTimeOffset PlayerVersion;

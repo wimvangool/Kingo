@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace System.ComponentModel.Client
+namespace Syztem.ComponentModel.Client
 {
     [TestClass]
     public sealed class IsValidIndicatorTest

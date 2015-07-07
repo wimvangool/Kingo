@@ -1,8 +1,9 @@
-﻿using System.Resources;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
+using Syztem.Resources;
+using Syztem.Threading;
 
-namespace System.ComponentModel.Server
+namespace Syztem.ComponentModel.Server
 {
     /// <summary>
     /// Represents a module that validates a message and throws an <see cref="InvalidMessageException" /> if

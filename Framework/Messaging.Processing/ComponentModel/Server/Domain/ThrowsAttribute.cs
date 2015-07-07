@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.Server.Domain
+﻿using System;
+
+namespace Syztem.ComponentModel.Server.Domain
 {
     /// <summary>
     /// This attribute can be declared on a <see cref="IMessageHandler{T}" /> class or on the
@@ -7,7 +9,7 @@
     /// thrown by the handler (or any delegated members) and convert it into a
     /// <see cref="InvalidMessageException" /> (the default) or a <see cref="CommandExecutionException" />.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public sealed class ThrowsAttribute : Attribute, IDomainExceptionFilter
     {
         private readonly Type _exceptionType;

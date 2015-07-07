@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel
+﻿namespace Syztem.ComponentModel
 {
     internal sealed class MessageOne : Message<MessageOne>
     {
