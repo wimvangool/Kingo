@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Syztem</RootNamespace>
-    <AssemblyName>Syztem.ComponentModel.Messaging</AssemblyName>
+    <AssemblyName>Syztem.Messaging</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

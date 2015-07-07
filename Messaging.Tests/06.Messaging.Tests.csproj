@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Syztem</RootNamespace>
-    <AssemblyName>Syztem.ComponentModel.Messaging.Tests</AssemblyName>
+    <AssemblyName>Syztem.Messaging.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -74,7 +74,6 @@
     <Compile Include="ComponentModel\RequestMessageWithChildMessageTest.cs" />
     <Compile Include="Diagnostics\HighResolutionClockTest.cs" />
     <Compile Include="Diagnostics\StopwatchClockTest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemClockTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +81,9 @@
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>07.Messaging</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

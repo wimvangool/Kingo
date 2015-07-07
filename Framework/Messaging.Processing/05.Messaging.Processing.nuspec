@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>    	
-	<id>System.ComponentModel.Messaging.Processing</id>
+	<id>Syztem.Messaging.Processing</id>
     <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>
