@@ -9,20 +9,20 @@ namespace SummerBreeze.ChessApplication.Games
     /// Handles the <see cref="ChallengeAcceptedEvent" />.
     /// </summary>	
     [MessageHandler(InstanceLifetime.PerResolve)]
-    public sealed class GameStarter : MessageHandler<ChallengeAcceptedEvent>
+    public sealed class ChallengeAcceptedHandler : MessageHandler<ChallengeAcceptedEvent>
     {
         private readonly IChallengeRepository _challenges;
         private readonly IGameRepository _games;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameStarter" /> class.
+        /// Initializes a new instance of the <see cref="ChallengeAcceptedHandler" /> class.
         /// </summary>
         /// <param name="challenges">A <see cref="IChallengeRepository" />.</param>
         /// <param name="games">A <see cref="IGameRepository" />.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="challenges" /> or <paramref name="games"/> is <c>null</c>.
         /// </exception>
-        public GameStarter(IChallengeRepository challenges, IGameRepository games)
+        public ChallengeAcceptedHandler(IChallengeRepository challenges, IGameRepository games)
         {
             if (challenges == null)
             {

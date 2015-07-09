@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SummerBreeze.ChessApplication</RootNamespace>
-    <AssemblyName>SummerBreeze.ChessApplication.BusinessLogicLayer</AssemblyName>
+    <AssemblyName>SummerBreeze.ChessApplication.BusinessLogicLayer.Domain</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -45,9 +45,9 @@
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>07.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\05.BusinessLogicLayer.Messages.csproj">
+    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\07.BusinessLogicLayer.Messages.csproj">
       <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
-      <Name>05.BusinessLogicLayer.Messages</Name>
+      <Name>07.BusinessLogicLayer.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
@@ -64,24 +64,19 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Challenges\AcceptChallengeCommandHandler.cs" />
     <Compile Include="Challenges\Challenge.cs" />
     <Compile Include="Challenges\ChallengeAlreadyRejectedException.cs" />
     <Compile Include="Challenges\ChallengeNotAcceptedException.cs" />
     <Compile Include="Challenges\ChallengeState.cs" />
-    <Compile Include="Challenges\RejectChallengeCommandHandler.cs" />
     <Compile Include="Challenges\ChallengeAlreadyAcceptedException.cs" />
     <Compile Include="Games\Game.cs" />
-    <Compile Include="Games\GameStarter.cs" />
     <Compile Include="Games\IGameRepository.cs" />
-    <Compile Include="Players\ChallengePlayerCommandHandler.cs" />
     <Compile Include="Challenges\IChallengeRepository.cs" />
     <Compile Include="Players\InvalidPasswordException.cs" />
     <Compile Include="Players\InvalidUsernameException.cs" />
     <Compile Include="Players\IPlayerRepository.cs" />
     <Compile Include="Players\Password.cs" />
     <Compile Include="Players\Player.cs" />
-    <Compile Include="Players\RegisterPlayerCommandHandler.cs" />
     <Compile Include="Players\Username.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Constraints.cs" />

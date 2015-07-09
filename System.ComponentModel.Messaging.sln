@@ -36,11 +36,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChessApplication", "ChessApplication", "{DF86ABE4-CF9F-4D08-8168-FFBDCCADDB31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.BusinessLogicLayer.UnitTests", "ChessApplication\ChessApplication.BusinessLogicLayer.UnitTests\03.BusinessLogicLayer.UnitTests.csproj", "{08B87FEE-BEB7-4ACF-95EE-1022A7CB60D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.BusinessLogicLayer.ScenarioTests", "ChessApplication\ChessApplication.BusinessLogicLayer.UnitTests\03.BusinessLogicLayer.ScenarioTests.csproj", "{08B87FEE-BEB7-4ACF-95EE-1022A7CB60D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.BusinessLogicLayer", "ChessApplication\ChessApplication.BusinessLogicLayer\04.BusinessLogicLayer.csproj", "{42AF2C3E-3A00-4BD8-8AA5-D802A10F0C49}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.BusinessLogicLayer.Domain", "ChessApplication\ChessApplication.BusinessLogicLayer.Domain\05.BusinessLogicLayer.Domain.csproj", "{42AF2C3E-3A00-4BD8-8AA5-D802A10F0C49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.BusinessLogicLayer.Messages", "ChessApplication\ChessApplication.BusinessLogicLayer.Messages\05.BusinessLogicLayer.Messages.csproj", "{8CC646BE-DA0D-4FDC-B21D-AAAA73079220}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "07.BusinessLogicLayer.Messages", "ChessApplication\ChessApplication.BusinessLogicLayer.Messages\07.BusinessLogicLayer.Messages.csproj", "{8CC646BE-DA0D-4FDC-B21D-AAAA73079220}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.InterfaceLayer", "ChessApplication\ChessApplication.InterfaceLayer\02.InterfaceLayer.csproj", "{21FB26ED-6CC8-4D23-9746-61B253D103DC}"
 EndProject
@@ -59,6 +59,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "07.Messaging", "Framework\Messaging\07.Messaging.csproj", "{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.Messaging.Tests", "Messaging.Tests\06.Messaging.Tests.csproj", "{9697EACA-8E8F-451B-AE46-CF081559E0ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.BusinessLogicLayer.MessageHandlers", "ChessApplication\ChessApplication.BusinessLogicLayer.MessageHandlers\04.BusinessLogicLayer.MessageHandlers.csproj", "{74A0F1EF-4B77-43F1-A93E-6C59B78C1DF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.BusinessLogicLayer.Messages.Tests", "ChessApplication\ChessApplication.BusinessLogicLayer.Messages.Tests\06.BusinessLogicLayer.Messages.Tests.csproj", "{5E3BD2B1-B522-4E64-98E0-5BF06556302D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +142,14 @@ Global
 		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74A0F1EF-4B77-43F1-A93E-6C59B78C1DF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74A0F1EF-4B77-43F1-A93E-6C59B78C1DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74A0F1EF-4B77-43F1-A93E-6C59B78C1DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74A0F1EF-4B77-43F1-A93E-6C59B78C1DF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E3BD2B1-B522-4E64-98E0-5BF06556302D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E3BD2B1-B522-4E64-98E0-5BF06556302D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E3BD2B1-B522-4E64-98E0-5BF06556302D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E3BD2B1-B522-4E64-98E0-5BF06556302D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,6 +179,8 @@ Global
 		{B7F22563-2F52-4C61-A3E2-2EBA0106D9FA} = {359C7385-9976-44ED-9A29-B67088A3564A}
 		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0} = {72205C90-C23B-4086-8580-050201371032}
 		{9697EACA-8E8F-451B-AE46-CF081559E0ED} = {72205C90-C23B-4086-8580-050201371032}
+		{74A0F1EF-4B77-43F1-A93E-6C59B78C1DF4} = {C34B6B12-C107-4E75-AAD2-6C6EC1E11846}
+		{5E3BD2B1-B522-4E64-98E0-5BF06556302D} = {C34B6B12-C107-4E75-AAD2-6C6EC1E11846}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35

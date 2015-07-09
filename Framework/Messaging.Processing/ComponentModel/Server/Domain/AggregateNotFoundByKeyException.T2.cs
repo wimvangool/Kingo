@@ -7,51 +7,61 @@ namespace Syztem.ComponentModel.Server.Domain
     /// <summary>
     /// This type of exception is thrown when a <see cref="Repository{T, S, U}" /> was unable to retrieve,
     /// an <see cref="IVersionedObject{T, S}" /> by its key.
-    /// </summary>
-    /// <typeparam name="TAggregate">Type of the aggregate.</typeparam>
+    /// </summary>    
     /// <typeparam name="TKey">Type of the key of the aggregate.</typeparam>
     [Serializable]
-    public class AggregateNotFoundByKeyException<TAggregate, TKey> : AggregateNotFoundException<TAggregate>
-        where TAggregate : class, IKeyedObject<TKey>
-        where TKey : struct, IEquatable<TKey>
+    public class AggregateNotFoundByKeyException<TKey> : AggregateNotFoundException where TKey : struct, IEquatable<TKey>
     {
         private const string _AggregateKeyKey = "_aggregateKey";
         private readonly TKey _aggregateKey;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T, K}" /> class.
+        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T}" /> class.
         /// </summary>
+        /// <param name="aggregateType">Type of the aggregate that was not found.</param>
         /// <param name="aggregateKey">Key of the aggregate that was not found.</param>
-        public AggregateNotFoundByKeyException(TKey aggregateKey)
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// </exception>
+        public AggregateNotFoundByKeyException(Type aggregateType, TKey aggregateKey)
+            : base(aggregateType)
         {
             _aggregateKey = aggregateKey;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T, K}" /> class.
+        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T}" /> class.
         /// </summary>
+        /// <param name="aggregateType">Type of the aggregate that was not found.</param>
         /// <param name="aggregateKey">Key of the aggregate that was not found.</param>
-        /// <param name="message">Message of the exception.</param>        
-        public AggregateNotFoundByKeyException(TKey aggregateKey, string message)
-            : base(message)
+        /// <param name="message">Message of the exception.</param>  
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// </exception>      
+        public AggregateNotFoundByKeyException(Type aggregateType, TKey aggregateKey, string message)
+            : base(aggregateType, message)
         {
             _aggregateKey = aggregateKey;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T, K}" /> class.
+        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T}" /> class.
         /// </summary>
+        /// <param name="aggregateType">Type of the aggregate that was not found.</param>
         /// <param name="aggregateKey">Key of the aggregate that was not found.</param>
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of the exception.</param>
-        public AggregateNotFoundByKeyException(TKey aggregateKey, string message, Exception innerException)
-            : base(message, innerException)
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// </exception>
+        public AggregateNotFoundByKeyException(Type aggregateType, TKey aggregateKey, string message, Exception innerException)
+            : base(aggregateType, message, innerException)
         {
             _aggregateKey = aggregateKey;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T, K}" /> class.
+        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T}" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>

@@ -166,7 +166,7 @@ namespace Syztem.ComponentModel.Server.Domain
         /// </summary>
         /// <param name="key">The key of the aggregate to return.</param>
         /// <returns>The aggregate with the specified <paramref name="key"/>.</returns>
-        /// <exception cref="AggregateNotFoundException{T}">
+        /// <exception cref="AggregateNotFoundByKeyException{T}">
         /// No aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/> was found.
         /// </exception>
         public virtual async Task<TAggregate> GetByKeyAsync(TKey key)
@@ -395,29 +395,17 @@ namespace Syztem.ComponentModel.Server.Domain
         #region [====== Exception Factory Methods ======]
 
         /// <summary>
-        /// Creates and returns a new <see cref="AggregateNotFoundByKeyException{T, K}" /> that indicates that this repository
+        /// Creates and returns a new <see cref="AggregateNotFoundByKeyException{T}" /> that indicates that this repository
         /// was unable to retrieve an aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/>.
         /// </summary>
         /// <param name="key">Key of the aggregate that was not found.</param>
-        /// <returns>A new <see cref="AggregateNotFoundByKeyException{T, K}" />.</returns>
-        protected AggregateNotFoundByKeyException<TAggregate, TKey> NewAggregateNotFoundByKeyException(TKey key)
+        /// <returns>A new <see cref="AggregateNotFoundByKeyException{T}" />.</returns>
+        protected AggregateNotFoundByKeyException<TKey> NewAggregateNotFoundByKeyException(TKey key)
         {
             var messageFormat = ExceptionMessages.Repository_AggregateNotFoundByKey;
             var message = string.Format(messageFormat, typeof(TAggregate), key);
-            return NewAggregateNotFoundByKeyException(key, message);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="AggregateNotFoundByKeyException{T, K}" /> that indicates that this repository
-        /// was unable to retrieve an aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/>.
-        /// </summary>
-        /// <param name="key">Key of the aggregate that was not found.</param>
-        /// <param name="message">Message of the exception.</param>
-        /// <returns>A new <see cref="AggregateNotFoundByKeyException{T, K}" />.</returns>
-        protected virtual AggregateNotFoundByKeyException<TAggregate, TKey> NewAggregateNotFoundByKeyException(TKey key, string message)
-        {            
-            return new AggregateNotFoundByKeyException<TAggregate, TKey>(key, message);
-        }
+            return new AggregateNotFoundByKeyException<TKey>(typeof(TAggregate), key, message);
+        }        
 
         private static Exception NewDuplicateKeyException(TKey key)
         {

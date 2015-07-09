@@ -16,7 +16,7 @@ namespace Syztem.ComponentModel.Server.Domain
             {
                 var key = Guid.NewGuid();                
                 
-                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
+                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<Guid>>();
                 
                 Assert.AreEqual(1, repository.SelectCountOf(key));
                 Assert.IsFalse(repository.WasEnlisted);
@@ -38,7 +38,7 @@ namespace Syztem.ComponentModel.Server.Domain
                 Assert.AreSame(existingAggregate, retrievedAggregate);
 
                 repository.RemoveByKey(key);
-                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
+                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<Guid>>();
 
                 Assert.IsTrue(repository.WasEnlisted);
                 Assert.IsTrue(repository.RequiresFlush());
@@ -61,7 +61,7 @@ namespace Syztem.ComponentModel.Server.Domain
                 Assert.AreSame(aggregate, retrievedAggregate);
 
                 repository.RemoveByKey(key);
-                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<AggregateStub, Guid>>();
+                repository.GetByKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<Guid>>();
 
                 Assert.IsTrue(repository.WasEnlisted);
                 Assert.IsFalse(repository.RequiresFlush());

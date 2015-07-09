@@ -65,13 +65,17 @@
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>07.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\05.BusinessLogicLayer.Messages.csproj">
-      <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
-      <Name>05.BusinessLogicLayer.Messages</Name>
+    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.MessageHandlers\04.BusinessLogicLayer.MessageHandlers.csproj">
+      <Project>{74a0f1ef-4b77-43f1-a93e-6c59b78c1df4}</Project>
+      <Name>04.BusinessLogicLayer.MessageHandlers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer\04.BusinessLogicLayer.csproj">
+    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\07.BusinessLogicLayer.Messages.csproj">
+      <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
+      <Name>07.BusinessLogicLayer.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Domain\05.BusinessLogicLayer.Domain.csproj">
       <Project>{42af2c3e-3a00-4bd8-8aa5-d802a10f0c49}</Project>
-      <Name>04.BusinessLogicLayer</Name>
+      <Name>05.BusinessLogicLayer.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Framework\Messaging.TestEngine\02.Messaging.TestEngine.csproj">
       <Project>{fa31c09f-6319-484b-96ec-88bf3c3fdb81}</Project>
@@ -100,18 +104,14 @@
     <Compile Include="Challenges\RejectedChallengeNotFoundScenario.cs" />
     <Compile Include="Games\FakeGameRepository.cs" />
     <Compile Include="Games\GameIsStartedScenario.cs" />
-    <Compile Include="MessageTest.cs" />
     <Compile Include="Challenges\AcceptedChallengeNotFoundScenario.cs" />
-    <Compile Include="Players\ChallengePlayerCommandTest.cs" />
     <Compile Include="Challenges\FakeChallengeRepository.cs" />
     <Compile Include="Players\FakePlayerRepository.cs" />
     <Compile Include="Players\InvalidPasswordScenario.cs" />
     <Compile Include="Players\InvalidUsernameScenario.cs" />
     <Compile Include="Players\PlayerIsChallengedScenario.cs" />
     <Compile Include="Players\PlayerIsRegisteredScenario.cs" />
-    <Compile Include="Players\PlayerRegisteredEventTest.cs" />
     <Compile Include="Players\ChallengeReceiverNotFoundScenario.cs" />
-    <Compile Include="Players\RegisterPlayerCommandTest.cs" />
     <Compile Include="Players\ChallengeSenderNotFoundScenario.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="UnitTestProcessor.cs" />

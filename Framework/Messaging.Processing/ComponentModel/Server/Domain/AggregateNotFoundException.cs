@@ -10,26 +10,62 @@ namespace Syztem.ComponentModel.Server.Domain
     /// </summary>
     [Serializable]
     public abstract class AggregateNotFoundException : DomainException
-    {        
+    {
+        private const string _AggregateTypeKey = "_aggregateType";
+        private readonly Type _aggregateType;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
         /// </summary>                
-        internal AggregateNotFoundException() { }       
+        /// <param name="aggregateType">Type of the aggregate that was not found.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// </exception>
+        protected AggregateNotFoundException(Type aggregateType)
+        {
+            if (aggregateType == null)
+            {
+                throw new ArgumentNullException("aggregateType");
+            }
+            _aggregateType = aggregateType;
+        }       
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
         /// </summary>        
-        /// <param name="message">Message of the exception.</param>        
-        internal AggregateNotFoundException(string message)
-            : base(message) { }
+        /// <param name="aggregateType">Type of the aggregate that was not found.</param>        
+        /// <param name="message">Message of the exception.</param>  
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// </exception>      
+        internal AggregateNotFoundException(Type aggregateType, string message)
+            : base(message)
+        {
+            if (aggregateType == null)
+            {
+                throw new ArgumentNullException("aggregateType");
+            }
+            _aggregateType = aggregateType;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
         /// </summary>        
+        /// <param name="aggregateType">Type of the aggregate that was not found.</param>        
         /// <param name="message">Message of the exception.</param>
-        /// <param name="innerException">Cause of the exception.</param>        
-        internal AggregateNotFoundException(string message, Exception innerException)
-            : base(message, innerException) { }
+        /// <param name="innerException">Cause of the exception.</param>   
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// </exception>     
+        internal AggregateNotFoundException(Type aggregateType, string message, Exception innerException)
+            : base(message, innerException)
+        {
+            if (aggregateType == null)
+            {
+                throw new ArgumentNullException("aggregateType");
+            }
+            _aggregateType = aggregateType;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
@@ -38,14 +74,26 @@ namespace Syztem.ComponentModel.Server.Domain
         /// <param name="context">The streaming context.</param>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         internal AggregateNotFoundException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }        
+            : base(info, context)
+        {
+            _aggregateType = (Type) info.GetValue(_AggregateTypeKey, typeof(Type));
+        }
+
+        /// <inheritdoc />
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue(_AggregateTypeKey, _aggregateType);
+        }
 
         /// <summary>
-        /// Returns the <see cref="Type" /> of the aggregate.
+        /// Returns the <see cref="Type" /> of the aggregate that was not found.
         /// </summary>
-        public abstract Type AggregateType
+        public Type AggregateType
         {
-            get;
+            get { return _aggregateType; ;}
         }        
     }
 }

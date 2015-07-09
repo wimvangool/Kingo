@@ -54,7 +54,7 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="..\ChessApplication.BusinessLogicLayer\Constraints.cs">
+    <Compile Include="..\ChessApplication.BusinessLogicLayer.Domain\Constraints.cs">
       <Link>Constraints.cs</Link>
     </Compile>
     <Compile Include="Challenges\AcceptChallengeCommand.cs" />

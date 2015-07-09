@@ -40,11 +40,11 @@ namespace SummerBreeze.ChessApplication.Players
         private void ContainsExpectedInnerException(IMemberConstraintSet validator, InvalidMessageException exception)
         {
             validator.VerifyThat(() => exception.InnerException)
-                .IsInstanceOf<AggregateNotFoundByKeyException<Player, Guid>>()
+                .IsInstanceOf<AggregateNotFoundByKeyException<Guid>>()
                 .And(ContainsExpectedAggregateKey);
         }
 
-        private void ContainsExpectedAggregateKey(IMemberConstraintSet validator, AggregateNotFoundByKeyException<Player, Guid> exception)
+        private void ContainsExpectedAggregateKey(IMemberConstraintSet validator, AggregateNotFoundByKeyException<Guid> exception)
         {
             validator.VerifyThat(() => exception.AggregateKey).IsEqualTo(Message.SenderId);
         }

@@ -23,7 +23,7 @@ namespace SummerBreeze.ChessApplication.Players
             _password = password;
         } 
        
-        internal static Player Register(Guid playerId, Username username, Password password)
+        public static Player Register(Guid playerId, Username username, Password password)
         {
             var player = new Player(playerId, username, password);
 
@@ -57,7 +57,7 @@ namespace SummerBreeze.ChessApplication.Players
 
         #endregion
 
-        internal Challenge ChallengeOtherPlayer(Guid challengeId, Player receiver)
+        public Challenge ChallengeOtherPlayer(Guid challengeId, Player receiver)
         {
             return Challenge.CreateChallenge(challengeId, Id, receiver.Id);
         }

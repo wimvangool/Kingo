@@ -28,7 +28,7 @@ namespace SummerBreeze.ChessApplication
         {
             var factory = new UnityFactory();
             factory.RegisterMessageHandlers(BusinessLogicLayer());
-            factory.RegisterRepositories(UnitTestLayer() + BusinessLogicLayer());
+            factory.RegisterRepositories(BusinessLogicLayer() + UnitTestLayer());
             return factory;
         }
 
@@ -39,7 +39,7 @@ namespace SummerBreeze.ChessApplication
 
         private static AssemblySet BusinessLogicLayer()
         {
-            return AssemblySet.FromCurrentDirectory("*BusinessLogicLayer.dll");
+            return AssemblySet.FromCurrentDirectory("*BusinessLogicLayer.*.dll");
         }
     }
 }

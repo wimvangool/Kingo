@@ -25,7 +25,7 @@ namespace SummerBreeze.ChessApplication.Challenges
             _version = DateTimeOffset.MinValue;
         }        
 
-        internal static Challenge CreateChallenge(Guid challengeId, Guid senderId, Guid receiverId)
+        public static Challenge CreateChallenge(Guid challengeId, Guid senderId, Guid receiverId)
         {
             var challenge = new Challenge(challengeId, senderId, receiverId);
 
@@ -60,7 +60,7 @@ namespace SummerBreeze.ChessApplication.Challenges
 
         #endregion
 
-        internal void Accept()
+        public void Accept()
         {
             if (_state == ChallengeState.New)
             {
@@ -78,7 +78,7 @@ namespace SummerBreeze.ChessApplication.Challenges
             }
         }
 
-        internal void Reject()
+        public void Reject()
         {
             if (_state == ChallengeState.New)
             {
@@ -96,7 +96,7 @@ namespace SummerBreeze.ChessApplication.Challenges
             }
         }
 
-        internal Game StartNewGame()
+        public Game StartNewGame()
         {
             if (_state == ChallengeState.Accepted)
             {

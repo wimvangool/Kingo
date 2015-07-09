@@ -38,7 +38,7 @@ namespace SummerBreeze.ChessApplication.Players
         }
 
         /// <inheritdoc />
-        [Throws(typeof(AggregateNotFoundByKeyException<Player, Guid>))]
+        [Throws(typeof(AggregateNotFoundByKeyException<Guid>))]
         public override async Task HandleAsync(ChallengePlayerCommand message)
         {
             if (message == null)

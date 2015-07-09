@@ -60,7 +60,6 @@
     <Compile Include="ComponentModel\Server\Domain\ThrowsAttribute.cs" />
     <Compile Include="ComponentModel\Server\DependencyToConfigurationMapping.cs" />
     <Compile Include="ComponentModel\Server\Domain\AggregateNotFoundByKeyException.T2.cs" />
-    <Compile Include="ComponentModel\Server\Domain\AggregateNotFoundException.T1.cs" />
     <Compile Include="ComponentModel\Server\Domain\ConstraintViolationException.cs" />
     <Compile Include="ComponentModel\Server\Domain\BusinessRuleViolationException.cs" />
     <Compile Include="ComponentModel\Server\Domain\Entity.T1.cs" />

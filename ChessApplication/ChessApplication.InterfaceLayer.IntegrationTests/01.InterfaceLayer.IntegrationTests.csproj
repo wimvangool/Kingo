@@ -64,17 +64,17 @@
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>07.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\05.BusinessLogicLayer.Messages.csproj">
+    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Messages\07.BusinessLogicLayer.Messages.csproj">
       <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
-      <Name>05.BusinessLogicLayer.Messages</Name>
+      <Name>07.BusinessLogicLayer.Messages</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer\04.BusinessLogicLayer.csproj">
+    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.Domain\05.BusinessLogicLayer.Domain.csproj">
       <Project>{42af2c3e-3a00-4bd8-8aa5-d802a10f0c49}</Project>
-      <Name>04.BusinessLogicLayer</Name>
+      <Name>05.BusinessLogicLayer.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.UnitTests\03.BusinessLogicLayer.UnitTests.csproj">
+    <ProjectReference Include="..\ChessApplication.BusinessLogicLayer.UnitTests\03.BusinessLogicLayer.ScenarioTests.csproj">
       <Project>{08b87fee-beb7-4acf-95ee-1022a7cb60d2}</Project>
-      <Name>03.BusinessLogicLayer.UnitTests</Name>
+      <Name>03.BusinessLogicLayer.ScenarioTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChessApplication.DataAccessLayer.Messages\09.DataAccessLayer.Messages.csproj">
       <Project>{b7f22563-2f52-4c61-a3e2-2eba0106d9fa}</Project>

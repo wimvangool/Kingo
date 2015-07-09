@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Syztem.ComponentModel;
+using Syztem.ComponentModel.FluentValidation;
 
 namespace SummerBreeze.ChessApplication.Players
 {
@@ -17,10 +18,12 @@ namespace SummerBreeze.ChessApplication.Players
         [TestMethod]
         public override void Then()
         {
-            VerifyThatExceptionIsA<InvalidMessageException>().And((validator, exception) =>
-            
-                validator.VerifyThat(() => exception.InnerException).IsInstanceOf<InvalidUsernameException>()
-            );
+            VerifyThatExceptionIsA<InvalidMessageException>().And(ContainsExpectedInnerException);
+        }
+
+        private static void ContainsExpectedInnerException(IMemberConstraintSet validator, InvalidMessageException exception)
+        {
+            validator.VerifyThat(() => exception.InnerException).IsInstanceOf<InvalidUsernameException>();
         }
     }
 }
