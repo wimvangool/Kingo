@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using ServiceComponents.ChessApplication.Resources;
-using ServiceComponents;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.ChessApplication.Resources;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Represents a request to register a new player.

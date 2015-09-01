@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ServiceComponents.ComponentModel.Server;
-using ServiceComponents.ComponentModel.Server.Domain;
-using ServiceComponents.Threading;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.Threading;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Handles the <see cref="RegisterPlayerCommand" />.

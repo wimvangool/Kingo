@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.Text;
+﻿using System.ServiceModel;
 using System.Threading.Tasks;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     internal sealed class PlayerServiceProxy : ClientBase<IPlayerService>, IPlayerService
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ServiceComponents.ComponentModel.Server;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Challenges
+namespace Kingo.ChessApplication.Challenges
 {
     /// <summary>
     /// Handles the <see cref="AcceptChallengeCommand" />.

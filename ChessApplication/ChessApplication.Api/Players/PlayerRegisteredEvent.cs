@@ -1,11 +1,11 @@
 ﻿using System;
-using ServiceComponents.ChessApplication.Resources;
-using ServiceComponents;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.ChessApplication.Resources;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Occurs when a player has been registered.

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.ComponentModel.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
-using ServiceComponents.ComponentModel.Server;
 
-namespace ServiceComponents.ChessApplication.Challenges
+namespace Kingo.ChessApplication.Challenges
 {
     [TestClass]
     public sealed class RejectedChallengeAlreadyRejectedScenario : UnitTestScenario<RejectChallengeCommand>

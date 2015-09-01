@@ -1,0 +1,283 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Kingo.BuildingBlocks.Resources;
+
+namespace Kingo.BuildingBlocks.ComponentModel.Constraints
+{
+    /// <summary>
+    /// Represents a set of <see cref="IMember"/> instances that are validated by adding run-time constraints.
+    /// </summary>
+    public class MemberConstraintSet : IMemberConstraintSet, IErrorMessageProducer, IEnumerable<IMemberConstraint>
+    {               
+        private readonly Dictionary<string, IMemberConstraint> _membersConstraints;
+        private readonly LinkedList<string> _parentMembers;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemberConstraintSet" /> class.
+        /// </summary>        
+        public MemberConstraintSet()
+        {                        
+            _membersConstraints = new Dictionary<string, IMemberConstraint>();
+            _parentMembers = new LinkedList<string>();
+        }                
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Join(Environment.NewLine, _membersConstraints.Values);
+        }
+
+        #region [====== Push & Pop Parent ======]
+
+        internal void PushParent(string parentMemberName)
+        {
+            _parentMembers.AddLast(parentMemberName);
+        }
+
+        internal void PopParent()
+        {
+            _parentMembers.RemoveLast();
+        }
+
+        #endregion
+
+        #region [====== VerifyThat ======]
+
+        /// <inheritdoc />
+        public IMemberConstraint<TValue> VerifyThat<TValue>(Expression<Func<TValue>> memberExpression)
+        {
+            if (memberExpression == null)
+            {
+                throw new ArgumentNullException("memberExpression");
+            }
+            return VerifyThat(memberExpression.Compile(), ExtractMemberNameFrom(memberExpression));
+        }
+
+        /// <inheritdoc />
+        public IMemberConstraint<TValue> VerifyThat<TValue>(Func<TValue> memberValueFactory, string memberName)
+        {
+            var member = new Member<TValue>(memberValueFactory, memberName, DetermineParentName());
+            var memberConstraint = new MemberConstraint<TValue, TValue>(this, member, new TrueConstraint<TValue>());
+
+            Put(memberConstraint);
+
+            return memberConstraint;
+        }
+
+        /// <inheritdoc />
+        public IMemberConstraint<TValue> VerifyThat<TValue>(TValue value, string name)
+        {
+            return VerifyThat(() => value, name);
+        }       
+
+        private void Put(IMemberConstraint newConstraint)
+        {
+            IMemberConstraint oldConstraint;
+
+            if (_membersConstraints.TryGetValue(newConstraint.Member.FullName, out oldConstraint))
+            {
+                Replace(oldConstraint, newConstraint);
+            }
+            else
+            {
+                Add(newConstraint);
+            }
+        }
+
+        private string DetermineParentName()
+        {
+            if (_parentMembers.Count == 0)
+            {
+                return null;
+            }
+            return string.Join(".", _parentMembers);
+        }
+
+        private static string ExtractMemberNameFrom(Expression valueExpression)
+        {
+            var lambdaExpression = (LambdaExpression) valueExpression;
+            MemberExpression memberExpression;
+
+            if (TryCastToMemberExpression(lambdaExpression, out memberExpression))
+            {
+                return memberExpression.Member.Name;
+            }            
+            throw NewExpressionNotSupportedException(valueExpression);
+        }
+
+        private static bool TryCastToMemberExpression(LambdaExpression lambdaExpression, out MemberExpression memberExpression)
+        {
+            var unaryExpression = lambdaExpression.Body as UnaryExpression;
+            if (unaryExpression != null)
+            {
+                memberExpression = (MemberExpression) unaryExpression.Operand;
+                return true;
+            }
+            memberExpression = lambdaExpression.Body as MemberExpression;
+            return memberExpression != null;
+        }
+
+        #endregion        
+
+        #region [====== Add, Remove & Replace ======]
+
+        /// <summary>
+        /// Replaces <paramref name="oldConstraint"/> by the specified <paramref name="newConstraint"/>.
+        /// </summary>
+        /// <param name="oldConstraint">The member to remove.</param>
+        /// <param name="newConstraint">The member to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="oldConstraint"/> or <paramref name="newConstraint"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="oldConstraint"/> and <paramref name="newConstraint"/> do not have the same name.
+        /// </exception>
+        protected internal void Replace(IMemberConstraint oldConstraint, IMemberConstraint newConstraint)
+        {
+            if (ReferenceEquals(oldConstraint, null))
+            {
+                throw new ArgumentNullException("oldConstraint");
+            }
+            if (ReferenceEquals(newConstraint, null))
+            {
+                throw new ArgumentNullException("newConstraint");
+            }
+            if (ReferenceEquals(oldConstraint, newConstraint))
+            {
+                return;
+            }
+            if (Remove(oldConstraint))
+            {
+                Add(newConstraint);
+            }            
+        }
+
+        /// <summary>
+        /// Occurs when a constraint was removed from this set.
+        /// </summary>
+        public event EventHandler<MemberConstraintEventArgs> ConstraintRemoved;
+
+        /// <summary>
+        /// Raises the <see cref="ConstraintRemoved"/> event.
+        /// </summary>
+        /// <param name="arguments">The arguments of the event.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="arguments"/> is <c>null</c>.
+        /// </exception>
+        protected virtual void OnConstraintRemoved(MemberConstraintEventArgs arguments)
+        {
+            ConstraintRemoved.Raise(this, arguments);
+        }
+
+        /// <summary>
+        /// Removes the specified <paramref name="constraint"/> from the set.
+        /// </summary>
+        /// <param name="constraint">The member to remove.</param>
+        /// <returns><c>true</c> if the member was removed; otherwise <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        protected bool Remove(IMemberConstraint constraint)
+        {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            if (_membersConstraints.Remove(constraint.Member.FullName))
+            {
+                OnConstraintRemoved(new MemberConstraintEventArgs(constraint));
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Occurs when a constraint was added to this set.
+        /// </summary>
+        public event EventHandler<MemberConstraintEventArgs> ConstraintAdded;
+
+        /// <summary>
+        /// Raises the <see cref="ConstraintAdded"/> event.
+        /// </summary>
+        /// <param name="arguments">The arguments of the event.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="arguments"/> is <c>null</c>.
+        /// </exception>
+        protected virtual void OnConstraintAdded(MemberConstraintEventArgs arguments)
+        {
+            ConstraintAdded.Raise(this, arguments);
+        }
+
+        /// <summary>
+        /// Adds the specified <paramref name="constraint"/> to the set.
+        /// </summary>
+        /// <param name="constraint">The member to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// A member with the same name was already added to this set.
+        /// </exception>
+        protected void Add(IMemberConstraint constraint)
+        {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            try
+            {
+                _membersConstraints.Add(constraint.Member.FullName, constraint);                
+            }
+            catch (ArgumentException)
+            {
+                throw NewMemberAlreadyAddedException(constraint.Member.FullName);
+            }
+            OnConstraintAdded(new MemberConstraintEventArgs(constraint));
+        }        
+
+        /// <inheritdoc />
+        public bool AddErrorMessagesTo(IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
+        {
+            var hasAddedErrorMessages = false;
+
+            foreach (var member in _membersConstraints.Values)
+            {
+                hasAddedErrorMessages |= member.AddErrorMessagesTo(consumer, formatProvider);
+            }
+            return hasAddedErrorMessages;
+        }
+
+        #endregion
+
+        #region [====== IEnumerable ======]
+
+        /// <inheritdoc />
+        public IEnumerator<IMemberConstraint> GetEnumerator()
+        {
+            return _membersConstraints.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
+        private static Exception NewMemberAlreadyAddedException(string memberName)
+        {
+            var messageFormat = ExceptionMessages.MemberSet_MemberAlreadyAdded;
+            var message = string.Format(messageFormat, memberName);
+            return new ArgumentException(message);
+        }
+
+        private static Exception NewExpressionNotSupportedException(Expression valueExpression)
+        {
+            var messageFormat = ExceptionMessages.MemberSet_UnsupportedExpression;
+            var message = string.Format(messageFormat, valueExpression.NodeType);
+            return new ArgumentException(message, "valueExpression");
+        }        
+    }
+}

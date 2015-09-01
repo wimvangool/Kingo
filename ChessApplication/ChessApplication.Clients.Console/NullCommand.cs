@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ServiceComponents.Threading;
+﻿using System.Threading.Tasks;
+using Kingo.BuildingBlocks.Threading;
 
-namespace ServiceComponents.ChessApplication
+namespace Kingo.ChessApplication
 {
     internal sealed class NullCommand : IUserCommand
     {

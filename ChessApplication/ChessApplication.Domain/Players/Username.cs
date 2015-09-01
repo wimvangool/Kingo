@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using ServiceComponents.ChessApplication.Resources;
-using ServiceComponents;
+using Kingo.BuildingBlocks;
+using Kingo.ChessApplication.Resources;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Represents a username.

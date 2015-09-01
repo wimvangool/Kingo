@@ -1,8 +1,8 @@
 ﻿using System;
+using Kingo.BuildingBlocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Tests the behavior of <see cref="PlayerRegisteredEvent" /> instances.

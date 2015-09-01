@@ -1,7 +1,7 @@
 ﻿using System;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// This exception is thrown when the specified password is invalid.

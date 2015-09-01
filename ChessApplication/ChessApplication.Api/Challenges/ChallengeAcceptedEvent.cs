@@ -1,9 +1,9 @@
 ﻿using System;
-using ServiceComponents;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Challenges
+namespace Kingo.ChessApplication.Challenges
 {
     /// <summary>
     /// Occurs when a challenge was accepted.

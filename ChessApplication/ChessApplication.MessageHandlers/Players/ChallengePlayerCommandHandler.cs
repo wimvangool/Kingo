@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ServiceComponents.ChessApplication.Challenges;
-using ServiceComponents.ComponentModel.Server;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.ChessApplication.Challenges;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Handles the <see cref="ChallengePlayerCommand" />.

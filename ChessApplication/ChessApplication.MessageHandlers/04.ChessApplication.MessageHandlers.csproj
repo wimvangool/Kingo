@@ -7,8 +7,8 @@
     <ProjectGuid>{74A0F1EF-4B77-43F1-A93E-6C59B78C1DF4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServiceComponents.ChessApplication</RootNamespace>
-    <AssemblyName>ServiceComponents.ChessApplication.MessageHandlers</AssemblyName>
+    <RootNamespace>Kingo.ChessApplication</RootNamespace>
+    <AssemblyName>Kingo.ChessApplication.MessageHandlers</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -60,13 +60,13 @@
       <Project>{42af2c3e-3a00-4bd8-8aa5-d802a10f0c49}</Project>
       <Name>05.ChessApplication.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging.Processing</Name>
+      <Name>04.BuildingBlocks.Server</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging\07.Messaging.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks\02.BuildingBlocks.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
-      <Name>07.Messaging</Name>
+      <Name>02.BuildingBlocks</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

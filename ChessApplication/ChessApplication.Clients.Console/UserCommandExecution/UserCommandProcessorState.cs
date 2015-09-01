@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using ServiceComponents.ChessApplication.Players;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Server;
-using ServiceComponents.Threading;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.Threading;
 
-namespace ServiceComponents.ChessApplication.UserCommandExecution
+namespace Kingo.ChessApplication.UserCommandExecution
 {
     internal abstract class UserCommandProcessorState : IUserCommandProcessor
     {        

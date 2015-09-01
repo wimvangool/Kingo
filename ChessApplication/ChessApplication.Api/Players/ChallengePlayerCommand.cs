@@ -1,9 +1,9 @@
 ﻿using System;
-using ServiceComponents;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Represents a request to let one player challenge another player.

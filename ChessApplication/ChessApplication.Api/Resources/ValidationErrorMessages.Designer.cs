@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ServiceComponents.ChessApplication.Resources {
+namespace Kingo.ChessApplication.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ServiceComponents.ChessApplication.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ServiceComponents.ChessApplication.Resources.ValidationErrorMessages", typeof(ValidationErrorMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kingo.ChessApplication.Resources.ValidationErrorMessages", typeof(ValidationErrorMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

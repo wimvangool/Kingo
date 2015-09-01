@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Irony;
 using Irony.Ast;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
-namespace ServiceComponents.ChessApplication
+namespace Kingo.ChessApplication
 {
     internal sealed class UserCommand : AstNode, IUserCommand
     {

@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents.ComponentModel;
+﻿using Kingo.BuildingBlocks.ComponentModel;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ServiceComponents.ChessApplication
+namespace Kingo.ChessApplication
 {
     /// <summary>
     /// Serves as a base class for testing the behavior of a certain message.

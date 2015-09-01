@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ServiceComponents.ChessApplication.Games
+namespace Kingo.ChessApplication.Games
 {
     /// <summary>
     /// Manages the persistence of <see cref="Game" /> instances.

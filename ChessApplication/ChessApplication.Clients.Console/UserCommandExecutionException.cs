@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
-namespace ServiceComponents.ChessApplication
+namespace Kingo.ChessApplication
 {
     /// <summary>
     /// This exception is thrown when an a UserCommand could not be executed.

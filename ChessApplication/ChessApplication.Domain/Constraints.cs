@@ -1,4 +1,4 @@
-﻿namespace ServiceComponents.ChessApplication
+﻿namespace Kingo.ChessApplication
 {
     internal static class Constraints
     {

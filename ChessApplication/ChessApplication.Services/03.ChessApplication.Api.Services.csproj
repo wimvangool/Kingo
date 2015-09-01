@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FBD7DED4-957B-499B-9572-38A003ADDE72}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kingo.ChessApplication</RootNamespace>
+    <AssemblyName>Kingo.ChessApplication.Api.Services</AssemblyName>
+    <ProjectTypeGuids>{3D9AD99F-2412-4246-B90B-4EAA41C64699};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <StartArguments>/client:"WcfTestClient.exe"</StartArguments>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+    <XsdCodeGenEnabled>True</XsdCodeGenEnabled>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="Challenges\ChallengeService.cs" />
+    <Compile Include="ChessApplicationService.cs" />
+    <Compile Include="Games\GameService.cs" />
+    <Compile Include="Players\PlayerService.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChessApplication.Api\02.ChessApplication.Api.csproj">
+      <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
+      <Name>02.ChessApplication.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChessApplication.Domain\05.ChessApplication.Domain.csproj">
+      <Project>{42af2c3e-3a00-4bd8-8aa5-d802a10f0c49}</Project>
+      <Name>05.ChessApplication.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChessApplication.MessageHandlers\04.ChessApplication.MessageHandlers.csproj">
+      <Project>{74a0f1ef-4b77-43f1-a93e-6c59b78c1df4}</Project>
+      <Name>04.ChessApplication.MessageHandlers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChessApplication.Sql\06.ChessApplication.Sql.csproj">
+      <Project>{9099af7e-67ac-4b00-a6bb-d9ff5b47d5b4}</Project>
+      <Name>06.ChessApplication.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj">
+      <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
+      <Name>04.BuildingBlocks.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server.Unity\06.BuildingBlocks.Server.Unity.csproj">
+      <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
+      <Name>06.BuildingBlocks.Server.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\BuildingBlocks\02.BuildingBlocks.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>02.BuildingBlocks</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Web.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{3D9AD99F-2412-4246-B90B-4EAA41C64699}">
+        <WcfProjectProperties>
+          <AutoStart>True</AutoStart>
+        </WcfProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

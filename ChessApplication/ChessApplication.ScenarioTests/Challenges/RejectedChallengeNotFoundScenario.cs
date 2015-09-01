@@ -1,10 +1,10 @@
 ﻿using System;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
-using ServiceComponents.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Challenges
+namespace Kingo.ChessApplication.Challenges
 {
     [TestClass]
     public sealed class RejectedChallengeNotFoundScenario : UnitTestScenario<RejectChallengeCommand>

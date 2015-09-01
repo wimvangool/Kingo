@@ -1,7 +1,7 @@
 ﻿using System;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Challenges
+namespace Kingo.ChessApplication.Challenges
 {
     /// <summary>
     /// This exception is thrown when an attempt is made to start a new game from a challenge that has

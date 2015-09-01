@@ -1,9 +1,9 @@
 ﻿using System;
-using ServiceComponents;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
 
-namespace ServiceComponents.ChessApplication.Challenges
+namespace Kingo.ChessApplication.Challenges
 {
     /// <summary>
     /// Represents a request to reject a challenge.

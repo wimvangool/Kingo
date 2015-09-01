@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ServiceComponents.ChessApplication.Challenges;
-using ServiceComponents.ComponentModel.Server;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.ChessApplication.Challenges;
 
-namespace ServiceComponents.ChessApplication.Games
+namespace Kingo.ChessApplication.Games
 {
     /// <summary>
     /// Handles the <see cref="ChallengeAcceptedEvent" />.

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using ServiceComponents.ComponentModel.Server;
-using ServiceComponents.Reflection;
-using ServiceComponents.Transactions;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.Reflection;
+using Kingo.BuildingBlocks.Transactions;
 
-namespace ServiceComponents.ChessApplication
+namespace Kingo.ChessApplication
 {
     /// <summary>
     /// Represents a <see cref="MessageProcessor" />.

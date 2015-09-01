@@ -1,9 +1,9 @@
 ﻿using System;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Server;
 
-namespace ServiceComponents.ChessApplication
+namespace Kingo.ChessApplication
 {
     [TestClass]
     public abstract class UnitTestScenario<TMessage> : Scenario<TMessage>

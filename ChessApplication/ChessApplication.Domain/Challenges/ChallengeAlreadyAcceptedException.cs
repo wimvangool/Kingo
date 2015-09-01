@@ -1,7 +1,7 @@
 ﻿using System;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Challenges
+namespace Kingo.ChessApplication.Challenges
 {
     /// <summary>
     /// This exception is thrown when a challenge is accepted or rejected when it has already been accepted.

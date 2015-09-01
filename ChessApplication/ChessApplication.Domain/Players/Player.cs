@@ -1,9 +1,9 @@
 ﻿using System;
-using ServiceComponents.ChessApplication.Challenges;
-using ServiceComponents;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.ChessApplication.Challenges;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     /// <summary>
     /// Represents a player.

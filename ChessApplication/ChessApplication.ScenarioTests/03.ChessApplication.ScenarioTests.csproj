@@ -6,8 +6,8 @@
     <ProjectGuid>{08B87FEE-BEB7-4ACF-95EE-1022A7CB60D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServiceComponents.ChessApplication</RootNamespace>
-    <AssemblyName>ServiceComponents.ChessApplication.ScenarioTests</AssemblyName>
+    <RootNamespace>Kingo.ChessApplication</RootNamespace>
+    <AssemblyName>Kingo.ChessApplication.ScenarioTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -61,9 +61,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\Messaging\07.Messaging.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks\02.BuildingBlocks.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
-      <Name>07.Messaging</Name>
+      <Name>02.BuildingBlocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChessApplication.MessageHandlers\04.ChessApplication.MessageHandlers.csproj">
       <Project>{74a0f1ef-4b77-43f1-a93e-6c59b78c1df4}</Project>
@@ -77,17 +77,17 @@
       <Project>{42af2c3e-3a00-4bd8-8aa5-d802a10f0c49}</Project>
       <Name>05.ChessApplication.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging.TestEngine\02.Messaging.TestEngine.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server.TestEngine\02.BuildingBlocks.Server.TestEngine.csproj">
       <Project>{fa31c09f-6319-484b-96ec-88bf3c3fdb81}</Project>
-      <Name>02.Messaging.TestEngine</Name>
+      <Name>02.BuildingBlocks.Server.TestEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging.Unity\02.Messaging.Unity.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server.Unity\06.BuildingBlocks.Server.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
-      <Name>02.Messaging.Unity</Name>
+      <Name>06.BuildingBlocks.Server.Unity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging.Processing</Name>
+      <Name>04.BuildingBlocks.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

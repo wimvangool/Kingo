@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
-using ServiceComponents.ComponentModel.Server;
-using ServiceComponents.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     [TestClass]
     public sealed class ChallengeReceiverNotFoundScenario : UnitTestScenario<ChallengePlayerCommand>

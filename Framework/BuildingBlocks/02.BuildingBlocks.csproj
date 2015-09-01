@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kingo.BuildingBlocks</RootNamespace>
+    <AssemblyName>Kingo.BuildingBlocks</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Kingo.BuildingBlocks.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="AsyncLocalClockContext.cs" />
+    <Compile Include="Clock.cs" />
+    <Compile Include="ClockScope.cs" />
+    <Compile Include="ClockWithOffset.cs" />
+    <Compile Include="ComponentModel\Constraints\AndConstraint.T3.cs" />
+    <Compile Include="ComponentModel\Constraints\Comparable.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\Comparer.cs" />
+    <Compile Include="ComponentModel\AttachedCollection.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\Constraint.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\ConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\DelegateConstraint.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\DelegateConstraintBuilder.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\DelegateConstraintBuilder.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\IConstraintWithErrorMessage.cs" />
+    <Compile Include="ComponentModel\Constraints\IConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\IMemberConstraint.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\MemberConstraintEventArgs.cs" />
+    <Compile Include="ComponentModel\Constraints\New.cs" />
+    <Compile Include="ComponentModel\Constraints\TrueConstraint.T1.cs" />
+    <Compile Include="StringTemplate.cs" />
+    <Compile Include="StringTemplateComponent.cs" />
+    <Compile Include="StringTemplateLiteral.cs" />
+    <Compile Include="StringTemplateVariable.cs" />
+    <Compile Include="ComponentModel\Constraints\IConstraint.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\IMemberConstraint.cs" />
+    <Compile Include="ComponentModel\Constraints\Member.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\MemberConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\BooleanConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\CollectionConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\EnumerableConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\ConstraintValidator.cs" />
+    <Compile Include="ComponentModel\Constraints\GuidConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\IErrorMessageConsumer.cs" />
+    <Compile Include="ComponentModel\Constraints\IErrorMessageProducer.cs" />
+    <Compile Include="ComponentModel\Constraints\IMemberConstraintSet.cs" />
+    <Compile Include="ComponentModel\Constraints\IMember.cs" />
+    <Compile Include="ComponentModel\Constraints\RangeAdapter.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\ListConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\MemberConstraint.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\MemberConstraintSet.cs" />
+    <Compile Include="ComponentModel\Constraints\NullableConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\StringConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\ValidationErrorTreeBuilder.cs" />
+    <Compile Include="ComponentModel\IAsyncValidationService.cs" />
+    <Compile Include="ComponentModel\IMessage.cs" />
+    <Compile Include="ComponentModel\IMessage.T1.cs" />
+    <Compile Include="ComponentModel\IMessageValidator.cs" />
+    <Compile Include="ComponentModel\INotifyHasChanges.cs" />
+    <Compile Include="ComponentModel\INotifyIsValid.cs" />
+    <Compile Include="ComponentModel\IRequestMessageViewModel.cs" />
+    <Compile Include="ComponentModel\IRequestMessageViewModel.T1.cs" />
+    <Compile Include="ComponentModel\Message.cs" />
+    <Compile Include="ComponentModel\Message.T1.cs" />
+    <Compile Include="ComponentModel\MessageValidator.cs" />
+    <Compile Include="ComponentModel\PropertyChangedBase.cs" />
+    <Compile Include="ComponentModel\PropertyChangedOption.cs" />
+    <Compile Include="ComponentModel\RequestMessagePropertyChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\RequestMessageViewModel.T1.cs" />
+    <Compile Include="ComponentModel\RequestMessageViewModelEditScope.cs" />
+    <Compile Include="ComponentModel\SerializationInfoExtensions.cs" />
+    <Compile Include="ComponentModel\ValidationErrorTree.cs" />
+    <Compile Include="ComponentModel\ValueMessage.T1.cs" />
+    <Compile Include="Diagnostics\HighResolutionClock.cs" />
+    <Compile Include="Diagnostics\StopwatchClock.cs" />
+    <Compile Include="ComponentModel\Constraints\Equatable.T1.cs" />
+    <Compile Include="EventHandlerExtensions.cs" />
+    <Compile Include="HashCode.cs" />
+    <Compile Include="IClock.cs" />
+    <Compile Include="IClockContext.cs" />
+    <Compile Include="ComponentModel\Constraints\IRange.T1.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="ComponentModel\Constraints\Range.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\RangeOptions.cs" />
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ConstraintErrors.Designer.cs">
+      <DependentUpon>ConstraintErrors.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="StaticClockContext.cs" />
+    <Compile Include="SystemClock.cs" />
+    <Compile Include="Threading\AsyncLocal.T1.cs" />
+    <Compile Include="Threading\AsyncMethod.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ConstraintErrors.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConstraintErrors.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="07.BuildingBlocks.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

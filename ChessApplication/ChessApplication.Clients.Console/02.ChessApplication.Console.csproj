@@ -7,8 +7,8 @@
     <ProjectGuid>{EBBD6EDE-7CE9-40B7-9F94-39319063B57B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServiceComponents.ChessApplication</RootNamespace>
-    <AssemblyName>ServiceComponents.ChessApplication.Console</AssemblyName>
+    <RootNamespace>Kingo.ChessApplication</RootNamespace>
+    <AssemblyName>Kingo.ChessApplication.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>ServiceComponents.ChessApplication.UserCommandExecution.UserCommandProcessor</StartupObject>
+    <StartupObject>Kingo.ChessApplication.UserCommandExecution.UserCommandProcessor</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Irony">
@@ -82,17 +82,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging.Processing</Name>
+      <Name>04.BuildingBlocks.Server</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging.Unity\02.Messaging.Unity.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server.Unity\06.BuildingBlocks.Server.Unity.csproj">
       <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
-      <Name>02.Messaging.Unity</Name>
+      <Name>06.BuildingBlocks.Server.Unity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging\07.Messaging.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks\02.BuildingBlocks.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
-      <Name>07.Messaging</Name>
+      <Name>02.BuildingBlocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChessApplication.Api\02.ChessApplication.Api.csproj">
       <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>

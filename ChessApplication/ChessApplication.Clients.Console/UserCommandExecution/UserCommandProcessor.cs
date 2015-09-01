@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.BuildingBlocks.ComponentModel.Server;
 using Nito.AsyncEx;
-using ServiceComponents.ComponentModel.Server;
 
-namespace ServiceComponents.ChessApplication.UserCommandExecution
+namespace Kingo.ChessApplication.UserCommandExecution
 {
     internal sealed class UserCommandProcessor : MessageProcessor
     {                

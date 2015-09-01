@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-using Irony;
 
-namespace ServiceComponents.ChessApplication
+namespace Kingo.ChessApplication
 {
     /// <summary>
     /// This exception is thrown when a user command could not be parsed.

@@ -1,10 +1,10 @@
 ﻿using System;
-using ServiceComponents;
-using ServiceComponents.ComponentModel;
-using ServiceComponents.ComponentModel.Constraints;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Games
+namespace Kingo.ChessApplication.Games
 {
     /// <summary>
     /// Occurs when a new game is started.

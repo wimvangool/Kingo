@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents.ComponentModel.Constraints;
+﻿using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     [TestClass]
     public sealed class PlayerIsRegisteredScenario : UnitTestScenario<RegisterPlayerCommand>

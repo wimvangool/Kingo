@@ -1,4 +1,4 @@
-﻿namespace ServiceComponents.ChessApplication.Challenges
+﻿namespace Kingo.ChessApplication.Challenges
 {
     /// <summary>
     /// Represents the state a <see cref="Challenge" /> can be in.

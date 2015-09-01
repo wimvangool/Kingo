@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.ChessApplication.Challenges;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceComponents.ChessApplication.Challenges;
-using ServiceComponents.ComponentModel.Constraints;
-using ServiceComponents.ComponentModel.Server;
 
-namespace ServiceComponents.ChessApplication.Players
+namespace Kingo.ChessApplication.Players
 {
     [TestClass]
     public sealed class PlayerIsChallengedScenario : UnitTestScenario<ChallengePlayerCommand>

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ServiceComponents.ComponentModel.Server;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Games
+namespace Kingo.ChessApplication.Games
 {
     /// <summary>
     /// Represents an in-memory repository for Game instances.

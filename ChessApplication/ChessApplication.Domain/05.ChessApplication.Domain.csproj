@@ -7,8 +7,8 @@
     <ProjectGuid>{42AF2C3E-3A00-4BD8-8AA5-D802A10F0C49}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServiceComponents.ChessApplication</RootNamespace>
-    <AssemblyName>ServiceComponents.ChessApplication.Domain</AssemblyName>
+    <RootNamespace>Kingo.ChessApplication</RootNamespace>
+    <AssemblyName>Kingo.ChessApplication.Domain</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -41,17 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\Messaging\07.Messaging.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks\02.BuildingBlocks.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
-      <Name>07.Messaging</Name>
+      <Name>02.BuildingBlocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChessApplication.Api\02.ChessApplication.Api.csproj">
       <Project>{8cc646be-da0d-4fdc-b21d-aaaa73079220}</Project>
       <Name>02.ChessApplication.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Framework\Messaging.Processing\05.Messaging.Processing.csproj">
+    <ProjectReference Include="..\..\Framework\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>05.Messaging.Processing</Name>
+      <Name>04.BuildingBlocks.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

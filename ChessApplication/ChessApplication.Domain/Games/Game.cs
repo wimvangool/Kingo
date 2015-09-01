@@ -1,8 +1,8 @@
 ﻿using System;
-using ServiceComponents;
-using ServiceComponents.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
 
-namespace ServiceComponents.ChessApplication.Games
+namespace Kingo.ChessApplication.Games
 {
     /// <summary>
     /// Represents a game.
