@@ -1,7 +1,7 @@
 ﻿
 using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
+namespace ServiceComponents.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests
 {
     [MessageHandler(InstanceLifetime.PerResolve)]
     internal sealed class MessageHandlerWithPerResolveLifetime : IMessageHandler<Command>

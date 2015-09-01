@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Syztem.ComponentModel.Server.SampleApplication.Messages;
-using Syztem.Threading;
+using ServiceComponents.ComponentModel.Server.SampleApplication.Messages;
+using ServiceComponents.Threading;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {    
     [TestClass]    
     public sealed class MessageProcessorTest

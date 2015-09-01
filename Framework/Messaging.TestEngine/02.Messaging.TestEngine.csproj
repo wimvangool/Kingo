@@ -8,8 +8,8 @@
     <ProjectGuid>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Syztem</RootNamespace>
-    <AssemblyName>Syztem.Messaging.TestEngine</AssemblyName>
+    <RootNamespace>ServiceComponents</RootNamespace>
+    <AssemblyName>ServiceComponents.TestEngine</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -38,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Syztem.Messaging.TestEngine.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\ServiceComponents.TestEngine.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>

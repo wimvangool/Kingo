@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     internal sealed class MessageSequenceConcatenation : MessageSequence
     {
@@ -18,11 +19,11 @@ namespace Syztem.ComponentModel.Server
             _messages = messages;
         }
 
-        public override async Task ProcessWithAsync(IMessageProcessor processor)
+        public override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
         {
             foreach (var sequence in _messages.Where(sequence => sequence != null))
             {
-                await sequence.ProcessWithAsync(processor);
+                await sequence.ProcessWithAsync(processor, token);
             }
         }
     }

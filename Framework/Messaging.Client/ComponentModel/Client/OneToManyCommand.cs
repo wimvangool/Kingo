@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Represents a command that can have many active connections at once.

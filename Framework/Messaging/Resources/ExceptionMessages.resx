@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DelegateConstraintBuilder_MissingConstraint" xml:space="preserve">
+    <value>No constraint implementation has been specified.</value>
+  </data>
+  <data name="DelegateConstraintBuilder_MissingDisplayFormat" xml:space="preserve">
+    <value>No displayFormat of the constraint has been specified.</value>
+  </data>
+  <data name="DelegateConstraint_NullValueNotAllowed" xml:space="preserve">
+    <value>Constraint '{0}' does not allow null values to be checked. Consider placing an IsNotNullConstraint in front of this constraint.</value>
+  </data>
   <data name="MemberSet_MemberAlreadyAdded" xml:space="preserve">
     <value>A member with name '{0}' has already been added to the set.</value>
   </data>
@@ -135,6 +144,9 @@
   <data name="Message_ServiceAlreadyRegistered" xml:space="preserve">
     <value>A service of type '{0}' was already registered.</value>
   </data>
+  <data name="New_NegativeIndex" xml:space="preserve">
+    <value>Index cannot be negative: {0}.</value>
+  </data>
   <data name="Range_InvalidRange" xml:space="preserve">
     <value>The specified range is not valid: {0}.</value>
   </data>
@@ -152,5 +164,17 @@
   </data>
   <data name="StringMemberExtensions_NegativeLength" xml:space="preserve">
     <value>A length cannot be negative: {0}.</value>
+  </data>
+  <data name="StringTemplateVariable_MemberNotFound" xml:space="preserve">
+    <value>Instance of type '{0}' does not contain public field or property '{1}'.</value>
+  </data>
+  <data name="StringTemplate_MissingClosingBrace" xml:space="preserve">
+    <value>Invalid format string specified: '{0}'. Missing closing brace of variable at index {1}.</value>
+  </data>
+  <data name="StringTemplate_MissingIdentifier" xml:space="preserve">
+    <value>Invalid format string specified: '{0}'. Missing identifier at index {1}.</value>
+  </data>
+  <data name="StringTemplate_UnexpectedCharacter" xml:space="preserve">
+    <value>Invalid format string specified: '{0}'. Unexpected character '{1}' at index {2}.</value>
   </data>
 </root>

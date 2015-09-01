@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Serves as a base class for every <see cref="MessageToStrategyMapping{T}" /> instance.

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Syztem.Threading;
+using ServiceComponents.Threading;
 
-namespace Syztem.ComponentModel.Server.Domain
+namespace ServiceComponents.ComponentModel.Server.Domain
 {
     internal sealed class RepositoryStub : Repository<AggregateStub, Guid, int>
     {

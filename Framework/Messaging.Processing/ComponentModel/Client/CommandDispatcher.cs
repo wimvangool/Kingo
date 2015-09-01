@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {    
     /// <summary>
     /// Represents a command that has no execution-parameter(s).

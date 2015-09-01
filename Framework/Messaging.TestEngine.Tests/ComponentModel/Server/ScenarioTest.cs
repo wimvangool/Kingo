@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ServiceComponents.ComponentModel.Constraints;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     [TestClass]   
     public sealed class ScenarioTest

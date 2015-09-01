@@ -1,4 +1,4 @@
-﻿namespace Syztem.ComponentModel.Client.DataVirtualization
+﻿namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents an item of a <see cref="VirtualCollection{T}" />.

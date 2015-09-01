@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Threading;
 
-namespace Syztem.ComponentModel.Client.DataVirtualization
+namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {
     internal sealed class CollectionChangedEventThrottle
     {

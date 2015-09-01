@@ -2,5 +2,5 @@
 using System.Runtime.InteropServices;
 
 [assembly: Guid("E71C9902-7E79-4EDF-9292-8D1DA81FD07B")]
-[assembly: AssemblyTitle("Syztem.Messaging.Processing.Tests")]
+[assembly: AssemblyTitle("ServiceComponents.Messaging.Processing.Tests")]
 [assembly: AssemblyDescription("Contains all unit tests for the UnitOfWork library.")]

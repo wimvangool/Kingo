@@ -1,4 +1,4 @@
-﻿namespace Syztem.ComponentModel
+﻿namespace ServiceComponents.ComponentModel
 {
     internal sealed class MessageOne : Message<MessageOne>
     {

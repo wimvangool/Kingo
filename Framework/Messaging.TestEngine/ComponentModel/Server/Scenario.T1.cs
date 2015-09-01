@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Syztem.ComponentModel.FluentValidation;
-using Syztem.Resources;
+using ServiceComponents.ComponentModel.Constraints;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a scenario that follows the Behavior Driven Development (BDD) style, which is characterized
@@ -13,7 +15,7 @@ namespace Syztem.ComponentModel.Server
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is executed on the When-phase.</typeparam>    
     public abstract class Scenario<TMessage> : Scenario, IErrorMessageConsumer where TMessage : class, IMessage<TMessage>
-    {
+    {                
         private readonly Lazy<TMessage> _message;
         private readonly MemberConstraintSet _memberSet;                
         private readonly List<object> _publishedEvents;
@@ -23,9 +25,9 @@ namespace Syztem.ComponentModel.Server
         /// Initializes a new instance of the <see cref="Scenario{TMessage}" /> class.
         /// </summary>
         protected Scenario()
-        {
+        {            
             _message = new Lazy<TMessage>(When);
-            _memberSet = new MemberConstraintSet(this);
+            _memberSet = new MemberConstraintSet();
             _publishedEvents = new List<object>();
         }
 
@@ -35,14 +37,14 @@ namespace Syztem.ComponentModel.Server
         public TMessage Message
         {
             get { return _message.Value; }
-        }  
+        }          
 
         /// <summary>
         /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
         /// </summary>                
-        public override async Task ProcessWithAsync(IMessageProcessor processor)
+        public override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
         {                        
-            await CreateSetupSequence().ProcessWithAsync(processor);
+            await CreateSetupSequence().ProcessWithAsync(processor, token);
 
             // This scenario must collect all events that are published during the When()-phase.
             var connection = processor.EventBus.Connect<object>(OnEventPublished, true);
@@ -59,12 +61,10 @@ namespace Syztem.ComponentModel.Server
 
                 if (TryGetFunctionalExceptionFrom(exception, out functionalException))
                 {
-                    _exception = functionalException;                    
+                    _exception = functionalException;
+                    return;
                 }
-                else
-                {
-                    throw;
-                }                
+                throw;               
             }        
             catch (FunctionalException exception)
             {
@@ -231,13 +231,13 @@ namespace Syztem.ComponentModel.Server
 
         #endregion
 
-        #region [====== Verification ======]
+        #region [====== Verification ======]                
 
         /// <summary>
         /// Returns the number of published domain events that can be verified with a fluent syntax.
         /// </summary>
-        /// <returns>A <see cref="Member{T}" /> that can be used to verify the number of published domain events.</returns>        
-        protected Member<int> VerifyThatDomainEventCount()
+        /// <returns>A <see cref="IMemberConstraint{T}" /> that can be used to verify the number of published domain events.</returns>        
+        protected IMemberConstraint<int> VerifyThatDomainEventCount()
         {
             return _memberSet.VerifyThat(() => _publishedEvents.Count, "DomainEventCount");
         }        
@@ -246,61 +246,43 @@ namespace Syztem.ComponentModel.Server
         /// Returns the published domain event at the specified index that can be verified with a fluent syntax.
         /// </summary>
         /// <param name="index">The index of the published event.</param>
-        /// <returns>A <see cref="Member{T}" /> that can be used to verify the event.</returns>
+        /// <returns>A <see cref="IMemberConstraint{T}" /> that can be used to verify the event.</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> does not point to a valid index.
         /// </exception>
         [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
-        protected Member<object> VerifyThatDomainEventAtIndex(int index)
+        protected IMemberConstraint<object> VerifyThatDomainEventAtIndex(int index)
         {
             return _memberSet.VerifyThat(GetDomainEventAt(index), string.Format("DomainEvent[{0}]", index));
         }        
 
         /// <summary>
         /// Verifies that an <see cref="Exception" /> of the specified type (<typeparamref name="TException"/>) was thrown
-        /// and returns an instance of this <see cref="Exception" /> in the form of a <see cref="Member{TValue}" /> such that
+        /// and returns an instance of this <see cref="Exception" /> in the form of a <see cref="IMemberConstraint{TValue}" /> such that
         /// more details about this exception can be verified.
         /// </summary>
         /// <typeparam name="TException">Type of the expected exception.</typeparam>
-        /// <returns>A <see cref="Member{TValue}" /> referring to the exception that was thrown.</returns>
-        protected Member<TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
+        /// <returns>A <see cref="IMemberConstraint{TValue}" /> referring to the exception that was thrown.</returns>
+        protected IMemberConstraint<TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
         {            
             return _memberSet.VerifyThat(_exception, "ExpectedException")
-                .IsNotNull(new FormattedString(FailureMessages.Scenario_NoExceptionWasThrown, typeof(TException)))              
-                .IsInstanceOf<TException>(new FormattedString(FailureMessages.Scenario_UnexpectedExceptionWasThrown, typeof(TException), _exception.GetType()));                
-        }                       
+                .IsNotNull(FailureMessages.Scenario_NoExceptionWasThrown)              
+                .IsInstanceOf<TException>(FailureMessages.Scenario_UnexpectedExceptionWasThrown);                
+        }
 
-        void IErrorMessageConsumer.Add(string memberName, FormattedString errorMessage)
+        void IErrorMessageConsumer.Add(string memberName, string errorMessage)
         {
-            Fail(errorMessage);
+            OnVerificationFailed(memberName, errorMessage);
         }
 
         /// <summary>
-        /// Marks this scenario as failed by throwing an exception.
+        /// Occurs when verification of a certain member during the Then-phase failed.
         /// </summary>
-        /// <param name="message">Message describing the reason why the scenario failed.</param>
-        /// <exception cref="Exception">
-        /// Always (by definition).
-        /// </exception>
-        protected void Fail(FormattedString message)
+        /// <param name="memberName">Name of the invalid member.</param>
+        /// <param name="errorMessage">The error message.</param>
+        protected virtual void OnVerificationFailed(string memberName, string errorMessage)
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            Fail(message.ToString());
-        }
-
-        /// <summary>
-        /// Marks this scenario as failed by throwing an exception.
-        /// </summary>
-        /// <param name="message">Message describing the reason why the scenario failed.</param>
-        /// <exception cref="Exception">
-        /// Always (by definition).
-        /// </exception>
-        protected virtual void Fail(string message)
-        {
-            throw NewScenarioFailedException(message);
+            throw NewScenarioFailedException(errorMessage);
         }
 
         /// <summary>
@@ -310,6 +292,6 @@ namespace Syztem.ComponentModel.Server
         /// <returns>A new <see cref="Exception" />-instance with the specfied <paramref name="message"/>.</returns>
         protected abstract Exception NewScenarioFailedException(string message);
 
-        #endregion             
+        #endregion
     }
 }

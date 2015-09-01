@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, represents a mapping from specific <see cref="IMessage">Messages</see>

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Summary description for OneToOneCommandTest

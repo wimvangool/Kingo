@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
 	/// <summary>
     /// Contains all configuration settings for a dependency.

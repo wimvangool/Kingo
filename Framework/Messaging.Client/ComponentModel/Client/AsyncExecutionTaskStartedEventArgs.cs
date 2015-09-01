@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Arguments for the <see cref="ClientCommand{T}.TaskStarted" /> event.

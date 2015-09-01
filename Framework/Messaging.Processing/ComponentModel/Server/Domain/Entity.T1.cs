@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace Syztem.ComponentModel.Server.Domain
+namespace ServiceComponents.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an entity that can be identified by it's key.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     internal abstract class MessageProcessorPipeline<TModule>
     {

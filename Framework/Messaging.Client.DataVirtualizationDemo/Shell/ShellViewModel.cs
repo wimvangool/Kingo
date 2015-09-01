@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
 using Caliburn.Micro;
-using Syztem.ComponentModel.Client.DataVirtualization;
+using ServiceComponents.ComponentModel.Client.DataVirtualization;
 
-namespace Syztem.ComponentModel.Client.Shell
+namespace ServiceComponents.ComponentModel.Client.Shell
 {
     public sealed class ShellViewModel : Screen
     {

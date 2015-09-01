@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Syztem.Threading
+namespace ServiceComponents.Threading
 {
     /// <summary>
     /// Contains several helper methods for async methods that need to run synchronously.

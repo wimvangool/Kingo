@@ -1,7 +1,7 @@
-﻿<Application x:Class="Syztem.ComponentModel.Client.App"
+﻿<Application x:Class="ServiceComponents.ComponentModel.Client.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:WpfApplication="clr-namespace:Syztem.ComponentModel.Client">
+             xmlns:WpfApplication="clr-namespace:ServiceComponents.ComponentModel.Client">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

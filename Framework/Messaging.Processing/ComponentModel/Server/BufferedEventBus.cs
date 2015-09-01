@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Syztem.Resources;
-using Syztem.Threading;
+using ServiceComponents.Resources;
+using ServiceComponents.Threading;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {    
     internal sealed class BufferedEventBus : IDomainEventBus, IUnitOfWork
     {        

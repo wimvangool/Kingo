@@ -7,8 +7,8 @@
     <ProjectGuid>{77F45326-E908-47EB-B924-A3BD26CAD6B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Syztem</RootNamespace>
-    <AssemblyName>Syztem.Messaging.Unity</AssemblyName>
+    <RootNamespace>ServiceComponents</RootNamespace>
+    <AssemblyName>ServiceComponents.Unity</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -36,7 +36,7 @@
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Syztem.Messaging.Unity.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\ServiceComponents.Unity.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>

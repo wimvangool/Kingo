@@ -6,7 +6,7 @@ using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Client.DataVirtualization
+namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {
     internal sealed class VirtualCollectionSpy : VirtualCollection<int>
     {

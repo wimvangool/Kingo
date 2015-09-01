@@ -7,10 +7,11 @@
     <ProjectGuid>{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Syztem</RootNamespace>
-    <AssemblyName>Syztem.Messaging</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>ServiceComponents</RootNamespace>
+    <AssemblyName>ServiceComponents.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\ServiceComponents.Core.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,38 +50,44 @@
     <Compile Include="Clock.cs" />
     <Compile Include="ClockScope.cs" />
     <Compile Include="ClockWithOffset.cs" />
-    <Compile Include="Comparable.T1.cs" />
-    <Compile Include="Comparer.cs" />
+    <Compile Include="ComponentModel\Constraints\AndConstraint.T3.cs" />
+    <Compile Include="ComponentModel\Constraints\Comparable.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\Comparer.cs" />
     <Compile Include="ComponentModel\AttachedCollection.T1.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\MemberValidationAttribute.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\RequestMessageLabelProvider.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\RequiredMemberAttribute.cs" />
-    <Compile Include="ComponentModel\DataAnnotations\StringConstraint.cs" />
-    <Compile Include="ComponentModel\FluentValidation\AndConstraint.cs" />
-    <Compile Include="ComponentModel\FluentValidation\BooleanMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\CollectionMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\Constraint.cs" />
-    <Compile Include="ComponentModel\FluentValidation\Constraint.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\EnumerableMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ErrorMessageMerger.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ErrorMessageCounter.cs" />
-    <Compile Include="ComponentModel\FluentValidation\OrConstraint.T1.cs" />
-    <Compile Include="FormattedString.cs" />
-    <Compile Include="ComponentModel\FluentValidation\FluentValidator.cs" />
-    <Compile Include="ComponentModel\FluentValidation\GuidMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IErrorMessageConsumer.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IErrorMessageProducer.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IMemberConstraintSet.cs" />
-    <Compile Include="ComponentModel\FluentValidation\IMember.cs" />
-    <Compile Include="ComponentModel\FluentValidation\InternalRange.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ListMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\Member.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\MemberConstraintSet.cs" />
-    <Compile Include="ComponentModel\FluentValidation\NullableMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\NullConstraint.cs" />
-    <Compile Include="ComponentModel\FluentValidation\StringMemberExtensions.cs" />
-    <Compile Include="ComponentModel\FluentValidation\StringToNumberConverter.T1.cs" />
-    <Compile Include="ComponentModel\FluentValidation\ValidationErrorTreeBuilder.cs" />
+    <Compile Include="ComponentModel\Constraints\Constraint.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\ConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\DelegateConstraint.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\DelegateConstraintBuilder.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\DelegateConstraintBuilder.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\IConstraintWithErrorMessage.cs" />
+    <Compile Include="ComponentModel\Constraints\IConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\IMemberConstraint.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\New.cs" />
+    <Compile Include="ComponentModel\Constraints\TrueConstraint.T1.cs" />
+    <Compile Include="StringTemplate.cs" />
+    <Compile Include="StringTemplateComponent.cs" />
+    <Compile Include="StringTemplateLiteral.cs" />
+    <Compile Include="StringTemplateVariable.cs" />
+    <Compile Include="ComponentModel\Constraints\IConstraint.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\IMemberConstraint.cs" />
+    <Compile Include="ComponentModel\Constraints\Member.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\MemberConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\BooleanConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\CollectionConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\EnumerableConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\ConstraintValidator.cs" />
+    <Compile Include="ComponentModel\Constraints\GuidConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\IErrorMessageConsumer.cs" />
+    <Compile Include="ComponentModel\Constraints\IErrorMessageProducer.cs" />
+    <Compile Include="ComponentModel\Constraints\IMemberConstraintSet.cs" />
+    <Compile Include="ComponentModel\Constraints\IMember.cs" />
+    <Compile Include="ComponentModel\Constraints\RangeAdapter.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\ListConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\MemberConstraint.T2.cs" />
+    <Compile Include="ComponentModel\Constraints\MemberConstraintSet.cs" />
+    <Compile Include="ComponentModel\Constraints\NullableConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\StringConstraints.cs" />
+    <Compile Include="ComponentModel\Constraints\ValidationErrorTreeBuilder.cs" />
     <Compile Include="ComponentModel\IAsyncValidationService.cs" />
     <Compile Include="ComponentModel\IMessage.cs" />
     <Compile Include="ComponentModel\IMessage.T1.cs" />
@@ -101,22 +109,22 @@
     <Compile Include="ComponentModel\ValueMessage.T1.cs" />
     <Compile Include="Diagnostics\HighResolutionClock.cs" />
     <Compile Include="Diagnostics\StopwatchClock.cs" />
-    <Compile Include="Equatable.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\Equatable.T1.cs" />
     <Compile Include="EventHandlerExtensions.cs" />
     <Compile Include="HashCode.cs" />
     <Compile Include="IClock.cs" />
     <Compile Include="IClockContext.cs" />
-    <Compile Include="IRange.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\IRange.T1.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Range.T1.cs" />
-    <Compile Include="RangeOptions.cs" />
+    <Compile Include="ComponentModel\Constraints\Range.T1.cs" />
+    <Compile Include="ComponentModel\Constraints\RangeOptions.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\ValidationMessages.Designer.cs">
-      <DependentUpon>ValidationMessages.resx</DependentUpon>
+    <Compile Include="Resources\ConstraintErrors.Designer.cs">
+      <DependentUpon>ConstraintErrors.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -129,10 +137,11 @@
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\ValidationMessages.resx">
+    <EmbeddedResource Include="Resources\ConstraintErrors.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
+      <LastGenOutput>ConstraintErrors.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +149,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"</PostBuildEvent>

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Syztem.ComponentModel.Server.Domain;
-using Syztem.Threading;
+using ServiceComponents.ComponentModel.Server.Domain;
+using ServiceComponents.Threading;
 
-namespace Syztem.ComponentModel.Server.SampleApplication.Infrastructure
+namespace ServiceComponents.ComponentModel.Server.SampleApplication.Infrastructure
 {
     [MessageHandlerDependency(InstanceLifetime.Singleton)]
     public sealed class ShoppingCartRepository : Repository<ShoppingCart, Guid, int>, IShoppingCartRepository

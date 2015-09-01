@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     internal sealed class MessageProcessorBusConnection<TMessage> : Connection, IMessageProcessorBusConnection where TMessage : class
     {
@@ -20,7 +20,7 @@ namespace Syztem.ComponentModel.Server
         internal MessageProcessorBusConnection(ICollection<IMessageProcessorBusConnection> connections, Action<TMessage> handler)
         {
             _connections = connections;
-            _handler = (ActionDecorator<TMessage>) handler;
+            _handler = new MessageHandlerDelegate<TMessage>(handler);
         }
 
         protected override bool IsOpen

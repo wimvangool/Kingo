@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace Syztem
+namespace ServiceComponents
 {
     internal sealed class StaticClockContext : IClockContext, IClock
     {        

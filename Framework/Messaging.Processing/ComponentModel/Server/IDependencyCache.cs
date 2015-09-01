@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a cache to which items can be added.

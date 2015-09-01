@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using Syztem.Resources;
-using Syztem.Threading;
+using ServiceComponents.Resources;
+using ServiceComponents.Threading;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a handler of arbitrary messages.
@@ -21,9 +21,9 @@ namespace Syztem.ComponentModel.Server
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
         /// </summary>        
-        public MessageProcessor()
+        public MessageProcessor(bool useSynchronizationContext = false)
         {                       
-            _domainEventBus = new MessageProcessorBus(this);               
+            _domainEventBus = new MessageProcessorBus(this, useSynchronizationContext);               
         }                
 
         /// <inheritdoc />
@@ -88,7 +88,13 @@ namespace Syztem.ComponentModel.Server
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
         {
-            Handle(message, (ActionDecorator<TMessage>) handler);
+            Handle(message, new MessageHandlerDelegate<TMessage>(handler));
+        }
+
+        /// <inheritdoc />
+        public void Handle<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>
+        {
+            Handle(message, new MessageHandlerDelegate<TMessage>(handler));
         }
 
         /// <inheritdoc />
@@ -112,13 +118,25 @@ namespace Syztem.ComponentModel.Server
         /// <inheritdoc />
         public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, (ActionDecorator<TMessage>) handler, CancellationToken.None);
+            return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), CancellationToken.None);
         }
 
         /// <inheritdoc />
         public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
         {
-            return HandleAsync(message, (ActionDecorator<TMessage>) handler, token);
+            return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), token);
+        }
+
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        {
+            return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), token);
         }
 
         /// <inheritdoc />
@@ -162,7 +180,15 @@ namespace Syztem.ComponentModel.Server
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return Execute(message, (FuncDecorator<TMessageIn, TMessageOut>) query);
+            return Execute(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query));
+        }
+
+        /// <inheritdoc />
+        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return Execute(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query));
         }
 
         /// <inheritdoc />
@@ -186,7 +212,23 @@ namespace Syztem.ComponentModel.Server
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return ExecuteAsync(message, (FuncDecorator<TMessageIn, TMessageOut>) query, token);
+            return ExecuteAsync(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query), token);
+        }  
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return ExecuteAsync(message, query, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query, CancellationToken token)
+            where TMessageIn : class, IMessage<TMessageIn>
+            where TMessageOut : class, IMessage<TMessageOut>
+        {
+            return ExecuteAsync(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query), token);
         }        
 
         /// <inheritdoc />

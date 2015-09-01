@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem
+namespace ServiceComponents
 {
     /// <summary>
     /// Provides a basic implementation of the <see cref="IClock" /> interface.

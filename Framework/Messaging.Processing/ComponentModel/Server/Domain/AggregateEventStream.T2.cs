@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Server.Domain
+namespace ServiceComponents.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents an aggregate that is modeled as a stream of events and can also be restored as such.

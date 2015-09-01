@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem
+namespace ServiceComponents
 {
     /// <summary>
     /// Contains specific methods for object to calculate a hashcode based on their (immutable) members.

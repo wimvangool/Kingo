@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Transactions;
-using Syztem.ComponentModel.Server;
+using ServiceComponents.ComponentModel.Server;
 
-namespace Syztem.Transactions
+namespace ServiceComponents.Transactions
 {
     /// <summary>
     /// Represents a module that creates a <see cref="TransactionScope" /> before calling the next handler.

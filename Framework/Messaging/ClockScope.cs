@@ -1,7 +1,7 @@
 ﻿using System;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem
+namespace ServiceComponents
 {
     internal sealed class ClockScope : IDisposable
     {

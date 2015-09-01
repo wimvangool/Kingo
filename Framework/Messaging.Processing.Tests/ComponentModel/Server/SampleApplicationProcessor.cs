@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a <see cref="MessageProcessor" />.
@@ -47,7 +47,7 @@ namespace Syztem.ComponentModel.Server
 
         private static bool IsHandlerForMessageProcessorTests(Type type)
         {
-            return type.Namespace == "Syztem.ComponentModel.Server.SampleApplication.MessageHandlers";
+            return type.Namespace == "ServiceComponents.ComponentModel.Server.SampleApplication.MessageHandlers";
         }
 
         private static bool IsRepositoryInterface(Type type)

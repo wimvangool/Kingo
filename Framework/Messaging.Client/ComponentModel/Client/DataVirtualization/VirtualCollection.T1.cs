@@ -4,9 +4,9 @@ using System.Collections.Specialized;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Client.DataVirtualization
+namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Represents a read-only collection of items that is partially loaded in memory while items are accessed or iterated.

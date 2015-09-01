@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Server.Domain
+namespace ServiceComponents.ComponentModel.Server.Domain
 {
     /// <summary>
     /// This type of exception is thrown when something goes wrong in the domain of an application.

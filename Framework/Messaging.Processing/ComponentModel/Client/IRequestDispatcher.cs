@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Represents a request - either a command or a query - that can be executed.

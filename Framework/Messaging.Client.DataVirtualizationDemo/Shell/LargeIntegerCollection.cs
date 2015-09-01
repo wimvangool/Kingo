@@ -7,9 +7,9 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-using Syztem.ComponentModel.Client.DataVirtualization;
+using ServiceComponents.ComponentModel.Client.DataVirtualization;
 
-namespace Syztem.ComponentModel.Client.Shell
+namespace ServiceComponents.ComponentModel.Client.Shell
 {
     internal sealed class LargeIntegerCollection : VirtualCollection<int>
     {        

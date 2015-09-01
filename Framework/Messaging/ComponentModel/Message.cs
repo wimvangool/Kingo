@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel
+namespace ServiceComponents.ComponentModel
 {
     /// <summary>
     /// Provides a base-implementation of the <see cref="IMessage" /> interface.

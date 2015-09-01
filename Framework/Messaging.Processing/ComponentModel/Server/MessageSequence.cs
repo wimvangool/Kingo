@@ -1,44 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
-using Syztem.Threading;
+using ServiceComponents.Threading;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a sequence of messages, ready to be executed.
     /// </summary>
     public abstract class MessageSequence : IMessageSequence
-    {
-        #region [====== Nested Types ======]
-
-        private sealed class EmptyMessageSequence : IMessageSequence
-        {
-            public void ProcessWith(IMessageProcessor handler) { }
-
-            public Task ProcessWithAsync(IMessageProcessor processor)
-            {
-                return AsyncMethod.Void;
-            }
-
-            public IMessageSequence Append(IMessageSequence sequence)
-            {
-                if (sequence == null)
-                {
-                    throw new ArgumentNullException("sequence");
-                }
-                return sequence;
-            }
-
-            public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-            {
-                return new MessageSequenceNode<TMessage>(message);
-            }            
-        }
-
-        #endregion
-
+    {        
         /// <inheritdoc />
         public virtual void ProcessWith(IMessageProcessor processor)
         {
@@ -46,7 +19,13 @@ namespace Syztem.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public abstract Task ProcessWithAsync(IMessageProcessor processor);
+        public Task ProcessWithAsync(IMessageProcessor processor)
+        {
+            return ProcessWithAsync(processor, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public abstract Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token);
 
         /// <inheritdoc />
         public virtual IMessageSequence Append(IMessageSequence sequence)
@@ -55,9 +34,27 @@ namespace Syztem.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public virtual IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
             return new MessageSequencePair(this, new MessageSequenceNode<TMessage>(message));
+        }
+
+        /// <inheritdoc />
+        public IMessageSequence Append<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return Append(message, new MessageHandlerDelegate<TMessage>(handler));
+        }
+
+        /// <inheritdoc />
+        public IMessageSequence Append<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return Append(message, new MessageHandlerDelegate<TMessage>(handler));
+        }
+
+        /// <inheritdoc />
+        public virtual IMessageSequence Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        {
+            return new MessageSequencePair(this, new MessageSequenceNode<TMessage>(message, handler));
         }
 
         /// <summary>

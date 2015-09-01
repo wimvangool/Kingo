@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Syztem.ComponentModel.Server.Domain;
-using Syztem.Security;
+using ServiceComponents.ComponentModel.Server.Domain;
+using ServiceComponents.Security;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     internal sealed class MessageHandlerDispatcher<TMessage> : MessageHandlerDispatcher where TMessage : class, IMessage<TMessage>
     {       
@@ -67,17 +67,7 @@ namespace Syztem.ComponentModel.Server
             try
             {
                 await pipeline.InvokeAsync();
-            }
-            catch (AggregateException exception)
-            {
-                FunctionalException functionalException;
-
-                if (TryConvertToFunctionalException(messageHandler, exception, out functionalException))
-                {
-                    throw functionalException;
-                }
-                throw;
-            }
+            }            
             catch (DomainException exception)
             {
                 FunctionalException functionalException;
@@ -89,56 +79,7 @@ namespace Syztem.ComponentModel.Server
                 throw;
             }
             ThrowIfCancellationRequested();
-        }
-
-        private static bool TryConvertToFunctionalException(IMessageHandler handler, AggregateException exception, out FunctionalException functionalException)
-        {
-            var functionalExceptions = new List<FunctionalException>();
-
-            // NB: Handle will throw a new AggregateException if not all inner-exceptions are handled.
-            exception.Flatten().Handle(innerException =>
-            {
-                var domainException = innerException as DomainException;
-                if (domainException != null)
-                {
-                    FunctionalException convertedException;
-
-                    if (TryConvertToFunctionalException(handler, domainException, out convertedException))
-                    {
-                        functionalExceptions.Add(convertedException);
-                        return true;
-                    }
-                }                
-                return false;
-            });
-
-            // When one or more exceptions were converted into a FunctionalException, the most prominent
-            // one is returned.
-            if (functionalExceptions.Count == 0)
-            {
-                functionalException = null;
-                return false;
-            }
-            if (functionalExceptions.Count == 1)
-            {
-                functionalException = functionalExceptions[0];
-                return true;
-            }
-            return
-                TryGetFirst<SenderNotAuthorizedException>(functionalExceptions, out functionalException) ||
-                TryGetFirst<InvalidMessageException>(functionalExceptions, out functionalException) ||
-                TryGetFirst<CommandExecutionException>(functionalExceptions, out functionalException);
-        }
-
-        private static bool TryGetFirst<TException>(IEnumerable<FunctionalException> functionalExceptions, out FunctionalException functionalException) where TException : FunctionalException
-        {
-            var exceptions = from exception in functionalExceptions
-                             let desiredException = exception as TException
-                             where desiredException != null
-                             select desiredException;
-
-            return (functionalException = exceptions.FirstOrDefault()) != null;
-        }        
+        }     
         
         private static bool TryConvertToFunctionalException(IMessageHandler handler, DomainException exception, out FunctionalException functionalException)
         {

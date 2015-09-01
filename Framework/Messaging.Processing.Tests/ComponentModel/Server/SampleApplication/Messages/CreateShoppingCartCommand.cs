@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Server.SampleApplication.Messages
+namespace ServiceComponents.ComponentModel.Server.SampleApplication.Messages
 {
     internal class CreateShoppingCartCommand : Message<CreateShoppingCartCommand>
     {

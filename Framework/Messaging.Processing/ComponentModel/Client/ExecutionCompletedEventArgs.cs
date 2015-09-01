@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// EventArgs for the <see cref="IRequestDispatcher.ExecutionCompleted" /> event.

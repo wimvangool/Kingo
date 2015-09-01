@@ -1,7 +1,7 @@
 ﻿using System;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a cache that relays to a another cache-implementation. This class can be useful

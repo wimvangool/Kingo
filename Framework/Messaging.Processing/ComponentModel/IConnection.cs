@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel
+namespace ServiceComponents.ComponentModel
 {
     /// <summary>
     /// Represents a connection that can be made with an event-bus, for example.

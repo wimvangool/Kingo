@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// When implemented by a class, represents a <see cref="MessageProcessorBus" /> to which event-handlers can subscribe.

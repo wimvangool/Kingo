@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Syztem.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests;
+using ServiceComponents.ComponentModel.Server.SampleHandlers.ForTryRegisterInTests;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     [TestClass]
     public class MessageHandlerClassTest

@@ -1,5 +1,5 @@
 ﻿
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// A value that is used to specify the lifetime of a certain instance that is resolved at runtime.

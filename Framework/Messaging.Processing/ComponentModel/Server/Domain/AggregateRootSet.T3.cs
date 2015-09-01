@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Syztem.ComponentModel.Server.Domain
+namespace ServiceComponents.ComponentModel.Server.Domain
 {
     internal sealed class AggregateRootSet<TAggregate, TKey, TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>

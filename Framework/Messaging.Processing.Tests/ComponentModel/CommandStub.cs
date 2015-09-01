@@ -1,6 +1,5 @@
-﻿using Syztem.ComponentModel.DataAnnotations;
-
-namespace Syztem.ComponentModel
+﻿
+namespace ServiceComponents.ComponentModel
 {
     public sealed class CommandStub : RequestMessageViewModel<CommandStub>
     {
@@ -14,8 +13,7 @@ namespace Syztem.ComponentModel
         #region [====== Value ======]
 
         private string _value;
-
-        [RequiredMember]
+        
         public string Value
         {
             get { return _value; }

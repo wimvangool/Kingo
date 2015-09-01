@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Syztem.Resources {
+namespace ServiceComponents.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Syztem.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Syztem.Resources.ExceptionMessages", typeof(ExceptionMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ServiceComponents.Resources.ExceptionMessages", typeof(ExceptionMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,33 @@ namespace Syztem.Resources {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Constraint &apos;{0}&apos; does not allow null values to be checked. Consider placing an IsNotNullConstraint in front of this constraint..
+        /// </summary>
+        internal static string DelegateConstraint_NullValueNotAllowed {
+            get {
+                return ResourceManager.GetString("DelegateConstraint_NullValueNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No constraint implementation has been specified..
+        /// </summary>
+        internal static string DelegateConstraintBuilder_MissingConstraint {
+            get {
+                return ResourceManager.GetString("DelegateConstraintBuilder_MissingConstraint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No displayFormat of the constraint has been specified..
+        /// </summary>
+        internal static string DelegateConstraintBuilder_MissingDisplayFormat {
+            get {
+                return ResourceManager.GetString("DelegateConstraintBuilder_MissingDisplayFormat", resourceCulture);
             }
         }
         
@@ -115,6 +142,15 @@ namespace Syztem.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Index cannot be negative: {0}..
+        /// </summary>
+        internal static string New_NegativeIndex {
+            get {
+                return ResourceManager.GetString("New_NegativeIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified range is not valid: {0}..
         /// </summary>
         internal static string Range_InvalidRange {
@@ -165,6 +201,42 @@ namespace Syztem.Resources {
         internal static string StringMemberExtensions_NegativeLength {
             get {
                 return ResourceManager.GetString("StringMemberExtensions_NegativeLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid format string specified: &apos;{0}&apos;. Missing closing brace of variable at index {1}..
+        /// </summary>
+        internal static string StringTemplate_MissingClosingBrace {
+            get {
+                return ResourceManager.GetString("StringTemplate_MissingClosingBrace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid format string specified: &apos;{0}&apos;. Missing identifier at index {1}..
+        /// </summary>
+        internal static string StringTemplate_MissingIdentifier {
+            get {
+                return ResourceManager.GetString("StringTemplate_MissingIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid format string specified: &apos;{0}&apos;. Unexpected character &apos;{1}&apos; at index {2}..
+        /// </summary>
+        internal static string StringTemplate_UnexpectedCharacter {
+            get {
+                return ResourceManager.GetString("StringTemplate_UnexpectedCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; does not contain public field or property &apos;{1}&apos;..
+        /// </summary>
+        internal static string StringTemplateVariable_MemberNotFound {
+            get {
+                return ResourceManager.GetString("StringTemplateVariable_MemberNotFound", resourceCulture);
             }
         }
     }

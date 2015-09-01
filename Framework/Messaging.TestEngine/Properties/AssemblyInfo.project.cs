@@ -3,13 +3,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: Guid("c6102b0a-4d14-4f2b-9ef5-0e645cc438ba")]
-[assembly: AssemblyTitle("Syztem.Messaging.TestEngine")]
+[assembly: AssemblyTitle("ServiceComponents.Messaging.TestEngine")]
 [assembly: AssemblyDescription("Represents a test-engine for projects that are built using messaging-patterns.")]
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
 [assembly: AssemblyInformationalVersion("2.0.0.0")]
 
-[assembly: InternalsVisibleTo("Syztem.Messaging.TestEngine.Tests")]
+[assembly: InternalsVisibleTo("ServiceComponents.TestEngine.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +
 "PublicKey=002400000480000094000000060200000024000052534" +
 "1310004000001000100c547cac37abd99c8db225ef2f6c8a3602f3b" +

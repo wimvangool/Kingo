@@ -5,10 +5,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Syztem.Reflection;
-using Syztem.Resources;
+using ServiceComponents.Reflection;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     internal sealed class MessageHandlerClass
     {        

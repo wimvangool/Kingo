@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Represents a task that can executes a command asynchronously.

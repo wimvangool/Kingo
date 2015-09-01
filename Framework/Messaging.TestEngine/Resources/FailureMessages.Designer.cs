@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Syztem.Resources {
+namespace ServiceComponents.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Syztem.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Syztem.Resources.FailureMessages", typeof(FailureMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ServiceComponents.Resources.FailureMessages", typeof(FailureMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

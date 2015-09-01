@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Syztem.Reflection;
+using ServiceComponents.Reflection;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// When implemented, represents a factory of all message-handlers that are used to handle the messages

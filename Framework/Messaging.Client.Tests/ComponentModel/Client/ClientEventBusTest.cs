@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Syztem.ComponentModel.Server;
+using ServiceComponents.ComponentModel.Server;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     [TestClass]
     public sealed class ClientEventBusTest

@@ -1,4 +1,4 @@
-﻿namespace Syztem.ComponentModel
+﻿namespace ServiceComponents.ComponentModel
 {
     /// <summary>
     /// Represents a request-message that supports change-tracking and validation.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Syztem.ComponentModel.Client.DataVirtualization
+namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Arguments of the <see cref="VirtualCollection{T}.PageLoaded" /> event.

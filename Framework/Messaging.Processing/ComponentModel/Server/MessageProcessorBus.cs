@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {           
     internal sealed class MessageProcessorBus : IMessageProcessorBus
     {        
         private readonly ICollection<IMessageProcessorBusConnection> _connections;        
-        private readonly IMessageProcessor _processor;  
+        private readonly IMessageProcessor _processor;
+        private readonly bool _useSynchronizationContext;
         
-        internal MessageProcessorBus(IMessageProcessor processor)
+        internal MessageProcessorBus(IMessageProcessor processor, bool useSynchronizationContext)
         {            
             _connections = new SynchronizedCollection<IMessageProcessorBusConnection>();            
-            _processor = processor;                
+            _processor = processor;
+            _useSynchronizationContext = useSynchronizationContext;
         }
 
         #region [====== Connect ======]
@@ -61,17 +64,26 @@ namespace Syztem.ComponentModel.Server
             await InvokeConnectedHandlers(message);                            
         }
 
-        private Task InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        private async Task InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
-            return _processor.HandleAsync(message);
+            if (_useSynchronizationContext)
+            {
+                var context = SynchronizationContext.Current;
+                if (context == null)
+                {
+                    ThreadPool.QueueUserWorkItem(async state => await _processor.HandleAsync(state as TMessage), message.Copy());
+                }
+                else
+                {
+                    context.Post(async state => await _processor.HandleAsync(state as TMessage), message.Copy());
+                }
+            }
+            await _processor.HandleAsync(message);
         }              
 
         private async Task InvokeConnectedHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
         {
-            foreach (var connection in _connections)
-            {
-                await connection.HandleAsync(_processor, message);
-            }            
+            await Task.WhenAll(_connections.Select(connection => connection.HandleAsync(_processor, message)));                      
         }
 
         private static IConnection Connect(object handler, bool openConnection, ICollection<IMessageProcessorBusConnection> connections)

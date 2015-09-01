@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Client.DataVirtualization
+namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {
     /// <summary>
     /// Arguments of the <see cref="VirtualCollection{T}.PageFailedToLoad" /> event.

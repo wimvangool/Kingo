@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Server.Domain
+namespace ServiceComponents.ComponentModel.Server.Domain
 {
     /// <summary>
     /// Represents a stream of <see cref="IVersionedObject{T, S}" /> that can be written to.

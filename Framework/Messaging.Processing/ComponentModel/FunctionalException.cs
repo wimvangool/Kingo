@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using Syztem.ComponentModel.Server;
+using ServiceComponents.ComponentModel.Server;
 
-namespace Syztem.ComponentModel
+namespace ServiceComponents.ComponentModel
 {
     /// <summary>
     /// This exception is thrown when a message could not be processed by a <see cref="IMessageProcessor" />

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem
+namespace ServiceComponents
 {
     /// <summary>
     /// Contains extension-methods for raising events.

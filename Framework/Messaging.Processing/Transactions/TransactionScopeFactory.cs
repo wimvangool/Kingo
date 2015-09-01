@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Transactions;
 
-namespace Syztem.Transactions
+namespace ServiceComponents.Transactions
 {
     /// <summary>
     /// Represents a factory for <see cref="TransactionScope">TransactionScopes</see>.

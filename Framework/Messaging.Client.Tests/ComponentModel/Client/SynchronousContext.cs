@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     internal sealed class SynchronousContext : SynchronizationContext
     {

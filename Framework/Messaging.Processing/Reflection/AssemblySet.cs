@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security;
 
-namespace Syztem.Reflection
+namespace ServiceComponents.Reflection
 {
     /// <summary>
     /// Represents a set of <see cref="Assembly">Assemblies</see>.
@@ -232,6 +232,19 @@ namespace Syztem.Reflection
         /// This method will ignore <c>null</c>-references in <paramref name="sets"/>.
         /// </remarks>
         public static AssemblySet Join(params AssemblySet[] sets)
+        {
+            return Join(sets as IEnumerable<AssemblySet>);
+        }
+
+        /// <summary>
+        /// Creates and returns a union of the specified <paramref name="sets"/>.
+        /// </summary>
+        /// <param name="sets">The sets to unite into a single set.</param>
+        /// <returns>A union of the specified <paramref name="sets"/>.</returns>
+        /// <remarks>
+        /// This method will ignore <c>null</c>-references in <paramref name="sets"/>.
+        /// </remarks>
+        public static AssemblySet Join(IEnumerable<AssemblySet> sets)
         {
             return new AssemblySet(sets.Where(set => set != null).SelectMany(set => set._assemblies));
         }

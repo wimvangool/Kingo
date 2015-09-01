@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a pair of message sequences put together as a single sequence.
@@ -34,10 +35,10 @@ namespace Syztem.ComponentModel.Server
         }
 
         /// <inheritdoc />
-        public override async Task ProcessWithAsync(IMessageProcessor processor)
+        public override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
         {
-            await _left.ProcessWithAsync(processor);
-            await _right.ProcessWithAsync(processor);
+            await _left.ProcessWithAsync(processor, token);
+            await _right.ProcessWithAsync(processor, token);
         }
     }
 }

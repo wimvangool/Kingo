@@ -1,7 +1,7 @@
 ﻿using System;
-using Syztem.ComponentModel.Server;
+using ServiceComponents.ComponentModel.Server;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Represents a <see cref="IQueryDispatcher{T}" /> that delegates it's implementation to another method.

@@ -1,7 +1,7 @@
 ﻿using System;
-using Syztem.ComponentModel.Server.Domain;
+using ServiceComponents.ComponentModel.Server.Domain;
 
-namespace Syztem.ComponentModel.Server.SampleApplication.Messages
+namespace ServiceComponents.ComponentModel.Server.SampleApplication.Messages
 {
     internal sealed class ProductAddedToCartEvent : Message<ProductAddedToCartEvent>, IVersionedObject<Guid, int>
     {

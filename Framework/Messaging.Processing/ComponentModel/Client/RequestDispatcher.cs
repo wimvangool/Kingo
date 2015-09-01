@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using Syztem.ComponentModel.Server;
+using ServiceComponents.ComponentModel.Server;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Basic implementation of the <see cref="IRequestDispatcher" /> interface, serving as a base class for all request-types.

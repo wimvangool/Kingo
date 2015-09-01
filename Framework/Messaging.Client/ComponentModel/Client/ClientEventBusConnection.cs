@@ -1,4 +1,4 @@
-﻿namespace Syztem.ComponentModel.Client
+﻿namespace ServiceComponents.ComponentModel.Client
 {
     internal sealed class ClientEventBusConnection : Connection
     {

@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Client.DataVirtualization
+namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {    
     internal sealed class VirtualCollectionPageLoader<T> : AsyncObject
     {        

@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     [TestClass]
     public sealed class RelayCommandOfT1Test

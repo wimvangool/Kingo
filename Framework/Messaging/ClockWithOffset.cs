@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Syztem
+namespace ServiceComponents
 {
     internal sealed class ClockWithOffset : Clock
     {

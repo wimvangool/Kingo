@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Syztem.Diagnostics
+namespace ServiceComponents.Diagnostics
 {
     /// <summary>
     /// This clock represents a stopwatch that starts at a specified date and/or time and can be started and stopped.

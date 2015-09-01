@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syztem.ComponentModel.Server.Domain
+namespace ServiceComponents.ComponentModel.Server.Domain
 {    
     internal sealed class AggregateStub : AggregateRoot<Guid, int>
     {

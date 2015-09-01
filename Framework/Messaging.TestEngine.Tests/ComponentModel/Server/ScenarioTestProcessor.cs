@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Represents a <see cref="MessageProcessor" />.

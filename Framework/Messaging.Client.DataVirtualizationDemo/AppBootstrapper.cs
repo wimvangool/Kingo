@@ -1,7 +1,7 @@
 ﻿using Caliburn.Micro;
-using Syztem.ComponentModel.Client.Shell;
+using ServiceComponents.ComponentModel.Client.Shell;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     public sealed class AppBootstrapper : Bootstrapper<ShellViewModel>
     {        

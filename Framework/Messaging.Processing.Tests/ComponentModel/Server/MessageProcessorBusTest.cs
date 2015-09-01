@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     [TestClass]
     public sealed class MessageProcessorBusTest
@@ -13,7 +13,7 @@ namespace Syztem.ComponentModel.Server
         [TestInitialize]
         public void Setup()
         {
-            _bus = new MessageProcessorBus(new MessageProcessorStub());
+            _bus = new MessageProcessorBus(new MessageProcessorStub(), false);
         }        
 
         #region [====== ConnectGenericHandler ======]

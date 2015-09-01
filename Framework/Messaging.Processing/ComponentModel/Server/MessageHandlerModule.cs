@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {
     /// <summary>
     /// Serves as the base-class for all modules in a <see cref="IMessageHandler{TMessage}" /> pipeline.

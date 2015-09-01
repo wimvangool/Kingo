@@ -4,9 +4,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Syztem.ComponentModel.DataAnnotations;
 
-namespace Syztem.ComponentModel
+namespace ServiceComponents.ComponentModel
 {
     [TestClass]
     public sealed class InvalidMessageExceptionTest
@@ -56,8 +55,7 @@ namespace Syztem.ComponentModel
 
             private const string _ValueKey = "_value";            
             private int _value;
-
-            [RequiredMember]
+            
             public int Value
             {
                 get { return _value; }
@@ -127,8 +125,7 @@ namespace Syztem.ComponentModel
 
             private const string _ValueKey = "_value";
             private int _value;
-
-            [RequiredMember]
+            
             public int Value
             {
                 get { return _value; }

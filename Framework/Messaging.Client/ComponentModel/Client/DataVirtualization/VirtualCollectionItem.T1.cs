@@ -1,7 +1,7 @@
 ﻿using System;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Client.DataVirtualization
+namespace ServiceComponents.ComponentModel.Client.DataVirtualization
 {
 	/// <summary>
 	/// Represents an item of a <see cref="VirtualCollection{T}" />.

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {    
     internal sealed class MessageHandlerDecorator<TMessage> : IMessageHandler<TMessage> where TMessage : class
     {

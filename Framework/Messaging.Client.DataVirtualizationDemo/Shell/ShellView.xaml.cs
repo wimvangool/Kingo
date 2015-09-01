@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Syztem.ComponentModel.Client.Shell
+namespace ServiceComponents.ComponentModel.Client.Shell
 {
     /// <summary>
     /// Interaction logic for ShellView.xaml

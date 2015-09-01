@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Remoting.Messaging;
 
-namespace Syztem.Threading
+namespace ServiceComponents.Threading
 {
     /// <summary>
     /// Represents a memory slot inside the <see cref="LogicalCallContext" />.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Syztem.ComponentModel.Server
+namespace ServiceComponents.ComponentModel.Server
 {   
     /// <summary>
     /// Provides a basic, in-memory implementation of the <see cref="IDependencyCache" /> interface.

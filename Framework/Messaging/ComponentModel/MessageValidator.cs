@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Syztem.ComponentModel.DataAnnotations;
 
-namespace Syztem.ComponentModel
+namespace ServiceComponents.ComponentModel
 {
     /// <summary>
     /// Represents a <see cref="IMessageValidator" /> that validates a message through
@@ -50,23 +49,14 @@ namespace Syztem.ComponentModel
         }
 
         private static ValidationErrorTree Validate(ValidationContext validationContext)
-        {            
-            RequestMessageLabelProvider.Add(validationContext.ObjectInstance);
-
-            try
+        {
+            var validationResults = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(validationContext.ObjectInstance, validationContext, validationResults, true);
+            if (isValid)
             {
-                var validationResults = new List<ValidationResult>();
-                var isValid = Validator.TryValidateObject(validationContext.ObjectInstance, validationContext, validationResults, true);
-                if (isValid)
-                {
-                    return ValidationErrorTree.NoErrors;
-                }
-                return new ValidationErrorTree(CreateErrorMessagesPerMember(validationResults));                
+                return ValidationErrorTree.NoErrors;
             }
-            finally
-            {
-                RequestMessageLabelProvider.Remove(validationContext.ObjectInstance);
-            }
+            return new ValidationErrorTree(CreateErrorMessagesPerMember(validationResults));
         }        
 
         private static Dictionary<string, string> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)

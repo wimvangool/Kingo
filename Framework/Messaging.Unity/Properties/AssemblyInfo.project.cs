@@ -9,5 +9,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("2.1.505.0")]
 [assembly: AssemblyInformationalVersion("2.1.505.0")]
 
-[assembly: InternalsVisibleTo("System.ComponentModel.Tests")]
-[assembly: InternalsVisibleTo("System.ComponentModel.Unity.Tests")]
+[assembly: InternalsVisibleTo("ServiceComponents.Unity.Tests")]

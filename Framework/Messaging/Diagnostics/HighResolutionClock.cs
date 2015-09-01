@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using Timer = System.Timers.Timer;
 
-namespace Syztem.Diagnostics
+namespace ServiceComponents.Diagnostics
 {
     /// <summary>
     /// Represents a clock that uses a <see cref="Stopwatch" /> in combination with

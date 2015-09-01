@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using Syztem.Resources;
+using ServiceComponents.Resources;
 
-namespace Syztem.ComponentModel.Client
+namespace ServiceComponents.ComponentModel.Client
 {
     /// <summary>
     /// Serves as a base-class for objects that are bound to specific <see cref="SynchronizationContext" /> when
