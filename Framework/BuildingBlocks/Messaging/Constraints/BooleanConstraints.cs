@@ -22,7 +22,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<bool> IsTrue(this IMemberConstraint<bool> member, string errorMessage = null)
+        public static IMemberConstraint<T, bool> IsTrue<T>(this IMemberConstraint<T, bool> member, string errorMessage = null)
         {
             if (member == null)
             {
@@ -61,7 +61,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<bool> IsFalse(this IMemberConstraint<bool> member, string errorMessage = null)
+        public static IMemberConstraint<T, bool> IsFalse<T>(this IMemberConstraint<T, bool> member, string errorMessage = null)
         {
             if (member == null)
             {

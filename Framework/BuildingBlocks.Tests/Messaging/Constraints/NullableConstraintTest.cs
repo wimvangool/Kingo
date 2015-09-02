@@ -12,22 +12,22 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         public void ValidateIsNotNull_ReturnsExpectedError_IfMemberIsNull()
         {
             var message = new ValidatedMessage<int?>(null);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).HasValue(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).HasValue(RandomErrorMessage);
 
-            validator.Validate().AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
 
         [TestMethod]
         public void ValidateIsNotNull_ReturnsDefaultError_IfMemberIsNull_And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<int?>(null);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).HasValue();
+            validator.VerifyThat(m => m.Member).HasValue();
 
-            validator.Validate().AssertOneError("Member (<null>) must have a value.");
+            validator.Validate(message).AssertOneError("Member (<null>) must have a value.");
         }
 
         [TestMethod]
@@ -35,11 +35,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         {
             var member = Clock.Current.UtcDateAndTime().Second;
             var message = new ValidatedMessage<int?>(member);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).HasValue(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).HasValue(RandomErrorMessage);
 
-            validator.Validate().AssertNoErrors();
+            validator.Validate(message).AssertNoErrors();
         }
 
         [TestMethod]
@@ -47,13 +47,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         {
             var member = Clock.Current.UtcDateAndTime().Second;
             var message = new ValidatedMessage<int?>(member);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member)
+            validator.VerifyThat(m => m.Member)
                 .HasValue(RandomErrorMessage)
                 .IsEqualTo(member, RandomErrorMessage);
 
-            validator.Validate().AssertNoErrors();
+            validator.Validate(message).AssertNoErrors();
         }
 
         #endregion

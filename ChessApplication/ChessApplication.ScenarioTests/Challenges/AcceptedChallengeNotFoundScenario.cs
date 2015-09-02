@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.ComponentModel.Server;
 using Kingo.BuildingBlocks.Messaging;
 using Kingo.BuildingBlocks.Messaging.Constraints;
 using Kingo.BuildingBlocks.Messaging.Domain;
@@ -33,19 +31,13 @@ namespace Kingo.ChessApplication.Challenges
         [TestMethod]
         public override void Then()
         {
-            VerifyThatExceptionIsA<InvalidMessageException>().And(ContainsExpectedInnerException);
-        }
-
-        private void ContainsExpectedInnerException(IMemberConstraintSet validator, InvalidMessageException exception)
-        {
-            validator.VerifyThat(() => exception.InnerException)
-                .IsInstanceOf<AggregateNotFoundByKeyException<Guid>>()
-                .And(ContainsExpectedChallengeId);
-        }
-
-        private void ContainsExpectedChallengeId(IMemberConstraintSet validator, AggregateNotFoundByKeyException<Guid> exception)
-        {
-            validator.VerifyThat(() => exception.AggregateKey).IsEqualTo(Message.ChallengeId);
-        }
+            VerifyThatExceptionIsA<InvalidMessageException>().And(v1 =>
+            {
+                v1.VerifyThat(exception => exception.InnerException).IsInstanceOf<AggregateNotFoundByKeyException<Guid>>().And(v2 =>
+                {
+                    v2.VerifyThat(exception => exception.AggregateKey).IsEqualTo(Message.ChallengeId);
+                });
+            });
+        }        
     }
 }

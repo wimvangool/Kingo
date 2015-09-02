@@ -68,5 +68,30 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         #endregion               
+
+        #region [====== Validation ======]
+
+        /// <inheritdoc />
+        public override DataErrorInfo Validate()
+        {
+            var validationStrategy = CreateValidator();
+            if (validationStrategy == null)
+            {
+                return DataErrorInfo.NoErrors;
+            }
+            return validationStrategy.Validate(Copy());
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="IMessageValidator{T}" /> that can be used to validate this message,
+        /// or <c>null</c> if this message does not require validation.
+        /// </summary>
+        /// <returns>A new <see cref="IMessageValidator{T}" /> that can be used to validate this message.</returns>
+        protected virtual IMessageValidator<TMessage> CreateValidator()
+        {
+            return null;
+        }
+
+        #endregion
     }
 }

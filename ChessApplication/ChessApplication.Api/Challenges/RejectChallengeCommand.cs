@@ -70,11 +70,11 @@ namespace Kingo.ChessApplication.Challenges
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        protected override IMessageValidator CreateValidator()
+        protected override IMessageValidator<RejectChallengeCommand> CreateValidator()
         {
-            var validator = new ConstraintValidator();
+            var validator = new ConstraintValidator<RejectChallengeCommand>();
 
-            validator.VerifyThat(() => ChallengeId).IsNotEmpty();
+            validator.VerifyThat(message => message.ChallengeId).IsNotEmpty();
 
             return validator;
         }

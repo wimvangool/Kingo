@@ -14,8 +14,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         /// <summary>
         /// Verifies that the specified collection contains a value at the specified <paramref name="index"/>.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the values in the collection.</typeparam>
+        /// </summary>        
         /// <param name="member">A member.</param>
         /// <param name="index">The index to verify.</param>   
         /// <param name="errorMessage">
@@ -28,7 +27,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> ElementAt<TValue>(this IMemberConstraint<IList<TValue>> member, int index, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> ElementAt<T, TValue>(this IMemberConstraint<T, IList<TValue>> member, int index, string errorMessage = null)
         {
             if (member == null)
             {

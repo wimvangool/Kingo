@@ -1,5 +1,4 @@
-﻿using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.Messaging;
+﻿using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication

@@ -15,8 +15,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         /// <summary>
         /// Verifies that the specified collection has at least one element.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the values in the collection.</typeparam>
+        /// </summary>       
         /// <param name="member">A member.</param>        
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
@@ -28,7 +27,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<IEnumerable<TValue>> IsNotNullOrEmpty<TValue>(this IMemberConstraint<IEnumerable<TValue>> member, string errorMessage = null)
+        public static IMemberConstraint<T, IEnumerable<TValue>> IsNotNullOrEmpty<T, TValue>(this IMemberConstraint<T, IEnumerable<TValue>> member, string errorMessage = null)
         {
             if (member == null)
             {
@@ -60,8 +59,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         /// <summary>
         /// Verifies that the specified collection is either <c>null</c> or empty.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the values in the collection.</typeparam>
+        /// </summary>        
         /// <param name="member">A member.</param>        
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
@@ -73,7 +71,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<IEnumerable<TValue>> IsNullOrEmpty<TValue>(this IMemberConstraint<IEnumerable<TValue>> member, string errorMessage = null)
+        public static IMemberConstraint<T, IEnumerable<TValue>> IsNullOrEmpty<T, TValue>(this IMemberConstraint<T, IEnumerable<TValue>> member, string errorMessage = null)
         {
             if (member == null)
             {
@@ -105,8 +103,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         /// <summary>
         /// Verifies that the specified collection contains a value at the specified <paramref name="index"/>.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the values in the collection.</typeparam>
+        /// </summary>        
         /// <param name="member">A member.</param>
         /// <param name="index">The index to verify.</param>   
         /// <param name="errorMessage">
@@ -116,7 +113,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<TValue> ElementAt<TValue>(this IMemberConstraint<IEnumerable<TValue>> member, int index, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> ElementAt<T, TValue>(this IMemberConstraint<T, IEnumerable<TValue>> member, int index, string errorMessage = null)
         {
             if (member == null)
             {

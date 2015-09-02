@@ -35,7 +35,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotNull<TValue>(this IMemberConstraint<TValue> member, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotNull<T, TValue>(this IMemberConstraint<T, TValue> member, string errorMessage = null)
         {
             if (member == null)
             {
@@ -76,7 +76,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsNull<TValue>(this IMemberConstraint<TValue> member, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNull<T, TValue>(this IMemberConstraint<T, TValue> member, string errorMessage = null)
         {
             if (member == null)
             {
@@ -121,7 +121,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotSameInstanceAs<TValue>(this IMemberConstraint<TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotSameInstanceAs<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -168,7 +168,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsSameInstanceAs<TValue>(this IMemberConstraint<TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSameInstanceAs<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -215,7 +215,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TValue> IsNotInstanceOf<TValue>(this IMemberConstraint<TValue> member, Type type, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInstanceOf<T, TValue>(this IMemberConstraint<T, TValue> member, Type type, string errorMessage = null)
         {
             if (member == null)
             {
@@ -269,7 +269,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TValue> IsInstanceOf<TValue>(this IMemberConstraint<TValue> member, Type type, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInstanceOf<T, TValue>(this IMemberConstraint<T, TValue> member, Type type, string errorMessage = null)
         {
             if (member == null)
             {
@@ -342,7 +342,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotEqualTo<TValue>(this IMemberConstraint<TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -366,7 +366,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotEqualTo<TValue>(this IMemberConstraint<TValue> member, TValue other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -391,7 +391,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>     
-        public static IMemberConstraint<TValue> IsNotEqualTo<TValue>(this IMemberConstraint<TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -415,7 +415,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>           
-        public static IMemberConstraint<TValue> IsNotEqualTo<TValue>(this IMemberConstraint<TValue> member, IEquatable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -512,7 +512,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<TValue> IsEqualTo<TValue>(this IMemberConstraint<TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -536,7 +536,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<TValue> IsEqualTo<TValue>(this IMemberConstraint<TValue> member, TValue other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -561,7 +561,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsEqualTo<TValue>(this IMemberConstraint<TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -585,7 +585,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>    
-        public static IMemberConstraint<TValue> IsEqualTo<TValue>(this IMemberConstraint<TValue> member, IEquatable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -686,7 +686,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsSmallerThan<TValue>(this IMemberConstraint<TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThan<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -710,7 +710,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> IsSmallerThan<TValue>(this IMemberConstraint<TValue> member, IComparable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThan<T, TValue>(this IMemberConstraint<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -777,7 +777,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsSmallerThanOrEqualTo<TValue>(this IMemberConstraint<TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -801,7 +801,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TValue> IsSmallerThanOrEqualTo<TValue>(this IMemberConstraint<TValue> member, IComparable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -868,7 +868,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsGreaterThan<TValue>(this IMemberConstraint<TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -892,7 +892,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<TValue> IsGreaterThan<TValue>(this IMemberConstraint<TValue> member, IComparable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraint<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -959,7 +959,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsGreaterThanOrEqualTo<TValue>(this IMemberConstraint<TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -983,7 +983,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>        
-        public static IMemberConstraint<TValue> IsGreaterThanOrEqualTo<TValue>(this IMemberConstraint<TValue> member, IComparable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1050,7 +1050,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1081,7 +1081,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1110,7 +1110,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1142,7 +1142,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsNotInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1169,7 +1169,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TValue> IsNotInRange<TValue>(this IMemberConstraint<TValue> member, IRange<TValue> range, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraint<T, TValue> member, IRange<TValue> range, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1299,7 +1299,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1330,7 +1330,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1359,7 +1359,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1391,7 +1391,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TValue> IsInRange<TValue>(this IMemberConstraint<TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInRange<T, TValue>(this IMemberConstraint<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null)
         {
             if (member == null)
             {
@@ -1415,7 +1415,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>        
-        public static IMemberConstraint<TValue> IsInRange<TValue>(this IMemberConstraint<TValue> member, IRange<TValue> range, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInRange<T, TValue>(this IMemberConstraint<T, TValue> member, IRange<TValue> range, string errorMessage = null)
         {
             if (member == null)
             {

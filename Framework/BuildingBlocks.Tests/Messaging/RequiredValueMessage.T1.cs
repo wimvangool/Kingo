@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kingo.BuildingBlocks.Messaging.Constraints;
+﻿using Kingo.BuildingBlocks.Messaging.Constraints;
 
 namespace Kingo.BuildingBlocks.Messaging
 {
@@ -50,11 +45,11 @@ namespace Kingo.BuildingBlocks.Messaging
 
         #region [====== Validation ======]
 
-        protected override IMessageValidator CreateValidator()
+        protected override IMessageValidator<RequiredValueMessage<TValue>> CreateValidator()
         {
-            var validator = new ConstraintValidator();
+            var validator = new ConstraintValidator<RequiredValueMessage<TValue>>();
 
-            validator.VerifyThat(() => Value).IsNotNull();
+            validator.VerifyThat(message => message.Value).IsNotNull();
 
             return validator;
         }

@@ -80,12 +80,12 @@ namespace Kingo.ChessApplication.Players
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        protected override IMessageValidator CreateValidator()
+        protected override IMessageValidator<ChallengePlayerCommand> CreateValidator()
         {
-            var validator = new ConstraintValidator();
+            var validator = new ConstraintValidator<ChallengePlayerCommand>();
 
-            validator.VerifyThat(() => SenderId).IsNotEmpty();
-            validator.VerifyThat(() => ReceiverId).IsNotEmpty();
+            validator.VerifyThat(m => m.SenderId).IsNotEmpty();
+            validator.VerifyThat(m => m.ReceiverId).IsNotEmpty();
 
             return validator;
         }

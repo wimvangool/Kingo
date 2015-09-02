@@ -5,18 +5,19 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     /// <summary>
     /// Represents a member of a message.
     /// </summary>
+    /// <typeparam name="T">Type of the object the error messages are produced for.</typeparam>
     /// <typeparam name="TValue">Type of the member.</typeparam>
-    public sealed class Member<TValue> : IMember
+    public sealed class Member<T, TValue> : IMember
     {
         private readonly string _parentName;
         private readonly string _memberName;
-        private readonly Lazy<TValue> _value;
+        private readonly Func<T, TValue> _valueFactory;
 
-        internal Member(Func<TValue> memberValueFactory, string memberName, string parentName = null)
+        internal Member(Func<T, TValue> valueFactory, string memberName, string parentName = null)
         {
-            if (memberValueFactory == null)
+            if (valueFactory == null)
             {
-                throw new ArgumentNullException("memberValueFactory");
+                throw new ArgumentNullException("valueFactory");
             }
             if (memberName == null)
             {
@@ -24,15 +25,8 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             }
             _parentName = parentName;
             _memberName = memberName;
-            _value = new Lazy<TValue>(memberValueFactory);
-        }
-
-        private Member(Lazy<TValue> value, string memberName, string parentName)
-        {
-            _parentName = parentName;
-            _memberName = memberName;
-            _value = value;
-        }
+            _valueFactory = valueFactory;
+        }        
 
         /// <summary>
         /// Returns the fully qualified name of this member.
@@ -55,36 +49,31 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         public string Name
         {
             get { return _memberName; }
-        }
-
-        object IMember.Value
-        {
-            get { return _value.Value; }
-        }
+        }        
 
         /// <summary>
         /// Returns the type of the value of this member.
         /// </summary>
         public Type Type
         {
-            get { return ReferenceEquals(Value, null) ? typeof(TValue) : Value.GetType(); }
+            get { return typeof(TValue); }
         }
 
         /// <summary>
         /// Returns the value of this member.
         /// </summary>
-        public TValue Value
+        public TValue GetValue(T item)
         {
-            get { return _value.Value; }
+            return _valueFactory.Invoke(item);
         }
 
-        internal Member<TValue> Rename(Func<string, string> nameSelector = null)
+        internal Member<T, TValue> Rename(Func<string, string> nameSelector = null)
         {
             if (nameSelector == null)
             {
                 return this;
             }
-            return new Member<TValue>(_value, nameSelector.Invoke(_memberName), _parentName);            
+            return new Member<T, TValue>(_valueFactory, nameSelector.Invoke(_memberName), _parentName);            
         }
     }
 }

@@ -29,14 +29,6 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         Type Type
         {
             get;
-        }
-
-        /// <summary>
-        /// The value of this member.
-        /// </summary>
-        object Value
-        {
-            get;
-        }
+        }        
     }
 }

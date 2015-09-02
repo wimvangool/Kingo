@@ -23,10 +23,10 @@ namespace Kingo.ChessApplication.Players
         public override void Then()
         {
             VerifyThatDomainEventCount().IsEqualTo(1);
-            VerifyThatDomainEventAtIndex(0).IsInstanceOf<PlayerRegisteredEvent>().And((validator, @event) =>
+            VerifyThatDomainEventAtIndex(0).IsInstanceOf<PlayerRegisteredEvent>().And(validator =>
             {
-                validator.VerifyThat(() => @event.PlayerId).IsEqualTo(Message.PlayerId);
-                validator.VerifyThat(() => @event.Username).IsEqualTo(Message.Username);                
+                validator.VerifyThat(e => e.PlayerId).IsEqualTo(Message.PlayerId);
+                validator.VerifyThat(e => e.Username).IsEqualTo(Message.Username);                
             });
         }
     }

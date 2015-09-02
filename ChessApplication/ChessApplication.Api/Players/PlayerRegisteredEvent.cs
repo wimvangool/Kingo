@@ -95,12 +95,12 @@ namespace Kingo.ChessApplication.Players
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        protected override IMessageValidator CreateValidator()
+        protected override IMessageValidator<PlayerRegisteredEvent> CreateValidator()
         {
-            var validator = new ConstraintValidator();
+            var validator = new ConstraintValidator<PlayerRegisteredEvent>();
 
-            validator.VerifyThat(() => PlayerId).IsNotEmpty(ValidationErrorMessages.PlayerRegisteredEvent_PlayerId_NotSpecified);
-            validator.VerifyThat(() => Username).IsNotNullOrWhiteSpace(ValidationErrorMessages.PlayerRegisteredEvent_Username_NotSpecified);
+            validator.VerifyThat(m => m.PlayerId).IsNotEmpty(ValidationErrorMessages.PlayerRegisteredEvent_PlayerId_NotSpecified);
+            validator.VerifyThat(m => m.Username).IsNotNullOrWhiteSpace(ValidationErrorMessages.PlayerRegisteredEvent_Username_NotSpecified);
 
             return validator;
         }

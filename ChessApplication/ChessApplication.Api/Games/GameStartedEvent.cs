@@ -113,13 +113,13 @@ namespace Kingo.ChessApplication.Games
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        protected override IMessageValidator CreateValidator()
+        protected override IMessageValidator<GameStartedEvent> CreateValidator()
         {
-            var validator = new ConstraintValidator();
+            var validator = new ConstraintValidator<GameStartedEvent>();
 
-            validator.VerifyThat(() => GameId).IsNotEmpty();
-            validator.VerifyThat(() => WhitePlayerId).IsNotEmpty();
-            validator.VerifyThat(() => BlackPlayerId).IsNotEmpty();
+            validator.VerifyThat(m => m.GameId).IsNotEmpty();
+            validator.VerifyThat(m => m.WhitePlayerId).IsNotEmpty();
+            validator.VerifyThat(m => m.BlackPlayerId).IsNotEmpty();
 
             return validator;
         }

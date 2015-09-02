@@ -16,7 +16,7 @@ namespace Kingo.BuildingBlocks.Messaging
     public abstract class Scenario<TMessage> : Scenario, IErrorMessageConsumer where TMessage : class, IMessage<TMessage>
     {                
         private readonly Lazy<TMessage> _message;
-        private readonly MemberConstraintSet _memberSet;                
+        private readonly MemberConstraintSet<Scenario<TMessage>> _memberSet;                
         private readonly List<object> _publishedEvents;
         private FunctionalException _exception;
 
@@ -26,8 +26,8 @@ namespace Kingo.BuildingBlocks.Messaging
         protected Scenario()
         {            
             _message = new Lazy<TMessage>(When);
-            _memberSet = new MemberConstraintSet();
-            _memberSet.ConstraintAdded += (s, e) => e.MemberConstraint.AddErrorMessagesTo(this, FormatProvider);
+            _memberSet = new MemberConstraintSet<Scenario<TMessage>>();
+            _memberSet.ConstraintAdded += (s, e) => e.MemberConstraint.HasErrors(this, this, FormatProvider);
             _publishedEvents = new List<object>();
         }
 
@@ -246,9 +246,9 @@ namespace Kingo.BuildingBlocks.Messaging
         /// Returns the number of published domain events that can be verified with a fluent syntax.
         /// </summary>
         /// <returns>A <see cref="IMemberConstraint{T}" /> that can be used to verify the number of published domain events.</returns>        
-        protected IMemberConstraint<int> VerifyThatDomainEventCount()
+        protected IMemberConstraint<Scenario<TMessage>, int> VerifyThatDomainEventCount()
         {
-            return _memberSet.VerifyThat(() => _publishedEvents.Count, "DomainEventCount");
+            return _memberSet.VerifyThat(scenario => scenario._publishedEvents.Count, "DomainEventCount");
         }        
 
         /// <summary>
@@ -260,9 +260,9 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <paramref name="index"/> does not point to a valid index.
         /// </exception>
         [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
-        protected IMemberConstraint<object> VerifyThatDomainEventAtIndex(int index)
+        protected IMemberConstraint<Scenario<TMessage>, object> VerifyThatDomainEventAtIndex(int index)
         {
-            return _memberSet.VerifyThat(GetDomainEventAt(index), string.Format("DomainEvent[{0}]", index));
+            return _memberSet.VerifyThat(scenario => scenario.GetDomainEventAt(index), string.Format("DomainEvent[{0}]", index));
         }        
 
         /// <summary>
@@ -272,9 +272,9 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>
         /// <typeparam name="TException">Type of the expected exception.</typeparam>
         /// <returns>A <see cref="IMemberConstraint{TValue}" /> referring to the exception that was thrown.</returns>
-        protected IMemberConstraint<TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
+        protected IMemberConstraint<Scenario<TMessage>, TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
         {            
-            return _memberSet.VerifyThat(_exception, "ExpectedException")
+            return _memberSet.VerifyThat(scenario => scenario._exception, "ExpectedException")
                 .IsNotNull(FailureMessages.Scenario_NoExceptionWasThrown)              
                 .IsInstanceOf<TException>(FailureMessages.Scenario_UnexpectedExceptionWasThrown);                
         }

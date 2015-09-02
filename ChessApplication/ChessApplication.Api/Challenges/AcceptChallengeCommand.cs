@@ -70,10 +70,9 @@ namespace Kingo.ChessApplication.Challenges
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        protected override IMessageValidator CreateValidator()
-        {
-            //throw new NotImplementedException();
-            return new ConstraintValidator();
+        protected override IMessageValidator<AcceptChallengeCommand> CreateValidator()
+        {            
+            return new ConstraintValidator<AcceptChallengeCommand>();
         }
 
         #endregion

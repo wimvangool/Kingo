@@ -21,7 +21,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<Guid> IsNotEmpty(this IMemberConstraint<Guid> member, string errorMessage = null)
+        public static IMemberConstraint<T, Guid> IsNotEmpty<T>(this IMemberConstraint<T, Guid> member, string errorMessage = null)
         {
             if (member == null)
             {
@@ -58,7 +58,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<Guid> IsEmpty(this IMemberConstraint<Guid> member, string errorMessage = null)
+        public static IMemberConstraint<T, Guid> IsEmpty<T>(this IMemberConstraint<T, Guid> member, string errorMessage = null)
         {
             if (member == null)
             {

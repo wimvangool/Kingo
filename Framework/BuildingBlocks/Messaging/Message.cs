@@ -26,33 +26,7 @@ namespace Kingo.BuildingBlocks.Messaging
                 throw new ArgumentNullException("message");
             }
             _extensionData = message._extensionData;
-        }
-
-        #region [====== TypeId ======]
-
-        string IMessage.TypeId
-        {
-            get { return TypeIdOf(GetType()); }
-        }
-
-        /// <summary>
-        /// Returns the type-id of the specified <paramref name="messageType"/>.
-        /// </summary>
-        /// <param name="messageType">Type of a message.</param>
-        /// <returns>The type-id of the specified <paramref name="messageType"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="messageType"/> is <c>null</c>.
-        /// </exception>
-        public static string TypeIdOf(Type messageType)
-        {
-            if (messageType == null)
-            {
-                throw new ArgumentNullException("messageType");
-            }
-            return messageType.Name;
-        }
-
-        #endregion
+        }        
 
         #region [====== ExtensibleObject ======]
 
@@ -79,25 +53,7 @@ namespace Kingo.BuildingBlocks.Messaging
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        public DataErrorInfo Validate()
-        {
-            var validationStrategy = CreateValidator();
-            if (validationStrategy == null)
-            {
-                return DataErrorInfo.NoErrors;
-            }
-            return validationStrategy.Validate();
-        }                
-
-        /// <summary>
-        /// Creates and returns a <see cref="IMessageValidator" /> that can be used to validate this message,
-        /// or <c>null</c> if this message does not require validation.
-        /// </summary>
-        /// <returns>A new <see cref="IMessageValidator" /> that can be used to validate this message.</returns>
-        protected virtual IMessageValidator CreateValidator()
-        {
-            return null;
-        }
+        public abstract DataErrorInfo Validate();        
 
         #endregion
 

@@ -5,47 +5,33 @@ using System.ComponentModel.DataAnnotations;
 namespace Kingo.BuildingBlocks.Messaging
 {
     /// <summary>
-    /// Represents a <see cref="IMessageValidator" /> that validates a message through
+    /// Represents a <see cref="IMessageValidator{T}" /> that validates a message through
     /// all <see cref="ValidationAttribute">ValidationAttributes</see> that have been declared on the
     /// members of a message.
     /// </summary>    
-    public sealed class MessageValidator : IMessageValidator
+    public sealed class MessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class
     {        
-        private readonly Func<ValidationContext> _validationContextFactory;
+        private readonly Func<TMessage, ValidationContext> _validationContextFactory;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageValidator" /> class.
-        /// </summary> 
-        /// <param name="message">The message to validate.</param>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        public MessageValidator(object message)
-            : this(message, null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessageValidator" /> class.
-        /// </summary>        
-        /// <param name="message">The message to validate.</param>       
+        /// Initializes a new instance of the <see cref="MessageValidator{T}" /> class.
+        /// </summary>                
         /// <param name="validationContextFactory">
         /// The method used to create a <see cref="ValidationContext" /> for a specific message.
-        /// </param>     
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>   
-        public MessageValidator(object message, Func<ValidationContext> validationContextFactory)
-        {            
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }           
-            _validationContextFactory = validationContextFactory ?? (() => new ValidationContext(message, null, null));
+        /// </param>             
+        public MessageValidator(Func<TMessage, ValidationContext> validationContextFactory = null)
+        {                               
+            _validationContextFactory = validationContextFactory ?? (message => new ValidationContext(message, null, null));
         }
 
         /// <inheritdoc />
-        public DataErrorInfo Validate()
+        public DataErrorInfo Validate(TMessage message)
         {
-            return Validate(_validationContextFactory.Invoke());
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            return Validate(_validationContextFactory.Invoke(message));
         }
 
         private static DataErrorInfo Validate(ValidationContext validationContext)

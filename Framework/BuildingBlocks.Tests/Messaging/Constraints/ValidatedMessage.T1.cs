@@ -20,6 +20,8 @@
             return new ValidatedMessage<TValue>(this);
         }
 
+        #region [====== Equals & GetHashCode ======]
+
         public override bool Equals(object obj)
         {
             return Equals(obj as ValidatedMessage<TValue>);
@@ -41,6 +43,13 @@
         public override int GetHashCode()
         {
             return HashCode.Of(Member);
+        }
+
+        #endregion
+
+        internal ConstraintValidator<ValidatedMessage<TValue>> CreateConstraintValidator()
+        {
+            return new ConstraintValidator<ValidatedMessage<TValue>>();
         }
     }   
 }

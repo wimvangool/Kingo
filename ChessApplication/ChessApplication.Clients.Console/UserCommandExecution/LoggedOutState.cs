@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Kingo.BuildingBlocks.ComponentModel.Server;
 using Kingo.BuildingBlocks.Messaging;
 using Kingo.ChessApplication.Players;
 

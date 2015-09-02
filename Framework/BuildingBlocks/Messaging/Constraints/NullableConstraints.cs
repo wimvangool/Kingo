@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TValue> HasValue<TValue>(this IMemberConstraint<TValue?> member, string errorMessage = null) where TValue : struct
+        public static IMemberConstraint<T, TValue> HasValue<T, TValue>(this IMemberConstraint<T, TValue?> member, string errorMessage = null) where TValue : struct
         {
             if (member == null)
             {

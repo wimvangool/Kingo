@@ -11,33 +11,33 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         public void ValidateIsTrue_ReturnsExpectedError_IfMemberIsFalse()
         {
             var message = new ValidatedMessage<bool>(false);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsTrue(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsTrue(RandomErrorMessage);
 
-            validator.Validate().AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
 
         [TestMethod]
         public void ValidateIsTrue_ReturnsDefaultError_IfMemberIsFalse__And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<bool>(false);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsTrue();
+            validator.VerifyThat(m => m.Member).IsTrue();
 
-            validator.Validate().AssertOneError("Member (false) must be true.");
+            validator.Validate(message).AssertOneError("Member (false) must be true.");
         }
 
         [TestMethod]
         public void ValidateIsTrue_ReturnsNoErrors_IfMemberIsTrue()
         {
             var message = new ValidatedMessage<bool>(true);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsTrue(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsTrue(RandomErrorMessage);
 
-            validator.Validate().AssertNoErrors();
+            validator.Validate(message).AssertNoErrors();
         }
 
         #endregion
@@ -48,33 +48,33 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         public void ValidateIsFalse_ReturnsExpectedError_IfMemberIsTrue()
         {
             var message = new ValidatedMessage<bool>(true);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsFalse(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsFalse(RandomErrorMessage);
 
-            validator.Validate().AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
 
         [TestMethod]
         public void ValidateIsFalse_ReturnsDefaultError_IfMemberIsTrue__And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<bool>(true);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsFalse();
+            validator.VerifyThat(m => m.Member).IsFalse();
 
-            validator.Validate().AssertOneError("Member (true) must be false.");
+            validator.Validate(message).AssertOneError("Member (true) must be false.");
         }
 
         [TestMethod]
         public void ValidateIsFalse_ReturnsNoErrors_IfMemberIsFalse()
         {
             var message = new ValidatedMessage<bool>(false);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsFalse(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsFalse(RandomErrorMessage);
 
-            validator.Validate().AssertNoErrors();
+            validator.Validate(message).AssertNoErrors();
         }
 
         #endregion

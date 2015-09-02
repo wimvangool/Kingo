@@ -5,11 +5,11 @@ namespace Kingo.BuildingBlocks.Messaging
 {
     internal sealed class MessageToStrategyMapping<TStrategy> : MessageToStrategyMapping, IMessageToStrategyMapping<TStrategy> where TStrategy : class
     {
-        private readonly Dictionary<string, TStrategy> _mapping;
+        private readonly Dictionary<Type, TStrategy> _mapping;
 
         internal MessageToStrategyMapping()
         {
-            _mapping = new Dictionary<string, TStrategy>();
+            _mapping = new Dictionary<Type, TStrategy>();
         }
 
         public void Add(IMessage message, TStrategy strategy)
@@ -18,22 +18,17 @@ namespace Kingo.BuildingBlocks.Messaging
             {
                 throw new ArgumentNullException("message");
             }
-            Add(message.TypeId, strategy);
+            Add(message.GetType(), strategy);
         }
 
         public void Add(Type messageType, TStrategy strategy)
         {
-            Add(Message.TypeIdOf(messageType), strategy);
-        }
-
-        public void Add(string messageTypeId, TStrategy strategy)
-        {
-            if (messageTypeId == null)
+            if (messageType == null)
             {
-                throw new ArgumentNullException("messageTypeId");
+                throw new ArgumentNullException("messageType");
             }
-            _mapping.Add(messageTypeId, strategy);
-        }        
+            _mapping.Add(messageType, strategy);
+        }              
 
         public bool TryGetStrategy(IMessage message, out TStrategy strategy)
         {
@@ -41,21 +36,12 @@ namespace Kingo.BuildingBlocks.Messaging
             {
                 throw new ArgumentNullException("message");
             }
-            return TryGetStrategy(message.TypeId, out strategy);
+            return TryGetStrategy(message.GetType(), out strategy);
         }
 
         public bool TryGetStrategy(Type messageType, out TStrategy strategy)
         {
-            return TryGetStrategy(Message.TypeIdOf(messageType), out strategy);
-        }
-
-        public bool TryGetStrategy(string messageTypeId, out TStrategy strategy)
-        {
-            if (messageTypeId == null)
-            {
-                throw new ArgumentNullException("messageTypeId");
-            }
-            return _mapping.TryGetValue(messageTypeId, out strategy);
-        }
+            return _mapping.TryGetValue(messageType, out strategy);
+        }        
     }
 }

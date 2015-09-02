@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.ComponentModel.Server;
 using Kingo.BuildingBlocks.Messaging;
 using Kingo.BuildingBlocks.Messaging.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,19 +28,13 @@ namespace Kingo.ChessApplication.Challenges
         [TestMethod]
         public override void Then()
         {
-            VerifyThatExceptionIsA<CommandExecutionException>().And(ContainsExpectedInnerException);
-        }
-
-        private void ContainsExpectedInnerException(IMemberConstraintSet validator, CommandExecutionException exception)
-        {
-            validator.VerifyThat(() => exception.InnerException)
-                .IsInstanceOf<ChallengeAlreadyAcceptedException>()
-                .And(ContainsExpectedChallengeId);
-        }
-
-        private void ContainsExpectedChallengeId(IMemberConstraintSet validator, ChallengeAlreadyAcceptedException exception)
-        {
-            validator.VerifyThat(() => exception.ChallengeId).IsEqualTo(Message.ChallengeId);
-        }
+            VerifyThatExceptionIsA<CommandExecutionException>().And(v1 =>
+            {
+                v1.VerifyThat(exception => exception.InnerException).IsInstanceOf<ChallengeAlreadyAcceptedException>().And(v2 =>
+                {
+                    v2.VerifyThat(exception => exception.ChallengeId).IsEqualTo(Message.ChallengeId);
+                });
+            });
+        }        
     }
 }

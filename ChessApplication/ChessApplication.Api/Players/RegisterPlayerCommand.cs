@@ -80,9 +80,9 @@ namespace Kingo.ChessApplication.Players
 
         #region [====== Validation ======]
 
-        protected override IMessageValidator CreateValidator()
+        protected override IMessageValidator<RegisterPlayerCommand> CreateValidator()
         {
-            var validator = new ConstraintValidator();            
+            var validator = new ConstraintValidator<RegisterPlayerCommand>();            
 
             VerifyUsername(validator, Constraints.UsernameMinLength, Constraints.UsernameMaxLength, Constraints.UsernameRegex);
             VerifyPassword(validator, Constraints.PasswordMinLength, Constraints.PasswordMaxLength, Constraints.PasswordRegex);            
@@ -90,17 +90,17 @@ namespace Kingo.ChessApplication.Players
             return validator;
         }        
 
-        private void VerifyUsername(IMemberConstraintSet validator, int minLength, int maxLength, string regex)
+        private void VerifyUsername(IMemberConstraintSet<RegisterPlayerCommand> validator, int minLength, int maxLength, string regex)
         {
-            validator.VerifyThat(() => Username)
+            validator.VerifyThat(m => m.Username)
                 .IsNotNullOrWhiteSpace(ValidationErrorMessages.RegisterPlayerCommand_Username_NotSpecified)
                 .HasLengthBetween(minLength, maxLength, ValidationErrorMessages.RegisterPlayerCommand_Username_InvalidLength)
                 .Matches(regex, ValidationErrorMessages.RegisterPlayerCommand_Username_IllegalCharacters);
         }
 
-        private void VerifyPassword(IMemberConstraintSet validator, int minLength, int maxLength, string regex)
+        private void VerifyPassword(IMemberConstraintSet<RegisterPlayerCommand> validator, int minLength, int maxLength, string regex)
         {
-            validator.VerifyThat(() => Password)
+            validator.VerifyThat(m => m.Password)
                 .IsNotNullOrWhiteSpace(ValidationErrorMessages.RegisterPlayerCommand_Password_NotSpecified)
                 .HasLengthBetween(minLength, maxLength, ValidationErrorMessages.RegisterPlayerCommand_Password_InvalidLength)
                 .Matches(regex, ValidationErrorMessages.RegisterPlayerCommand_Password_IllegalCharacters);

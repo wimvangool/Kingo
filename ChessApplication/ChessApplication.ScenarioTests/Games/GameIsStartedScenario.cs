@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kingo.BuildingBlocks.ComponentModel.Server;
 using Kingo.BuildingBlocks.Messaging;
 using Kingo.BuildingBlocks.Messaging.Constraints;
 using Kingo.ChessApplication.Challenges;
@@ -49,16 +48,16 @@ namespace Kingo.ChessApplication.Games
             throw new NotImplementedException();
         }
 
-        private void SenderIsWhiteAndReceiverIsBlack(IMemberConstraintSet validator, GameStartedEvent @event)
+        private void SenderIsWhiteAndReceiverIsBlack(IMemberConstraintSet<GameStartedEvent> validator)
         {
-            validator.VerifyThat(() => @event.WhitePlayerId).IsEqualTo(SenderId);
-            validator.VerifyThat(() => @event.BlackPlayerId).IsEqualTo(ReceiverId);
+            validator.VerifyThat(e => e.WhitePlayerId).IsEqualTo(SenderId);
+            validator.VerifyThat(e => e.BlackPlayerId).IsEqualTo(ReceiverId);
         }
 
-        private void SenderIsBlackAndReceiverIsWhite(IMemberConstraintSet validator, GameStartedEvent @event)
+        private void SenderIsBlackAndReceiverIsWhite(IMemberConstraintSet<GameStartedEvent> validator)
         {
-            validator.VerifyThat(() => @event.WhitePlayerId).IsEqualTo(ReceiverId);
-            validator.VerifyThat(() => @event.BlackPlayerId).IsEqualTo(SenderId);
+            validator.VerifyThat(e => e.WhitePlayerId).IsEqualTo(ReceiverId);
+            validator.VerifyThat(e => e.BlackPlayerId).IsEqualTo(SenderId);
         }
     }
 }

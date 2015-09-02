@@ -1,5 +1,4 @@
 ﻿using System;
-using Kingo.BuildingBlocks;
 using Kingo.BuildingBlocks.Clocks;
 using Kingo.BuildingBlocks.Messaging.Domain;
 

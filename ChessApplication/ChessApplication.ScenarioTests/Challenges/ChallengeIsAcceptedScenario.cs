@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Kingo.BuildingBlocks.ComponentModel.Server;
 using Kingo.BuildingBlocks.Messaging;
 using Kingo.BuildingBlocks.Messaging.Constraints;
 using Kingo.ChessApplication.Players;
@@ -36,9 +35,9 @@ namespace Kingo.ChessApplication.Challenges
         public override void Then()
         {
             VerifyThatDomainEventCount().IsEqualTo(1);
-            VerifyThatDomainEventAtIndex(0).IsInstanceOf<ChallengeAcceptedEvent>().And((validator, @event) =>
+            VerifyThatDomainEventAtIndex(0).IsInstanceOf<ChallengeAcceptedEvent>().And(validator =>
             {
-                validator.VerifyThat(() => @event.ChallengeId).IsEqualTo(Message.ChallengeId);
+                validator.VerifyThat(e => e.ChallengeId).IsEqualTo(Message.ChallengeId);
             });
         }
     }

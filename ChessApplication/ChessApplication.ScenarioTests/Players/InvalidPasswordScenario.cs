@@ -1,6 +1,4 @@
-﻿using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.Messaging;
-using Kingo.BuildingBlocks.Messaging.Constraints;
+﻿using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication.Players
@@ -19,12 +17,10 @@ namespace Kingo.ChessApplication.Players
         [TestMethod]
         public override void Then()
         {
-            VerifyThatExceptionIsA<InvalidMessageException>().And(ContainsExpectedInnerException);
-        }
-
-        private static void ContainsExpectedInnerException(IMemberConstraintSet validator, InvalidMessageException exception)
-        {
-            validator.VerifyThat(() => exception.InnerException).IsInstanceOf<InvalidPasswordException>();
-        }
+            VerifyThatExceptionIsA<InvalidMessageException>().And(validator =>
+            {
+                validator.VerifyThat(exception => exception.InnerException).IsInstanceOf<InvalidPasswordException>();
+            });
+        }        
     }
 }

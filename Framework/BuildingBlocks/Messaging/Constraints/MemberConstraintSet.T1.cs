@@ -9,17 +9,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     /// <summary>
     /// Represents a set of <see cref="IMember"/> instances that are validated by adding run-time constraints.
     /// </summary>
-    public class MemberConstraintSet : IMemberConstraintSet, IErrorMessageProducer, IEnumerable<IMemberConstraint>
+    /// <typeparam name="T">Type of the object the constraints are added for.</typeparam>
+    public class MemberConstraintSet<T> : IMemberConstraintSet<T>, IErrorMessageProducer<T>, IEnumerable<IMemberConstraint<T>>
     {               
-        private readonly Dictionary<string, IMemberConstraint> _membersConstraints;
+        private readonly Dictionary<string, IMemberConstraint<T>> _membersConstraints;
         private readonly LinkedList<string> _parentMembers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemberConstraintSet" /> class.
+        /// Initializes a new instance of the <see cref="MemberConstraintSet{T}" /> class.
         /// </summary>        
         public MemberConstraintSet()
         {                        
-            _membersConstraints = new Dictionary<string, IMemberConstraint>();
+            _membersConstraints = new Dictionary<string, IMemberConstraint<T>>();
             _parentMembers = new LinkedList<string>();
         }                
 
@@ -46,7 +47,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #region [====== VerifyThat ======]
 
         /// <inheritdoc />
-        public IMemberConstraint<TValue> VerifyThat<TValue>(Expression<Func<TValue>> memberExpression)
+        public IMemberConstraint<T, TValue> VerifyThat<TValue>(Expression<Func<T, TValue>> memberExpression)
         {
             if (memberExpression == null)
             {
@@ -56,25 +57,19 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         /// <inheritdoc />
-        public IMemberConstraint<TValue> VerifyThat<TValue>(Func<TValue> memberValueFactory, string memberName)
+        public IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> memberValueFactory, string memberName)
         {
-            var member = new Member<TValue>(memberValueFactory, memberName, DetermineParentName());
-            var memberConstraint = new MemberConstraint<TValue, TValue>(this, member, new TrueConstraint<TValue>());
+            var member = new Member<T, TValue>(memberValueFactory, memberName, DetermineParentName());
+            var memberConstraint = new MemberConstraint<T, TValue, TValue>(this, member, new TrueConstraint<TValue>());
 
             Put(memberConstraint);
 
             return memberConstraint;
-        }
+        }            
 
-        /// <inheritdoc />
-        public IMemberConstraint<TValue> VerifyThat<TValue>(TValue value, string name)
+        private void Put(IMemberConstraint<T> newConstraint)
         {
-            return VerifyThat(() => value, name);
-        }       
-
-        private void Put(IMemberConstraint newConstraint)
-        {
-            IMemberConstraint oldConstraint;
+            IMemberConstraint<T> oldConstraint;
 
             if (_membersConstraints.TryGetValue(newConstraint.Member.FullName, out oldConstraint))
             {
@@ -134,7 +129,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="oldConstraint"/> and <paramref name="newConstraint"/> do not have the same name.
         /// </exception>
-        protected internal void Replace(IMemberConstraint oldConstraint, IMemberConstraint newConstraint)
+        protected internal void Replace(IMemberConstraint<T> oldConstraint, IMemberConstraint<T> newConstraint)
         {
             if (ReferenceEquals(oldConstraint, null))
             {
@@ -157,7 +152,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <summary>
         /// Occurs when a constraint was removed from this set.
         /// </summary>
-        public event EventHandler<MemberConstraintEventArgs> ConstraintRemoved;
+        public event EventHandler<MemberConstraintEventArgs<T>> ConstraintRemoved;
 
         /// <summary>
         /// Raises the <see cref="ConstraintRemoved"/> event.
@@ -166,7 +161,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arguments"/> is <c>null</c>.
         /// </exception>
-        protected virtual void OnConstraintRemoved(MemberConstraintEventArgs arguments)
+        protected virtual void OnConstraintRemoved(MemberConstraintEventArgs<T> arguments)
         {
             ConstraintRemoved.Raise(this, arguments);
         }
@@ -179,7 +174,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        protected bool Remove(IMemberConstraint constraint)
+        protected bool Remove(IMemberConstraint<T> constraint)
         {
             if (constraint == null)
             {
@@ -187,7 +182,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             }
             if (_membersConstraints.Remove(constraint.Member.FullName))
             {
-                OnConstraintRemoved(new MemberConstraintEventArgs(constraint));
+                OnConstraintRemoved(new MemberConstraintEventArgs<T>(constraint));
                 return true;
             }
             return false;
@@ -196,7 +191,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <summary>
         /// Occurs when a constraint was added to this set.
         /// </summary>
-        public event EventHandler<MemberConstraintEventArgs> ConstraintAdded;
+        public event EventHandler<MemberConstraintEventArgs<T>> ConstraintAdded;
 
         /// <summary>
         /// Raises the <see cref="ConstraintAdded"/> event.
@@ -205,7 +200,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arguments"/> is <c>null</c>.
         /// </exception>
-        protected virtual void OnConstraintAdded(MemberConstraintEventArgs arguments)
+        protected virtual void OnConstraintAdded(MemberConstraintEventArgs<T> arguments)
         {
             ConstraintAdded.Raise(this, arguments);
         }
@@ -220,7 +215,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// A member with the same name was already added to this set.
         /// </exception>
-        protected void Add(IMemberConstraint constraint)
+        protected void Add(IMemberConstraint<T> constraint)
         {
             if (constraint == null)
             {
@@ -234,17 +229,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw NewMemberAlreadyAddedException(constraint.Member.FullName);
             }
-            OnConstraintAdded(new MemberConstraintEventArgs(constraint));
+            OnConstraintAdded(new MemberConstraintEventArgs<T>(constraint));
         }        
 
         /// <inheritdoc />
-        public bool AddErrorMessagesTo(IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
+        public bool HasErrors(T item, IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
         {
             var hasAddedErrorMessages = false;
 
             foreach (var member in _membersConstraints.Values)
             {
-                hasAddedErrorMessages |= member.AddErrorMessagesTo(consumer, formatProvider);
+                hasAddedErrorMessages |= member.HasErrors(item, consumer, formatProvider);
             }
             return hasAddedErrorMessages;
         }
@@ -254,7 +249,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #region [====== IEnumerable ======]
 
         /// <inheritdoc />
-        public IEnumerator<IMemberConstraint> GetEnumerator()
+        public IEnumerator<IMemberConstraint<T>> GetEnumerator()
         {
             return _membersConstraints.Values.GetEnumerator();
         }

@@ -12,33 +12,33 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         public void ValidateIsNotEmpty_ReturnsExpectedError_IfGuidIsEmpty()
         {
             var message = new ValidatedMessage<Guid>(Guid.Empty);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsNotEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotEmpty(RandomErrorMessage);
 
-            validator.Validate().AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
 
         [TestMethod]
         public void ValidateIsNotEmpty_ReturnsDefaultError_IfGuidIsEmpty_And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<Guid>(Guid.Empty);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsNotEmpty();
+            validator.VerifyThat(m => m.Member).IsNotEmpty();
 
-            validator.Validate().AssertOneError("Member (00000000-0000-0000-0000-000000000000) must not be empty.");
+            validator.Validate(message).AssertOneError("Member (00000000-0000-0000-0000-000000000000) must not be empty.");
         }
 
         [TestMethod]
         public void ValidateIsNotEmpty_ReturnsNoErrors_IfGuidIsNotEmpty()
         {
             var message = new ValidatedMessage<Guid>(Guid.NewGuid());
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsNotEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotEmpty(RandomErrorMessage);
 
-            validator.Validate().AssertNoErrors();
+            validator.Validate(message).AssertNoErrors();
         }
 
         #endregion
@@ -49,33 +49,33 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         public void ValidateIsEmpty_ReturnsNoErrors_IfGuidIsEmpty()
         {
             var message = new ValidatedMessage<Guid>(Guid.Empty);
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsEmpty(RandomErrorMessage);
 
-            validator.Validate().AssertNoErrors();
+            validator.Validate(message).AssertNoErrors();
         }
 
         [TestMethod]
         public void ValidateIsEmpty_ReturnsExpectedError_IfGuidIsNotEmpty()
         {
             var message = new ValidatedMessage<Guid>(Guid.NewGuid());
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsEmpty(RandomErrorMessage);
 
-            validator.Validate().AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
 
         [TestMethod]
         public void ValidateIsEmpty_ReturnsDefaultError_IfGuidIsNotEmpty_And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<Guid>(Guid.NewGuid());
-            var validator = new ConstraintValidator();
+            var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(() => message.Member).IsEmpty();
+            validator.VerifyThat(m => m.Member).IsEmpty();
 
-            validator.Validate().AssertOneError(string.Format("Member ({0}) must be empty.", message.Member));
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be empty.", message.Member));
         }
 
         #endregion

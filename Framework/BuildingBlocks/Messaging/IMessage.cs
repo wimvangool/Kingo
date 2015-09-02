@@ -4,15 +4,7 @@
     /// Represents a message that can validate itself.
     /// </summary>
     public interface IMessage
-    {
-        /// <summary>
-        /// Returns the unique identifier of this message type.
-        /// </summary>
-        string TypeId
-        {
-            get;
-        }
-
+    {        
         /// <summary>
         /// Creates and returns a copy of this message.
         /// </summary>
