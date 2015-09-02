@@ -1,4 +1,5 @@
 ﻿using Kingo.BuildingBlocks.ComponentModel;
+using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication
@@ -70,7 +71,7 @@ namespace Kingo.ChessApplication
             var message = CreateValidMessage();
             var errorTree = message.Validate();
 
-            Assert.AreEqual(0, errorTree.TotalErrorCount);
+            Assert.AreEqual(0, errorTree.Errors.Count);
         }
 
         #endregion

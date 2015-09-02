@@ -1,7 +1,7 @@
 ﻿using System;
 using Kingo.BuildingBlocks;
-using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.Messaging;
+using Kingo.BuildingBlocks.Messaging.Constraints;
 
 namespace Kingo.ChessApplication.Players
 {

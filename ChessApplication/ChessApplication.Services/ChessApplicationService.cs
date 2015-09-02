@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kingo.BuildingBlocks;
 using Kingo.BuildingBlocks.ComponentModel.Server;
-using Kingo.BuildingBlocks.Reflection;
-using Kingo.BuildingBlocks.Transactions;
+using Kingo.BuildingBlocks.Messaging;
+using Kingo.BuildingBlocks.Messaging.Modules;
 
 namespace Kingo.ChessApplication
 {

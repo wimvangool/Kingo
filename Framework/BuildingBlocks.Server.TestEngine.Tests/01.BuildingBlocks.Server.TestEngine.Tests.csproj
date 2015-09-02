@@ -38,7 +38,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
@@ -69,12 +69,12 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="ComponentModel\Server\DomainEvent.cs" />
-    <Compile Include="ComponentModel\Server\ScenarioTestProcessor.cs" />
+    <Compile Include="Messaging\DomainEvent.cs" />
+    <Compile Include="Messaging\ScenarioTestProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ComponentModel\Server\ScenarioTest.cs" />
-    <Compile Include="ComponentModel\Server\TheCommand.cs" />
-    <Compile Include="ComponentModel\Server\TheCommandHandler.cs" />
+    <Compile Include="Messaging\ScenarioTest.cs" />
+    <Compile Include="Messaging\TheCommand.cs" />
+    <Compile Include="Messaging\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj">

@@ -1,6 +1,7 @@
 ﻿using System;
 using Kingo.BuildingBlocks;
-using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.Clocks;
+using Kingo.BuildingBlocks.Messaging.Domain;
 using Kingo.ChessApplication.Challenges;
 
 namespace Kingo.ChessApplication.Players

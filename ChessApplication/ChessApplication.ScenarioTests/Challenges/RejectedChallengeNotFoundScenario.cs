@@ -1,7 +1,8 @@
 ﻿using System;
 using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.ComponentModel.Constraints;
-using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.Messaging;
+using Kingo.BuildingBlocks.Messaging.Constraints;
+using Kingo.BuildingBlocks.Messaging.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication.Challenges

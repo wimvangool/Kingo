@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.Clocks;
 using Kingo.BuildingBlocks.ComponentModel.Server;
-using Kingo.BuildingBlocks.Diagnostics;
-using Kingo.BuildingBlocks.Reflection;
+using Kingo.BuildingBlocks.Messaging;
+using Kingo.BuildingBlocks.Messaging.Modules;
 
 namespace Kingo.ChessApplication
 {

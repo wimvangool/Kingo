@@ -1,4 +1,4 @@
-﻿using Kingo.BuildingBlocks.ComponentModel.Constraints;
+﻿using Kingo.BuildingBlocks.Messaging.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication.Players

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Kingo.BuildingBlocks.Threading;
+using Kingo.BuildingBlocks;
 
 namespace Kingo.ChessApplication
 {

@@ -36,7 +36,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(null, _ValidPassword);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -46,7 +46,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(string.Empty, _ValidPassword);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -56,7 +56,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("    ", _ValidPassword);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -66,7 +66,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("abcd+3", _ValidPassword);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -76,7 +76,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("abc", _ValidPassword);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -86,7 +86,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("abcdefghijklm", _ValidPassword);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -100,7 +100,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, null);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Password"]);
         }
 
@@ -110,7 +110,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, string.Empty);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Password"]);
         }
 
@@ -120,7 +120,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "       ");
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Password"]);
         }
 
@@ -130,7 +130,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "abcd 3g5g65");
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Password"]);
         }
 
@@ -140,7 +140,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "abcde");
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Password"]);
         }
 
@@ -150,7 +150,7 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "abcdefghijklmnopqrstuvw");
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Password"]);
         }
 

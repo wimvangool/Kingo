@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Kingo.BuildingBlocks.ComponentModel.Client.DataVirtualization;
+using Kingo.BuildingBlocks.Messaging.Client.DataVirtualization;
 
 namespace Kingo.BuildingBlocks.DataVirtualizationDemo.Shell
 {

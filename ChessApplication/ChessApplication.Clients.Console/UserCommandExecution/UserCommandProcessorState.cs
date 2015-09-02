@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Kingo.BuildingBlocks;
 using Kingo.BuildingBlocks.ComponentModel;
 using Kingo.BuildingBlocks.ComponentModel.Server;
-using Kingo.BuildingBlocks.Threading;
+using Kingo.BuildingBlocks.Messaging;
 
 namespace Kingo.ChessApplication.UserCommandExecution
 {

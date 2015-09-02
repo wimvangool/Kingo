@@ -1,8 +1,8 @@
 ﻿<Window x:Class="Kingo.BuildingBlocks.DataVirtualizationDemo.Shell.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:DataVirtualization="clr-namespace:Kingo.BuildingBlocks.ComponentModel.Client.DataVirtualization;assembly=Kingo.BuildingBlocks.Client"
         xmlns:Shell="clr-namespace:Kingo.BuildingBlocks.DataVirtualizationDemo.Shell"
+        xmlns:DataVirtualization="clr-namespace:Kingo.BuildingBlocks.Messaging.Client.DataVirtualization;assembly=Kingo.BuildingBlocks.Client"
         Height="300"
         Width="300">    
     <TabControl>

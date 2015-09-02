@@ -61,23 +61,23 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="ComponentModel\Client\DataVirtualization\IndexRangeTest.cs" />
-    <Compile Include="ComponentModel\Client\DataVirtualization\IndexSetTest.cs" />
-    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionSpy.cs" />
-    <Compile Include="ComponentModel\Client\DataVirtualization\VirtualCollectionTest.cs" />
-    <Compile Include="ComponentModel\Client\SynchronousContext.cs" />
+    <Compile Include="Messaging\Client\DataVirtualization\IndexRangeTest.cs" />
+    <Compile Include="Messaging\Client\DataVirtualization\IndexSetTest.cs" />
+    <Compile Include="Messaging\Client\DataVirtualization\VirtualCollectionSpy.cs" />
+    <Compile Include="Messaging\Client\DataVirtualization\VirtualCollectionTest.cs" />
+    <Compile Include="Messaging\Client\SynchronousContext.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ComponentModel\Client\ClientEventBusStub.cs" />
-    <Compile Include="ComponentModel\Client\ClientEventBusTest.cs" />
-    <Compile Include="ComponentModel\Client\HasChangesIndicatorTest.cs" />
-    <Compile Include="ComponentModel\Client\IsBusyIndicatorTest.cs" />
-    <Compile Include="ComponentModel\Client\IsValidIndicatorTest.cs" />
-    <Compile Include="ComponentModel\Client\HasChangesIndicatorStub.cs" />
-    <Compile Include="ComponentModel\Client\IsBusyIndicatorStub.cs" />
-    <Compile Include="ComponentModel\Client\IsValidIndicatorStub.cs" />
-    <Compile Include="ComponentModel\Client\OneToManyCommandTest.cs" />
-    <Compile Include="ComponentModel\Client\OneToOneCommandTest.cs" />
-    <Compile Include="ComponentModel\Client\RelayCommandOfT1.Test.cs" />
+    <Compile Include="Messaging\Client\ClientEventBusStub.cs" />
+    <Compile Include="Messaging\Client\ClientEventBusTest.cs" />
+    <Compile Include="Messaging\Client\HasChangesIndicatorTest.cs" />
+    <Compile Include="Messaging\Client\IsBusyIndicatorTest.cs" />
+    <Compile Include="Messaging\Client\IsValidIndicatorTest.cs" />
+    <Compile Include="Messaging\Client\HasChangesIndicatorStub.cs" />
+    <Compile Include="Messaging\Client\IsBusyIndicatorStub.cs" />
+    <Compile Include="Messaging\Client\IsValidIndicatorStub.cs" />
+    <Compile Include="Messaging\Client\OneToManyCommandTest.cs" />
+    <Compile Include="Messaging\Client\OneToOneCommandTest.cs" />
+    <Compile Include="Messaging\Client\RelayCommandOfT1.Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks.Client\03.BuildingBlocks.Client.csproj">

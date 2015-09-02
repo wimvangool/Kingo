@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using Caliburn.Micro;
-using Kingo.BuildingBlocks.ComponentModel.Client;
-using Kingo.BuildingBlocks.ComponentModel.Client.DataVirtualization;
+using Kingo.BuildingBlocks.Messaging.Client;
+using Kingo.BuildingBlocks.Messaging.Client.DataVirtualization;
 
 namespace Kingo.BuildingBlocks.DataVirtualizationDemo.Shell
 {

@@ -115,33 +115,6 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unknown value of type &apos;{0}&apos; specified: {1}..
-        /// </summary>
-        internal static string Message_InvalidOption {
-            get {
-                return ResourceManager.GetString("Message_InvalidOption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot mark message &apos;{0}&apos; as changed because it is marked readonly..
-        /// </summary>
-        internal static string Message_IsReadOnly {
-            get {
-                return ResourceManager.GetString("Message_IsReadOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A service of type &apos;{0}&apos; was already registered..
-        /// </summary>
-        internal static string Message_ServiceAlreadyRegistered {
-            get {
-                return ResourceManager.GetString("Message_ServiceAlreadyRegistered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Index cannot be negative: {0}..
         /// </summary>
         internal static string New_NegativeIndex {

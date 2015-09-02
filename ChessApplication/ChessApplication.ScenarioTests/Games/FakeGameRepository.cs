@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kingo.BuildingBlocks.ComponentModel.Server;
-using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.Messaging;
+using Kingo.BuildingBlocks.Messaging.Domain;
 
 namespace Kingo.ChessApplication.Games
 {

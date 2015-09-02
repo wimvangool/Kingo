@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.BuildingBlocks.Messaging;
 using Microsoft.Practices.Unity;
 
 namespace Kingo.BuildingBlocks.ComponentModel.Server

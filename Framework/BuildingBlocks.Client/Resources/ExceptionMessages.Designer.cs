@@ -61,6 +61,24 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot execute this task because it was already executed or canceled..
+        /// </summary>
+        internal static string AsyncExecutionTask_TaskAlreadyStarted {
+            get {
+                return ResourceManager.GetString("AsyncExecutionTask_TaskAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot execute this method because the current SynchronizationContext is null..
+        /// </summary>
+        internal static string AsyncObject_ContextNotSet {
+            get {
+                return ResourceManager.GetString("AsyncObject_ContextNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid count specified: {0}. Value cannot be negative..
         /// </summary>
         internal static string CountLoadedEventArgs_InvalidCount {

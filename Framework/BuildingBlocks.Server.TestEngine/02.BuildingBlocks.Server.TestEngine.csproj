@@ -58,8 +58,8 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="ComponentModel\Server\Domain\FakeRepository.T3.cs" />
-    <Compile Include="ComponentModel\Server\ScenarioCache.cs" />
+    <Compile Include="Messaging\Domain\FakeRepository.T3.cs" />
+    <Compile Include="Messaging\ScenarioCache.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -71,10 +71,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FailureMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="ComponentModel\Server\GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ComponentModel\Server\Scenario.cs" />
-    <Compile Include="ComponentModel\Server\Scenario.T1.cs" />
+    <Compile Include="Messaging\Scenario.cs" />
+    <Compile Include="Messaging\Scenario.T1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj">

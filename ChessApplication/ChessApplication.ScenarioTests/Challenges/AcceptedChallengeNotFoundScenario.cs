@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.ComponentModel.Constraints;
 using Kingo.BuildingBlocks.ComponentModel.Server;
-using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.Messaging;
+using Kingo.BuildingBlocks.Messaging.Constraints;
+using Kingo.BuildingBlocks.Messaging.Domain;
 using Kingo.ChessApplication.Players;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

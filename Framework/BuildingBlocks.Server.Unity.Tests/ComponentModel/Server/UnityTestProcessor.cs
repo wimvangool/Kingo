@@ -1,4 +1,6 @@
-﻿namespace Kingo.BuildingBlocks.ComponentModel.Server
+﻿using Kingo.BuildingBlocks.Messaging;
+
+namespace Kingo.BuildingBlocks.ComponentModel.Server
 {
     internal sealed class UnityTestProcessor : MessageProcessor
     {

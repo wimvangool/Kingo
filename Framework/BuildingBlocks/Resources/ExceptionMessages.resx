@@ -135,15 +135,6 @@
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>
   </data>
-  <data name="Message_InvalidOption" xml:space="preserve">
-    <value>Unknown value of type '{0}' specified: {1}.</value>
-  </data>
-  <data name="Message_IsReadOnly" xml:space="preserve">
-    <value>Cannot mark message '{0}' as changed because it is marked readonly.</value>
-  </data>
-  <data name="Message_ServiceAlreadyRegistered" xml:space="preserve">
-    <value>A service of type '{0}' was already registered.</value>
-  </data>
   <data name="New_NegativeIndex" xml:space="preserve">
     <value>Index cannot be negative: {0}.</value>
   </data>

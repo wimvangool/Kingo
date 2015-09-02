@@ -1,5 +1,5 @@
 ﻿using System;
-using Kingo.BuildingBlocks.ComponentModel.Server.Domain;
+using Kingo.BuildingBlocks.Messaging.Domain;
 
 namespace Kingo.ChessApplication.Challenges
 {

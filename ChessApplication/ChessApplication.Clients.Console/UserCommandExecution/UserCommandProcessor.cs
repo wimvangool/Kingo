@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.BuildingBlocks.ComponentModel.Server;
+using Kingo.BuildingBlocks.Messaging;
 using Nito.AsyncEx;
 
 namespace Kingo.ChessApplication.UserCommandExecution

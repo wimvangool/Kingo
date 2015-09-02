@@ -7,7 +7,8 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.BuildingBlocks.ComponentModel.Client.DataVirtualization;
+using Kingo.BuildingBlocks.Clocks;
+using Kingo.BuildingBlocks.Messaging.Client.DataVirtualization;
 
 namespace Kingo.BuildingBlocks.DataVirtualizationDemo.Shell
 {

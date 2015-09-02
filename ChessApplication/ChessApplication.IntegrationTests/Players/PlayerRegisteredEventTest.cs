@@ -1,5 +1,6 @@
 ﻿using System;
 using Kingo.BuildingBlocks;
+using Kingo.BuildingBlocks.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication.Players
@@ -46,7 +47,7 @@ namespace Kingo.ChessApplication.Players
             };
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["PlayerId"]);
         }
 
@@ -60,7 +61,7 @@ namespace Kingo.ChessApplication.Players
             var message = new PlayerRegisteredEvent(_ValidPlayerId, _ValidPlayerVersion);
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -73,7 +74,7 @@ namespace Kingo.ChessApplication.Players
             };
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 
@@ -86,7 +87,7 @@ namespace Kingo.ChessApplication.Players
             };
             var errorTree = message.Validate();
 
-            Assert.AreEqual(1, errorTree.TotalErrorCount);
+            Assert.AreEqual(1, errorTree.Errors.Count);
             Assert.IsNotNull(errorTree.Errors["Username"]);
         }
 

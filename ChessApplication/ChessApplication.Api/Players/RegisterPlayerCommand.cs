@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Kingo.BuildingBlocks;
-using Kingo.BuildingBlocks.ComponentModel;
-using Kingo.BuildingBlocks.ComponentModel.Constraints;
+using Kingo.BuildingBlocks.Messaging;
+using Kingo.BuildingBlocks.Messaging.Constraints;
 using Kingo.ChessApplication.Resources;
 
 namespace Kingo.ChessApplication.Players

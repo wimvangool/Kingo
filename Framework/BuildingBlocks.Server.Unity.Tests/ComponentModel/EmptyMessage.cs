@@ -1,4 +1,6 @@
-﻿namespace Kingo.BuildingBlocks.ComponentModel
+﻿using Kingo.BuildingBlocks.Messaging;
+
+namespace Kingo.BuildingBlocks.ComponentModel
 {
     internal sealed class EmptyMessage : Message<EmptyMessage>
     {
