@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Messaging.Constraints
 {
@@ -19,6 +20,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         {
             Assert.IsNotNull(errorTree);
             Assert.AreEqual(1, errorTree.Errors.Count);
+            Assert.IsTrue(errorTree.Errors.ContainsKey(memberName), string.Format("Expected member name '{0}' but was '{1}'.", memberName, errorTree.Errors.Keys.Single()));
             Assert.AreEqual(errorMessage, errorTree.Errors[memberName]);
         }        
     }

@@ -106,7 +106,7 @@ namespace Kingo.ChessApplication.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must be between {0} and {1} characters long..
+        ///   Looks up a localized string similar to A password must be between {constraint.Range.Left} and {constraint.Range.Right} characters long..
         /// </summary>
         internal static string RegisterPlayerCommand_Password_InvalidLength {
             get {
@@ -133,7 +133,7 @@ namespace Kingo.ChessApplication.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A username must be between {0} and {1} characters long..
+        ///   Looks up a localized string similar to A username must be between {constraint.Range.Left} and {constraint.Range.Right} characters long..
         /// </summary>
         internal static string RegisterPlayerCommand_Username_InvalidLength {
             get {

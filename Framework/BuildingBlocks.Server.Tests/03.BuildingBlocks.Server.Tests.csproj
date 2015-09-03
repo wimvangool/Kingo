@@ -87,7 +87,7 @@
     <Compile Include="Messaging\MessageProcessorStub.cs" />
     <Compile Include="Messaging\MessageToStrategyMappingTest.cs" />
     <Compile Include="Messaging\Modules\MessageValidationModuleTest.cs" />
-    <Compile Include="Messaging\SampleApplicationProcessor.cs" />
+    <Compile Include="Messaging\SampleApplication\SampleApplicationProcessor.cs" />
     <Compile Include="Messaging\Modules\TransactionScopeModuleTest.cs" />
     <Compile Include="Messaging\MessageHandlerClassTest.cs" />
     <Compile Include="Messaging\MessageHandlerFactoryStub.cs" />

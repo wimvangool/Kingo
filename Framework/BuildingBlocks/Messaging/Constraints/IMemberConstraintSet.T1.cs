@@ -48,6 +48,6 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception> 
         IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> memberValueFactory, string memberName);                
 
-        #endregion        
+        #endregion                   
     }
 }

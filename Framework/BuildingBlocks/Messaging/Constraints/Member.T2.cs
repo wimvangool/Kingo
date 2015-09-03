@@ -9,11 +9,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     /// <typeparam name="TValue">Type of the member.</typeparam>
     public sealed class Member<T, TValue> : IMember
     {
-        private readonly string _parentName;
+        private readonly string[] _parentNames;
         private readonly string _memberName;
         private readonly Func<T, TValue> _valueFactory;
 
-        internal Member(Func<T, TValue> valueFactory, string memberName, string parentName = null)
+        internal Member(Func<T, TValue> valueFactory, string memberName, string[] parentNames)
         {
             if (valueFactory == null)
             {
@@ -23,7 +23,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("memberName");
             }
-            _parentName = parentName;
+            _parentNames = parentNames;
             _memberName = memberName;
             _valueFactory = valueFactory;
         }        
@@ -35,11 +35,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         {
             get
             {
-                if (_parentName == null)
-                {
-                    return _memberName;
-                }
-                return string.Format("{0}.{1}", _parentName, _memberName);
+                const string separator = ".";
+
+                return _parentNames.Length == 0
+                    ? _memberName
+                    : string.Join(separator, _parentNames) + separator + _memberName;                
             }
         }
 
@@ -73,7 +73,23 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 return this;
             }
-            return new Member<T, TValue>(_valueFactory, nameSelector.Invoke(_memberName), _parentName);            
+            return new Member<T, TValue>(_valueFactory, nameSelector.Invoke(_memberName), _parentNames);            
+        }
+
+        internal Member<T, TResult> Transform<TResult>(IConstraintWithErrorMessage<TValue, TResult> constraint)
+        {
+            Func<T, TResult> valueFactory = value =>
+            {
+                TResult result;
+                IConstraintWithErrorMessage failedConstraint;
+
+                if (constraint.IsSatisfiedBy(GetValue(value), out result, out failedConstraint))
+                {
+                    return result;
+                }
+                return default(TResult);
+            };
+            return new Member<T, TResult>(valueFactory, _memberName, _parentNames);
         }
     }
 }

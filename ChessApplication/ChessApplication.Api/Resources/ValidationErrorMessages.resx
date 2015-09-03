@@ -133,7 +133,7 @@
     <value>A password cannot contains white space characters.</value>
   </data>
   <data name="RegisterPlayerCommand_Password_InvalidLength" xml:space="preserve">
-    <value>A password must be between {0} and {1} characters long.</value>
+    <value>A password must be between {constraint.Range.Left} and {constraint.Range.Right} characters long.</value>
   </data>
   <data name="RegisterPlayerCommand_Password_NotSpecified" xml:space="preserve">
     <value>No password was specified.</value>
@@ -142,7 +142,7 @@
     <value>A username may only contain alphanumeric characters or underscores (_) and cannot start with a number.</value>
   </data>
   <data name="RegisterPlayerCommand_Username_InvalidLength" xml:space="preserve">
-    <value>A username must be between {0} and {1} characters long.</value>
+    <value>A username must be between {constraint.Range.Left} and {constraint.Range.Right} characters long.</value>
   </data>
   <data name="RegisterPlayerCommand_Username_NotSpecified" xml:space="preserve">
     <value>No username was specified.</value>

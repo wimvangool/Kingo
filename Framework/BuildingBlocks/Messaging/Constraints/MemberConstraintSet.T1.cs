@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Kingo.BuildingBlocks.Resources;
 
@@ -10,19 +11,109 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     /// Represents a set of <see cref="IMember"/> instances that are validated by adding run-time constraints.
     /// </summary>
     /// <typeparam name="T">Type of the object the constraints are added for.</typeparam>
-    public class MemberConstraintSet<T> : IMemberConstraintSet<T>, IErrorMessageProducer<T>, IEnumerable<IMemberConstraint<T>>
-    {               
+    public class MemberConstraintSet<T> : IMemberConstraintSet<T>, IErrorMessageProducer<T>
+    {
+        #region [====== ChildConstraintSet  & ChildConstraint ======]
+
+        private sealed class ChildConstraintSet<TOriginal, TResult> : IErrorMessageProducer<TOriginal>, IMemberConstraintSet<TResult>
+        {
+            private readonly MemberConstraintSet<TOriginal> _parentSet;
+            private readonly MemberConstraintSet<TResult> _childSet;
+            private readonly Member<TOriginal, TResult> _member;
+
+            internal ChildConstraintSet(MemberConstraintSet<TOriginal> parentSet, Member<TOriginal, TResult> member)
+            {
+                _parentSet = parentSet;
+                _childSet = new MemberConstraintSet<TResult>(AddChildMemberName(parentSet._parentNames, member.Name));
+                _childSet.ConstraintRemoved += HandleConstraintRemoved;
+                _childSet.ConstraintAdded += HandleConstraintAdded;
+                _member = member;
+            }
+
+            private void HandleConstraintRemoved(object sender, MemberConstraintEventArgs<TResult> arguments)
+            {
+                _parentSet.OnConstraintRemoved(Convert(arguments));
+            }
+
+            private void HandleConstraintAdded(object sender, MemberConstraintEventArgs<TResult> arguments)
+            {
+                _parentSet.OnConstraintAdded(Convert(arguments));
+            }
+
+            private MemberConstraintEventArgs<TOriginal> Convert(MemberConstraintEventArgs<TResult> arguments)
+            {
+                return new MemberConstraintEventArgs<TOriginal>(new ChildConstraint<TOriginal,TResult>(arguments.MemberConstraint, _member));
+            }
+                
+            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Expression<Func<TResult, TValue>> memberExpression)
+            {
+                return _childSet.VerifyThat(memberExpression);
+            }
+
+            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> memberValueFactory, string memberName)
+            {
+                return _childSet.VerifyThat(memberValueFactory, memberName);
+            }
+
+            public bool HasErrors(TOriginal item, IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
+            {
+                return _childSet.HasErrors(_member.GetValue(item), consumer, formatProvider);
+            }
+           
+            private static string[] AddChildMemberName(IReadOnlyList<string> parentNames, string memberName)
+            {
+                var parentNamesPlusMemberName = new string[parentNames.Count + 1];
+
+                for (int index = 0; index < parentNames.Count; index++)
+                {
+                    parentNamesPlusMemberName[index] = parentNames[index];
+                }
+                parentNamesPlusMemberName[parentNames.Count] = memberName;
+
+                return parentNamesPlusMemberName;
+            }
+        }
+
+        private sealed class ChildConstraint<TOriginal, TResult> : IMemberConstraint<TOriginal>
+        {
+            private readonly IMemberConstraint<TResult> _childMemberConstraint;
+            private readonly Member<TOriginal, TResult> _member;
+
+            internal ChildConstraint(IMemberConstraint<TResult> childMemberConstraint, Member<TOriginal, TResult> member)
+            {
+                _childMemberConstraint = childMemberConstraint;
+                _member = member;
+            }
+
+            public IMember Member
+            {
+                get { return _childMemberConstraint.Member; }
+            }
+
+            public bool HasErrors(TOriginal item, IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
+            {
+                return _childMemberConstraint.HasErrors(_member.GetValue(item), consumer, formatProvider);
+            }
+        }
+
+        #endregion
+
         private readonly Dictionary<string, IMemberConstraint<T>> _membersConstraints;
-        private readonly LinkedList<string> _parentMembers;
+        private readonly Dictionary<string, IErrorMessageProducer<T>> _childConstraintSets;
+        private readonly string[] _parentNames;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemberConstraintSet{T}" /> class.
         /// </summary>        
         public MemberConstraintSet()
-        {                        
+            : this(new string[0]) { }
+        
+        private MemberConstraintSet(string[] parentNames)
+        {
             _membersConstraints = new Dictionary<string, IMemberConstraint<T>>();
-            _parentMembers = new LinkedList<string>();
-        }                
+            _childConstraintSets = new Dictionary<string, IErrorMessageProducer<T>>();
+            _parentNames = parentNames;
+        }
 
         /// <inheritdoc />
         public override string ToString()
@@ -32,15 +123,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #region [====== Push & Pop Parent ======]
 
-        internal void PushParent(string parentMemberName)
+        internal void AddChildMemberConstraints<TResult>(Action<IMemberConstraintSet<TResult>> innerConstraintFactory, Member<T, TResult> member)
         {
-            _parentMembers.AddLast(parentMemberName);
-        }
+            if (innerConstraintFactory == null)
+            {
+                throw new ArgumentNullException("innerConstraintFactory");
+            }
+            var childConstraintSet = new ChildConstraintSet<T, TResult>(this, member);
 
-        internal void PopParent()
-        {
-            _parentMembers.RemoveLast();
-        }
+            innerConstraintFactory.Invoke(childConstraintSet);
+
+            _childConstraintSets.Add(member.FullName, childConstraintSet);            
+        }        
 
         #endregion
 
@@ -59,7 +153,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <inheritdoc />
         public IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> memberValueFactory, string memberName)
         {
-            var member = new Member<T, TValue>(memberValueFactory, memberName, DetermineParentName());
+            var member = new Member<T, TValue>(memberValueFactory, memberName, _parentNames);
             var memberConstraint = new MemberConstraint<T, TValue, TValue>(this, member, new TrueConstraint<TValue>());
 
             Put(memberConstraint);
@@ -79,16 +173,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 Add(newConstraint);
             }
-        }
-
-        private string DetermineParentName()
-        {
-            if (_parentMembers.Count == 0)
-            {
-                return null;
-            }
-            return string.Join(".", _parentMembers);
-        }
+        }        
 
         private static string ExtractMemberNameFrom(Expression valueExpression)
         {
@@ -235,31 +320,25 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <inheritdoc />
         public bool HasErrors(T item, IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
         {
+            if (consumer == null)
+            {
+                throw new ArgumentNullException("consumer");
+            }
             var hasAddedErrorMessages = false;
 
-            foreach (var member in _membersConstraints.Values)
+            foreach (var member in MemberConstraints())
             {
                 hasAddedErrorMessages |= member.HasErrors(item, consumer, formatProvider);
             }
             return hasAddedErrorMessages;
         }
 
-        #endregion
-
-        #region [====== IEnumerable ======]
-
-        /// <inheritdoc />
-        public IEnumerator<IMemberConstraint<T>> GetEnumerator()
+        private IEnumerable<IErrorMessageProducer<T>> MemberConstraints()
         {
-            return _membersConstraints.Values.GetEnumerator();
+            return _membersConstraints.Values.Concat(_childConstraintSets.Values);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
+        #endregion        
 
         private static Exception NewMemberAlreadyAddedException(string memberName)
         {

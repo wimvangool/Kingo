@@ -1095,11 +1095,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #region [====== HasLengthBetween ======]
 
         /// <summary>
-        /// Verifies that the <paramref name="member"/>'s value length is between <paramref name="minLength"/> and <paramref name="maxLength"/>.
+        /// Verifies that the <paramref name="member"/>'s value length is between <paramref name="left"/> and <paramref name="right"/>.
         /// </summary>
         /// <param name="member">A member.</param>
-        /// <param name="minLength">The minimum length of the string (inclusive).</param>
-        /// <param name="maxLength">The maximum length of the string (inclusive).</param>
+        /// <param name="left">The minimum length of the string (inclusive).</param>
+        /// <param name="right">The maximum length of the string (inclusive).</param>
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>
@@ -1111,16 +1111,16 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Either <paramref name="minLength"/> or <paramref name="maxLength "/> is smaller than 0, or
-        /// <paramref name="maxLength"/> is smaller than <paramref name="minLength"/>.
+        /// Either <paramref name="left"/> or <paramref name="right"/> is smaller than 0, or
+        /// <paramref name="right"/> is smaller than <paramref name="left"/>.
         /// </exception>
-        public static IMemberConstraint<T, string> HasLengthBetween<T>(this IMemberConstraint<T, string> member, int minLength, int maxLength, string errorMessage = null)
+        public static IMemberConstraint<T, string> HasLengthBetween<T>(this IMemberConstraint<T, string> member, int left, int right, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(HasLengthBetweenConstraint(minLength, maxLength, errorMessage));
+            return member.Satisfies(HasLengthBetweenConstraint(left, right, errorMessage));
         }
 
         /// <summary>

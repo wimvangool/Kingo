@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Transactions;
+using Kingo.BuildingBlocks.Messaging.SampleApplication;
 using Kingo.BuildingBlocks.Messaging.SampleApplication.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

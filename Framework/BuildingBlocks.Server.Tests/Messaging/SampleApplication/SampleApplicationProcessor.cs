@@ -2,7 +2,7 @@
 using System.Reflection;
 using Kingo.BuildingBlocks.ComponentModel.Server;
 
-namespace Kingo.BuildingBlocks.Messaging
+namespace Kingo.BuildingBlocks.Messaging.SampleApplication
 {
     /// <summary>
     /// Represents a <see cref="MessageProcessor" />.
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Messaging
 
         private static bool IsHandlerForMessageProcessorTests(Type type)
         {
-            return type.Namespace == "ServiceComponents.ComponentModel.Server.SampleApplication.MessageHandlers";
+            return type.Namespace.EndsWith("SampleApplication.MessageHandlers");
         }
 
         private static bool IsRepositoryInterface(Type type)

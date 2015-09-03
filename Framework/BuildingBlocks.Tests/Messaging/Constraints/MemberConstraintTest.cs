@@ -43,58 +43,60 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #region [====== And ======]
 
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentNullException))]
-        //public void And_Throws_IfArgumentIsNull()
-        //{
-        //    var message = new ValidatedMessage<object>(new object());
-        //    var validator = new FluentValidator();
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void And_Throws_IfArgumentIsNull()
+        {
+            var message = new ValidatedMessage<object>(new object());
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNotNull(ErrorMessage).And(null); ;
-        //}
+            validator.VerifyThat(m => m.Member).IsNotNull().And(null);
+        }
 
-        //[TestMethod]
-        //public void And_ReturnsNoErrors_IfChildValidationSucceeds()
-        //{
-        //    var message = new ValidatedMessage<object>("Some value");
-        //    var validator = new FluentValidator();
+        [TestMethod]
+        public void And_ReturnsNoErrors_IfChildValidationSucceeds()
+        {
+            var message = new ValidatedMessage<object>("Some value");
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member)
-        //        .IsNotNull(ErrorMessage)
-        //        .IsInstanceOf<string>(ErrorMessage)
-        //        .And(value => validator.VerifyThat(() => value.Length).IsEqualTo(10, ErrorMessage));
+            validator.VerifyThat(m => m.Member).IsNotNull().IsInstanceOf<string>().And(v =>
+            {
+                v.VerifyThat(value => value.Length).IsEqualTo(10);
+            });
 
-        //    validator.Validate(message).AssertNoErrors();
-        //}
+            validator.Validate(message).AssertNoErrors();
+        }
 
-        //[TestMethod]
-        //public void And_ReturnsExpectedError_IfChildValidationFails()
-        //{
-        //    var message = new ValidatedMessage<object>("Some value");
-        //    var validator = new FluentValidator();
+        [TestMethod]
+        public void And_ReturnsExpectedError_IfChildValidationFails()
+        {
+            var message = new ValidatedMessage<object>("Some value");
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member)
-        //        .IsNotNull(ErrorMessage)
-        //        .IsInstanceOf<string>(ErrorMessage)
-        //        .And(value => validator.VerifyThat(() => value.Length).IsNotEqualTo(10, ErrorMessage));
+            validator.VerifyThat(m => m.Member).IsNotNull().IsInstanceOf<string>().And(v =>
+            {
+                v.VerifyThat(value => value.Length).IsNotEqualTo(10, RandomErrorMessage);
+            });
 
-        //    validator.Validate(message).AssertOneError(ErrorMessage, "Member.Length");
-        //}
+            validator.Validate(message).AssertOneError(RandomErrorMessage, "Member.Length");
+        }
 
-        //[TestMethod]
-        //public void And_ReturnsExpectedError_IfChildOfChildValidationFails()
-        //{
-        //    var message = new ValidatedMessage<ValidatedMessage<object>>(new ValidatedMessage<object>("Some value"));
-        //    var validator = new FluentValidator();
+        [TestMethod]
+        public void And_ReturnsExpectedError_IfChildOfChildValidationFails()
+        {
+            var message = new ValidatedMessage<ValidatedMessage<object>>(new ValidatedMessage<object>("Some value"));
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNotNull(ErrorMessage).And(innerMessage =>            
-        //        validator.VerifyThat(() => innerMessage.Member).IsInstanceOf<string>().And(value =>                
-        //            validator.VerifyThat(() => value.Length).IsNotEqualTo(10, ErrorMessage)
-        //        )
-        //    );
+            validator.VerifyThat(m => m.Member).IsNotNull().And(v1 =>
+            {
+                v1.VerifyThat(childMessage => childMessage.Member).IsInstanceOf<string>().And(v2 =>
+                {
+                    v2.VerifyThat(value => value.Length).IsNotEqualTo(10, RandomErrorMessage);
+                });
+            });
 
-        //    validator.Validate(message).AssertOneError(ErrorMessage, "Member.Member.Length");
-        //}
+            validator.Validate(message).AssertOneError(RandomErrorMessage, "Member.Member.Length");
+        }
 
         #endregion
 
@@ -328,7 +330,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotInstanceOf<object>();                
 
-            validator.Validate(message).AssertOneError("Member of type 'System.String' must not be an instance of type 'System.Object'.");
+            validator.Validate(message).AssertOneError("Member of type 'System.Object' must not be an instance of type 'System.Object'.");
         } 
 
         [TestMethod]
@@ -400,7 +402,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf<int>();
 
-            validator.Validate(message).AssertOneError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
+            validator.Validate(message).AssertOneError("Member of type 'System.Object' must be an instance of type 'System.Int32'.");
         } 
 
         [TestMethod]
@@ -446,7 +448,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(int));
 
-            validator.Validate(message).AssertOneError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
+            validator.Validate(message).AssertOneError("Member of type 'System.Object' must be an instance of type 'System.Int32'.");
         }
 
         [TestMethod]

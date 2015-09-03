@@ -51,9 +51,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
                 _member.Type,
                 Value = value
             };
-            var errorMessage = failedConstraint
-                .FormatErrorMessage(formatProvider)
-                .Format(MemberConstraints.MemberId, member, formatProvider);
+            var errorMessage = failedConstraint.FormatErrorMessage(formatProvider).Format(MemberConstraints.MemberId, member, formatProvider);
 
             consumer.Add(_member.FullName, errorMessage.ToString());
             return true;         
@@ -67,21 +65,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <inheritdoc />
         public void And(Action<IMemberConstraintSet<TResult>> innerConstraintFactory)
         {
-            if (innerConstraintFactory == null)
-            {
-                throw new ArgumentNullException("innerConstraintFactory");
-            }
-            _memberConstraintSet.PushParent(_member.Name);
-
-            try
-            {
-                //innerConstraintFactory.Invoke(_memberConstraintSet, _member.Value);                
-                throw new NotImplementedException();
-            }
-            finally
-            {
-                _memberConstraintSet.PopParent();
-            }
+            _memberConstraintSet.AddChildMemberConstraints(innerConstraintFactory, _member.Transform(_constraint));
         }       
 
         #region [====== InstanceOf ======]
