@@ -14,7 +14,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<int?>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).HasValue(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
@@ -25,7 +25,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<int?>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).HasValue();
+            validator.VerifyThat(m => m.Member).IsNotNull();
 
             validator.Validate(message).AssertOneError("Member (<null>) must have a value.");
         }
@@ -37,7 +37,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<int?>(member);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).HasValue(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
         }
@@ -50,7 +50,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member)
-                .HasValue(RandomErrorMessage)
+                .IsNotNull(RandomErrorMessage)
                 .IsEqualTo(member, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();

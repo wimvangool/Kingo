@@ -47,8 +47,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<ICollection<TValue>, ICollection<TValue>> IsNotNullOrEmptyConstraint<TValue>(string errorMessage = null)
         {
-            return New.Constraint<ICollection<TValue>>(collection => collection != null && collection.Count > 0)
-                .WithDisplayFormat("{member.Name}?.Count > 0")
+            return New.Constraint<ICollection<TValue>>(member => member != null && member.Count > 0)                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.CollectionConstraints_IsNotNullOrEmpty)
                 .BuildConstraint();
         }
@@ -91,8 +90,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<ICollection<TValue>, ICollection<TValue>> IsNullOrEmptyConstraint<TValue>(string errorMessage = null)
         {
-            return New.Constraint<ICollection<TValue>>(collection => collection == null || collection.Count == 0)
-                .WithDisplayFormat("{member.Name} == null || {member.Name}.Count == 0")
+            return New.Constraint<ICollection<TValue>>(member => member == null || member.Count == 0)                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.CollectionConstraints_IsNullOrEmpty)
                 .BuildConstraint();
         }
@@ -146,8 +144,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw New.NegativeIndexException(index);
             }
-            return New.Constraint<ICollection<TValue>, TValue>(collection => index < collection.Count, collection => collection.ElementAt(index))
-                .WithDisplayFormat("{member.Index} < {member.Name}.Count")
+            return New.Constraint<ICollection<TValue>, TValue>(member => index < member.Count, member => member.ElementAt(index), "{constraint.Index} < {member.Name}.Count")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.CollectionConstraints_ElementAt)
                 .WithArguments(new { Index = index })
                 .BuildConstraint();

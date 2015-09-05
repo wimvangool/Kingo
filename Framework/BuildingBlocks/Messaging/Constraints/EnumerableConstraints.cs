@@ -47,8 +47,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<IEnumerable<TValue>, IEnumerable<TValue>> IsNotNullOrEmptyConstraint<TValue>(string errorMessage = null)
         {
-            return New.Constraint<IEnumerable<TValue>>(collection => collection != null && collection.Any())
-                .WithDisplayFormat("{member.Name}?.Count > 0")
+            return New.Constraint<IEnumerable<TValue>>(member => member != null && member.Any())                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.EnumerableConstraints_IsNotNullOrEmpty)
                 .BuildConstraint();
         }
@@ -91,8 +90,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<IEnumerable<TValue>, IEnumerable<TValue>> IsNullOrEmptyConstraint<TValue>(string errorMessage = null)
         {
-            return New.Constraint<IEnumerable<TValue>>(collection => collection == null || !collection.Any())
-                .WithDisplayFormat("{member.Name} == null || {member.Name}.Count == 0")
+            return New.Constraint<IEnumerable<TValue>>(member => member == null || !member.Any())                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.EnumerableConstraints_IsNullOrEmpty)
                 .BuildConstraint();
         }
@@ -137,12 +135,24 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw New.NegativeIndexException(index);
             }
-            return New.Constraint<IEnumerable<TValue>, TValue>(collection => collection.Skip(index).Any(), collection => collection.ElementAt(index))
-                .WithDisplayFormat("{member.Index} < {member.Name}.Count")
+            DelegateConstraint<IEnumerable<TValue>, TValue>.Implementation constraint = delegate(IEnumerable<TValue> member, out TValue element)
+            {                
+                try
+                {
+                    element = member.Skip(index).First();
+                    return true;
+                }
+                catch (InvalidOperationException)
+                {
+                    element = default(TValue);
+                    return false;
+                }
+            };
+            return New.Constraint(constraint, "{constraint.Index} < {member.Name}.Count()")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.EnumerableConstraints_ElementAt)
                 .WithArguments(new { Index = index })
                 .BuildConstraint();
-        }
+        }       
 
         #endregion
     }

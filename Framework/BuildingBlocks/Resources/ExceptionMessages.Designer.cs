@@ -61,33 +61,6 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constraint &apos;{0}&apos; does not allow null values to be checked. Consider placing an IsNotNullConstraint in front of this constraint..
-        /// </summary>
-        internal static string DelegateConstraint_NullValueNotAllowed {
-            get {
-                return ResourceManager.GetString("DelegateConstraint_NullValueNotAllowed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No constraint implementation has been specified..
-        /// </summary>
-        internal static string DelegateConstraintBuilder_MissingConstraint {
-            get {
-                return ResourceManager.GetString("DelegateConstraintBuilder_MissingConstraint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No displayFormat of the constraint has been specified..
-        /// </summary>
-        internal static string DelegateConstraintBuilder_MissingDisplayFormat {
-            get {
-                return ResourceManager.GetString("DelegateConstraintBuilder_MissingDisplayFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A member with name &apos;{0}&apos; has already been added to the set..
         /// </summary>
         internal static string MemberSet_MemberAlreadyAdded {

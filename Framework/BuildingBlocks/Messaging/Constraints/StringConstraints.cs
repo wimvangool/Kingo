@@ -45,8 +45,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, string> IsNotNullOrEmptyConstraint(string errorMessage = null)
         {
-            return New.Constraint<string>(value => !string.IsNullOrEmpty(value))
-                .WithDisplayFormat("{member.Name} != null && {member.Name}.Length > 0")
+            return New.Constraint<string>(member => !string.IsNullOrEmpty(member))                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NotNullOrEmpty)
                 .BuildConstraint();
         }        
@@ -88,8 +87,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, string> IsNullOrEmptyConstraint(string errorMessage = null)
         {
-            return New.Constraint<string>(string.IsNullOrEmpty)
-                .WithDisplayFormat("{member.Name} == null || {member.Name}.Length == 0")
+            return New.Constraint<string>(member => string.IsNullOrEmpty(member))                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NullOrEmpty)
                 .BuildConstraint();
         }        
@@ -131,8 +129,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, string> IsNotNullOrWhiteSpaceConstraint(string errorMessage = null)
         {
-            return New.Constraint<string>(value => !string.IsNullOrWhiteSpace(value))
-                .WithDisplayFormat("!string.IsNullOrWhiteSpace({member.Name})")
+            return New.Constraint<string>(member => !string.IsNullOrWhiteSpace(member))                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NotNullOrWhiteSpace)
                 .BuildConstraint();
         }        
@@ -174,8 +171,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, string> IsNullOrWhiteSpaceConstraint(string errorMessage = null)
         {
-            return New.Constraint<string>(string.IsNullOrWhiteSpace)
-                .WithDisplayFormat("string.IsNullOrWhiteSpace({member.Name})")
+            return New.Constraint<string>(member => string.IsNullOrWhiteSpace(member))                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NullOrWhiteSpace)
                 .BuildConstraint();
         }       
@@ -221,8 +217,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, string> IsNotEqualToConstraint(string other, StringComparison compareType, string errorMessage = null)
         {
-            return New.Constraint<string>(value => !string.Equals(value, other, compareType))
-                .WithDisplayFormat("{member.Name} != {member.Other}")
+            return New.Constraint<string>(member => !string.Equals(member, other, compareType), "{member.Name} != {constraint.Other}")              
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -269,8 +264,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, string> IsEqualToConstraint(string other, StringComparison compareType, string errorMessage = null)
         {
-            return New.Constraint<string>(value => string.Equals(value, other, compareType))
-                .WithDisplayFormat("{member.Name} == {member.Other}")
+            return New.Constraint<string>(member => string.Equals(member, other, compareType), "{member.Name} == {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -365,8 +359,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("prefix");
             }
-            return New.Constraint<string>(value => !value.StartsWith(prefix, compareType))
-                .WithDisplayFormat("!{member.Name}.StartsWith({member.Prefix})")
+            return New.Constraint<string>(member => !member.StartsWith(prefix, compareType), "!{member.Name}.StartsWith({constraint.Prefix})")              
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotStartWith)
                 .WithArguments(new { Prefix = prefix })
                 .BuildConstraint();
@@ -461,8 +454,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("prefix");
             }
-            return New.Constraint<string>(value => value.StartsWith(prefix, compareType))
-                .WithDisplayFormat("{member.Name}.StartsWith({member.Prefix})")
+            return New.Constraint<string>(member => member.StartsWith(prefix, compareType), "{member.Name}.StartsWith({constraint.Prefix})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_StartsWith)
                 .WithArguments(new { Prefix = prefix })
                 .BuildConstraint();
@@ -557,8 +549,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("postfix");
             }
-            return New.Constraint<string>(value => !value.EndsWith(postfix, compareType))
-                .WithDisplayFormat("!{member.Name}.EndsWith({member.Postfix})")
+            return New.Constraint<string>(member => !member.EndsWith(postfix, compareType), "!{member.Name}.EndsWith({constraint.Postfix})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotEndWith)
                 .WithArguments(new { Postfix = postfix })
                 .BuildConstraint();
@@ -653,8 +644,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("postfix");
             }
-            return New.Constraint<string>(value => value.EndsWith(postfix, compareType))
-                .WithDisplayFormat("{member.Name}.EndsWith({member.Postfix})")
+            return New.Constraint<string>(member => member.EndsWith(postfix, compareType), "{member.Name}.EndsWith({constraint.Postfix})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_EndsWith)
                 .WithArguments(new { Postfix = postfix })
                 .BuildConstraint();
@@ -744,8 +734,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("value");
             }
-            return New.Constraint<string>(v => !v.Contains(value))
-                .WithDisplayFormat("!{member.Name}.Contains({member.Value})")
+            return New.Constraint<string>(member => !member.Contains(value), "!{member.Name}.Contains({constraint.Value})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotContain)
                 .WithArguments(new { Value = value })
                 .BuildConstraint();
@@ -835,8 +824,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("value");
             }
-            return New.Constraint<string>(v => v.Contains(value))
-                .WithDisplayFormat("{member.Name}.Contains({member.Value})")
+            return New.Constraint<string>(member => member.Contains(value), "{member.Name}.Contains({constraint.Value})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_Contains)
                 .WithArguments(new { Value = value })
                 .BuildConstraint();
@@ -931,8 +919,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("pattern");
             }
-            return New.Constraint<string>(value => !Regex.IsMatch(value, pattern, options))
-                .WithDisplayFormat("!{member.Name}.Matches({member.Pattern})")
+            return New.Constraint<string>(member => !Regex.IsMatch(member, pattern, options), "!Regex.IsMatch({member.Name}, {constraint.Pattern})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotMatch)
                 .WithArguments(new { Pattern = pattern })
                 .BuildConstraint();
@@ -1012,7 +999,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string matches a certain pattern.
         /// </summary>        
         /// <param name="pattern">The pattern to match.</param>
-        /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
+        /// <param name="options">A bitwise combination of the enumeration members that provide options for matching.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
         /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
@@ -1027,8 +1014,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("pattern");
             }
-            return New.Constraint<string>(value => Regex.IsMatch(value, pattern, options))
-                .WithDisplayFormat("{member.Name}.Matches({member.Pattern})")
+            return New.Constraint<string>(member => Regex.IsMatch(member, pattern, options), "Regex.IsMatch({member.Name}, {constraint.Pattern})")              
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_Matches)
                 .WithArguments(new { Pattern = pattern })
                 .BuildConstraint();
@@ -1083,8 +1069,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw NewNegativeLengthException("length", length);
             }
-            return New.Constraint<string>(value => value.Length == length)
-                .WithDisplayFormat("{member.Name}.Length == {member.Length}")
+            return New.Constraint<string>(member => member.Length == length, "{member.Name}.Length == {constraint.Length}")               
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_HasLengthOf)
                 .WithArguments(new { Length = length })
                 .BuildConstraint();
@@ -1192,8 +1177,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("range");
             }
-            return New.Constraint<string>(value => range.Contains(value.Length))
-                .WithDisplayFormat("{member.Name}.Length in {member.Range}")
+            return New.Constraint<string>(member => range.Contains(member.Length), "{constraint.Range}.Contains({member.Name}.Length)")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_HasLengthBetween)
                 .WithArguments(new { Range = range })
                 .BuildConstraint();
@@ -1274,9 +1258,12 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
         public static IConstraintWithErrorMessage<string, byte> IsByteConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
-        {            
-            return New.Constraint(delegate(string value, out byte result) { return byte.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("byte.Parse({member.Name})")
+        {
+            DelegateConstraint<string, byte>.Implementation constraint = delegate(string member, out byte result)
+            {
+                return byte.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is byte")               
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsByte)
                 .BuildConstraint();
         }
@@ -1350,8 +1337,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, sbyte> IsSByteConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return New.Constraint(delegate(string value, out sbyte result) { return sbyte.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("sbyte.Parse({member.Name})")
+            DelegateConstraint<string, sbyte>.Implementation constraint = delegate(string member, out sbyte result)
+            {
+                return sbyte.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is sbyte") 
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsSByte)
                 .BuildConstraint();
         }
@@ -1393,8 +1383,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, char> IsCharConstraint(string errorMessage = null)
         {
-            return New.Constraint<string, char>(value => value != null && value.Length == 1, value => value[0])
-                .WithDisplayFormat("{member.Name}[0]")
+            return New.Constraint<string, char>(member => member != null && member.Length == 1, member => member[0])                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsChar)
                 .BuildConstraint();
         }
@@ -1468,8 +1457,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, short> IsInt16Constraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return New.Constraint(delegate(string value, out short result) { return short.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("short.Parse({member.Name})")
+            DelegateConstraint<string, short>.Implementation constraint = delegate(string member, out short result)
+            {
+                return short.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is Int16") 
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsInt16)
                 .BuildConstraint();
         }
@@ -1531,7 +1523,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a 32-bit integer.
         /// </summary>        
         /// <param name="style">
-        /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
+        /// A bitwise combination of enumeration members that indicates the style elements that can be present in a value.
         /// </param>
         /// <param name="formatProvider">
         /// An object that supplies culture-specific formatting information about a value.
@@ -1543,8 +1535,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, int> IsInt32Constraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return New.Constraint(delegate(string value, out int result) { return int.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("int.Parse({member.Name})")
+            DelegateConstraint<string, int>.Implementation constraint = delegate(string member, out int result)
+            {
+                return int.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is Int32") 
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsInt32)
                 .BuildConstraint();
         }
@@ -1618,8 +1613,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, long> IsInt64Constraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return New.Constraint(delegate(string value, out long result) { return long.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("long.Parse({member.Name})")
+            DelegateConstraint<string, long>.Implementation constraint = delegate(string member, out long result)
+            {
+                return long.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is Int64") 
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsInt64)
                 .BuildConstraint();
         }
@@ -1693,8 +1691,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, float> IsSingleConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return New.Constraint(delegate(string value, out float result) { return float.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("float.Parse({member.Name})")
+            DelegateConstraint<string, float>.Implementation constraint = delegate(string member, out float result)
+            {
+                return float.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is Single") 
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsSingle)
                 .BuildConstraint();
         }
@@ -1768,8 +1769,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, double> IsDoubleConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return New.Constraint(delegate(string value, out double result) { return double.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("double.Parse({member.Name})")
+            DelegateConstraint<string, double>.Implementation constraint = delegate(string member, out double result)
+            {
+                return double.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is Double") 
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsDouble)
                 .BuildConstraint();
         }
@@ -1843,8 +1847,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<string, decimal> IsDecimalConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return New.Constraint(delegate(string value, out decimal result) { return decimal.TryParse(value, style, formatProvider, out result); })
-                .WithDisplayFormat("decimal.Parse({member.Name})")
+            DelegateConstraint<string, decimal>.Implementation constraint = delegate(string member, out decimal result)
+            {
+                return decimal.TryParse(member, style, formatProvider, out result);
+            };
+            return New.Constraint(constraint, "{member.Name} is Decimal") 
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsDecimal)
                 .BuildConstraint();
         }

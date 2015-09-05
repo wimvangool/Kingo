@@ -57,6 +57,7 @@
     <Compile Include="Clocks\ClockWithOffsetTest.cs" />
     <Compile Include="Messaging\Constraints\BooleanConstraintTest.cs" />
     <Compile Include="Messaging\Constraints\ConstraintTest.cs" />
+    <Compile Include="Messaging\Constraints\DelegateConstraintBuilderTest.cs" />
     <Compile Include="Messaging\EmptyMessage.cs" />
     <Compile Include="Messaging\RequiredValueMessage.T1.cs" />
     <Compile Include="StringTemplateTest.cs" />

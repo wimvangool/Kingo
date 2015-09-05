@@ -37,8 +37,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
         public static IConstraintWithErrorMessage<Guid, Guid> IsNotEmptyConstraint(string errorMessage = null)
         {
-            return New.Constraint<Guid>(value => !value.Equals(Guid.Empty))
-                .WithDisplayFormat(string.Format("{{member.Name}} != {0}", Guid.Empty))
+            return New.Constraint<Guid>(member => !member.Equals(Guid.Empty), string.Format("{{member.Name}} != {0}", Guid.Empty))               
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.GuidConstraints_IsNotEmpty)
                 .BuildConstraint();
         }        
@@ -74,8 +73,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
         public static IConstraintWithErrorMessage<Guid, Guid> IsEmptyConstraint(string errorMessage = null)
         {
-            return New.Constraint<Guid>(value => value.Equals(Guid.Empty))
-                .WithDisplayFormat(string.Format("{{member.Name}} == {0}", Guid.Empty))
+            return New.Constraint<Guid>(member => member.Equals(Guid.Empty), string.Format("{{member.Name}} == {0}", Guid.Empty))                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.GuidConstraints_IsEmpty)
                 .BuildConstraint();
         }        

@@ -41,8 +41,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<bool, bool> IsTrueConstraint(string errorMessage = null)
         {
-            return New.Constraint<bool>(value => value)
-                .WithDisplayFormat("{member.Name} == true")
+            return New.Constraint<bool>(member => member)                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.BooleanConstraints_IsTrue)
                 .BuildConstraint();
         }
@@ -80,8 +79,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<bool, bool> IsFalseConstraint(string errorMessage = null)
         {
-            return New.Constraint<bool>(value => !value)
-                .WithDisplayFormat("{member.Name} == false")
+            return New.Constraint<bool>(member => !member)                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.BooleanConstraints_IsFalse)
                 .BuildConstraint();
         }

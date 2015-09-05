@@ -56,8 +56,8 @@
     <Compile Include="Messaging\Constraints\Constraint.T1.cs" />
     <Compile Include="Messaging\Constraints\ConstraintWithErrorMessage.T2.cs" />
     <Compile Include="Messaging\Constraints\DelegateConstraint.T2.cs" />
-    <Compile Include="Messaging\Constraints\DelegateConstraintBuilder.T1.cs" />
     <Compile Include="Messaging\Constraints\DelegateConstraintBuilder.T2.cs" />
+    <Compile Include="Messaging\Constraints\DisplayFormatFactory.cs" />
     <Compile Include="Messaging\Constraints\IConstraintWithErrorMessage.cs" />
     <Compile Include="Messaging\Constraints\IConstraintWithErrorMessage.T2.cs" />
     <Compile Include="Messaging\Constraints\IMemberConstraint.T2.cs" />

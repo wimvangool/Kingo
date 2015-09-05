@@ -55,8 +55,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsNotNullConstraint<TValue>(string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => !ReferenceEquals(value, null))
-                .WithDisplayFormat("{member.Name} != null")
+            return New.Constraint<TValue>(member => !ReferenceEquals(member, null), "{member.Name} != null")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotNull)
                 .BuildConstraint();
         }        
@@ -96,8 +95,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsNullConstraint<TValue>(string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => ReferenceEquals(value, null))
-                .WithDisplayFormat("{member.Name} == null")
+            return New.Constraint<TValue>(member => ReferenceEquals(member, null), "{member.Name} == null")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNull)
                 .BuildConstraint();
         }        
@@ -142,8 +140,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsNotSameInstanceAsConstraint<TValue>(object other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => !ReferenceEquals(value, other))
-                .WithDisplayFormat("{member.Name} !== {member.Other}")
+            return New.Constraint<TValue>(member => !ReferenceEquals(member, other))                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotSameInstanceAs)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -189,8 +186,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsSameInstanceAsConstraint<TValue>(object other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => ReferenceEquals(value, other))
-                .WithDisplayFormat("{member.Name} === {member.Other}")
+            return New.Constraint<TValue>(member => ReferenceEquals(member, other))                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsSameInstanceAs)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -243,8 +239,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("type");
             }
-            return New.Constraint<TValue>(value => !type.IsInstanceOfType(value))
-                .WithDisplayFormat("!({member.Name} is {member.Type.Name})")
+            return New.Constraint<TValue>(member => !type.IsInstanceOfType(member), "!({member.Name} is {constraint.Type.Name})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotInstanceOf)
                 .WithArguments(new { Type = type })
                 .BuildConstraint();
@@ -297,8 +292,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("type");
             }
-            return New.Constraint<TValue>(value => type.IsInstanceOfType(value))
-                .WithDisplayFormat("({member.Name} is {member.Type.Name})")
+            return New.Constraint<TValue>(member => type.IsInstanceOfType(member), "{member.Name} is {constraint.Type.Name}")            
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsInstanceOf)
                 .WithArguments(new { Type = type })
                 .BuildConstraint();
@@ -315,9 +309,8 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TOther> IsInstanceOfConstraint<TValue, TOther>(string errorMessage = null)
-        {            
-            return New.Constraint<TValue, TOther>(value => value is TOther, value => (TOther) (object) value)
-                .WithDisplayFormat("({member.Name} is {member.Type.Name})")
+        {
+            return New.Constraint<TValue, TOther>(member => member is TOther, member => (TOther) (object) member, "{member.Name} is {constraint.Type.Name}")           
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsInstanceOf)
                 .WithArguments(new { Type = typeof(TOther) })
                 .BuildConstraint();
@@ -436,8 +429,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsNotEqualToConstraint<TValue>(object other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => !Equals(value, other))
-                .WithDisplayFormat("{member.Name} != {member.Other}")
+            return New.Constraint<TValue>(member => !Equals(member, other), "{member.Name} != {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -486,8 +478,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsNotEqualToConstraint<TValue>(IEquatable<TValue> other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => !Comparer.IsEqualTo(value, other))
-                .WithDisplayFormat("{member.Name} != {member.Other}")
+            return New.Constraint<TValue>(member => !Comparer.IsEqualTo(member, other), "{member.Name} != {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -606,8 +597,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsEqualToConstraint<TValue>(object other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => Equals(value, other))
-                .WithDisplayFormat("{member.Name} == {member.Other}")
+            return New.Constraint<TValue>(member => Equals(member, other), "{member.Name} == {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -656,8 +646,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsEqualToConstraint<TValue>(IEquatable<TValue> other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => Comparer.IsEqualTo(value, other))
-                .WithDisplayFormat("{member.Name} == {member.Other}")
+            return New.Constraint<TValue>(member => Comparer.IsEqualTo(member, other), "{member.Name} == {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -736,7 +725,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a value is ...
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a value is smaller than <paramref name="other"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to check.</typeparam>
         /// <param name="other">The instance to compare the member's value to.</param>   
@@ -747,8 +736,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsSmallerThanConstraint<TValue>(IComparable<TValue> other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => Comparer.IsSmallerThan(value, other))
-                .WithDisplayFormat("{member.Name} < {member.Other}")
+            return New.Constraint<TValue>(member => Comparer.IsSmallerThan(member, other), "{member.Name} < {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsSmallerThan)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -827,7 +815,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a value is ...
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a value is smaller than or equal to <paramref name="other"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to check.</typeparam>
         /// <param name="other">The instance to compare the member's value to.</param>  
@@ -838,8 +826,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsSmallerThanOrEqualToConstraint<TValue>(IComparable<TValue> other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => Comparer.IsSmallerThanOrEqualTo(value, other))
-                .WithDisplayFormat("{member.Name} <= {member.Other}")
+            return New.Constraint<TValue>(member => Comparer.IsSmallerThanOrEqualTo(member, other), "{member.Name} <= {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsSmallerThanOrEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -929,8 +916,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsGreaterThanConstraint<TValue>(IComparable<TValue> other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => Comparer.IsGreaterThan(value, other))
-                .WithDisplayFormat("{member.Name} > {member.Other}")
+            return New.Constraint<TValue>(member => Comparer.IsGreaterThan(member, other), "{member.Name} > {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsGreaterThan)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -993,7 +979,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a value is ...
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a value is greater than or equal to <paramref name="other"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to check.</typeparam>
         /// <param name="other">The instance to compare the member's value to.</param>
@@ -1020,8 +1006,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// </exception>
         public static IConstraintWithErrorMessage<TValue, TValue> IsGreaterThanOrEqualToConstraint<TValue>(IComparable<TValue> other, string errorMessage = null)
         {
-            return New.Constraint<TValue>(value => Comparer.IsGreaterThanOrEqualTo(value, other))
-                .WithDisplayFormat("{member.Name} >= {member.Other}")
+            return New.Constraint<TValue>(member => Comparer.IsGreaterThanOrEqualTo(member, other), "{member.Name} >= {constraint.Other}")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsGreaterThanOrEqualTo)
                 .WithArguments(new { Other = other })
                 .BuildConstraint();
@@ -1269,8 +1254,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("range");
             }                       
-            return New.Constraint<TValue>(value => !range.Contains(value))
-                .WithDisplayFormat("!({member.Name} in {member.Range}")
+            return New.Constraint<TValue>(member => !range.Contains(member), "!{constraint.Range}.Contains({member.Name})")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotInRange)
                 .WithArguments(new { Range = range })
                 .BuildConstraint();
@@ -1514,9 +1498,8 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             if (range == null)
             {
                 throw new ArgumentNullException("range");
-            }            
-            return New.Constraint<TValue>(range.Contains)
-                .WithDisplayFormat("!({member.Name} in {member.Range}")
+            }
+            return New.Constraint<TValue>(range.Contains, "({constraint.Range}.Contains({member.Name}))")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsInRange)
                 .WithArguments(new { Range = range })
                 .BuildConstraint();

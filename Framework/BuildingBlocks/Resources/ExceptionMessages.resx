@@ -117,15 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DelegateConstraintBuilder_MissingConstraint" xml:space="preserve">
-    <value>No constraint implementation has been specified.</value>
-  </data>
-  <data name="DelegateConstraintBuilder_MissingDisplayFormat" xml:space="preserve">
-    <value>No displayFormat of the constraint has been specified.</value>
-  </data>
-  <data name="DelegateConstraint_NullValueNotAllowed" xml:space="preserve">
-    <value>Constraint '{0}' does not allow null values to be checked. Consider placing an IsNotNullConstraint in front of this constraint.</value>
-  </data>
   <data name="MemberSet_MemberAlreadyAdded" xml:space="preserve">
     <value>A member with name '{0}' has already been added to the set.</value>
   </data>

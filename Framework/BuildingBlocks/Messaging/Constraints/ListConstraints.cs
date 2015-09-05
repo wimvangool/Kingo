@@ -54,8 +54,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw New.NegativeIndexException(index);
             }
-            return New.Constraint<IList<TValue>, TValue>(list => index < list.Count, collection => collection[index])
-                .WithDisplayFormat("{member.Index} < {member.Name}.Count")
+            return New.Constraint<IList<TValue>, TValue>(member => index < member.Count, member => member[index], "{constraint.Index} < {member.Name}.Count")                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.ListConstraints_ElementAt)
                 .WithArguments(new { Index = index })
                 .BuildConstraint();

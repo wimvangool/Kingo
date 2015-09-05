@@ -13,6 +13,7 @@ namespace Kingo.BuildingBlocks.Messaging
     /// Provides a base-implementation of the <see cref="IMessage" /> interface.
     /// </summary>
     [Serializable]
+    [DataContract(Namespace = "http://www.kingo.com/buildingblocks")]
     public abstract class Message : IMessage, IExtensibleDataObject
     {
         private ExtensionDataObject _extensionData;

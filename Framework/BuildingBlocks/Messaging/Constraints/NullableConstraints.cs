@@ -24,13 +24,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> HasValue<T, TValue>(this IMemberConstraint<T, TValue?> member, string errorMessage = null) where TValue : struct
+        public static IMemberConstraint<T, TValue> IsNotNull<T, TValue>(this IMemberConstraint<T, TValue?> member, string errorMessage = null) where TValue : struct
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }            
-            return member.Satisfies(HasValueConstraint<TValue>(errorMessage));
+            return member.Satisfies(IsNotNullConstraint<TValue>(errorMessage));
         }
 
         /// <summary>
@@ -42,10 +42,9 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<TValue?, TValue> HasValueConstraint<TValue>(string errorMessage = null) where TValue : struct
+        public static IConstraintWithErrorMessage<TValue?, TValue> IsNotNullConstraint<TValue>(string errorMessage = null) where TValue : struct
         {
-            return New.Constraint<TValue?, TValue>(value => value.HasValue, value => value.Value)
-                .WithDisplayFormat("{member.Name}.HasValue")
+            return New.Constraint<TValue?, TValue>(member => member.HasValue, value => value.Value)                
                 .WithErrorFormat(errorMessage ?? ConstraintErrors.NullableConstraints_IsNotNull)
                 .BuildConstraint();
         }

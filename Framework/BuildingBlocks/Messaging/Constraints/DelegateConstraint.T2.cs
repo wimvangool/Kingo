@@ -39,7 +39,23 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="displayFormat"/> or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public DelegateConstraint(Implementation implementation, string displayFormat, string errorMessage = null, Func<object> arguments = null)            
+        public DelegateConstraint(Implementation implementation, string displayFormat, string errorMessage = null, Func<object> arguments = null)
+            : this(implementation, StringTemplate.Parse(displayFormat), StringTemplate.Parse(errorMessage ?? ConstraintErrors.MemberConstraints_Default), arguments) { }        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateConstraint{T, S}" /> class.
+        /// </summary>
+        /// <param name="implementation">Delegate that represents the implementation of this constraint.</param>   
+        /// <param name="displayFormat">Format string that will be used to create a string-representation of this constraint.</param>
+        /// <param name="errorMessage">The error message that belongs to this constraint.</param>
+        /// <param name="arguments">
+        /// If specified, this delegate will be used to create the argument-instance to replace all placeholder values of the constraint
+        /// within the <paramref name="displayFormat"/> and <paramref name="errorMessage"/>.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="implementation"/> or <paramref name="displayFormat"/> is <c>null</c>.
+        /// </exception>        
+        public DelegateConstraint(Implementation implementation, StringTemplate displayFormat, StringTemplate errorMessage = null, Func<object> arguments = null)
         {
             if (implementation == null)
             {
@@ -49,11 +65,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw new ArgumentNullException("displayFormat");
             }
-            _implementation = implementation;  
-            _displayFormat = StringTemplate.Parse(displayFormat);
-            _errorMessage = StringTemplate.Parse(errorMessage ?? ConstraintErrors.MemberConstraints_Default);
+            _implementation = implementation;
+            _displayFormat = displayFormat;
+            _errorMessage = errorMessage;
             _arguments = arguments;
-        }       
+        } 
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value, out TResult result, out IConstraintWithErrorMessage failedConstraint)
