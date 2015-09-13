@@ -5,23 +5,23 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 {
     internal static class DataErrorInfoExtensions
     {
-        internal static void AssertNoErrors(this DataErrorInfo errorTree)
+        internal static void AssertNoErrors(this DataErrorInfo errorInfo)
         {
-            Assert.IsNotNull(errorTree);
-            Assert.AreEqual(0, errorTree.Errors.Count);
+            Assert.IsNotNull(errorInfo);
+            Assert.AreEqual(0, errorInfo.Errors.Count);
         }
 
-        internal static void AssertOneError(this DataErrorInfo errorTree, string errorMessage)
+        internal static void AssertOneError(this DataErrorInfo errorInfo, string errorMessage)
         {
-            AssertOneError(errorTree, errorMessage, "Member");
+            AssertOneError(errorInfo, errorMessage, "Member");
         }
 
-        internal static void AssertOneError(this DataErrorInfo errorTree, string errorMessage, string memberName)
+        internal static void AssertOneError(this DataErrorInfo errorInfo, string errorMessage, string memberName)
         {
-            Assert.IsNotNull(errorTree);
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsTrue(errorTree.Errors.ContainsKey(memberName), string.Format("Expected member name '{0}' but was '{1}'.", memberName, errorTree.Errors.Keys.Single()));
-            Assert.AreEqual(errorMessage, errorTree.Errors[memberName]);
-        }        
+            Assert.IsNotNull(errorInfo);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsTrue(errorInfo.Errors.ContainsKey(memberName), string.Format("Expected member name '{0}' but was '{1}'.", memberName, errorInfo.Errors.Keys.Single()));
+            Assert.AreEqual(errorMessage, errorInfo.Errors[memberName]);
+        }               
     }
 }

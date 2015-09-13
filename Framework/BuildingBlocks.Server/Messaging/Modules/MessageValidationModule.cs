@@ -23,10 +23,10 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
             {
                 throw new ArgumentNullException("handler");
             }
-            var errorTree = await Validate(handler.Message);
-            if (errorTree.Errors.Count > 0)
+            var errorInfo = await Validate(handler.Message);
+            if (errorInfo.Errors.Count > 0)
             {
-                throw NewInvalidMessageException(handler.Message, errorTree);
+                throw NewInvalidMessageException(handler.Message, errorInfo);
             }
             await handler.InvokeAsync();
         }
@@ -46,11 +46,11 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         /// <paramref name="message"/> is not valid.
         /// </summary>
         /// <param name="message">The invalid message.</param>
-        /// <param name="errorTree">The <see cref="DataErrorInfo" /> containing all validation errors.</param>
+        /// <param name="errorInfo">The <see cref="DataErrorInfo" /> containing all validation errors.</param>
         /// <returns>A new <see cref="InvalidMessageException"/>.</returns>
-        protected virtual InvalidMessageException NewInvalidMessageException(IMessage message, DataErrorInfo errorTree)
+        protected virtual InvalidMessageException NewInvalidMessageException(IMessage message, DataErrorInfo errorInfo)
         {
-            return new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, errorTree);
+            return new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, errorInfo);
         }
     }
 }

@@ -26,27 +26,27 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNotNullOrEmpty<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> IsNotNullOrEmpty<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                        
-            return member.Satisfies(IsNotNullOrEmptyConstraint(errorMessage));
+            return member.Satisfies(IsNotNullOrEmptyConstraint<TMessage>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string is not null or empty.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string is not null or empty.
         /// </summary>        
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> IsNotNullOrEmptyConstraint(string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> IsNotNullOrEmptyConstraint<TMessage>(string errorMessage = null)
         {
-            return New.Constraint<string>(member => !string.IsNullOrEmpty(member))                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NotNullOrEmpty)
+            return New.Constraint<TMessage, string>(member => !string.IsNullOrEmpty(member))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_NotNullOrEmpty)
                 .BuildConstraint();
         }        
 
@@ -68,27 +68,27 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNullOrEmpty<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> IsNullOrEmpty<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsNullOrEmptyConstraint(errorMessage));
+            return member.Satisfies(IsNullOrEmptyConstraint<TMessage>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string is null or empty.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string is null or empty.
         /// </summary>        
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> IsNullOrEmptyConstraint(string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> IsNullOrEmptyConstraint<TMessage>(string errorMessage = null)
         {
-            return New.Constraint<string>(member => string.IsNullOrEmpty(member))                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NullOrEmpty)
+            return New.Constraint<TMessage, string>(member => string.IsNullOrEmpty(member))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_NullOrEmpty)
                 .BuildConstraint();
         }        
 
@@ -110,27 +110,27 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNotNullOrWhiteSpace<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> IsNotNullOrWhiteSpace<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                 
-            return member.Satisfies(IsNotNullOrWhiteSpaceConstraint(errorMessage));
+            return member.Satisfies(IsNotNullOrWhiteSpaceConstraint<TMessage>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string is not null or white space.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string is not null or white space.
         /// </summary>        
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> IsNotNullOrWhiteSpaceConstraint(string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> IsNotNullOrWhiteSpaceConstraint<TMessage>(string errorMessage = null)
         {
-            return New.Constraint<string>(member => !string.IsNullOrWhiteSpace(member))                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NotNullOrWhiteSpace)
+            return New.Constraint<TMessage, string>(member => !string.IsNullOrWhiteSpace(member))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_NotNullOrWhiteSpace)
                 .BuildConstraint();
         }        
 
@@ -152,27 +152,27 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNullOrWhiteSpace<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> IsNullOrWhiteSpace<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsNullOrWhiteSpaceConstraint(errorMessage));
+            return member.Satisfies(IsNullOrWhiteSpaceConstraint<TMessage>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string is null or white space.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string is null or white space.
         /// </summary>        
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> IsNullOrWhiteSpaceConstraint(string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> IsNullOrWhiteSpaceConstraint<TMessage>(string errorMessage = null)
         {
-            return New.Constraint<string>(member => string.IsNullOrWhiteSpace(member))                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_NullOrWhiteSpace)
+            return New.Constraint<TMessage, string>(member => string.IsNullOrWhiteSpace(member))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_NullOrWhiteSpace)
                 .BuildConstraint();
         }       
 
@@ -196,30 +196,30 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNotEqualTo<T>(this IMemberConstraint<T, string> member, string other, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> IsNotEqualTo<TMessage>(this IMemberConstraint<TMessage, string> member, string other, StringComparison compareType, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }            
-            return member.Satisfies(IsNotEqualToConstraint(other, compareType, errorMessage));
+            return member.Satisfies(IsNotEqualToConstraint<TMessage>(other, compareType, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string is not equal to another string.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string is not equal to another string.
         /// </summary>        
         /// <param name="other">The value to compare.</param>
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> IsNotEqualToConstraint(string other, StringComparison compareType, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> IsNotEqualToConstraint<TMessage>(string other, StringComparison compareType, string errorMessage = null)
         {
-            return New.Constraint<string>(member => !string.Equals(member, other, compareType), "{member.Name} != {constraint.Other}")              
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotEqualTo)
-                .WithArguments(new { Other = other })
+            return New.Constraint<TMessage, string>(member => !string.Equals(member, other, compareType))              
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.MemberConstraints_IsNotEqualTo)
+                .WithErrorMessageArguments(new { Other = other })
                 .BuildConstraint();
         }        
 
@@ -243,30 +243,30 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsEqualTo<T>(this IMemberConstraint<T, string> member, string other, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> IsEqualTo<TMessage>(this IMemberConstraint<TMessage, string> member, string other, StringComparison compareType, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }            
-            return member.Satisfies(IsEqualToConstraint(other, compareType, errorMessage));
+            return member.Satisfies(IsEqualToConstraint<TMessage>(other, compareType, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string is equal to another string.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string is equal to another string.
         /// </summary>        
         /// <param name="other">The value to compare.</param>
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> IsEqualToConstraint(string other, StringComparison compareType, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> IsEqualToConstraint<TMessage>(string other, StringComparison compareType, string errorMessage = null)
         {
-            return New.Constraint<string>(member => string.Equals(member, other, compareType), "{member.Name} == {constraint.Other}")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.MemberConstraints_IsEqualTo)
-                .WithArguments(new { Other = other })
+            return New.Constraint<TMessage, string>(member => string.Equals(member, other, compareType))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.MemberConstraints_IsEqualTo)
+                .WithErrorMessageArguments(new { Other = other })
                 .BuildConstraint();
         }        
 
@@ -289,13 +289,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotStartWith<T>(this IMemberConstraint<T, string> member, string prefix, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotStartWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(DoesNotStartWithConstraint(prefix, errorMessage));
+            return member.Satisfies(DoesNotStartWithConstraint<TMessage>(prefix, errorMessage));
         }
 
         /// <summary>
@@ -314,54 +314,54 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotStartWith<T>(this IMemberConstraint<T, string> member, string prefix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotStartWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, StringComparison compareType, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(DoesNotStartWithConstraint(prefix, compareType, errorMessage));
+            return member.Satisfies(DoesNotStartWithConstraint<TMessage>(prefix, compareType, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not start with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not start with a certain value.
         /// </summary>   
         /// <param name="prefix">The prefix this value should not start with.</param>     
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="prefix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotStartWithConstraint(string prefix, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotStartWithConstraint<TMessage>(string prefix, string errorMessage = null)
         {
-            return DoesNotStartWithConstraint(prefix, StringComparison.Ordinal, errorMessage);
+            return DoesNotStartWithConstraint<TMessage>(prefix, StringComparison.Ordinal, errorMessage);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not start with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not start with a certain value.
         /// </summary>   
         /// <param name="prefix">The prefix this value should not start with.</param> 
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>    
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="prefix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotStartWithConstraint(string prefix, StringComparison compareType, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotStartWithConstraint<TMessage>(string prefix, StringComparison compareType, string errorMessage = null)
         {
             if (prefix == null)
             {
                 throw new ArgumentNullException("prefix");
             }
-            return New.Constraint<string>(member => !member.StartsWith(prefix, compareType), "!{member.Name}.StartsWith({constraint.Prefix})")              
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotStartWith)
-                .WithArguments(new { Prefix = prefix })
+            return New.Constraint<TMessage, string>(member => !member.StartsWith(prefix, compareType))              
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotStartWith)
+                .WithErrorMessageArguments(new { Prefix = prefix })
                 .BuildConstraint();
         }
 
@@ -384,13 +384,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> StartsWith<T>(this IMemberConstraint<T, string> member, string prefix, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> StartsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, string errorMessage = null)
         {            
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(StartsWithConstraint(prefix, errorMessage));
+            return member.Satisfies(StartsWithConstraint<TMessage>(prefix, errorMessage));
         }
 
         /// <summary>
@@ -409,54 +409,54 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> StartsWith<T>(this IMemberConstraint<T, string> member, string prefix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> StartsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, StringComparison compareType, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(StartsWithConstraint(prefix, compareType, errorMessage));
+            return member.Satisfies(StartsWithConstraint<TMessage>(prefix, compareType, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string starts with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string starts with a certain value.
         /// </summary>   
         /// <param name="prefix">The prefix this value should start with.</param>     
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="prefix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> StartsWithConstraint(string prefix, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> StartsWithConstraint<TMessage>(string prefix, string errorMessage = null)
         {             
-            return StartsWithConstraint(prefix, StringComparison.Ordinal, errorMessage);            
+            return StartsWithConstraint<TMessage>(prefix, StringComparison.Ordinal, errorMessage);            
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string starts with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string starts with a certain value.
         /// </summary>   
         /// <param name="prefix">The prefix this value should start with.</param> 
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>    
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="prefix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> StartsWithConstraint(string prefix, StringComparison compareType, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> StartsWithConstraint<TMessage>(string prefix, StringComparison compareType, string errorMessage = null)
         {
             if (prefix == null)
             {
                 throw new ArgumentNullException("prefix");
             }
-            return New.Constraint<string>(member => member.StartsWith(prefix, compareType), "{member.Name}.StartsWith({constraint.Prefix})")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_StartsWith)
-                .WithArguments(new { Prefix = prefix })
+            return New.Constraint<TMessage, string>(member => member.StartsWith(prefix, compareType))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_StartsWith)
+                .WithErrorMessageArguments(new { Prefix = prefix })
                 .BuildConstraint();
         }                
 
@@ -479,13 +479,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotEndWith<T>(this IMemberConstraint<T, string> member, string postfix, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotEndWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(DoesNotEndWithConstraint(postfix, errorMessage));
+            return member.Satisfies(DoesNotEndWithConstraint<TMessage>(postfix, errorMessage));
         }
 
         /// <summary>
@@ -504,54 +504,54 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotEndWith<T>(this IMemberConstraint<T, string> member, string postfix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotEndWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, StringComparison compareType, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(DoesNotEndWithConstraint(postfix, compareType, errorMessage));
+            return member.Satisfies(DoesNotEndWithConstraint<TMessage>(postfix, compareType, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not end with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not end with a certain value.
         /// </summary>   
         /// <param name="postfix">The postfix this value should not end with.</param>     
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="postfix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotEndWithConstraint(string postfix, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotEndWithConstraint<TMessage>(string postfix, string errorMessage = null)
         {
-            return DoesNotEndWithConstraint(postfix, StringComparison.Ordinal, errorMessage);
+            return DoesNotEndWithConstraint<TMessage>(postfix, StringComparison.Ordinal, errorMessage);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not end with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not end with a certain value.
         /// </summary>   
         /// <param name="postfix">The postfix this value should not end with.</param> 
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>    
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="postfix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotEndWithConstraint(string postfix, StringComparison compareType, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotEndWithConstraint<TMessage>(string postfix, StringComparison compareType, string errorMessage = null)
         {
             if (postfix == null)
             {
                 throw new ArgumentNullException("postfix");
             }
-            return New.Constraint<string>(member => !member.EndsWith(postfix, compareType), "!{member.Name}.EndsWith({constraint.Postfix})")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotEndWith)
-                .WithArguments(new { Postfix = postfix })
+            return New.Constraint<TMessage, string>(member => !member.EndsWith(postfix, compareType))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotEndWith)
+                .WithErrorMessageArguments(new { Postfix = postfix })
                 .BuildConstraint();
         }
 
@@ -574,13 +574,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> EndsWith<T>(this IMemberConstraint<T, string> member, string postfix, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> EndsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(EndsWithConstraint(postfix, errorMessage));
+            return member.Satisfies(EndsWithConstraint<TMessage>(postfix, errorMessage));
         }        
 
         /// <summary>
@@ -599,54 +599,54 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> EndsWith<T>(this IMemberConstraint<T, string> member, string postfix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> EndsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, StringComparison compareType, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                     
-            return member.Satisfies(EndsWithConstraint(postfix, compareType, errorMessage));
+            return member.Satisfies(EndsWithConstraint<TMessage>(postfix, compareType, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string ends with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string ends with a certain value.
         /// </summary>   
         /// <param name="postfix">The postfix this value should end with.</param>     
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="postfix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> EndsWithConstraint(string postfix, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> EndsWithConstraint<TMessage>(string postfix, string errorMessage = null)
         {
-            return EndsWithConstraint(postfix, StringComparison.Ordinal, errorMessage);            
+            return EndsWithConstraint<TMessage>(postfix, StringComparison.Ordinal, errorMessage);            
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string ends with a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string ends with a certain value.
         /// </summary>   
         /// <param name="postfix">The postfix this value should start with.</param> 
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>    
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="postfix"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> EndsWithConstraint(string postfix, StringComparison compareType, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> EndsWithConstraint<TMessage>(string postfix, StringComparison compareType, string errorMessage = null)
         {
             if (postfix == null)
             {
                 throw new ArgumentNullException("postfix");
             }
-            return New.Constraint<string>(member => member.EndsWith(postfix, compareType), "{member.Name}.EndsWith({constraint.Postfix})")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_EndsWith)
-                .WithArguments(new { Postfix = postfix })
+            return New.Constraint<TMessage, string>(member => member.EndsWith(postfix, compareType))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_EndsWith)
+                .WithErrorMessageArguments(new { Postfix = postfix })
                 .BuildConstraint();
         }         
 
@@ -669,13 +669,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotContain<T>(this IMemberConstraint<T, string> member, char value, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotContain<TMessage>(this IMemberConstraint<TMessage, string> member, char value, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(DoesNotContainConstraint(value, errorMessage));
+            return member.Satisfies(DoesNotContainConstraint<TMessage>(value, errorMessage));
         }
 
         /// <summary>
@@ -693,50 +693,50 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotContain<T>(this IMemberConstraint<T, string> member, string value, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotContain<TMessage>(this IMemberConstraint<TMessage, string> member, string value, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                                   
-            return member.Satisfies(DoesNotContainConstraint(value, errorMessage));
+            return member.Satisfies(DoesNotContainConstraint<TMessage>(value, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not contain a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not contain a certain value.
         /// </summary>        
         /// <param name="value">The value to check for.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotContainConstraint(char value, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotContainConstraint<TMessage>(char value, string errorMessage = null)
         {
-            return DoesNotContainConstraint(value.ToString(CultureInfo.CurrentCulture), errorMessage);
+            return DoesNotContainConstraint<TMessage>(value.ToString(CultureInfo.CurrentCulture), errorMessage);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not contain a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not contain a certain value.
         /// </summary>        
         /// <param name="value">The value to check for.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="value "/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotContainConstraint(string value, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotContainConstraint<TMessage>(string value, string errorMessage = null)
         {
             if (value == null)
             {
                 throw new ArgumentNullException("value");
             }
-            return New.Constraint<string>(member => !member.Contains(value), "!{member.Name}.Contains({constraint.Value})")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotContain)
-                .WithArguments(new { Value = value })
+            return New.Constraint<TMessage, string>(member => !member.Contains(value))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotContain)
+                .WithErrorMessageArguments(new { Value = value })
                 .BuildConstraint();
         }        
 
@@ -759,13 +759,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> Contains<T>(this IMemberConstraint<T, string> member, char value, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> Contains<TMessage>(this IMemberConstraint<TMessage, string> member, char value, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(ContainsConstraint(value, errorMessage));
+            return member.Satisfies(ContainsConstraint<TMessage>(value, errorMessage));
         }
 
         /// <summary>
@@ -783,50 +783,50 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> Contains<T>(this IMemberConstraint<T, string> member, string value, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> Contains<TMessage>(this IMemberConstraint<TMessage, string> member, string value, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                       
-            return member.Satisfies(ContainsConstraint(value, errorMessage));
+            return member.Satisfies(ContainsConstraint<TMessage>(value, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string contains a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string contains a certain value.
         /// </summary>        
         /// <param name="value">The value to check for.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> ContainsConstraint(char value, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> ContainsConstraint<TMessage>(char value, string errorMessage = null)
         {
-            return ContainsConstraint(value.ToString(CultureInfo.CurrentCulture), errorMessage);
+            return ContainsConstraint<TMessage>(value.ToString(CultureInfo.CurrentCulture), errorMessage);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string contains a certain value.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string contains a certain value.
         /// </summary>        
         /// <param name="value">The value to check for.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="value "/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> ContainsConstraint(string value, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> ContainsConstraint<TMessage>(string value, string errorMessage = null)
         {
             if (value == null)
             {
                 throw new ArgumentNullException("value");
             }
-            return New.Constraint<string>(member => member.Contains(value), "{member.Name}.Contains({constraint.Value})")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_Contains)
-                .WithArguments(new { Value = value })
+            return New.Constraint<TMessage, string>(member => member.Contains(value))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_Contains)
+                .WithErrorMessageArguments(new { Value = value })
                 .BuildConstraint();
         }        
 
@@ -849,13 +849,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotMatch<T>(this IMemberConstraint<T, string> member, string pattern, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotMatch<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(DoesNotMatchConstraint(pattern, errorMessage));
+            return member.Satisfies(DoesNotMatchConstraint<TMessage>(pattern, errorMessage));
         }
 
         /// <summary>
@@ -874,54 +874,54 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> DoesNotMatch<T>(this IMemberConstraint<T, string> member, string pattern, RegexOptions options, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> DoesNotMatch<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, RegexOptions options, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                       
-            return member.Satisfies(DoesNotMatchConstraint(pattern, options, errorMessage));
+            return member.Satisfies(DoesNotMatchConstraint<TMessage>(pattern, options, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not match a certain pattern.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not match a certain pattern.
         /// </summary>        
         /// <param name="pattern">The pattern to match.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotMatchConstraint(string pattern, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotMatchConstraint<TMessage>(string pattern, string errorMessage = null)
         {
-            return DoesNotMatchConstraint(pattern, RegexOptions.None, errorMessage);            
+            return DoesNotMatchConstraint<TMessage>(pattern, RegexOptions.None, errorMessage);            
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string does not match a certain pattern.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string does not match a certain pattern.
         /// </summary>        
         /// <param name="pattern">The pattern to match.</param>
         /// <param name="options">A bitwise combination of the enumeration values that provide options for matching.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> DoesNotMatchConstraint(string pattern, RegexOptions options, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> DoesNotMatchConstraint<TMessage>(string pattern, RegexOptions options, string errorMessage = null)
         {
             if (pattern == null)
             {
                 throw new ArgumentNullException("pattern");
             }
-            return New.Constraint<string>(member => !Regex.IsMatch(member, pattern, options), "!Regex.IsMatch({member.Name}, {constraint.Pattern})")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotMatch)
-                .WithArguments(new { Pattern = pattern })
+            return New.Constraint<TMessage, string>(member => !Regex.IsMatch(member, pattern, options))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_DoesNotMatch)
+                .WithErrorMessageArguments(new { Pattern = pattern })
                 .BuildConstraint();
         }        
 
@@ -944,13 +944,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> Matches<T>(this IMemberConstraint<T, string> member, string pattern, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> Matches<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(MatchesConstraint(pattern, errorMessage));
+            return member.Satisfies(MatchesConstraint<TMessage>(pattern, errorMessage));
         }                
 
         /// <summary>
@@ -969,54 +969,54 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> Matches<T>(this IMemberConstraint<T, string> member, string pattern, RegexOptions options, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> Matches<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, RegexOptions options, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                      
-            return member.Satisfies(MatchesConstraint(pattern, options, errorMessage));
+            return member.Satisfies(MatchesConstraint<TMessage>(pattern, options, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string matches a certain pattern.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string matches a certain pattern.
         /// </summary>        
         /// <param name="pattern">The pattern to match.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> MatchesConstraint(string pattern, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> MatchesConstraint<TMessage>(string pattern, string errorMessage = null)
         {
-            return MatchesConstraint(pattern, RegexOptions.None, errorMessage);
+            return MatchesConstraint<TMessage>(pattern, RegexOptions.None, errorMessage);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string matches a certain pattern.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string matches a certain pattern.
         /// </summary>        
         /// <param name="pattern">The pattern to match.</param>
         /// <param name="options">A bitwise combination of the enumeration members that provide options for matching.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="pattern"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> MatchesConstraint(string pattern, RegexOptions options, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> MatchesConstraint<TMessage>(string pattern, RegexOptions options, string errorMessage = null)
         {
             if (pattern == null)
             {
                 throw new ArgumentNullException("pattern");
             }
-            return New.Constraint<string>(member => Regex.IsMatch(member, pattern, options), "Regex.IsMatch({member.Name}, {constraint.Pattern})")              
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_Matches)
-                .WithArguments(new { Pattern = pattern })
+            return New.Constraint<TMessage, string>(member => Regex.IsMatch(member, pattern, options))              
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_Matches)
+                .WithErrorMessageArguments(new { Pattern = pattern })
                 .BuildConstraint();
         }        
 
@@ -1042,36 +1042,36 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> is smaller than <c>0</c>.
         /// </exception>
-        public static IMemberConstraint<T, string> HasLengthOf<T>(this IMemberConstraint<T, string> member, int length, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> HasLengthOf<TMessage>(this IMemberConstraint<TMessage, string> member, int length, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(HasLengthOfConstraint(length, errorMessage));
+            return member.Satisfies(HasLengthOfConstraint<TMessage>(length, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string has a specific length.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string has a specific length.
         /// </summary>        
         /// <param name="length">The required length of the string.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>        
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> is smaller than <c>0</c>.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> HasLengthOfConstraint(int length, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> HasLengthOfConstraint<TMessage>(int length, string errorMessage = null)
         {
             if (length < 0)
             {
                 throw NewNegativeLengthException("length", length);
             }
-            return New.Constraint<string>(member => member.Length == length, "{member.Name}.Length == {constraint.Length}")               
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_HasLengthOf)
-                .WithArguments(new { Length = length })
+            return New.Constraint<TMessage, string>(member => member.Length == length)               
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_HasLengthOf)
+                .WithErrorMessageArguments(new { Length = length })
                 .BuildConstraint();
         }
 
@@ -1099,13 +1099,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// Either <paramref name="left"/> or <paramref name="right"/> is smaller than 0, or
         /// <paramref name="right"/> is smaller than <paramref name="left"/>.
         /// </exception>
-        public static IMemberConstraint<T, string> HasLengthBetween<T>(this IMemberConstraint<T, string> member, int left, int right, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> HasLengthBetween<TMessage>(this IMemberConstraint<TMessage, string> member, int left, int right, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(HasLengthBetweenConstraint(left, right, errorMessage));
+            return member.Satisfies(HasLengthBetweenConstraint<TMessage>(left, right, errorMessage));
         }
 
         /// <summary>
@@ -1123,22 +1123,22 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> HasLengthBetween<T>(this IMemberConstraint<T, string> member, IRange<int> range, string errorMessage = null)
+        public static IMemberConstraint<TMessage, string> HasLengthBetween<TMessage>(this IMemberConstraint<TMessage, string> member, IRange<int> range, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }                       
-            return member.Satisfies(HasLengthBetweenConstraint(range, errorMessage));
+            return member.Satisfies(HasLengthBetweenConstraint<TMessage>(range, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string has a length within a specific range.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string has a length within a specific range.
         /// </summary>        
         /// <param name="left">The minimum length of the string (inclusive).</param>
         /// <param name="right">The maximum length of the string (inclusive).</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
@@ -1146,7 +1146,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// Either <paramref name="left"/> or <paramref name="right"/> is smaller than 0, or
         /// <paramref name="right"/> is smaller than <paramref name="left"/>.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> HasLengthBetweenConstraint(int left, int right, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> HasLengthBetweenConstraint<TMessage>(int left, int right, string errorMessage = null)
         {
             if (left < 0)
             {
@@ -1156,30 +1156,30 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw NewNegativeLengthException("right", right);
             }
-            return HasLengthBetweenConstraint(new RangeAdapter<int>(left, right), errorMessage);
+            return HasLengthBetweenConstraint<TMessage>(new RangeAdapter<int>(left, right), errorMessage);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string has a length within a specific range.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string has a length within a specific range.
         /// </summary>        
         /// <param name="range">A range of allowable lengths.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="range"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, string> HasLengthBetweenConstraint(IRange<int> range, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, string> HasLengthBetweenConstraint<TMessage>(IRange<int> range, string errorMessage = null)
         {
             if (range == null)
             {
                 throw new ArgumentNullException("range");
             }
-            return New.Constraint<string>(member => range.Contains(member.Length), "{constraint.Range}.Contains({member.Name}.Length)")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_HasLengthBetween)
-                .WithArguments(new { Range = range })
+            return New.Constraint<TMessage, string>(member => range.Contains(member.Length))                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_HasLengthBetween)
+                .WithErrorMessageArguments(new { Range = range })
                 .BuildConstraint();
         }        
 
@@ -1208,7 +1208,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, byte> IsByte<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, byte> IsByte<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsByte(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1234,17 +1234,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, byte> IsByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IMemberConstraint<TMessage, byte> IsByte<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsByteConstraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsByteConstraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a byte.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a byte.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
@@ -1253,18 +1253,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, byte> IsByteConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, byte> IsByteConstraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, byte>.Implementation constraint = delegate(string member, out byte result)
+            DelegateConstraint<TMessage, string, byte>.Implementation implementation = delegate(string member, TMessage message, out byte result)
             {
                 return byte.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is byte")               
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsByte)
+            return New.Constraint(implementation)               
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsByte)
                 .BuildConstraint();
         }
 
@@ -1286,7 +1286,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, sbyte> IsSByte<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, sbyte> IsSByte<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsSByte(member, NumberStyles.Integer | NumberStyles.AllowTrailingSign, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1312,17 +1312,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, sbyte> IsSByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<TMessage, sbyte> IsSByte<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsSByteConstraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsSByteConstraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a signed byte.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a signed byte.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
@@ -1331,18 +1331,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, sbyte> IsSByteConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, sbyte> IsSByteConstraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, sbyte>.Implementation constraint = delegate(string member, out sbyte result)
+            DelegateConstraint<TMessage, string, sbyte>.Implementation implementation = delegate(string member, TMessage message, out sbyte result)
             {
                 return sbyte.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is sbyte") 
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsSByte)
+            return New.Constraint(implementation) 
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsSByte)
                 .BuildConstraint();
         }
 
@@ -1364,27 +1364,27 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, char> IsChar<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, char> IsChar<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsCharConstraint(errorMessage));
+            return member.Satisfies(IsCharConstraint<TMessage>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a byte.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a byte.
         /// </summary>                
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, char> IsCharConstraint(string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, char> IsCharConstraint<TMessage>(string errorMessage = null)
         {
-            return New.Constraint<string, char>(member => member != null && member.Length == 1, member => member[0])                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsChar)
+            return New.Constraint<TMessage, string, char>(member => member != null && member.Length == 1, member => member[0])                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsChar)
                 .BuildConstraint();
         }
 
@@ -1406,7 +1406,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, short> IsInt16<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, short> IsInt16<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsInt16(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1432,17 +1432,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, short> IsInt16<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<TMessage, short> IsInt16<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsInt16Constraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsInt16Constraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a 16-bit integer.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a 16-bit integer.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
@@ -1451,18 +1451,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, short> IsInt16Constraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, short> IsInt16Constraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, short>.Implementation constraint = delegate(string member, out short result)
+            DelegateConstraint<TMessage, string, short>.Implementation implementation = delegate(string member, TMessage message, out short result)
             {
                 return short.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is Int16") 
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsInt16)
+            return New.Constraint(implementation) 
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsInt16)
                 .BuildConstraint();
         }
 
@@ -1484,7 +1484,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, int> IsInt32<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, int> IsInt32<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsInt32(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1510,17 +1510,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, int> IsInt32<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<TMessage, int> IsInt32<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsInt32Constraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsInt32Constraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a 32-bit integer.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a 32-bit integer.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration members that indicates the style elements that can be present in a value.
@@ -1529,18 +1529,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, int> IsInt32Constraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, int> IsInt32Constraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, int>.Implementation constraint = delegate(string member, out int result)
+            DelegateConstraint<TMessage, string, int>.Implementation implementation = delegate(string member, TMessage message, out int result)
             {
                 return int.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is Int32") 
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsInt32)
+            return New.Constraint(implementation) 
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsInt32)
                 .BuildConstraint();
         }
 
@@ -1562,7 +1562,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, long> IsInt64<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, long> IsInt64<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsInt64(member, NumberStyles.Integer, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1588,17 +1588,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, long> IsInt64<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<TMessage, long> IsInt64<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsInt64Constraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsInt64Constraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a 64-bit integer.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a 64-bit integer.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
@@ -1607,18 +1607,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, long> IsInt64Constraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, long> IsInt64Constraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, long>.Implementation constraint = delegate(string member, out long result)
+            DelegateConstraint<TMessage, string, long>.Implementation implementation = delegate(string member, TMessage message, out long result)
             {
                 return long.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is Int64") 
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsInt64)
+            return New.Constraint(implementation) 
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsInt64)
                 .BuildConstraint();
         }
 
@@ -1640,7 +1640,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, float> IsSingle<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, float> IsSingle<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsSingle(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1666,17 +1666,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, float> IsSingle<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<TMessage, float> IsSingle<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsSingleConstraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsSingleConstraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a 32-bit floating point number.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a 32-bit floating point number.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
@@ -1685,18 +1685,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, float> IsSingleConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, float> IsSingleConstraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, float>.Implementation constraint = delegate(string member, out float result)
+            DelegateConstraint<TMessage, string, float>.Implementation implementation = delegate(string member, TMessage message, out float result)
             {
                 return float.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is Single") 
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsSingle)
+            return New.Constraint(implementation) 
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsSingle)
                 .BuildConstraint();
         }
 
@@ -1718,7 +1718,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, double> IsDouble<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, double> IsDouble<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsDouble(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1744,17 +1744,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, double> IsDouble<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<TMessage, double> IsDouble<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsDoubleConstraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsDoubleConstraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a 64-bit floating point number.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a 64-bit floating point number.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
@@ -1763,18 +1763,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, double> IsDoubleConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, double> IsDoubleConstraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, double>.Implementation constraint = delegate(string member, out double result)
+            DelegateConstraint<TMessage, string, double>.Implementation implementation = delegate(string member, TMessage message, out double result)
             {
                 return double.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is Double") 
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsDouble)
+            return New.Constraint(implementation) 
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsDouble)
                 .BuildConstraint();
         }
 
@@ -1796,7 +1796,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, decimal> IsDecimal<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, decimal> IsDecimal<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
             return IsDecimal(member, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, errorMessage);
         }
@@ -1822,17 +1822,17 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, decimal> IsDecimal<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<TMessage, decimal> IsDecimal<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsDecimalConstraint(style, formatProvider, errorMessage));
+            return member.Satisfies(IsDecimalConstraint<TMessage>(style, formatProvider, errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a string can be converted to a 96-bit floating point number.
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a string can be converted to a 96-bit floating point number.
         /// </summary>        
         /// <param name="style">
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in a value.
@@ -1841,18 +1841,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// An object that supplies culture-specific formatting information about a value.
         /// </param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<string, decimal> IsDecimalConstraint(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, string, decimal> IsDecimalConstraint<TMessage>(NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            DelegateConstraint<string, decimal>.Implementation constraint = delegate(string member, out decimal result)
+            DelegateConstraint<TMessage, string, decimal>.Implementation implementation = delegate(string member, TMessage message, out decimal result)
             {
                 return decimal.TryParse(member, style, formatProvider, out result);
             };
-            return New.Constraint(constraint, "{member.Name} is Decimal") 
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.StringConstraints_IsDecimal)
+            return New.Constraint(implementation) 
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.StringConstraints_IsDecimal)
                 .BuildConstraint();
         }
 

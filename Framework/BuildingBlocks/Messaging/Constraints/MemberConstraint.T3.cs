@@ -2,17 +2,17 @@
 
 namespace Kingo.BuildingBlocks.Messaging.Constraints
 {    
-    internal sealed class MemberConstraint<T, TValue, TResult> : IMemberConstraint<T, TResult>
+    internal sealed class MemberConstraint<TMessage, TValue, TResult> : IMemberConstraint<TMessage, TResult>
     {
-        private readonly MemberConstraintSet<T> _memberConstraintSet;
-        private readonly Member<T, TValue> _member;
+        private readonly MemberConstraintSet<TMessage> _memberConstraintSet;
+        private readonly Member<TMessage, TValue> _member;
         private readonly Func<string, string> _nameSelector;
-        private readonly IConstraintWithErrorMessage<TValue, TResult> _constraint;                     
+        private readonly IConstraintWithErrorMessage<TMessage, TValue, TResult> _constraint;        
 
-        internal MemberConstraint(MemberConstraintSet<T> memberConstraintSet, Member<T, TValue> member, IConstraintWithErrorMessage<TValue, TResult> constraint)
+        internal MemberConstraint(MemberConstraintSet<TMessage> memberConstraintSet, Member<TMessage, TValue> member, IConstraintWithErrorMessage<TMessage, TValue, TResult> constraint)
             : this(memberConstraintSet, member, constraint, null) { }
 
-        private MemberConstraint(MemberConstraintSet<T> memberConstraintSet, Member<T, TValue> member, IConstraintWithErrorMessage<TValue, TResult> constraint, Func<string, string> nameSelector)
+        private MemberConstraint(MemberConstraintSet<TMessage> memberConstraintSet, Member<TMessage, TValue> member, IConstraintWithErrorMessage<TMessage, TValue, TResult> constraint, Func<string, string> nameSelector)
         {
             _memberConstraintSet = memberConstraintSet;
             _member = member;
@@ -20,47 +20,37 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             _constraint = constraint;
         }                    
 
-        IMember IMemberConstraint<T>.Member
+        IMember IMemberConstraint<TMessage>.Member
         {
             get { return _member; }
-        }              
+        }        
 
-        public Member<T, TValue> Member
-        {
-            get { return _member; }
-        }
-
-        bool IErrorMessageProducer<T>.HasErrors(T item, IErrorMessageConsumer consumer, IFormatProvider formatProvider)
+        bool IErrorMessageProducer<TMessage>.HasErrors(TMessage message, IErrorMessageConsumer consumer, IFormatProvider formatProvider)
         {            
+            if (ReferenceEquals(message, null))
+            {
+                throw new ArgumentNullException("message");
+            }
             if (consumer == null)
             {
                 throw new ArgumentNullException("consumer");
             }            
             TResult result;
-            IConstraintWithErrorMessage failedConstraint;
-            var value = _member.GetValue(item);
+            IConstraintWithErrorMessage<TMessage> failedConstraint;
+            var member = _member.ToMember(message);
 
-            if (_constraint.IsSatisfiedBy(value, out result, out failedConstraint))
+            if (_constraint.IsSatisfiedBy(member.Value, message, out result, out failedConstraint))
             {
                 return false;                 
-            }
-            var member = new
-            {
-                _member.FullName,
-                _member.Name,
-                _member.Type,
-                Value = value
-            };
-            var errorMessage = failedConstraint.FormatErrorMessage(formatProvider).Format(MemberConstraints.MemberId, member, formatProvider);
+            }                        
+            var errorMessage = failedConstraint.ErrorMessage                
+                .Format(MemberConstraints.MemberId, member, formatProvider)                
+                .Format(MemberConstraints.ConstraintId, failedConstraint.ErrorMessageArguments(message), formatProvider)
+                .ToString();
 
-            consumer.Add(_member.FullName, errorMessage.ToString());
+            consumer.Add(_member.FullName, errorMessage);
             return true;         
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0}: {1}", _member.FullName, _constraint.ToString(_member.Name));
-        }
+        }                                
 
         /// <inheritdoc />
         public void And(Action<IMemberConstraintSet<TResult>> innerConstraintFactory)
@@ -71,15 +61,15 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #region [====== InstanceOf ======]
 
         /// <inheritdoc />      
-        public IMemberConstraint<T, TResult> IsNotInstanceOf<TOther>(string errorMessage = null)
+        public IMemberConstraint<TMessage, TResult> IsNotInstanceOf<TOther>(string errorMessage = null)
         {
             return this.IsNotInstanceOf(typeof(TOther), errorMessage);            
         }        
 
         /// <inheritdoc />     
-        public IMemberConstraint<T, TOther> IsInstanceOf<TOther>(string errorMessage = null)
+        public IMemberConstraint<TMessage, TOther> IsInstanceOf<TOther>(string errorMessage = null)
         {
-            return Satisfies(MemberConstraints.IsInstanceOfConstraint<TResult, TOther>(errorMessage));
+            return Satisfies(MemberConstraints.IsInstanceOfConstraint<TMessage, TResult, TOther>(errorMessage));
         }        
 
         #endregion
@@ -87,11 +77,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #region [====== Satisfies ======]
 
         /// <inheritdoc />
-        public IMemberConstraint<T, TOther> Satisfies<TOther>(IConstraintWithErrorMessage<TResult, TOther> constraint, Func<string, string> nameSelector = null)
+        public IMemberConstraint<TMessage, TOther> Satisfies<TOther>(IConstraintWithErrorMessage<TMessage, TResult, TOther> constraint, Func<string, string> nameSelector = null)
         {
             var newConstraint = _constraint.And(constraint);
             var newNember = _member.Rename(_nameSelector);
-            var newMemberConstraint = new MemberConstraint<T, TValue, TOther>(_memberConstraintSet, newNember, newConstraint, nameSelector);
+            var newMemberConstraint = new MemberConstraint<TMessage, TValue, TOther>(_memberConstraintSet, newNember, newConstraint, nameSelector);
 
             _memberConstraintSet.Replace(this, newMemberConstraint);
 

@@ -1,18 +1,40 @@
-﻿namespace Kingo.BuildingBlocks.Messaging.Constraints
+﻿using System;
+
+namespace Kingo.BuildingBlocks.Messaging.Constraints
 {   
     internal sealed class ValidatedMessage<TValue> : Message<ValidatedMessage<TValue>>
     {
-        internal readonly TValue Member;        
+        internal readonly TValue Member;
+        internal readonly TValue Other;
+        internal readonly TValue Left;
+        internal readonly TValue Right;
+        internal Type ExpectedMemberType = typeof(TValue);
 
         internal ValidatedMessage(TValue member)
         {
             Member = member;
         }
 
+        internal ValidatedMessage(TValue member, TValue other)
+        {
+            Member = member;
+            Other = other;
+        }
+
+        internal ValidatedMessage(TValue member, TValue left, TValue right)
+        {
+            Member = member;
+            Left = left;
+            Right = right;
+        }
+
         private ValidatedMessage(ValidatedMessage<TValue> message)
             : base(message)
         {
             Member = message.Member;
+            Other = message.Other;
+            Left = message.Left;
+            Right = message.Right;
         }
 
         public override ValidatedMessage<TValue> Copy()
@@ -37,12 +59,16 @@
             {
                 return true;
             }
-            return Equals(Member, other.Member);
+            return
+                Equals(Member, other.Member) &&
+                Equals(Other, other.Other) &&
+                Equals(Left, other.Left) &&
+                Equals(Right, other.Right);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Of(Member);
+            return GetType().GetHashCode();
         }
 
         #endregion

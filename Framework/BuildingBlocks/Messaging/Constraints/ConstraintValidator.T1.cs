@@ -7,7 +7,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     /// Represents a <see cref="IMessageValidator{T}" /> in which validation-errors are reported
     /// through a <see cref="DataErrorInfoBuilder" />.
     /// </summary>    
-    public sealed class ConstraintValidator<TMessage> : IMessageValidator<TMessage>, IMemberConstraintSet<TMessage> where TMessage : class
+    public sealed class ConstraintValidator<TMessage> : IMessageValidator<TMessage>, IMemberConstraintSet<TMessage>
     {        
         private readonly MemberConstraintSet<TMessage> _memberConstraintSet;
 
@@ -44,7 +44,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <inheritdoc />
         public DataErrorInfo Validate(TMessage message)
         {
-            if (message == null)
+            if (ReferenceEquals(message, null))
             {
                 throw new ArgumentNullException("message");
             }

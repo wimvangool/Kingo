@@ -18,6 +18,20 @@ namespace Kingo.BuildingBlocks
             get { return _nextComponent; }
         }
 
+        internal override StringTemplateComponent AttachLast(StringTemplateComponent nextComponent)
+        {
+            if (_nextComponent == null)
+            {
+                return new StringTemplateLiteral(_literal, nextComponent);
+            }
+            return new StringTemplateLiteral(_literal, _nextComponent.AttachLast(nextComponent));
+        }
+
+        internal override int CountLiterals()
+        {
+            return _literal.Length + (_nextComponent == null ? 0 : _nextComponent.CountLiterals());
+        }
+
         #region [====== Equals & GetHashCode ======]
 
         public override bool Equals(object obj)

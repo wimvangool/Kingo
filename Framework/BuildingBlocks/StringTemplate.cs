@@ -11,12 +11,25 @@ namespace Kingo.BuildingBlocks
     /// Represents a format string that can contain placeholder values that are identified by an instance name.
     /// </summary>
     public sealed class StringTemplate : IEquatable<StringTemplate>
-    {        
+    {
+        /// <summary>
+        /// The value that is used in templates to represent the <c>null</c>-value.
+        /// </summary>
+        public const string NullValue = "<null>";
+
         private readonly StringTemplateComponent _template;
 
         private StringTemplate(StringTemplateComponent template)
         {
             _template = template;
+        }
+
+        /// <summary>
+        /// Returns the amount of literal characters in this template.
+        /// </summary>
+        public int LiteralCount
+        {
+            get { return _template.CountLiterals(); }
         }
 
         #region [====== Equals & GetHashCode ======]
@@ -74,6 +87,63 @@ namespace Kingo.BuildingBlocks
 
         #endregion
 
+        #region [====== Concat ======]
+
+        /// <summary>
+        /// Concatenates this template with another template.
+        /// </summary>
+        /// <param name="template">The template to concatenate.</param>
+        /// <returns>The concatenated template.</returns>
+        public StringTemplate Concat(string template)
+        {
+            return Concat(Parse(template));
+        }
+
+        /// <summary>
+        /// Concatenates this template with another template.
+        /// </summary>
+        /// <param name="template">The template to concatenate.</param>
+        /// <returns>The concatenated template.</returns>
+        public StringTemplate Concat(StringTemplate template)
+        {
+            if (template == null || template.LiteralCount == 0)
+            {
+                return this;
+            }
+            return new StringTemplate(_template.AttachLast(template._template));
+        }
+
+        /// <summary>
+        /// Returns the concatenation of <paramref name="left"/> and <paramref name="right"/>.
+        /// </summary>
+        /// <param name="left">Left template.</param>
+        /// <param name="right">Right template.</param>
+        /// <returns>The concatenated template.</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="right"/> is not in a correct format.
+        /// </exception>
+        public static StringTemplate operator +(StringTemplate left, string right)
+        {
+            return left + Parse(right);
+        }
+
+        /// <summary>
+        /// Returns the concatenation of <paramref name="left"/> and <paramref name="right"/>.
+        /// </summary>
+        /// <param name="left">Left template.</param>
+        /// <param name="right">Right template.</param>
+        /// <returns>The concatenated template.</returns>
+        public static StringTemplate operator +(StringTemplate left, StringTemplate right)
+        {
+            if (left == null)
+            {
+                return right;
+            }            
+            return left.Concat(right);
+        }
+
+        #endregion
+
         #region [====== Parse ======]
 
         private const char _BraceOpen = '{';
@@ -83,10 +153,7 @@ namespace Kingo.BuildingBlocks
         /// Parses the specified <paramref name="templateFormat"/> such that it can be formatted using arbitrary arguments.
         /// </summary>
         /// <param name="templateFormat">The format string to parse.</param>
-        /// <returns>A parsed format string.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="templateFormat"/> is <c>null</c>.
-        /// </exception>
+        /// <returns><c>null</c> if <paramref name="templateFormat"/> is <c>null</c>; otherwise a parsed format string.</returns>        
         /// <exception cref="ArgumentException">
         /// <paramref name="templateFormat"/> is not in a correct format.
         /// </exception>
@@ -94,7 +161,7 @@ namespace Kingo.BuildingBlocks
         {
             if (templateFormat == null)
             {
-                throw new ArgumentNullException("templateFormat");
+                return null;
             }                        
             return new StringTemplate(ParseNextComponent(templateFormat));
         }

@@ -10,6 +10,10 @@ namespace Kingo.BuildingBlocks
             get;
         }
 
+        internal abstract StringTemplateComponent AttachLast(StringTemplateComponent nextComponent);
+
+        internal abstract int CountLiterals();
+
         internal abstract StringTemplateComponent Format(string identifier, object argument, IFormatProvider formatProvider);
 
         internal string ToString(StringBuilder value)

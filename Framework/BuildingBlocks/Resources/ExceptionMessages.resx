@@ -117,11 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
+    <value>Specified expression is not supported: '{0}'.</value>
+  </data>
   <data name="MemberSet_MemberAlreadyAdded" xml:space="preserve">
     <value>A member with name '{0}' has already been added to the set.</value>
-  </data>
-  <data name="MemberSet_UnsupportedExpression" xml:space="preserve">
-    <value>Specified expression is not supported: '{0}'.</value>
   </data>
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>

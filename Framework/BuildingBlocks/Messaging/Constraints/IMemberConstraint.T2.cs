@@ -5,9 +5,9 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     /// <summary>
     /// Represents a constraint for a specific member of a message.
     /// </summary>    
-    /// <typeparam name="T">Type of the object the error messages are produced for.</typeparam>
+    /// <typeparam name="TMessage">Type of the message the error messages are produced for.</typeparam>
     /// <typeparam name="TResult">Type of the result the value is converted to.</typeparam>
-    public interface IMemberConstraint<in T, TResult> : IMemberConstraint<T>
+    public interface IMemberConstraint<TMessage, TResult> : IMemberConstraint<TMessage>
     {
         /// <summary>
         /// Descends one level down in the validation-hierarchy.
@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>
         /// <returns>This member.</returns>        
-        IMemberConstraint<T, TResult> IsNotInstanceOf<TOther>(string errorMessage = null);
+        IMemberConstraint<TMessage, TResult> IsNotInstanceOf<TOther>(string errorMessage = null);
 
         /// <summary>
         /// Verifies that this member'value is an instance of <typeparamref name="TOther"/>.
@@ -38,18 +38,18 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>
         /// <returns>A member casted to <typeparamref name="TOther"/>.</returns>        
-        IMemberConstraint<T, TOther> IsInstanceOf<TOther>(string errorMessage = null);
+        IMemberConstraint<TMessage, TOther> IsInstanceOf<TOther>(string errorMessage = null);
 
         /// <summary>
         /// Applies the specified <paramref name="constraint"/> in addition to the current constraint(s) and returns
-        /// a <see cref="IMemberConstraint{T}" /> of which the value has been converted using the specified <paramref name="constraint"/>.
+        /// a <see cref="IMemberConstraint{TMessage}" /> of which the value has been converted using the specified <paramref name="constraint"/>.
         /// </summary>
         /// <param name="constraint">The constraint to apply.</param>        
         /// <param name="nameSelector">Optional delegate used to convert the current member's name to a new name.</param>
-        /// <returns>A <see cref="IMemberConstraint{T}" /> that has applied the specified <paramref name="constraint"/>.</returns>
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> that has applied the specified <paramref name="constraint"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IMemberConstraint<T, TOther> Satisfies<TOther>(IConstraintWithErrorMessage<TResult, TOther> constraint, Func<string, string> nameSelector = null);
+        IMemberConstraint<TMessage, TOther> Satisfies<TOther>(IConstraintWithErrorMessage<TMessage, TResult, TOther> constraint, Func<string, string> nameSelector = null);
     }
 }

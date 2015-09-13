@@ -61,20 +61,20 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
+        /// </summary>
+        internal static string ExpressionExtensions_UnsupportedExpression {
+            get {
+                return ResourceManager.GetString("ExpressionExtensions_UnsupportedExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member with name &apos;{0}&apos; has already been added to the set..
         /// </summary>
         internal static string MemberSet_MemberAlreadyAdded {
             get {
                 return ResourceManager.GetString("MemberSet_MemberAlreadyAdded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
-        /// </summary>
-        internal static string MemberSet_UnsupportedExpression {
-            get {
-                return ResourceManager.GetString("MemberSet_UnsupportedExpression", resourceCulture);
             }
         }
         

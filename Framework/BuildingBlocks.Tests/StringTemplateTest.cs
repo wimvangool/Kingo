@@ -6,11 +6,12 @@ namespace Kingo.BuildingBlocks
     [TestClass]
     public sealed class StringTemplateTest
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Parse_Throws_IfFormatIsNull()
+        #region [====== Parse =====]
+
+        [TestMethod]        
+        public void Parse_ReturnsNull_IfFormatIsNull()
         {
-            StringTemplate.Parse(null);
+            Assert.IsNull(StringTemplate.Parse(null));
         }        
 
         [TestMethod]
@@ -112,6 +113,10 @@ namespace Kingo.BuildingBlocks
             Assert.AreEqual(string.Empty, errorMessage.ToString());            
         }
 
+        #endregion
+
+        #region [====== Format & ToString ======]
+
         [TestMethod]
         public void ToString_ReturnsExpectedErrorMessage_IfFormatContainsLiteralTextOnly()
         {
@@ -198,7 +203,7 @@ namespace Kingo.BuildingBlocks
         }
 
         [TestMethod]
-        public void Parse_ReturnsExpectedErrorMessage_IfLiteralTextContainsEscapeCharacters()
+        public void Format_ReturnsExpectedErrorMessage_IfLiteralTextContainsEscapeCharacters()
         {
             const string errorMessageText = @"{member.Name} and {{something else}}";
             var errorMessage = StringTemplate.Parse(errorMessageText);
@@ -214,6 +219,72 @@ namespace Kingo.BuildingBlocks
             var errorMessage = StringTemplate.Parse(@"{member.Name}");
 
             errorMessage.Format("member", new object());
-        }        
+        }
+
+        #endregion
+
+        #region [====== Concat ======]
+
+        [TestMethod]
+        public void ConcatWithStringTemplate_ReturnsSelf_IfOtherTemplateIsNull()
+        {
+            var templateX = StringTemplate.Parse("Left {member.Name} ");
+            var templateY = templateX.Concat(null as StringTemplate);
+
+            Assert.AreSame(templateX, templateY);
+        }
+
+        [TestMethod]
+        public void ConcatWithStringTemplate_ReturnsSelf_IfOtherTemplateIsEmpty()
+        {
+            var templateX = StringTemplate.Parse("Left {member.Name} ");
+            var templateY = templateX.Concat(StringTemplate.Parse(string.Empty));
+
+            Assert.AreSame(templateX, templateY);
+        }
+
+        [TestMethod]
+        public void ConcatWithStringTemplate_ReturnsConcatenatedTemplate_IfOtherTemplateIsNotEmpty()
+        {
+            var templateX = StringTemplate.Parse("Left {member.Name} ");
+            var templateY = StringTemplate.Parse("Right {member.Name} ");
+            var templateZ = templateX.Concat(templateY);
+
+            Assert.AreNotSame(templateX, templateZ);
+            Assert.AreNotSame(templateY, templateZ);
+            Assert.AreEqual("Left Member Right Member ", templateZ.Format("member", new { Name = "Member" }).ToString());
+        }
+
+        [TestMethod]
+        public void ConcatWithStringTemplate_ReturnsSelf_IfOtherStringIsNull()
+        {
+            var templateX = StringTemplate.Parse("Left {member.Name} ");
+            var templateY = templateX.Concat(null as string);
+
+            Assert.AreSame(templateX, templateY);
+        }
+
+        [TestMethod]
+        public void ConcatWithStringTemplate_ReturnsSelf_IfOtherStringIsEmpty()
+        {
+            var templateX = StringTemplate.Parse("Left {member.Name} ");
+            var templateY = templateX.Concat(string.Empty);
+
+            Assert.AreSame(templateX, templateY);
+        }
+
+        [TestMethod]
+        public void ConcatWithStringTemplate_ReturnsConcatenatedTemplate_IfOtherStringIsNotEmpty()
+        {
+            var templateX = StringTemplate.Parse("Left {member.Name} ");
+            var templateY = "Right {member.Name} ";
+            var templateZ = templateX.Concat(templateY);
+
+            Assert.AreNotSame(templateX, templateZ);
+            Assert.AreNotSame(templateY, templateZ);
+            Assert.AreEqual("Left Member Right Member ", templateZ.Format("member", new { Name = "Member" }).ToString());
+        }
+
+        #endregion
     }
 }

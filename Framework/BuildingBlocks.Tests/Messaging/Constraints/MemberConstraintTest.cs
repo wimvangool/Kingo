@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(new object());
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).Satisfies(new TrueConstraint<object>());
+            validator.VerifyThat(m => m.Member).Satisfies(new TrueConstraint<ValidatedMessage<object>, object>());
 
             validator.Validate(message).AssertNoErrors();            
         }        
@@ -110,7 +110,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
 
-            validator.Validate(message).AssertNoErrors();                     
+            validator.Validate(message).AssertNoErrors();                    
         }
 
         [TestMethod]
@@ -133,7 +133,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member).IsNotNull();
 
             validator.Validate(message).AssertOneError("Member (<null>) must refer to an instance of an object.");
-        }
+        }        
 
         #endregion     
    
@@ -170,7 +170,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member).IsNull();
 
             validator.Validate(message).AssertOneError("Member (System.Object) must be null.");
-        }
+        }        
 
         #endregion
 
@@ -182,7 +182,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(null, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(null as object, RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
@@ -193,7 +193,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(null);
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(null as object);
 
             validator.Validate(message).AssertOneError("Member (<null>) must not refer to the same instance as '<null>'.");
         }
@@ -232,7 +232,79 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(new object(), RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
+        }        
+
+        #endregion
+
+        #region [====== IsNotSameInstanceAs (Indirect) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ValidateIsNotSameInstanceAs_Throws_IfOtherFactoryIsNull()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(null);
         }
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsExpectedError_IfBothObjectsAreNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsDefaultError_IfBothObjectsAreNull_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => null);
+
+            validator.Validate(message).AssertOneError("Member (<null>) must not refer to the same instance as '<null>'.");
+        }
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsExpectedError_IfObjectsAreSameInstance_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsDefaultError_IfObjectsAreSameInstance_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => m.Other);
+
+            validator.Validate(message).AssertOneError("Member (System.Object) must not refer to the same instance as 'Other (System.Object)'.");
+        }
+
+        [TestMethod]
+        public void ValidateIsNotSameInstanceAs_ReturnsNoErrors_IfObjectsAreNotSameInstance_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => new object(), RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }    
 
         #endregion
 
@@ -244,7 +316,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsSameInstanceAs(null, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsSameInstanceAs(null as object, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
         }
@@ -283,6 +355,67 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member).IsSameInstanceAs(new object());
 
             validator.Validate(message).AssertOneError("Member (System.Object) must refer to the same instance as 'System.Object'.");
+        }               
+
+        #endregion
+
+        #region [====== IsSameInstanceAs (Indirect) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ValidateIsSameInstanceAs_Throws_IfOtherFactoryIsNull()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSameInstanceAs(null);
+        }
+
+        [TestMethod]
+        public void ValidateIsSameInstanceAs_ReturnsNoErrors_IfBothObjectsAreNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSameInstanceAs(m => null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSameInstanceAs_ReturnsNoErrors_IfObjectsAreSameInstance_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSameInstanceAs(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSameInstanceAs_ReturnsExpectedError_IfObjectsAreNotSameInstance_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSameInstanceAs(m => new object(), RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSameInstanceAs_ReturnsDefaultError_IfObjectsAreNotSameInstance_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSameInstanceAs(m => m.Other);
+
+            validator.Validate(message).AssertOneError("Member (System.Object) must refer to the same instance as 'Other (System.Object)'.");
         }
 
         #endregion
@@ -312,7 +445,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsNotInstanceOfOther_ReturnsExpectedError_IfObjectIsNotInstanceOfSpecifiedType()
+        public void ValidateIsNotInstanceOfOther_ReturnsExpectedError_IfObjectIsNotOfSpecifiedType()
         {
             var message = new ValidatedMessage<object>("Some value");
             var validator = message.CreateConstraintValidator();
@@ -323,7 +456,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsNotInstanceOfOther_ReturnsDefaultError_IfObjectIsNotInstanceOfSpecifiedType_And_NoErrorMessageIsSpecified()
+        public void ValidateIsNotInstanceOfOther_ReturnsDefaultError_IfObjectIsNotOfSpecifiedType_And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<object>("Some value");
             var validator = message.CreateConstraintValidator();
@@ -345,7 +478,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }        
 
         [TestMethod]
-        public void ValidateIsNotInstanceOf_ReturnsExpectedError_IfObjectIsNotInstanceOfSpecifiedType()
+        public void ValidateIsNotInstanceOf_ReturnsExpectedError_IfObjectIsNotOfSpecifiedType()
         {
             var message = new ValidatedMessage<object>("Some value");
             var validator = message.CreateConstraintValidator();
@@ -366,6 +499,38 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member).IsNotInstanceOf(typeof(int), RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
+        }        
+
+        #endregion
+
+        #region [====== IsNotInstanceOf (Indirect) =======]
+
+        [TestMethod]
+        public void ValidateIsNotInstanceOfOther_ReturnsNoErrors_IfObjectIsNotOfSpecifiedType_Indirect()
+        {
+            var message = new ValidatedMessage<object>("Some value")
+            {
+                ExpectedMemberType = typeof(int)
+            };
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotInstanceOf(m => m.ExpectedMemberType);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotInstanceOfOther_ReturnsExpectedError_IfObjectIsOfSpecifiedType_Indirect()
+        {
+            var message = new ValidatedMessage<object>("Some value")
+            {
+                ExpectedMemberType = typeof(string)
+            };
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotInstanceOf(m => m.ExpectedMemberType, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
 
         #endregion
@@ -406,7 +571,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         } 
 
         [TestMethod]
-        public void ValidateIsInstanceOfOther_ReturnsNoErrors_IfObjectIsInstanceOfSpecifiedType()
+        public void ValidateIsInstanceOfOther_ReturnsNoErrors_IfObjectIsOfSpecifiedType()
         {
             var message = new ValidatedMessage<object>("Some value");
             var validator = message.CreateConstraintValidator();
@@ -452,7 +617,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsInstanceOf_ReturnsNoErrors_IfObjectIsInstanceOfSpecifiedType()
+        public void ValidateIsInstanceOf_ReturnsNoErrors_IfObjectIsOfSpecifiedType()
         {
             var message = new ValidatedMessage<object>("Some value");
             var validator = message.CreateConstraintValidator();
@@ -462,9 +627,41 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
                 .IsInstanceOf(typeof(string), RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
-        }               
+        }
 
-        #endregion           
+        #endregion
+
+        #region [====== IsInstanceOf (Indirect) =======]
+
+        [TestMethod]
+        public void ValidateIsInstanceOfOther_ReturnsExpectedError_IfObjectIsNotOfSpecifiedType_Indirect()
+        {
+            var message = new ValidatedMessage<object>("Some value")
+            {
+                ExpectedMemberType = typeof(int)
+            };
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInstanceOf(m => m.ExpectedMemberType, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsInstanceOfOther_ReturnsNoErrors_IfObjectIsOfSpecifiedType_Indirect()
+        {
+            var message = new ValidatedMessage<object>("Some value")
+            {
+                ExpectedMemberType = typeof(string)
+            };
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInstanceOf(m => m.ExpectedMemberType);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        #endregion
 
         #region [====== IsNotEqualTo ======]
 
@@ -588,7 +785,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotEqualTo(null, null, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(null as object, null, RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
@@ -686,7 +883,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotEqualTo(null, comparer, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(null as object, comparer, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
         }        
@@ -721,6 +918,261 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #endregion      
 
+        #region [====== IsNotEqualTo (Indirect) ======]
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsExpectedError_IfObjectsAreBothNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsDefaultError_IfObjectsAreBothNull_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
+
+            validator.Validate(message).AssertOneError("Member (<null>) must not be equal to 'Other (<null>)'.");
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsExpectedError_IfObjectsAreSameInstance_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsDefaultError_IfObjectsAreSameInstance_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
+
+            validator.Validate(message).AssertOneError("Member (System.Object) must not be equal to 'Other (System.Object)'.");
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsExpectedError_IfObjectsAreEqual_Indirect()
+        {
+            var memberValue = Guid.NewGuid();
+            var message = new ValidatedMessage<object>(memberValue.ToString());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(memberValue.ToString(), RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsDefaultError_IfObjectsAreEqual_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var memberValue = Guid.NewGuid();
+            var message = new ValidatedMessage<object>(memberValue.ToString(), memberValue.ToString());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
+
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be equal to 'Other ({0})'.", memberValue));
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsNoErrors_IfMemberIsNullAndTheOtherIsNot_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsNoErrors_IfOtherIsNullAndTheMemberIsNot_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsNoErrors_IfObjectsAreNotNullAndNotEqual_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualTo_ReturnsNoErrors_IfStringsAreNotEqual_Indirect()
+        {
+            var message = new ValidatedMessage<object>("Some value", "Some other value");
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToByComparer_ReturnsExpectedError_IfObjectsAreBothNull_And_ComparerIsNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToByComparer_ReturnsExpectedError_IfObjectsAreSameInstance_And_ComparerIsNull_Indirect()
+        {
+            IEqualityComparer<object> comparer = null;
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToByComparer_ReturnsExpectedError_IfObjectsAreEqual_And_ComparerIsNull_Indirect()
+        {
+            IEqualityComparer<object> comparer = null;
+            var memberValue = Guid.NewGuid();
+            var message = new ValidatedMessage<object>(memberValue.ToString(), memberValue.ToString());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToByComparer_ReturnsNoErrors_IfMemberIsNullAndTheOtherIsNot_And_ComparerIsNull_Indirect()
+        {
+            IEqualityComparer<object> comparer = null;
+            var message = new ValidatedMessage<object>(null, new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToByComparer_ReturnsNoErrors_IfOtherIsNullAndTheMemberIsNot_And_ComparerIsNull_Indirect()
+        {
+            IEqualityComparer<object> comparer = null;
+            var message = new ValidatedMessage<object>(new object(), null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToByComparer_ReturnsNoErrors_IfObjectsAreNotNullAndNotEqual_And_ComparerIsNull_Indirect()
+        {
+            IEqualityComparer<object> comparer = null;
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToByComparer_ReturnsNoErrors_IfStringsAreNotEqual_And_ComparerIsNull_Indirect()
+        {
+            IEqualityComparer<object> comparer = null;
+            var message = new ValidatedMessage<object>("Some value", "Some other value");
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfComparerReturnsTrue_Indirect()
+        {
+            var comparer = new EqualityComparerStub<object>(true);
+            var message = new ValidatedMessage<object>(Guid.NewGuid(), Guid.NewGuid());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsNoErrors_IfComparerReturnsFalse_Indirect()
+        {
+            var comparer = new EqualityComparerStub<object>(false);
+            var message = new ValidatedMessage<object>(null, null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToOther_ReturnsExpectedError_IfValuesAreEqual_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member)
+                .IsInstanceOf<long>(RandomErrorMessage)
+                .IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotEqualToOther_ReturnsNoErrors_IfValuesAreNotEqual_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<object>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member)
+                .IsInstanceOf<long>(RandomErrorMessage)
+                .IsNotEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        #endregion      
+
         #region [====== IsEqualTo ======]
 
         [TestMethod]
@@ -729,7 +1181,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsEqualTo(null, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsEqualTo(null as object, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
         }
@@ -786,7 +1238,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(new object());
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsEqualTo(null, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsEqualTo(null as object, RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
@@ -797,7 +1249,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(new object());
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsEqualTo(null);
+            validator.VerifyThat(m => m.Member).IsEqualTo(null as object);
 
             validator.Validate(message).AssertOneError("Member (System.Object) must be equal to '<null>'.");
         }
@@ -841,7 +1293,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsEqualTo(null, null, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsEqualTo(null as object, null, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
         }
@@ -887,7 +1339,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(new object());
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsEqualTo(null, null, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsEqualTo(null as object, null, RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
@@ -933,7 +1385,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsEqualTo(null, comparer, RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsEqualTo(null as object, comparer, RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }        
@@ -962,6 +1414,253 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member)
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsEqualTo(member + 1, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        #endregion
+
+        #region [====== IsEqualTo (Indirect) ======]
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsNoErrors_IfObjectsAreBothNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsNoErrors_IfObjectsAreSameInstance_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsNoErrors_IfObjectsAreEqual_Indirect()
+        {
+            var member = Guid.NewGuid();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsExpectedError_IfMemberIsNullAndTheOtherIsNot_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsDefaultError_IfMemberIsNullAndTheOtherIsNot_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
+
+            validator.Validate(message).AssertOneError("Member (<null>) must be equal to 'Other (System.Object)'.");
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsExpectedError_IfOtherIsNullAndTheMemberIsNot_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsDefaultError_IfOtherIsNullAndTheMemberIsNot_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
+
+            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to 'Other (<null>)'.");
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsExpectedError_IfObjectsAreNotNullAndNotEqual_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsDefaultError_IfObjectsAreNotNullAndNotEqual_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
+
+            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to 'Other (System.Object)'.");
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualTo_ReturnsExpectedError_IfStringsAreNotEqual_Indirect()
+        {
+            var message = new ValidatedMessage<object>("Some value", "Some other value");
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsNoErrors_IfObjectsAreBothNull_And_ComparerIsNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsNoErrors_IfObjectsAreSameInstance_And_ComparerIsNull_Indirect()
+        {
+            var member = new object();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsNoErrors_IfObjectsAreEqual_And_ComparerIsNull_Indirect()
+        {
+            var member = Guid.NewGuid();
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfMemberIsNullAndTheOtherIsNot_And_ComparerIsNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(null, new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfOtherIsNullAndTheMemberIsNot_And_ComparerIsNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfObjectsAreNotNullAndNotEqual_And_ComparerIsNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfStringsAreNotEqual_And_ComparerIsNull_Indirect()
+        {
+            var message = new ValidatedMessage<object>("Some value", "Some other value");
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsNoErrors_IfComparerReturnsTrue_Indirect()
+        {
+            var comparer = new EqualityComparerStub<object>(true);
+            var message = new ValidatedMessage<object>(Guid.NewGuid(), Guid.NewGuid());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfComparerReturnsFalse_Indirect()
+        {
+            var comparer = new EqualityComparerStub<object>(false);
+            var message = new ValidatedMessage<object>(null, null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToOther_ReturnsNoErrors_IfValuesAreEqual_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<object>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member)
+                .IsInstanceOf<long>(RandomErrorMessage)
+                .IsEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsEqualToOther_ReturnsExpectedError_IfValuesAreNotEqual_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<object>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member)
+                .IsInstanceOf<long>(RandomErrorMessage)
+                .IsEqualTo(m => m.Other, RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
@@ -1109,6 +1808,133 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #endregion
 
+        #region [====== IsSmallerThan (Indirect) ======]
+
+        [TestMethod]
+        public void ValidateIsSmallerThanByComparer_ReturnsNoErrors_IfMemberIsSmallerThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanByComparer_ReturnsExpectedError_IfMemberIsEqualToOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanByComparer_ReturnsDefaultError_IfMemberIsEqualToOtherValue_And_ComparerIsNull_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, null);
+
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be smaller than 'Other ({0})'.", member));
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanByComparer_ReturnsExpectedError_IfMemberIsGreaterThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanByComparer_ReturnsExpectedError_IfComparerReturnsNegativeNumber_Indirect()
+        {
+            // A negative result means that the specified value is smaller than the member.
+            var comparer = new ComparerStub<object>(-1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanByComparer_ReturnsExpectedError_IfComparerReturnsZero_Indirect()
+        {
+            // Zero means that the specified value is equal to the member.
+            var comparer = new ComparerStub<object>(0);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanByComparer_ReturnsNoErrors_IfComparerReturnsPositiveNumber_Indirect()
+        {
+            // A positive result means that the specified value is greater than the member.
+            var comparer = new ComparerStub<object>(1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThan_ReturnsNoErrors_IfMemberIsSmallerThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThan_ReturnsExpectedError_IfMemberIsEqualToOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThan_ReturnsExpectedError_IfMemberIsGreaterThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThan(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        #endregion
+
         #region [====== IsSmallerThanOrEqualTo ======]
 
         [TestMethod]
@@ -1250,6 +2076,133 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #endregion
 
+        #region [====== IsSmallerThanOrEqualTo (Indirect) ======]
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualToByComparer_ReturnsNoErrors_IfMemberIsSmallerThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualToByComparer_ReturnsNoErrors_IfMemberIsEqualToOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualToByComparer_ReturnsExpectedError_IfMemberIsGreaterThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualToByComparer_ReturnsDefaultError_IfMemberIsGreaterThanOtherValue_And_ComparerIsNull_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, null);
+
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be smaller than or equal to 'Other ({1})'.", member, member - 1));
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualToByComparer_ReturnsExpectedError_IfComparerReturnsNegativeNumber_Indirect()
+        {
+            // A negative result means that the specified value is smaller than the member.
+            var comparer = new ComparerStub<object>(-1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualToByComparer_ReturnsNoErrors_IfComparerReturnsZero_Indirect()
+        {
+            // Zero means that the specified value is equal to the member.
+            var comparer = new ComparerStub<object>(0);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualToByComparer_ReturnsNoErrors_IfComparerReturnsPositiveNumber_Indirect()
+        {
+            // A positive result means that the specified value is greater than the member.
+            var comparer = new ComparerStub<object>(1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualTo_ReturnsNoErrors_IfMemberIsSmallerThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualTo_ReturnsNoErrors_IfMemberIsEqualToOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsSmallerThanOrEqualTo_ReturnsExpectedError_IfMemberIsGreaterThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsSmallerThanOrEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        #endregion
+
         #region [====== IsGreaterThan ======]
 
         [TestMethod]
@@ -1385,6 +2338,133 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member)
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThan(member - 1, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        #endregion
+
+        #region [====== IsGreaterThan (Indirect) ======]
+
+        [TestMethod]
+        public void ValidateIsGreaterThanByComparer_ReturnsExpectedError_IfMemberIsSmallerThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanByComparer_ReturnsExpectedError_IfMemberIsEqualToOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanByComparer_ReturnsDefaultError_IfMemberIsEqualToOtherValue_And_ComparerIsNull_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, null);
+
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be greater than 'Other ({0})'.", member));
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanByComparer_ReturnsNoErrors_IfMemberIsGreaterThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, null, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanByComparer_ReturnsNoErrors_IfComparerReturnsNegativeNumber_Indirect()
+        {
+            // A negative result means that the specified value is smaller than the member.
+            var comparer = new ComparerStub<object>(-1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanByComparer_ReturnsExpectedError_IfComparerReturnsZero_Indirect()
+        {
+            // Zero means that the specified value is equal to the member.
+            var comparer = new ComparerStub<object>(0);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanByComparer_ReturnsExpectedError_IfComparerReturnsPositiveNumber_Indirect()
+        {
+            // A positive result means that the specified value is greater than the member.
+            var comparer = new ComparerStub<object>(1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThan_ReturnsExpectedError_IfMemberIsGreaterThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThan_ReturnsExpectedError_IfMemberIsEqualToOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThan_ReturnsNoErrors_IfMemberIsGreaterThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
         }
@@ -1535,6 +2615,136 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #endregion
 
+        #region [====== IsGreaterThanOrEqualTo (Indirect) ======]
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualToByComparer_ReturnsExpectedErrors_IfMemberIsSmallerThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            IComparer<long> comparer = null;
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualToByComparer_ReturnsExpectedErrors_IfMemberIsSmallerThanOtherValue_And_ComparerIsNull_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, null);
+
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be greater than or equal to 'Other ({1})'.", member, member + 1));
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualToByComparer_ReturnsNoErrors_IfMemberIsEqualToOtherValue_And_ComparerIsNull_Indirect()
+        {
+            IComparer<long> comparer = null;
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualToByComparer_ReturnsNoErrors_IfMemberIsGreaterThanOtherValue_And_ComparerIsNull_Indirect()
+        {
+            IComparer<long> comparer = null;
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualToByComparer_ReturnsNoErrors_IfComparerReturnsNegativeNumber_Indirect()
+        {
+            // A negative result means that the specified value is smaller than the member.
+            var comparer = new ComparerStub<object>(-1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualToByComparer_ReturnsNoErrors_IfComparerReturnsZero_Indirect()
+        {
+            // Zero means that the specified value is equal to the member.
+            var comparer = new ComparerStub<object>(0);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualToByComparer_ReturnsExpectedError_IfComparerReturnsPositiveNumber_Indirect()
+        {
+            // A positive result means that the specified value is greater than the member.
+            var comparer = new ComparerStub<object>(1);
+            var message = new ValidatedMessage<object>(new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualTo_ReturnsExpectedError_IfMemberIsGreaterThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member + 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualTo_ReturnsNoErrors_IfMemberIsEqualToOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsGreaterThanOrEqualTo_ReturnsNoErrors_IfMemberIsGreaterThanOtherValue_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Ticks;
+            var message = new ValidatedMessage<long>(member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        #endregion
+
         #region [====== IsNotInRange ======]
 
         [TestMethod]
@@ -1547,7 +2757,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             validator.VerifyThat(m => m.Member)
                 .IsInstanceOf<int>(RandomErrorMessage)
-                .IsNotInRange(null, RandomErrorMessage);
+                .IsNotInRange(null as IRange<int>, RandomErrorMessage);
         }
 
         [TestMethod]
@@ -1619,6 +2829,72 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #endregion
 
+        #region [====== IsNotInRange (Indirect) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ValidateIsNotInRange_Throws_IfNeitherValueImplementsComparable_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<object>(member, new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotInRange(m => m.Left, m => m.Right, RandomErrorMessage);
+
+            validator.Validate(message);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ValidateIsNotInRange_Throws_IfRangeIsInvalid_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotInRange(m => m.Left, m => m.Right, RandomErrorMessage);
+
+            validator.Validate(message);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotInRange_ReturnsExpectedError_IfMemberIsInSpecifiedRange_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, 0, 1000);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsNotInRange_ReturnsDefaultError_IfMemberIsInSpecifiedRange_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, 0, 1000);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive);
+
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be within the following range: [0, 1000>.", member));
+        }
+
+        [TestMethod]
+        public void ValidateIsNotInRange_ReturnsNoErrors_IfMemberIsNotInSpecifiedRange_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, 1000, 2000);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        #endregion
+
         #region [====== IsInRange ======]
 
         [TestMethod]
@@ -1631,7 +2907,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             validator.VerifyThat(m => m.Member)
                 .IsInstanceOf<int>(RandomErrorMessage)
-                .IsInRange(null, RandomErrorMessage);          
+                .IsInRange(null as IRange<int>, RandomErrorMessage);          
         }
 
         [TestMethod]
@@ -1697,6 +2973,72 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             validator.VerifyThat(m => m.Member)
                 .IsInstanceOf<int>(RandomErrorMessage)
                 .IsInRange(1000, 2000, RangeOptions.RightExclusive);
+
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be within the following range: [1000, 2000>.", member));
+        }
+
+        #endregion
+
+        #region [====== IsInRange (Indirect) ======]        
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ValidateIsInRange_Throws_IfNeitherValueImplementsComparable_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<object>(member, new object(), new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInRange(m => m.Left, m => m.Right);
+
+            validator.Validate(message);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void ValidateIsInRange_Throws_IfRangeIsInvalid_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, member, member - 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInRange(m => m.Left, m => m.Right);
+
+            validator.Validate(message);
+        }
+
+        [TestMethod]
+        public void ValidateIsInRange_ReturnsNoErrors_IfMemberIsInSpecifiedRange_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, 0, 1000);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsInRange_ReturnsExpectedError_IfMemberIsNotInSpecifiedRange_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, 1000, 2000);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateIsInRange_ReturnsDefaultError_IfMemberIsNotInSpecifiedRange_And_NoErrorMessageIsSpecified_Indirect()
+        {
+            var member = Clock.Current.UtcDateAndTime().Millisecond;
+            var message = new ValidatedMessage<int>(member, 1000, 2000);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive);
 
             validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be within the following range: [1000, 2000>.", member));
         }

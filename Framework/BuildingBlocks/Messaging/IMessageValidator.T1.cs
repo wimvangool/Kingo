@@ -5,7 +5,7 @@ namespace Kingo.BuildingBlocks.Messaging
     /// <summary>
     /// When implemented by a class, represents a validator for a specific message.
     /// </summary>
-    public interface IMessageValidator<in TMessage> where TMessage : class
+    public interface IMessageValidator<in TMessage>
     {
         /// <summary>
         /// Validates all values of the specified <paramref name="message"/> and returns all the validation-errors, if any.

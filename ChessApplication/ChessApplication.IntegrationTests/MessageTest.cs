@@ -68,9 +68,9 @@ namespace Kingo.ChessApplication
         public void Validate_ReturnsNoErrors_IfMessageIsValid()
         {
             var message = CreateValidMessage();
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(0, errorTree.Errors.Count);
+            Assert.AreEqual(0, errorInfo.Errors.Count);
         }
 
         #endregion

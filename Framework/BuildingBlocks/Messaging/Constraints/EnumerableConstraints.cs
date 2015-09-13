@@ -7,7 +7,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Messaging.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage}" />.
     /// </summary>
     public static class EnumerableConstraints
     {
@@ -20,35 +20,34 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>     
-        /// <returns>A <see cref="IMemberConstraint{T}" /> instance that contains the member's value.</returns>
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, IEnumerable<TValue>> IsNotNullOrEmpty<T, TValue>(this IMemberConstraint<T, IEnumerable<TValue>> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, IEnumerable<TValue>> IsNotNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, IEnumerable<TValue>> member, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }            
-            return member.Satisfies(IsNotNullOrEmptyConstraint<TValue>(errorMessage));
+            return member.Satisfies(IsNotNullOrEmptyConstraint<TMessage, TValue>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a collection is not null or empty.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a collection is not null or empty.
+        /// </summary>        
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<IEnumerable<TValue>, IEnumerable<TValue>> IsNotNullOrEmptyConstraint<TValue>(string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, IEnumerable<TValue>, IEnumerable<TValue>> IsNotNullOrEmptyConstraint<TMessage, TValue>(string errorMessage = null)
         {
-            return New.Constraint<IEnumerable<TValue>>(member => member != null && member.Any())                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.EnumerableConstraints_IsNotNullOrEmpty)
+            return New.Constraint<TMessage, IEnumerable<TValue>>(member => member != null && member.Any())                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.EnumerableConstraints_IsNotNullOrEmpty)
                 .BuildConstraint();
         }
 
@@ -63,35 +62,34 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>     
-        /// <returns>A <see cref="IMemberConstraint{T}" /> instance that contains the member's value.</returns>
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, IEnumerable<TValue>> IsNullOrEmpty<T, TValue>(this IMemberConstraint<T, IEnumerable<TValue>> member, string errorMessage = null)
+        public static IMemberConstraint<TMessage, IEnumerable<TValue>> IsNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, IEnumerable<TValue>> member, string errorMessage = null)
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }
-            return member.Satisfies(IsNullOrEmptyConstraint<TValue>(errorMessage));
+            return member.Satisfies(IsNullOrEmptyConstraint<TMessage, TValue>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a collection is null or empty.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a collection is null or empty.
+        /// </summary>        
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<IEnumerable<TValue>, IEnumerable<TValue>> IsNullOrEmptyConstraint<TValue>(string errorMessage = null)
+        public static IConstraintWithErrorMessage<TMessage, IEnumerable<TValue>, IEnumerable<TValue>> IsNullOrEmptyConstraint<TMessage, TValue>(string errorMessage = null)
         {
-            return New.Constraint<IEnumerable<TValue>>(member => member == null || !member.Any())                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.EnumerableConstraints_IsNullOrEmpty)
+            return New.Constraint<TMessage, IEnumerable<TValue>>(member => member == null || !member.Any())                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.EnumerableConstraints_IsNullOrEmpty)
                 .BuildConstraint();
         }
 
@@ -107,11 +105,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
         /// </param>     
-        /// <returns>A <see cref="IMemberConstraint{T}" /> instance that contains the member's value.</returns>
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TValue> ElementAt<T, TValue>(this IMemberConstraint<T, IEnumerable<TValue>> member, int index, string errorMessage = null)
+        public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, IEnumerable<TValue>> member, int index, string errorMessage = null)
         {
             if (member == null)
             {
@@ -119,27 +117,30 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             }                                               
             Func<string, string> nameSelector = name => string.Format(CultureInfo.InvariantCulture, "{0}[{1}]", name, index);
 
-            return member.Satisfies(ElementAtConstraint<TValue>(index, errorMessage), nameSelector);
+            return member.Satisfies(ElementAtConstraint<TMessage, TValue>(index, errorMessage), nameSelector);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a collection has an element at the specified index.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a collection has an element at the specified index.
+        /// </summary>        
         /// <param name="index">The index to verify.</param>
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
-        public static IConstraintWithErrorMessage<IEnumerable<TValue>, TValue> ElementAtConstraint<TValue>(int index, string errorMessage = null)
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
+        public static IConstraintWithErrorMessage<TMessage, IEnumerable<TValue>, TValue> ElementAtConstraint<TMessage, TValue>(int index, string errorMessage = null)
         {
             if (index < 0)
             {
                 throw New.NegativeIndexException(index);
             }
-            DelegateConstraint<IEnumerable<TValue>, TValue>.Implementation constraint = delegate(IEnumerable<TValue> member, out TValue element)
+            DelegateConstraint<TMessage, IEnumerable<TValue>, TValue>.Implementation implementation = delegate(IEnumerable<TValue> value, TMessage message, out TValue element)
             {                
+                if (ReferenceEquals(message, null))
+                {
+                    throw new ArgumentNullException("message");
+                }
                 try
                 {
-                    element = member.Skip(index).First();
+                    element = value.Skip(index).First();
                     return true;
                 }
                 catch (InvalidOperationException)
@@ -148,9 +149,9 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
                     return false;
                 }
             };
-            return New.Constraint(constraint, "{constraint.Index} < {member.Name}.Count()")                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.EnumerableConstraints_ElementAt)
-                .WithArguments(new { Index = index })
+            return New.Constraint(implementation)                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.EnumerableConstraints_ElementAt)
+                .WithErrorMessageArguments(new { Index = index })
                 .BuildConstraint();
         }       
 

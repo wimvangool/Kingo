@@ -29,10 +29,10 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfSenderIdIsEmpty()
         {
             var message = new ChallengePlayerCommand(Guid.Empty, Guid.NewGuid());
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["SenderId"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["SenderId"]);
         }
 
         #endregion
@@ -43,10 +43,10 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfReceiverIdIsEmpty()
         {
             var message = new ChallengePlayerCommand(Guid.NewGuid(), Guid.Empty);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["ReceiverId"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["ReceiverId"]);
         }
 
         #endregion

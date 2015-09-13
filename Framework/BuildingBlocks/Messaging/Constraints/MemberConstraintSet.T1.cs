@@ -10,12 +10,12 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     /// <summary>
     /// Represents a set of <see cref="IMember"/> instances that are validated by adding run-time constraints.
     /// </summary>
-    /// <typeparam name="T">Type of the object the constraints are added for.</typeparam>
-    public class MemberConstraintSet<T> : IMemberConstraintSet<T>, IErrorMessageProducer<T>
+    /// <typeparam name="TMessage">Type of the object the constraints are added for.</typeparam>
+    public class MemberConstraintSet<TMessage> : IMemberConstraintSet<TMessage>, IErrorMessageProducer<TMessage>
     {
         #region [====== ChildConstraintSet  & ChildConstraint ======]
 
-        private sealed class ChildConstraintSet<TOriginal, TResult> : IErrorMessageProducer<TOriginal>, IMemberConstraintSet<TResult>
+        private sealed class ChildConstraintSet<TOriginal, TResult> : IErrorMessageProducer<TOriginal>, IMemberConstraintSet<TResult>            
         {
             private readonly MemberConstraintSet<TOriginal> _parentSet;
             private readonly MemberConstraintSet<TResult> _childSet;
@@ -98,8 +98,8 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #endregion
 
-        private readonly Dictionary<string, IMemberConstraint<T>> _membersConstraints;
-        private readonly Dictionary<string, IErrorMessageProducer<T>> _childConstraintSets;
+        private readonly Dictionary<string, IMemberConstraint<TMessage>> _membersConstraints;
+        private readonly Dictionary<string, IErrorMessageProducer<TMessage>> _childConstraintSets;
         private readonly string[] _parentNames;
 
         /// <summary>
@@ -110,8 +110,8 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         
         private MemberConstraintSet(string[] parentNames)
         {
-            _membersConstraints = new Dictionary<string, IMemberConstraint<T>>();
-            _childConstraintSets = new Dictionary<string, IErrorMessageProducer<T>>();
+            _membersConstraints = new Dictionary<string, IMemberConstraint<TMessage>>();
+            _childConstraintSets = new Dictionary<string, IErrorMessageProducer<TMessage>>();
             _parentNames = parentNames;
         }
 
@@ -123,13 +123,13 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
         #region [====== Push & Pop Parent ======]
 
-        internal void AddChildMemberConstraints<TResult>(Action<IMemberConstraintSet<TResult>> innerConstraintFactory, Member<T, TResult> member)
+        internal void AddChildMemberConstraints<TResult>(Action<IMemberConstraintSet<TResult>> innerConstraintFactory, Member<TMessage, TResult> member)
         {
             if (innerConstraintFactory == null)
             {
                 throw new ArgumentNullException("innerConstraintFactory");
             }
-            var childConstraintSet = new ChildConstraintSet<T, TResult>(this, member);
+            var childConstraintSet = new ChildConstraintSet<TMessage, TResult>(this, member);
 
             innerConstraintFactory.Invoke(childConstraintSet);
 
@@ -141,29 +141,29 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #region [====== VerifyThat ======]
 
         /// <inheritdoc />
-        public IMemberConstraint<T, TValue> VerifyThat<TValue>(Expression<Func<T, TValue>> memberExpression)
+        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> memberExpression)
         {
             if (memberExpression == null)
             {
                 throw new ArgumentNullException("memberExpression");
             }
-            return VerifyThat(memberExpression.Compile(), ExtractMemberNameFrom(memberExpression));
+            return VerifyThat(memberExpression.Compile(), memberExpression.ExtractMemberName());
         }
 
         /// <inheritdoc />
-        public IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> memberValueFactory, string memberName)
+        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> memberValueFactory, string memberName)
         {
-            var member = new Member<T, TValue>(memberValueFactory, memberName, _parentNames);
-            var memberConstraint = new MemberConstraint<T, TValue, TValue>(this, member, new TrueConstraint<TValue>());
+            var member = new Member<TMessage, TValue>(memberValueFactory, memberName, _parentNames);
+            var memberConstraint = new MemberConstraint<TMessage, TValue, TValue>(this, member, new TrueConstraint<TMessage, TValue>());
 
             Put(memberConstraint);
 
             return memberConstraint;
         }            
 
-        private void Put(IMemberConstraint<T> newConstraint)
+        private void Put(IMemberConstraint<TMessage> newConstraint)
         {
-            IMemberConstraint<T> oldConstraint;
+            IMemberConstraint<TMessage> oldConstraint;
 
             if (_membersConstraints.TryGetValue(newConstraint.Member.FullName, out oldConstraint))
             {
@@ -173,31 +173,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 Add(newConstraint);
             }
-        }        
-
-        private static string ExtractMemberNameFrom(Expression valueExpression)
-        {
-            var lambdaExpression = (LambdaExpression) valueExpression;
-            MemberExpression memberExpression;
-
-            if (TryCastToMemberExpression(lambdaExpression, out memberExpression))
-            {
-                return memberExpression.Member.Name;
-            }            
-            throw NewExpressionNotSupportedException(valueExpression);
-        }
-
-        private static bool TryCastToMemberExpression(LambdaExpression lambdaExpression, out MemberExpression memberExpression)
-        {
-            var unaryExpression = lambdaExpression.Body as UnaryExpression;
-            if (unaryExpression != null)
-            {
-                memberExpression = (MemberExpression) unaryExpression.Operand;
-                return true;
-            }
-            memberExpression = lambdaExpression.Body as MemberExpression;
-            return memberExpression != null;
-        }
+        }                
 
         #endregion        
 
@@ -214,7 +190,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="oldConstraint"/> and <paramref name="newConstraint"/> do not have the same name.
         /// </exception>
-        protected internal void Replace(IMemberConstraint<T> oldConstraint, IMemberConstraint<T> newConstraint)
+        protected internal void Replace(IMemberConstraint<TMessage> oldConstraint, IMemberConstraint<TMessage> newConstraint)
         {
             if (ReferenceEquals(oldConstraint, null))
             {
@@ -237,7 +213,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <summary>
         /// Occurs when a constraint was removed from this set.
         /// </summary>
-        public event EventHandler<MemberConstraintEventArgs<T>> ConstraintRemoved;
+        public event EventHandler<MemberConstraintEventArgs<TMessage>> ConstraintRemoved;
 
         /// <summary>
         /// Raises the <see cref="ConstraintRemoved"/> event.
@@ -246,7 +222,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arguments"/> is <c>null</c>.
         /// </exception>
-        protected virtual void OnConstraintRemoved(MemberConstraintEventArgs<T> arguments)
+        protected virtual void OnConstraintRemoved(MemberConstraintEventArgs<TMessage> arguments)
         {
             ConstraintRemoved.Raise(this, arguments);
         }
@@ -259,7 +235,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        protected bool Remove(IMemberConstraint<T> constraint)
+        protected bool Remove(IMemberConstraint<TMessage> constraint)
         {
             if (constraint == null)
             {
@@ -267,7 +243,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             }
             if (_membersConstraints.Remove(constraint.Member.FullName))
             {
-                OnConstraintRemoved(new MemberConstraintEventArgs<T>(constraint));
+                OnConstraintRemoved(new MemberConstraintEventArgs<TMessage>(constraint));
                 return true;
             }
             return false;
@@ -276,7 +252,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <summary>
         /// Occurs when a constraint was added to this set.
         /// </summary>
-        public event EventHandler<MemberConstraintEventArgs<T>> ConstraintAdded;
+        public event EventHandler<MemberConstraintEventArgs<TMessage>> ConstraintAdded;
 
         /// <summary>
         /// Raises the <see cref="ConstraintAdded"/> event.
@@ -285,7 +261,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arguments"/> is <c>null</c>.
         /// </exception>
-        protected virtual void OnConstraintAdded(MemberConstraintEventArgs<T> arguments)
+        protected virtual void OnConstraintAdded(MemberConstraintEventArgs<TMessage> arguments)
         {
             ConstraintAdded.Raise(this, arguments);
         }
@@ -300,7 +276,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// A member with the same name was already added to this set.
         /// </exception>
-        protected void Add(IMemberConstraint<T> constraint)
+        protected void Add(IMemberConstraint<TMessage> constraint)
         {
             if (constraint == null)
             {
@@ -314,11 +290,11 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             {
                 throw NewMemberAlreadyAddedException(constraint.Member.FullName);
             }
-            OnConstraintAdded(new MemberConstraintEventArgs<T>(constraint));
+            OnConstraintAdded(new MemberConstraintEventArgs<TMessage>(constraint));
         }        
 
         /// <inheritdoc />
-        public bool HasErrors(T item, IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
+        public bool HasErrors(TMessage message, IErrorMessageConsumer consumer, IFormatProvider formatProvider = null)
         {
             if (consumer == null)
             {
@@ -328,12 +304,12 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             foreach (var member in MemberConstraints())
             {
-                hasAddedErrorMessages |= member.HasErrors(item, consumer, formatProvider);
+                hasAddedErrorMessages |= member.HasErrors(message, consumer, formatProvider);
             }
             return hasAddedErrorMessages;
         }
 
-        private IEnumerable<IErrorMessageProducer<T>> MemberConstraints()
+        private IEnumerable<IErrorMessageProducer<TMessage>> MemberConstraints()
         {
             return _membersConstraints.Values.Concat(_childConstraintSets.Values);
         }
@@ -345,13 +321,6 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             var messageFormat = ExceptionMessages.MemberSet_MemberAlreadyAdded;
             var message = string.Format(messageFormat, memberName);
             return new ArgumentException(message);
-        }
-
-        private static Exception NewExpressionNotSupportedException(Expression valueExpression)
-        {
-            var messageFormat = ExceptionMessages.MemberSet_UnsupportedExpression;
-            var message = string.Format(messageFormat, valueExpression.NodeType);
-            return new ArgumentException(message, "valueExpression");
-        }        
+        }              
     }
 }

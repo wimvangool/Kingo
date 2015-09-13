@@ -34,60 +34,60 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfUsernameIsNull()
         {
             var message = new RegisterPlayerCommand(null, _ValidPassword);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfUsernameIsEmpty()
         {
             var message = new RegisterPlayerCommand(string.Empty, _ValidPassword);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfUsernameContainsOnlyWhiteSpace()
         {
             var message = new RegisterPlayerCommand("    ", _ValidPassword);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfUsernameContainsAnIllegalCharacter()
         {
             var message = new RegisterPlayerCommand("abcd+3", _ValidPassword);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfUsernameIsTooShort()
         {
             var message = new RegisterPlayerCommand("abc", _ValidPassword);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfUsernameIsTooLong()
         {
             var message = new RegisterPlayerCommand("abcdefghijklm", _ValidPassword);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         #endregion
@@ -98,60 +98,60 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfPasswordIsNull()
         {
             var message = new RegisterPlayerCommand(_ValidUsername, null);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Password"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfPasswordIsEmpty()
         {
             var message = new RegisterPlayerCommand(_ValidUsername, string.Empty);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Password"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfPasswordContainsOnlyWhiteSpace()
         {
             var message = new RegisterPlayerCommand(_ValidUsername, "       ");
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Password"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfPasswordContainsAnIllegalCharacter()
         {
             var message = new RegisterPlayerCommand(_ValidUsername, "abcd 3g5g65");
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Password"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfPasswordIsTooShort()
         {
             var message = new RegisterPlayerCommand(_ValidUsername, "abcde");
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Password"]);
         }
 
         [TestMethod]
         public void Validate_ReturnsErrors_IfPasswordIsTooLong()
         {
             var message = new RegisterPlayerCommand(_ValidUsername, "abcdefghijklmnopqrstuvw");
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Password"]);
         }
 
         #endregion

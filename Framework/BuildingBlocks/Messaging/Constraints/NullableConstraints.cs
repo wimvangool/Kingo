@@ -4,7 +4,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Messaging.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage}" />.
     /// </summary>
     public static class NullableConstraints
     {        
@@ -24,28 +24,27 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> IsNotNull<T, TValue>(this IMemberConstraint<T, TValue?> member, string errorMessage = null) where TValue : struct
+        public static IMemberConstraint<TMessage, TValue> IsNotNull<TMessage, TValue>(this IMemberConstraint<TMessage, TValue?> member, string errorMessage = null) where TValue : struct
         {
             if (member == null)
             {
                 throw new ArgumentNullException("member");
             }            
-            return member.Satisfies(IsNotNullConstraint<TValue>(errorMessage));
+            return member.Satisfies(IsNotNullConstraint<TMessage, TValue>(errorMessage));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{T, S}" /> that checks whether or not a nullable has a value.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// Creates and returns a new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" /> that checks whether or not a nullable has a value.
+        /// </summary>        
         /// <param name="errorMessage">Error message to return when the member fails.</param>
-        /// <returns>A new <see cref="IConstraintWithErrorMessage{T, S}" />.</returns>
+        /// <returns>A new <see cref="IConstraintWithErrorMessage{TMessage, T, S}" />.</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IConstraintWithErrorMessage<TValue?, TValue> IsNotNullConstraint<TValue>(string errorMessage = null) where TValue : struct
+        public static IConstraintWithErrorMessage<TMessage, TValue?, TValue> IsNotNullConstraint<TMessage, TValue>(string errorMessage = null) where TValue : struct
         {
-            return New.Constraint<TValue?, TValue>(member => member.HasValue, value => value.Value)                
-                .WithErrorFormat(errorMessage ?? ConstraintErrors.NullableConstraints_IsNotNull)
+            return New.Constraint<TMessage, TValue?, TValue>(member => member.HasValue, value => value.Value)                
+                .WithErrorMessage(errorMessage ?? ConstraintErrors.NullableConstraints_IsNotNull)
                 .BuildConstraint();
         }
 

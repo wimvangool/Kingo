@@ -44,10 +44,10 @@ namespace Kingo.ChessApplication.Players
             {
                 Username = _ValidUsername
             };
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["PlayerId"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["PlayerId"]);
         }
 
         #endregion
@@ -58,10 +58,10 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfUsernameIsNull()
         {
             var message = new PlayerRegisteredEvent(_ValidPlayerId, _ValidPlayerVersion);
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         [TestMethod]
@@ -71,10 +71,10 @@ namespace Kingo.ChessApplication.Players
             {
                 Username = string.Empty
             };
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         [TestMethod]
@@ -84,10 +84,10 @@ namespace Kingo.ChessApplication.Players
             {
                 Username = "    "
             };
-            var errorTree = message.Validate();
+            var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorTree.Errors.Count);
-            Assert.IsNotNull(errorTree.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.Errors.Count);
+            Assert.IsNotNull(errorInfo.Errors["Username"]);
         }
 
         #endregion

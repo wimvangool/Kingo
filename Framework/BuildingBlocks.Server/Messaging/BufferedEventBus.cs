@@ -29,10 +29,10 @@ namespace Kingo.BuildingBlocks.Messaging
             return AsyncMethod.RunSynchronously(() =>
             {
                 var messageCopy = message.Copy();
-                var errorTree = messageCopy.Validate();
-                if (errorTree.Errors.Count > 0)
+                var errorInfo = messageCopy.Validate();
+                if (errorInfo.Errors.Count > 0)
                 {
-                    throw NewInvalidEventException("message", messageCopy, errorTree);
+                    throw NewInvalidEventException("message", messageCopy, errorInfo);
                 }
                 lock (_buffer)
                 {
@@ -66,11 +66,11 @@ namespace Kingo.BuildingBlocks.Messaging
             return string.Format("{0} Event(s) Published", _buffer.Count);
         }
 
-        private static Exception NewInvalidEventException(string paramName, IMessage invalidEvent, DataErrorInfo errorTree)
+        private static Exception NewInvalidEventException(string paramName, IMessage invalidEvent, DataErrorInfo errorInfo)
         {
             var messageFormat = ExceptionMessages.BufferedEventBus_InvalidMessage;
             var message = string.Format(messageFormat, invalidEvent.GetType().Name);
-            return new InvalidEventException(paramName, invalidEvent, message, errorTree);
+            return new InvalidEventException(paramName, invalidEvent, message, errorInfo);
         }
     }
 }

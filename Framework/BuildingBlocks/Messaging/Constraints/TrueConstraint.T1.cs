@@ -3,9 +3,9 @@ using System.Globalization;
 
 namespace Kingo.BuildingBlocks.Messaging.Constraints
 {
-    internal sealed class TrueConstraint<TValue> : ConstraintWithErrorMessage<TValue, TValue>
+    internal sealed class TrueConstraint<TMessage, TValue> : ConstraintWithErrorMessage<TMessage, TValue, TValue>
     {
-        internal override IConstraintWithErrorMessage<TValue, TNewResult> And<TNewResult>(IConstraintWithErrorMessage<TValue, TNewResult> constraint)
+        internal override IConstraintWithErrorMessage<TMessage, TValue, TNewResult> And<TNewResult>(IConstraintWithErrorMessage<TMessage, TValue, TNewResult> constraint)
         {
             if (constraint == null)
             {
@@ -14,16 +14,15 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             return constraint;
         }
 
-        public override bool IsSatisfiedBy(TValue value, out TValue result, out IConstraintWithErrorMessage failedConstraint)
+        public override bool IsSatisfiedBy(TValue value, TMessage message, out TValue result, out IConstraintWithErrorMessage<TMessage> failedConstraint)
         {
+            if (ReferenceEquals(message, null))
+            {
+                throw new ArgumentNullException("message");
+            }
             result = value;
             failedConstraint = null;
             return true;
-        }
-
-        public override string ToString(string memberName)
-        {
-            return true.ToString(CultureInfo.CurrentCulture).ToLower(CultureInfo.CurrentCulture);
-        }
+        }        
     }
 }

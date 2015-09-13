@@ -26,6 +26,20 @@ namespace Kingo.BuildingBlocks
             get { return _nextComponent; }
         }
 
+        internal override StringTemplateComponent AttachLast(StringTemplateComponent nextComponent)
+        {
+            if (_nextComponent == null)
+            {
+                return new StringTemplateVariable(_identifier, _expression, _format, nextComponent);
+            }
+            return new StringTemplateVariable(_identifier, _expression, _format, _nextComponent.AttachLast(nextComponent));
+        }
+
+        internal override int CountLiterals()
+        {
+            return _nextComponent == null ? 0 : _nextComponent.CountLiterals();
+        }
+
         #region [====== Equals & GetHashCode ======]
 
         public override bool Equals(object obj)
@@ -91,7 +105,7 @@ namespace Kingo.BuildingBlocks
             var instance = Evaluate(argument, expression);
             if (instance == null)
             {
-                return "<null>";
+                return StringTemplate.NullValue;
             }
             var formattable = instance as IFormattable;
             if (formattable == null)

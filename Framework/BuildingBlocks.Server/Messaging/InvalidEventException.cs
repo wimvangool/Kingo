@@ -8,16 +8,16 @@ namespace Kingo.BuildingBlocks.Messaging
     internal sealed class InvalidEventException : ArgumentException
     {
         private const string _InvalidEventKey = "_invalidEvent";
-        private const string _ErrorTreeKey = "_errorTree";
+        private const string _ErrorTreeKey = "_errorInfo";
 
         private readonly IMessage _invalidEvent;
-        private readonly DataErrorInfo _errorTree;        
+        private readonly DataErrorInfo _errorInfo;        
                 
-        internal InvalidEventException(string paramName, IMessage invalidEvent, string message, DataErrorInfo errorTree)
+        internal InvalidEventException(string paramName, IMessage invalidEvent, string message, DataErrorInfo errorInfo)
             : base(message, paramName)
         {            
             _invalidEvent = invalidEvent;
-            _errorTree = errorTree;
+            _errorInfo = errorInfo;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Messaging
             : base(info, context)
         {
             _invalidEvent = (IMessage) info.GetValue(_InvalidEventKey, typeof(IMessage));
-            _errorTree = (DataErrorInfo) info.GetValue(_ErrorTreeKey, typeof(DataErrorInfo));
+            _errorInfo = (DataErrorInfo) info.GetValue(_ErrorTreeKey, typeof(DataErrorInfo));
         }
 
         /// <inheritdoc />
@@ -40,7 +40,7 @@ namespace Kingo.BuildingBlocks.Messaging
             base.GetObjectData(info, context);
 
             info.AddValue(_InvalidEventKey, _invalidEvent);
-            info.AddValue(_ErrorTreeKey, _errorTree);
+            info.AddValue(_ErrorTreeKey, _errorInfo);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>
         public DataErrorInfo ErrorTree
         {
-            get { return _errorTree; }
+            get { return _errorInfo; }
         }
     }
 }

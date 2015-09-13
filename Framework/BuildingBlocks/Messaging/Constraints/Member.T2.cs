@@ -1,19 +1,14 @@
 ﻿using System;
 
 namespace Kingo.BuildingBlocks.Messaging.Constraints
-{
-    /// <summary>
-    /// Represents a member of a message.
-    /// </summary>
-    /// <typeparam name="T">Type of the object the error messages are produced for.</typeparam>
-    /// <typeparam name="TValue">Type of the member.</typeparam>
-    public sealed class Member<T, TValue> : IMember
+{    
+    internal sealed class Member<TMessage, TValue> : IMember
     {
         private readonly string[] _parentNames;
         private readonly string _memberName;
-        private readonly Func<T, TValue> _valueFactory;
+        private readonly Func<TMessage, TValue> _valueFactory;
 
-        internal Member(Func<T, TValue> valueFactory, string memberName, string[] parentNames)
+        internal Member(Func<TMessage, TValue> valueFactory, string memberName, string[] parentNames)
         {
             if (valueFactory == null)
             {
@@ -26,11 +21,8 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             _parentNames = parentNames;
             _memberName = memberName;
             _valueFactory = valueFactory;
-        }        
-
-        /// <summary>
-        /// Returns the fully qualified name of this member.
-        /// </summary>
+        }
+        
         public string FullName
         {
             get
@@ -42,10 +34,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
                     : string.Join(separator, _parentNames) + separator + _memberName;                
             }
         }
-
-        /// <summary>
-        /// Returns the name of this member.
-        /// </summary>
+        
         public string Name
         {
             get { return _memberName; }
@@ -59,37 +48,39 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             get { return typeof(TValue); }
         }
 
-        /// <summary>
-        /// Returns the value of this member.
-        /// </summary>
-        public TValue GetValue(T item)
+        internal MemberWithValue<TMessage, TValue> ToMember(TMessage message)
         {
-            return _valueFactory.Invoke(item);
+            return new MemberWithValue<TMessage, TValue>(this, message);
+        }
+        
+        internal TValue GetValue(TMessage message)
+        {
+            return _valueFactory.Invoke(message);
         }
 
-        internal Member<T, TValue> Rename(Func<string, string> nameSelector = null)
+        internal Member<TMessage, TValue> Rename(Func<string, string> nameSelector = null)
         {
             if (nameSelector == null)
             {
                 return this;
             }
-            return new Member<T, TValue>(_valueFactory, nameSelector.Invoke(_memberName), _parentNames);            
+            return new Member<TMessage, TValue>(_valueFactory, nameSelector.Invoke(_memberName), _parentNames);            
         }
 
-        internal Member<T, TResult> Transform<TResult>(IConstraintWithErrorMessage<TValue, TResult> constraint)
+        internal Member<TMessage, TResult> Transform<TResult>(IConstraintWithErrorMessage<TMessage, TValue, TResult> constraint)
         {
-            Func<T, TResult> valueFactory = value =>
+            Func<TMessage, TResult> valueFactory = message =>
             {
                 TResult result;
-                IConstraintWithErrorMessage failedConstraint;
+                IConstraintWithErrorMessage<TMessage> failedConstraint;
 
-                if (constraint.IsSatisfiedBy(GetValue(value), out result, out failedConstraint))
+                if (constraint.IsSatisfiedBy(GetValue(message), message, out result, out failedConstraint))
                 {
                     return result;
                 }
                 return default(TResult);
             };
-            return new Member<T, TResult>(valueFactory, _memberName, _parentNames);
+            return new Member<TMessage, TResult>(valueFactory, _memberName, _parentNames);
         }
     }
 }
