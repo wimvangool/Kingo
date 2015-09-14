@@ -8,10 +8,10 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
     [TestClass]
     public sealed class MemberConstraintTest : ConstraintTest
     {       
-        #region [====== Basics ======]
+        #region [====== Basics ======]        
 
         [TestMethod]
-        public void Validate_ReturnsNoErrors_IfMessageIsValid()
+        public void Validate_ReturnsNoErrors_IfNoConstraintsAreSpecified()
         {            
             var validator = new ConstraintValidator<EmptyMessage>();
 
@@ -19,7 +19,79 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }
 
         [TestMethod]
-        public void Validate_ReturnsNoErrors_IfConstraintIsSatisfied()
+        public void Validate_ReturnsNoErrors_IfConstraintIsSatisfied_1()
+        {
+            var message = new ValidatedMessage<object>(new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Satisfies(value => true);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedError_IfConstraintIsNotSatisfied_1()
+        {
+            var message = new ValidatedMessage<object>(new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Satisfies(value => false, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsNoErrors_IfConstraintIsSatisfied_2()
+        {
+            var message = new ValidatedMessage<int>(Clock.Current.LocalDateAndTime().Millisecond);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Satisfies(value => value >= 0, value => value.ToString()).IsInt32();
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedError_IfConstraintIsNotSatisfied_2()
+        {
+            var message = new ValidatedMessage<object>(new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Satisfies(value => false, value => value.ToString(), RandomErrorMessage).IsInt32();
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsNoErrors_IfConstraintIsSatisfied_3()
+        {
+            var message = new ValidatedMessage<string>(Clock.Current.LocalDateAndTime().Millisecond.ToString());
+            var validator = message.CreateConstraintValidator();            
+
+            validator.VerifyThat(m => m.Member).Satisfies(delegate (string value, ValidatedMessage<string> m, out int result)
+            {
+                return int.TryParse(value, out result);
+            }).IsGreaterThanOrEqualTo(0);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedError_IfConstraintIsNotSatisfied_3()
+        {
+            var message = new ValidatedMessage<string>(Guid.NewGuid().ToString());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Satisfies(delegate(string value, ValidatedMessage<string> m, out int result)
+            {
+                return int.TryParse(value, out result);
+            }, RandomErrorMessage);
+
+            validator.Validate(message).AssertOneError(RandomErrorMessage);
+        }        
+
+        [TestMethod]
+        public void Validate_ReturnsNoErrors_IfConstraintIsSatisfied_4()
         {
             var message = new ValidatedMessage<object>(new object());
             var validator = message.CreateConstraintValidator();

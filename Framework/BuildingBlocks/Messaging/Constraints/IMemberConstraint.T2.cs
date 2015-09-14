@@ -44,6 +44,51 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         /// Applies the specified <paramref name="constraint"/> in addition to the current constraint(s) and returns
         /// a <see cref="IMemberConstraint{TMessage}" /> of which the value has been converted using the specified <paramref name="constraint"/>.
         /// </summary>
+        /// <param name="constraint">The constraint to apply.</param>  
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>              
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> that has applied the specified <paramref name="constraint"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        IMemberConstraint<TMessage, TResult> Satisfies(Func<TResult, bool> constraint, string errorMessage = null);
+
+        /// <summary>
+        /// Applies the specified <paramref name="constraint"/> in addition to the current constraint(s) and returns
+        /// a <see cref="IMemberConstraint{TMessage}" /> of which the value has been converted using the specified <paramref name="constraint"/>.
+        /// </summary>
+        /// <param name="constraint">The constraint to apply.</param> 
+        /// <param name="valueConverter">Delegate used to convert the value of type <typeparamref name="TResult"/> to a value of type <typeparamref name="TOther"/>.</param> 
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>           
+        /// <param name="nameSelector">Optional delegate used to convert the current member's name to a new name.</param>   
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> that has applied the specified <paramref name="constraint"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        IMemberConstraint<TMessage, TOther> Satisfies<TOther>(Func<TResult, bool> constraint, Func<TResult, TOther> valueConverter, string errorMessage = null, Func<string, string> nameSelector = null);
+
+        /// <summary>
+        /// Applies the specified <paramref name="constraint"/> in addition to the current constraint(s) and returns
+        /// a <see cref="IMemberConstraint{TMessage}" /> of which the value has been converted using the specified <paramref name="constraint"/>.
+        /// </summary>
+        /// <param name="constraint">The constraint to apply.</param>         
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageConsumer" /> when verification fails.
+        /// </param>           
+        /// <param name="nameSelector">Optional delegate used to convert the current member's name to a new name.</param>   
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> that has applied the specified <paramref name="constraint"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        IMemberConstraint<TMessage, TOther> Satisfies<TOther>(DelegateConstraint<TMessage, TResult, TOther>.Implementation constraint, string errorMessage = null, Func<string, string> nameSelector = null);
+
+        /// <summary>
+        /// Applies the specified <paramref name="constraint"/> in addition to the current constraint(s) and returns
+        /// a <see cref="IMemberConstraint{TMessage}" /> of which the value has been converted using the specified <paramref name="constraint"/>.
+        /// </summary>
         /// <param name="constraint">The constraint to apply.</param>        
         /// <param name="nameSelector">Optional delegate used to convert the current member's name to a new name.</param>
         /// <returns>A <see cref="IMemberConstraint{TMessage}" /> that has applied the specified <paramref name="constraint"/>.</returns>

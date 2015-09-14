@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Messaging.Constraints
 {    
@@ -77,6 +78,27 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #region [====== Satisfies ======]
 
         /// <inheritdoc />
+        public IMemberConstraint<TMessage, TResult> Satisfies(Func<TResult, bool> constraint, string errorMessage = null)
+        {
+            return Satisfies(New.Constraint<TMessage, TResult, TResult>(constraint, value => value), errorMessage, null);
+        }
+
+        public IMemberConstraint<TMessage, TOther> Satisfies<TOther>(Func<TResult, bool> constraint, Func<TResult, TOther> valueConverter, string errorMessage = null, Func<string, string> nameSelector = null)
+        {
+            return Satisfies(New.Constraint<TMessage, TResult, TOther>(constraint, valueConverter), errorMessage, nameSelector);
+        }
+
+        public IMemberConstraint<TMessage, TOther> Satisfies<TOther>(DelegateConstraint<TMessage, TResult, TOther>.Implementation constraint, string errorMessage = null, Func<string, string> nameSelector = null)
+        {
+            return Satisfies(New.Constraint(constraint), errorMessage, nameSelector);
+        }
+
+        private IMemberConstraint<TMessage, TOther> Satisfies<TOther>(DelegateConstraintBuilder<TMessage, TResult, TOther> constraint, string errorMessage, Func<string, string> nameSelector)
+        {
+            return Satisfies(constraint.WithErrorMessage(errorMessage ?? ConstraintErrors.MemberConstraints_Default).BuildConstraint(), nameSelector);
+        }
+
+        /// <inheritdoc />
         public IMemberConstraint<TMessage, TOther> Satisfies<TOther>(IConstraintWithErrorMessage<TMessage, TResult, TOther> constraint, Func<string, string> nameSelector = null)
         {
             var newConstraint = _constraint.And(constraint);
@@ -88,6 +110,6 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
             return newMemberConstraint;                        
         }
 
-        #endregion                                          
+        #endregion
     }
 }
