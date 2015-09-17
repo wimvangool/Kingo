@@ -72,7 +72,7 @@
     <Compile Include="Messaging\Constraints\RangeTest.cs" />
     <Compile Include="Messaging\Constraints\StringConstraintTest.cs" />
     <Compile Include="Messaging\Constraints\ValidatedMessage.T1.cs" />
-    <Compile Include="Messaging\Constraints\DataErrorInfoExtensions.cs" />
+    <Compile Include="Messaging\Constraints\DataErrorInfoListExtensions.cs" />
     <Compile Include="Clocks\HighResolutionClockTest.cs" />
     <Compile Include="Clocks\StopwatchClockTest.cs" />
     <Compile Include="Clocks\SystemClockTest.cs" />

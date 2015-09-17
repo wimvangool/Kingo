@@ -8,16 +8,16 @@ namespace Kingo.BuildingBlocks.Messaging
     /// has insufficient rights to process a specific message.
     /// </summary>
     [Serializable]
-    public class SenderNotAuthorizedException : FunctionalException
+    public class AuthorizationFailedException : FunctionalException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SenderNotAuthorizedException" /> class.
+        /// Initializes a new instance of the <see cref="AuthorizationFailedException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public SenderNotAuthorizedException(IMessage failedMessage) 
+        public AuthorizationFailedException(IMessage failedMessage) 
             : base(failedMessage) {}
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public SenderNotAuthorizedException(IMessage failedMessage, string message)
+        public AuthorizationFailedException(IMessage failedMessage, string message)
             : base(failedMessage, message) {}
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public SenderNotAuthorizedException(IMessage failedMessage, string message, Exception innerException)
+        public AuthorizationFailedException(IMessage failedMessage, string message, Exception innerException)
             : base(failedMessage, message, innerException) {}
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected SenderNotAuthorizedException(SerializationInfo info, StreamingContext context)
+        protected AuthorizationFailedException(SerializationInfo info, StreamingContext context)
             : base(info, context) {}
     }
 }

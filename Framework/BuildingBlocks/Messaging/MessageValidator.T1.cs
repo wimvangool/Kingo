@@ -25,13 +25,18 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         /// <inheritdoc />
-        public DataErrorInfo Validate(TMessage message)
+        public IReadOnlyList<DataErrorInfo> Validate(TMessage message)
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            return Validate(_validationContextFactory.Invoke(message));
+            var errorInfo = Validate(_validationContextFactory.Invoke(message));
+            if (errorInfo.Errors.Count == 0)
+            {
+                return DataErrorInfo.EmptyList;
+            }
+            return new [] { errorInfo };
         }
 
         private static DataErrorInfo Validate(ValidationContext validationContext)

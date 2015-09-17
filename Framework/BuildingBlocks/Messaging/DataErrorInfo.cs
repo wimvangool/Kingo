@@ -29,7 +29,7 @@ namespace Kingo.BuildingBlocks.Messaging
             _error = new Lazy<string>(CreateError);            
         }
 
-        private DataErrorInfo(ReadOnlyDictionary<string, string> errors, IEnumerable<DataErrorInfo> childErrors)
+        private DataErrorInfo(ReadOnlyDictionary<string, string> errors)
         {            
             _errors = errors;            
         }
@@ -87,7 +87,9 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <summary>
         /// An instance of the <see cref="DataErrorInfo" /> class without any errors.
         /// </summary>       
-        public static readonly DataErrorInfo NoErrors = new DataErrorInfo(EmptyDictionary(), null);                      
+        public static readonly DataErrorInfo NoErrors = new DataErrorInfo(EmptyDictionary());
+        
+        internal static readonly DataErrorInfo[] EmptyList = new DataErrorInfo[0];      
 
         private static ReadOnlyDictionary<string, string> EmptyDictionary()
         {

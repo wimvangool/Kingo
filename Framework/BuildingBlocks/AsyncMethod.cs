@@ -125,6 +125,6 @@ namespace Kingo.BuildingBlocks
             return taskCompletionSource.Task;
         }
 
-        #endregion
+        #endregion        
     }
 }

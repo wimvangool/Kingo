@@ -48,14 +48,14 @@ namespace Kingo.BuildingBlocks.Messaging
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        public override DataErrorInfo Validate()
+        public override IReadOnlyList<DataErrorInfo> Validate()
         {
-            var validationStrategy = CreateValidator();
-            if (validationStrategy == null)
+            var validator = CreateValidator();
+            if (validator == null)
             {
-                return DataErrorInfo.NoErrors;
+                return DataErrorInfo.EmptyList;
             }
-            return validationStrategy.Validate(Copy());
+            return validator.Validate(Copy());
         }
 
         /// <summary>

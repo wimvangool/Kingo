@@ -1,4 +1,5 @@
-﻿using Kingo.BuildingBlocks.Messaging;
+﻿using System.Linq;
+using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication
@@ -68,7 +69,7 @@ namespace Kingo.ChessApplication
         public void Validate_ReturnsNoErrors_IfMessageIsValid()
         {
             var message = CreateValidMessage();
-            var errorInfo = message.Validate();
+            var errorInfo = message.Validate().Single();
 
             Assert.AreEqual(0, errorInfo.Errors.Count);
         }

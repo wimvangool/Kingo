@@ -85,7 +85,7 @@ namespace Kingo.ChessApplication.Challenges
 
         #endregion
 
-        #region [====== Validation ======]        
+        #region [====== Validation ======]
 
         #endregion
     }

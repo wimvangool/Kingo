@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.BuildingBlocks.Resources;
 
@@ -23,10 +24,10 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
             {
                 throw new ArgumentNullException("handler");
             }
-            var errorInfo = await Validate(handler.Message);
-            if (errorInfo.Errors.Count > 0)
+            var errorInfoCollection = await Validate(handler.Message);
+            if (errorInfoCollection.Count > 0)
             {
-                throw NewInvalidMessageException(handler.Message, errorInfo);
+                throw NewInvalidMessageException(handler.Message, errorInfoCollection);
             }
             await handler.InvokeAsync();
         }
@@ -36,7 +37,7 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         /// </summary>
         /// <param name="message">The message to validate.</param>
         /// <returns>The resulting <see cref="DataErrorInfo" />.</returns>
-        protected virtual Task<DataErrorInfo> Validate(IMessage message)
+        protected virtual Task<IReadOnlyList<DataErrorInfo>> Validate(IMessage message)
         {
             return AsyncMethod.RunSynchronously(() => message.Validate());
         }        
@@ -46,11 +47,11 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         /// <paramref name="message"/> is not valid.
         /// </summary>
         /// <param name="message">The invalid message.</param>
-        /// <param name="errorInfo">The <see cref="DataErrorInfo" /> containing all validation errors.</param>
+        /// <param name="errorInfoCollection">A collection of <see cref="DataErrorInfo" /> instances containing all validation errors.</param>
         /// <returns>A new <see cref="InvalidMessageException"/>.</returns>
-        protected virtual InvalidMessageException NewInvalidMessageException(IMessage message, DataErrorInfo errorInfo)
+        protected virtual InvalidMessageException NewInvalidMessageException(IMessage message, IReadOnlyList<DataErrorInfo> errorInfoCollection)
         {
-            return new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, errorInfo);
+            return new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, errorInfoCollection);
         }
     }
 }

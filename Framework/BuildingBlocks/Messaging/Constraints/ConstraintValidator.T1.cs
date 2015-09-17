@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Kingo.BuildingBlocks.Messaging.Constraints
@@ -42,7 +43,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         #endregion        
 
         /// <inheritdoc />
-        public DataErrorInfo Validate(TMessage message)
+        public IReadOnlyList<DataErrorInfo> Validate(TMessage message)
         {
             if (ReferenceEquals(message, null))
             {
@@ -52,9 +53,9 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
 
             if (_memberConstraintSet.HasErrors(message, errorTreeBuilder))
             {
-                return errorTreeBuilder.BuildErrorTree();
+                return new [] { errorTreeBuilder.BuildErrorTree() };
             }
-            return DataErrorInfo.NoErrors;
-        }        
+            return DataErrorInfo.EmptyList;
+        }               
     }
 }

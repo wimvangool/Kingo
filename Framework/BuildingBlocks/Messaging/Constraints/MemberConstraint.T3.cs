@@ -27,11 +27,7 @@ namespace Kingo.BuildingBlocks.Messaging.Constraints
         }        
 
         bool IErrorMessageProducer<TMessage>.HasErrors(TMessage message, IErrorMessageConsumer consumer, IFormatProvider formatProvider)
-        {            
-            if (ReferenceEquals(message, null))
-            {
-                throw new ArgumentNullException("message");
-            }
+        {                        
             if (consumer == null)
             {
                 throw new ArgumentNullException("consumer");

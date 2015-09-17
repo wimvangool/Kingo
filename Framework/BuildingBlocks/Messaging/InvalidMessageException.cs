@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
@@ -12,7 +13,7 @@ namespace Kingo.BuildingBlocks.Messaging
     public class InvalidMessageException : FunctionalException
     {
         private const string _ErrorTreeKey = "_errorInfo";
-        private readonly DataErrorInfo _errorInfo;
+        private readonly IReadOnlyList<DataErrorInfo> _errorInfoCollection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
@@ -42,13 +43,13 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>
         /// <param name="failedMessage">The invalid request.</param>  
         /// <param name="message">Message of the exception.</param> 
-        /// <param name="errorInfo">
+        /// <param name="errorInfoCollection">
         /// If specified, contains all the validation-errors of the <paramref name="failedMessage"/>.
         /// </param>
-        public InvalidMessageException(IMessage failedMessage, string message, DataErrorInfo errorInfo)
+        public InvalidMessageException(IMessage failedMessage, string message, IReadOnlyList<DataErrorInfo> errorInfoCollection)
             : base(failedMessage, message)
         {
-            _errorInfo = errorInfo;
+            _errorInfoCollection = errorInfoCollection;
         }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace Kingo.BuildingBlocks.Messaging
         protected InvalidMessageException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _errorInfo = (DataErrorInfo) info.GetValue(_ErrorTreeKey, typeof(DataErrorInfo));
+            _errorInfoCollection = (IReadOnlyList<DataErrorInfo>) info.GetValue(_ErrorTreeKey, typeof(IReadOnlyList<DataErrorInfo>));
         }
 
         /// <inheritdoc />
@@ -69,15 +70,15 @@ namespace Kingo.BuildingBlocks.Messaging
         {
             base.GetObjectData(info, context);
 
-            info.AddValue(_ErrorTreeKey, _errorInfo);
+            info.AddValue(_ErrorTreeKey, _errorInfoCollection);
         }
 
         /// <summary>
         /// If specified, contains all the validation-errors of the <see cref="FunctionalException.FailedMessage" />.
         /// </summary>
-        public DataErrorInfo ErrorTree
+        public IReadOnlyList<DataErrorInfo> ErrorInfoCollection
         {
-            get { return _errorInfo; }
+            get { return _errorInfoCollection ?? DataErrorInfo.EmptyList; }
         }
     }
 }

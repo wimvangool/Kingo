@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
@@ -8,16 +9,16 @@ namespace Kingo.BuildingBlocks.Messaging
     internal sealed class InvalidEventException : ArgumentException
     {
         private const string _InvalidEventKey = "_invalidEvent";
-        private const string _ErrorTreeKey = "_errorInfo";
+        private const string _ErrorInfoCollectionKey = "_errorInfoCollection";
 
-        private readonly IMessage _invalidEvent;
-        private readonly DataErrorInfo _errorInfo;        
+        internal readonly IMessage InvalidEvent;
+        internal readonly IReadOnlyList<DataErrorInfo> ErrorInfoCollection;        
                 
-        internal InvalidEventException(string paramName, IMessage invalidEvent, string message, DataErrorInfo errorInfo)
+        internal InvalidEventException(string paramName, IMessage invalidEvent, string message, IReadOnlyList<DataErrorInfo> errorInfoCollection)
             : base(message, paramName)
         {            
-            _invalidEvent = invalidEvent;
-            _errorInfo = errorInfo;
+            InvalidEvent = invalidEvent;
+            ErrorInfoCollection = errorInfoCollection;
         }
 
         /// <summary>
@@ -29,8 +30,8 @@ namespace Kingo.BuildingBlocks.Messaging
         private InvalidEventException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _invalidEvent = (IMessage) info.GetValue(_InvalidEventKey, typeof(IMessage));
-            _errorInfo = (DataErrorInfo) info.GetValue(_ErrorTreeKey, typeof(DataErrorInfo));
+            InvalidEvent = (IMessage) info.GetValue(_InvalidEventKey, typeof(IMessage));
+            ErrorInfoCollection = (IReadOnlyList<DataErrorInfo>) info.GetValue(_ErrorInfoCollectionKey, typeof(IReadOnlyList<DataErrorInfo>));
         }
 
         /// <inheritdoc />
@@ -39,24 +40,8 @@ namespace Kingo.BuildingBlocks.Messaging
         {
             base.GetObjectData(info, context);
 
-            info.AddValue(_InvalidEventKey, _invalidEvent);
-            info.AddValue(_ErrorTreeKey, _errorInfo);
-        }
-
-        /// <summary>
-        /// The invalid event.
-        /// </summary>
-        public IMessage InvalidEvent
-        {
-            get { return _invalidEvent; }
-        }
-
-        /// <summary>
-        /// If specified, contains all the validation-errors of the <see cref="FunctionalException.FailedMessage" />.
-        /// </summary>
-        public DataErrorInfo ErrorTree
-        {
-            get { return _errorInfo; }
-        }
+            info.AddValue(_InvalidEventKey, InvalidEvent);
+            info.AddValue(_ErrorInfoCollectionKey, ErrorInfoCollection);
+        }                
     }
 }

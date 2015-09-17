@@ -5,8 +5,7 @@ using System.Security.Permissions;
 namespace Kingo.BuildingBlocks.Messaging
 {
     /// <summary>
-    /// This exception is thrown when a message could not be processed by a <see cref="IMessageProcessor" />
-    /// for functional reasons, meaning that the (sender of the) message did not meet the preconditions for correct processing of this message.    
+    /// This exception is thrown when an application's precondition for handling a certain message failed.   
     /// </summary>
     [Serializable]
     public abstract class FunctionalException : Exception
