@@ -131,9 +131,9 @@ namespace Kingo.BuildingBlocks
         public void Format_Throws_IfIdentifierIsNull()
         {
             var errorMessageText = Guid.NewGuid().ToString("N");
-            var errorMessage = StringTemplate.Parse(errorMessageText);
+            var errorMessage = StringTemplate.Parse(errorMessageText);            
 
-            errorMessage.Format(null, null);
+            errorMessage.Format(null as string, null);
         }
 
         [TestMethod]

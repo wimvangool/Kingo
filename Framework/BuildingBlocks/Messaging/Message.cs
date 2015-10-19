@@ -54,7 +54,7 @@ namespace Kingo.BuildingBlocks.Messaging
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        public abstract IReadOnlyList<DataErrorInfo> Validate();        
+        public abstract DataErrorInfo Validate();        
 
         #endregion
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kingo.BuildingBlocks.Messaging.Constraints;
+using Kingo.BuildingBlocks.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Messaging

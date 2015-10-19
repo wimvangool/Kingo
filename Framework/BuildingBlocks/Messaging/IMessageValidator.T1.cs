@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Kingo.BuildingBlocks.Messaging
 {
@@ -13,12 +12,11 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>   
         /// <param name="message">The message to validate.</param>             
         /// <returns>
-        /// A list of <see cref="DataErrorInfo" /> instances that contain the error messages for all failed constraints;
-        /// if validation succeeded, the list returned is empty.
+        /// A <see cref="DataErrorInfo" /> instance that contain the error messages for all invalid members.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>   
-        IReadOnlyList<DataErrorInfo> Validate(TMessage message); 
+        DataErrorInfo Validate(TMessage message); 
     }
 }

@@ -25,7 +25,7 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         /// <inheritdoc />
-        public IReadOnlyList<DataErrorInfo> Validate(TMessage message)
+        public DataErrorInfo Validate(TMessage message)
         {
             if (message == null)
             {
@@ -34,9 +34,9 @@ namespace Kingo.BuildingBlocks.Messaging
             var errorInfo = Validate(_validationContextFactory.Invoke(message));
             if (errorInfo.Errors.Count == 0)
             {
-                return DataErrorInfo.EmptyList;
+                return DataErrorInfo.Empty;
             }
-            return new [] { errorInfo };
+            return errorInfo;
         }
 
         private static DataErrorInfo Validate(ValidationContext validationContext)
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Messaging
             var isValid = Validator.TryValidateObject(validationContext.ObjectInstance, validationContext, validationResults, true);
             if (isValid)
             {
-                return DataErrorInfo.NoErrors;
+                return DataErrorInfo.Empty;
             }
             return new DataErrorInfo(CreateErrorMessagesPerMember(validationResults));
         }        

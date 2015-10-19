@@ -14,7 +14,7 @@ namespace Kingo.BuildingBlocks
 
         internal abstract int CountLiterals();
 
-        internal abstract StringTemplateComponent Format(string identifier, object argument, IFormatProvider formatProvider);
+        internal abstract StringTemplateComponent Format(Identifier identifier, object argument, IFormatProvider formatProvider);
 
         internal string ToString(StringBuilder value)
         {

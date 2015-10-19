@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Kingo.BuildingBlocks.Constraints;
 using Kingo.BuildingBlocks.Messaging;
-using Kingo.BuildingBlocks.Messaging.Constraints;
 using Kingo.ChessApplication.Challenges;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

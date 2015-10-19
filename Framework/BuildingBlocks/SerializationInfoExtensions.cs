@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Kingo.BuildingBlocks.Messaging
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
     /// Contains extension-methods for the <see cref="SerializationInfo" /> class.

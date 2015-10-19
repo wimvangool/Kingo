@@ -64,7 +64,7 @@ namespace Kingo.BuildingBlocks
             return _literal;
         }
 
-        internal override StringTemplateComponent Format(string identifier, object argument, IFormatProvider formatProvider)
+        internal override StringTemplateComponent Format(Identifier identifier, object argument, IFormatProvider formatProvider)
         {
             if (identifier == null)
             {

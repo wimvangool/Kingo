@@ -74,7 +74,25 @@ namespace Kingo.BuildingBlocks
         /// <exception cref="ArgumentNullException">
         /// <paramref name="identifier"/> is <c>null</c>.
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="identifier"/> is not a valid identifier.
+        /// </exception>
         public StringTemplate Format(string identifier, object argument, IFormatProvider formatProvider = null)
+        {
+            return Format(Identifier.Parse(identifier), argument, formatProvider);
+        }
+
+        /// <summary>
+        /// Replaces all placeholders of the specified <paramref name="identifier"/> with the value of <paramref name="argument"/>.
+        /// </summary>
+        /// <param name="identifier">Identifier of the placeholder.</param>
+        /// <param name="argument">Value of the placeholder.</param>
+        /// <param name="formatProvider">A <see cref="IFormatProvider" /> that is used for placeholders that define a specific format.</param>
+        /// <returns>The formatted string.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="identifier"/> is <c>null</c>.
+        /// </exception>
+        public StringTemplate Format(Identifier identifier, object argument, IFormatProvider formatProvider = null)
         {
             return new StringTemplate(_template.Format(identifier, argument, formatProvider ?? CultureInfo.CurrentCulture));
         }

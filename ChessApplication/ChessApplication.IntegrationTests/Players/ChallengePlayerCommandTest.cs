@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.ChessApplication.Players
@@ -30,7 +29,7 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfSenderIdIsEmpty()
         {
             var message = new ChallengePlayerCommand(Guid.Empty, Guid.NewGuid());
-            var errorInfo = message.Validate().Single();
+            var errorInfo = message.Validate();
 
             Assert.AreEqual(1, errorInfo.Errors.Count);
             Assert.IsNotNull(errorInfo.Errors["SenderId"]);
@@ -44,7 +43,7 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfReceiverIdIsEmpty()
         {
             var message = new ChallengePlayerCommand(Guid.NewGuid(), Guid.Empty);
-            var errorInfo = message.Validate().Single();
+            var errorInfo = message.Validate();
 
             Assert.AreEqual(1, errorInfo.Errors.Count);
             Assert.IsNotNull(errorInfo.Errors["ReceiverId"]);

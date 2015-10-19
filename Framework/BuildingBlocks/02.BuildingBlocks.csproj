@@ -46,53 +46,84 @@
     <Compile Include="..\..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Clocks\AsyncLocalClockContext.cs" />
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ClockWithOffset.cs" />
+    <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
-    <Compile Include="Messaging\Constraints\AndConstraint.T4.cs" />
-    <Compile Include="Messaging\Constraints\Comparable.T1.cs" />
-    <Compile Include="Messaging\Constraints\Comparer.cs" />
-    <Compile Include="Messaging\Constraints\Constraint.T2.cs" />
-    <Compile Include="Messaging\Constraints\ConstraintWithErrorMessage.T3.cs" />
-    <Compile Include="Messaging\Constraints\DelegateConstraint.T3.cs" />
-    <Compile Include="Messaging\Constraints\DelegateConstraintBuilder.T3.cs" />
+    <Compile Include="Constraints\AndConstraint.T1.cs" />
+    <Compile Include="Constraints\AndConstraint.T3.cs" />
+    <Compile Include="Constraints\Comparable.T1.cs" />
+    <Compile Include="Constraints\Comparer.cs" />
     <Compile Include="LambdaExpressionExtensions.cs" />
-    <Compile Include="Messaging\Constraints\IConstraintWithErrorMessage.T1.cs" />
-    <Compile Include="Messaging\Constraints\IConstraintWithErrorMessage.T3.cs" />
-    <Compile Include="Messaging\Constraints\IMemberConstraint.T2.cs" />
-    <Compile Include="Messaging\Constraints\MemberWithValue.T2.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraintEventArgs.T1.cs" />
-    <Compile Include="Messaging\Constraints\New.cs" />
-    <Compile Include="Messaging\Constraints\TrueConstraint.T1.cs" />
+    <Compile Include="Constraints\ConstraintFactory.T3.cs" />
+    <Compile Include="Constraints\ConstraintImplementation.T1.cs" />
+    <Compile Include="Constraints\ConstraintImplementation.T2.cs" />
+    <Compile Include="Constraints\ConstraintImplementationBase.T1.cs" />
+    <Compile Include="Constraints\ConstraintWithErrorMessage.cs" />
+    <Compile Include="Constraints\ConstraintWithErrorMessage.T1.cs" />
+    <Compile Include="Constraints\ConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="Constraints\ErrorMessage.cs" />
+    <Compile Include="Constraints\FailedConstraintMessage.cs" />
+    <Compile Include="Constraints\FailedOrConstraintMessage.cs" />
+    <Compile Include="Constraints\IConstraint.T1.cs" />
+    <Compile Include="Constraints\IConstraint.T2.cs" />
+    <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />
+    <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
+    <Compile Include="Constraints\IConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="Constraints\IErrorMessage.cs" />
+    <Compile Include="Constraints\IErrorMessageReader.cs" />
+    <Compile Include="Constraints\IErrorMessageWriter.T1.cs" />
+    <Compile Include="Constraints\IMemberConstraint.T2.cs" />
+    <Compile Include="Constraints\InputToOutputMapper.T1.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsEqualTo.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsGreaterThan.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsInstanceOf.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsNull.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsSameInstanceAs.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsSmallerThan.cs" />
+    <Compile Include="Constraints\MemberWithValue.T2.cs" />
+    <Compile Include="Constraints\MemberConstraintEventArgs.T1.cs" />
+    <Compile Include="Constraints\New.cs" />
+    <Compile Include="Constraints\NotConstraint.T1.cs" />
+    <Compile Include="Constraints\NullConstraint.T1.cs" />
+    <Compile Include="Constraints\OrConstraint.T1.cs" />
+    <Compile Include="Constraints\StringConstraints.Contains.cs" />
+    <Compile Include="Constraints\StringConstraints.EndsWith.cs" />
+    <Compile Include="Constraints\StringConstraints.HasLengthOf.cs" />
+    <Compile Include="Constraints\StringConstraints.IsEqualTo.cs" />
+    <Compile Include="Constraints\StringConstraints.IsNullOrEmpty.cs" />
+    <Compile Include="Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />
+    <Compile Include="Constraints\StringConstraints.Matches.cs" />
+    <Compile Include="Constraints\StringConstraints.StartsWith.cs" />
     <Compile Include="Messaging\FunctionalException.cs" />
     <Compile Include="Messaging\InvalidMessageException.cs" />
     <Compile Include="Messaging\AuthorizationFailedException.cs" />
+    <Compile Include="Resources\ErrorMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+    </Compile>
     <Compile Include="StringTemplate.cs" />
     <Compile Include="StringTemplateComponent.cs" />
     <Compile Include="StringTemplateLiteral.cs" />
     <Compile Include="StringTemplateVariable.cs" />
-    <Compile Include="Messaging\Constraints\IConstraint.T2.cs" />
-    <Compile Include="Messaging\Constraints\IMemberConstraint.T1.cs" />
-    <Compile Include="Messaging\Constraints\Member.T2.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraints.cs" />
-    <Compile Include="Messaging\Constraints\BooleanConstraints.cs" />
-    <Compile Include="Messaging\Constraints\CollectionConstraints.cs" />
-    <Compile Include="Messaging\Constraints\EnumerableConstraints.cs" />
-    <Compile Include="Messaging\Constraints\ConstraintValidator.T1.cs" />
-    <Compile Include="Messaging\Constraints\GuidConstraints.cs" />
-    <Compile Include="Messaging\Constraints\IErrorMessageConsumer.cs" />
-    <Compile Include="Messaging\Constraints\IErrorMessageProducer.T1.cs" />
-    <Compile Include="Messaging\Constraints\IMemberConstraintSet.T1.cs" />
-    <Compile Include="Messaging\Constraints\IMember.cs" />
-    <Compile Include="Messaging\Constraints\RangeAdapter.T1.cs" />
-    <Compile Include="Messaging\Constraints\ListConstraints.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraint.T3.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraintSet.T1.cs" />
-    <Compile Include="Messaging\Constraints\NullableConstraints.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.cs" />
-    <Compile Include="Messaging\Constraints\DataErrorInfoBuilder.cs" />
+    <Compile Include="Constraints\IMemberConstraint.T1.cs" />
+    <Compile Include="Constraints\Member.T2.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsInRange.cs" />
+    <Compile Include="Constraints\BooleanConstraints.cs" />
+    <Compile Include="Constraints\CollectionConstraints.cs" />
+    <Compile Include="Messaging\ConstraintValidator.T1.cs" />
+    <Compile Include="Constraints\GuidConstraints.cs" />
+    <Compile Include="Constraints\IMemberConstraintSet.T1.cs" />
+    <Compile Include="Constraints\IMember.cs" />
+    <Compile Include="Constraints\RangeAdapter.T1.cs" />
+    <Compile Include="Constraints\MemberConstraint.T3.cs" />
+    <Compile Include="Constraints\MemberConstraintSet.T1.cs" />
+    <Compile Include="Constraints\NullableConstraints.cs" />
+    <Compile Include="Constraints\StringConstraints.IsNumber.cs" />
     <Compile Include="Messaging\IMessage.cs" />
     <Compile Include="Messaging\IMessage.T1.cs" />
     <Compile Include="Messaging\IMessageValidator.T1.cs" />
@@ -103,24 +134,19 @@
     <Compile Include="Messaging\DataErrorInfo.cs" />
     <Compile Include="Clocks\HighResolutionClock.cs" />
     <Compile Include="Clocks\StopwatchClock.cs" />
-    <Compile Include="Messaging\Constraints\Equatable.T1.cs" />
+    <Compile Include="Constraints\Equatable.T1.cs" />
     <Compile Include="EventHandlerExtensions.cs" />
     <Compile Include="HashCode.cs" />
     <Compile Include="Clocks\IClock.cs" />
     <Compile Include="Clocks\IClockContext.cs" />
-    <Compile Include="Messaging\Constraints\IRange.T1.cs" />
+    <Compile Include="Constraints\IRange.T1.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Messaging\Constraints\Range.T1.cs" />
-    <Compile Include="Messaging\Constraints\RangeOptions.cs" />
+    <Compile Include="Constraints\Range.T1.cs" />
+    <Compile Include="Constraints\RangeOptions.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Resources\ConstraintErrors.Designer.cs">
-      <DependentUpon>ConstraintErrors.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Clocks\StaticClockContext.cs" />
     <Compile Include="Clocks\SystemClock.cs" />
@@ -128,14 +154,14 @@
     <Compile Include="AsyncMethod.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\ErrorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\ConstraintErrors.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConstraintErrors.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

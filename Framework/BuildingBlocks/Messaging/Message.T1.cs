@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Kingo.BuildingBlocks.Messaging
 {
@@ -48,12 +46,12 @@ namespace Kingo.BuildingBlocks.Messaging
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        public override IReadOnlyList<DataErrorInfo> Validate()
+        public override DataErrorInfo Validate()
         {
             var validator = CreateValidator();
             if (validator == null)
             {
-                return DataErrorInfo.EmptyList;
+                return DataErrorInfo.Empty;
             }
             return validator.Validate(Copy());
         }

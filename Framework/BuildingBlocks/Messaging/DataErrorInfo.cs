@@ -87,9 +87,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <summary>
         /// An instance of the <see cref="DataErrorInfo" /> class without any errors.
         /// </summary>       
-        public static readonly DataErrorInfo NoErrors = new DataErrorInfo(EmptyDictionary());
-        
-        internal static readonly DataErrorInfo[] EmptyList = new DataErrorInfo[0];      
+        public static readonly DataErrorInfo Empty = new DataErrorInfo(EmptyDictionary());                    
 
         private static ReadOnlyDictionary<string, string> EmptyDictionary()
         {

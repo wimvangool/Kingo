@@ -1,4 +1,4 @@
-﻿using Kingo.BuildingBlocks.Messaging.Constraints;
+﻿using Kingo.BuildingBlocks.Constraints;
 
 namespace Kingo.BuildingBlocks.Messaging
 {

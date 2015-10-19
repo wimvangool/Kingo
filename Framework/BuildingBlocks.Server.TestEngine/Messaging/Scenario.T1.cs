@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.BuildingBlocks.Messaging.Constraints;
+using Kingo.BuildingBlocks.Constraints;
 using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Messaging
@@ -13,8 +13,40 @@ namespace Kingo.BuildingBlocks.Messaging
     /// by the Given-When-Then pattern.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is executed on the When-phase.</typeparam>    
-    public abstract class Scenario<TMessage> : Scenario, IErrorMessageConsumer where TMessage : class, IMessage<TMessage>
-    {                
+    public abstract class Scenario<TMessage> : Scenario where TMessage : class, IMessage<TMessage>
+    {
+        #region [====== ErrorMessageReader ======]
+
+        private sealed class ErrorMessageReader<T> : IErrorMessageReader where T : class, IMessage<T>
+        {
+            private readonly Scenario<T> _scenario;
+
+            internal ErrorMessageReader(Scenario<T> scenario)
+            {
+                _scenario = scenario;
+            }
+
+            public void Add(string memberName, IErrorMessage errorMessage)
+            {
+                if (memberName == null)
+                {
+                    throw new ArgumentNullException("memberName");
+                }
+                if (errorMessage != null)
+                {
+                    Add(memberName, errorMessage.ToString(_scenario.FormatProvider));
+                }                
+            }
+
+            public void Add(string memberName, string errorMessage)
+            {
+                _scenario.OnVerificationFailed(memberName, errorMessage);
+            }
+        }
+
+        #endregion
+
+        private readonly ErrorMessageReader<TMessage> _errorMessageReader;
         private readonly Lazy<TMessage> _message;
         private readonly MemberConstraintSet<Scenario<TMessage>> _memberSet;                
         private readonly List<object> _publishedEvents;
@@ -25,9 +57,10 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>
         protected Scenario()
         {            
+            _errorMessageReader = new ErrorMessageReader<TMessage>(this);
             _message = new Lazy<TMessage>(When);
             _memberSet = new MemberConstraintSet<Scenario<TMessage>>();
-            _memberSet.ConstraintAdded += (s, e) => e.MemberConstraint.HasErrors(this, this, FormatProvider);
+            _memberSet.ConstraintAdded += (s, e) => e.MemberConstraint.WriteErrorMessages(this, _errorMessageReader);
             _publishedEvents = new List<object>();
         }
 
@@ -277,12 +310,7 @@ namespace Kingo.BuildingBlocks.Messaging
             return _memberSet.VerifyThat(scenario => scenario._exception, "ExpectedException")
                 .IsNotNull(FailureMessages.Scenario_NoExceptionWasThrown)              
                 .IsInstanceOf<TException>(FailureMessages.Scenario_UnexpectedExceptionWasThrown);                
-        }
-
-        void IErrorMessageConsumer.Add(string memberName, string errorMessage)
-        {
-            OnVerificationFailed(memberName, errorMessage);
-        }
+        }        
 
         /// <summary>
         /// Occurs when verification of a certain member during the Then-phase failed.

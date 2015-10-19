@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Kingo.BuildingBlocks.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -45,7 +44,7 @@ namespace Kingo.ChessApplication.Players
             {
                 Username = _ValidUsername
             };
-            var errorInfo = message.Validate().Single();
+            var errorInfo = message.Validate();
 
             Assert.AreEqual(1, errorInfo.Errors.Count);
             Assert.IsNotNull(errorInfo.Errors["PlayerId"]);
@@ -59,7 +58,7 @@ namespace Kingo.ChessApplication.Players
         public void Validate_ReturnsErrors_IfUsernameIsNull()
         {
             var message = new PlayerRegisteredEvent(_ValidPlayerId, _ValidPlayerVersion);
-            var errorInfo = message.Validate().Single();
+            var errorInfo = message.Validate();
 
             Assert.AreEqual(1, errorInfo.Errors.Count);
             Assert.IsNotNull(errorInfo.Errors["Username"]);
@@ -72,7 +71,7 @@ namespace Kingo.ChessApplication.Players
             {
                 Username = string.Empty
             };
-            var errorInfo = message.Validate().Single();
+            var errorInfo = message.Validate();
 
             Assert.AreEqual(1, errorInfo.Errors.Count);
             Assert.IsNotNull(errorInfo.Errors["Username"]);
@@ -85,7 +84,7 @@ namespace Kingo.ChessApplication.Players
             {
                 Username = "    "
             };
-            var errorInfo = message.Validate().Single();
+            var errorInfo = message.Validate();
 
             Assert.AreEqual(1, errorInfo.Errors.Count);
             Assert.IsNotNull(errorInfo.Errors["Username"]);

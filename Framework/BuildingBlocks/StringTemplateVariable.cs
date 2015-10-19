@@ -85,7 +85,7 @@ namespace Kingo.BuildingBlocks
                 : '{' + expression + ':' + _format + '}';
         }
 
-        internal override StringTemplateComponent Format(string identifier, object argument, IFormatProvider formatProvider)
+        internal override StringTemplateComponent Format(Identifier identifier, object argument, IFormatProvider formatProvider)
         {
             if (identifier == null)
             {
@@ -93,7 +93,7 @@ namespace Kingo.BuildingBlocks
             }
             var nextComponent = _nextComponent == null ? null : _nextComponent.Format(identifier, argument, formatProvider);
 
-            if (identifier == _identifier)
+            if (identifier.ToString() == _identifier)
             {
                 return new StringTemplateLiteral(Format(argument, _expression, _format, formatProvider), nextComponent);
             }

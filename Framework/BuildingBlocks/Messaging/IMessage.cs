@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Kingo.BuildingBlocks.Messaging
+﻿namespace Kingo.BuildingBlocks.Messaging
 {
     /// <summary>
     /// Represents a message that can validate itself.
@@ -14,13 +12,12 @@ namespace Kingo.BuildingBlocks.Messaging
         IMessage Copy();        
 
         /// <summary>
-        /// Validates all values of this message and returns a collection of <see cref="DataErrorInfo"/>-instances
-        /// that contain error messages for each failed configuration of constraints.
+        /// Validates all values of this message and returns a <see cref="DataErrorInfo"/> instance
+        /// that contains error messages for all invalid members.
         /// </summary>                
         /// <returns>
-        /// A list of <see cref="DataErrorInfo" /> instances containing all validation-errors (if any). If validation
-        /// succeeded, an empty list is returned.
+        /// A <see cref="DataErrorInfo" /> instance that contains all validation-errors (if any).
         /// </returns>   
-        IReadOnlyList<DataErrorInfo> Validate(); 
+        DataErrorInfo Validate(); 
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using Kingo.BuildingBlocks;
 using Kingo.BuildingBlocks.Messaging;
-using Kingo.BuildingBlocks.Messaging.Constraints;
 
 namespace Kingo.ChessApplication.Challenges
 {
