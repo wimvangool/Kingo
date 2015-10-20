@@ -7,11 +7,25 @@ namespace Kingo.BuildingBlocks.Constraints
     {
         private readonly IConstraint<TValue>[] _constraints;
 
-        internal OrConstraint(IConstraint<TValue> left, IConstraint<TValue> right)
+        internal OrConstraint(IConstraint<TValue> left, IConstraint<TValue> constraint)
             : base(null, null)
         {
-            _constraints = new [] { left, right };
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            _constraints = new [] { left, constraint };
         }
+
+        private OrConstraint(OrConstraint<TValue> left, IConstraint<TValue> constraint)
+            : base(left.ErrorMessage, left.Name)
+        {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            _constraints = left._constraints.Add(constraint);
+        } 
 
         private OrConstraint(OrConstraint<TValue> constraint, Identifier name)
             : base(constraint.ErrorMessage, name)
@@ -23,13 +37,7 @@ namespace Kingo.BuildingBlocks.Constraints
             : base(errorMessage, constraint.Name)
         {
             _constraints = constraint._constraints;
-        }
-
-        private OrConstraint(OrConstraint<TValue> constraint, IConstraint<TValue> addedConstraint)
-            : base(constraint.ErrorMessage, constraint.Name)
-        {
-            _constraints = constraint._constraints.Add(addedConstraint);
-        }        
+        }               
 
         #region [====== Name & ErrorMessage ======]
 
@@ -45,14 +53,10 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        #region [====== Or ======]
+        #region [====== And, Or & Invert ======]
 
         public override IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint)
-        {
-            if (constraint == null)
-            {
-                throw new ArgumentNullException("constraint");
-            }
+        {            
             return new OrConstraint<TValue>(this, constraint);
         }
 

@@ -7,19 +7,14 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     /// <typeparam name="TValue">Type of the constraint value.</typeparam>
     public abstract class ConstraintWithErrorMessage<TValue> : ConstraintWithErrorMessage, IConstraintWithErrorMessage<TValue>
-    {
-        private readonly ConstraintImplementation<TValue> _implementation;
-
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstraintWithErrorMessage{T}" /> class.
         /// </summary>
         /// <param name="name">Name of this constraint.</param>
         /// <param name="errorMessage">Error message of this constraint.</param>        
         protected ConstraintWithErrorMessage(StringTemplate errorMessage, Identifier name)
-            : base(errorMessage, name)
-        {
-            _implementation = new ConstraintImplementation<TValue>(this);
-        }
+            : base(errorMessage, name) { }
 
         #region [====== Name & ErrorMessage ======]
 
@@ -80,31 +75,30 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public virtual IConstraint<TValue> And(IConstraint<TValue> constraint)
         {
-            return _implementation.And(constraint);
+            return new AndConstraint<TValue>(this, constraint);
         }
 
         /// <inheritdoc />
         public virtual IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint)
         {
-            return _implementation.Or(constraint);
+            return new OrConstraint<TValue>(this, constraint);
+        }
+        
+        IConstraint<TValue> IConstraint<TValue>.Invert()
+        {
+            return Invert(null as StringTemplate);
         }
 
         /// <inheritdoc />
-        public IConstraint<TValue> Invert()
+        public IConstraintWithErrorMessage<TValue> Invert(string errorMessage, string name = null)
         {
-            return _implementation.Invert();
+            return Invert(StringTemplate.Parse(errorMessage), Identifier.Parse(name));
         }
 
         /// <inheritdoc />
-        public IConstraint<TValue> Invert(string errorMessage, string name = null)
+        public virtual IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return _implementation.Invert(errorMessage, name);
-        }
-
-        /// <inheritdoc />
-        public virtual IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return _implementation.Invert(errorMessage);
+            return new ConstraintInverter<TValue>(this, errorMessage, name);
         }
 
         #endregion
@@ -114,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public virtual IConstraint<TValue, TValue> MapInputToOutput()
         {
-            return _implementation.MapInputToOutput();
+            return new InputToOutputMapper<TValue>(this);
         }
 
         #endregion

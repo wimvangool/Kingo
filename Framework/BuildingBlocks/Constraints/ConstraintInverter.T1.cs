@@ -6,12 +6,12 @@ namespace Kingo.BuildingBlocks.Constraints
     /// Represents a constraint that negates another constraint.
     /// </summary>
     /// <typeparam name="TValue">Type of the constraint value.</typeparam>
-    public sealed class NotConstraint<TValue> : ConstraintWithErrorMessage<TValue>
+    public sealed class ConstraintInverter<TValue> : ConstraintWithErrorMessage<TValue>
     {
-        private readonly IConstraint<TValue> _constraint;
+        private readonly IConstraintWithErrorMessage<TValue> _constraint;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NotConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ConstraintInverter{T}" /> class.
         /// </summary>
         /// <param name="constraint">The constraint that is to be negated.</param>
         /// <param name="errorMessage">The error message for this constraint.</param>
@@ -19,11 +19,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public NotConstraint(IConstraint<TValue> constraint, string errorMessage = null, string name = null)
+        public ConstraintInverter(IConstraintWithErrorMessage<TValue> constraint, string errorMessage = null, string name = null)
             : this(constraint, StringTemplate.Parse(errorMessage), Identifier.Parse(name)) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NotConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ConstraintInverter{T}" /> class.
         /// </summary>
         /// <param name="constraint">The constraint that is to be negated.</param>
         /// <param name="errorMessage">The error message for this constraint.</param>
@@ -31,7 +31,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public NotConstraint(IConstraint<TValue> constraint, StringTemplate errorMessage, Identifier name)
+        public ConstraintInverter(IConstraintWithErrorMessage<TValue> constraint, StringTemplate errorMessage, Identifier name)
             : base(errorMessage, name)
         {
             if (constraint == null)
@@ -41,17 +41,33 @@ namespace Kingo.BuildingBlocks.Constraints
             _constraint = constraint;
         }
 
+        #region [====== Name & ErrorMessage ======]
+
         /// <inheritdoc />
         protected override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
-            return new NotConstraint<TValue>(_constraint, ErrorMessage, name);
+            return new ConstraintInverter<TValue>(_constraint, ErrorMessage, name);
         }
 
         /// <inheritdoc />
         protected override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new NotConstraint<TValue>(_constraint, errorMessage, Name);
-        }        
+            return new ConstraintInverter<TValue>(_constraint, errorMessage, Name);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value)
@@ -70,5 +86,7 @@ namespace Kingo.BuildingBlocks.Constraints
             errorMessage = null;
             return false;
         }
+
+        #endregion
     }
 }

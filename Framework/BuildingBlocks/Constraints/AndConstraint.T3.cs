@@ -1,49 +1,43 @@
-﻿namespace Kingo.BuildingBlocks.Constraints
+﻿using System;
+
+namespace Kingo.BuildingBlocks.Constraints
 {
     internal sealed class AndConstraint<TValueIn, TValueMiddle, TValueOut> : IConstraint<TValueIn, TValueOut>
-    {
-        private readonly ConstraintImplementation<TValueIn, TValueOut> _implementation;
+    {        
         private readonly IConstraint<TValueIn, TValueMiddle> _leftConstraint;
         private readonly IConstraint<TValueMiddle, TValueOut> _rightConstraint;
 
-        internal AndConstraint(IConstraint<TValueIn, TValueMiddle> leftConstraint, IConstraint<TValueMiddle, TValueOut> rightConstraint)            
+        internal AndConstraint(IConstraint<TValueIn, TValueMiddle> left, IConstraint<TValueMiddle, TValueOut> constraint)            
         {
-            _implementation = new ConstraintImplementation<TValueIn, TValueOut>(this);
-            _leftConstraint = leftConstraint;
-            _rightConstraint = rightConstraint;
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            _leftConstraint = left;
+            _rightConstraint = constraint;
         }
 
         #region [====== And, Or & Invert ======]
 
         public IConstraint<TValueIn> And(IConstraint<TValueIn> constraint)
         {
-            return _implementation.And(constraint);
+            return new AndConstraint<TValueIn>(this, constraint);
         }
 
         public IConstraint<TValueIn, TResult> And<TResult>(IConstraint<TValueOut, TResult> constraint)
         {
-            return _implementation.And(constraint);
+            return new AndConstraint<TValueIn, TValueOut, TResult>(this, constraint);
         }
 
         public IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint)
         {
-            return _implementation.Or(constraint);
+            return new OrConstraint<TValueIn>(this, constraint);
         }
 
         public IConstraint<TValueIn> Invert()
         {
-            return _implementation.Invert();
-        }
-
-        public IConstraint<TValueIn> Invert(string errorMessage, string name = null)
-        {
-            return _implementation.Invert(errorMessage, name);
-        }
-
-        public IConstraint<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return _implementation.Invert(errorMessage, name);
-        }
+            throw new NotImplementedException();
+        }        
 
         #endregion
 
@@ -60,7 +54,9 @@
 
         public bool IsSatisfiedBy(TValueIn value)
         {
-            return _implementation.IsSatisfiedBy(value);
+            TValueOut valueOut;
+
+            return IsSatisfiedBy(value, out valueOut);
         }
 
         public bool IsSatisfiedBy(TValueIn valueIn, out TValueOut valueOut)
@@ -77,7 +73,9 @@
 
         public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessage errorMessage)
         {
-            return _implementation.IsNotSatisfiedBy(value, out errorMessage);
+            TValueOut valueOut;
+
+            return IsNotSatisfiedBy(value, out errorMessage, out valueOut);
         }
 
         public bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessage errorMessage, out TValueOut valueOut)

@@ -4,52 +4,43 @@ using System.Linq;
 namespace Kingo.BuildingBlocks.Constraints
 {
     internal sealed class AndConstraint<TValue> : IConstraint<TValue>
-    {
-        private readonly ConstraintImplementation<TValue> _implementation;
+    {        
         private readonly IConstraint<TValue>[] _constraints;
 
-        internal AndConstraint(IConstraint<TValue> left, IConstraint<TValue> right)
-        {
-            _implementation = new ConstraintImplementation<TValue>(this);
-            _constraints = new [] { left, right };
+        internal AndConstraint(IConstraint<TValue> left, IConstraint<TValue> constraint)
+        {            
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            _constraints = new [] { left, constraint };
         }        
 
-        private AndConstraint(AndConstraint<TValue> constraint, IConstraint<TValue> addedConstraint)            
-        {
-            _implementation = new ConstraintImplementation<TValue>(this);
-            _constraints = constraint._constraints.Add(addedConstraint);
-        }                
-
-        #region [====== And, Or & Invert ======]
-
-        public IConstraint<TValue> And(IConstraint<TValue> constraint)
+        private AndConstraint(AndConstraint<TValue> left, IConstraint<TValue> constraint)            
         {
             if (constraint == null)
             {
                 throw new ArgumentNullException("constraint");
             }
+            _constraints = left._constraints.Add(constraint);
+        }                
+
+        #region [====== And, Or & Invert ======]
+
+        public IConstraint<TValue> And(IConstraint<TValue> constraint)
+        {            
             return new AndConstraint<TValue>(this, constraint);
         }
 
         public IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint)
         {
-            return _implementation.Or(constraint);
+            return new OrConstraint<TValue>(this, constraint);
         }
 
         public IConstraint<TValue> Invert()
         {
-            return _implementation.Invert();
-        }
-
-        public IConstraint<TValue> Invert(string errorMessage, string name = null)
-        {
-            return _implementation.Invert(errorMessage, name);
-        }
-
-        public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return _implementation.Invert(errorMessage, name);
-        }
+            throw new NotImplementedException();
+        }        
 
         #endregion
 
@@ -57,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IConstraint<TValue, TValue> MapInputToOutput()
         {
-            return _implementation.MapInputToOutput();
+            return new InputToOutputMapper<TValue>(this);
         }
 
         #endregion

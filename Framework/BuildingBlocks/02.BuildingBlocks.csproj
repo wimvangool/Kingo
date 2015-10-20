@@ -59,9 +59,6 @@
     <Compile Include="Constraints\Comparer.cs" />
     <Compile Include="LambdaExpressionExtensions.cs" />
     <Compile Include="Constraints\ConstraintFactory.T3.cs" />
-    <Compile Include="Constraints\ConstraintImplementation.T1.cs" />
-    <Compile Include="Constraints\ConstraintImplementation.T2.cs" />
-    <Compile Include="Constraints\ConstraintImplementationBase.T1.cs" />
     <Compile Include="Constraints\ConstraintWithErrorMessage.cs" />
     <Compile Include="Constraints\ConstraintWithErrorMessage.T1.cs" />
     <Compile Include="Constraints\ConstraintWithErrorMessage.T2.cs" />
@@ -87,7 +84,7 @@
     <Compile Include="Constraints\MemberWithValue.T2.cs" />
     <Compile Include="Constraints\MemberConstraintEventArgs.T1.cs" />
     <Compile Include="Constraints\New.cs" />
-    <Compile Include="Constraints\NotConstraint.T1.cs" />
+    <Compile Include="Constraints\ConstraintInverter.T1.cs" />
     <Compile Include="Constraints\NullConstraint.T1.cs" />
     <Compile Include="Constraints\OrConstraint.T1.cs" />
     <Compile Include="Constraints\StringConstraints.Contains.cs" />

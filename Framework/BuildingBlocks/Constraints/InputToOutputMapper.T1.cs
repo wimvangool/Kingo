@@ -55,19 +55,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public IConstraint<TValue> Invert()
         {
             return new InputToOutputMapper<TValue>(_constraint.Invert());
-        }
-
-        /// <inheritdoc />
-        public IConstraint<TValue> Invert(string errorMessage, string name = null)
-        {
-            return new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
-        }
-
-        /// <inheritdoc />
-        public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
-        }
+        }        
 
         #endregion
 

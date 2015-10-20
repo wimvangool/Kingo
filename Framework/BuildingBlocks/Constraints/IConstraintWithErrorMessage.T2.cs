@@ -7,6 +7,8 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public interface IConstraintWithErrorMessage<TValueIn, TValueOut> : IConstraint<TValueIn, TValueOut>, IConstraintWithErrorMessage<TValueIn>
     {
+        #region [====== Name & ErrorMessage ======]
+
         /// <summary>
         /// Creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
         /// </summary>
@@ -52,5 +54,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>        
         new IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
+
+        #endregion        
     }
 }

@@ -8,19 +8,14 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <typeparam name="TValueIn">Type of the input (checked) value.</typeparam>
     /// <typeparam name="TValueOut">Type of the output value.</typeparam>
     public abstract class ConstraintWithErrorMessage<TValueIn, TValueOut> : ConstraintWithErrorMessage, IConstraintWithErrorMessage<TValueIn, TValueOut>
-    {
-        private readonly ConstraintImplementation<TValueIn, TValueOut> _implementation;
-
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstraintWithErrorMessage{T}" /> class.
         /// </summary>
         /// <param name="name">Name of this constraint.</param>
         /// <param name="errorMessage">Error message of this constraint.</param>  
         protected ConstraintWithErrorMessage(StringTemplate errorMessage, Identifier name)
-            : base(errorMessage, name)
-        {
-            _implementation = new ConstraintImplementation<TValueIn, TValueOut>(this);
-        }
+            : base(errorMessage, name) { }
 
         #region [====== Name & ErrorMessage ======]
 
@@ -93,37 +88,36 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public virtual IConstraint<TValueIn> And(IConstraint<TValueIn> constraint)
         {
-            return _implementation.And(constraint);
+            return new AndConstraint<TValueIn>(this, constraint);
         }
 
         /// <inheritdoc />
         public virtual IConstraint<TValueIn, TResult> And<TResult>(IConstraint<TValueOut, TResult> constraint)
         {
-            return _implementation.And(constraint);
+            return new AndConstraint<TValueIn, TValueOut, TResult>(this, constraint);
         }
 
         /// <inheritdoc />
         public virtual IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint)
         {
-            return _implementation.Or(constraint);
+            return new OrConstraint<TValueIn>(this, constraint);
+        }
+
+        IConstraint<TValueIn> IConstraint<TValueIn>.Invert()
+        {
+            return Invert(null as StringTemplate);
         }
 
         /// <inheritdoc />
-        public IConstraint<TValueIn> Invert()
+        public IConstraintWithErrorMessage<TValueIn> Invert(string errorMessage, string name = null)
         {
-            return _implementation.Invert();
+            return Invert(StringTemplate.Parse(errorMessage), Identifier.Parse(name));
         }
 
         /// <inheritdoc />
-        public IConstraint<TValueIn> Invert(string errorMessage, string name = null)
+        public virtual IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return _implementation.Invert(errorMessage, name);
-        }
-
-        /// <inheritdoc />
-        public virtual IConstraint<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return _implementation.Invert(errorMessage, name);
+            return new ConstraintInverter<TValueIn>(this, errorMessage, name);
         }
 
         #endregion
@@ -132,7 +126,7 @@ namespace Kingo.BuildingBlocks.Constraints
        
         IConstraint<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput()
         {
-            return _implementation.MapInputToOutput();
+            return new InputToOutputMapper<TValueIn>(this);
         }
 
         #endregion
@@ -142,7 +136,9 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public bool IsSatisfiedBy(TValueIn value)
         {
-            return _implementation.IsSatisfiedBy(value);
+            TValueOut valueOut;
+
+            return IsSatisfiedBy(value, out valueOut);
         }
 
         /// <inheritdoc />
@@ -151,7 +147,9 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessage errorMessage)
         {
-            return _implementation.IsNotSatisfiedBy(value, out errorMessage);
+            TValueOut valueOut;
+
+            return IsNotSatisfiedBy(value, out errorMessage, out valueOut);
         }
 
         /// <inheritdoc />
