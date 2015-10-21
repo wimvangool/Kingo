@@ -75,7 +75,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IMemberConstraint<TMessage, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return Satisfies(new DelegateConstraint<TValueOut>(constraint, errorMessage));
         }
 
         public IMemberConstraint<TMessage, TValueOut> Satisfies(IConstraint<TValueOut> constraint)

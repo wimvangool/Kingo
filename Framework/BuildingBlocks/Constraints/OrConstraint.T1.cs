@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class OrConstraint<TValue> : ConstraintWithErrorMessage<TValue>
+    internal sealed class OrConstraint<TValue> : Constraint<TValue>
     {
         private readonly IConstraint<TValue>[] _constraints;
 

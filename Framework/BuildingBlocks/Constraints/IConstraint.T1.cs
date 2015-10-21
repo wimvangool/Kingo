@@ -14,11 +14,59 @@ namespace Kingo.BuildingBlocks.Constraints
         /// Creates and returns a logical AND constraint for this and the specified <paramref name="constraint"/>.
         /// </summary>
         /// <param name="constraint">Another constraint.</param>
+        /// <param name="errorMessage">Error message associated with the constraint.</param>
+        /// <param name="name">Name of the constraint.</param>
         /// <returns>A logical AND constraint.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IConstraint<TValue> And(IConstraint<TValue> constraint);        
+        IConstraint<TValue> And(Func<TValue, bool> constraint, string errorMessage = null, string name = null);
+
+        /// <summary>
+        /// Creates and returns a logical AND constraint for this and the specified <paramref name="constraint"/>.
+        /// </summary>
+        /// <param name="constraint">Another constraint.</param>
+        /// <param name="errorMessage">Error message associated with the constraint.</param>
+        /// <param name="name">Name of the constraint.</param>
+        /// <returns>A logical AND constraint.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        IConstraint<TValue> And(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null); 
+
+        /// <summary>
+        /// Creates and returns a logical AND constraint for this and the specified <paramref name="constraint"/>.
+        /// </summary>
+        /// <param name="constraint">Another constraint.</param>
+        /// <returns>A logical AND constraint.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        IConstraint<TValue> And(IConstraint<TValue> constraint);
+
+        /// <summary>
+        /// Creates and returns a logical OR constraint for this and the specified <paramref name="constraint"/>.
+        /// </summary>
+        /// <param name="constraint">Another constraint.</param>
+        /// <param name="errorMessage">Error message associated with the constraint.</param>
+        /// <param name="name">Name of the constraint.</param>
+        /// <returns>A logical OR constraint.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, string errorMessage = null, string name = null);
+
+        /// <summary>
+        /// Creates and returns a logical OR constraint for this and the specified <paramref name="constraint"/>.
+        /// </summary>
+        /// <param name="constraint">Another constraint.</param>
+        /// <param name="errorMessage">Error message associated with the constraint.</param>
+        /// <param name="name">Name of the constraint.</param>
+        /// <returns>A logical OR constraint.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null);
 
         /// <summary>
         /// Creates and returns a logical OR constraint for this and the specified <paramref name="constraint"/>.

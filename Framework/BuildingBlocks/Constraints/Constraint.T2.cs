@@ -7,14 +7,14 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     /// <typeparam name="TValueIn">Type of the input (checked) value.</typeparam>
     /// <typeparam name="TValueOut">Type of the output value.</typeparam>
-    public abstract class ConstraintWithErrorMessage<TValueIn, TValueOut> : ConstraintWithErrorMessage, IConstraintWithErrorMessage<TValueIn, TValueOut>
+    public abstract class Constraint<TValueIn, TValueOut> : Constraint, IConstraintWithErrorMessage<TValueIn, TValueOut>
     {        
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConstraintWithErrorMessage{T}" /> class.
+        /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
         /// </summary>
         /// <param name="name">Name of this constraint.</param>
         /// <param name="errorMessage">Error message of this constraint.</param>  
-        protected ConstraintWithErrorMessage(StringTemplate errorMessage, Identifier name)
+        protected Constraint(StringTemplate errorMessage, Identifier name)
             : base(errorMessage, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -86,6 +86,18 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
+        public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, string errorMessage = null, string name = null)
+        {
+            return And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        }
+
+        /// <inheritdoc />
+        public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        {
+            return And(new DelegateConstraint<TValueIn>(constraint, errorMessage, name));
+        }
+
+        /// <inheritdoc />
         public virtual IConstraint<TValueIn> And(IConstraint<TValueIn> constraint)
         {
             return new AndConstraint<TValueIn>(this, constraint);
@@ -98,12 +110,30 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValueIn> Or(Func<TValueIn, bool> constraint, string errorMessage = null, string name = null)
+        {
+            return Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        }
+
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValueIn> Or(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        {
+            return Or(new DelegateConstraint<TValueIn>(constraint, errorMessage, name));
+        }
+
+        /// <inheritdoc />
         public virtual IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint)
         {
             return new OrConstraint<TValueIn>(this, constraint);
         }
 
         IConstraint<TValueIn> IConstraint<TValueIn>.Invert()
+        {
+            return Invert();
+        }
+
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValueIn> Invert()
         {
             return Invert(null as StringTemplate);
         }

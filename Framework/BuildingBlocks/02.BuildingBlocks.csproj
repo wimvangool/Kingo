@@ -52,6 +52,7 @@
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ClockWithOffset.cs" />
     <Compile Include="Constraints\BasicConstraints.cs" />
+    <Compile Include="Constraints\DelegateConstraint.T1.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />
@@ -60,9 +61,9 @@
     <Compile Include="Constraints\Comparer.cs" />
     <Compile Include="LambdaExpressionExtensions.cs" />
     <Compile Include="Constraints\ConstraintFactory.T3.cs" />
-    <Compile Include="Constraints\ConstraintWithErrorMessage.cs" />
-    <Compile Include="Constraints\ConstraintWithErrorMessage.T1.cs" />
-    <Compile Include="Constraints\ConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="Constraints\Constraint.cs" />
+    <Compile Include="Constraints\Constraint.T1.cs" />
+    <Compile Include="Constraints\Constraint.T2.cs" />
     <Compile Include="Constraints\ErrorMessage.cs" />
     <Compile Include="Constraints\FailedConstraintMessage.cs" />
     <Compile Include="Constraints\FailedOrConstraintMessage.cs" />

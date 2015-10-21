@@ -6,7 +6,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// Represents a constraint that negates another constraint.
     /// </summary>
     /// <typeparam name="TValue">Type of the constraint value.</typeparam>
-    public sealed class ConstraintInverter<TValue> : ConstraintWithErrorMessage<TValue>
+    public sealed class ConstraintInverter<TValue> : Constraint<TValue>
     {
         private readonly IConstraintWithErrorMessage<TValue> _constraint;
 
@@ -62,7 +62,9 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            throw new NotImplementedException();
+            return _constraint
+                .WithErrorMessage(errorMessage ?? _constraint.ErrorMessage)
+                .WithName(name ?? _constraint.Name);
         }
 
         #endregion

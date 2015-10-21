@@ -61,6 +61,12 @@ namespace Kingo.BuildingBlocks.Constraints
 
         /// <summary>
         /// Creates and returns a constraint that negates this constraint.
+        /// </summary>        
+        /// <returns>A constraint that is the logical opposite of this constraint.</returns>        
+        new IConstraintWithErrorMessage<TValue> Invert();
+
+        /// <summary>
+        /// Creates and returns a constraint that negates this constraint.
         /// </summary>
         /// <param name="errorMessage">Error message of the inverting constraint.</param>
         /// <param name="name">Name of the inverting constraint.</param>

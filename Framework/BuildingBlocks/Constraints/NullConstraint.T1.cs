@@ -6,7 +6,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// Represents a constraint that is always satisfied.
     /// </summary>
     /// <typeparam name="TValue">Type of the constraint value.</typeparam>
-    public sealed class NullConstraint<TValue> : ConstraintWithErrorMessage<TValue>
+    public sealed class NullConstraint<TValue> : Constraint<TValue>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NullConstraint{T}" /> class.

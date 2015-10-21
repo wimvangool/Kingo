@@ -60,7 +60,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a value is <c>true</c>.
     /// </summary>
-    public sealed class IsTrueConstraint : ConstraintWithErrorMessage<bool>
+    public sealed class IsTrueConstraint : Constraint<bool>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="IsTrueConstraint" /> class.
@@ -110,7 +110,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a value is <c>false</c>.
     /// </summary>
-    public sealed class IsFalseConstraint : ConstraintWithErrorMessage<bool>
+    public sealed class IsFalseConstraint : Constraint<bool>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="IsFalseConstraint" /> class.

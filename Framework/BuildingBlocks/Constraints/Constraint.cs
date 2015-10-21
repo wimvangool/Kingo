@@ -6,17 +6,17 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Provides a base implementation of the <see cref="IConstraintWithErrorMessage" /> interface.
     /// </summary>
-    public abstract class ConstraintWithErrorMessage : IConstraintWithErrorMessage
+    public abstract class Constraint : IConstraintWithErrorMessage
     {        
         private readonly Identifier _name;
         private readonly StringTemplate _errorMessage;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConstraintWithErrorMessage{T}" /> class.
+        /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
         /// </summary>
         /// <param name="name">Name of this constraint.</param>
         /// <param name="errorMessage">Error message of this constraint.</param>        
-        internal ConstraintWithErrorMessage(StringTemplate errorMessage, Identifier name)
+        internal Constraint(StringTemplate errorMessage, Identifier name)
         {            
             _name = name ?? DefaultName;
             _errorMessage = errorMessage ?? DefaultErrorMessage;

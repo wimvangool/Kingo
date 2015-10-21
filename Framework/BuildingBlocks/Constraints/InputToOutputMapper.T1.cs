@@ -30,6 +30,18 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
+        public IConstraint<TValue> And(Func<TValue, bool> constraint, string errorMessage = null, string name = null)
+        {
+            return _constraint.And(constraint, errorMessage, name);
+        }
+
+        /// <inheritdoc />
+        public IConstraint<TValue> And(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        {
+            return _constraint.And(constraint, errorMessage, name);
+        }
+
+        /// <inheritdoc />
         public IConstraint<TValue> And(IConstraint<TValue> constraint)
         {
             return _constraint.And(constraint);
@@ -43,6 +55,18 @@ namespace Kingo.BuildingBlocks.Constraints
                 throw new ArgumentNullException("constraint");
             }
             return new AndConstraint<TValue, TValue, TResult>(this, constraint);
+        }
+
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, string errorMessage = null, string name = null)
+        {
+            return _constraint.Or(constraint, errorMessage, name);
+        }
+
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        {
+            return _constraint.Or(constraint, errorMessage, name);
         }
 
         /// <inheritdoc />
@@ -106,6 +130,6 @@ namespace Kingo.BuildingBlocks.Constraints
             return false;
         }
 
-        #endregion                    
+        #endregion
     }
 }

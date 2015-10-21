@@ -19,6 +19,16 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== And, Or & Invert ======]
 
+        public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, string errorMessage = null, string name = null)
+        {
+            return And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        }
+
+        public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        {
+            return And(new DelegateConstraint<TValueIn>(constraint, errorMessage, name));
+        }
+
         public IConstraint<TValueIn> And(IConstraint<TValueIn> constraint)
         {
             return new AndConstraint<TValueIn>(this, constraint);
@@ -27,6 +37,16 @@ namespace Kingo.BuildingBlocks.Constraints
         public IConstraint<TValueIn, TResult> And<TResult>(IConstraint<TValueOut, TResult> constraint)
         {
             return new AndConstraint<TValueIn, TValueOut, TResult>(this, constraint);
+        }
+
+        public IConstraintWithErrorMessage<TValueIn> Or(Func<TValueIn, bool> constraint, string errorMessage = null, string name = null)
+        {
+            return Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        }
+
+        public IConstraintWithErrorMessage<TValueIn> Or(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        {
+            return Or(new DelegateConstraint<TValueIn>(constraint, errorMessage, name));
         }
 
         public IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint)
@@ -90,6 +110,6 @@ namespace Kingo.BuildingBlocks.Constraints
             return _rightConstraint.IsNotSatisfiedBy(valueMiddle, out errorMessage, out valueOut);
         }
 
-        #endregion        
+        #endregion
     }
 }
