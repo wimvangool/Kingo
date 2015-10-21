@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return typeof(TValue); }
         }
 
-        internal MemberWithValue<TMessage, TValue> ToMember(TMessage message)
+        internal MemberWithValue<TMessage, TValue> WithValue(TMessage message)
         {
             return new MemberWithValue<TMessage, TValue>(this, message);
         }

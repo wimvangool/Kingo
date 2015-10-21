@@ -150,52 +150,52 @@
   <data name="ListConstraints_ElementAt" xml:space="preserve">
     <value>{member.Name} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}.</value>
   </data>
-  <data name="MemberConstraints_Default" xml:space="preserve">
+  <data name="BasicConstraints_Default" xml:space="preserve">
     <value>{member.Name} ({member.Value}) is not valid.</value>
   </data>
-  <data name="MemberConstraints_IsEqualTo" xml:space="preserve">
+  <data name="BasicConstraints_IsEqualTo" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must be equal to '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_IsGreaterThan" xml:space="preserve">
+  <data name="BasicConstraints_IsGreaterThan" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must be greater than '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_IsGreaterThanOrEqualTo" xml:space="preserve">
+  <data name="BasicConstraints_IsGreaterThanOrEqualTo" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must be greater than or equal to '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_IsInRange" xml:space="preserve">
+  <data name="BasicConstraints_IsInRange" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must be within the following range: {constraint.Range}.</value>
   </data>
-  <data name="MemberConstraints_IsInstanceOf" xml:space="preserve">
+  <data name="BasicConstraints_IsInstanceOf" xml:space="preserve">
     <value>{member.Name} of type '{member.Type.FullName}' must be an instance of type '{constraint.Type.FullName}'.</value>
   </data>
-  <data name="MemberConstraints_IsNotEqualTo" xml:space="preserve">
+  <data name="BasicConstraints_IsNotEqualTo" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must not be equal to '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_IsNotInRange" xml:space="preserve">
+  <data name="BasicConstraints_IsNotInRange" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must not be within the following range: {constraint.Range}.</value>
   </data>
-  <data name="MemberConstraints_IsNotInstanceOf" xml:space="preserve">
+  <data name="BasicConstraints_IsNotInstanceOf" xml:space="preserve">
     <value>{member.Name} of type '{member.Type.FullName}' must not be an instance of type '{constraint.Type.FullName}'.</value>
   </data>
-  <data name="MemberConstraints_IsNotNull" xml:space="preserve">
+  <data name="BasicConstraints_IsNotNull" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must refer to an instance of an object.</value>
   </data>
-  <data name="MemberConstraints_IsNotSameInstanceAs" xml:space="preserve">
+  <data name="BasicConstraints_IsNotSameInstanceAs" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must not refer to the same instance as '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_IsNull" xml:space="preserve">
+  <data name="BasicConstraints_IsNull" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must be null.</value>
   </data>
-  <data name="MemberConstraints_IsSameInstanceAs" xml:space="preserve">
+  <data name="BasicConstraints_IsSameInstanceAs" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must refer to the same instance as '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_IsSmallerThan" xml:space="preserve">
+  <data name="BasicConstraints_IsSmallerThan" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must be smaller than '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_IsSmallerThanOrEqualTo" xml:space="preserve">
+  <data name="BasicConstraints_IsSmallerThanOrEqualTo" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must be smaller than or equal to '{constraint.Other}'.</value>
   </data>
-  <data name="MemberConstraints_MultipleConstraintsFailed" xml:space="preserve">
+  <data name="BasicConstraints_MultipleConstraintsFailed" xml:space="preserve">
     <value>{member.Name} ({member.Value}) did not satisfy the following constraint: '{constraint}'.</value>
   </data>
   <data name="NullableConstraints_IsNotNull" xml:space="preserve">

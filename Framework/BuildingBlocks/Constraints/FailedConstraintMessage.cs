@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -18,9 +19,11 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return _failedConstraint; }
         }        
 
-        protected override StringTemplate FormatErrorMessage(IFormatProvider formatProvider)
+        protected override StringTemplate FormatErrorMessage(IEnumerable<KeyValuePair<Identifier, object>> arguments, IFormatProvider formatProvider)
         {            
-            return _failedConstraint.ErrorMessage.Format(_failedConstraint.Name, _errorMessageArgument, formatProvider);
+            return _failedConstraint.ErrorMessage
+                .Format(arguments, formatProvider)
+                .Format(_failedConstraint.Name, _errorMessageArgument, formatProvider);
         }        
     }
 }

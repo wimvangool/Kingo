@@ -26,22 +26,37 @@ namespace Kingo.BuildingBlocks.Messaging
                 _scenario = scenario;
             }
 
+            public void Put(IErrorMessage errorMessage)
+            {
+                Put(Format(errorMessage));
+            }
+
+            public void Put(string errorMessage)
+            {
+                if (errorMessage != null)
+                {
+                    _scenario.OnVerificationFailed(errorMessage);
+                }
+            }
+
             public void Add(string memberName, IErrorMessage errorMessage)
+            {
+                Add(memberName, Format(errorMessage));            
+            }
+
+            public void Add(string memberName, string errorMessage)
             {
                 if (memberName == null)
                 {
                     throw new ArgumentNullException("memberName");
                 }
-                if (errorMessage != null)
-                {
-                    Add(memberName, errorMessage.ToString(_scenario.FormatProvider));
-                }                
+                _scenario.OnVerificationFailed("[" + memberName + "] " + errorMessage);
             }
-
-            public void Add(string memberName, string errorMessage)
+            
+            private string Format(IErrorMessage errorMessage)
             {
-                _scenario.OnVerificationFailed(memberName, errorMessage);
-            }
+                return errorMessage == null ? null : errorMessage.ToString(_scenario.FormatProvider);
+            }            
         }
 
         #endregion
@@ -314,10 +329,9 @@ namespace Kingo.BuildingBlocks.Messaging
 
         /// <summary>
         /// Occurs when verification of a certain member during the Then-phase failed.
-        /// </summary>
-        /// <param name="memberName">Name of the invalid member.</param>
+        /// </summary>        
         /// <param name="errorMessage">The error message.</param>
-        protected virtual void OnVerificationFailed(string memberName, string errorMessage)
+        protected virtual void OnVerificationFailed(string errorMessage)
         {
             throw NewScenarioFailedException(errorMessage);
         }

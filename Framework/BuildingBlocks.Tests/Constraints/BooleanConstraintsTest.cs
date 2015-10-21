@@ -19,7 +19,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsTrue_ReturnsDefaultError_IfMemberIsFalse__And_NoErrorMessageIsSpecified()
+        public void ValidateIsTrue_ReturnsDefaultError_IfMemberIsFalse_And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<bool>(false);
             var validator = message.CreateConstraintValidator();
@@ -56,7 +56,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsFalse_ReturnsDefaultError_IfMemberIsTrue__And_NoErrorMessageIsSpecified()
+        public void ValidateIsFalse_ReturnsDefaultError_IfMemberIsTrue_And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<bool>(true);
             var validator = message.CreateConstraintValidator();

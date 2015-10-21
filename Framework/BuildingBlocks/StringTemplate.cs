@@ -65,12 +65,32 @@ namespace Kingo.BuildingBlocks
         #region [====== Format & ToString ======]
 
         /// <summary>
+        /// Replaces all placeholders of this template with the argument-values that are specified in the collection.
+        /// </summary>
+        /// <param name="arguments">A collection of arguments.</param>
+        /// <param name="formatProvider">Optional <see cref="IFormatProvider" /> that is used for placeholders that define a specific format.</param>
+        /// <returns>A new <see cref="StringTemplate" /> that has replaced all matching placeholder with their values.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="arguments"/> is <c>null</c>.
+        /// </exception>
+        public StringTemplate Format(IEnumerable<KeyValuePair<Identifier, object>> arguments, IFormatProvider formatProvider = null)
+        {
+            var template = this;
+
+            foreach (var argument in arguments)
+            {
+                template = template.Format(argument.Key, argument.Value, formatProvider);
+            }
+            return template;
+        }
+
+        /// <summary>
         /// Replaces all placeholders of the specified <paramref name="identifier"/> with the value of <paramref name="argument"/>.
         /// </summary>
         /// <param name="identifier">Identifier of the placeholder.</param>
         /// <param name="argument">Value of the placeholder.</param>
-        /// <param name="formatProvider">A <see cref="IFormatProvider" /> that is used for placeholders that define a specific format.</param>
-        /// <returns>The formatted string.</returns>
+        /// <param name="formatProvider">Optional <see cref="IFormatProvider" /> that is used for placeholders that define a specific format.</param>
+        /// <returns>A new <see cref="StringTemplate" /> that has replaced all matching placeholder with their values.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="identifier"/> is <c>null</c>.
         /// </exception>
@@ -87,8 +107,8 @@ namespace Kingo.BuildingBlocks
         /// </summary>
         /// <param name="identifier">Identifier of the placeholder.</param>
         /// <param name="argument">Value of the placeholder.</param>
-        /// <param name="formatProvider">A <see cref="IFormatProvider" /> that is used for placeholders that define a specific format.</param>
-        /// <returns>The formatted string.</returns>
+        /// <param name="formatProvider">Optional <see cref="IFormatProvider" /> that is used for placeholders that define a specific format.</param>
+        /// <returns>A new <see cref="StringTemplate" /> that has replaced all matching placeholder with their values.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="identifier"/> is <c>null</c>.
         /// </exception>

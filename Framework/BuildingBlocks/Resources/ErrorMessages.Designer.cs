@@ -61,6 +61,150 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) is not valid..
+        /// </summary>
+        internal static string BasicConstraints_Default {
+            get {
+                return ResourceManager.GetString("BasicConstraints_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be equal to &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsEqualTo {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be greater than &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsGreaterThan {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsGreaterThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be greater than or equal to &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsGreaterThanOrEqualTo {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsGreaterThanOrEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be within the following range: {constraint.Range}..
+        /// </summary>
+        internal static string BasicConstraints_IsInRange {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsInRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} of type &apos;{member.Type.FullName}&apos; must be an instance of type &apos;{constraint.Type.FullName}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsInstanceOf {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsInstanceOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be equal to &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsNotEqualTo {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsNotEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be within the following range: {constraint.Range}..
+        /// </summary>
+        internal static string BasicConstraints_IsNotInRange {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsNotInRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} of type &apos;{member.Type.FullName}&apos; must not be an instance of type &apos;{constraint.Type.FullName}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsNotInstanceOf {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsNotInstanceOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must refer to an instance of an object..
+        /// </summary>
+        internal static string BasicConstraints_IsNotNull {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not refer to the same instance as &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsNotSameInstanceAs {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsNotSameInstanceAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be null..
+        /// </summary>
+        internal static string BasicConstraints_IsNull {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must refer to the same instance as &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsSameInstanceAs {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsSameInstanceAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be smaller than &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsSmallerThan {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsSmallerThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be smaller than or equal to &apos;{constraint.Other}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_IsSmallerThanOrEqualTo {
+            get {
+                return ResourceManager.GetString("BasicConstraints_IsSmallerThanOrEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) did not satisfy the following constraint: &apos;{constraint}&apos;..
+        /// </summary>
+        internal static string BasicConstraints_MultipleConstraintsFailed {
+            get {
+                return ResourceManager.GetString("BasicConstraints_MultipleConstraintsFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {member.Name} (true) must be false..
         /// </summary>
         internal static string BooleanConstraints_IsFalse {
@@ -156,150 +300,6 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string ListConstraints_ElementAt {
             get {
                 return ResourceManager.GetString("ListConstraints_ElementAt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) is not valid..
-        /// </summary>
-        internal static string MemberConstraints_Default {
-            get {
-                return ResourceManager.GetString("MemberConstraints_Default", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be equal to &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsEqualTo {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsEqualTo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be greater than &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsGreaterThan {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsGreaterThan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be greater than or equal to &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsGreaterThanOrEqualTo {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsGreaterThanOrEqualTo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be within the following range: {constraint.Range}..
-        /// </summary>
-        internal static string MemberConstraints_IsInRange {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsInRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} of type &apos;{member.Type.FullName}&apos; must be an instance of type &apos;{constraint.Type.FullName}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsInstanceOf {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsInstanceOf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be equal to &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsNotEqualTo {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsNotEqualTo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be within the following range: {constraint.Range}..
-        /// </summary>
-        internal static string MemberConstraints_IsNotInRange {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsNotInRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} of type &apos;{member.Type.FullName}&apos; must not be an instance of type &apos;{constraint.Type.FullName}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsNotInstanceOf {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsNotInstanceOf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must refer to an instance of an object..
-        /// </summary>
-        internal static string MemberConstraints_IsNotNull {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsNotNull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not refer to the same instance as &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsNotSameInstanceAs {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsNotSameInstanceAs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be null..
-        /// </summary>
-        internal static string MemberConstraints_IsNull {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsNull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must refer to the same instance as &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsSameInstanceAs {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsSameInstanceAs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be smaller than &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsSmallerThan {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsSmallerThan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be smaller than or equal to &apos;{constraint.Other}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_IsSmallerThanOrEqualTo {
-            get {
-                return ResourceManager.GetString("MemberConstraints_IsSmallerThanOrEqualTo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) did not satisfy the following constraint: &apos;{constraint}&apos;..
-        /// </summary>
-        internal static string MemberConstraints_MultipleConstraintsFailed {
-            get {
-                return ResourceManager.GetString("MemberConstraints_MultipleConstraintsFailed", resourceCulture);
             }
         }
         

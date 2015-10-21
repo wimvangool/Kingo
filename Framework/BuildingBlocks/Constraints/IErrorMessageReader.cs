@@ -7,6 +7,24 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public interface IErrorMessageReader
     {
+        #region [====== Put ======]
+
+        /// <summary>
+        /// Sets the error message for the entire object.
+        /// </summary>
+        /// <param name="errorMessage">An error message.</param>
+        void Put(IErrorMessage errorMessage);
+
+        /// <summary>
+        /// Sets the error message for the entire object.
+        /// </summary>
+        /// <param name="errorMessage">An error message.</param>
+        void Put(string errorMessage);
+
+        #endregion
+
+        #region [====== Add ======]
+
         /// <summary>
         /// Adds an error message to the reader.
         /// </summary>
@@ -25,6 +43,8 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="memberName"/> is <c>null</c>.
         /// </exception>        
-        void Add(string memberName, string errorMessage);        
+        void Add(string memberName, string errorMessage);
+
+        #endregion
     }
 }

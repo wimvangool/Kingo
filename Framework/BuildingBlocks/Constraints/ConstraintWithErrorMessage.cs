@@ -66,7 +66,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <summary>
         /// Represents the default error message of a constraint when no error message has been specified explicitly.
         /// </summary>
-        public static readonly StringTemplate DefaultErrorMessage = StringTemplate.Parse(ErrorMessages.MemberConstraints_Default);        
+        public static readonly StringTemplate DefaultErrorMessage = StringTemplate.Parse(ErrorMessages.BasicConstraints_Default);        
 
         /// <summary>
         /// Returns the left template if <paramref name="left"/> is not <c>null</c>; otherwise returns <paramref name="right"/>.

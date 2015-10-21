@@ -160,10 +160,14 @@ namespace Kingo.BuildingBlocks.Constraints
             return memberConstraint;
         }        
     
-        private ConstraintFactory<TMessage, TValue, TValue> CreateConstraintFactory<TValue>()
+        private static ConstraintFactory<TMessage, TValue, TValue> CreateConstraintFactory<TValue>()
         {
             return new ConstraintFactory<TMessage, TValue, TValue>(message => new NullConstraint<TValue>().MapInputToOutput());
-        }
+        }                      
+
+        #endregion        
+
+        #region [====== Add, Put, Remove & Replace ======]
 
         private void Put(IMemberConstraint<TMessage> newConstraint)
         {
@@ -177,11 +181,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 Add(newConstraint);
             }
-        }                
-
-        #endregion        
-
-        #region [====== Add, Remove & Replace ======]
+        }  
 
         /// <summary>
         /// Replaces <paramref name="oldConstraint"/> by the specified <paramref name="newConstraint"/>.

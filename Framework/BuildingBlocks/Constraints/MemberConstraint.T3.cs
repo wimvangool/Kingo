@@ -35,12 +35,14 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("reader");
             }
+            var member = _member.WithValue(message);
             var constraint = _constraintFactory.CreateConstraint(message);
             IErrorMessage errorMessage;
 
-            if (constraint.IsNotSatisfiedBy(_member.GetValue(message), out errorMessage))
+            if (constraint.IsNotSatisfiedBy(member.Value, out errorMessage))
             {
-                reader.Add(_member.FullName, errorMessage);
+                errorMessage.Add("member", member);
+                reader.Add(member.FullName, errorMessage);
                 return true;
             }
             return false;

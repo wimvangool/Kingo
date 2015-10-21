@@ -16,6 +16,35 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <summary>
+        /// Adds an argument to this error message that will be used to format the message on a call to one of the
+        /// <see cref="ToString(IFormatProvider)" /> overloads.
+        /// </summary>
+        /// <param name="name">Name of the argument.</param>
+        /// <param name="argument">Value of the argument.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="name" /> is not a valid identifier, or
+        /// an argument with the same name has already been added to this error message.
+        /// </exception>
+        void Add(string name, object argument);
+
+        /// <summary>
+        /// Adds an argument to this error message that will be used to format the message on a call to one of the
+        /// <see cref="ToString(IFormatProvider)" /> overloads.
+        /// </summary>
+        /// <param name="name">Name of the argument.</param>
+        /// <param name="argument">Value of the argument.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// An argument with the same name has already been added to this error message.
+        /// </exception>
+        void Add(Identifier name, object argument);
+
+        /// <summary>
         /// Returns a string-representation of the error message formatted using the specified <paramref name="formatProvider"/>.
         /// </summary>
         /// <param name="formatProvider">

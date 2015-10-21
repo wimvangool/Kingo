@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Kingo.BuildingBlocks.Messaging
 {
@@ -12,26 +10,25 @@ namespace Kingo.BuildingBlocks.Messaging
     /// </summary>
     [Serializable]    
     public sealed class DataErrorInfo : IDataErrorInfo
-    {        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ReadOnlyDictionary<string, string> _errors;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Lazy<string> _error;                      
+    {                
+        private readonly ReadOnlyDictionary<string, string> _errors;        
+        private readonly string _error;                      
  
         /// <summary>
         /// Initializes a new instance of the <see cref="DataErrorInfo" /> class.
         /// </summary>        
-        /// <param name="errors">Error-messages indexed by property- or fieldname.</param>               
-        public DataErrorInfo(IDictionary<string, string> errors)
+        /// <param name="errors">Error messages indexed by property- or fieldname.</param> 
+        /// <param name="error">Error message for the whole object.</param>              
+        public DataErrorInfo(IDictionary<string, string> errors, string error = null)
         {            
             _errors = new ReadOnlyDictionary<string, string>(errors);
-            _error = new Lazy<string>(CreateError);            
+            _error = error ?? string.Empty;         
         }
 
         private DataErrorInfo(ReadOnlyDictionary<string, string> errors)
         {            
-            _errors = errors;            
+            _errors = errors;
+            _error = string.Empty;
         }
 
         #region [====== IDataErrorInfo ======]
@@ -52,24 +49,14 @@ namespace Kingo.BuildingBlocks.Messaging
 
         string IDataErrorInfo.Error
         {
-            get { return _error.Value; }
-        }
-
-        private string CreateError()
-        {
-            return _errors.Count == 0 ? null : Concatenate(_errors.Values);
-        }
-
-        internal static string Concatenate(IEnumerable<string> errorMessages)
-        {
-            return string.Join(Environment.NewLine, errorMessages.Where(error => !string.IsNullOrWhiteSpace(error)));
-        }
+            get { return _error; }
+        }                
 
         #endregion                       
 
         /// <summary>
         /// Returns the errors that were detected on the message. The key represent a property or field,
-        /// the value contains the error message.
+        /// the value contains the error message. This collection is read-only.
         /// </summary>
         public IDictionary<string, string> Errors
         {

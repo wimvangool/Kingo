@@ -51,6 +51,7 @@
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ClockWithOffset.cs" />
+    <Compile Include="Constraints\BasicConstraints.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />
     <Compile Include="Constraints\StringConstraints.Matches.cs" />
     <Compile Include="Constraints\StringConstraints.StartsWith.cs" />
+    <Compile Include="Messaging\DataErrorInfoBuilder.cs" />
     <Compile Include="Messaging\FunctionalException.cs" />
     <Compile Include="Messaging\InvalidMessageException.cs" />
     <Compile Include="Messaging\AuthorizationFailedException.cs" />
