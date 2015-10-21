@@ -70,6 +70,24 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot create an empty identifier..
+        /// </summary>
+        internal static string Identifier_EmptyIdentifier {
+            get {
+                return ResourceManager.GetString("Identifier_EmptyIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid identifier specified: &apos;{0}&apos;..
+        /// </summary>
+        internal static string Identifier_InvalidIdentifier {
+            get {
+                return ResourceManager.GetString("Identifier_InvalidIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member with name &apos;{0}&apos; has already been added to the set..
         /// </summary>
         internal static string MemberSet_MemberAlreadyAdded {

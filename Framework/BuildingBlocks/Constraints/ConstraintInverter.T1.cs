@@ -20,7 +20,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
         public ConstraintInverter(IConstraintWithErrorMessage<TValue> constraint, string errorMessage = null, string name = null)
-            : this(constraint, StringTemplate.Parse(errorMessage), Identifier.Parse(name)) { }
+            : this(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name)) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstraintInverter{T}" /> class.

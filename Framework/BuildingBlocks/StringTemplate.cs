@@ -79,7 +79,7 @@ namespace Kingo.BuildingBlocks
         /// </exception>
         public StringTemplate Format(string identifier, object argument, IFormatProvider formatProvider = null)
         {
-            return Format(Identifier.Parse(identifier), argument, formatProvider);
+            return Format(Identifier.ParseOrNull(identifier), argument, formatProvider);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Kingo.BuildingBlocks
         /// <returns>The concatenated template.</returns>
         public StringTemplate Concat(string template)
         {
-            return Concat(Parse(template));
+            return Concat(ParseOrNull(template));
         }
 
         /// <summary>
@@ -175,11 +175,27 @@ namespace Kingo.BuildingBlocks
         /// <exception cref="ArgumentException">
         /// <paramref name="templateFormat"/> is not in a correct format.
         /// </exception>
+        public static StringTemplate ParseOrNull(string templateFormat)
+        {
+            return templateFormat == null ? null : Parse(templateFormat);
+        }
+
+        /// <summary>
+        /// Parses the specified <paramref name="templateFormat"/> such that it can be formatted using arbitrary arguments.
+        /// </summary>
+        /// <param name="templateFormat">The format string to parse.</param>
+        /// <returns>A new <see cref="StringTemplate" /> instance.</returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="templateFormat"/> is <c>null</c>.
+        /// </exception>       
+        /// <exception cref="ArgumentException">
+        /// <paramref name="templateFormat"/> is not in a correct format.
+        /// </exception>
         public static StringTemplate Parse(string templateFormat)
         {
             if (templateFormat == null)
             {
-                return null;
+                throw new ArgumentNullException("templateFormat");
             }                        
             return new StringTemplate(ParseNextComponent(templateFormat));
         }
@@ -289,8 +305,8 @@ namespace Kingo.BuildingBlocks
             string format = null;
 
             var identifierExpected = true;
-            var identifierList = new LinkedList<StringBuilder>();
-            var identifier = new StringBuilder(variableLength);
+            var identifierList = new LinkedList<Identifier.Builder>();
+            var identifier = Identifier.NewBuilder(variableLength);
             var index = 0;
 
             while (index < variableLength)
@@ -305,7 +321,7 @@ namespace Kingo.BuildingBlocks
                         throw NewMissingIdentifierException(templateFormat, characterIndex);
                     }
                     identifierList.AddLast(identifier);
-                    identifier = new StringBuilder(variableLength - index);
+                    identifier = Identifier.NewBuilder(variableLength - index);
                     identifierExpected = true;
                 }
                 else if (character == ':')
@@ -313,16 +329,10 @@ namespace Kingo.BuildingBlocks
                     format = templateFormat.Substring(characterIndex + 1, variableLength - index - 1);
                     break;
                 }
-                else if (char.IsLetter(character) || character == '_')
-                {
+                else if (identifier.Append(character))
+                {                    
                     identifierExpected = false;
-                    identifier.Append(character);
-                }
-                else if (char.IsDigit(character) && identifier.Length > 0)
-                {
-                    identifierExpected = false;
-                    identifier.Append(character);
-                }                
+                }                               
                 else
                 {
                     throw NewUnexpectedCharacterException(templateFormat, characterIndex, character);
@@ -340,10 +350,10 @@ namespace Kingo.BuildingBlocks
             return CreateVariableComponent(identifierList, format, nextComponent);
         }               
 
-        private static StringTemplateVariable CreateVariableComponent(LinkedList<StringBuilder> identifiers, string format, StringTemplateComponent nextComponent)
+        private static StringTemplateVariable CreateVariableComponent(LinkedList<Identifier.Builder> identifiers, string format, StringTemplateComponent nextComponent)
         {
-            var identifier = identifiers.First.Value.ToString();
-            var expression = identifiers.Skip(1).Select(id => id.ToString()).ToArray();
+            var identifier = identifiers.First.Value.BuildIdentifier();
+            var expression = identifiers.Skip(1).Select(id => id.BuildIdentifier()).ToArray();
 
             return new StringTemplateVariable(identifier, expression, format, nextComponent);
         }

@@ -9,10 +9,17 @@ namespace Kingo.BuildingBlocks
         #region [====== Parse =====]
 
         [TestMethod]        
-        public void Parse_ReturnsNull_IfFormatIsNull()
+        public void ParseOrNull_ReturnsNull_IfFormatIsNull()
         {
-            Assert.IsNull(StringTemplate.Parse(null));
+            Assert.IsNull(StringTemplate.ParseOrNull(null));
         }        
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Parse_Throws_IfFormatIsNull()
+        {
+            StringTemplate.Parse(null);
+        }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]

@@ -9,11 +9,11 @@ namespace Kingo.BuildingBlocks
     internal sealed class StringTemplateVariable : StringTemplateComponent, IEquatable<StringTemplateVariable>
     {
         private readonly StringTemplateComponent _nextComponent;
-        private readonly string _identifier;
-        private readonly string[] _expression;
+        private readonly Identifier _identifier;
+        private readonly Identifier[] _expression;
         private readonly string _format;
 
-        internal StringTemplateVariable(string identifier, string[] expression, string format, StringTemplateComponent nextComponent)
+        internal StringTemplateVariable(Identifier identifier, Identifier[] expression, string format, StringTemplateComponent nextComponent)
         {
             _nextComponent = nextComponent;
             _identifier = identifier;
@@ -64,7 +64,7 @@ namespace Kingo.BuildingBlocks
                 Equals(_nextComponent, other._nextComponent);
         }
 
-        private static bool Equals(IReadOnlyCollection<string> left, IReadOnlyCollection<string> right)
+        private static bool Equals(IReadOnlyCollection<Identifier> left, IReadOnlyCollection<Identifier> right)
         {
             return left.Count == right.Count && left.SequenceEqual(right);
         }
@@ -93,14 +93,14 @@ namespace Kingo.BuildingBlocks
             }
             var nextComponent = _nextComponent == null ? null : _nextComponent.Format(identifier, argument, formatProvider);
 
-            if (identifier.ToString() == _identifier)
+            if (identifier == _identifier)
             {
                 return new StringTemplateLiteral(Format(argument, _expression, _format, formatProvider), nextComponent);
             }
             return new StringTemplateVariable(_identifier, _expression, _format, nextComponent);
         }
 
-        private static string Format(object argument, IReadOnlyList<string> expression, string format, IFormatProvider formatProvider)
+        private static string Format(object argument, IReadOnlyList<Identifier> expression, string format, IFormatProvider formatProvider)
         {
             var instance = Evaluate(argument, expression);
             if (instance == null)
@@ -115,11 +115,11 @@ namespace Kingo.BuildingBlocks
             return formattable.ToString(format, formatProvider);
         }
 
-        private static object Evaluate(object argument, IReadOnlyList<string> expression)
+        private static object Evaluate(object argument, IReadOnlyList<Identifier> expression)
         {
             for (int index = 0; index < expression.Count && argument != null; index++)
             {
-                argument = Evaluate(argument, expression[index]);
+                argument = Evaluate(argument, expression[index].ToString());
             }
             return argument;
         }
@@ -127,7 +127,7 @@ namespace Kingo.BuildingBlocks
         private static object Evaluate(object argument, string identifier)
         {            
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
-            
+                        
             var argumentType = argument.GetType();
             var property = argumentType.GetProperty(identifier, bindingFlags);
             if (property != null)

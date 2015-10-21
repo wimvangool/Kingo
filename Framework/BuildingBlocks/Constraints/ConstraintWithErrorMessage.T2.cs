@@ -21,13 +21,13 @@ namespace Kingo.BuildingBlocks.Constraints
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithName(string name)
         {
-            return WithName(Identifier.Parse(name));
+            return WithName(Identifier.ParseOrNull(name));
         }
 
         /// <inheritdoc />
         public IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(string name)
         {
-            return WithName(Identifier.Parse(name));
+            return WithName(Identifier.ParseOrNull(name));
         }
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithName(Identifier name)
@@ -52,13 +52,13 @@ namespace Kingo.BuildingBlocks.Constraints
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithErrorMessage(string errorMessage)
         {
-            return WithErrorMessage(StringTemplate.Parse(errorMessage));
+            return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
         }
 
         /// <inheritdoc />
         public IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage)
         {
-            return WithErrorMessage(StringTemplate.Parse(errorMessage));
+            return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
         }
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithErrorMessage(StringTemplate errorMessage)
@@ -111,7 +111,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IConstraintWithErrorMessage<TValueIn> Invert(string errorMessage, string name = null)
         {
-            return Invert(StringTemplate.Parse(errorMessage), Identifier.Parse(name));
+            return Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
         }
 
         /// <inheritdoc />

@@ -20,7 +20,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithName(string name)
         {
-            return WithName(Identifier.Parse(name));
+            return WithName(Identifier.ParseOrNull(name));
         }
 
         IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithName(Identifier name)
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Constraints
             
         IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithErrorMessage(string errorMessage)
         {
-            return WithErrorMessage(StringTemplate.Parse(errorMessage));
+            return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
         }
 
         IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithErrorMessage(StringTemplate errorMessage)
@@ -92,7 +92,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IConstraintWithErrorMessage<TValue> Invert(string errorMessage, string name = null)
         {
-            return Invert(StringTemplate.Parse(errorMessage), Identifier.Parse(name));
+            return Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
         }
 
         /// <inheritdoc />

@@ -36,7 +36,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(string name)
         {
-            return WithNameCore(Identifier.Parse(name));
+            return WithNameCore(Identifier.ParseOrNull(name));
         }
 
         IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(Identifier name)
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         IConstraintWithErrorMessage IConstraintWithErrorMessage.WithErrorMessage(string errorMessage)
         {
-            return WithErrorMessageCore(StringTemplate.Parse(errorMessage));
+            return WithErrorMessageCore(StringTemplate.ParseOrNull(errorMessage));
         }
 
         IConstraintWithErrorMessage IConstraintWithErrorMessage.WithErrorMessage(StringTemplate errorMessage)
@@ -81,7 +81,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static StringTemplate SelectBetween(StringTemplate left, string right)
         {
-            return SelectBetween(left, StringTemplate.Parse(right));
+            return SelectBetween(left, StringTemplate.ParseOrNull(right));
         }
  
         private static StringTemplate SelectBetween(StringTemplate left, StringTemplate right)

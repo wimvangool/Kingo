@@ -65,6 +65,8 @@
     <Compile Include="Constraints\BasicConstraintsTest.IsSmallerThan.cs" />
     <Compile Include="Constraints\BooleanConstraintsTest.cs" />
     <Compile Include="Constraints\ConstraintTest.cs" />
+    <Compile Include="Constraints\OrConstraintTest.cs" />
+    <Compile Include="IdentifierTest.cs" />
     <Compile Include="Messaging\ConstraintValidatorExtensions.cs" />
     <Compile Include="Constraints\StringConstraintsTest.Contains.cs" />
     <Compile Include="Constraints\StringConstraintsTest.EndsWith.cs" />

@@ -120,6 +120,12 @@
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
   </data>
+  <data name="Identifier_EmptyIdentifier" xml:space="preserve">
+    <value>Cannot create an empty identifier.</value>
+  </data>
+  <data name="Identifier_InvalidIdentifier" xml:space="preserve">
+    <value>Invalid identifier specified: '{0}'.</value>
+  </data>
   <data name="MemberSet_MemberAlreadyAdded" xml:space="preserve">
     <value>A member with name '{0}' has already been added to the set.</value>
   </data>

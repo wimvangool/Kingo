@@ -14,7 +14,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="errorMessage">The error message for this constraint.</param>
         /// <param name="name">The name of this constraint.</param>
         public NullConstraint(string errorMessage = null, string name = null)
-            : this(StringTemplate.Parse(errorMessage), Identifier.Parse(name)) { }
+            : this(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name)) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NullConstraint{T}" /> class.
