@@ -79,7 +79,17 @@ namespace Kingo.BuildingBlocks.Constraints
         public IConstraint<TValue> Invert()
         {
             return new InputToOutputMapper<TValue>(_constraint.Invert());
-        }        
+        }
+
+        public IConstraint<TValue> Invert(string errorMessage, string name = null)
+        {
+            return new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
+        }
+
+        public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
+        }
 
         #endregion
 

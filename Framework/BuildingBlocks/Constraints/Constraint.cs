@@ -22,6 +22,8 @@ namespace Kingo.BuildingBlocks.Constraints
             _errorMessage = errorMessage ?? DefaultErrorMessage;
         }
 
+        #region [====== Name & ErrorMessage ======]
+
         /// <inheritdoc />
         public Identifier Name
         {
@@ -88,5 +90,75 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             return left ?? right;
         }
+
+        #endregion
+
+        #region [====== Any & All ======]
+
+        /// <summary>
+        /// Returns a logical OR-constraint composed of the specified <paramref name="constraints"/>.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// <param name="constraints">A set of constraints.</param>
+        /// <returns>A logical OR-constraint composed of the specified <paramref name="constraints"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraints"/> is <c>null</c>.
+        /// </exception>
+        public static IConstraintWithErrorMessage<TValue> Any<TValue>(params IConstraint<TValue>[] constraints)
+        {
+            if (constraints == null)
+            {
+                throw new ArgumentNullException("constraints");
+            }
+            if (constraints.Length == 0)
+            {
+                return new NullConstraint<TValue>();
+            }
+            if (constraints.Length == 1)
+            {
+                return new ConstraintWrapper<TValue>(constraints[0]);
+            }
+            var constraint = constraints[0].Or(constraints[1]);
+
+            for (int index = 2; index < constraints.Length; index++)
+            {
+                constraint = constraint.Or(constraints[index]);
+            }
+            return constraint;
+        }
+
+        /// <summary>
+        /// Returns a logical AND-constraint composed of the specified <paramref name="constraints"/>.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// <param name="constraints">A set of constraints.</param>
+        /// <returns>A logical AND-constraint composed of the specified <paramref name="constraints"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraints"/> is <c>null</c>.
+        /// </exception>
+        public static IConstraint<TValue> All<TValue>(params IConstraint<TValue>[] constraints)
+        {
+            if (constraints == null)
+            {
+                throw new ArgumentNullException("constraints");
+            }
+            if (constraints.Length == 0)
+            {
+                return new NullConstraint<TValue>();
+            }
+            if (constraints.Length == 1)
+            {
+                return constraints[0];
+            }
+            var constraint = constraints[0].And(constraints[1]);
+
+            for (int index = 2; index < constraints.Length; index++)
+            {
+                constraint = constraint.And(constraints[index]);
+            }
+            return constraint;
+        }
+
+        #endregion
     }
 }

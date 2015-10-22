@@ -22,13 +22,7 @@ namespace Kingo.BuildingBlocks.Constraints
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithName(string name)
         {
             return WithName(Identifier.ParseOrNull(name));
-        }
-
-        /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(string name)
-        {
-            return WithName(Identifier.ParseOrNull(name));
-        }
+        }        
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithName(Identifier name)
         {
@@ -40,6 +34,12 @@ namespace Kingo.BuildingBlocks.Constraints
             return WithName(name);
         }
 
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(string name)
+        {
+            return WithName(Identifier.ParseOrNull(name));
+        }
+
         /// <summary>
         /// Creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
         /// </summary>
@@ -48,18 +48,12 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception>   
-        protected abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
+        public abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithErrorMessage(string errorMessage)
         {
             return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
-        }
-
-        /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage)
-        {
-            return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
-        }
+        }        
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithErrorMessage(StringTemplate errorMessage)
         {
@@ -71,6 +65,12 @@ namespace Kingo.BuildingBlocks.Constraints
             return WithErrorMessage(errorMessage);
         }
 
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage)
+        {
+            return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
+        }
+
         /// <summary>
         /// Creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
         /// </summary>
@@ -79,7 +79,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        protected abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
+        public abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
 
         #endregion
 
@@ -125,11 +125,22 @@ namespace Kingo.BuildingBlocks.Constraints
         public virtual IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint)
         {
             return new OrConstraint<TValueIn>(this, constraint);
-        }
+        }        
 
         IConstraint<TValueIn> IConstraint<TValueIn>.Invert()
         {
             return Invert();
+        }
+
+        IConstraint<TValueIn> IConstraint<TValueIn>.Invert(string errorMessage, string name)
+        {
+            return Invert(errorMessage, name);
+        }
+
+        /// <inheritdoc />
+        IConstraint<TValueIn> IConstraint<TValueIn>.Invert(StringTemplate errorMessage, Identifier name)
+        {
+            return Invert(errorMessage, name);
         }
 
         /// <inheritdoc />

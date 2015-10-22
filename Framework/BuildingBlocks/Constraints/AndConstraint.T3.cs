@@ -56,8 +56,18 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IConstraint<TValueIn> Invert()
         {
-            throw new NotImplementedException();
-        }        
+            return Invert(null as StringTemplate);
+        }
+
+        public IConstraint<TValueIn> Invert(string errorMessage, string name = null)
+        {
+            return Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        }
+
+        public IConstraint<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new ConstraintInverter<TValueIn>(new ConstraintWrapper<TValueIn>(this), errorMessage, name);
+        }
 
         #endregion
 
@@ -111,5 +121,6 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         #endregion
+        
     }
 }

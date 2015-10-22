@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Clocks\ClockTest.cs" />
     <Compile Include="Clocks\ClockWithOffsetTest.cs" />
+    <Compile Include="Constraints\AndConstraintTestOne.cs" />
+    <Compile Include="Constraints\AndConstraintTestTwo.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.And.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsEqualTo.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsGreaterThan.cs" />
@@ -64,8 +66,12 @@
     <Compile Include="Constraints\BasicConstraintsTest.IsSameInstanceAs.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsSmallerThan.cs" />
     <Compile Include="Constraints\BooleanConstraintsTest.cs" />
+    <Compile Include="Constraints\CompositeConstraintTest.cs" />
+    <Compile Include="Constraints\ConstraintInverterTest.cs" />
     <Compile Include="Constraints\ConstraintTest.cs" />
+    <Compile Include="Constraints\ConstraintTestBase.cs" />
     <Compile Include="Constraints\DelegateConstraintTest.cs" />
+    <Compile Include="Constraints\AndConstraintTest.cs" />
     <Compile Include="Constraints\OrConstraintTest.cs" />
     <Compile Include="IdentifierTest.cs" />
     <Compile Include="Messaging\ConstraintValidatorExtensions.cs" />

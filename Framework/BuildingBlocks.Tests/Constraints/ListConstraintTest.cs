@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.BuildingBlocks.Constraints
 {
     [TestClass]
-    public sealed class ListConstraintTest : ConstraintTest
+    public sealed class ListConstraintTest : ConstraintTestBase
     {               
         #region [====== ElementAt ======]
 

@@ -79,13 +79,13 @@ namespace Kingo.BuildingBlocks.Constraints
             : base(SelectBetween(errorMessage, ErrorMessages.BooleanConstraints_IsTrue), name) {}
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<bool> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<bool> WithName(Identifier name)
         {
             return new IsTrueConstraint(ErrorMessage, name);
         }
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
         {
             return new IsTrueConstraint(errorMessage, Name);
         }
@@ -129,13 +129,13 @@ namespace Kingo.BuildingBlocks.Constraints
             : base(SelectBetween(errorMessage, ErrorMessages.BooleanConstraints_IsFalse), name) {}
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<bool> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<bool> WithName(Identifier name)
         {
             return new IsFalseConstraint(ErrorMessage, name);
         }
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
         {
             return new IsFalseConstraint(errorMessage, Name);
         }

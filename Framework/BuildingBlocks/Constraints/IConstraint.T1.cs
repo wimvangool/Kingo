@@ -82,7 +82,26 @@ namespace Kingo.BuildingBlocks.Constraints
         /// Creates and returns a constraint that negates this constraint.
         /// </summary>        
         /// <returns>A constraint that is the logical opposite of this constraint.</returns>
-        IConstraint<TValue> Invert();        
+        IConstraint<TValue> Invert();
+
+        /// <summary>
+        /// Creates and returns a constraint that negates this constraint.
+        /// </summary>
+        /// <param name="errorMessage">Error message of the inverting constraint.</param>
+        /// <param name="name">Name of the inverting constraint.</param>
+        /// <returns>A constraint that is the logical opposite of this constraint.</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format or <paramref name="name"/> is not a valid identifier.
+        /// </exception>
+        IConstraint<TValue> Invert(string errorMessage, string name = null);
+
+        /// <summary>
+        /// Creates and returns a constraint that negates this constraint.
+        /// </summary>
+        /// <param name="errorMessage">Error message of the inverting constraint.</param>
+        /// <param name="name">Name of the inverting constraint.</param>
+        /// <returns>A constraint that is the logical opposite of this constraint.</returns>
+        IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null);
 
         #endregion
 

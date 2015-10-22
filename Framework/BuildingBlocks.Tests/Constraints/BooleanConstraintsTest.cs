@@ -3,7 +3,7 @@
 namespace Kingo.BuildingBlocks.Constraints
 {
     [TestClass]
-    public sealed class BooleanConstraintsTest : ConstraintTest
+    public sealed class BooleanConstraintsTest : ConstraintTestBase
     {
         #region [====== IsTrue ======]
 

@@ -59,8 +59,18 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IConstraint<TValue> Invert()
         {
-            throw new NotImplementedException();
-        }        
+            return Invert(null as StringTemplate);
+        }
+
+        public IConstraint<TValue> Invert(string errorMessage, string name = null)
+        {
+            return Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        }
+
+        public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new OrConstraint<TValue>(_constraints.Select(constraint => constraint.Invert()), errorMessage, name);
+        }
 
         #endregion
 

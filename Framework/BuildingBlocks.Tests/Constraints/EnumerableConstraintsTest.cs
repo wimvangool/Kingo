@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.BuildingBlocks.Constraints
 {
     [TestClass]
-    public sealed class EnumerableConstraintsTest : ConstraintTest
+    public sealed class EnumerableConstraintsTest : ConstraintTestBase
     {        
         #region [====== IsNotNullOrEmpty ======]
 

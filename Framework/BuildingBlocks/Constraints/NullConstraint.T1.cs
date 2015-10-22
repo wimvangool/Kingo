@@ -25,13 +25,13 @@ namespace Kingo.BuildingBlocks.Constraints
             : base(errorMessage, name) { }
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
             return new NullConstraint<TValue>(ErrorMessage, name);
         }
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
             return new NullConstraint<TValue>(errorMessage, Name);
         }

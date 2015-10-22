@@ -52,6 +52,7 @@
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ClockWithOffset.cs" />
     <Compile Include="Constraints\BasicConstraints.cs" />
+    <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />

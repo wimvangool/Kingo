@@ -44,13 +44,13 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
             return new DelegateConstraint<TValue>(_constraint, ErrorMessage, name);
         }
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
             return new DelegateConstraint<TValue>(_constraint, errorMessage, Name);
         }

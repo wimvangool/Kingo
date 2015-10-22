@@ -8,7 +8,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <typeparam name="TValue">Type of the constraint value.</typeparam>
     public sealed class ConstraintInverter<TValue> : Constraint<TValue>
     {
-        private readonly IConstraintWithErrorMessage<TValue> _constraint;
+        private readonly IConstraintWithErrorMessage<TValue> _constraint;             
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstraintInverter{T}" /> class.
@@ -44,20 +44,20 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
             return new ConstraintInverter<TValue>(_constraint, ErrorMessage, name);
         }
 
         /// <inheritdoc />
-        protected override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
             return new ConstraintInverter<TValue>(_constraint, errorMessage, Name);
         }
 
         #endregion
 
-        #region [====== And, Or & Invert ======]
+        #region [====== And, Or & Invert ======]        
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)

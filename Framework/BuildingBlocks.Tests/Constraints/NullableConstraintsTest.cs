@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.BuildingBlocks.Constraints
 {
     [TestClass]
-    public sealed class NullableConstraintsTest : ConstraintTest
+    public sealed class NullableConstraintsTest : ConstraintTestBase
     {        
         #region [====== NotNull ======]
 

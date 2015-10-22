@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.BuildingBlocks.Constraints
 {
     [TestClass]
-    public sealed partial class StringConstraintsTest : ConstraintTest
+    public sealed partial class StringConstraintsTest : ConstraintTestBase
     {                                                                                        
         private static ValidatedMessage<string> NewValidatedMessage()
         {

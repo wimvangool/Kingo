@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kingo.BuildingBlocks.Constraints
@@ -15,6 +16,12 @@ namespace Kingo.BuildingBlocks.Constraints
                 throw new ArgumentNullException("constraint");
             }
             _constraints = new [] { left, constraint };
+        }
+
+        internal OrConstraint(IEnumerable<IConstraint<TValue>> constraints, StringTemplate errorMessage, Identifier name)
+            : base(errorMessage, name)
+        {
+            _constraints = constraints.ToArray();
         }
 
         private OrConstraint(OrConstraint<TValue> left, IConstraint<TValue> constraint)
@@ -41,12 +48,12 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== Name & ErrorMessage ======]
 
-        protected override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
             return new OrConstraint<TValue>(this, name);
         }
 
-        protected override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
             return new OrConstraint<TValue>(this, errorMessage);
         }

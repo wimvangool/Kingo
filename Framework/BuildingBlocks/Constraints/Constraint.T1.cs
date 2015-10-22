@@ -18,55 +18,33 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== Name & ErrorMessage ======]
 
-        IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithName(string name)
-        {
-            return WithName(Identifier.ParseOrNull(name));
-        }
-
-        IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithName(Identifier name)
-        {
-            return WithName(name);
-        }
-
         internal override IConstraintWithErrorMessage WithNameCore(Identifier name)
         {
             return WithName(name);
         }
 
-        /// <summary>
-        /// Creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
-        /// </summary>
-        /// <param name="name">New name of the constraint.</param>
-        /// <returns>A copy of this constraint with the specified <paramref name="name"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="name"/> is <c>null</c>.
-        /// </exception>   
-        protected abstract IConstraintWithErrorMessage<TValue> WithName(Identifier name);
-            
-        IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithErrorMessage(string errorMessage)
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValue> WithName(string name)
         {
-            return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
+            return WithName(Identifier.ParseOrNull(name));
         }
 
-        IConstraintWithErrorMessage<TValue> IConstraintWithErrorMessage<TValue>.WithErrorMessage(StringTemplate errorMessage)
-        {
-            return WithErrorMessage(errorMessage);
-        }
+        /// <inheritdoc />
+        public abstract IConstraintWithErrorMessage<TValue> WithName(Identifier name);
 
         internal override IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage)
         {
             return WithErrorMessage(errorMessage);
+        }  
+
+        /// <inheritdoc />
+        public IConstraintWithErrorMessage<TValue> WithErrorMessage(string errorMessage)
+        {
+            return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
         }
 
-        /// <summary>
-        /// Creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
-        /// </summary>
-        /// <param name="errorMessage">New error message of the constraint.</param>
-        /// <returns>A copy of this constraint with the specified <paramref name="errorMessage"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="errorMessage"/> is <c>null</c>.
-        /// </exception>
-        protected abstract IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage);
+        /// <inheritdoc />
+        public abstract IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage);             
 
         #endregion
 
@@ -111,6 +89,17 @@ namespace Kingo.BuildingBlocks.Constraints
         IConstraint<TValue> IConstraint<TValue>.Invert()
         {
             return Invert();
+        }
+
+        IConstraint<TValue> IConstraint<TValue>.Invert(string errorMessage, string name)
+        {
+            return Invert(errorMessage, name);
+        }
+
+        /// <inheritdoc />
+        IConstraint<TValue> IConstraint<TValue>.Invert(StringTemplate errorMessage, Identifier name)
+        {
+            return Invert(errorMessage, name);
         }
 
         /// <inheritdoc />
