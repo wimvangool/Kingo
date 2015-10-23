@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Kingo.BuildingBlocks.Resources;
 
@@ -8,10 +9,10 @@ namespace Kingo.BuildingBlocks.Constraints
     /// Represents a range or domain of values.
     /// </summary>
     /// <typeparam name="TValue">Type of values in this range.</typeparam>
-    public struct Range<TValue> : IRange<TValue>, IEquatable<Range<TValue>> where TValue : IEquatable<TValue>, IComparable<TValue>
+    public sealed class Range<TValue> : IRange<TValue>, IEquatable<Range<TValue>>
     {
-        private readonly TValue _left;
-        private readonly TValue _right;
+        private readonly Comparable<TValue> _left;
+        private readonly Comparable<TValue> _right;
         private readonly RangeOptions _options;
 
         /// <summary>
@@ -23,32 +24,57 @@ namespace Kingo.BuildingBlocks.Constraints
         /// The options indicating whether or <paramref name="left"/> and/or <paramref name="right"/> are part of this range themselves.
         /// </param>
         /// <exception cref="ArgumentException">
-        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range, or both are
-        /// equal and <paramref name="options"/> specifies at least one exclusive boundary.
+        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range
+        /// - or -
+        /// both are equal and <paramref name="options"/> specifies at least one exclusive boundary
+        /// - or -
+        /// the specified instances do not implement the <see cref="IComparable{T}" /> interface.
         /// </exception>
-        public Range(TValue left, TValue right, RangeOptions options = RangeOptions.None)           
+        public Range(TValue left, TValue right, RangeOptions options = RangeOptions.None)
+            : this(left, right, null, options) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Range{TValue}" /> class.
+        /// </summary>
+        /// <param name="left">The lower boundary of this range.</param>
+        /// <param name="right">The upper boundary of this range.</param>
+        /// <param name="comparer">Optional comparer to use when comparing two instances.</param>
+        /// <param name="options">
+        /// The options indicating whether or <paramref name="left"/> and/or <paramref name="right"/> are part of this range themselves.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="left"/> and <paramref name="right"/> do not represent a valid range
+        /// - or -
+        /// both are equal and <paramref name="options"/> specifies at least one exclusive boundary
+        /// - or -
+        /// <paramref name="comparer"/> is <c>null</c> and the specified instances do not implement the <see cref="IComparable{T}" /> interface.
+        /// </exception>
+        public Range(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.None)
         {
-            if (IsValidRange(left, right, options))
+            var leftValue = new Comparable<TValue>(left, comparer);
+            var rightValue = new Comparable<TValue>(right, comparer);
+
+            if (IsValidRange(leftValue, rightValue, options = options & RangeOptions.AllExclusive))
             {
-                _left = left;
-                _right = right;
-                _options = options & RangeOptions.AllExclusive;                
+                _left = leftValue;
+                _right = rightValue;
+                _options = options;
             }
             else
             {
                 throw NewInvalidRangeException(left, right, options);
-            }            
-        }
+            }
+        }        
 
-        private static bool IsValidRange(TValue left, TValue right, RangeOptions options)
+        private static bool IsValidRange(Comparable<TValue> left, IComparable<TValue> right, RangeOptions options)
         {
-            if (Comparer.IsSmallerThan(left, right))
+            if (Comparer.IsSmallerThan(left.Value, right))
             {
                 return true;
             }
-            if (Comparer.IsEqualTo(left, right as IEquatable<TValue>))
+            if (Comparer.IsEqualTo(left.Value, right))
             {
-                return !IsSet(options, RangeOptions.LeftExclusive) && !IsSet(options, RangeOptions.RightExclusive);
+                return options == RangeOptions.None;
             }
             return false;
         }
@@ -56,13 +82,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public TValue Left
         {
-            get { return _left; }
+            get { return _left.Value; }
         }
 
         /// <inheritdoc />
         public TValue Right
         {
-            get { return _right; }
+            get { return _right.Value; }
         }        
 
         /// <summary>
@@ -155,7 +181,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override string ToString()
         {
-            return ToString(_left, _right, _options);
+            return ToString(Left, Right, _options);
         }
 
         private static Exception NewInvalidRangeException(TValue left, TValue right, RangeOptions options)

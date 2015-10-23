@@ -7,14 +7,40 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     /// <typeparam name="TValue">Type of the constraint value.</typeparam>
     public abstract class Constraint<TValue> : Constraint, IConstraintWithErrorMessage<TValue>
-    {        
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
         /// </summary>
-        /// <param name="name">Name of this constraint.</param>
-        /// <param name="errorMessage">Error message of this constraint.</param>        
-        protected Constraint(StringTemplate errorMessage, Identifier name)
-            : base(errorMessage, name) { }
+        protected Constraint() { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
+        /// </summary>
+        /// <param name="constraint">Constraint to copy.</param>        
+        protected Constraint(Constraint<TValue> constraint = null)
+            : base(constraint) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
+        /// </summary>
+        /// <param name="constraint">Constraint to copy.</param>
+        /// <param name="errorMessage">The error message of this constraint.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        protected Constraint(Constraint<TValue> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
+        /// </summary>
+        /// <param name="constraint">Constraint to copy.</param>
+        /// <param name="name">The name of this constraint.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        protected Constraint(Constraint<TValue> constraint, Identifier name)
+            : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
 
@@ -59,7 +85,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IConstraint<TValue> And(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
         {
-            return And(new DelegateConstraint<TValue>(constraint, errorMessage, name));
+            return And(new DelegateConstraint<TValue>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
 
         /// <inheritdoc />
@@ -77,7 +103,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
         {
-            return Or(new DelegateConstraint<TValue>(constraint, errorMessage, name));
+            return Or(new DelegateConstraint<TValue>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
 
         /// <inheritdoc />
@@ -117,17 +143,23 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public virtual IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new ConstraintInverter<TValue>(this, errorMessage, name);
+            return new ConstraintInverter<TValue>(this).WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
 
-        #region [====== MapInputToOutput ======]
+        #region [====== Conversion ======]
 
         /// <inheritdoc />
         public virtual IConstraint<TValue, TValue> MapInputToOutput()
         {
             return new InputToOutputMapper<TValue>(this);
+        }
+
+        /// <inheritdoc />
+        public virtual Func<TValue, bool> ToDelegate()
+        {
+            return IsSatisfiedBy;
         }
 
         #endregion
@@ -149,6 +181,6 @@ namespace Kingo.BuildingBlocks.Constraints
             return true;
         }
 
-        #endregion                    
+        #endregion
     }
 }

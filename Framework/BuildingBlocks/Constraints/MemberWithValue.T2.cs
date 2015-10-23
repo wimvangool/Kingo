@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public Type Type
         {
-            get { return _member.Type; }
+            get { return ReferenceEquals(Value, null) ? typeof(TValue) : Value.GetType(); }
         }
 
         /// <summary>

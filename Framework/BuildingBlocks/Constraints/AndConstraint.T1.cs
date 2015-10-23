@@ -34,7 +34,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IConstraint<TValue> And(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
         {
-            return And(new DelegateConstraint<TValue>(constraint, errorMessage, name));
+            return And(new DelegateConstraint<TValue>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
 
         public IConstraint<TValue> And(IConstraint<TValue> constraint)
@@ -49,7 +49,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
         {
-            return Or(new DelegateConstraint<TValue>(constraint, errorMessage, name));
+            return Or(new DelegateConstraint<TValue>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
 
         public IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint)
@@ -69,16 +69,23 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new OrConstraint<TValue>(_constraints.Select(constraint => constraint.Invert()), errorMessage, name);
+            return new OrConstraint<TValue>(_constraints.Select(constraint => constraint.Invert()))
+                .WithErrorMessage(errorMessage)
+                .WithName(name);
         }
 
         #endregion
 
-        #region [====== MapInputToOutput ======]
+        #region [====== Conversion ======]
 
         public IConstraint<TValue, TValue> MapInputToOutput()
         {
             return new InputToOutputMapper<TValue>(this);
+        }
+        
+        public Func<TValue, bool> ToDelegate()
+        {
+            return IsSatisfiedBy;
         }
 
         #endregion

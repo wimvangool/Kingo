@@ -12,12 +12,38 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <summary>
         /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
         /// </summary>
-        /// <param name="name">Name of this constraint.</param>
-        /// <param name="errorMessage">Error message of this constraint.</param>  
-        protected Constraint(StringTemplate errorMessage, Identifier name)
-            : base(errorMessage, name) { }
+        /// <param name="constraint">Constraint to copy.</param>        
+        protected Constraint(Constraint<TValueIn, TValueOut> constraint = null)
+            : base(constraint) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Constraint{T, S}" /> class.
+        /// </summary>
+        /// <param name="constraint">Constraint to copy.</param>
+        /// <param name="errorMessage">The error message of this constraint.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        protected Constraint(Constraint<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Constraint{T, S}" /> class.
+        /// </summary>
+        /// <param name="constraint">Constraint to copy.</param>
+        /// <param name="name">The name of this constraint.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constraint"/> is <c>null</c>.
+        /// </exception>
+        protected Constraint(Constraint<TValueIn, TValueOut> constraint, Identifier name)
+            : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
+
+        internal override IConstraintWithErrorMessage WithNameCore(Identifier name)
+        {
+            return WithName(name);
+        }
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithName(string name)
         {
@@ -49,6 +75,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception>   
         public abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
+
+        internal override IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage)
+        {
+            return WithErrorMessage(errorMessage);
+        }
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithErrorMessage(string errorMessage)
         {
@@ -94,7 +125,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
         {
-            return And(new DelegateConstraint<TValueIn>(constraint, errorMessage, name));
+            return And(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
 
         /// <inheritdoc />
@@ -118,7 +149,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IConstraintWithErrorMessage<TValueIn> Or(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
         {
-            return Or(new DelegateConstraint<TValueIn>(constraint, errorMessage, name));
+            return Or(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
 
         /// <inheritdoc />
@@ -158,16 +189,22 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public virtual IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new ConstraintInverter<TValueIn>(this, errorMessage, name);
+            return new ConstraintInverter<TValueIn>(this).WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
 
-        #region [====== MapInputToOutput ======]
+        #region [====== Conversion ======]
        
         IConstraint<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput()
         {
             return new InputToOutputMapper<TValueIn>(this);
+        }
+
+        /// <inheritdoc />
+        public virtual Func<TValueIn, bool> ToDelegate()
+        {
+            return IsSatisfiedBy;
         }
 
         #endregion
@@ -175,7 +212,7 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(TValueIn value)
+        public virtual bool IsSatisfiedBy(TValueIn value)
         {
             TValueOut valueOut;
 
@@ -188,9 +225,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessage errorMessage)
         {
-            TValueOut valueOut;
-
-            return IsNotSatisfiedBy(value, out errorMessage, out valueOut);
+            if (IsSatisfiedBy(value))
+            {
+                errorMessage = null;
+                return false;
+            }
+            errorMessage = new FailedConstraintMessage(this);
+            return true;
         }
 
         /// <inheritdoc />

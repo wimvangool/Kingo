@@ -71,11 +71,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public override string ToString()
         {
-            if (ReferenceEquals(_value, null))
-            {
-                return string.Empty;
-            }
-            return _value.ToString();
+            return ReferenceEquals(_value, null) ? StringTemplate.NullValue : _value.ToString();            
         }        
     }
 }

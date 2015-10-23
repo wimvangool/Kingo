@@ -52,7 +52,7 @@ namespace Kingo.BuildingBlocks.Constraints
         [TestMethod]
         public void BoundaryOptions_AreSetCorrectly_IfOptionsIsNone()
         {
-            var range = new Range<int>();
+            var range = new Range<int>(0, 0);
 
             Assert.IsTrue(range.IsLeftInclusive);
             Assert.IsFalse(range.IsLeftExclusive);

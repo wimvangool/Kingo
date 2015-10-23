@@ -65,8 +65,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />     
         public IMemberConstraint<TMessage, TOther> IsInstanceOf<TOther>(string errorMessage = null)
         {
-            //return Satisfies(MemberConstraints.IsInstanceOfConstraint<TMessage, TValueOut, TOther>(errorMessage));
-            throw new NotImplementedException();
+            return Satisfies(new IsInstanceOfConstraint<TValueOut, TOther>().WithErrorMessage(errorMessage));            
         }        
 
         #endregion
@@ -75,7 +74,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public IMemberConstraint<TMessage, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null)
         {
-            return Satisfies(new DelegateConstraint<TValueOut>(constraint, errorMessage));
+            return Satisfies(new DelegateConstraint<TValueOut>(constraint).WithErrorMessage(errorMessage));
         }
 
         public IMemberConstraint<TMessage, TValueOut> Satisfies(IConstraint<TValueOut> constraint)

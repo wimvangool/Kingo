@@ -209,7 +209,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfComparerReturnsTrue()
+        public void ValidateIsNotEqualToByComparer_ReturnsExpectedError_IfComparerReturnsTrue()
         {
             var comparer = new EqualityComparerStub<object>(true);
             var message = new ValidatedMessage<object>(Guid.NewGuid());
@@ -221,7 +221,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsEqualToByComparer_ReturnsNoErrors_IfComparerReturnsFalse()
+        public void ValidateIsNotEqualToByComparer_ReturnsNoErrors_IfComparerReturnsFalse()
         {
             var comparer = new EqualityComparerStub<object>(false);
             var message = new ValidatedMessage<object>(null);
@@ -283,7 +283,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (<null>) must not be equal to 'Other (<null>)'.");
+            validator.Validate(message).AssertOneError("Member (<null>) must not be equal to '<null>'.");
         }
 
         [TestMethod]
@@ -307,7 +307,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must not be equal to 'Other (System.Object)'.");
+            validator.Validate(message).AssertOneError("Member (System.Object) must not be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -331,7 +331,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be equal to 'Other ({0})'.", memberValue));
+            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be equal to '{0}'.", memberValue));
         }
 
         [TestMethod]
@@ -464,7 +464,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsEqualToByComparer_ReturnsExpectedError_IfComparerReturnsTrue_Indirect()
+        public void ValidateIsNotEqualToByComparer_ReturnsExpectedError_IfComparerReturnsTrue_Indirect()
         {
             var comparer = new EqualityComparerStub<object>(true);
             var message = new ValidatedMessage<object>(Guid.NewGuid(), Guid.NewGuid());
@@ -476,7 +476,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsEqualToByComparer_ReturnsNoErrors_IfComparerReturnsFalse_Indirect()
+        public void ValidateIsNotEqualToByComparer_ReturnsNoErrors_IfComparerReturnsFalse_Indirect()
         {
             var comparer = new EqualityComparerStub<object>(false);
             var message = new ValidatedMessage<object>(null, null);
@@ -820,7 +820,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (<null>) must be equal to 'Other (System.Object)'.");
+            validator.Validate(message).AssertOneError("Member (<null>) must be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -842,7 +842,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to 'Other (<null>)'.");
+            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to '<null>'.");
         }
 
         [TestMethod]
@@ -864,7 +864,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to 'Other (System.Object)'.");
+            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to 'System.Object'.");
         }
 
         [TestMethod]

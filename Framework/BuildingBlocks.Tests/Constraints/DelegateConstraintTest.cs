@@ -13,21 +13,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void Constructor_Throws_IfConstraintIsNull()
         {
             new DelegateConstraint<object>(null);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Constructor_Throws_IfErrorMessageIsNotInCorrectFormat()
-        {
-            new DelegateConstraint<object>(IsValid, @"{xyz");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Constructor_Throws_IfNameIsNotAValidIdentifier()
-        {
-            new DelegateConstraint<object>(IsValid, @"xyz", "!@#$");
-        }
+        }        
 
         #endregion
 
@@ -43,7 +29,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void ErrorMessage_ReturnsExpectedErrorMessage_IfErrorMessageWasExplicitlySpecified()
         {
             var errorMessage = StringTemplate.Parse("Custom {error.Message}.");
-            var constraint = new DelegateConstraint<object>(IsValid, errorMessage, null);
+            var constraint = new DelegateConstraint<object>(IsValid).WithErrorMessage(errorMessage);
             
             Assert.AreEqual(errorMessage, constraint.ErrorMessage);
         }
@@ -67,7 +53,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void Name_ReturnsExpectedName_IfNameWasExplicitlySpecified()
         {
             var name = Identifier.Parse("other");
-            var constraint = new DelegateConstraint<object>(IsValid, null, name);
+            var constraint = new DelegateConstraint<object>(IsValid).WithName(name);
 
             Assert.AreEqual(name, constraint.Name);
         }

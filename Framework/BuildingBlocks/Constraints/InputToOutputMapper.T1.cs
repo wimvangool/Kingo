@@ -81,11 +81,13 @@ namespace Kingo.BuildingBlocks.Constraints
             return new InputToOutputMapper<TValue>(_constraint.Invert());
         }
 
+        /// <inheritdoc />
         public IConstraint<TValue> Invert(string errorMessage, string name = null)
         {
             return new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
         }
 
+        /// <inheritdoc />
         public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
             return new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
@@ -93,11 +95,17 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        #region [====== MapInputToOutput ======]
+        #region [====== Conversion ======]
 
         IConstraint<TValue, TValue> IConstraint<TValue>.MapInputToOutput()
         {
             return this;
+        }
+
+        /// <inheritdoc />
+        public Func<TValue, bool> ToDelegate()
+        {
+            return IsSatisfiedBy;
         }
 
         #endregion

@@ -6,8 +6,7 @@ namespace Kingo.BuildingBlocks.Constraints
     {
         private readonly IConstraint<TValue> _constraint;
 
-        internal ConstraintWrapper(IConstraint<TValue> constraint, StringTemplate errorMessage = null, Identifier name = null)
-            : base(errorMessage, name)
+        internal ConstraintWrapper(IConstraint<TValue> constraint)            
         {
             if (constraint == null)
             {
@@ -16,16 +15,28 @@ namespace Kingo.BuildingBlocks.Constraints
             _constraint = constraint;
         }
 
+        private ConstraintWrapper(ConstraintWrapper<TValue> constraint, StringTemplate errorMessage) 
+            : base(constraint, errorMessage)
+        {
+            _constraint = constraint._constraint;
+        }
+
+        private ConstraintWrapper(ConstraintWrapper<TValue> constraint, Identifier name)
+            : base(constraint, name)
+        {
+            _constraint = constraint._constraint;
+        }
+
         #region [====== Name & ErrorMessage ======]
 
         public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
-            return new ConstraintWrapper<TValue>(_constraint, ErrorMessage, name);
+            return new ConstraintWrapper<TValue>(this, name);
         }
 
         public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ConstraintWrapper<TValue>(_constraint, errorMessage, Name);
+            return new ConstraintWrapper<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -44,12 +55,12 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new ConstraintWrapper<TValue>(_constraint.Invert(), errorMessage, name);
+            return new ConstraintWrapper<TValue>(_constraint.Invert()).WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
 
-        #region [====== MapInputToOutput ======]
+        #region [====== Conversion ======]
 
         public override IConstraint<TValue, TValue> MapInputToOutput()
         {

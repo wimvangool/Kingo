@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, bool> IsTrue<TMessage>(this IMemberConstraint<TMessage, bool> member, string errorMessage = null)
         {
-            return member.Apply(new IsTrueConstraint(errorMessage));
+            return member.Apply(new IsTrueConstraint().WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -49,7 +49,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, bool> IsFalse<TMessage>(this IMemberConstraint<TMessage, bool> member, string errorMessage = null)
         {
-            return member.Apply(new IsFalseConstraint(errorMessage));
+            return member.Apply(new IsFalseConstraint().WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -58,49 +58,62 @@ namespace Kingo.BuildingBlocks.Constraints
     #region [====== IsTrueConstraint ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a value is <c>true</c>.
+    /// Represents a constraint that checks whether or not a value is <c>false</c>.
     /// </summary>
     public sealed class IsTrueConstraint : Constraint<bool>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="IsTrueConstraint" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message for this constraint.</param>
-        /// <param name="name">The name of this constraint.</param>
-        public IsTrueConstraint(string errorMessage = null, string name = null)
-            : this(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name)) {}
+        /// </summary>        
+        public IsTrueConstraint() { }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IsTrueConstraint" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message for this constraint.</param>
-        /// <param name="name">The name of this constraint.</param>
-        public IsTrueConstraint(StringTemplate errorMessage, Identifier name)
-            : base(SelectBetween(errorMessage, ErrorMessages.BooleanConstraints_IsTrue), name) {}
+        private IsTrueConstraint(IsTrueConstraint constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) { }
+
+        private IsTrueConstraint(IsTrueConstraint constraint, Identifier name)
+            : base(constraint, name) { }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.BooleanConstraints_IsTrue); }
+        }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithName(Identifier name)
         {
-            return new IsTrueConstraint(ErrorMessage, name);
+            return new IsTrueConstraint(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsTrueConstraint(errorMessage, Name);
+            return new IsTrueConstraint(this, errorMessage);
         }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsFalseConstraint(errorMessage, name);
+            return new IsFalseConstraint().WithErrorMessage(errorMessage).WithName(name);
         }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(bool value)
         {
             return value;
         }
+
+        #endregion
     }
 
     #endregion
@@ -114,43 +127,56 @@ namespace Kingo.BuildingBlocks.Constraints
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="IsFalseConstraint" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message for this constraint.</param>
-        /// <param name="name">The name of this constraint.</param>
-        public IsFalseConstraint(string errorMessage = null, string name = null)
-            : this(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name)) {}
+        /// </summary>        
+        public IsFalseConstraint() { }            
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IsFalseConstraint" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message for this constraint.</param>
-        /// <param name="name">The name of this constraint.</param>
-        public IsFalseConstraint(StringTemplate errorMessage, Identifier name)
-            : base(SelectBetween(errorMessage, ErrorMessages.BooleanConstraints_IsFalse), name) {}
+        private IsFalseConstraint(IsFalseConstraint constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) { }
+
+        private IsFalseConstraint(IsFalseConstraint constraint, Identifier name)
+            : base(constraint, name) { }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.BooleanConstraints_IsFalse); }
+        }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithName(Identifier name)
         {
-            return new IsFalseConstraint(ErrorMessage, name);
+            return new IsFalseConstraint(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsFalseConstraint(errorMessage, Name);
+            return new IsFalseConstraint(this, errorMessage);
         }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsTrueConstraint(errorMessage, name);
+            return new IsTrueConstraint().WithErrorMessage(errorMessage).WithName(name);
         }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(bool value)
         {
             return !value;
         }
+
+        #endregion
     }
 
     #endregion

@@ -47,7 +47,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotInstanceOf<object>();
 
-            validator.Validate(message).AssertOneError("Member of type 'System.Object' must not be an instance of type 'System.Object'.");
+            validator.Validate(message).AssertOneError("Member of type 'System.String' must not be an instance of type 'System.Object'.");
         }
 
         [TestMethod]
@@ -122,12 +122,23 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== IsInstanceOf =======]
 
         [TestMethod]
-        public void ValidateIsInstanceOfOther_ReturnsExpectedError_IfMemberIsNull()
+        public void ValidateIsInstanceOfOther_ReturnsNoErrors_IfMemberIsNull_And_ValueIsReferenceType()
         {
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member).IsInstanceOf<object>(RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsInstanceOfOther_ReturnsExpectedError_IfMemberIsNull_And_ValueIsValueType()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInstanceOf<int>(RandomErrorMessage);
 
             validator.Validate(message).AssertOneError(RandomErrorMessage);
         }
@@ -151,7 +162,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf<int>();
 
-            validator.Validate(message).AssertOneError("Member of type 'System.Object' must be an instance of type 'System.Int32'.");
+            validator.Validate(message).AssertOneError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
         }
 
         [TestMethod]
@@ -197,7 +208,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(int));
 
-            validator.Validate(message).AssertOneError("Member of type 'System.Object' must be an instance of type 'System.Int32'.");
+            validator.Validate(message).AssertOneError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
         }
 
         [TestMethod]

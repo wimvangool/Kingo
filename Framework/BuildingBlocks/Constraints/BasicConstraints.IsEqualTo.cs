@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -27,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, object other, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, TValue other, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>     
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsNotEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -88,7 +89,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>           
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, IEquatable<TValue> other, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -108,7 +109,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, object> otherFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -128,7 +133,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, TValue> otherFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -149,7 +158,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>     
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, TValue> otherFactory, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -169,7 +182,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>           
         public static IMemberConstraint<TMessage, TValue> IsNotEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, IEquatable<TValue>> otherFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
 
         #endregion
@@ -193,7 +210,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception> 
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, object other, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -213,7 +230,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception> 
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, TValue other, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -234,7 +251,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -254,7 +271,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>    
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, IEquatable<TValue> other, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -274,7 +291,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception> 
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, object> otherFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -294,7 +315,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception> 
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, TValue> otherFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -315,7 +340,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, TValue> otherFactory, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -335,9 +364,209 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>    
         public static IMemberConstraint<TMessage, TValue> IsEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, IEquatable<TValue>> otherFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
 
         #endregion
     }
+
+    #region [====== IsNotEqualToConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a value is equal to another value.
+    /// </summary>
+    public sealed class IsNotEqualToConstraint<TValue> : Constraint<TValue>
+    {
+        private readonly IEquatable<TValue> _other;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsNotEqualToConstraint{T}" /> class.
+        /// </summary>
+        /// <param name="other">Instance to compare the value to.</param>
+        public IsNotEqualToConstraint(object other)
+            : this(new EquatableObject<TValue>(other)) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsNotEqualToConstraint{T}" /> class.
+        /// </summary>
+        /// <param name="other">Instance to compare the value to.</param>
+        /// <param name="comparer">Optional comparer to use when comparing the two instances.</param>
+        public IsNotEqualToConstraint(TValue other, IEqualityComparer<TValue> comparer = null)
+            : this(new EquatableValue<TValue>(other, comparer)) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsNotEqualToConstraint{T}" /> class.
+        /// </summary>
+        /// <param name="other">Instance to compare the value to.</param>
+        public IsNotEqualToConstraint(IEquatable<TValue> other)            
+        {
+            _other = other;
+        }
+
+        private IsNotEqualToConstraint(IsNotEqualToConstraint<TValue> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage)
+        {
+            _other = constraint._other;
+        }
+
+        private IsNotEqualToConstraint(IsNotEqualToConstraint<TValue> constraint, Identifier name)
+            : base(constraint, name)
+        {
+            _other = constraint._other;
+        }
+
+        /// <summary>
+        /// The instance that the value is compared to.
+        /// </summary>
+        public IEquatable<TValue> Other
+        {
+            get { return _other; }
+        }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotEqualTo); }
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
+        {
+            return new IsNotEqualToConstraint<TValue>(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new IsNotEqualToConstraint<TValue>(this, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new IsEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(TValue value)
+        {
+            return !Comparer.IsEqualTo(value, _other);
+        }
+
+        #endregion
+    }
+
+    #endregion
+
+    #region [====== IsEqualToConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a value is equal to another value.
+    /// </summary>
+    public sealed class IsEqualToConstraint<TValue> : Constraint<TValue>
+    {
+        private readonly IEquatable<TValue> _other;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsEqualToConstraint{T}" /> class.
+        /// </summary>
+        /// <param name="other">Instance to compare the value to.</param>
+        public IsEqualToConstraint(object other)
+            : this(new EquatableObject<TValue>(other)) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsEqualToConstraint{T}" /> class.
+        /// </summary>
+        /// <param name="other">Instance to compare the value to.</param>
+        /// <param name="comparer">Optional comparer to use when comparing the two instances.</param>
+        public IsEqualToConstraint(TValue other, IEqualityComparer<TValue> comparer = null)
+            : this(new EquatableValue<TValue>(other, comparer)) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsEqualToConstraint{T}" /> class.
+        /// </summary>
+        /// <param name="other">Instance to compare the value to.</param>
+        public IsEqualToConstraint(IEquatable<TValue> other)            
+        {
+            _other = other;
+        }
+
+        private IsEqualToConstraint(IsEqualToConstraint<TValue> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage)
+        {
+            _other = constraint._other;
+        }
+
+        private IsEqualToConstraint(IsEqualToConstraint<TValue> constraint, Identifier name)
+            : base(constraint, name)
+        {
+            _other = constraint._other;
+        }
+
+        /// <summary>
+        /// The instance that the value is compared to.
+        /// </summary>
+        public IEquatable<TValue> Other
+        {
+            get { return _other; }
+        }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsEqualTo); }
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
+        {
+            return new IsEqualToConstraint<TValue>(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new IsEqualToConstraint<TValue>(this, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new IsNotEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(TValue value)
+        {
+            return Comparer.IsEqualTo(value, _other);
+        }
+
+        #endregion
+    }
+
+    #endregion
 }

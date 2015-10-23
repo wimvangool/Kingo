@@ -8,8 +8,7 @@ namespace Kingo.BuildingBlocks.Constraints
     {
         private readonly IConstraint<TValue>[] _constraints;
 
-        internal OrConstraint(IConstraint<TValue> left, IConstraint<TValue> constraint)
-            : base(null, null)
+        internal OrConstraint(IConstraint<TValue> left, IConstraint<TValue> constraint)           
         {
             if (constraint == null)
             {
@@ -18,14 +17,13 @@ namespace Kingo.BuildingBlocks.Constraints
             _constraints = new [] { left, constraint };
         }
 
-        internal OrConstraint(IEnumerable<IConstraint<TValue>> constraints, StringTemplate errorMessage, Identifier name)
-            : base(errorMessage, name)
+        internal OrConstraint(IEnumerable<IConstraint<TValue>> constraints)           
         {
             _constraints = constraints.ToArray();
         }
 
         private OrConstraint(OrConstraint<TValue> left, IConstraint<TValue> constraint)
-            : base(left.ErrorMessage, left.Name)
+            : base(left)
         {
             if (constraint == null)
             {
@@ -35,13 +33,13 @@ namespace Kingo.BuildingBlocks.Constraints
         } 
 
         private OrConstraint(OrConstraint<TValue> constraint, Identifier name)
-            : base(constraint.ErrorMessage, name)
+            : base(constraint, name)
         {
             _constraints = constraint._constraints;
         }
 
         private OrConstraint(OrConstraint<TValue> constraint, StringTemplate errorMessage)
-            : base(errorMessage, constraint.Name)
+            : base(constraint, errorMessage)
         {
             _constraints = constraint._constraints;
         }               

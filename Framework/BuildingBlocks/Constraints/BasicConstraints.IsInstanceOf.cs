@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -26,7 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>  
         public static IMemberConstraint<TMessage, TValue> IsNotInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Type type, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(NewIsNotInstanceOfConstraint<TValue>(type, errorMessage));
         }
 
         /// <summary>
@@ -46,7 +47,26 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>  
         public static IMemberConstraint<TMessage, TValue> IsNotInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, Type> typeFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (typeFactory == null)
+            {
+                throw new ArgumentNullException("typeFactory");
+            }
+            return member.Apply(message => NewIsNotInstanceOfConstraint<TValue>(typeFactory.Invoke(message), errorMessage));
+        }
+
+        /// <summary>
+        /// Creates and returns a constraint that checks whether or not a certain value is of the specified <paramref name="type"/>.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// <param name="type">Type that the value is compared to.</param>
+        /// <param name="errorMessage">Error message of the constraint.</param>
+        /// <returns>A new constraint.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public static IConstraint<TValue> NewIsNotInstanceOfConstraint<TValue>(Type type, string errorMessage = null)
+        {
+            return NewIsInstanceOfConstraint<TValue>(type).Invert(errorMessage);
         }
 
         #endregion
@@ -70,7 +90,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>  
         public static IMemberConstraint<TMessage, TValue> IsInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Type type, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(NewIsInstanceOfConstraint<TValue>(type).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -90,9 +110,131 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>  
         public static IMemberConstraint<TMessage, TValue> IsInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, Type> typeFactory, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            if (typeFactory == null)
+            {
+                throw new ArgumentNullException("typeFactory");
+            }
+            return member.Apply(message => NewIsInstanceOfConstraint<TValue>(typeFactory.Invoke(message)).WithErrorMessage(errorMessage));
+        }        
+
+        /// <summary>
+        /// Creates and returns a constraint that checks whether or not a certain value is of the specified <paramref name="type"/>.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the value to check.</typeparam>
+        /// <param name="type">Type that the value is compared to or cast to.</param>
+        /// <param name="errorMessage">Error message of the constraint.</param>
+        /// <returns>A new constraint.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public static IConstraintWithErrorMessage<TValue> NewIsInstanceOfConstraint<TValue>(Type type, string errorMessage = null)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+            var constraintTypeDefinition = typeof(IsInstanceOfConstraint<,>);
+            var constraintType = constraintTypeDefinition.MakeGenericType(typeof(TValue), type);
+            return (IConstraintWithErrorMessage<TValue>) Activator.CreateInstance(constraintType);
         }
 
         #endregion
     }
+
+    #region [====== IsInstanceOfConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a value is an instance of a specific type.
+    /// </summary>
+    public sealed class IsInstanceOfConstraint<TValueIn, TValueOut> : Constraint<TValueIn, TValueOut>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsInstanceOfConstraint{T, S}" /> class.
+        /// </summary>    
+        public IsInstanceOfConstraint() { }
+
+        private IsInstanceOfConstraint(IsInstanceOfConstraint<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) {}
+
+        private IsInstanceOfConstraint(IsInstanceOfConstraint<TValueIn, TValueOut> constraint, Identifier name)
+            : base(constraint, name) { }
+
+        /// <summary>
+        /// Returns the type that the value is compared to or cast to.
+        /// </summary>
+        public Type Type
+        {
+            get { return typeof(TValueOut); }
+        }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsInstanceOf); }
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
+        {
+            return new IsInstanceOfConstraint<TValueIn, TValueOut>(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new IsInstanceOfConstraint<TValueIn, TValueOut>(this, errorMessage);
+        }
+
+        #endregion     
+   
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new ConstraintInverter<TValueIn>(this, ErrorMessages.BasicConstraints_IsNotInstanceOf)
+                .WithErrorMessage(errorMessage)
+                .WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(TValueIn value)
+        {
+            return value is TValueOut;
+        }
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(TValueIn value, out TValueOut valueOut)
+        {
+            // NB: A NullReferenceException is thrown when value is null
+            // and TValueOut is a ValueType.
+            object valueIn = value;
+
+            try
+            {
+                valueOut = (TValueOut) valueIn;
+                return true;
+            }
+            catch (NullReferenceException)
+            {                
+                valueOut = default(TValueOut);
+                return false;
+            }
+            catch (InvalidCastException)
+            {
+                valueOut = default(TValueOut);
+                return false;
+            }
+        }
+
+        #endregion
+    }
+
+    #endregion
 }

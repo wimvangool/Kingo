@@ -8,18 +8,41 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public abstract class Constraint : IConstraintWithErrorMessage
     {        
-        private readonly Identifier _name;
-        private readonly StringTemplate _errorMessage;        
+        private readonly Lazy<Identifier> _name;
+        private readonly Lazy<StringTemplate> _errorMessage;                                                  
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
-        /// </summary>
-        /// <param name="name">Name of this constraint.</param>
-        /// <param name="errorMessage">Error message of this constraint.</param>        
-        internal Constraint(StringTemplate errorMessage, Identifier name)
-        {            
-            _name = name ?? DefaultName;
-            _errorMessage = errorMessage ?? DefaultErrorMessage;
+        internal Constraint(Constraint constraint = null)
+        {
+            if (constraint == null)
+            {
+                _name = new Lazy<Identifier>(() => NameIfNotSpecified);
+                _errorMessage = new Lazy<StringTemplate>(() => ErrorMessageIfNotSpecified);
+            }
+            else
+            {
+                _name = constraint._name;
+                _errorMessage = constraint._errorMessage;
+            }
+        }
+
+        internal Constraint(Constraint constraint, StringTemplate errorMessage)
+        {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            _name = constraint._name;
+            _errorMessage = new Lazy<StringTemplate>(() => errorMessage ?? ErrorMessageIfNotSpecified);
+        }
+
+        internal Constraint(Constraint constraint, Identifier name)
+        {
+            if (constraint == null)
+            {
+                throw new ArgumentNullException("constraint");
+            }
+            _name = new Lazy<Identifier>(() => name ?? NameIfNotSpecified);
+            _errorMessage = constraint._errorMessage;
         }
 
         #region [====== Name & ErrorMessage ======]
@@ -27,14 +50,30 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public Identifier Name
         {
-            get { return _name; }
+            get { return _name.Value; }
+        }
+
+        /// <summary>
+        /// Returns the name of this constraint if it was not explicitly specified.
+        /// </summary>
+        protected virtual Identifier NameIfNotSpecified
+        {
+            get { return DefaultName; }
         }
 
         /// <inheritdoc />
         public StringTemplate ErrorMessage
         {
-            get { return _errorMessage; }
+            get { return _errorMessage.Value; }
         }        
+
+        /// <summary>
+        /// Returns the error message of this constraint if it was not explicitly specified.
+        /// </summary>
+        protected virtual StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return DefaultErrorMessage; }
+        }
 
         IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(string name)
         {
@@ -68,28 +107,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <summary>
         /// Represents the default error message of a constraint when no error message has been specified explicitly.
         /// </summary>
-        public static readonly StringTemplate DefaultErrorMessage = StringTemplate.Parse(ErrorMessages.BasicConstraints_Default);        
-
-        /// <summary>
-        /// Returns the left template if <paramref name="left"/> is not <c>null</c>; otherwise returns <paramref name="right"/>.
-        /// </summary>
-        /// <param name="left">Left template.</param>
-        /// <param name="right">Right template.</param>
-        /// <returns>
-        /// <paramref name="left"/> if it is not <c>null</c>; otherwise <paramref name="right"/>.
-        /// </returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="right"/> is not in a correct format.
-        /// </exception>
-        public static StringTemplate SelectBetween(StringTemplate left, string right)
-        {
-            return SelectBetween(left, StringTemplate.ParseOrNull(right));
-        }
- 
-        private static StringTemplate SelectBetween(StringTemplate left, StringTemplate right)
-        {
-            return left ?? right;
-        }
+        public static readonly StringTemplate DefaultErrorMessage = StringTemplate.Parse(ErrorMessages.BasicConstraints_Default);                
 
         #endregion
 

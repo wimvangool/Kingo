@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class Equatable<TValue> : IEquatable<TValue>
+    internal sealed class EquatableValue<TValue> : IEquatable<TValue>
     {
         private readonly TValue _value;
         private readonly IEqualityComparer<TValue> _comparer;        
 
-        internal Equatable(TValue value, IEqualityComparer<TValue> comparer)
+        internal EquatableValue(TValue value, IEqualityComparer<TValue> comparer)
         {
             _value = value;
             _comparer = comparer;
@@ -18,7 +18,11 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             if (ReferenceEquals(_comparer, null))
             {
-                return Equals(_value, other);
+                if (ReferenceEquals(_value, null))
+                {
+                    return ReferenceEquals(other, null);
+                }
+                return _value.Equals(other);
             }
             return _comparer.Equals(_value, other);
         }

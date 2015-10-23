@@ -122,7 +122,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must not refer to the same instance as 'Other (System.Object)'.");
+            validator.Validate(message).AssertOneError("Member (System.Object) must not refer to the same instance as 'System.Object'.");
         }
 
         [TestMethod]
@@ -246,7 +246,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsSameInstanceAs(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must refer to the same instance as 'Other (System.Object)'.");
+            validator.Validate(message).AssertOneError("Member (System.Object) must refer to the same instance as 'System.Object'.");
         }
 
         #endregion

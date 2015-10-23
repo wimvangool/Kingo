@@ -10,31 +10,32 @@ namespace Kingo.BuildingBlocks.Constraints
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NullConstraint{T}" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message for this constraint.</param>
-        /// <param name="name">The name of this constraint.</param>
-        public NullConstraint(string errorMessage = null, string name = null)
-            : this(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name)) { }
+        /// </summary>        
+        public NullConstraint()  { }   
+     
+        private NullConstraint(NullConstraint<TValue> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) { }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NullConstraint{T}" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message for this constraint.</param>
-        /// <param name="name">The name of this constraint.</param>
-        public NullConstraint(StringTemplate errorMessage, Identifier name)
-            : base(errorMessage, name) { }
+        private NullConstraint(NullConstraint<TValue> constraint, Identifier name)
+            : base(constraint, name) { }
+
+        #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
-            return new NullConstraint<TValue>(ErrorMessage, name);
+            return new NullConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new NullConstraint<TValue>(errorMessage, Name);
+            return new NullConstraint<TValue>(this, errorMessage);
         }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
         public override IConstraint<TValue> And(IConstraint<TValue> constraint)
@@ -56,10 +57,16 @@ namespace Kingo.BuildingBlocks.Constraints
             return this;
         }
 
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value)
         {
             return true;
         }
+
+        #endregion
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="Constraints\BasicConstraints.cs" />
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
+    <Compile Include="Constraints\EquatableObject.T1.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />
@@ -120,7 +121,6 @@
     <Compile Include="Constraints\GuidConstraints.cs" />
     <Compile Include="Constraints\IMemberConstraintSet.T1.cs" />
     <Compile Include="Constraints\IMember.cs" />
-    <Compile Include="Constraints\RangeAdapter.T1.cs" />
     <Compile Include="Constraints\MemberConstraint.T3.cs" />
     <Compile Include="Constraints\MemberConstraintSet.T1.cs" />
     <Compile Include="Constraints\NullableConstraints.cs" />
@@ -135,7 +135,7 @@
     <Compile Include="Messaging\DataErrorInfo.cs" />
     <Compile Include="Clocks\HighResolutionClock.cs" />
     <Compile Include="Clocks\StopwatchClock.cs" />
-    <Compile Include="Constraints\Equatable.T1.cs" />
+    <Compile Include="Constraints\EquatableValue.T1.cs" />
     <Compile Include="EventHandlerExtensions.cs" />
     <Compile Include="HashCode.cs" />
     <Compile Include="Clocks\IClock.cs" />
@@ -158,6 +158,7 @@
     <EmbeddedResource Include="Resources\ErrorMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
