@@ -61,6 +61,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Index cannot be negative: {0}..
+        /// </summary>
+        internal static string CollectionConstraints_NegativeIndex {
+            get {
+                return ResourceManager.GetString("CollectionConstraints_NegativeIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
         /// </summary>
         internal static string ExpressionExtensions_UnsupportedExpression {
@@ -102,15 +111,6 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string Message_AmbiguousAttributeMatch {
             get {
                 return ResourceManager.GetString("Message_AmbiguousAttributeMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Index cannot be negative: {0}..
-        /// </summary>
-        internal static string New_NegativeIndex {
-            get {
-                return ResourceManager.GetString("New_NegativeIndex", resourceCulture);
             }
         }
         

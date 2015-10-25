@@ -232,6 +232,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {member.Name} contains no element at index {constraint.Index}..
+        /// </summary>
+        internal static string CollectionConstraints_ElementAt_Enumerable {
+            get {
+                return ResourceManager.GetString("CollectionConstraints_ElementAt_Enumerable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be null and contain at least one element..
         /// </summary>
         internal static string CollectionConstraints_IsNotNullOrEmpty {
@@ -250,29 +259,29 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} contains no element at index {constraint.Index}..
-        /// </summary>
-        internal static string EnumerableConstraints_ElementAt {
-            get {
-                return ResourceManager.GetString("EnumerableConstraints_ElementAt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be null and contain at least one element..
-        /// </summary>
-        internal static string EnumerableConstraints_IsNotNullOrEmpty {
-            get {
-                return ResourceManager.GetString("EnumerableConstraints_IsNotNullOrEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {member.Name} must be null or empty..
         /// </summary>
-        internal static string EnumerableConstraints_IsNullOrEmpty {
+        internal static string CollectionConstraints_IsNullOrEmpty_Enumerable {
             get {
-                return ResourceManager.GetString("EnumerableConstraints_IsNullOrEmpty", resourceCulture);
+                return ResourceManager.GetString("CollectionConstraints_IsNullOrEmpty_Enumerable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value.Count}) does contain an element index {constraint.Index}..
+        /// </summary>
+        internal static string CollectionConstraints_NoElementAt {
+            get {
+                return ResourceManager.GetString("CollectionConstraints_NoElementAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.Name} does contain an element index {constraint.Index}..
+        /// </summary>
+        internal static string CollectionConstraints_NoElementAt_Enumerable {
+            get {
+                return ResourceManager.GetString("CollectionConstraints_NoElementAt_Enumerable", resourceCulture);
             }
         }
         

@@ -9,28 +9,6 @@ namespace Kingo.BuildingBlocks
     /// </summary>
     public static class LambdaExpressionExtensions
     {        
-        internal static object Invoke<TMessage, TValue>(this Expression<Func<TMessage, TValue>> expression, TMessage message)
-        {            
-            var otherFactoryDelegate = expression.Compile();
-            string memberName;
-
-            if (expression.TryExtractMemberName(out memberName))
-            {
-                return string.Format("{0} ({1})", memberName, Invoke(otherFactoryDelegate, message));
-            }
-            return Invoke(otherFactoryDelegate, message);
-        }
-
-        private static object Invoke<TMessage, TValue>(Func<TMessage, TValue> otherFactory, TMessage message)
-        {
-            var value = otherFactory.Invoke(message) as object;
-            if (value == null)
-            {
-                return StringTemplate.NullValue;
-            }
-            return value;
-        }
-
         /// <summary>
         /// Returns the name of the field or property accessed by the specified <paramref name="expression"/>.
         /// </summary>

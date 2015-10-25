@@ -20,7 +20,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void ValidateElementAt_Throws_IfCollectionIsNull()
         {
             var message = new ValidatedMessage<IList<object>>(null);
@@ -54,7 +54,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateElementAt_ReturnsNoErrors_IfCollectionContainsSpecifiedElement()
+        public void ValidateElementAt_ReturnsNoErrors_IfCollectionContainsElement_At_Index0()
         {
             var value = new object();
             var message = new ValidatedMessage<IList<object>>(new[] { value });
@@ -62,6 +62,20 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member)
                 .ElementAt(0, RandomErrorMessage)
+                .IsSameInstanceAs(value, RandomErrorMessage);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateElementAt_ReturnsNoErrors_IfCollectionContainsElement_At_Index1()
+        {
+            var value = new object();
+            var message = new ValidatedMessage<IList<object>>(new[] { null, value, null });
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member)
+                .ElementAt(1, RandomErrorMessage)
                 .IsSameInstanceAs(value, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();

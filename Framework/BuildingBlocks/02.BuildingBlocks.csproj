@@ -52,9 +52,14 @@
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ClockWithOffset.cs" />
     <Compile Include="Constraints\BasicConstraints.cs" />
+    <Compile Include="Constraints\CollectionConstraints.cs" />
+    <Compile Include="Constraints\CollectionConstraints.Enumerable.cs" />
+    <Compile Include="Constraints\CollectionConstraints.List.cs" />
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
     <Compile Include="Constraints\EquatableObject.T1.cs" />
+    <Compile Include="Constraints\ReadOnlyCollection.T1.cs" />
+    <Compile Include="Constraints\ReadOnlyList.T1.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />
@@ -87,7 +92,6 @@
     <Compile Include="Constraints\BasicConstraints.IsSmallerThan.cs" />
     <Compile Include="Constraints\MemberWithValue.T2.cs" />
     <Compile Include="Constraints\MemberConstraintEventArgs.T1.cs" />
-    <Compile Include="Constraints\New.cs" />
     <Compile Include="Constraints\ConstraintInverter.T1.cs" />
     <Compile Include="Constraints\NullConstraint.T1.cs" />
     <Compile Include="Constraints\OrConstraint.T1.cs" />
@@ -116,7 +120,7 @@
     <Compile Include="Constraints\Member.T2.cs" />
     <Compile Include="Constraints\BasicConstraints.IsInRange.cs" />
     <Compile Include="Constraints\BooleanConstraints.cs" />
-    <Compile Include="Constraints\CollectionConstraints.cs" />
+    <Compile Include="Constraints\CollectionConstraints.Collection.cs" />
     <Compile Include="Messaging\ConstraintValidator.T1.cs" />
     <Compile Include="Constraints\GuidConstraints.cs" />
     <Compile Include="Constraints\IMemberConstraintSet.T1.cs" />
@@ -131,7 +135,6 @@
     <Compile Include="Messaging\Message.cs" />
     <Compile Include="Messaging\Message.T1.cs" />
     <Compile Include="Messaging\MessageValidator.T1.cs" />
-    <Compile Include="SerializationInfoExtensions.cs" />
     <Compile Include="Messaging\DataErrorInfo.cs" />
     <Compile Include="Clocks\HighResolutionClock.cs" />
     <Compile Include="Clocks\StopwatchClock.cs" />
