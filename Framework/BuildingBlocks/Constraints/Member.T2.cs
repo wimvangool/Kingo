@@ -1,86 +1,77 @@
 ﻿using System;
+using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {    
-    internal sealed class Member<TMessage, TValue> : IMember
+    internal sealed class Member<TMessage, TValue> : Member
     {
         private readonly string[] _parentNames;
-        private readonly string _memberName;
+        private readonly string _name;
         private readonly Func<TMessage, TValue> _valueFactory;
 
-        internal Member(Func<TMessage, TValue> valueFactory, string memberName, string[] parentNames)
+        internal Member(string[] parentNames, string name, Func<TMessage, TValue> valueFactory)            
         {
             if (valueFactory == null)
             {
                 throw new ArgumentNullException("valueFactory");
             }
-            if (memberName == null)
+            if (name == null)
             {
-                throw new ArgumentNullException("memberName");
+                throw new ArgumentNullException("name");
             }
             _parentNames = parentNames;
-            _memberName = memberName;
+            _name = name;
             _valueFactory = valueFactory;
         }
-        
-        public string FullName
-        {
-            get
-            {
-                const string separator = ".";
 
-                return _parentNames.Length == 0
-                    ? _memberName
-                    : string.Join(separator, _parentNames) + separator + _memberName;                
-            }
+        protected override string[] ParentNames
+        {
+            get { return _parentNames; }
         }
-        
-        public string Name
-        {
-            get { return _memberName; }
-        }        
 
-        /// <summary>
-        /// Returns the type of the value of this member.
-        /// </summary>
-        public Type Type
+        public override string Name
+        {
+            get { return _name; }
+        }        
+        
+        public override Type Type
         {
             get { return typeof(TValue); }
-        }
-
-        internal MemberWithValue<TMessage, TValue> WithValue(TMessage message)
-        {
-            return new MemberWithValue<TMessage, TValue>(this, message);
-        }
+        }                
         
         internal TValue GetValue(TMessage message)
         {
             return _valueFactory.Invoke(message);
         }
 
-        internal Member<TMessage, TValue> Rename(Func<string, string> nameSelector = null)
+        internal MemberByTransformation EnableTransformation()
         {
-            if (nameSelector == null)
-            {
-                return this;
-            }
-            return new Member<TMessage, TValue>(_valueFactory, nameSelector.Invoke(_memberName), _parentNames);            
+            return new MemberByTransformation(_parentNames, _name, Type);
         }
 
-        internal Member<TMessage, TValueOut> Transform<TValueOut>(ConstraintFactory<TMessage, TValue, TValueOut> constraintFactory)
+        internal Member<TMessage, TValueOut> CreateChildMember<TValueOut>(Func<TMessage, IConstraint<TValue, TValueOut>> constraintFactory)
         {
             Func<TMessage, TValueOut> valueFactory = message =>
             {
-                var constraint = constraintFactory.CreateConstraint(message);
-                TValueOut valueOut;               
+                var value = GetValue(message);
+                var constraint = constraintFactory.Invoke(message);
+                IErrorMessage errorMessage;
+                TValueOut valueOut;
 
-                if (constraint.IsSatisfiedBy(GetValue(message), out valueOut))
+                if (constraint.IsNotSatisfiedBy(value, out errorMessage, out valueOut))
                 {
-                    return valueOut;                    
+                    throw NewConstraintFailedException(errorMessage);
                 }
-                return default(TValueOut);
+                return valueOut;                
             };
-            return new Member<TMessage, TValueOut>(valueFactory, _memberName, _parentNames);
+            return new Member<TMessage, TValueOut>(_parentNames, _name, valueFactory);
+        }
+
+        private static Exception NewConstraintFailedException(IErrorMessage errorMessage)
+        {
+            var messageFormat = ExceptionMessages.Member_ConstraintFailed;
+            var message = string.Format(messageFormat, errorMessage);
+            return new InvalidOperationException(message);
         }
     }
 }

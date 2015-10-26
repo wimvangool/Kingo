@@ -177,7 +177,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 errorMessage = null;
                 return false;
             }
-            errorMessage = new FailedConstraintMessage(this);
+            errorMessage = new ErrorMessageOfConstraint(this, value);
             return true;
         }
 

@@ -17,6 +17,11 @@ namespace Kingo.BuildingBlocks.Constraints
             get;
         }
 
+        public abstract object FailedValue
+        {
+            get;
+        }
+
         public void Add(string name, object argument)
         {
             Add(Identifier.ParseOrNull(name), argument);

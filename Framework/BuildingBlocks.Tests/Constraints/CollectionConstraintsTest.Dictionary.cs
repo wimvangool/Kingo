@@ -74,7 +74,20 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsSameInstanceAs(value, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
-        }        
+        }
+
+        [TestMethod]
+        public void ValidateElementAt_ChangesMemberNameAsExpected()
+        {
+            var value = new object();
+            var dictionary = new Dictionary<string, object>() { { _Key, value } };
+            var message = new ValidatedMessage<IDictionary<string, object>>(dictionary);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).ElementAt(_Key, RandomErrorMessage).IsNull();
+
+            validator.Validate(message).AssertOneError("Member[Key] (System.Object) must be null.", "Member[Key]");
+        }
 
         #endregion
     }

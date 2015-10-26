@@ -16,6 +16,14 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <summary>
+        /// Returns the value that did not satisfy the <see cref="FailedConstraint" />.
+        /// </summary>
+        object FailedValue
+        {
+            get;
+        }
+
+        /// <summary>
         /// Adds an argument to this error message that will be used to format the message on a call to one of the
         /// <see cref="ToString(IFormatProvider)" /> overloads.
         /// </summary>

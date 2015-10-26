@@ -59,6 +59,9 @@
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
     <Compile Include="Constraints\EquatableObject.T1.cs" />
+    <Compile Include="Constraints\Member.cs" />
+    <Compile Include="Constraints\MemberByTransformation.cs" />
+    <Compile Include="Constraints\MemberConstraint.T2.cs" />
     <Compile Include="Constraints\ReadOnlyCollection.T1.cs" />
     <Compile Include="Constraints\ReadOnlyList.T1.cs" />
     <Compile Include="Identifier.cs" />
@@ -68,13 +71,13 @@
     <Compile Include="Constraints\Comparable.T1.cs" />
     <Compile Include="Constraints\Comparer.cs" />
     <Compile Include="LambdaExpressionExtensions.cs" />
-    <Compile Include="Constraints\ConstraintFactory.T3.cs" />
+    <Compile Include="Constraints\MemberConstraintFactory.T3.cs" />
     <Compile Include="Constraints\Constraint.cs" />
     <Compile Include="Constraints\Constraint.T1.cs" />
     <Compile Include="Constraints\Constraint.T2.cs" />
     <Compile Include="Constraints\ErrorMessage.cs" />
-    <Compile Include="Constraints\FailedConstraintMessage.cs" />
-    <Compile Include="Constraints\FailedOrConstraintMessage.cs" />
+    <Compile Include="Constraints\ErrorMessageOfConstraint.cs" />
+    <Compile Include="Constraints\ErrorMessageOfOrConstraint.cs" />
     <Compile Include="Constraints\IConstraint.T1.cs" />
     <Compile Include="Constraints\IConstraint.T2.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />
@@ -91,7 +94,7 @@
     <Compile Include="Constraints\BasicConstraints.IsNull.cs" />
     <Compile Include="Constraints\BasicConstraints.IsSameInstanceAs.cs" />
     <Compile Include="Constraints\BasicConstraints.IsSmallerThan.cs" />
-    <Compile Include="Constraints\MemberWithValue.T2.cs" />
+    <Compile Include="Constraints\MemberWithValue.cs" />
     <Compile Include="Constraints\MemberConstraintEventArgs.T1.cs" />
     <Compile Include="Constraints\ConstraintInverter.T1.cs" />
     <Compile Include="Constraints\NullConstraint.T1.cs" />

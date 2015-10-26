@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, IList<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtListConstraint<TValue>(index).WithErrorMessage(errorMessage));
+            return member.Apply(new ElementAtListConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>

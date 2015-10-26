@@ -97,6 +97,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not obtain value of child member because the constraint that provides this value failed: {0}.
+        /// </summary>
+        internal static string Member_ConstraintFailed {
+            get {
+                return ResourceManager.GetString("Member_ConstraintFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member with name &apos;{0}&apos; has already been added to the set..
         /// </summary>
         internal static string MemberSet_MemberAlreadyAdded {

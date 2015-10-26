@@ -83,7 +83,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 errorMessage = null;
                 return false;
             }
-            errorMessage = new FailedConstraintMessage(this, _constraint);
+            errorMessage = new ErrorMessageOfConstraint(this, value, _constraint);
             return true;
         }
 

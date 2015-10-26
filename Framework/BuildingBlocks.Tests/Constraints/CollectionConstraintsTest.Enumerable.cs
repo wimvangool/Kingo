@@ -169,6 +169,18 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.Validate(message).AssertNoErrors();
         }
 
+        [TestMethod]
+        public void ValidateElementAt_ChangesMemberNameAsExpected()
+        {
+            var value = new object();
+            var message = new ValidatedMessage<IEnumerable<object>>(new[] { value });
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).ElementAt(0, RandomErrorMessage).IsNull();
+
+            validator.Validate(message).AssertOneError("Member[0] (System.Object) must be null.", "Member[0]");
+        }
+
         #endregion
     }
 }

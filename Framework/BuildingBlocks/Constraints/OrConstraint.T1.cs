@@ -97,7 +97,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 errorMessage = null;
                 return false;
             }
-            errorMessage = new FailedOrConstraintMessage(this, failedConstraints);
+            errorMessage = new ErrorMessageOfOrConstraint(this, value, failedConstraints);
             return true;
         }        
 

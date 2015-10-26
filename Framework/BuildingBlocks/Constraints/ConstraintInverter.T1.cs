@@ -116,7 +116,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             if (_constraint.IsSatisfiedBy(value))
             {
-                errorMessage = new FailedConstraintMessage(this, _constraint);
+                errorMessage = new ErrorMessageOfConstraint(this, value, _constraint);
                 return true;
             }
             errorMessage = null;

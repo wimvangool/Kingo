@@ -168,7 +168,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, ICollection<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtCollectionConstraint<TValue>(index).WithErrorMessage(errorMessage));
+            return member.Apply(new ElementAtCollectionConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, IReadOnlyCollection<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtReadOnlyCollectionConstraint<TValue>(index).WithErrorMessage(errorMessage));
+            return member.Apply(new ElementAtReadOnlyCollectionConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>

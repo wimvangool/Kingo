@@ -152,17 +152,17 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> memberValueFactory, string memberName)
         {
-            var member = new Member<TMessage, TValue>(memberValueFactory, memberName, _parentNames);            
-            var memberConstraint = new MemberConstraint<TMessage, TValue, TValue>(this, member, CreateConstraintFactory<TValue>());
+            var member = new Member<TMessage, TValue>(_parentNames, memberName, memberValueFactory);            
+            var memberConstraint = new MemberConstraint<TMessage, TValue, TValue>(this, CreateConstraintFactory<TValue>(member));
 
             Put(memberConstraint);
 
             return memberConstraint;
         }        
     
-        private static ConstraintFactory<TMessage, TValue, TValue> CreateConstraintFactory<TValue>()
+        private static MemberConstraintFactory<TMessage, TValue, TValue> CreateConstraintFactory<TValue>(Member<TMessage, TValue> member)
         {
-            return new ConstraintFactory<TMessage, TValue, TValue>(message => new NullConstraint<TValue>().MapInputToOutput());
+            return new MemberConstraintFactory<TMessage, TValue, TValue>(member, message => new NullConstraint<TValue>().MapInputToOutput());
         }                      
 
         #endregion        

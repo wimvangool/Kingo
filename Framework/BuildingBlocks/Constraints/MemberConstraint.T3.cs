@@ -4,54 +4,29 @@ namespace Kingo.BuildingBlocks.Constraints
 {    
     internal sealed class MemberConstraint<TMessage, TValueIn, TValueOut> : IMemberConstraint<TMessage, TValueOut>
     {
-        private readonly MemberConstraintSet<TMessage> _memberConstraintSet;
-        private readonly Member<TMessage, TValueIn> _member;
-        private readonly Func<string, string> _nameSelector;
-        private readonly ConstraintFactory<TMessage, TValueIn, TValueOut> _constraintFactory;        
+        private readonly MemberConstraintSet<TMessage> _memberConstraintSet;        
+        private readonly MemberConstraintFactory<TMessage, TValueIn, TValueOut> _memberConstraintFactory;                
 
-        internal MemberConstraint(MemberConstraintSet<TMessage> memberConstraintSet, Member<TMessage, TValueIn> member, ConstraintFactory<TMessage, TValueIn, TValueOut> constraint)
-            : this(memberConstraintSet, member, constraint, null) { }
-
-        private MemberConstraint(MemberConstraintSet<TMessage> memberConstraintSet, Member<TMessage, TValueIn> member, ConstraintFactory<TMessage, TValueIn, TValueOut> constraint, Func<string, string> nameSelector)
+        internal MemberConstraint(MemberConstraintSet<TMessage> memberConstraintSet, MemberConstraintFactory<TMessage, TValueIn, TValueOut> memberConstraintFactory)
         {
-            _memberConstraintSet = memberConstraintSet;
-            _member = member;
-            _nameSelector = nameSelector;
-            _constraintFactory = constraint;
+            _memberConstraintSet = memberConstraintSet;            
+            _memberConstraintFactory = memberConstraintFactory;
         }                    
 
         IMember IMemberConstraint<TMessage>.Member
         {
-            get { return _member; }
+            get { return _memberConstraintFactory.Member; }
         }        
 
         bool IErrorMessageWriter<TMessage>.WriteErrorMessages(TMessage message, IErrorMessageReader reader)
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-            var member = _member.WithValue(message);
-            var constraint = _constraintFactory.CreateConstraint(message);
-            IErrorMessage errorMessage;
-
-            if (constraint.IsNotSatisfiedBy(member.Value, out errorMessage))
-            {
-                errorMessage.Add("member", member);
-                reader.Add(member.FullName, errorMessage);
-                return true;
-            }
-            return false;
+            return _memberConstraintFactory.WriteErrorMessages(message, reader);
         }
 
         /// <inheritdoc />
         public void And(Action<IMemberConstraintSet<TValueOut>> innerConstraintFactory)
         {
-            _memberConstraintSet.AddChildMemberConstraints(innerConstraintFactory, _member.Transform(_constraintFactory));
+            _memberConstraintSet.AddChildMemberConstraints(innerConstraintFactory, _memberConstraintFactory.CreateChildMember());            
         }       
 
         #region [====== InstanceOf ======]
@@ -110,9 +85,8 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("constraintFactory");
             }
-            var newConstraint = _constraintFactory.And(constraintFactory);
-            var newNember = _member.Rename(_nameSelector);
-            var newMemberConstraint = new MemberConstraint<TMessage, TValueIn, TOther>(_memberConstraintSet, newNember, newConstraint, nameSelector);
+            var newConstraintFactory = _memberConstraintFactory.And(constraintFactory, nameSelector);            
+            var newMemberConstraint = new MemberConstraint<TMessage, TValueIn, TOther>(_memberConstraintSet, newConstraintFactory);
 
             _memberConstraintSet.Replace(this, newMemberConstraint);
 

@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, IDictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
         {
-            return member.Apply(new ElementAtDictionaryConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage));
+            return member.Apply(new ElementAtDictionaryConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, IReadOnlyDictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
         {
-            return member.Apply(new ElementAtReadOnlyDictionaryConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage));
+            return member.Apply(new ElementAtReadOnlyDictionaryConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));
         }
 
         #endregion
