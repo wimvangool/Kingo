@@ -46,12 +46,12 @@ namespace Kingo.BuildingBlocks.Messaging
         #region [====== Validation ======]
 
         /// <inheritdoc />
-        public override DataErrorInfo Validate()
+        public override MessageErrorInfo Validate()
         {
             var validator = CreateValidator();
             if (validator == null)
             {
-                return DataErrorInfo.Empty;
+                return MessageErrorInfo.Empty;
             }
             return validator.Validate(Copy());
         }

@@ -31,8 +31,8 @@ namespace Kingo.ChessApplication.Players
             var message = new ChallengePlayerCommand(Guid.Empty, Guid.NewGuid());
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["SenderId"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["SenderId"]);
         }
 
         #endregion
@@ -45,8 +45,8 @@ namespace Kingo.ChessApplication.Players
             var message = new ChallengePlayerCommand(Guid.NewGuid(), Guid.Empty);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["ReceiverId"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["ReceiverId"]);
         }
 
         #endregion

@@ -47,7 +47,7 @@ namespace Kingo.BuildingBlocks.Messaging
         #region [====== Validate ======]
 
         /// <inheritdoc />
-        public DataErrorInfo Validate(TMessage message)
+        public MessageErrorInfo Validate(TMessage message)
         {
             if (ReferenceEquals(message, null))
             {
@@ -61,15 +61,15 @@ namespace Kingo.BuildingBlocks.Messaging
         }     
         
         /// <summary>
-        /// Creates and returns a new <see cref="DataErrorInfoBuilder" /> that will be used to collect all error messages during validation.
+        /// Creates and returns a new <see cref="MessageErrorInfoBuilder" /> that will be used to collect all error messages during validation.
         /// </summary>
         /// <param name="formatProvider">
         /// The format provider that is used to format all error messages.
         /// </param>
-        /// <returns>A new <see cref="DataErrorInfoBuilder" />.</returns>
-        protected virtual DataErrorInfoBuilder CreateDataErrorInfoBuilder(IFormatProvider formatProvider)
+        /// <returns>A new <see cref="MessageErrorInfoBuilder" />.</returns>
+        protected virtual MessageErrorInfoBuilder CreateDataErrorInfoBuilder(IFormatProvider formatProvider)
         {
-            return new DataErrorInfoBuilder(formatProvider);
+            return new MessageErrorInfoBuilder(formatProvider);
         }
 
         #endregion

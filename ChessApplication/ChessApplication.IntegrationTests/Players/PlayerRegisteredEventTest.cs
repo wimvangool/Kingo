@@ -46,8 +46,8 @@ namespace Kingo.ChessApplication.Players
             };
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["PlayerId"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["PlayerId"]);
         }
 
         #endregion
@@ -60,8 +60,8 @@ namespace Kingo.ChessApplication.Players
             var message = new PlayerRegisteredEvent(_ValidPlayerId, _ValidPlayerVersion);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         [TestMethod]
@@ -73,8 +73,8 @@ namespace Kingo.ChessApplication.Players
             };
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         [TestMethod]
@@ -86,8 +86,8 @@ namespace Kingo.ChessApplication.Players
             };
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         #endregion

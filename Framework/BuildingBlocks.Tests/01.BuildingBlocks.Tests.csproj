@@ -98,7 +98,7 @@
     <Compile Include="Constraints\RangeTest.cs" />
     <Compile Include="Constraints\StringConstraintsTest.cs" />
     <Compile Include="Constraints\ValidatedMessage.T1.cs" />
-    <Compile Include="Constraints\DataErrorInfoExtensions.cs" />
+    <Compile Include="Messaging\MessageErrorInfoExtensions.cs" />
     <Compile Include="Clocks\HighResolutionClockTest.cs" />
     <Compile Include="Clocks\StopwatchClockTest.cs" />
     <Compile Include="Clocks\SystemClockTest.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kingo.BuildingBlocks.Clocks;
+using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Constraints

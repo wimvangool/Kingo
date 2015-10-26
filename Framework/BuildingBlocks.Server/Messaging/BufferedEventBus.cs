@@ -31,7 +31,7 @@ namespace Kingo.BuildingBlocks.Messaging
                 var messageCopy = message.Copy();
 
                 var errorInfo = messageCopy.Validate();
-                if (errorInfo.Errors.Count > 0)
+                if (errorInfo.HasErrors)
                 {
                     throw NewInvalidEventException("message", messageCopy, errorInfo);
                 }
@@ -67,7 +67,7 @@ namespace Kingo.BuildingBlocks.Messaging
             return string.Format("{0} Event(s) Published", _buffer.Count);
         }
 
-        private static Exception NewInvalidEventException(string paramName, IMessage invalidEvent, DataErrorInfo errorInfo)
+        private static Exception NewInvalidEventException(string paramName, IMessage invalidEvent, MessageErrorInfo errorInfo)
         {
             var messageFormat = ExceptionMessages.BufferedEventBus_InvalidMessage;
             var message = string.Format(messageFormat, invalidEvent.GetType().Name);

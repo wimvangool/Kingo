@@ -103,7 +103,8 @@
     <Compile Include="Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />
     <Compile Include="Constraints\StringConstraints.Matches.cs" />
     <Compile Include="Constraints\StringConstraints.StartsWith.cs" />
-    <Compile Include="Messaging\DataErrorInfoBuilder.cs" />
+    <Compile Include="Messaging\IValidateable.cs" />
+    <Compile Include="Messaging\MessageErrorInfoBuilder.cs" />
     <Compile Include="Messaging\FunctionalException.cs" />
     <Compile Include="Messaging\InvalidMessageException.cs" />
     <Compile Include="Messaging\AuthorizationFailedException.cs" />
@@ -135,7 +136,7 @@
     <Compile Include="Messaging\Message.cs" />
     <Compile Include="Messaging\Message.T1.cs" />
     <Compile Include="Messaging\MessageValidator.T1.cs" />
-    <Compile Include="Messaging\DataErrorInfo.cs" />
+    <Compile Include="Messaging\MessageErrorInfo.cs" />
     <Compile Include="Clocks\HighResolutionClock.cs" />
     <Compile Include="Clocks\StopwatchClock.cs" />
     <Compile Include="Constraints\EquatableValue.T1.cs" />

@@ -6,19 +6,19 @@ using Kingo.BuildingBlocks.Constraints;
 namespace Kingo.BuildingBlocks.Messaging
 {
     /// <summary>
-    /// A builder that can be used to build an instance of the <see cref="DataErrorInfo" /> class.
+    /// A builder that can be used to build an instance of the <see cref="MessageErrorInfo" /> class.
     /// </summary>
-    public class DataErrorInfoBuilder : IErrorMessageReader
+    public class MessageErrorInfoBuilder : IErrorMessageReader
     {
         private readonly IFormatProvider _formatProvider;
         private readonly Lazy<IDictionary<string, string>> _errorMessages;
         private string _errorMessage;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataErrorInfoBuilder" /> class.
+        /// Initializes a new instance of the <see cref="MessageErrorInfoBuilder" /> class.
         /// </summary>
         /// <param name="formatProvider">Optional <see cref="IFormatProvider" /> to use when formatting error messages.</param>
-        public DataErrorInfoBuilder(IFormatProvider formatProvider = null)
+        public MessageErrorInfoBuilder(IFormatProvider formatProvider = null)
         {
             _formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
             _errorMessages = new Lazy<IDictionary<string, string>>(CreateErrorMessageDictionary);
@@ -70,21 +70,21 @@ namespace Kingo.BuildingBlocks.Messaging
         #endregion
 
         /// <summary>
-        /// Creates and returns a new <see cref="DataErrorInfo"/> instance containing all added error messages.
+        /// Creates and returns a new <see cref="MessageErrorInfo"/> instance containing all added error messages.
         /// </summary>
-        /// <returns>A new <see cref="DataErrorInfo"/> instance.</returns>
-        public DataErrorInfo BuildDataErrorInfo()
+        /// <returns>A new <see cref="MessageErrorInfo"/> instance.</returns>
+        public MessageErrorInfo BuildDataErrorInfo()
         {
             return BuildDataErrorInfo(_errorMessages.Value, _errorMessage);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="DataErrorInfo"/> instance containing all added error messages.
+        /// Creates and returns a new <see cref="MessageErrorInfo"/> instance containing all added error messages.
         /// </summary>
-        /// <returns>A new <see cref="DataErrorInfo"/> instance.</returns>
-        protected virtual DataErrorInfo BuildDataErrorInfo(IDictionary<string, string> errorMessages, string errorMessage)
+        /// <returns>A new <see cref="MessageErrorInfo"/> instance.</returns>
+        protected virtual MessageErrorInfo BuildDataErrorInfo(IDictionary<string, string> errorMessages, string errorMessage)
         {
-            return new DataErrorInfo(errorMessages, errorMessage);
+            return new MessageErrorInfo(errorMessages, errorMessage);
         }
 
         /// <summary>

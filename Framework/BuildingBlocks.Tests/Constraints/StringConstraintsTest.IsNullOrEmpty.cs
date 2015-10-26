@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Kingo.BuildingBlocks.Messaging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Constraints
 {

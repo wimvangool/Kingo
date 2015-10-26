@@ -36,8 +36,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(null, _ValidPassword);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         [TestMethod]
@@ -46,8 +46,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(string.Empty, _ValidPassword);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         [TestMethod]
@@ -56,8 +56,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("    ", _ValidPassword);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         [TestMethod]
@@ -66,8 +66,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("abcd+3", _ValidPassword);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         [TestMethod]
@@ -76,8 +76,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("abc", _ValidPassword);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         [TestMethod]
@@ -86,8 +86,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand("abcdefghijklm", _ValidPassword);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Username"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Username"]);
         }
 
         #endregion
@@ -100,8 +100,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, null);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Password"]);
         }
 
         [TestMethod]
@@ -110,8 +110,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, string.Empty);
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Password"]);
         }
 
         [TestMethod]
@@ -120,8 +120,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "       ");
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Password"]);
         }
 
         [TestMethod]
@@ -130,8 +130,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "abcd 3g5g65");
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Password"]);
         }
 
         [TestMethod]
@@ -140,8 +140,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "abcde");
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Password"]);
         }
 
         [TestMethod]
@@ -150,8 +150,8 @@ namespace Kingo.ChessApplication.Players
             var message = new RegisterPlayerCommand(_ValidUsername, "abcdefghijklmnopqrstuvw");
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(1, errorInfo.Errors.Count);
-            Assert.IsNotNull(errorInfo.Errors["Password"]);
+            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.IsNotNull(errorInfo.MemberErrors["Password"]);
         }
 
         #endregion

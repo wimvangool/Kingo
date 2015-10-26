@@ -11,9 +11,9 @@ namespace Kingo.BuildingBlocks.Messaging
         private const string _ErrorInfoKey = "_errorInfo";
 
         internal readonly IMessage InvalidEvent;
-        internal readonly DataErrorInfo ErrorInfo;        
+        internal readonly MessageErrorInfo ErrorInfo;        
                 
-        internal InvalidEventException(string paramName, IMessage invalidEvent, string message, DataErrorInfo errorInfo)
+        internal InvalidEventException(string paramName, IMessage invalidEvent, string message, MessageErrorInfo errorInfo)
             : base(message, paramName)
         {            
             InvalidEvent = invalidEvent;
@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Messaging
             : base(info, context)
         {
             InvalidEvent = (IMessage) info.GetValue(_InvalidEventKey, typeof(IMessage));
-            ErrorInfo = (DataErrorInfo) info.GetValue(_ErrorInfoKey, typeof(DataErrorInfo));
+            ErrorInfo = (MessageErrorInfo) info.GetValue(_ErrorInfoKey, typeof(MessageErrorInfo));
         }
 
         /// <inheritdoc />

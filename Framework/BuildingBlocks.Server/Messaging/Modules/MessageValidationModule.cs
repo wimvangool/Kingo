@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
                 throw new ArgumentNullException("handler");
             }
             var errorInfo = await Validate(handler.Message);
-            if (errorInfo.Errors.Count > 0)
+            if (errorInfo.HasErrors)
             {
                 throw NewInvalidMessageException(handler.Message, errorInfo);
             }
@@ -32,11 +32,11 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         }
 
         /// <summary>
-        /// Validates the specified <paramref name="message" /> and returns the resulting <see cref="DataErrorInfo" />.
+        /// Validates the specified <paramref name="message" /> and returns the resulting <see cref="MessageErrorInfo" />.
         /// </summary>
         /// <param name="message">The message to validate.</param>
-        /// <returns>The resulting <see cref="DataErrorInfo" />.</returns>
-        protected virtual Task<DataErrorInfo> Validate(IMessage message)
+        /// <returns>The resulting <see cref="MessageErrorInfo" />.</returns>
+        protected virtual Task<MessageErrorInfo> Validate(IMessage message)
         {
             return AsyncMethod.RunSynchronously(() => message.Validate());
         }        
@@ -46,9 +46,9 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         /// <paramref name="message"/> is not valid.
         /// </summary>
         /// <param name="message">The invalid message.</param>
-        /// <param name="errorInfo">A <see cref="DataErrorInfo" /> instance containing all validation errors.</param>
+        /// <param name="errorInfo">A <see cref="MessageErrorInfo" /> instance containing all validation errors.</param>
         /// <returns>A new <see cref="InvalidMessageException"/>.</returns>
-        protected virtual InvalidMessageException NewInvalidMessageException(IMessage message, DataErrorInfo errorInfo)
+        protected virtual InvalidMessageException NewInvalidMessageException(IMessage message, MessageErrorInfo errorInfo)
         {
             return new InvalidMessageException(message, ExceptionMessages.InvalidMessageException_InvalidMessage, errorInfo);
         }

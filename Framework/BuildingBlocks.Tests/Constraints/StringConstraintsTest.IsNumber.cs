@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Constraints

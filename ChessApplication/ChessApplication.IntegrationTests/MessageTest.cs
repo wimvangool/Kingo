@@ -70,7 +70,7 @@ namespace Kingo.ChessApplication
             var message = CreateValidMessage();
             var errorInfo = message.Validate();
 
-            Assert.AreEqual(0, errorInfo.Errors.Count);
+            Assert.AreEqual(0, errorInfo.ErrorCount);
         }
 
         #endregion

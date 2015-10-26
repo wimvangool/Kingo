@@ -12,11 +12,11 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>   
         /// <param name="message">The message to validate.</param>             
         /// <returns>
-        /// A <see cref="DataErrorInfo" /> instance that contain the error messages for all invalid members.
+        /// A <see cref="MessageErrorInfo" /> instance that contain the error messages for all invalid members.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>   
-        DataErrorInfo Validate(TMessage message); 
+        MessageErrorInfo Validate(TMessage message); 
     }
 }

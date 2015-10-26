@@ -25,29 +25,29 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         /// <inheritdoc />
-        public DataErrorInfo Validate(TMessage message)
+        public MessageErrorInfo Validate(TMessage message)
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
             var errorInfo = Validate(_validationContextFactory.Invoke(message));
-            if (errorInfo.Errors.Count == 0)
+            if (errorInfo.HasErrors)
             {
-                return DataErrorInfo.Empty;
+                return MessageErrorInfo.Empty;
             }
             return errorInfo;
         }
 
-        private static DataErrorInfo Validate(ValidationContext validationContext)
+        private static MessageErrorInfo Validate(ValidationContext validationContext)
         {
             var validationResults = new List<ValidationResult>();
             var isValid = Validator.TryValidateObject(validationContext.ObjectInstance, validationContext, validationResults, true);
             if (isValid)
             {
-                return DataErrorInfo.Empty;
+                return MessageErrorInfo.Empty;
             }
-            return new DataErrorInfo(CreateErrorMessagesPerMember(validationResults));
+            return new MessageErrorInfo(CreateErrorMessagesPerMember(validationResults));
         }        
 
         private static Dictionary<string, string> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)
