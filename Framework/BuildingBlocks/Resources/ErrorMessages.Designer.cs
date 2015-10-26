@@ -232,6 +232,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value.Count} item(s)) contains no value with key &apos;{constraint.Key}&apos;..
+        /// </summary>
+        internal static string CollectionConstraints_ElementAt_Dictionary {
+            get {
+                return ResourceManager.GetString("CollectionConstraints_ElementAt_Dictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {member.Name} contains no element at index {constraint.Index}..
         /// </summary>
         internal static string CollectionConstraints_ElementAt_Enumerable {

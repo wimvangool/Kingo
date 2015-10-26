@@ -282,4 +282,7 @@
   <data name="CollectionConstraints_NoElementAt" xml:space="preserve">
     <value>{member.Name} ({member.Value.Count}) does contain an element index {constraint.Index}.</value>
   </data>
+  <data name="CollectionConstraints_ElementAt_Dictionary" xml:space="preserve">
+    <value>{member.Name} ({member.Value.Count} item(s)) contains no value with key '{constraint.Key}'.</value>
+  </data>
 </root>

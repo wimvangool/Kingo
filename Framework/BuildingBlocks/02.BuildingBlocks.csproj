@@ -54,6 +54,7 @@
     <Compile Include="Constraints\BasicConstraints.cs" />
     <Compile Include="Constraints\CollectionConstraints.cs" />
     <Compile Include="Constraints\CollectionConstraints.Enumerable.cs" />
+    <Compile Include="Constraints\CollectionConstraints.Dictionary.cs" />
     <Compile Include="Constraints\CollectionConstraints.List.cs" />
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
