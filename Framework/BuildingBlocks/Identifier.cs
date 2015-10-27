@@ -191,6 +191,38 @@ namespace Kingo.BuildingBlocks
             return new Identifier(value);
         }
 
+        /// <summary>
+        /// Attempts to parse the specified <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">The value to parse.</param>
+        /// <param name="identifier">
+        /// If this method returns <c>true</c>, this parameter will refer to the parsed <see cref="Identifier" />;
+        /// otherwise <c>false</c>.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the specified <paramref name="value"/> could be parsed to an <see cref="Identifier" />;
+        /// otherwise <c>false</c>.        
+        /// </returns>        
+        public static bool TryParse(string value, out Identifier identifier)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                identifier = null;
+                return false;
+            }
+            for (int index = 0; index < value.Length; index++)
+            {
+                if (IsValidCharacter(value[index], index))
+                {
+                    continue;
+                }
+                identifier = null;
+                return false;
+            }
+            identifier = new Identifier(value);
+            return true;
+        }
+
         private static bool IsValidCharacter(char character, int characterIndex)
         {
             return IsValidCharacter(character) || (char.IsDigit(character) && characterIndex > 0);

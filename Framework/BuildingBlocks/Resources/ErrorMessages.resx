@@ -270,4 +270,7 @@
   <data name="CollectionConstraints_ElementAt_Dictionary" xml:space="preserve">
     <value>{member.Name} ({member.Value.Count} item(s)) contains no value with key '{constraint.Key}'.</value>
   </data>
+  <data name="StringConstraints_IsIdentifier" xml:space="preserve">
+    <value>{member.Name} ({member.Value}) could not be converted to an identifier.</value>
+  </data>
 </root>

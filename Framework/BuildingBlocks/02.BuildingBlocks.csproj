@@ -64,6 +64,7 @@
     <Compile Include="Constraints\MemberConstraint.T2.cs" />
     <Compile Include="Constraints\ReadOnlyCollection.T1.cs" />
     <Compile Include="Constraints\ReadOnlyList.T1.cs" />
+    <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />

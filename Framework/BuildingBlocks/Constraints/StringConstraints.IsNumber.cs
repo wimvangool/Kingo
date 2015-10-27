@@ -571,19 +571,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsByteConstraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -642,19 +630,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsSByteConstraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -706,19 +682,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsCharConstraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -788,19 +752,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsInt16Constraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -859,19 +811,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsInt32Constraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion       
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -930,19 +870,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsInt64Constraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -1001,19 +929,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsSingleConstraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -1072,19 +988,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsDoubleConstraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
@@ -1143,19 +1047,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new StringIsDecimalConstraint(this, errorMessage);
         }
 
-        #endregion
-
-        #region [====== And, Or & Invert ======]
-
-        /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 

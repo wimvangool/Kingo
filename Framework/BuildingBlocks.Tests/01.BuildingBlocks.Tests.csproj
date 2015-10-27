@@ -74,6 +74,7 @@
     <Compile Include="Constraints\DelegateConstraintTest.cs" />
     <Compile Include="Constraints\AndConstraintTest.cs" />
     <Compile Include="Constraints\OrConstraintTest.cs" />
+    <Compile Include="Constraints\StringConstraintsTest.IsIdentifier.cs" />
     <Compile Include="IdentifierTest.cs" />
     <Compile Include="Messaging\ConstraintValidatorExtensions.cs" />
     <Compile Include="Constraints\StringConstraintsTest.Contains.cs" />

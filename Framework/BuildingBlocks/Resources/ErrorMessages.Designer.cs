@@ -421,6 +421,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to an identifier..
+        /// </summary>
+        internal static string StringConstraints_IsIdentifier {
+            get {
+                return ResourceManager.GetString("StringConstraints_IsIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 16-bit integer..
         /// </summary>
         internal static string StringConstraints_IsInt16 {
