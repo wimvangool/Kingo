@@ -166,6 +166,66 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
+        public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, LinkedList<TValue>> member, int index, string errorMessage = null)
+        {
+            return member.As<ICollection<TValue>>().ElementAt(index, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the specified collection contains a value at the specified <paramref name="index"/>.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <param name="index">The index to verify.</param>   
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, Queue<TValue>> member, int index, string errorMessage = null)
+        {
+            return member.As<ICollection<TValue>>().ElementAt(index, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the specified collection contains a value at the specified <paramref name="index"/>.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <param name="index">The index to verify.</param>   
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, Stack<TValue>> member, int index, string errorMessage = null)
+        {
+            return member.As<ICollection<TValue>>().ElementAt(index, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the specified collection contains a value at the specified <paramref name="index"/>.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <param name="index">The index to verify.</param>   
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, ICollection<TValue>> member, int index, string errorMessage = null)
         {
             return member.Apply(new ElementAtCollectionConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));

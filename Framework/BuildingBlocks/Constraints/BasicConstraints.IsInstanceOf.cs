@@ -237,4 +237,70 @@ namespace Kingo.BuildingBlocks.Constraints
     }
 
     #endregion
+
+    #region [====== AsConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a value is an instance of a specific type. This constraints
+    /// always succeeds, but outputs a <c>null</c> value if the conversion failed.
+    /// </summary>
+    public sealed class AsConstraint<TValueIn, TValueOut> : Constraint<TValueIn, TValueOut> where TValueOut : class
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AsConstraint{T, S}" /> class.
+        /// </summary>    
+        public AsConstraint() { }
+
+        private AsConstraint(AsConstraint<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) { }
+
+        private AsConstraint(AsConstraint<TValueIn, TValueOut> constraint, Identifier name)
+            : base(constraint, name) { }        
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
+        {
+            return new AsConstraint<TValueIn, TValueOut>(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new AsConstraint<TValueIn, TValueOut>(this, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new ConstraintInverter<TValueIn>(this, ErrorMessages.BasicConstraints_IsNotInstanceOf)
+                .WithErrorMessage(errorMessage)
+                .WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(TValueIn value)
+        {
+            return value is TValueOut;
+        }
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(TValueIn value, out TValueOut valueOut)
+        {
+            return (valueOut = value as TValueOut) != null;
+        }
+
+        #endregion
+    }
+
+    #endregion
 }

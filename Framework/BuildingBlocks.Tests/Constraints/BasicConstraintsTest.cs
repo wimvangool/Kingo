@@ -50,5 +50,57 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         #endregion                                                                
+
+        #region [====== Multiple Constraints Per Member ======]
+
+        [TestMethod]
+        public void Validate_ReturnsErrorOfFirstConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_FirstConstraintFails()
+        {
+            var message = new ValidatedMessage<int>(0);
+            var validator = new ConstraintValidator<ValidatedMessage<int>>();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(0);
+            validator.VerifyThat(m => m.Member).IsSmallerThan(10);
+
+            validator.Validate(message).AssertOneError("Member (0) must be greater than '0'.");
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsErrorOfSecondConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_SecondConstraintFails()
+        {
+            var message = new ValidatedMessage<int>(10);
+            var validator = new ConstraintValidator<ValidatedMessage<int>>();
+
+            validator.VerifyThat(m => m.Member).IsGreaterThan(0);
+            validator.VerifyThat(m => m.Member).IsSmallerThan(10);
+
+            validator.Validate(message).AssertOneError("Member (10) must be smaller than '10'.");
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsErrorOfFirstChildConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_FirstChildConstraintFails()
+        {
+            var message = new ValidatedMessage<int[]>(new [] { 0 });
+            var validator = new ConstraintValidator<ValidatedMessage<int[]>>();
+
+            validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
+            validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
+
+            validator.Validate(message).AssertOneError("Member[0] (0) must be greater than '0'.", "Member[0]");
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsErrorOfSecondChildConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_SecondChildConstraintFails()
+        {
+            var message = new ValidatedMessage<int[]>(new [] { 10 } );
+            var validator = new ConstraintValidator<ValidatedMessage<int[]>>();
+
+            validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
+            validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
+
+            validator.Validate(message).AssertOneError("Member[0] (10) must be smaller than '10'.", "Member[0]");
+        }
+
+        #endregion
     }
 }

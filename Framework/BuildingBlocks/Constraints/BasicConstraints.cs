@@ -76,6 +76,6 @@ namespace Kingo.BuildingBlocks.Constraints
             return member;
         }
 
-        #endregion
+        #endregion        
     }
 }

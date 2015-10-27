@@ -26,6 +26,66 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
+        public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, SortedList<TKey, TValue>> member, TKey key, string errorMessage = null)
+        {
+            return member.As<IDictionary<TKey, TValue>>().ElementAt(key, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the specified collection contains a value with the specified <paramref name="key"/>.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <param name="key">The key of the element.</param>   
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, SortedDictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
+        {
+            return member.As<IDictionary<TKey, TValue>>().ElementAt(key, errorMessage);
+        }
+
+        /// <summary>
+        /// Verifies that the specified collection contains a value with the specified <paramref name="key"/>.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <param name="key">The key of the element.</param>   
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, Dictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
+        {
+            return member.As<IDictionary<TKey, TValue>>().ElementAt(key, errorMessage);                
+        }
+
+        /// <summary>
+        /// Verifies that the specified collection contains a value with the specified <paramref name="key"/>.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <param name="key">The key of the element.</param>   
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, IDictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
         {
             return member.Apply(new ElementAtDictionaryConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));

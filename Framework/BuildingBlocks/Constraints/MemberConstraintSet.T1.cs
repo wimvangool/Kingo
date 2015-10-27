@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -97,7 +96,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        private readonly Dictionary<string, IMemberConstraint<TMessage>> _membersConstraints;
+        private readonly Dictionary<string, LinkedList<IMemberConstraint<TMessage>>> _membersConstraints;
         private readonly Dictionary<string, IErrorMessageWriter<TMessage>> _childConstraintSets;
         private readonly string[] _parentNames;
 
@@ -109,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
         
         private MemberConstraintSet(string[] parentNames)
         {
-            _membersConstraints = new Dictionary<string, IMemberConstraint<TMessage>>();
+            _membersConstraints = new Dictionary<string, LinkedList<IMemberConstraint<TMessage>>>();
             _childConstraintSets = new Dictionary<string, IErrorMessageWriter<TMessage>>();
             _parentNames = parentNames;
         }
@@ -153,9 +152,9 @@ namespace Kingo.BuildingBlocks.Constraints
         public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> memberValueFactory, string memberName)
         {
             var member = new Member<TMessage, TValue>(_parentNames, memberName, memberValueFactory);            
-            var memberConstraint = new MemberConstraint<TMessage, TValue, TValue>(this, CreateConstraintFactory<TValue>(member));
+            var memberConstraint = new MemberConstraint<TMessage, TValue, TValue>(this, CreateConstraintFactory(member));
 
-            Put(memberConstraint);
+            Add(memberConstraint);
 
             return memberConstraint;
         }        
@@ -167,21 +166,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion        
 
-        #region [====== Add, Put, Remove & Replace ======]
-
-        private void Put(IMemberConstraint<TMessage> newConstraint)
-        {
-            IMemberConstraint<TMessage> oldConstraint;
-
-            if (_membersConstraints.TryGetValue(newConstraint.Member.FullName, out oldConstraint))
-            {
-                Replace(oldConstraint, newConstraint);
-            }
-            else
-            {
-                Add(newConstraint);
-            }
-        }  
+        #region [====== Add, Remove & Replace ======]         
 
         /// <summary>
         /// Replaces <paramref name="oldConstraint"/> by the specified <paramref name="newConstraint"/>.
@@ -208,7 +193,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 return;
             }
-            if (Remove(oldConstraint))
+            if (Remove(oldConstraint, false))
             {
                 Add(newConstraint);
             }            
@@ -241,12 +226,24 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         protected bool Remove(IMemberConstraint<TMessage> constraint)
         {
+            return Remove(constraint, true);
+        }
+
+        private bool Remove(IMemberConstraint<TMessage> constraint, bool removeEmptyList)
+        {
             if (constraint == null)
             {
                 throw new ArgumentNullException("constraint");
             }
-            if (_membersConstraints.Remove(constraint.Member.FullName))
+            var member = constraint.Member.FullName;
+            LinkedList<IMemberConstraint<TMessage>> existingConstraints;
+
+            if (_membersConstraints.TryGetValue(member, out existingConstraints) && existingConstraints.Remove(constraint))
             {
+                if (removeEmptyList && existingConstraints.Count == 0)
+                {
+                    _membersConstraints.Remove(member);
+                }
                 OnConstraintRemoved(new MemberConstraintEventArgs<TMessage>(constraint));
                 return true;
             }
@@ -276,26 +273,24 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="constraint">The member to add.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// A member with the same name was already added to this set.
-        /// </exception>
+        /// </exception>        
         protected void Add(IMemberConstraint<TMessage> constraint)
         {
             if (constraint == null)
             {
                 throw new ArgumentNullException("constraint");
             }
-            try
+            var member = constraint.Member.FullName;
+            LinkedList<IMemberConstraint<TMessage>> existingConstraints;
+
+            if (!_membersConstraints.TryGetValue(member, out existingConstraints))
             {
-                _membersConstraints.Add(constraint.Member.FullName, constraint);                
+                _membersConstraints.Add(member, existingConstraints = new LinkedList<IMemberConstraint<TMessage>>());
             }
-            catch (ArgumentException)
-            {
-                throw NewMemberAlreadyAddedException(constraint.Member.FullName);
-            }
+            existingConstraints.AddLast(constraint);
+
             OnConstraintAdded(new MemberConstraintEventArgs<TMessage>(constraint));
-        }        
+        }              
 
         /// <inheritdoc />
         public bool WriteErrorMessages(TMessage message, IErrorMessageReader reader)
@@ -315,16 +310,9 @@ namespace Kingo.BuildingBlocks.Constraints
 
         private IEnumerable<IErrorMessageWriter<TMessage>> MemberConstraints()
         {
-            return _membersConstraints.Values.Concat(_childConstraintSets.Values);
+            return _membersConstraints.Values.SelectMany(constraint => constraint).Concat(_childConstraintSets.Values);
         }
 
-        #endregion        
-
-        private static Exception NewMemberAlreadyAddedException(string memberName)
-        {
-            var messageFormat = ExceptionMessages.MemberSet_MemberAlreadyAdded;
-            var message = string.Format(messageFormat, memberName);
-            return new ArgumentException(message);
-        }              
+        #endregion                           
     }
 }

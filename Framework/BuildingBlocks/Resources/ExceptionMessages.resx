@@ -129,9 +129,6 @@
   <data name="Identifier_InvalidIdentifier" xml:space="preserve">
     <value>Invalid identifier specified: '{0}'.</value>
   </data>
-  <data name="MemberSet_MemberAlreadyAdded" xml:space="preserve">
-    <value>A member with name '{0}' has already been added to the set.</value>
-  </data>
   <data name="Member_ConstraintFailed" xml:space="preserve">
     <value>Could not obtain value of child member because the constraint that provides this value failed: {0}</value>
   </data>

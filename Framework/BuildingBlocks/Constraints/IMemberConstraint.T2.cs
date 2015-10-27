@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        #region [====== IsInstanceOf & IsNotInstanceOf ======]
+        #region [====== IsInstanceOf, IsNotInstanceOf  & As ======]
 
         /// <summary>
         /// Verifies that this member's value is not an instance of <typeparamref name="TOther"/>.
@@ -45,6 +45,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </param>
         /// <returns>A member casted to <typeparamref name="TOther"/>.</returns>        
         IMemberConstraint<TMessage, TOther> IsInstanceOf<TOther>(string errorMessage = null);
+
+        /// <summary>
+        /// Casts the output of this member to an instance of the specified type <typeparamref name="TOther"/>.
+        /// </summary>
+        /// <typeparam name="TOther">Type to cast this member's type to.</typeparam>
+        /// <returns>The casted member.</returns>
+        IMemberConstraint<TMessage, TOther> As<TOther>() where TOther : class;
 
         #endregion
 

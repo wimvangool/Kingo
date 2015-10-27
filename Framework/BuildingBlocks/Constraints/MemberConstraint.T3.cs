@@ -41,7 +41,13 @@ namespace Kingo.BuildingBlocks.Constraints
         public IMemberConstraint<TMessage, TOther> IsInstanceOf<TOther>(string errorMessage = null)
         {
             return Satisfies(new IsInstanceOfConstraint<TValueOut, TOther>().WithErrorMessage(errorMessage));            
-        }        
+        }
+
+        /// <inheritdoc />
+        public IMemberConstraint<TMessage, TOther> As<TOther>() where TOther : class
+        {
+            return Satisfies(new AsConstraint<TValueOut, TOther>());
+        }
 
         #endregion
 
