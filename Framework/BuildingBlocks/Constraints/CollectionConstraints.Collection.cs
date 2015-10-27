@@ -27,7 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, ICollection<TValue>> IsNotNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, ICollection<TValue>> member, string errorMessage = null)
         {            
-            return member.Apply(new IsNotNullOrEmptyCollectionConstraint<TValue>().WithErrorMessage(errorMessage));
+            return member.Apply(new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, IReadOnlyCollection<TValue>> IsNotNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, IReadOnlyCollection<TValue>> member, string errorMessage = null)
         {
-            return member.Apply(new IsNotNullOrEmptyReadOnlyCollectionConstraint<TValue>().WithErrorMessage(errorMessage));
+            return member.Apply(new ReadOnlyCollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, ICollection<TValue>> IsNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, ICollection<TValue>> member, string errorMessage = null)
         {
-            return member.Apply(new IsNullOrEmptyCollectionConstraint<TValue>().WithErrorMessage(errorMessage));
+            return member.Apply(new CollectionIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, IReadOnlyCollection<TValue>> IsNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, IReadOnlyCollection<TValue>> member, string errorMessage = null)
         {
-            return member.Apply(new IsNullOrEmptyReadOnlyCollectionConstraint<TValue>().WithErrorMessage(errorMessage));
+            return member.Apply(new ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint<TValue>().WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, ICollection<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtCollectionConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
+            return member.Apply(new CollectionElementAtConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, IReadOnlyCollection<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtReadOnlyCollectionConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
+            return member.Apply(new ReadOnlyCollectionElementAtConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>
@@ -331,22 +331,22 @@ namespace Kingo.BuildingBlocks.Constraints
         }
     }
 
-    #region [====== IsNotNullOrEmptyCollectionConstraints ======]
+    #region [====== CollectionIsNotNullOrEmptyConstraints ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>null</c> or empty.
     /// </summary>
-    public sealed class IsNotNullOrEmptyCollectionConstraint<TValue> : Constraint<ICollection<TValue>>
+    public sealed class CollectionIsNotNullOrEmptyConstraint<TValue> : Constraint<ICollection<TValue>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsNotNullOrEmptyCollectionConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="CollectionIsNotNullOrEmptyConstraint{T}" /> class.
         /// </summary>    
-        public IsNotNullOrEmptyCollectionConstraint() { }
+        public CollectionIsNotNullOrEmptyConstraint() { }
 
-        private IsNotNullOrEmptyCollectionConstraint(IsNotNullOrEmptyCollectionConstraint<TValue> constraint, StringTemplate errorMessage)
+        private CollectionIsNotNullOrEmptyConstraint(CollectionIsNotNullOrEmptyConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsNotNullOrEmptyCollectionConstraint(IsNotNullOrEmptyCollectionConstraint<TValue> constraint, Identifier name)
+        private CollectionIsNotNullOrEmptyConstraint(CollectionIsNotNullOrEmptyConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -360,13 +360,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>> WithName(Identifier name)
         {
-            return new IsNotNullOrEmptyCollectionConstraint<TValue>(this, name);
+            return new CollectionIsNotNullOrEmptyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsNotNullOrEmptyCollectionConstraint<TValue>(this, errorMessage);
+            return new CollectionIsNotNullOrEmptyConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -376,7 +376,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsNullOrEmptyCollectionConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+            return new CollectionIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
@@ -395,17 +395,17 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>null</c> or empty.
     /// </summary>
-    public sealed class IsNotNullOrEmptyReadOnlyCollectionConstraint<TValue> : Constraint<IReadOnlyCollection<TValue>>
+    public sealed class ReadOnlyCollectionIsNotNullOrEmptyConstraint<TValue> : Constraint<IReadOnlyCollection<TValue>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsNotNullOrEmptyReadOnlyCollectionConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ReadOnlyCollectionIsNotNullOrEmptyConstraint{T}" /> class.
         /// </summary>    
-        public IsNotNullOrEmptyReadOnlyCollectionConstraint() { }
+        public ReadOnlyCollectionIsNotNullOrEmptyConstraint() { }
 
-        private IsNotNullOrEmptyReadOnlyCollectionConstraint(IsNotNullOrEmptyReadOnlyCollectionConstraint<TValue> constraint, StringTemplate errorMessage)
+        private ReadOnlyCollectionIsNotNullOrEmptyConstraint(ReadOnlyCollectionIsNotNullOrEmptyConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsNotNullOrEmptyReadOnlyCollectionConstraint(IsNotNullOrEmptyReadOnlyCollectionConstraint<TValue> constraint, Identifier name)
+        private ReadOnlyCollectionIsNotNullOrEmptyConstraint(ReadOnlyCollectionIsNotNullOrEmptyConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -419,13 +419,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>> WithName(Identifier name)
         {
-            return new IsNotNullOrEmptyReadOnlyCollectionConstraint<TValue>(this, name);
+            return new ReadOnlyCollectionIsNotNullOrEmptyConstraint<TValue>(this, name);
         }       
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsNotNullOrEmptyReadOnlyCollectionConstraint<TValue>(this, errorMessage);
+            return new ReadOnlyCollectionIsNotNullOrEmptyConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -435,7 +435,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsNullOrEmptyReadOnlyCollectionConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+            return new ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion        
@@ -453,22 +453,22 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== IsNullOrEmptyCollectionConstraints ======]
+    #region [====== CollectionIsNullOrEmptyConstraints ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>null</c> or empty.
     /// </summary>
-    public sealed class IsNullOrEmptyCollectionConstraint<TValue> : Constraint<ICollection<TValue>>
+    public sealed class CollectionIsNullOrEmptyConstraint<TValue> : Constraint<ICollection<TValue>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsNullOrEmptyCollectionConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="CollectionIsNullOrEmptyConstraint{T}" /> class.
         /// </summary>    
-        public IsNullOrEmptyCollectionConstraint() { }
+        public CollectionIsNullOrEmptyConstraint() { }
 
-        private IsNullOrEmptyCollectionConstraint(IsNullOrEmptyCollectionConstraint<TValue> constraint, StringTemplate errorMessage)
+        private CollectionIsNullOrEmptyConstraint(CollectionIsNullOrEmptyConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsNullOrEmptyCollectionConstraint(IsNullOrEmptyCollectionConstraint<TValue> constraint, Identifier name)
+        private CollectionIsNullOrEmptyConstraint(CollectionIsNullOrEmptyConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -482,13 +482,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>> WithName(Identifier name)
         {
-            return new IsNullOrEmptyCollectionConstraint<TValue>(this, name);
+            return new CollectionIsNullOrEmptyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsNullOrEmptyCollectionConstraint<TValue>(this, errorMessage);
+            return new CollectionIsNullOrEmptyConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -498,7 +498,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsNotNullOrEmptyCollectionConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+            return new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
@@ -517,17 +517,17 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>null</c> or empty.
     /// </summary>
-    public sealed class IsNullOrEmptyReadOnlyCollectionConstraint<TValue> : Constraint<IReadOnlyCollection<TValue>>
+    public sealed class ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint<TValue> : Constraint<IReadOnlyCollection<TValue>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsNullOrEmptyReadOnlyCollectionConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint{T}" /> class.
         /// </summary>    
-        public IsNullOrEmptyReadOnlyCollectionConstraint() { }
+        public ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint() { }
 
-        private IsNullOrEmptyReadOnlyCollectionConstraint(IsNullOrEmptyReadOnlyCollectionConstraint<TValue> constraint, StringTemplate errorMessage)
+        private ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint(ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsNullOrEmptyReadOnlyCollectionConstraint(IsNullOrEmptyReadOnlyCollectionConstraint<TValue> constraint, Identifier name)
+        private ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint(ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -541,13 +541,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>> WithName(Identifier name)
         {
-            return new IsNullOrEmptyReadOnlyCollectionConstraint<TValue>(this, name);
+            return new ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsNullOrEmptyReadOnlyCollectionConstraint<TValue>(this, errorMessage);
+            return new ReadOnlyCollectionIsNullOrEmptyReadOnlyConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -557,7 +557,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsNotNullOrEmptyReadOnlyCollectionConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+            return new ReadOnlyCollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion        
@@ -575,19 +575,19 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== ElementAtCollectionConstraints ======]
+    #region [====== CollectionElementAtConstraints ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a collection contains an element at a certain index.
     /// </summary>
-    public sealed class ElementAtCollectionConstraint<TValue> : Constraint<ICollection<TValue>, TValue>
+    public sealed class CollectionElementAtConstraint<TValue> : Constraint<ICollection<TValue>, TValue>
     {
         private readonly int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtCollectionConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="CollectionElementAtConstraint{T}" /> class.
         /// </summary>    
-        public ElementAtCollectionConstraint(int index)
+        public CollectionElementAtConstraint(int index)
         {
             if (index < 0)
             {
@@ -596,13 +596,13 @@ namespace Kingo.BuildingBlocks.Constraints
             _index = index;
         }
 
-        private ElementAtCollectionConstraint(ElementAtCollectionConstraint<TValue> constraint, StringTemplate errorMessage)
+        private CollectionElementAtConstraint(CollectionElementAtConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _index = constraint._index;
         }
 
-        private ElementAtCollectionConstraint(ElementAtCollectionConstraint<TValue> constraint, Identifier name)
+        private CollectionElementAtConstraint(CollectionElementAtConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             _index = constraint._index;
@@ -627,13 +627,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtCollectionConstraint<TValue>(this, name);
+            return new CollectionElementAtConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<ICollection<TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtCollectionConstraint<TValue>(this, errorMessage);
+            return new CollectionElementAtConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -674,14 +674,14 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a collection contains an element at a certain index.
     /// </summary>
-    public sealed class ElementAtReadOnlyCollectionConstraint<TValue> : Constraint<IReadOnlyCollection<TValue>, TValue>
+    public sealed class ReadOnlyCollectionElementAtConstraint<TValue> : Constraint<IReadOnlyCollection<TValue>, TValue>
     {
         private readonly int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtReadOnlyCollectionConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ReadOnlyCollectionElementAtConstraint{T}" /> class.
         /// </summary>    
-        public ElementAtReadOnlyCollectionConstraint(int index)
+        public ReadOnlyCollectionElementAtConstraint(int index)
         {
             if (index < 0)
             {
@@ -690,13 +690,13 @@ namespace Kingo.BuildingBlocks.Constraints
             _index = index;
         }
 
-        private ElementAtReadOnlyCollectionConstraint(ElementAtReadOnlyCollectionConstraint<TValue> constraint, StringTemplate errorMessage)
+        private ReadOnlyCollectionElementAtConstraint(ReadOnlyCollectionElementAtConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _index = constraint._index;
         }
 
-        private ElementAtReadOnlyCollectionConstraint(ElementAtReadOnlyCollectionConstraint<TValue> constraint, Identifier name)
+        private ReadOnlyCollectionElementAtConstraint(ReadOnlyCollectionElementAtConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             _index = constraint._index;
@@ -721,13 +721,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtReadOnlyCollectionConstraint<TValue>(this, name);
+            return new ReadOnlyCollectionElementAtConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyCollection<TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtReadOnlyCollectionConstraint<TValue>(this, errorMessage);
+            return new ReadOnlyCollectionElementAtConstraint<TValue>(this, errorMessage);
         }
 
         #endregion

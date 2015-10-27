@@ -88,7 +88,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, IDictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
         {
-            return member.Apply(new ElementAtDictionaryConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));
+            return member.Apply(new DictionaryElementAtConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TKey, TValue>(this IMemberConstraint<TMessage, IReadOnlyDictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
         {
-            return member.Apply(new ElementAtReadOnlyDictionaryConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));
+            return member.Apply(new ReadOnlyDictionaryElementAtConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));
         }
 
         #endregion
@@ -119,25 +119,25 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a dictionary contains a value with a certain key.
     /// </summary>
-    public sealed class ElementAtDictionaryConstraint<TKey, TValue> : Constraint<IDictionary<TKey, TValue>, TValue>
+    public sealed class DictionaryElementAtConstraint<TKey, TValue> : Constraint<IDictionary<TKey, TValue>, TValue>
     {
         private readonly TKey _key;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtDictionaryConstraint{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="DictionaryElementAtConstraint{T, S}" /> class.
         /// </summary>    
-        public ElementAtDictionaryConstraint(TKey key)
+        public DictionaryElementAtConstraint(TKey key)
         {
             _key = key;
         }
 
-        private ElementAtDictionaryConstraint(ElementAtDictionaryConstraint<TKey, TValue> constraint, StringTemplate errorMessage)
+        private DictionaryElementAtConstraint(DictionaryElementAtConstraint<TKey, TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _key = constraint._key;
         }
 
-        private ElementAtDictionaryConstraint(ElementAtDictionaryConstraint<TKey, TValue> constraint, Identifier name)
+        private DictionaryElementAtConstraint(DictionaryElementAtConstraint<TKey, TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             _key = constraint._key;
@@ -162,13 +162,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IDictionary<TKey, TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtDictionaryConstraint<TKey, TValue>(this, name);
+            return new DictionaryElementAtConstraint<TKey, TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IDictionary<TKey, TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtDictionaryConstraint<TKey, TValue>(this, errorMessage);
+            return new DictionaryElementAtConstraint<TKey, TValue>(this, errorMessage);
         }
 
         #endregion
@@ -213,25 +213,25 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a dictionary contains a value with a certain key.
     /// </summary>
-    public sealed class ElementAtReadOnlyDictionaryConstraint<TKey, TValue> : Constraint<IReadOnlyDictionary<TKey, TValue>, TValue>
+    public sealed class ReadOnlyDictionaryElementAtConstraint<TKey, TValue> : Constraint<IReadOnlyDictionary<TKey, TValue>, TValue>
     {
         private readonly TKey _key;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtReadOnlyDictionaryConstraint{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="ReadOnlyDictionaryElementAtConstraint{T, S}" /> class.
         /// </summary>    
-        public ElementAtReadOnlyDictionaryConstraint(TKey key)
+        public ReadOnlyDictionaryElementAtConstraint(TKey key)
         {
             _key = key;
         }
 
-        private ElementAtReadOnlyDictionaryConstraint(ElementAtReadOnlyDictionaryConstraint<TKey, TValue> constraint, StringTemplate errorMessage)
+        private ReadOnlyDictionaryElementAtConstraint(ReadOnlyDictionaryElementAtConstraint<TKey, TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _key = constraint._key;
         }
 
-        private ElementAtReadOnlyDictionaryConstraint(ElementAtReadOnlyDictionaryConstraint<TKey, TValue> constraint, Identifier name)
+        private ReadOnlyDictionaryElementAtConstraint(ReadOnlyDictionaryElementAtConstraint<TKey, TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             _key = constraint._key;
@@ -256,13 +256,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyDictionary<TKey, TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtReadOnlyDictionaryConstraint<TKey, TValue>(this, name);
+            return new ReadOnlyDictionaryElementAtConstraint<TKey, TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyDictionary<TKey, TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtReadOnlyDictionaryConstraint<TKey, TValue>(this, errorMessage);
+            return new ReadOnlyDictionaryElementAtConstraint<TKey, TValue>(this, errorMessage);
         }
 
         #endregion

@@ -23,7 +23,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, Guid> IsNotEmpty<TMessage>(this IMemberConstraint<TMessage, Guid> member, string errorMessage = null)
         {
-            return member.Apply(new IsNotEmptyGuidConstraint().WithErrorMessage(errorMessage));
+            return member.Apply(new GuidIsNotEmptyConstraint().WithErrorMessage(errorMessage));
         }              
 
         #endregion
@@ -43,28 +43,28 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, Guid> IsEmpty<TMessage>(this IMemberConstraint<TMessage, Guid> member, string errorMessage = null)
         {
-            return member.Apply(new IsEmptyGuidConstraint().WithErrorMessage(errorMessage));
+            return member.Apply(new GuidIsEmptyConstraint().WithErrorMessage(errorMessage));
         }              
 
         #endregion
     }
 
-    #region [====== IsNotEmptyGuidConstraint ======]
+    #region [====== GuidIsNotEmptyConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a <see cref="Guid" /> is an empty guid..
     /// </summary>
-    public sealed class IsNotEmptyGuidConstraint : Constraint<Guid>
+    public sealed class GuidIsNotEmptyConstraint : Constraint<Guid>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsNotEmptyGuidConstraint" /> class.
+        /// Initializes a new instance of the <see cref="GuidIsNotEmptyConstraint" /> class.
         /// </summary>    
-        public IsNotEmptyGuidConstraint() {}
+        public GuidIsNotEmptyConstraint() {}
 
-        private IsNotEmptyGuidConstraint(IsNotEmptyGuidConstraint constraint, StringTemplate errorMessage)
+        private GuidIsNotEmptyConstraint(GuidIsNotEmptyConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) {}
 
-        private IsNotEmptyGuidConstraint(IsNotEmptyGuidConstraint constraint, Identifier name)
+        private GuidIsNotEmptyConstraint(GuidIsNotEmptyConstraint constraint, Identifier name)
             : base(constraint, name) {}
 
         #region [====== Name & ErrorMessage ======]
@@ -78,13 +78,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<Guid> WithName(Identifier name)
         {
-            return new IsNotEmptyGuidConstraint(this, name);
+            return new GuidIsNotEmptyConstraint(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<Guid> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsNotEmptyGuidConstraint(this, errorMessage);
+            return new GuidIsNotEmptyConstraint(this, errorMessage);
         }
 
         #endregion
@@ -112,22 +112,22 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== IsEmptyGuidConstraint ======]
+    #region [====== GuidIsEmptyConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a <see cref="Guid" /> is an empty guid..
     /// </summary>
-    public sealed class IsEmptyGuidConstraint : Constraint<Guid>
+    public sealed class GuidIsEmptyConstraint : Constraint<Guid>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsEmptyGuidConstraint" /> class.
+        /// Initializes a new instance of the <see cref="GuidIsEmptyConstraint" /> class.
         /// </summary>    
-        public IsEmptyGuidConstraint() { }
+        public GuidIsEmptyConstraint() { }
 
-        private IsEmptyGuidConstraint(IsEmptyGuidConstraint constraint, StringTemplate errorMessage)
+        private GuidIsEmptyConstraint(GuidIsEmptyConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsEmptyGuidConstraint(IsEmptyGuidConstraint constraint, Identifier name)
+        private GuidIsEmptyConstraint(GuidIsEmptyConstraint constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -141,13 +141,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<Guid> WithName(Identifier name)
         {
-            return new IsEmptyGuidConstraint(this, name);
+            return new GuidIsEmptyConstraint(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<Guid> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsEmptyGuidConstraint(this, errorMessage);
+            return new GuidIsEmptyConstraint(this, errorMessage);
         }
 
         #endregion
@@ -157,7 +157,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<Guid> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsNotEmptyGuidConstraint().WithErrorMessage(errorMessage).WithName(name);
+            return new GuidIsNotEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion

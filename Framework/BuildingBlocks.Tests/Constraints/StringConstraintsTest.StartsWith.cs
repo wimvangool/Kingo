@@ -19,7 +19,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void ValidateDoesNotStartWith_Throws_IfMemberIsNull()
         {
             var message = new ValidatedMessage<string>(null);
@@ -89,7 +89,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void ValidateStartsWith_Throws_IfValueIsNull()
         {
             var message = new ValidatedMessage<string>(null);

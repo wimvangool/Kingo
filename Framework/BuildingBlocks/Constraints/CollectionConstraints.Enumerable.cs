@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, IEnumerable<TValue>> IsNotNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, IEnumerable<TValue>> member, string errorMessage = null)
         {
-            return member.Apply(new IsNotNullOrEmptyEnumerableConstraint<TValue>().WithErrorMessage(errorMessage));
+            return member.Apply(new EnumerableIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, IEnumerable<TValue>> IsNullOrEmpty<TMessage, TValue>(this IMemberConstraint<TMessage, IEnumerable<TValue>> member, string errorMessage = null)
         {
-            return member.Apply(new IsNullOrEmptyEnumerableConstraint<TValue>().WithErrorMessage(errorMessage));
+            return member.Apply(new EnumerableIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));
         }
 
         #endregion
@@ -68,7 +68,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, IEnumerable<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtEnumerableConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
+            return member.Apply(new EnumerableElementAtConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>
@@ -123,22 +123,22 @@ namespace Kingo.BuildingBlocks.Constraints
         #endregion                
     }
 
-    #region [====== IsNotNullOrEmptyEnumerableConstraint ======]
+    #region [====== EnumerableIsNotNullOrEmptyConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>nul</c> or empty.
     /// </summary>
-    public sealed class IsNotNullOrEmptyEnumerableConstraint<TValue> : Constraint<IEnumerable<TValue>>
+    public sealed class EnumerableIsNotNullOrEmptyConstraint<TValue> : Constraint<IEnumerable<TValue>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsNotNullOrEmptyEnumerableConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="EnumerableIsNotNullOrEmptyConstraint{T}" /> class.
         /// </summary>    
-        public IsNotNullOrEmptyEnumerableConstraint() {}
+        public EnumerableIsNotNullOrEmptyConstraint() {}
 
-        private IsNotNullOrEmptyEnumerableConstraint(IsNotNullOrEmptyEnumerableConstraint<TValue> constraint, StringTemplate errorMessage)
+        private EnumerableIsNotNullOrEmptyConstraint(EnumerableIsNotNullOrEmptyConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) {}
 
-        private IsNotNullOrEmptyEnumerableConstraint(IsNotNullOrEmptyEnumerableConstraint<TValue> constraint, Identifier name)
+        private EnumerableIsNotNullOrEmptyConstraint(EnumerableIsNotNullOrEmptyConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) {}
 
         #region [====== Name & ErrorMessage ======]
@@ -152,13 +152,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithName(Identifier name)
         {
-            return new IsNotNullOrEmptyEnumerableConstraint<TValue>(this, name);
+            return new EnumerableIsNotNullOrEmptyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsNotNullOrEmptyEnumerableConstraint<TValue>(this, errorMessage);
+            return new EnumerableIsNotNullOrEmptyConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -168,7 +168,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsNullOrEmptyEnumerableConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+            return new EnumerableIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
@@ -186,22 +186,22 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== IsNullOrEmptyEnumerableConstraint ======]
+    #region [====== EnumerableIsNullOrEmptyConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>nul</c> or empty.
     /// </summary>
-    public sealed class IsNullOrEmptyEnumerableConstraint<TValue> : Constraint<IEnumerable<TValue>>
+    public sealed class EnumerableIsNullOrEmptyConstraint<TValue> : Constraint<IEnumerable<TValue>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsNullOrEmptyEnumerableConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="EnumerableIsNullOrEmptyConstraint{T}" /> class.
         /// </summary>    
-        public IsNullOrEmptyEnumerableConstraint() { }
+        public EnumerableIsNullOrEmptyConstraint() { }
 
-        private IsNullOrEmptyEnumerableConstraint(IsNullOrEmptyEnumerableConstraint<TValue> constraint, StringTemplate errorMessage)
+        private EnumerableIsNullOrEmptyConstraint(EnumerableIsNullOrEmptyConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsNullOrEmptyEnumerableConstraint(IsNullOrEmptyEnumerableConstraint<TValue> constraint, Identifier name)
+        private EnumerableIsNullOrEmptyConstraint(EnumerableIsNullOrEmptyConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -215,13 +215,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithName(Identifier name)
         {
-            return new IsNullOrEmptyEnumerableConstraint<TValue>(this, name);
+            return new EnumerableIsNullOrEmptyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsNullOrEmptyEnumerableConstraint<TValue>(this, errorMessage);
+            return new EnumerableIsNullOrEmptyConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -231,7 +231,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsNotNullOrEmptyEnumerableConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+            return new EnumerableIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
@@ -249,19 +249,19 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== ElementAtEnumerableConstraint ======]
+    #region [====== EnumerableElementAtConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a collection contains an element at a certain index.
     /// </summary>
-    public sealed class ElementAtEnumerableConstraint<TValue> : Constraint<IEnumerable<TValue>, TValue>
+    public sealed class EnumerableElementAtConstraint<TValue> : Constraint<IEnumerable<TValue>, TValue>
     {
         private readonly int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtEnumerableConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="EnumerableElementAtConstraint{T}" /> class.
         /// </summary>    
-        public ElementAtEnumerableConstraint(int index)
+        public EnumerableElementAtConstraint(int index)
         {
             if (index < 0)
             {
@@ -270,13 +270,13 @@ namespace Kingo.BuildingBlocks.Constraints
             _index = index;
         }
 
-        private ElementAtEnumerableConstraint(ElementAtEnumerableConstraint<TValue> constraint, StringTemplate errorMessage)
+        private EnumerableElementAtConstraint(EnumerableElementAtConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _index = constraint._index;
         }
 
-        private ElementAtEnumerableConstraint(ElementAtEnumerableConstraint<TValue> constraint, Identifier name)
+        private EnumerableElementAtConstraint(EnumerableElementAtConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             _index = constraint._index;
@@ -301,13 +301,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtEnumerableConstraint<TValue>(this, name);
+            return new EnumerableElementAtConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IEnumerable<TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtEnumerableConstraint<TValue>(this, errorMessage);
+            return new EnumerableElementAtConstraint<TValue>(this, errorMessage);
         }
 
         #endregion

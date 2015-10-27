@@ -101,7 +101,6 @@
     <Compile Include="Constraints\OrConstraint.T1.cs" />
     <Compile Include="Constraints\StringConstraints.Contains.cs" />
     <Compile Include="Constraints\StringConstraints.EndsWith.cs" />
-    <Compile Include="Constraints\StringConstraints.HasLengthOf.cs" />
     <Compile Include="Constraints\StringConstraints.IsEqualTo.cs" />
     <Compile Include="Constraints\StringConstraints.IsNullOrEmpty.cs" />
     <Compile Include="Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />

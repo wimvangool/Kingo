@@ -68,7 +68,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, IList<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtListConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
+            return member.Apply(new ListElementAtConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> ElementAt<TMessage, TValue>(this IMemberConstraint<TMessage, IReadOnlyList<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtReadOnlyListConstraint<TValue>(index).WithErrorMessage(errorMessage));
+            return member.Apply(new ReadOnlyListElementAtReadOnlyConstraint<TValue>(index).WithErrorMessage(errorMessage));
         }
 
         /// <summary>
@@ -172,19 +172,19 @@ namespace Kingo.BuildingBlocks.Constraints
         }
     }
 
-    #region [====== ElementAtListConstraints ======]
+    #region [====== ListElementAtConstraints ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a list contains an element at a certain index.
     /// </summary>
-    public sealed class ElementAtListConstraint<TValue> : Constraint<IList<TValue>, TValue>
+    public sealed class ListElementAtConstraint<TValue> : Constraint<IList<TValue>, TValue>
     {
         private readonly int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtListConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ListElementAtConstraint{T}" /> class.
         /// </summary>    
-        public ElementAtListConstraint(int index)
+        public ListElementAtConstraint(int index)
         {
             if (index < 0)
             {
@@ -193,13 +193,13 @@ namespace Kingo.BuildingBlocks.Constraints
             _index = index;
         }
 
-        private ElementAtListConstraint(ElementAtListConstraint<TValue> constraint, StringTemplate errorMessage)
+        private ListElementAtConstraint(ListElementAtConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _index = constraint._index;
         }
 
-        private ElementAtListConstraint(ElementAtListConstraint<TValue> constraint, Identifier name)
+        private ListElementAtConstraint(ListElementAtConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             _index = constraint._index;
@@ -224,13 +224,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IList<TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtListConstraint<TValue>(this, name);
+            return new ListElementAtConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IList<TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtListConstraint<TValue>(this, errorMessage);
+            return new ListElementAtConstraint<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -271,14 +271,14 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a list contains an element at a certain index.
     /// </summary>
-    public sealed class ElementAtReadOnlyListConstraint<TValue> : Constraint<IReadOnlyList<TValue>, TValue>
+    public sealed class ReadOnlyListElementAtReadOnlyConstraint<TValue> : Constraint<IReadOnlyList<TValue>, TValue>
     {
         private readonly int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtReadOnlyListConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ReadOnlyListElementAtReadOnlyConstraint{T}" /> class.
         /// </summary>    
-        public ElementAtReadOnlyListConstraint(int index)
+        public ReadOnlyListElementAtReadOnlyConstraint(int index)
         {
             if (index < 0)
             {
@@ -287,13 +287,13 @@ namespace Kingo.BuildingBlocks.Constraints
             _index = index;
         }
 
-        private ElementAtReadOnlyListConstraint(ElementAtReadOnlyListConstraint<TValue> constraint, StringTemplate errorMessage)
+        private ReadOnlyListElementAtReadOnlyConstraint(ReadOnlyListElementAtReadOnlyConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _index = constraint._index;
         }
 
-        private ElementAtReadOnlyListConstraint(ElementAtReadOnlyListConstraint<TValue> constraint, Identifier name)
+        private ReadOnlyListElementAtReadOnlyConstraint(ReadOnlyListElementAtReadOnlyConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             _index = constraint._index;
@@ -318,13 +318,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyList<TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtReadOnlyListConstraint<TValue>(this, name);
+            return new ReadOnlyListElementAtReadOnlyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<IReadOnlyList<TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtReadOnlyListConstraint<TValue>(this, errorMessage);
+            return new ReadOnlyListElementAtReadOnlyConstraint<TValue>(this, errorMessage);
         }
 
         #endregion

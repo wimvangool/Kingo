@@ -94,7 +94,7 @@ namespace Kingo.ChessApplication.Players
         {
             validator.VerifyThat(m => m.Username)
                 .IsNotNullOrWhiteSpace(ValidationErrorMessages.RegisterPlayerCommand_Username_NotSpecified)
-                .HasLengthBetween(minLength, maxLength, ValidationErrorMessages.RegisterPlayerCommand_Username_InvalidLength)
+                //.HasLengthBetween(minLength, maxLength, ValidationErrorMessages.RegisterPlayerCommand_Username_InvalidLength)
                 .Matches(regex, ValidationErrorMessages.RegisterPlayerCommand_Username_IllegalCharacters);
         }
 
@@ -102,7 +102,7 @@ namespace Kingo.ChessApplication.Players
         {
             validator.VerifyThat(m => m.Password)
                 .IsNotNullOrWhiteSpace(ValidationErrorMessages.RegisterPlayerCommand_Password_NotSpecified)
-                .HasLengthBetween(minLength, maxLength, ValidationErrorMessages.RegisterPlayerCommand_Password_InvalidLength)
+                //.HasLengthBetween(minLength, maxLength, ValidationErrorMessages.RegisterPlayerCommand_Password_InvalidLength)
                 .Matches(regex, ValidationErrorMessages.RegisterPlayerCommand_Password_IllegalCharacters);
         }
 

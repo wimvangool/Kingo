@@ -192,7 +192,7 @@
   <data name="BasicConstraints_MultipleConstraintsFailed" xml:space="preserve">
     <value>{member.Name} ({member.Value}) did not satisfy the following constraint: '{constraint}'.</value>
   </data>
-  <data name="NullableConstraints_IsNotNull" xml:space="preserve">
+  <data name="NullableConstraints_HasValue" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must have a value.</value>
   </data>
   <data name="StringConstraints_Contains" xml:space="preserve">
@@ -212,12 +212,6 @@
   </data>
   <data name="StringConstraints_EndsWith" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must end with '{constraint.Postfix}'.</value>
-  </data>
-  <data name="StringConstraints_HasLengthBetween" xml:space="preserve">
-    <value>{member.Name}'s Length ({member.Value}) must be within range {constraint.Range}.</value>
-  </data>
-  <data name="StringConstraints_HasLengthOf" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must have a length of {constraint.Length} character(s).</value>
   </data>
   <data name="StringConstraints_IsByte" xml:space="preserve">
     <value>{member.Name} ({member.Value}) could not be converted to a byte.</value>
@@ -245,15 +239,6 @@
   </data>
   <data name="StringConstraints_IsSingle" xml:space="preserve">
     <value>{member.Name} ({member.Value}) could not be converted to a 32-bit floating point number.</value>
-  </data>
-  <data name="StringConstraints_IsUInt16" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 16-bit unsigned integer.</value>
-  </data>
-  <data name="StringConstraints_IsUInt32" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 32-bit unsigned integer.</value>
-  </data>
-  <data name="StringConstraints_IsUInt64" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 64-bit unsigned integer.</value>
   </data>
   <data name="StringConstraints_Matches" xml:space="preserve">
     <value>{member.Name} ({member.Value}) must match pattern '{constraint.Pattern}'.</value>

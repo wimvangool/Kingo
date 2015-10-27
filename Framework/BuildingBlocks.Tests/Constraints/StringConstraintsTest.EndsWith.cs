@@ -43,7 +43,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void ValidateDoesNotEndWith_Throws_IfMemberIsNull()
         {
             var message = new ValidatedMessage<string>(null);
@@ -104,7 +104,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void ValidateEndsWith_Throws_IfMemberIsNull()
         {
             var message = new ValidatedMessage<string>(null);
@@ -160,5 +160,5 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         #endregion
-    }
+    }    
 }

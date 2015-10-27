@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, bool> IsTrue<TMessage>(this IMemberConstraint<TMessage, bool> member, string errorMessage = null)
         {
-            return member.Apply(new IsTrueConstraint().WithErrorMessage(errorMessage));
+            return member.Apply(new BooleanIsTrueConstraint().WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -49,28 +49,28 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, bool> IsFalse<TMessage>(this IMemberConstraint<TMessage, bool> member, string errorMessage = null)
         {
-            return member.Apply(new IsFalseConstraint().WithErrorMessage(errorMessage));
+            return member.Apply(new BooleanIsFalseConstraint().WithErrorMessage(errorMessage));
         }        
 
         #endregion
     }
 
-    #region [====== IsTrueConstraint ======]
+    #region [====== BooleanIsTrueConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a value is <c>false</c>.
     /// </summary>
-    public sealed class IsTrueConstraint : Constraint<bool>
+    public sealed class BooleanIsTrueConstraint : Constraint<bool>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsTrueConstraint" /> class.
+        /// Initializes a new instance of the <see cref="BooleanIsTrueConstraint" /> class.
         /// </summary>        
-        public IsTrueConstraint() { }
+        public BooleanIsTrueConstraint() { }
 
-        private IsTrueConstraint(IsTrueConstraint constraint, StringTemplate errorMessage)
+        private BooleanIsTrueConstraint(BooleanIsTrueConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsTrueConstraint(IsTrueConstraint constraint, Identifier name)
+        private BooleanIsTrueConstraint(BooleanIsTrueConstraint constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -84,13 +84,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithName(Identifier name)
         {
-            return new IsTrueConstraint(this, name);
+            return new BooleanIsTrueConstraint(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsTrueConstraint(this, errorMessage);
+            return new BooleanIsTrueConstraint(this, errorMessage);
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsFalseConstraint().WithErrorMessage(errorMessage).WithName(name);
+            return new BooleanIsFalseConstraint().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
@@ -118,22 +118,22 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== IsFalseConstraint ======]
+    #region [====== BooleanIsFalseConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a value is <c>false</c>.
     /// </summary>
-    public sealed class IsFalseConstraint : Constraint<bool>
+    public sealed class BooleanIsFalseConstraint : Constraint<bool>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsFalseConstraint" /> class.
+        /// Initializes a new instance of the <see cref="BooleanIsFalseConstraint" /> class.
         /// </summary>        
-        public IsFalseConstraint() { }            
+        public BooleanIsFalseConstraint() { }            
 
-        private IsFalseConstraint(IsFalseConstraint constraint, StringTemplate errorMessage)
+        private BooleanIsFalseConstraint(BooleanIsFalseConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private IsFalseConstraint(IsFalseConstraint constraint, Identifier name)
+        private BooleanIsFalseConstraint(BooleanIsFalseConstraint constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -147,13 +147,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithName(Identifier name)
         {
-            return new IsFalseConstraint(this, name);
+            return new BooleanIsFalseConstraint(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsFalseConstraint(this, errorMessage);
+            return new BooleanIsFalseConstraint(this, errorMessage);
         }
 
         #endregion
@@ -163,7 +163,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsTrueConstraint().WithErrorMessage(errorMessage).WithName(name);
+            return new BooleanIsTrueConstraint().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion

@@ -16,7 +16,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var message = new ValidatedMessage<string>("Some value");
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).DoesNotMatch(null);
+            validator.VerifyThat(m => m.Member).DoesNotMatch(null as Regex);
         }
 
         [TestMethod]
@@ -97,7 +97,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var message = new ValidatedMessage<string>("Some value");
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).Matches(null);
+            validator.VerifyThat(m => m.Member).Matches(null as Regex);
         }
 
         [TestMethod]

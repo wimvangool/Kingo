@@ -26,28 +26,28 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, TValue> IsNotNull<TMessage, TValue>(this IMemberConstraint<TMessage, TValue?> member, string errorMessage = null) where TValue : struct
         {
-            return member.Apply(new HasValueConstraint<TValue>().WithErrorMessage(errorMessage));
+            return member.Apply(new NullableHasValueConstraint<TValue>().WithErrorMessage(errorMessage));
         }        
 
         #endregion
     }
 
-    #region [====== HasValueConstraint ======]
+    #region [====== NullableHasValueConstraint ======]
 
     /// <summary>
     /// Represents a constraint that checks whether or not a <see cref="Nullable{T}" /> has a value.
     /// </summary>
-    public sealed class HasValueConstraint<TValue> : Constraint<TValue?, TValue> where TValue : struct
+    public sealed class NullableHasValueConstraint<TValue> : Constraint<TValue?, TValue> where TValue : struct
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="HasValueConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="NullableHasValueConstraint{T}" /> class.
         /// </summary>    
-        public HasValueConstraint() {}
+        public NullableHasValueConstraint() {}
 
-        private HasValueConstraint(HasValueConstraint<TValue> constraint, StringTemplate errorMessage)
+        private NullableHasValueConstraint(NullableHasValueConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) {}
 
-        private HasValueConstraint(HasValueConstraint<TValue> constraint, Identifier name)
+        private NullableHasValueConstraint(NullableHasValueConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) {}
 
         #region [====== Name & ErrorMessage ======]
@@ -55,19 +55,19 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         protected override StringTemplate ErrorMessageIfNotSpecified
         {
-            get { return StringTemplate.Parse(ErrorMessages.NullableConstraints_IsNotNull); }
+            get { return StringTemplate.Parse(ErrorMessages.NullableConstraints_HasValue); }
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue?, TValue> WithName(Identifier name)
         {
-            return new HasValueConstraint<TValue>(this, name);
+            return new NullableHasValueConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue?, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new HasValueConstraint<TValue>(this, errorMessage);
+            return new NullableHasValueConstraint<TValue>(this, errorMessage);
         }
 
         #endregion

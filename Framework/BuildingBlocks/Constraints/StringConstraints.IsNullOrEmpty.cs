@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -25,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> IsNotNullOrEmpty<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new StringIsNotNullOrEmptyConstraint().WithErrorMessage(errorMessage));
         }
 
         #endregion
@@ -48,9 +49,135 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> IsNullOrEmpty<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new StringIsNullOrEmptyConstraint().WithErrorMessage(errorMessage));
         }
 
         #endregion
     }
+
+    #region [====== StringIsNotNullOrEmptyConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a string is <c>null</c> or empty.
+    /// </summary>
+    public sealed class StringIsNotNullOrEmptyConstraint : Constraint<string>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StringIsNotNullOrEmptyConstraint" /> class.
+        /// </summary>    
+        public StringIsNotNullOrEmptyConstraint() { }
+
+        private StringIsNotNullOrEmptyConstraint(StringIsNotNullOrEmptyConstraint constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) { }
+
+        private StringIsNotNullOrEmptyConstraint(StringIsNotNullOrEmptyConstraint constraint, Identifier name)
+            : base(constraint, name) { }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_NotNullOrEmpty); }
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
+        {
+            return new StringIsNotNullOrEmptyConstraint(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new StringIsNotNullOrEmptyConstraint(this, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new StringIsNullOrEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(string value)
+        {
+            return !string.IsNullOrEmpty(value);
+        }
+
+        #endregion
+    }
+
+    #endregion
+
+    #region [====== StringIsNullOrEmptyConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a string is <c>null</c> or empty.
+    /// </summary>
+    public sealed class StringIsNullOrEmptyConstraint : Constraint<string>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StringIsNullOrEmptyConstraint" /> class.
+        /// </summary>    
+        public StringIsNullOrEmptyConstraint() {}
+
+        private StringIsNullOrEmptyConstraint(StringIsNullOrEmptyConstraint constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) {}
+
+        private StringIsNullOrEmptyConstraint(StringIsNullOrEmptyConstraint constraint, Identifier name)
+            : base(constraint, name) {}
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_NullOrEmpty); }
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
+        {
+            return new StringIsNullOrEmptyConstraint(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new StringIsNullOrEmptyConstraint(this, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new StringIsNotNullOrEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(string value)
+        {
+            return string.IsNullOrEmpty(value);
+        }
+
+        #endregion
+    }
+
+    #endregion
 }

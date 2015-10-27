@@ -324,9 +324,9 @@ namespace Kingo.BuildingBlocks.Resources {
         /// <summary>
         ///   Looks up a localized string similar to {member.Name} ({member.Value}) must have a value..
         /// </summary>
-        internal static string NullableConstraints_IsNotNull {
+        internal static string NullableConstraints_HasValue {
             get {
-                return ResourceManager.GetString("NullableConstraints_IsNotNull", resourceCulture);
+                return ResourceManager.GetString("NullableConstraints_HasValue", resourceCulture);
             }
         }
         
@@ -381,24 +381,6 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string StringConstraints_EndsWith {
             get {
                 return ResourceManager.GetString("StringConstraints_EndsWith", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name}&apos;s Length ({member.Value}) must be within range {constraint.Range}..
-        /// </summary>
-        internal static string StringConstraints_HasLengthBetween {
-            get {
-                return ResourceManager.GetString("StringConstraints_HasLengthBetween", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must have a length of {constraint.Length} character(s)..
-        /// </summary>
-        internal static string StringConstraints_HasLengthOf {
-            get {
-                return ResourceManager.GetString("StringConstraints_HasLengthOf", resourceCulture);
             }
         }
         
@@ -480,33 +462,6 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string StringConstraints_IsSingle {
             get {
                 return ResourceManager.GetString("StringConstraints_IsSingle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 16-bit unsigned integer..
-        /// </summary>
-        internal static string StringConstraints_IsUInt16 {
-            get {
-                return ResourceManager.GetString("StringConstraints_IsUInt16", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 32-bit unsigned integer..
-        /// </summary>
-        internal static string StringConstraints_IsUInt32 {
-            get {
-                return ResourceManager.GetString("StringConstraints_IsUInt32", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 64-bit unsigned integer..
-        /// </summary>
-        internal static string StringConstraints_IsUInt64 {
-            get {
-                return ResourceManager.GetString("StringConstraints_IsUInt64", resourceCulture);
             }
         }
         

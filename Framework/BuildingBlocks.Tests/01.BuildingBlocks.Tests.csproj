@@ -78,7 +78,6 @@
     <Compile Include="Messaging\ConstraintValidatorExtensions.cs" />
     <Compile Include="Constraints\StringConstraintsTest.Contains.cs" />
     <Compile Include="Constraints\StringConstraintsTest.EndsWith.cs" />
-    <Compile Include="Constraints\StringConstraintsTest.HasLengthOf.cs" />
     <Compile Include="Constraints\StringConstraintsTest.IsEqualTo.cs" />
     <Compile Include="Constraints\StringConstraintsTest.IsNullOrWhiteSpace.cs" />
     <Compile Include="Constraints\StringConstraintsTest.IsNullOrEmpty.cs" />

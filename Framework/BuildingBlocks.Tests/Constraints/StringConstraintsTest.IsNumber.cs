@@ -170,7 +170,8 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== IsChar ======]
 
         [TestMethod]
-        public void ValidateIsChar_ReturnsExpectedError_IfMemberIsNull()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ValidateIsChar_Throws_IfMemberIsNull()
         {
             var message = new ValidatedMessage<string>(null);
             var validator = message.CreateConstraintValidator();

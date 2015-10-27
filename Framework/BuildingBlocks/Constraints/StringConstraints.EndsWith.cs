@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -26,7 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> DoesNotEndWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.DoesNotEndWith(postfix, StringComparison.Ordinal, errorMessage);
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> DoesNotEndWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, StringComparison compareType, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new StringEndsWithConstraint(postfix, compareType).Invert(errorMessage));
         }
 
         #endregion
@@ -71,7 +72,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> EndsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.EndsWith(postfix, StringComparison.Ordinal, errorMessage);
         }
 
         /// <summary>
@@ -92,9 +93,118 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> EndsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, StringComparison compareType, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new StringEndsWithConstraint(postfix, compareType).WithErrorMessage(errorMessage));
         }
 
         #endregion
     }
+
+    #region [====== StringEndsWithConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a <see cref="string" /> ends with a certain value.
+    /// </summary>
+    public sealed class StringEndsWithConstraint : Constraint<string>
+    {
+        private readonly string _postfix;
+        private readonly StringComparison _compareType;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Kingo.BuildingBlocks.Constraints.StringEndsWithConstraint" /> class.
+        /// </summary>    
+        /// <param name="postfix">The prefix the value should end with.</param>
+        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="postfix"/> is <c>null</c>.
+        /// </exception>
+        public StringEndsWithConstraint(string postfix, StringComparison compareType = StringComparison.Ordinal)
+        {
+            if (postfix == null)
+            {
+                throw new ArgumentNullException("postfix");
+            }
+            _postfix = postfix;
+            _compareType = compareType;
+        }
+
+        private StringEndsWithConstraint(StringEndsWithConstraint constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage)
+        {
+            _postfix = constraint._postfix;
+            _compareType = constraint._compareType;
+        }
+
+        private StringEndsWithConstraint(StringEndsWithConstraint constraint, Identifier name)
+            : base(constraint, name)
+        {
+            _postfix = constraint._postfix;
+            _compareType = constraint._compareType;
+        }
+
+        /// <summary>
+        /// The postfix the value should end with.
+        /// </summary>
+        public string Postfix
+        {
+            get { return _postfix; }
+        }
+
+        /// <summary>
+        /// One of the enumeration values that specifies how the strings will be compared.
+        /// </summary>
+        public StringComparison CompareType
+        {
+            get { return _compareType; }
+        }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_EndsWith); }
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
+        {
+            return new StringEndsWithConstraint(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new StringEndsWithConstraint(this, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new ConstraintInverter<string>(this, ErrorMessages.StringConstraints_DoesNotEndWith)
+                .WithErrorMessage(errorMessage)
+                .WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(string value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+            return value.EndsWith(_postfix, _compareType);
+        }
+
+        #endregion
+    }
+
+    #endregion
 }

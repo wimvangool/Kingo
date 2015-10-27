@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -26,7 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> DoesNotStartWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.DoesNotStartWith(prefix, StringComparison.Ordinal, errorMessage);
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> DoesNotStartWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, StringComparison compareType, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new StringStartsWithConstraint(prefix, compareType).Invert(errorMessage));
         }
 
         #endregion
@@ -71,7 +72,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> StartsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.StartsWith(prefix, StringComparison.Ordinal, errorMessage);
         }
 
         /// <summary>
@@ -92,9 +93,118 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<TMessage, string> StartsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, StringComparison compareType, string errorMessage = null)
         {
-            throw new NotImplementedException();
+            return member.Apply(new StringStartsWithConstraint(prefix, compareType).WithErrorMessage(errorMessage));
         }
 
         #endregion
     }
+
+    #region [====== StringStartsWithConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that checks whether or not a <see cref="string" /> starts with a certain value.
+    /// </summary>
+    public sealed class StringStartsWithConstraint : Constraint<string>
+    {
+        private readonly string _prefix;
+        private readonly StringComparison _compareType;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StringStartsWithConstraint" /> class.
+        /// </summary>    
+        /// <param name="prefix">The prefix the value should start with.</param>
+        /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="prefix"/> is <c>null</c>.
+        /// </exception>
+        public StringStartsWithConstraint(string prefix, StringComparison compareType = StringComparison.Ordinal)
+        {
+            if (prefix == null)
+            {
+                throw new ArgumentNullException("prefix");
+            }
+            _prefix = prefix;
+            _compareType = compareType;
+        }
+
+        private StringStartsWithConstraint(StringStartsWithConstraint constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage)
+        {
+            _prefix = constraint._prefix;
+            _compareType = constraint._compareType;
+        }
+
+        private StringStartsWithConstraint(StringStartsWithConstraint constraint, Identifier name)
+            : base(constraint, name)
+        {
+            _prefix = constraint._prefix;
+            _compareType = constraint._compareType;
+        }
+
+        /// <summary>
+        /// The prefix the value should start with.
+        /// </summary>
+        public string Prefix
+        {
+            get { return _prefix; }
+        }
+
+        /// <summary>
+        /// One of the enumeration values that specifies how the strings will be compared.
+        /// </summary>
+        public StringComparison CompareType
+        {
+            get { return _compareType; }
+        }
+
+        #region [====== Name & ErrorMessage ======]
+
+        /// <inheritdoc />
+        protected override StringTemplate ErrorMessageIfNotSpecified
+        {
+            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_StartsWith); }
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
+        {
+            return new StringStartsWithConstraint(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new StringStartsWithConstraint(this, errorMessage);
+        }
+
+        #endregion
+
+        #region [====== And, Or & Invert ======]
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
+        {
+            return new ConstraintInverter<string>(this, ErrorMessages.StringConstraints_DoesNotStartWith)
+                .WithErrorMessage(errorMessage)
+                .WithName(name);
+        }
+
+        #endregion
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(string value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+            return value.StartsWith(_prefix, _compareType);
+        }
+
+        #endregion
+    }
+
+    #endregion
 }
