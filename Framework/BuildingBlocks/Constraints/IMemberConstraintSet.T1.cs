@@ -17,36 +17,56 @@ namespace Kingo.BuildingBlocks.Constraints
         /// constraints on <typeparamref name="TValue"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to verify.</typeparam>
-        /// <param name="memberExpression">
+        /// <param name="fieldOrPropertyExpression">
         /// An expression that returns an instance of <typeparamref name="TValue"/>.
         /// </param>
         /// <returns>A new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
         /// constraints on <typeparamref name="TValue"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="memberExpression"/> is <c>null</c>.
-        /// </exception>
+        /// <paramref name="fieldOrPropertyExpression"/> is <c>null</c>.
+        /// </exception>        
         /// <exception cref="ArgumentException">
-        /// <paramref name="memberExpression"/> refers to a member that was already added.
+        /// <paramref name="fieldOrPropertyExpression"/> is not a supported expression.
         /// </exception>
-        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> memberExpression);       
+        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> fieldOrPropertyExpression);
 
         /// <summary>
         /// Creates and returns a new <see cref="IMemberConstraint{TMessage}"/> that can be used to define certain
         /// constraints on <typeparamref name="TValue"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to verify.</typeparam>
-        /// <param name="memberValueFactory">
+        /// <param name="fieldOrProperty">
         /// A delegate that returns an instance of <typeparamref name="TValue"/>.
         /// </param>
-        /// <param name="memberName">The name of the member to add constraints for.</param>
+        /// <param name="fieldOrPropertyName">The name of the member to add constraints for.</param>
         /// <returns>A new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
         /// constraints on <typeparamref name="TValue"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="memberValueFactory"/> or <paramref name="memberName"/> is <c>null</c>.
+        /// <paramref name="fieldOrProperty"/> or <paramref name="fieldOrPropertyName"/> is <c>null</c>.
         /// </exception> 
-        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> memberValueFactory, string memberName);                
+        /// <exception cref="ArgumentException">
+        /// <paramref name="fieldOrPropertyName"/> is not a valid identifier.
+        /// </exception>
+        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> fieldOrProperty, string fieldOrPropertyName); 
+
+        /// <summary>
+        /// Creates and returns a new <see cref="IMemberConstraint{TMessage}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the value to verify.</typeparam>
+        /// <param name="fieldOrProperty">
+        /// A delegate that returns an instance of <typeparamref name="TValue"/>.
+        /// </param>
+        /// <param name="fieldOrPropertyName">The name of the member to add constraints for.</param>
+        /// <returns>A new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
+        /// constraints on <typeparamref name="TValue"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="fieldOrProperty"/> or <paramref name="fieldOrPropertyName"/> is <c>null</c>.
+        /// </exception> 
+        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> fieldOrProperty, Identifier fieldOrPropertyName);                
 
         #endregion                   
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kingo.BuildingBlocks.Clocks;
 using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,7 +8,46 @@ namespace Kingo.BuildingBlocks.Constraints
 {
     [TestClass]
     public sealed class ListConstraintTest : ConstraintTestBase
-    {               
+    {
+        #region [====== Count ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Count_Throws_IfCollectionIsNull()
+        {
+            var message = new ValidatedMessage<IList<object>>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Count();
+
+            validator.Validate(message);
+        }
+
+        [TestMethod]
+        public void LengthIsNotEqualTo_ReturnsExpectedErrorMessage_IfLengthIsNotEqualToSpecifiedValue()
+        {
+            var message = new ValidatedMessage<IList<object>>(new object[3]);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Count().IsNotEqualTo(3);
+
+            validator.Validate(message).AssertOneError("Member.Count (3) must not be equal to '3'.");
+        }
+
+        [TestMethod]
+        public void Count_ReturnsNumberOfElements_IfCollectionIsNotNull()
+        {
+            var count = Clock.Current.LocalDateAndTime().Hour;
+            var message = new ValidatedMessage<IList<object>>(new object[count]);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Count().IsEqualTo(count);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        #endregion
+
         #region [====== ElementAt ======]
 
         [TestMethod]

@@ -29,6 +29,11 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return _parentNames; }
         }
 
+        protected override Identifier[] FieldsOrProperties
+        {
+            get { return Identifier.EmptyArray; }
+        }
+
         public override string Name
         {
             get { return _name; }

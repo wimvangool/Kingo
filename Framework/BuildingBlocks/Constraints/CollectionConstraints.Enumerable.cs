@@ -52,6 +52,22 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
+        #region [====== Count ======]
+
+        /// <summary>
+        /// Counts the number of elements of the specified collection.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, int> Count<TMessage, TValue>(this IMemberConstraint<TMessage, IEnumerable<TValue>> member)
+        {
+            return member.Apply(new EnumerableCountConstraint<TValue>());
+        }
+
+        #endregion
+
         #region [====== ElementAt ======]
 
         /// <summary>
@@ -242,6 +258,54 @@ namespace Kingo.BuildingBlocks.Constraints
         public override bool IsSatisfiedBy(IEnumerable<TValue> value)
         {
             return value == null || !value.Any();
+        }
+
+        #endregion
+    }
+
+    #endregion
+
+    #region [====== EnumerableCountConstraint ======]
+
+    /// <summary>
+    /// Represents a constraint that simply returns the number of items within the collection.
+    /// </summary>
+    public sealed class EnumerableCountConstraint<TValue> : Constraint<IEnumerable<TValue>, int>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EnumerableCountConstraint{T}" /> class.
+        /// </summary>    
+        public EnumerableCountConstraint() {}
+
+        private EnumerableCountConstraint(EnumerableCountConstraint<TValue> constraint, StringTemplate errorMessage)
+            : base(constraint, errorMessage) {}
+
+        private EnumerableCountConstraint(EnumerableCountConstraint<TValue> constraint, Identifier name)
+            : base(constraint, name) {}
+
+        #region [====== Name & ErrorMessage ======]        
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<IEnumerable<TValue>, int> WithName(Identifier name)
+        {
+            return new EnumerableCountConstraint<TValue>(this, name);
+        }
+
+        /// <inheritdoc />
+        public override IConstraintWithErrorMessage<IEnumerable<TValue>, int> WithErrorMessage(StringTemplate errorMessage)
+        {
+            return new EnumerableCountConstraint<TValue>(this, errorMessage);
+        }
+
+        #endregion        
+
+        #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]        
+
+        /// <inheritdoc />
+        public override bool IsSatisfiedBy(IEnumerable<TValue> valueIn, out int valueOut)
+        {
+            valueOut = valueIn.Count();
+            return true;
         }
 
         #endregion

@@ -43,14 +43,19 @@ namespace Kingo.BuildingBlocks.Constraints
                 return new MemberConstraintEventArgs<TOriginal>(new ChildConstraint<TOriginal,TResult>(arguments.MemberConstraint, _member));
             }
                 
-            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Expression<Func<TResult, TValue>> memberExpression)
+            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Expression<Func<TResult, TValue>> fieldOrPropertyExpression)
             {
-                return _childSet.VerifyThat(memberExpression);
+                return _childSet.VerifyThat(fieldOrPropertyExpression);
             }
 
-            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> memberValueFactory, string memberName)
+            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> fieldOrProperty, string fieldOrPropertyName)
             {
-                return _childSet.VerifyThat(memberValueFactory, memberName);
+                return _childSet.VerifyThat(fieldOrProperty, fieldOrPropertyName);
+            }
+
+            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> fieldOrProperty, Identifier fieldOrPropertyName)
+            {
+                return _childSet.VerifyThat(fieldOrProperty, fieldOrPropertyName);
             }
 
             public bool WriteErrorMessages(TOriginal item, IErrorMessageReader reader)
@@ -116,10 +121,10 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Join(Environment.NewLine, _membersConstraints.Values);
+            return string.Format("{0} constraint(s)", _membersConstraints.Count + _childConstraintSets.Count);
         }
 
-        #region [====== Push & Pop Parent ======]
+        #region [====== ChildMemberConstraints ======]
 
         internal void AddChildMemberConstraints<TResult>(Action<IMemberConstraintSet<TResult>> innerConstraintFactory, Member<TMessage, TResult> member)
         {
@@ -131,7 +136,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             innerConstraintFactory.Invoke(childConstraintSet);
 
-            _childConstraintSets.Add(member.FullName, childConstraintSet);            
+            _childConstraintSets.Add(member.Key, childConstraintSet);            
         }        
 
         #endregion
@@ -139,19 +144,25 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== VerifyThat ======]
 
         /// <inheritdoc />
-        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> memberExpression)
+        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> fieldOrPropertyExpression)
         {
-            if (memberExpression == null)
+            if (fieldOrPropertyExpression == null)
             {
-                throw new ArgumentNullException("memberExpression");
+                throw new ArgumentNullException("fieldOrPropertyExpression");
             }
-            return VerifyThat(memberExpression.Compile(), memberExpression.ExtractMemberName());
+            return VerifyThat(fieldOrPropertyExpression.Compile(), fieldOrPropertyExpression.ExtractMemberName());
         }
 
         /// <inheritdoc />
-        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> memberValueFactory, string memberName)
+        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> fieldOrProperty, string fieldOrPropertyName)
         {
-            var member = new Member<TMessage, TValue>(_parentNames, memberName, memberValueFactory);            
+            return VerifyThat(fieldOrProperty, Identifier.ParseOrNull(fieldOrPropertyName));
+        }
+
+        /// <inheritdoc />
+        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> fieldOrProperty, Identifier fieldOrPropertyName)
+        {
+            var member = new Member<TMessage, TValue>(_parentNames, fieldOrPropertyName.ToString(), fieldOrProperty);            
             var memberConstraint = new MemberConstraint<TMessage, TValue, TValue>(this, CreateConstraintFactory(member));
 
             Add(memberConstraint);
@@ -166,7 +177,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion        
 
-        #region [====== Add, Remove & Replace ======]         
+        #region [====== Add, Remove & Replace ======]
 
         /// <summary>
         /// Replaces <paramref name="oldConstraint"/> by the specified <paramref name="newConstraint"/>.
@@ -235,7 +246,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("constraint");
             }
-            var member = constraint.Member.FullName;
+            var member = constraint.Member.Key;
             LinkedList<IMemberConstraint<TMessage>> existingConstraints;
 
             if (_membersConstraints.TryGetValue(member, out existingConstraints) && existingConstraints.Remove(constraint))
@@ -280,7 +291,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("constraint");
             }
-            var member = constraint.Member.FullName;
+            var member = constraint.Member.Key;
             LinkedList<IMemberConstraint<TMessage>> existingConstraints;
 
             if (!_membersConstraints.TryGetValue(member, out existingConstraints))
@@ -290,7 +301,11 @@ namespace Kingo.BuildingBlocks.Constraints
             existingConstraints.AddLast(constraint);
 
             OnConstraintAdded(new MemberConstraintEventArgs<TMessage>(constraint));
-        }              
+        } 
+        
+        #endregion
+
+        #region [====== WriteErrorMessages ======]
 
         /// <inheritdoc />
         public bool WriteErrorMessages(TMessage message, IErrorMessageReader reader)

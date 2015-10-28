@@ -13,19 +13,21 @@ namespace Kingo.BuildingBlocks.Constraints
             _value = value;
         }                
 
-        /// <inheritdoc />
+        public string Key
+        {
+            get { return _member.Key; }    
+        }
+        
         public string FullName
         {
             get { return _member.FullName; }
         }
-
-        /// <inheritdoc />
+        
         public string Name
         {
             get { return _member.Name; }
         }
-
-        /// <inheritdoc />
+        
         public Type Type
         {
             get { return ReferenceEquals(_value, null) ? _member.Type : _value.GetType(); }
@@ -38,8 +40,8 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public override string ToString()
         {
-            return string.Format("{0} ({1}, {2})", FullName, Type, ToString(_value));
-        }
+            return string.Format("Key = {0}, FullName = {1}, Type = {2}, Value = {3}", Key, FullName, Type, ToString(_value));
+        }  
 
         private static string ToString(object value)
         {

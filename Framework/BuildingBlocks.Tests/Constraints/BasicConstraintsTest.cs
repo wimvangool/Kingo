@@ -57,7 +57,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void Validate_ReturnsErrorOfFirstConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_FirstConstraintFails()
         {
             var message = new ValidatedMessage<int>(0);
-            var validator = new ConstraintValidator<ValidatedMessage<int>>();
+            var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).IsSmallerThan(10);
@@ -69,7 +69,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void Validate_ReturnsErrorOfSecondConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_SecondConstraintFails()
         {
             var message = new ValidatedMessage<int>(10);
-            var validator = new ConstraintValidator<ValidatedMessage<int>>();
+            var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).IsSmallerThan(10);
@@ -81,7 +81,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void Validate_ReturnsErrorOfFirstChildConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_FirstChildConstraintFails()
         {
             var message = new ValidatedMessage<int[]>(new [] { 0 });
-            var validator = new ConstraintValidator<ValidatedMessage<int[]>>();
+            var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
@@ -93,12 +93,40 @@ namespace Kingo.BuildingBlocks.Constraints
         public void Validate_ReturnsErrorOfSecondChildConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_SecondChildConstraintFails()
         {
             var message = new ValidatedMessage<int[]>(new [] { 10 } );
-            var validator = new ConstraintValidator<ValidatedMessage<int[]>>();
+            var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
 
             validator.Validate(message).AssertOneError("Member[0] (10) must be smaller than '10'.", "Member[0]");
+        }
+
+        #endregion
+
+        #region [====== Constraints On Fields Or Properties ======]
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedError_IfConstraintOnPropertyFails()
+        {
+            var message = new ValidatedMessage<string>("Some value");
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotNull().And(member => member.Length).IsEqualTo(0);
+
+            validator.Validate(message).AssertOneError("Member.Length (10) must be equal to '0'.");
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedError_IfConstraintOnPropertyOfPropertyFails()
+        {
+            var message = new ValidatedMessage<ValidatedMessage<string>>(new ValidatedMessage<string>("Some value"));
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsNotNull()
+                .And(member => member.Member).IsNotNull()
+                .And(member => member.Length).IsEqualTo(0);
+
+            validator.Validate(message).AssertOneError("Member.Member.Length (10) must be equal to '0'.");
         }
 
         #endregion

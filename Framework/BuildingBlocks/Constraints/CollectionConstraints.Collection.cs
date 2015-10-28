@@ -149,6 +149,70 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
+        #region [====== Count ======]
+
+        /// <summary>
+        /// Counts the number of elements of the specified collection.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, int> Count<TMessage, TValue>(this IMemberConstraint<TMessage, Queue<TValue>> member)
+        {
+            return member.As<ICollection<TValue>>().Count();
+        }
+
+        /// <summary>
+        /// Counts the number of elements of the specified collection.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, int> Count<TMessage, TValue>(this IMemberConstraint<TMessage, Stack<TValue>> member)
+        {
+            return member.As<ICollection<TValue>>().Count();
+        }
+
+        /// <summary>
+        /// Counts the number of elements of the specified collection.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, int> Count<TMessage, TValue>(this IMemberConstraint<TMessage, LinkedList<TValue>> member)
+        {
+            return member.As<ICollection<TValue>>().Count();
+        }
+
+        /// <summary>
+        /// Counts the number of elements of the specified collection.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, int> Count<TMessage, TValue>(this IMemberConstraint<TMessage, ICollection<TValue>> member)
+        {
+            return member.Select(collection => collection.Count);
+        }
+
+        /// <summary>
+        /// Counts the number of elements of the specified collection.
+        /// </summary>        
+        /// <param name="member">A member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, int> Count<TMessage, TValue>(this IMemberConstraint<TMessage, IReadOnlyCollection<TValue>> member)
+        {
+            return member.Select(collection => collection.Count);
+        }
+
+        #endregion
+
         #region [====== ElementAt ======]
 
         /// <summary>
@@ -573,7 +637,7 @@ namespace Kingo.BuildingBlocks.Constraints
         #endregion                    
     }
 
-    #endregion
+    #endregion    
 
     #region [====== CollectionElementAtConstraints ======]
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kingo.BuildingBlocks.Clocks;
 using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -101,6 +102,34 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).IsNullOrEmpty();
 
             validator.Validate(message).AssertOneError("Member must be null or empty.");
+        }
+
+        #endregion
+
+        #region [====== Count ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Count_Throws_IfCollectionIsNull()
+        {
+            var message = new ValidatedMessage<IEnumerable<object>>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Count();
+
+            validator.Validate(message);
+        }
+
+        [TestMethod]        
+        public void Count_ReturnsNumberOfElements_IfCollectionIsNotNull()
+        {
+            var count = Clock.Current.LocalDateAndTime().Hour;
+            var message = new ValidatedMessage<IEnumerable<object>>(new object[count]);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).Count().IsEqualTo(count);
+
+            validator.Validate(message).AssertNoErrors();
         }
 
         #endregion

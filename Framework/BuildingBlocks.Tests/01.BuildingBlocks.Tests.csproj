@@ -66,6 +66,7 @@
     <Compile Include="Constraints\BasicConstraintsTest.IsSameInstanceAs.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsSmallerThan.cs" />
     <Compile Include="Constraints\BooleanConstraintsTest.cs" />
+    <Compile Include="Constraints\CollectionConstraintsTest.Array.cs" />
     <Compile Include="Constraints\CollectionConstraintsTest.Dictionary.cs" />
     <Compile Include="Constraints\CompositeConstraintTest.cs" />
     <Compile Include="Constraints\ConstraintInverterTest.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Constraints\AndConstraintTest.cs" />
     <Compile Include="Constraints\OrConstraintTest.cs" />
     <Compile Include="Constraints\StringConstraintsTest.IsIdentifier.cs" />
+    <Compile Include="Constraints\StringConstraintsTest.Length.cs" />
     <Compile Include="IdentifierTest.cs" />
     <Compile Include="Messaging\ConstraintValidatorExtensions.cs" />
     <Compile Include="Constraints\StringConstraintsTest.Contains.cs" />

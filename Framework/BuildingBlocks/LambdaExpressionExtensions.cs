@@ -20,9 +20,9 @@ namespace Kingo.BuildingBlocks
         /// <exception cref="ArgumentException">
         /// The name of a field or property could not be retrieved from the specified <paramref name="expression"/>.
         /// </exception>
-        public static string ExtractMemberName(this LambdaExpression expression)
+        public static Identifier ExtractMemberName(this LambdaExpression expression)
         {
-            string memberName;
+            Identifier memberName;
 
             if (TryExtractMemberName(expression, out memberName))
             {
@@ -43,32 +43,37 @@ namespace Kingo.BuildingBlocks
         /// <exception cref="ArgumentNullException">
         /// <paramref name="expression"/> is <c>null</c>.
         /// </exception>
-        public static bool TryExtractMemberName(this LambdaExpression expression, out string memberName)
+        public static bool TryExtractMemberName(this LambdaExpression expression, out Identifier memberName)
         {
             if (expression == null)
             {
                 throw new ArgumentNullException("expression");
-            }
+            }            
+            var bodyExpression = expression.Body;
             MemberExpression memberExpression;
 
-            if (TryCastToMemberExpression(expression, out memberExpression))
+            var unaryExpression = bodyExpression as UnaryExpression;
+            if (unaryExpression != null)
             {
-                memberName = memberExpression.Member.Name;
+                if (unaryExpression.NodeType == ExpressionType.ArrayLength)
+                {
+                    memberName = Identifier.Parse("Length");
+                    return true;
+                }
+                bodyExpression = unaryExpression;
+            }            
+            if (TryCastToMemberExpression(bodyExpression, out memberExpression))
+            {
+                memberName = Identifier.Parse(memberExpression.Member.Name);
                 return true;
             }
             memberName = null;
             return false;
         }
 
-        private static bool TryCastToMemberExpression(LambdaExpression lambdaExpression, out MemberExpression memberExpression)
-        {
-            var unaryExpression = lambdaExpression.Body as UnaryExpression;
-            if (unaryExpression != null)
-            {
-                memberExpression = (MemberExpression) unaryExpression.Operand;
-                return true;
-            }
-            return (memberExpression = lambdaExpression.Body as MemberExpression) != null;            
+        private static bool TryCastToMemberExpression(Expression expression, out MemberExpression memberExpression)
+        {            
+            return (memberExpression = expression as MemberExpression) != null;            
         }
 
         private static Exception NewExpressionNotSupportedException(Expression expression)

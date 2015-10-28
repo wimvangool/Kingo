@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
 using Kingo.BuildingBlocks.Constraints;
 
 namespace Kingo.BuildingBlocks.Messaging
@@ -7,9 +6,8 @@ namespace Kingo.BuildingBlocks.Messaging
     /// <summary>
     /// Represents a <see cref="IMessageValidator{T}" /> that is implemented using constraints.
     /// </summary>    
-    public class ConstraintValidator<TMessage> : IMessageValidator<TMessage>, IMemberConstraintSet<TMessage>
-    {        
-        private readonly MemberConstraintSet<TMessage> _memberConstraintSet;
+    public class ConstraintValidator<TMessage> : MemberConstraintSet<TMessage>, IMessageValidator<TMessage>
+    {                
         private readonly IFormatProvider _formatProvider;
 
         /// <summary>
@@ -17,32 +15,9 @@ namespace Kingo.BuildingBlocks.Messaging
         /// </summary>        
         /// <param name="formatProvider">Optional <see cref="IFormatProvider" /> to use when formatting error messages.</param>
         public ConstraintValidator(IFormatProvider formatProvider = null)
-        {                      
-            _memberConstraintSet = new MemberConstraintSet<TMessage>();
+        {                                  
             _formatProvider = formatProvider;
-        }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return _memberConstraintSet.ToString();
-        }
-
-        #region [====== VerifyThat ======]
-
-        /// <inheritdoc />
-        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> memberExpression)
-        {
-            return _memberConstraintSet.VerifyThat(memberExpression);
-        }
-
-        /// <inheritdoc /> 
-        public IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> valueFactory, string name)
-        {
-            return _memberConstraintSet.VerifyThat(valueFactory, name);
-        }        
-
-        #endregion        
+        }                     
 
         #region [====== Validate ======]
 
@@ -55,7 +30,7 @@ namespace Kingo.BuildingBlocks.Messaging
             }
             var builder = CreateDataErrorInfoBuilder(_formatProvider);
 
-            _memberConstraintSet.WriteErrorMessages(message, builder);
+            WriteErrorMessages(message, builder);
 
             return builder.BuildDataErrorInfo();
         }     

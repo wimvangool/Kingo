@@ -296,7 +296,8 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValueIn value, out TValueOut valueOut)
         {
-            return (valueOut = value as TValueOut) != null;
+            valueOut = value as TValueOut;
+            return true;
         }
 
         #endregion

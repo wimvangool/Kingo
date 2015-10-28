@@ -8,6 +8,14 @@ namespace Kingo.BuildingBlocks.Constraints
     public interface IMember
     {
         /// <summary>
+        /// The full name of this member minus any property-members.
+        /// </summary>
+        string Key
+        {
+            get;
+        }
+
+        /// <summary>
         /// The full name of this member.
         /// </summary>
         string FullName

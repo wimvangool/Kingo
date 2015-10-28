@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 
 namespace Kingo.BuildingBlocks.Constraints
 {    
@@ -23,7 +24,25 @@ namespace Kingo.BuildingBlocks.Constraints
             return _memberConstraintFactory.WriteErrorMessages(message, reader);
         }
 
-        /// <inheritdoc />
+        public IMemberConstraint<TMessage, TMember> And<TMember>(Expression<Func<TValueOut, TMember>> fieldOrPropertyExpression)
+        {
+            if (fieldOrPropertyExpression == null)
+            {
+                throw new ArgumentNullException("fieldOrPropertyExpression");
+            }
+            return And(fieldOrPropertyExpression.Compile(), fieldOrPropertyExpression.ExtractMemberName());
+        }
+
+        public IMemberConstraint<TMessage, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, string fieldOrPropertyName)
+        {
+            return And(fieldOrProperty, Identifier.ParseOrNull(fieldOrPropertyName));
+        }
+        
+        public IMemberConstraint<TMessage, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, Identifier fieldOrPropertyName)
+        {
+            return Satisfies(message => new DelegateConstaint<TValueOut, TMember>(fieldOrProperty), new MemberSelectionTransformation(fieldOrPropertyName));
+        }
+        
         public void And(Action<IMemberConstraintSet<TValueOut>> innerConstraintFactory)
         {
             _memberConstraintSet.AddChildMemberConstraints(innerConstraintFactory, _memberConstraintFactory.CreateChildMember());            
@@ -87,16 +106,21 @@ namespace Kingo.BuildingBlocks.Constraints
         
         public IMemberConstraint<TMessage, TOther> Satisfies<TOther>(Func<TMessage, IConstraint<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null)
         {
+            return Satisfies(constraintFactory, new MemberNameTransformation(nameSelector));
+        }
+
+        private IMemberConstraint<TMessage, TOther> Satisfies<TOther>(Func<TMessage, IConstraint<TValueOut, TOther>> constraintFactory, IMemberTransformation transformation)
+        {
             if (constraintFactory == null)
             {
                 throw new ArgumentNullException("constraintFactory");
             }
-            var newConstraintFactory = _memberConstraintFactory.And(constraintFactory, nameSelector);            
+            var newConstraintFactory = _memberConstraintFactory.And(constraintFactory, transformation);
             var newMemberConstraint = new MemberConstraint<TMessage, TValueIn, TOther>(_memberConstraintSet, newConstraintFactory);
 
             _memberConstraintSet.Replace(this, newMemberConstraint);
 
-            return newMemberConstraint;                        
+            return newMemberConstraint;
         }
 
         #endregion                    

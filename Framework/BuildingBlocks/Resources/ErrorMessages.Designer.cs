@@ -61,7 +61,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) is not valid..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) is not valid..
         /// </summary>
         internal static string BasicConstraints_Default {
             get {
@@ -70,7 +70,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be equal to &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be equal to &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsEqualTo {
             get {
@@ -79,7 +79,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be greater than &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be greater than &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsGreaterThan {
             get {
@@ -88,7 +88,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be greater than or equal to &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be greater than or equal to &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsGreaterThanOrEqualTo {
             get {
@@ -97,7 +97,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be within the following range: {constraint.Range}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be within the following range: {constraint.Range}..
         /// </summary>
         internal static string BasicConstraints_IsInRange {
             get {
@@ -106,7 +106,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} of type &apos;{member.Type.FullName}&apos; must be an instance of type &apos;{constraint.Type.FullName}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} of type &apos;{member.Type.FullName}&apos; must be an instance of type &apos;{constraint.Type.FullName}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsInstanceOf {
             get {
@@ -115,7 +115,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be equal to &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not be equal to &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsNotEqualTo {
             get {
@@ -124,7 +124,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be within the following range: {constraint.Range}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not be within the following range: {constraint.Range}..
         /// </summary>
         internal static string BasicConstraints_IsNotInRange {
             get {
@@ -133,7 +133,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} of type &apos;{member.Type.FullName}&apos; must not be an instance of type &apos;{constraint.Type.FullName}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} of type &apos;{member.Type.FullName}&apos; must not be an instance of type &apos;{constraint.Type.FullName}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsNotInstanceOf {
             get {
@@ -142,7 +142,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must refer to an instance of an object..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must refer to an instance of an object..
         /// </summary>
         internal static string BasicConstraints_IsNotNull {
             get {
@@ -151,7 +151,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not refer to the same instance as &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not refer to the same instance as &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsNotSameInstanceAs {
             get {
@@ -160,7 +160,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be null..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be null..
         /// </summary>
         internal static string BasicConstraints_IsNull {
             get {
@@ -169,7 +169,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must refer to the same instance as &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must refer to the same instance as &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsSameInstanceAs {
             get {
@@ -178,7 +178,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be smaller than &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be smaller than &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsSmallerThan {
             get {
@@ -187,7 +187,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be smaller than or equal to &apos;{constraint.Other}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be smaller than or equal to &apos;{constraint.Other}&apos;..
         /// </summary>
         internal static string BasicConstraints_IsSmallerThanOrEqualTo {
             get {
@@ -196,7 +196,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) did not satisfy the following constraint: &apos;{constraint}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) did not satisfy the following constraint: &apos;{constraint}&apos;..
         /// </summary>
         internal static string BasicConstraints_MultipleConstraintsFailed {
             get {
@@ -205,7 +205,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} (true) must be false..
+        ///   Looks up a localized string similar to {member.FullName} (true) must be false..
         /// </summary>
         internal static string BooleanConstraints_IsFalse {
             get {
@@ -214,7 +214,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} (false) must be true..
+        ///   Looks up a localized string similar to {member.FullName} (false) must be true..
         /// </summary>
         internal static string BooleanConstraints_IsTrue {
             get {
@@ -223,7 +223,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}..
         /// </summary>
         internal static string CollectionConstraints_ElementAt {
             get {
@@ -232,7 +232,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value.Count} item(s)) contains no value with key &apos;{constraint.Key}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no value with key &apos;{constraint.Key}&apos;..
         /// </summary>
         internal static string CollectionConstraints_ElementAt_Dictionary {
             get {
@@ -241,7 +241,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} contains no element at index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} contains no element at index {constraint.Index}..
         /// </summary>
         internal static string CollectionConstraints_ElementAt_Enumerable {
             get {
@@ -250,7 +250,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be null and contain at least one element..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not be null and contain at least one element..
         /// </summary>
         internal static string CollectionConstraints_IsNotNullOrEmpty {
             get {
@@ -259,7 +259,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value.Count} item(s)) must be null or empty..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) must be null or empty..
         /// </summary>
         internal static string CollectionConstraints_IsNullOrEmpty {
             get {
@@ -268,7 +268,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} must be null or empty..
+        ///   Looks up a localized string similar to {member.FullName} must be null or empty..
         /// </summary>
         internal static string CollectionConstraints_IsNullOrEmpty_Enumerable {
             get {
@@ -277,7 +277,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value.Count}) does contain an element index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count}) does contain an element index {constraint.Index}..
         /// </summary>
         internal static string CollectionConstraints_NoElementAt {
             get {
@@ -286,7 +286,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} does contain an element index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} does contain an element index {constraint.Index}..
         /// </summary>
         internal static string CollectionConstraints_NoElementAt_Enumerable {
             get {
@@ -295,7 +295,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be empty..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be empty..
         /// </summary>
         internal static string GuidConstraints_IsEmpty {
             get {
@@ -304,7 +304,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not be empty..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not be empty..
         /// </summary>
         internal static string GuidConstraints_IsNotEmpty {
             get {
@@ -313,7 +313,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}..
         /// </summary>
         internal static string ListConstraints_ElementAt {
             get {
@@ -322,7 +322,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must have a value..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must have a value..
         /// </summary>
         internal static string NullableConstraints_HasValue {
             get {
@@ -331,7 +331,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must contain &apos;{constraint.Value}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must contain &apos;{constraint.Value}&apos;..
         /// </summary>
         internal static string StringConstraints_Contains {
             get {
@@ -340,7 +340,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not contain &apos;{constraint.Value}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not contain &apos;{constraint.Value}&apos;..
         /// </summary>
         internal static string StringConstraints_DoesNotContain {
             get {
@@ -349,7 +349,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not end with &apos;{constraint.Postfix}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not end with &apos;{constraint.Postfix}&apos;..
         /// </summary>
         internal static string StringConstraints_DoesNotEndWith {
             get {
@@ -358,7 +358,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not match pattern &apos;{constraint.Pattern}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not match pattern &apos;{constraint.Pattern}&apos;..
         /// </summary>
         internal static string StringConstraints_DoesNotMatch {
             get {
@@ -367,7 +367,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must not start with &apos;{constraint.Prefix}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must not start with &apos;{constraint.Prefix}&apos;..
         /// </summary>
         internal static string StringConstraints_DoesNotStartWith {
             get {
@@ -376,7 +376,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must end with &apos;{constraint.Postfix}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must end with &apos;{constraint.Postfix}&apos;..
         /// </summary>
         internal static string StringConstraints_EndsWith {
             get {
@@ -385,7 +385,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a byte..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a byte..
         /// </summary>
         internal static string StringConstraints_IsByte {
             get {
@@ -394,7 +394,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a single character..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a single character..
         /// </summary>
         internal static string StringConstraints_IsChar {
             get {
@@ -403,7 +403,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 96-bit floating point number..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a 96-bit floating point number..
         /// </summary>
         internal static string StringConstraints_IsDecimal {
             get {
@@ -412,7 +412,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 64-bit floating point number..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a 64-bit floating point number..
         /// </summary>
         internal static string StringConstraints_IsDouble {
             get {
@@ -421,7 +421,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to an identifier..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to an identifier..
         /// </summary>
         internal static string StringConstraints_IsIdentifier {
             get {
@@ -430,7 +430,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 16-bit integer..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a 16-bit integer..
         /// </summary>
         internal static string StringConstraints_IsInt16 {
             get {
@@ -439,7 +439,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 32-bit integer..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a 32-bit integer..
         /// </summary>
         internal static string StringConstraints_IsInt32 {
             get {
@@ -448,7 +448,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 64-bit integer..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a 64-bit integer..
         /// </summary>
         internal static string StringConstraints_IsInt64 {
             get {
@@ -457,7 +457,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a signed byte..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a signed byte..
         /// </summary>
         internal static string StringConstraints_IsSByte {
             get {
@@ -466,7 +466,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) could not be converted to a 32-bit floating point number..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) could not be converted to a 32-bit floating point number..
         /// </summary>
         internal static string StringConstraints_IsSingle {
             get {
@@ -475,7 +475,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must match pattern &apos;{constraint.Pattern}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must match pattern &apos;{constraint.Pattern}&apos;..
         /// </summary>
         internal static string StringConstraints_Matches {
             get {
@@ -484,7 +484,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) is not allowed to be null or empty..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) is not allowed to be null or empty..
         /// </summary>
         internal static string StringConstraints_NotNullOrEmpty {
             get {
@@ -493,7 +493,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) is not allowed to be null or contain only white space..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) is not allowed to be null or contain only white space..
         /// </summary>
         internal static string StringConstraints_NotNullOrWhiteSpace {
             get {
@@ -502,7 +502,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be either null or empty..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be either null or empty..
         /// </summary>
         internal static string StringConstraints_NullOrEmpty {
             get {
@@ -511,7 +511,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must be either null or contain only white space..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be either null or contain only white space..
         /// </summary>
         internal static string StringConstraints_NullOrWhiteSpace {
             get {
@@ -520,7 +520,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.Name} ({member.Value}) must start with &apos;{constraint.Prefix}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must start with &apos;{constraint.Prefix}&apos;..
         /// </summary>
         internal static string StringConstraints_StartsWith {
             get {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -7,6 +8,66 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public static partial class BasicConstraints
     {
+        #region [====== Select ======]
+
+        /// <summary>
+        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// with the intention to add some field- or property-specific constraints.
+        /// </summary>        
+        /// <param name="memberExpression">The expression that selects the member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="memberExpression"/> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, TMember> Select<TMessage, TValueOut, TMember>(this IMemberConstraint<TMessage, TValueOut> member, Expression<Func<TValueOut, TMember>> memberExpression)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            return member.And(memberExpression);
+        }
+
+        /// <summary>
+        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// with the intention to add some field- or property-specific constraints.
+        /// </summary>        
+        /// <param name="memberDelegate">The delegate that selects the member.</param>
+        /// <param name="memberName">Name of the member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/>,<paramref name="memberDelegate"/> or <paramref name="memberName" /> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="memberName"/> is not a valid identifier.
+        /// </exception>
+        public static IMemberConstraint<TMessage, TMember> Select<TMessage, TValueOut, TMember>(this IMemberConstraint<TMessage, TValueOut> member, Func<TValueOut, TMember> memberDelegate, string memberName)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            return member.And(memberDelegate, memberName);
+        }
+
+        /// <summary>
+        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// with the intention to add some field- or property-specific constraints.
+        /// </summary>        
+        /// <param name="memberDelegate">The delegate that selects the member.</param>
+        /// <param name="memberName">Name of the member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/>, <paramref name="memberDelegate"/> or <paramref name="memberName" /> is <c>null</c>.
+        /// </exception>
+        public static IMemberConstraint<TMessage, TMember> Select<TMessage, TValueOut, TMember>(this IMemberConstraint<TMessage, TValueOut> member, Func<TValueOut, TMember> memberDelegate, Identifier memberName)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            return member.And(memberDelegate, memberName);
+        }
+
+        #endregion
+
         #region [====== Apply ======]
 
         /// <summary>

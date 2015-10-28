@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -10,6 +11,47 @@ namespace Kingo.BuildingBlocks.Constraints
     public interface IMemberConstraint<TMessage, TValueOut> : IMemberConstraint<TMessage>
     {
         #region [====== And ======]
+
+        /// <summary>
+        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// with the intention to add some field- or property-specific constraints.
+        /// </summary>
+        /// <typeparam name="TMember">Type of the member.</typeparam>
+        /// <param name="fieldOrPropertyExpression">The expression that selects the member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="fieldOrPropertyExpression"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="fieldOrPropertyExpression"/> is not a supported expression.
+        /// </exception>
+        IMemberConstraint<TMessage, TMember> And<TMember>(Expression<Func<TValueOut, TMember>> fieldOrPropertyExpression);
+
+        /// <summary>
+        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// with the intention to add some field- or property-specific constraints.
+        /// </summary>
+        /// <typeparam name="TMember">Type of the member.</typeparam>
+        /// <param name="fieldOrProperty">The delegate that selects the member.</param>
+        /// <param name="fieldOrPropertyName">Name of the member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="fieldOrProperty"/> or <paramref name="fieldOrPropertyName" /> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="fieldOrPropertyName"/> is not a valid identifier.
+        /// </exception>
+        IMemberConstraint<TMessage, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, string fieldOrPropertyName);
+
+        /// <summary>
+        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// with the intention to add some field- or property-specific constraints.
+        /// </summary>
+        /// <typeparam name="TMember">Type of the member.</typeparam>
+        /// <param name="fieldOrProperty">The delegate that selects the member.</param>
+        /// <param name="fieldOrPropertyName">Name of the member.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="fieldOrProperty"/> or <paramref name="fieldOrPropertyName" /> is <c>null</c>.
+        /// </exception>
+        IMemberConstraint<TMessage, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, Identifier fieldOrPropertyName);
 
         /// <summary>
         /// Descends one level down in the validation-hierarchy.
@@ -24,7 +66,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        #region [====== IsInstanceOf, IsNotInstanceOf  & As ======]
+        #region [====== IsInstanceOf, IsNotInstanceOf & As ======]
 
         /// <summary>
         /// Verifies that this member's value is not an instance of <typeparamref name="TOther"/>.

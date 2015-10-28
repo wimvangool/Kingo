@@ -118,159 +118,159 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BooleanConstraints_IsFalse" xml:space="preserve">
-    <value>{member.Name} (true) must be false.</value>
+    <value>{member.FullName} (true) must be false.</value>
   </data>
   <data name="BooleanConstraints_IsTrue" xml:space="preserve">
-    <value>{member.Name} (false) must be true.</value>
+    <value>{member.FullName} (false) must be true.</value>
   </data>
   <data name="CollectionConstraints_IsNotNullOrEmpty" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not be null and contain at least one element.</value>
+    <value>{member.FullName} ({member.Value}) must not be null and contain at least one element.</value>
   </data>
   <data name="CollectionConstraints_IsNullOrEmpty" xml:space="preserve">
-    <value>{member.Name} ({member.Value.Count} item(s)) must be null or empty.</value>
+    <value>{member.FullName} ({member.Value.Count} item(s)) must be null or empty.</value>
   </data>
   <data name="CollectionConstraints_ElementAt_Enumerable" xml:space="preserve">
-    <value>{member.Name} contains no element at index {constraint.Index}.</value>
+    <value>{member.FullName} contains no element at index {constraint.Index}.</value>
   </data>
   <data name="CollectionConstraints_IsNullOrEmpty_Enumerable" xml:space="preserve">
-    <value>{member.Name} must be null or empty.</value>
+    <value>{member.FullName} must be null or empty.</value>
   </data>
   <data name="GuidConstraints_IsEmpty" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be empty.</value>
+    <value>{member.FullName} ({member.Value}) must be empty.</value>
   </data>
   <data name="GuidConstraints_IsNotEmpty" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not be empty.</value>
+    <value>{member.FullName} ({member.Value}) must not be empty.</value>
   </data>
   <data name="ListConstraints_ElementAt" xml:space="preserve">
-    <value>{member.Name} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}.</value>
+    <value>{member.FullName} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}.</value>
   </data>
   <data name="BasicConstraints_Default" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) is not valid.</value>
+    <value>{member.FullName} ({member.Value}) is not valid.</value>
   </data>
   <data name="BasicConstraints_IsEqualTo" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be equal to '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must be equal to '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_IsGreaterThan" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be greater than '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must be greater than '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_IsGreaterThanOrEqualTo" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be greater than or equal to '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must be greater than or equal to '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_IsInRange" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be within the following range: {constraint.Range}.</value>
+    <value>{member.FullName} ({member.Value}) must be within the following range: {constraint.Range}.</value>
   </data>
   <data name="BasicConstraints_IsInstanceOf" xml:space="preserve">
-    <value>{member.Name} of type '{member.Type.FullName}' must be an instance of type '{constraint.Type.FullName}'.</value>
+    <value>{member.FullName} of type '{member.Type.FullName}' must be an instance of type '{constraint.Type.FullName}'.</value>
   </data>
   <data name="BasicConstraints_IsNotEqualTo" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not be equal to '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must not be equal to '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_IsNotInRange" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not be within the following range: {constraint.Range}.</value>
+    <value>{member.FullName} ({member.Value}) must not be within the following range: {constraint.Range}.</value>
   </data>
   <data name="BasicConstraints_IsNotInstanceOf" xml:space="preserve">
-    <value>{member.Name} of type '{member.Type.FullName}' must not be an instance of type '{constraint.Type.FullName}'.</value>
+    <value>{member.FullName} of type '{member.Type.FullName}' must not be an instance of type '{constraint.Type.FullName}'.</value>
   </data>
   <data name="BasicConstraints_IsNotNull" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must refer to an instance of an object.</value>
+    <value>{member.FullName} ({member.Value}) must refer to an instance of an object.</value>
   </data>
   <data name="BasicConstraints_IsNotSameInstanceAs" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not refer to the same instance as '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must not refer to the same instance as '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_IsNull" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be null.</value>
+    <value>{member.FullName} ({member.Value}) must be null.</value>
   </data>
   <data name="BasicConstraints_IsSameInstanceAs" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must refer to the same instance as '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must refer to the same instance as '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_IsSmallerThan" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be smaller than '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must be smaller than '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_IsSmallerThanOrEqualTo" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be smaller than or equal to '{constraint.Other}'.</value>
+    <value>{member.FullName} ({member.Value}) must be smaller than or equal to '{constraint.Other}'.</value>
   </data>
   <data name="BasicConstraints_MultipleConstraintsFailed" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) did not satisfy the following constraint: '{constraint}'.</value>
+    <value>{member.FullName} ({member.Value}) did not satisfy the following constraint: '{constraint}'.</value>
   </data>
   <data name="NullableConstraints_HasValue" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must have a value.</value>
+    <value>{member.FullName} ({member.Value}) must have a value.</value>
   </data>
   <data name="StringConstraints_Contains" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must contain '{constraint.Value}'.</value>
+    <value>{member.FullName} ({member.Value}) must contain '{constraint.Value}'.</value>
   </data>
   <data name="StringConstraints_DoesNotContain" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not contain '{constraint.Value}'.</value>
+    <value>{member.FullName} ({member.Value}) must not contain '{constraint.Value}'.</value>
   </data>
   <data name="StringConstraints_DoesNotEndWith" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not end with '{constraint.Postfix}'.</value>
+    <value>{member.FullName} ({member.Value}) must not end with '{constraint.Postfix}'.</value>
   </data>
   <data name="StringConstraints_DoesNotMatch" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not match pattern '{constraint.Pattern}'.</value>
+    <value>{member.FullName} ({member.Value}) must not match pattern '{constraint.Pattern}'.</value>
   </data>
   <data name="StringConstraints_DoesNotStartWith" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must not start with '{constraint.Prefix}'.</value>
+    <value>{member.FullName} ({member.Value}) must not start with '{constraint.Prefix}'.</value>
   </data>
   <data name="StringConstraints_EndsWith" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must end with '{constraint.Postfix}'.</value>
+    <value>{member.FullName} ({member.Value}) must end with '{constraint.Postfix}'.</value>
   </data>
   <data name="StringConstraints_IsByte" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a byte.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a byte.</value>
   </data>
   <data name="StringConstraints_IsChar" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a single character.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a single character.</value>
   </data>
   <data name="StringConstraints_IsDecimal" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 96-bit floating point number.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a 96-bit floating point number.</value>
   </data>
   <data name="StringConstraints_IsDouble" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 64-bit floating point number.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a 64-bit floating point number.</value>
   </data>
   <data name="StringConstraints_IsInt16" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 16-bit integer.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a 16-bit integer.</value>
   </data>
   <data name="StringConstraints_IsInt32" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 32-bit integer.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a 32-bit integer.</value>
   </data>
   <data name="StringConstraints_IsInt64" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 64-bit integer.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a 64-bit integer.</value>
   </data>
   <data name="StringConstraints_IsSByte" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a signed byte.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a signed byte.</value>
   </data>
   <data name="StringConstraints_IsSingle" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to a 32-bit floating point number.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to a 32-bit floating point number.</value>
   </data>
   <data name="StringConstraints_Matches" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must match pattern '{constraint.Pattern}'.</value>
+    <value>{member.FullName} ({member.Value}) must match pattern '{constraint.Pattern}'.</value>
   </data>
   <data name="StringConstraints_NotNullOrEmpty" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) is not allowed to be null or empty.</value>
+    <value>{member.FullName} ({member.Value}) is not allowed to be null or empty.</value>
   </data>
   <data name="StringConstraints_NotNullOrWhiteSpace" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) is not allowed to be null or contain only white space.</value>
+    <value>{member.FullName} ({member.Value}) is not allowed to be null or contain only white space.</value>
   </data>
   <data name="StringConstraints_NullOrEmpty" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be either null or empty.</value>
+    <value>{member.FullName} ({member.Value}) must be either null or empty.</value>
   </data>
   <data name="StringConstraints_NullOrWhiteSpace" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must be either null or contain only white space.</value>
+    <value>{member.FullName} ({member.Value}) must be either null or contain only white space.</value>
   </data>
   <data name="StringConstraints_StartsWith" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) must start with '{constraint.Prefix}'.</value>
+    <value>{member.FullName} ({member.Value}) must start with '{constraint.Prefix}'.</value>
   </data>
   <data name="CollectionConstraints_ElementAt" xml:space="preserve">
-    <value>{member.Name} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}.</value>
+    <value>{member.FullName} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}.</value>
   </data>
   <data name="CollectionConstraints_NoElementAt_Enumerable" xml:space="preserve">
-    <value>{member.Name} does contain an element index {constraint.Index}.</value>
+    <value>{member.FullName} does contain an element index {constraint.Index}.</value>
   </data>
   <data name="CollectionConstraints_NoElementAt" xml:space="preserve">
-    <value>{member.Name} ({member.Value.Count}) does contain an element index {constraint.Index}.</value>
+    <value>{member.FullName} ({member.Value.Count}) does contain an element index {constraint.Index}.</value>
   </data>
   <data name="CollectionConstraints_ElementAt_Dictionary" xml:space="preserve">
-    <value>{member.Name} ({member.Value.Count} item(s)) contains no value with key '{constraint.Key}'.</value>
+    <value>{member.FullName} ({member.Value.Count} item(s)) contains no value with key '{constraint.Key}'.</value>
   </data>
   <data name="StringConstraints_IsIdentifier" xml:space="preserve">
-    <value>{member.Name} ({member.Value}) could not be converted to an identifier.</value>
+    <value>{member.FullName} ({member.Value}) could not be converted to an identifier.</value>
   </data>
 </root>

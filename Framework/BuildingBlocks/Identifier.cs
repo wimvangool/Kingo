@@ -142,6 +142,8 @@ namespace Kingo.BuildingBlocks
 
         #region [====== Parse ======]
 
+        internal static readonly Identifier[] EmptyArray = new Identifier[0];
+
         /// <summary>
         /// Parses the specified <paramref name="value"/>, or returns <c>null</c> if <paramref name="value"/> is <c>null</c>.
         /// </summary>
