@@ -94,7 +94,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<Guid> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            throw new NotImplementedException();
+            return new GuidIsEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion

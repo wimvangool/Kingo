@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotEndWith("value", RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -39,7 +39,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotEndWith("value");
 
-            validator.Validate(message).AssertOneError("Member (Some value) must not end with 'value'.");
+            validator.Validate(message).AssertError("Member (Some value) must not end with 'value'.");
         }
 
         [TestMethod]
@@ -73,7 +73,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotEndWith("VALUE", StringComparison.OrdinalIgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         #endregion
@@ -123,7 +123,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).EndsWith("VALUE", RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -134,7 +134,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).EndsWith("VALUE");
 
-            validator.Validate(message).AssertOneError("Member (Some value) must end with 'VALUE'.");
+            validator.Validate(message).AssertError("Member (Some value) must end with 'VALUE'.");
         }
 
         [TestMethod]
@@ -156,7 +156,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).EndsWith("Some", StringComparison.OrdinalIgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Messaging
 {
@@ -9,19 +8,23 @@ namespace Kingo.BuildingBlocks.Messaging
         {
             Assert.IsNotNull(errorInfo);
             Assert.AreEqual(0, errorInfo.ErrorCount);
-        }
+        }        
 
-        internal static void AssertOneError(this MessageErrorInfo errorInfo, string errorMessage)
+        internal static MessageErrorInfo AssertError(this MessageErrorInfo errorInfo, string errorMessage)
         {
-            AssertOneError(errorInfo, errorMessage, "Member");
+            return AssertError(errorInfo, errorMessage, "Member");
         }
 
-        internal static void AssertOneError(this MessageErrorInfo errorInfo, string errorMessage, string memberName)
+        internal static MessageErrorInfo AssertError(this MessageErrorInfo errorInfo, string errorMessage, params string[] memberNames)
         {            
-            Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(1, errorInfo.ErrorCount);
-            Assert.IsTrue(errorInfo.MemberErrors.ContainsKey(memberName), string.Format("Expected member name '{0}' but was '{1}'.", memberName, errorInfo.MemberErrors.Keys.Single()));
-            Assert.AreEqual(errorMessage, errorInfo.MemberErrors[memberName]);
+            Assert.IsNotNull(errorInfo);            
+
+            foreach (var memberName in memberNames)
+            {                
+                Assert.IsTrue(errorInfo.MemberErrors.ContainsKey(memberName), "No error for member '{0}' was present.", memberName);
+                Assert.AreEqual(errorMessage, errorInfo.MemberErrors[memberName]);    
+            }
+            return errorInfo;
         }               
     }
 }

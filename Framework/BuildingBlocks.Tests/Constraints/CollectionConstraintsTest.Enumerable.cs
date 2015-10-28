@@ -20,7 +20,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrEmpty();
 
-            validator.Validate(message).AssertOneError("Member (<null>) must not be null and contain at least one element.");
+            validator.Validate(message).AssertError("Member (<null>) must not be null and contain at least one element.");
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNullOrEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNullOrEmpty();
 
-            validator.Validate(message).AssertOneError("Member must be null or empty.");
+            validator.Validate(message).AssertError("Member must be null or empty.");
         }
 
         #endregion
@@ -156,7 +156,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(0, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -167,7 +167,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(0);
 
-            validator.Validate(message).AssertOneError("Member contains no element at index 0.");
+            validator.Validate(message).AssertError("Member contains no element at index 0.");
         }
 
         [TestMethod]
@@ -207,7 +207,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(0, RandomErrorMessage).IsNull();
 
-            validator.Validate(message).AssertOneError("Member[0] (System.Object) must be null.", "Member[0]");
+            validator.Validate(message).AssertError("Member[0] (System.Object) must be null.", "Member[0]");
         }
 
         #endregion

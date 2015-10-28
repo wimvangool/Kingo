@@ -18,7 +18,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(null as object, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -29,7 +29,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(null as object);
 
-            validator.Validate(message).AssertOneError("Member (<null>) must not be equal to '<null>'.");
+            validator.Validate(message).AssertError("Member (<null>) must not be equal to '<null>'.");
         }
 
         [TestMethod]
@@ -41,7 +41,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(member, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -53,7 +53,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(member);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must not be equal to 'System.Object'.");
+            validator.Validate(message).AssertError("Member (System.Object) must not be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(memberValue.ToString(), RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -77,7 +77,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(memberValue.ToString());
 
-            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be equal to '{0}'.", memberValue));
+            validator.Validate(message).AssertError(string.Format("Member ({0}) must not be equal to '{0}'.", memberValue));
         }
 
         [TestMethod]
@@ -132,7 +132,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(null as object, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -145,7 +145,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(member, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -158,7 +158,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(memberValue.ToString(), comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -218,7 +218,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(Guid.NewGuid(), comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -244,7 +244,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsNotEqualTo(member, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -273,7 +273,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -284,7 +284,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (<null>) must not be equal to '<null>'.");
+            validator.Validate(message).AssertError("Member (<null>) must not be equal to '<null>'.");
         }
 
         [TestMethod]
@@ -296,7 +296,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -308,7 +308,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must not be equal to 'System.Object'.");
+            validator.Validate(message).AssertError("Member (System.Object) must not be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -320,7 +320,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(memberValue.ToString(), RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -332,7 +332,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be equal to '{0}'.", memberValue));
+            validator.Validate(message).AssertError(string.Format("Member ({0}) must not be equal to '{0}'.", memberValue));
         }
 
         [TestMethod]
@@ -387,7 +387,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -400,7 +400,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -413,7 +413,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -473,7 +473,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -499,7 +499,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsNotEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -563,7 +563,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(new object(), RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -574,7 +574,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(new object());
 
-            validator.Validate(message).AssertOneError("Member (<null>) must be equal to 'System.Object'.");
+            validator.Validate(message).AssertError("Member (<null>) must be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -585,7 +585,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(null as object, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -596,7 +596,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(null as object);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to '<null>'.");
+            validator.Validate(message).AssertError("Member (System.Object) must be equal to '<null>'.");
         }
 
         [TestMethod]
@@ -607,7 +607,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(new object(), RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -618,7 +618,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(new object());
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to 'System.Object'.");
+            validator.Validate(message).AssertError("Member (System.Object) must be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -629,7 +629,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo("Some other value", RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -675,7 +675,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(new object(), null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -686,7 +686,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(null as object, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -697,7 +697,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(new object(), null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -708,7 +708,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo("Some other value", null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -732,7 +732,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(null as object, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -760,7 +760,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsEqualTo(member + 1, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         #endregion
@@ -810,7 +810,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -821,7 +821,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (<null>) must be equal to 'System.Object'.");
+            validator.Validate(message).AssertError("Member (<null>) must be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -832,7 +832,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -843,7 +843,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to '<null>'.");
+            validator.Validate(message).AssertError("Member (System.Object) must be equal to '<null>'.");
         }
 
         [TestMethod]
@@ -854,7 +854,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -865,7 +865,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
 
-            validator.Validate(message).AssertOneError("Member (System.Object) must be equal to 'System.Object'.");
+            validator.Validate(message).AssertError("Member (System.Object) must be equal to 'System.Object'.");
         }
 
         [TestMethod]
@@ -876,7 +876,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -922,7 +922,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -933,7 +933,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -944,7 +944,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -955,7 +955,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -979,7 +979,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -1007,7 +1007,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         #endregion

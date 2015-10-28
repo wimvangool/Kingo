@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -67,6 +69,43 @@ namespace Kingo.BuildingBlocks.Constraints
         internal IMember WithValue(object value)
         {
             return new MemberWithValue(this, value);
+        }
+
+        internal void WriteErrorMessageTo(IErrorMessageReader reader, IErrorMessage errorMessage)
+        {
+            foreach (var memberName in FromParentNameToCurrentName())
+            {
+                reader.Add(memberName, errorMessage);
+            }
+        }
+
+        private IEnumerable<string> FromParentNameToCurrentName()
+        {
+            return FromParentNameToCurrentName(_parentNames.Add(_name));
+        }
+
+        private static IEnumerable<string> FromParentNameToCurrentName(string[] names)
+        {
+            return GetNameCombinations(names).Select(Join);
+        }        
+
+        private static IEnumerable<string[]> GetNameCombinations(string[] names)
+        {
+            for (int index = 0; index < names.Length; index++)
+            {
+                yield return GetNameCombination(names, index + 1);
+            }
+        }
+
+        private static string[] GetNameCombination(string[] names, int length)
+        {
+            var nameCombination = new string[length];
+
+            for (int index = 0; index < length; index++)
+            {
+                nameCombination[index] = names[index];
+            }
+            return nameCombination;
         }
     }
 }

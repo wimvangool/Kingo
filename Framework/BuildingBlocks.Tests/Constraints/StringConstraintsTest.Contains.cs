@@ -49,7 +49,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotContain("e va", RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotContain("e va");
 
-            validator.Validate(message).AssertOneError("Member (Some value) must not contain 'e va'.");
+            validator.Validate(message).AssertError("Member (Some value) must not contain 'e va'.");
         }
 
         #endregion
@@ -97,7 +97,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Contains("xyz", RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Contains("xyz");
 
-            validator.Validate(message).AssertOneError("Member (Some value) must contain 'xyz'.");
+            validator.Validate(message).AssertError("Member (Some value) must contain 'xyz'.");
         }
 
         [TestMethod]

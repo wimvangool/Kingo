@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
     internal abstract class Member : IMember
-    {
-        private const string _NameSeparator = "."; 
-        
+    {                
         public string Key
         {
             get
@@ -15,7 +14,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 {
                     return Name;
                 }
-                return string.Join(_NameSeparator, ParentNames) + _NameSeparator + Name;
+                return Join(ParentNames.Concat(new [] { Name }));
             }
         }
 
@@ -27,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 {
                     return Key;
                 }
-                return Key + _NameSeparator + string.Join(_NameSeparator, FieldsOrProperties.Select(identifier => identifier.ToString()));
+                return Join(ParentNames.Concat(new[] { Name }).Concat(FieldsOrProperties.Select(identifier => identifier.ToString())));                
             }
         }
 
@@ -54,6 +53,13 @@ namespace Kingo.BuildingBlocks.Constraints
         public override string ToString()
         {
             return string.Format("Key = {0}, FullName = {1}, Type = {2}", Key, FullName, Type);
-        }        
+        }
+
+        private const string _NameSeparator = "."; 
+
+        internal static string Join(IEnumerable<string> names)
+        {
+            return string.Join(_NameSeparator, names);
+        }
     }
 }

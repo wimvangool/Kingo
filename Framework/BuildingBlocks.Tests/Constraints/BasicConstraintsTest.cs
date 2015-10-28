@@ -36,7 +36,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Satisfies(value => false, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }           
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).IsSmallerThan(10);
 
-            validator.Validate(message).AssertOneError("Member (0) must be greater than '0'.");
+            validator.Validate(message).AssertError("Member (0) must be greater than '0'.");
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).IsSmallerThan(10);
 
-            validator.Validate(message).AssertOneError("Member (10) must be smaller than '10'.");
+            validator.Validate(message).AssertError("Member (10) must be smaller than '10'.");
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
 
-            validator.Validate(message).AssertOneError("Member[0] (0) must be greater than '0'.", "Member[0]");
+            validator.Validate(message).AssertError("Member[0] (0) must be greater than '0'.", "Member[0]");
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
 
-            validator.Validate(message).AssertOneError("Member[0] (10) must be smaller than '10'.", "Member[0]");
+            validator.Validate(message).AssertError("Member[0] (10) must be smaller than '10'.", "Member[0]");
         }
 
         #endregion
@@ -113,7 +113,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNull().And(member => member.Length).IsEqualTo(0);
 
-            validator.Validate(message).AssertOneError("Member.Length (10) must be equal to '0'.");
+            validator.Validate(message).AssertError("Member.Length (10) must be equal to '0'.");
         }
 
         [TestMethod]
@@ -126,7 +126,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .And(member => member.Member).IsNotNull()
                 .And(member => member.Length).IsEqualTo(0);
 
-            validator.Validate(message).AssertOneError("Member.Member.Length (10) must be equal to '0'.");
+            validator.Validate(message).AssertError("Member.Member.Length (10) must be equal to '0'.");
         }
 
         #endregion

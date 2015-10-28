@@ -37,7 +37,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotInstanceOf<object>(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotInstanceOf<object>();
 
-            validator.Validate(message).AssertOneError("Member of type 'System.String' must not be an instance of type 'System.Object'.");
+            validator.Validate(message).AssertError("Member of type 'System.String' must not be an instance of type 'System.Object'.");
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsNotInstanceOf(typeof(object), RandomErrorMessage)
                 .IsNotInstanceOf(typeof(string), RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -115,7 +115,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotInstanceOf(m => m.ExpectedMemberType, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         #endregion
@@ -141,7 +141,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf<int>(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -152,7 +152,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf<int>(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -163,7 +163,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf<int>();
 
-            validator.Validate(message).AssertOneError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
+            validator.Validate(message).AssertError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
         }
 
         [TestMethod]
@@ -187,7 +187,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(object), RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -198,7 +198,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(int), RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -209,7 +209,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(int));
 
-            validator.Validate(message).AssertOneError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
+            validator.Validate(message).AssertError("Member of type 'System.String' must be an instance of type 'System.Int32'.");
         }
 
         [TestMethod]
@@ -240,7 +240,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInstanceOf(m => m.ExpectedMemberType, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]

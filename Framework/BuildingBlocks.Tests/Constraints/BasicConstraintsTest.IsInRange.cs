@@ -58,7 +58,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<int>(RandomErrorMessage)
                 .IsNotInRange(0, 1000, RangeOptions.RightExclusive, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<int>(RandomErrorMessage)
                 .IsNotInRange(0, 1000, RangeOptions.RightExclusive);
 
-            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be within the following range: [0, 1000>.", member));
+            validator.Validate(message).AssertError(string.Format("Member ({0}) must not be within the following range: [0, 1000>.", member));
         }
 
         [TestMethod]
@@ -128,7 +128,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -140,7 +140,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive);
 
-            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must not be within the following range: [0, 1000>.", member));
+            validator.Validate(message).AssertError(string.Format("Member ({0}) must not be within the following range: [0, 1000>.", member));
         }
 
         [TestMethod]
@@ -222,7 +222,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<int>(RandomErrorMessage)
                 .IsInRange(1000, 2000, RangeOptions.RightExclusive, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -236,7 +236,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<int>(RandomErrorMessage)
                 .IsInRange(1000, 2000, RangeOptions.RightExclusive);
 
-            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be within the following range: [1000, 2000>.", member));
+            validator.Validate(message).AssertError(string.Format("Member ({0}) must be within the following range: [1000, 2000>.", member));
         }
 
         #endregion
@@ -290,7 +290,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -302,7 +302,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInRange(m => m.Left, m => m.Right, RangeOptions.RightExclusive);
 
-            validator.Validate(message).AssertOneError(string.Format("Member ({0}) must be within the following range: [1000, 2000>.", member));
+            validator.Validate(message).AssertError(string.Format("Member ({0}) must be within the following range: [1000, 2000>.", member));
         }
 
         #endregion

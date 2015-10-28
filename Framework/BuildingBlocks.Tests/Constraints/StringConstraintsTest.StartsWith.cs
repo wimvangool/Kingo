@@ -38,7 +38,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotStartWith("SOME", StringComparison.OrdinalIgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotStartWith("SOME", StringComparison.OrdinalIgnoreCase);
 
-            validator.Validate(message).AssertOneError("Member (Some value) must not start with 'SOME'.");
+            validator.Validate(message).AssertError("Member (Some value) must not start with 'SOME'.");
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).StartsWith("SOME", RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).StartsWith("SOME");
 
-            validator.Validate(message).AssertOneError("Member (Some value) must start with 'SOME'.");
+            validator.Validate(message).AssertError("Member (Some value) must start with 'SOME'.");
         }
 
         [TestMethod]
@@ -141,7 +141,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).StartsWith("value", StringComparison.OrdinalIgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         #endregion

@@ -59,6 +59,10 @@ namespace Kingo.BuildingBlocks.Messaging
             {
                 throw new ArgumentNullException("memberName");
             }
+            if (_errorMessages.Value.ContainsKey(memberName))
+            {
+                return;
+            }
             _errorMessages.Value.Add(memberName, errorMessage);
         }
         

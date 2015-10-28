@@ -63,7 +63,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             if (constraint.IsNotSatisfiedBy(value, out errorMessage))
             {                
-                reader.Add(_transformedMember.Key, errorMessage);
+                _transformedMember.WriteErrorMessageTo(reader, errorMessage);
                 return true;
             }
             return false;

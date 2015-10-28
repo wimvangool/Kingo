@@ -16,7 +16,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsTrue(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsTrue();
 
-            validator.Validate(message).AssertOneError("Member (false) must be true.");
+            validator.Validate(message).AssertError("Member (false) must be true.");
         }
 
         [TestMethod]
@@ -53,7 +53,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsFalse(RandomErrorMessage);
 
-            validator.Validate(message).AssertOneError(RandomErrorMessage);
+            validator.Validate(message).AssertError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsFalse();
 
-            validator.Validate(message).AssertOneError("Member (true) must be false.");
+            validator.Validate(message).AssertError("Member (true) must be false.");
         }
 
         [TestMethod]
