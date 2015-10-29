@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Kingo.BuildingBlocks
+namespace Kingo.BuildingBlocks.Threading
 {
     /// <summary>
     /// Contains several helper methods for async methods that need to run synchronously.

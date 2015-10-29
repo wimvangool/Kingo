@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Kingo.BuildingBlocks.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace Kingo.BuildingBlocks.Messaging.Modules

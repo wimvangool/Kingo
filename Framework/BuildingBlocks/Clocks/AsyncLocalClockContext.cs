@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Kingo.BuildingBlocks.Threading;
 
 namespace Kingo.BuildingBlocks.Clocks
 {

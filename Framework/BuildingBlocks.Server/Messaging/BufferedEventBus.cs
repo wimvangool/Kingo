@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.BuildingBlocks.Resources;
+using Kingo.BuildingBlocks.Threading;
 
 namespace Kingo.BuildingBlocks.Messaging
 {    

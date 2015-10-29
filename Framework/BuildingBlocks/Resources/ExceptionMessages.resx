@@ -120,6 +120,9 @@
   <data name="CollectionConstraints_NegativeIndex" xml:space="preserve">
     <value>Index cannot be negative: {0}.</value>
   </data>
+  <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
+    <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>
+  </data>
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
   </data>

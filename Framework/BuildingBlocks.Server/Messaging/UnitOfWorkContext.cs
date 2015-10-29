@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Kingo.BuildingBlocks.Threading;
 
 namespace Kingo.BuildingBlocks.Messaging
 {

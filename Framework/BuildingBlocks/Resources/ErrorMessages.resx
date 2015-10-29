@@ -273,4 +273,13 @@
   <data name="StringConstraints_IsIdentifier" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) could not be converted to an identifier.</value>
   </data>
+  <data name="EnumConstraints_HasFlag" xml:space="preserve">
+    <value>{member.FullName} ({member.Value}) does not have all bitflags specified by '{constraint.Flag}' set.</value>
+  </data>
+  <data name="EnumConstraints_IsDefined" xml:space="preserve">
+    <value>{member.FullName} ({member.Value}) is not defined in Enum of type {constraint.EnumType.Name}.</value>
+  </data>
+  <data name="EnumConstraints_IsInRangeOfValidValues" xml:space="preserve">
+    <value>{member.FullName} ({member.Value}) has a value or contains bitflags that are not defined by type {constraint.EnumType.Name}.</value>
+  </data>
 </root>

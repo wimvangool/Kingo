@@ -74,6 +74,7 @@
     <Compile Include="Constraints\ConstraintTestBase.cs" />
     <Compile Include="Constraints\DelegateConstraintTest.cs" />
     <Compile Include="Constraints\AndConstraintTest.cs" />
+    <Compile Include="Constraints\EnumConstraintsTest.cs" />
     <Compile Include="Constraints\OrConstraintTest.cs" />
     <Compile Include="Constraints\StringConstraintsTest.IsIdentifier.cs" />
     <Compile Include="Constraints\StringConstraintsTest.Length.cs" />

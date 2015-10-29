@@ -60,6 +60,7 @@
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T2.cs" />
+    <Compile Include="Constraints\EnumConstraints.cs" />
     <Compile Include="Constraints\EquatableObject.T1.cs" />
     <Compile Include="Constraints\IMemberTransformation.cs" />
     <Compile Include="Constraints\Member.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Constraints\ReadOnlyList.T1.cs" />
     <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="Constraints\StringConstraints.Length.cs" />
+    <Compile Include="EnumOperators.T1.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />
@@ -165,8 +167,8 @@
     </Compile>
     <Compile Include="Clocks\StaticClockContext.cs" />
     <Compile Include="Clocks\SystemClock.cs" />
-    <Compile Include="AsyncLocal.T1.cs" />
-    <Compile Include="AsyncMethod.cs" />
+    <Compile Include="Threading\AsyncLocal.T1.cs" />
+    <Compile Include="Threading\AsyncMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ErrorMessages.resx">

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Kingo.BuildingBlocks.Messaging.Domain;
 using Kingo.BuildingBlocks.Messaging.SampleApplication.Messages;
+using Kingo.BuildingBlocks.Threading;
 
 namespace Kingo.BuildingBlocks.Messaging.SampleApplication.MessageHandlers
 {

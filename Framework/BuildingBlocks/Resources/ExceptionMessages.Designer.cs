@@ -70,6 +70,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instance &apos;{0}&apos; of type &apos;{1}&apos; is not supported because it is not an Enum type..
+        /// </summary>
+        internal static string EnumIsInRangeOfValidValues_UnsupportedValue {
+            get {
+                return ResourceManager.GetString("EnumIsInRangeOfValidValues_UnsupportedValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
         /// </summary>
         internal static string ExpressionExtensions_UnsupportedExpression {

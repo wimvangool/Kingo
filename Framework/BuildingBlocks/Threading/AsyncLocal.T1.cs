@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Remoting.Messaging;
 
-namespace Kingo.BuildingBlocks
+namespace Kingo.BuildingBlocks.Threading
 {
     /// <summary>
     /// Represents a memory slot inside the <see cref="LogicalCallContext" />.

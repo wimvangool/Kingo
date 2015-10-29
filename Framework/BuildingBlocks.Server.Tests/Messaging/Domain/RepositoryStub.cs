@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Kingo.BuildingBlocks.Threading;
 
 namespace Kingo.BuildingBlocks.Messaging.Domain
 {

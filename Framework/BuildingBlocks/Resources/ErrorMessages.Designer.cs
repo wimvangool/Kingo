@@ -295,6 +295,33 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) does not have all bitflags specified by &apos;{constraint.Flag}&apos; set..
+        /// </summary>
+        internal static string EnumConstraints_HasFlag {
+            get {
+                return ResourceManager.GetString("EnumConstraints_HasFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) is not defined in Enum of type {constraint.EnumType.Name}..
+        /// </summary>
+        internal static string EnumConstraints_IsDefined {
+            get {
+                return ResourceManager.GetString("EnumConstraints_IsDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value}) has a value or contains bitflags that are not defined by type {constraint.EnumType.Name}..
+        /// </summary>
+        internal static string EnumConstraints_IsInRangeOfValidValues {
+            get {
+                return ResourceManager.GetString("EnumConstraints_IsInRangeOfValidValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {member.FullName} ({member.Value}) must be empty..
         /// </summary>
         internal static string GuidConstraints_IsEmpty {
