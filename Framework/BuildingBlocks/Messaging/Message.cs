@@ -16,6 +16,7 @@ namespace Kingo.BuildingBlocks.Messaging
     [DataContract(Namespace = "http://www.kingo.com/buildingblocks")]
     public abstract class Message : IMessage, IExtensibleDataObject
     {
+        private const string _ExtensionDataKey = "_extensionData";
         private ExtensionDataObject _extensionData;
 
         internal Message() { }
@@ -27,7 +28,7 @@ namespace Kingo.BuildingBlocks.Messaging
                 throw new ArgumentNullException("message");
             }
             _extensionData = message._extensionData;
-        }        
+        }                       
 
         #region [====== ExtensibleObject ======]
 
@@ -41,6 +42,11 @@ namespace Kingo.BuildingBlocks.Messaging
         #endregion
 
         #region [====== Copy ======]
+
+        object ICloneable.Clone()
+        {
+            return CopyMessage();
+        }
 
         IMessage IMessage.Copy()
         {

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Kingo.BuildingBlocks.Messaging
 {
@@ -6,6 +9,7 @@ namespace Kingo.BuildingBlocks.Messaging
     /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
     [Serializable]
+    [DataContract(Namespace = "http://www.kingo.com/buildingblocks")]
     public abstract class Message<TMessage> : Message, IMessage<TMessage> where TMessage : Message<TMessage>
     {        
         /// <summary>
@@ -20,8 +24,8 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        protected Message(TMessage message)
-            : base(message) { }        
+        protected Message(Message<TMessage> message)
+            : base(message) { }                
 
         #region [====== Copy ======]
 
@@ -36,10 +40,23 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         /// <summary>
-        /// Creates and returns a copy of this message.
+        /// Creates and returns a copy of this message. The default implementation uses
+        /// the <see cref="DataContractSerializer" /> to copy this instance.
         /// </summary>
         /// <returns>A copy of this message.</returns>
-        public abstract TMessage Copy();        
+        public virtual TMessage Copy()
+        {
+            var memoryStream = new MemoryStream();
+            var writer = XmlDictionaryWriter.CreateBinaryWriter(memoryStream);
+            var reader = XmlDictionaryReader.CreateBinaryReader(memoryStream, XmlDictionaryReaderQuotas.Max);
+            var serializer = new DataContractSerializer(GetType());
+            
+            serializer.WriteObject(writer, this);
+            writer.Flush();
+            memoryStream.Position = 0;
+
+            return (TMessage) serializer.ReadObject(reader);
+        }
 
         #endregion               
 
