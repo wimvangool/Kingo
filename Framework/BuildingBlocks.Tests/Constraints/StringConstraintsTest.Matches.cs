@@ -39,7 +39,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotMatch("v.l", RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotMatch("v.l");
 
-            validator.Validate(message).AssertError("Member (Some value) must not match pattern 'v.l'.");
+            validator.Validate(message).AssertMemberError("Member (Some value) must not match pattern 'v.l'.");
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).DoesNotMatch("v.l", RegexOptions.IgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Matches("v.l", RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -142,7 +142,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Matches("v.l");
 
-            validator.Validate(message).AssertError("Member (Some VALUE) must match pattern 'v.l'.");
+            validator.Validate(message).AssertMemberError("Member (Some VALUE) must match pattern 'v.l'.");
         }
 
         [TestMethod]
@@ -164,7 +164,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Matches("valeu", RegexOptions.IgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         #endregion

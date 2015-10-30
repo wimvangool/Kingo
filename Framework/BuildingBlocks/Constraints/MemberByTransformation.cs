@@ -75,7 +75,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             foreach (var memberName in FromParentNameToCurrentName())
             {
-                reader.Add(memberName, errorMessage);
+                reader.Add(errorMessage, memberName);              
             }
         }
 

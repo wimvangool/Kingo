@@ -12,6 +12,11 @@ namespace Kingo.BuildingBlocks.Constraints
             _arguments = new Dictionary<Identifier, object>();
         }
 
+        protected IDictionary<Identifier, object> Arguments
+        {
+            get { return _arguments; }
+        }
+
         public abstract IConstraintWithErrorMessage FailedConstraint
         {
             get;

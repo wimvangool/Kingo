@@ -24,33 +24,20 @@ namespace Kingo.BuildingBlocks.Messaging
             internal ErrorMessageReader(Scenario<T> scenario)
             {
                 _scenario = scenario;
+            }            
+
+            public void Add(IErrorMessage errorMessage, string memberName)
+            {
+                Add(Format(errorMessage), memberName);
             }
 
-            public void Put(IErrorMessage errorMessage)
-            {
-                Put(Format(errorMessage));
-            }
-
-            public void Put(string errorMessage)
-            {
-                if (errorMessage != null)
+            public void Add(string errorMessage, string memberName)
+            {                
+                if (errorMessage == null)
                 {
-                    _scenario.OnVerificationFailed(errorMessage);
+                    return;
                 }
-            }
-
-            public void Add(string memberName, IErrorMessage errorMessage)
-            {
-                Add(memberName, Format(errorMessage));            
-            }
-
-            public void Add(string memberName, string errorMessage)
-            {
-                if (memberName == null)
-                {
-                    throw new ArgumentNullException("memberName");
-                }
-                _scenario.OnVerificationFailed("[" + memberName + "] " + errorMessage);
+                _scenario.OnVerificationFailed(errorMessage);
             }
             
             private string Format(IErrorMessage errorMessage)

@@ -31,7 +31,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Count().IsNotEqualTo(3);
 
-            validator.Validate(message).AssertError("Member.Count (3) must not be equal to '3'.");
+            validator.Validate(message).AssertMemberError("Member.Count (3) must not be equal to '3'.");
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(0, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -91,7 +91,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(0);
 
-            validator.Validate(message).AssertError("Member (0 item(s)) contains no element at index 0.");
+            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no element at index 0.");
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(0, RandomErrorMessage).IsNull();
 
-            validator.Validate(message).AssertError("Member[0] (System.Object) must be null.", "Member[0]");
+            validator.Validate(message).AssertMemberError("Member[0] (System.Object) must be null.", "Member[0]");
         }
 
         #endregion

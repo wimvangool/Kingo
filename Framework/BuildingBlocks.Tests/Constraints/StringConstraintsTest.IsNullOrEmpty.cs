@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrEmpty();
 
-            validator.Validate(message).AssertError("Member () is not allowed to be null or empty.");
+            validator.Validate(message).AssertMemberError("Member () is not allowed to be null or empty.");
         }
 
         #endregion
@@ -85,7 +85,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNullOrEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -96,7 +96,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNullOrEmpty();
 
-            validator.Validate(message).AssertError(string.Format("Member ({0}) must be either null or empty.", message.Member));
+            validator.Validate(message).AssertMemberError(string.Format("Member ({0}) must be either null or empty.", message.Member));
         }
 
         #endregion

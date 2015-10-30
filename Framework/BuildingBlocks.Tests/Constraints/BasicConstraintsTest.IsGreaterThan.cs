@@ -20,7 +20,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThan(member + 1, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -34,7 +34,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThan(member, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThan(member, null);
 
-            validator.Validate(message).AssertError(string.Format("Member ({0}) must be greater than '{0}'.", member));
+            validator.Validate(message).AssertMemberError(string.Format("Member ({0}) must be greater than '{0}'.", member));
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(new object(), comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(new object(), comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -115,7 +115,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThan(member + 1, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThan(member, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -159,7 +159,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -171,7 +171,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, null, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -183,7 +183,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, null);
 
-            validator.Validate(message).AssertError(string.Format("Member ({0}) must be greater than '{0}'.", member));
+            validator.Validate(message).AssertMemberError(string.Format("Member ({0}) must be greater than '{0}'.", member));
         }
 
         [TestMethod]
@@ -221,7 +221,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -234,7 +234,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -246,7 +246,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -258,7 +258,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThan(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -289,7 +289,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThanOrEqualTo(member + 1, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -303,7 +303,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThanOrEqualTo(member + 1, null);
 
-            validator.Validate(message).AssertError(string.Format("Member ({0}) must be greater than or equal to '{1}'.", member, member + 1));
+            validator.Validate(message).AssertMemberError(string.Format("Member ({0}) must be greater than or equal to '{1}'.", member, member + 1));
         }
 
         [TestMethod]
@@ -372,7 +372,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(new object(), comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -386,7 +386,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .IsInstanceOf<long>(RandomErrorMessage)
                 .IsGreaterThanOrEqualTo(member + 1, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -431,7 +431,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -443,7 +443,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, null);
 
-            validator.Validate(message).AssertError(string.Format("Member ({0}) must be greater than or equal to '{1}'.", member, member + 1));
+            validator.Validate(message).AssertMemberError(string.Format("Member ({0}) must be greater than or equal to '{1}'.", member, member + 1));
         }
 
         [TestMethod]
@@ -508,7 +508,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, comparer, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -520,7 +520,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsGreaterThanOrEqualTo(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]

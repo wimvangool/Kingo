@@ -13,7 +13,14 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== VerifyThat ======]
 
         /// <summary>
-        /// Creates and returns a new <see cref="IMemberConstraint{TMessage}"/> that can be used to define certain
+        /// Creates and returns a new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
+        /// constraints on the message itself instead on one of its particular members.
+        /// </summary>
+        /// <returns>A new <see cref="IMemberConstraint{TMessage, S}"/>.</returns>
+        IMemberConstraint<TMessage, TMessage> VerifyThatInstance();
+
+        /// <summary>
+        /// Creates and returns a new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
         /// constraints on <typeparamref name="TValue"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to verify.</typeparam>
@@ -32,7 +39,7 @@ namespace Kingo.BuildingBlocks.Constraints
         IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> fieldOrPropertyExpression);
 
         /// <summary>
-        /// Creates and returns a new <see cref="IMemberConstraint{TMessage}"/> that can be used to define certain
+        /// Creates and returns a new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
         /// constraints on <typeparamref name="TValue"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to verify.</typeparam>
@@ -52,7 +59,7 @@ namespace Kingo.BuildingBlocks.Constraints
         IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> fieldOrProperty, string fieldOrPropertyName); 
 
         /// <summary>
-        /// Creates and returns a new <see cref="IMemberConstraint{TMessage}"/> that can be used to define certain
+        /// Creates and returns a new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
         /// constraints on <typeparamref name="TValue"/>.
         /// </summary>
         /// <typeparam name="TValue">Type of the value to verify.</typeparam>

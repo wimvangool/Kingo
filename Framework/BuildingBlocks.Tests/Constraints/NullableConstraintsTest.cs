@@ -17,7 +17,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNull();
 
-            validator.Validate(message).AssertError("Member (<null>) must have a value.");
+            validator.Validate(message).AssertMemberError("Member (<null>) must have a value.");
         }
 
         [TestMethod]

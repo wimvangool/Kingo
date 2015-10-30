@@ -13,8 +13,12 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstraintValidator{T}" /> class.
         /// </summary>        
+        /// <param name="haltOnFirstError">
+        /// Indicates whether or not this constraint set should stop evaluating constraints once a constraint has failed.
+        /// </param>
         /// <param name="formatProvider">Optional <see cref="IFormatProvider" /> to use when formatting error messages.</param>
-        public ConstraintValidator(IFormatProvider formatProvider = null)
+        public ConstraintValidator(bool haltOnFirstError = false, IFormatProvider formatProvider = null)
+            : base(haltOnFirstError)
         {                                  
             _formatProvider = formatProvider;
         }                     

@@ -74,9 +74,9 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        internal ConstraintValidator<ValidatedMessage<TValue>> CreateConstraintValidator()
+        internal ConstraintValidator<ValidatedMessage<TValue>> CreateConstraintValidator(bool haltOnFirstError = false)
         {
-            return new ConstraintValidator<ValidatedMessage<TValue>>();
+            return new ConstraintValidator<ValidatedMessage<TValue>>(haltOnFirstError);
         }
     }   
 }

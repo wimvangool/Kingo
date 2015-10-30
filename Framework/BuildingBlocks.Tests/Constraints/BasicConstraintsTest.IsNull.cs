@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNull();
 
-            validator.Validate(message).AssertError("Member (<null>) must refer to an instance of an object.");
+            validator.Validate(message).AssertMemberError("Member (<null>) must refer to an instance of an object.");
         }
 
         #endregion
@@ -63,7 +63,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNull(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNull();
 
-            validator.Validate(message).AssertError("Member (System.Object) must be null.");
+            validator.Validate(message).AssertMemberError("Member (System.Object) must be null.");
         }
 
         #endregion

@@ -32,7 +32,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(_Key, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -43,7 +43,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(_Key);
 
-            validator.Validate(message).AssertError("Member (0 item(s)) contains no value with key 'Key'.");
+            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no value with key 'Key'.");
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).ElementAt(_Key, RandomErrorMessage).IsNull();
 
-            validator.Validate(message).AssertError("Member[Key] (System.Object) must be null.", "Member[Key]");
+            validator.Validate(message).AssertMemberError("Member[Key] (System.Object) must be null.", "Member[Key]");
         }
 
         #endregion

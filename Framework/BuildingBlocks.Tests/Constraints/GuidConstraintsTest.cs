@@ -17,7 +17,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEmpty();
 
-            validator.Validate(message).AssertError("Member (00000000-0000-0000-0000-000000000000) must not be empty.");
+            validator.Validate(message).AssertMemberError("Member (00000000-0000-0000-0000-000000000000) must not be empty.");
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEmpty(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -76,7 +76,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEmpty();
 
-            validator.Validate(message).AssertError(string.Format("Member ({0}) must be empty.", message.Member));
+            validator.Validate(message).AssertMemberError(string.Format("Member ({0}) must be empty.", message.Member));
         }
 
         #endregion

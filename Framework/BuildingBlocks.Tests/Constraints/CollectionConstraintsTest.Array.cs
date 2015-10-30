@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).Length().IsNotEqualTo(3);
 
-            validator.Validate(message).AssertError("Member.Length (3) must not be equal to '3'.");
+            validator.Validate(message).AssertMemberError("Member.Length (3) must not be equal to '3'.");
         }
 
         [TestMethod]

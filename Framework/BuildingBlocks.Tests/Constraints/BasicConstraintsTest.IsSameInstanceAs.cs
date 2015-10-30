@@ -16,7 +16,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(null as object, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(null as object);
 
-            validator.Validate(message).AssertError("Member (<null>) must not refer to the same instance as '<null>'.");
+            validator.Validate(message).AssertMemberError("Member (<null>) must not refer to the same instance as '<null>'.");
         }
 
         [TestMethod]
@@ -39,7 +39,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(member, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -51,7 +51,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(member);
 
-            validator.Validate(message).AssertError("Member (System.Object) must not refer to the same instance as 'System.Object'.");
+            validator.Validate(message).AssertMemberError("Member (System.Object) must not refer to the same instance as 'System.Object'.");
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => null, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -99,7 +99,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => null);
 
-            validator.Validate(message).AssertError("Member (<null>) must not refer to the same instance as '<null>'.");
+            validator.Validate(message).AssertMemberError("Member (<null>) must not refer to the same instance as '<null>'.");
         }
 
         [TestMethod]
@@ -111,7 +111,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => m.Other, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -123,7 +123,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotSameInstanceAs(m => m.Other);
 
-            validator.Validate(message).AssertError("Member (System.Object) must not refer to the same instance as 'System.Object'.");
+            validator.Validate(message).AssertMemberError("Member (System.Object) must not refer to the same instance as 'System.Object'.");
         }
 
         [TestMethod]
@@ -174,7 +174,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsSameInstanceAs(new object(), RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -186,7 +186,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsSameInstanceAs(new object());
 
-            validator.Validate(message).AssertError("Member (System.Object) must refer to the same instance as 'System.Object'.");
+            validator.Validate(message).AssertMemberError("Member (System.Object) must refer to the same instance as 'System.Object'.");
         }
 
         #endregion
@@ -235,7 +235,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsSameInstanceAs(m => new object(), RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -247,7 +247,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsSameInstanceAs(m => m.Other);
 
-            validator.Validate(message).AssertError("Member (System.Object) must refer to the same instance as 'System.Object'.");
+            validator.Validate(message).AssertMemberError("Member (System.Object) must refer to the same instance as 'System.Object'.");
         }
 
         #endregion

@@ -6,14 +6,14 @@ namespace Kingo.BuildingBlocks.Constraints
     internal sealed class ErrorMessageOfConstraint : ErrorMessage
     {
         private readonly IConstraintWithErrorMessage _failedConstraint;
-        private readonly object _failedValue;
-        private readonly object _errorMessageArgument;
+        private readonly object _failedValue;        
 
         internal ErrorMessageOfConstraint(IConstraintWithErrorMessage failedConstraint, object failedValue, object errorMessageArgument = null)
         {
             _failedConstraint = failedConstraint;
             _failedValue = failedValue;
-            _errorMessageArgument = errorMessageArgument ?? failedConstraint;
+            
+            Arguments.Add(failedConstraint.Name, errorMessageArgument ?? _failedConstraint);
         }
 
         public override IConstraintWithErrorMessage FailedConstraint
@@ -27,10 +27,8 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         protected override StringTemplate FormatErrorMessage(IEnumerable<KeyValuePair<Identifier, object>> arguments, IFormatProvider formatProvider)
-        {            
-            return _failedConstraint.ErrorMessage
-                .Format(arguments, formatProvider)
-                .Format(_failedConstraint.Name, _errorMessageArgument, formatProvider);
+        {
+            return _failedConstraint.ErrorMessage.Format(arguments, formatProvider);                
         }        
     }
 }

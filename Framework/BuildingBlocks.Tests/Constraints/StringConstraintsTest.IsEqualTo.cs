@@ -16,7 +16,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo("Some value", StringComparison.Ordinal, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo("Some value", StringComparison.Ordinal);
 
-            validator.Validate(message).AssertError("Member (Some value) must not be equal to 'Some value'.");
+            validator.Validate(message).AssertMemberError("Member (Some value) must not be equal to 'Some value'.");
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo("Some value", StringComparison.OrdinalIgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotEqualTo("Some VALUE", StringComparison.OrdinalIgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -97,7 +97,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo("Some VALUE", StringComparison.Ordinal, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo("Some VALUE", StringComparison.Ordinal);
 
-            validator.Validate(message).AssertError("Member (Some value) must be equal to 'Some VALUE'.");
+            validator.Validate(message).AssertMemberError("Member (Some value) must be equal to 'Some VALUE'.");
         }
 
         [TestMethod]
@@ -141,7 +141,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsEqualTo("Some other value", StringComparison.OrdinalIgnoreCase, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         #endregion

@@ -60,7 +60,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInRangeOfValidValues();
 
-            validator.Validate(message).AssertError("Member (4) has a value or contains bitflags that are not defined by type NonFlagsEnum.");
+            validator.Validate(message).AssertMemberError("Member (4) has a value or contains bitflags that are not defined by type NonFlagsEnum.");
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsInRangeOfValidValues();
 
-            validator.Validate(message).AssertError("Member (12) has a value or contains bitflags that are not defined by type FlagsEnum.");
+            validator.Validate(message).AssertMemberError("Member (12) has a value or contains bitflags that are not defined by type FlagsEnum.");
         }
 
         [TestMethod]
@@ -153,7 +153,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsDefined();
 
-            validator.Validate(message).AssertError("Member (4) is not defined in Enum of type NonFlagsEnum.");
+            validator.Validate(message).AssertMemberError("Member (4) is not defined in Enum of type NonFlagsEnum.");
         }
 
         [TestMethod]
@@ -186,7 +186,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsDefined();
 
-            validator.Validate(message).AssertError("Member (12) is not defined in Enum of type FlagsEnum.");
+            validator.Validate(message).AssertMemberError("Member (12) is not defined in Enum of type FlagsEnum.");
         }
 
         [TestMethod]
@@ -197,7 +197,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsDefined();
 
-            validator.Validate(message).AssertError("Member (One, Four) is not defined in Enum of type FlagsEnum.");
+            validator.Validate(message).AssertMemberError("Member (One, Four) is not defined in Enum of type FlagsEnum.");
         }        
 
         [TestMethod]
@@ -246,7 +246,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).HasFlag(FlagsEnum.One | FlagsEnum.Four);
 
-            validator.Validate(message).AssertError("Member (Zero) does not have all bitflags specified by 'One, Four' set.");
+            validator.Validate(message).AssertMemberError("Member (Zero) does not have all bitflags specified by 'One, Four' set.");
         }
 
         [TestMethod]

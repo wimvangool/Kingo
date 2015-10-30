@@ -6,19 +6,52 @@ namespace Kingo.BuildingBlocks.Constraints
 {
     [TestClass]
     public sealed partial class BasicConstraintsTest : ConstraintTestBase
-    {       
+    {        
         #region [====== Basics ======]
-
+     
         [TestMethod]
         public void Validate_ReturnsNoErrors_IfNoConstraintsAreSpecified()
-        {            
+        {
             var validator = new ConstraintValidator<EmptyMessage>();
 
-            validator.Validate(new EmptyMessage()).AssertNoErrors();            
+            validator.Validate(new EmptyMessage()).AssertNoErrors();
         }
 
         [TestMethod]
-        public void Validate_ReturnsNoErrors_IfConstraintIsSatisfied()
+        public void ValidateInstance_ReturnsNoErrors_IfNoConstraintsAreSpecified()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThatInstance();
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateInstance_ReturnsNoErrors_IfConstraintIsSpecified()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThatInstance().Satisfies(m => true);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateInstance_ReturnsExpectedError_IfConstraintIsNotSpecified()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThatInstance().Satisfies(m => false, RandomErrorMessage);
+
+            validator.Validate(message).AssertError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void ValidateMember_ReturnsNoErrors_IfConstraintIsSatisfied()
         {
             var message = new ValidatedMessage<object>(new object());
             var validator = message.CreateConstraintValidator();
@@ -29,14 +62,14 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void Validate_ReturnsExpectedError_IfConstraintIsNotSatisfied()
+        public void ValidateMember_ReturnsExpectedError_IfConstraintIsNotSatisfied()
         {
             var message = new ValidatedMessage<object>(new object());
             var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member).Satisfies(value => false, RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }           
 
         [TestMethod]
@@ -51,6 +84,39 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion                                                                
 
+        #region [====== HaltOnFirstError ======]
+
+        [TestMethod]
+        public void Validate_ReturnsAllErrors_IfMultipleConstraintsFail_And_HaltOnFirstErrorIsFalse()
+        {
+            var message = new ValidatedMessage<int>(0, 1);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
+            validator.VerifyThat(m => m.Other).IsEqualTo(m => m.Member);
+
+            validator.Validate(message)
+                .AssertErrorCountIs(2)
+                .AssertMemberError("Member (0) must be equal to '1'.", "Member")
+                .AssertMemberError("Other (1) must be equal to '0'.", "Other");
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsOnlyFirstError_IfMultipleConstraintsFail_And_HaltOnFirstErrorIsTrue()
+        {
+            var message = new ValidatedMessage<int>(0, 1);
+            var validator = message.CreateConstraintValidator(true);
+
+            validator.VerifyThat(m => m.Member).IsEqualTo(m => m.Other);
+            validator.VerifyThat(m => m.Other).IsEqualTo(m => m.Member);
+
+            validator.Validate(message)
+                .AssertErrorCountIs(1)
+                .AssertMemberError("Member (0) must be equal to '1'.", "Member");                
+        }
+
+        #endregion
+
         #region [====== Multiple Constraints Per Member ======]
 
         [TestMethod]
@@ -62,7 +128,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).IsSmallerThan(10);
 
-            validator.Validate(message).AssertError("Member (0) must be greater than '0'.");
+            validator.Validate(message).AssertMemberError("Member (0) must be greater than '0'.");
         }
 
         [TestMethod]
@@ -74,7 +140,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).IsSmallerThan(10);
 
-            validator.Validate(message).AssertError("Member (10) must be smaller than '10'.");
+            validator.Validate(message).AssertMemberError("Member (10) must be smaller than '10'.");
         }
 
         [TestMethod]
@@ -86,7 +152,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
 
-            validator.Validate(message).AssertError("Member[0] (0) must be greater than '0'.", "Member[0]");
+            validator.Validate(message).AssertMemberError("Member[0] (0) must be greater than '0'.", "Member[0]");
         }
 
         [TestMethod]
@@ -98,7 +164,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
             validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
 
-            validator.Validate(message).AssertError("Member[0] (10) must be smaller than '10'.", "Member[0]");
+            validator.Validate(message).AssertMemberError("Member[0] (10) must be smaller than '10'.", "Member[0]");
         }
 
         #endregion
@@ -113,7 +179,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNull().And(member => member.Length).IsEqualTo(0);
 
-            validator.Validate(message).AssertError("Member.Length (10) must be equal to '0'.");
+            validator.Validate(message).AssertMemberError("Member.Length (10) must be equal to '0'.");
         }
 
         [TestMethod]
@@ -126,7 +192,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 .And(member => member.Member).IsNotNull()
                 .And(member => member.Length).IsEqualTo(0);
 
-            validator.Validate(message).AssertError("Member.Member.Length (10) must be equal to '0'.");
+            validator.Validate(message).AssertMemberError("Member.Member.Length (10) must be equal to '0'.");
         }
 
         #endregion

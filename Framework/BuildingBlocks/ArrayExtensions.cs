@@ -25,10 +25,8 @@ namespace Kingo.BuildingBlocks
             }
             var elementsPlusOne = new TElement[elements.Length + 1];
 
-            for (int index = 0; index < elements.Length; index++)
-            {
-                elementsPlusOne[index] = elements[index];
-            }
+            Array.Copy(elements, 0, elementsPlusOne, 0, elements.Length);
+            
             elementsPlusOne[elements.Length] = element;
 
             return elementsPlusOne;

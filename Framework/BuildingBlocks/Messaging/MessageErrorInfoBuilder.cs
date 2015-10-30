@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Kingo.BuildingBlocks.Constraints;
 
 namespace Kingo.BuildingBlocks.Messaging
@@ -11,8 +12,8 @@ namespace Kingo.BuildingBlocks.Messaging
     public class MessageErrorInfoBuilder : IErrorMessageReader
     {
         private readonly IFormatProvider _formatProvider;
-        private readonly Lazy<IDictionary<string, string>> _errorMessages;
-        private string _errorMessage;
+        private readonly Lazy<IDictionary<string, IList<string>>> _memberErrors;
+        private readonly Lazy<IList<string>> _errors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageErrorInfoBuilder" /> class.
@@ -21,7 +22,8 @@ namespace Kingo.BuildingBlocks.Messaging
         public MessageErrorInfoBuilder(IFormatProvider formatProvider = null)
         {
             _formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
-            _errorMessages = new Lazy<IDictionary<string, string>>(CreateErrorMessageDictionary);
+            _memberErrors = new Lazy<IDictionary<string, IList<string>>>(CreateMemberErrorDictionary);
+            _errors = new Lazy<IList<string>>(CreateErrorList);
         }
 
         /// <summary>
@@ -31,42 +33,56 @@ namespace Kingo.BuildingBlocks.Messaging
         {
             get { return _formatProvider; }
         }        
+        
+        private IDictionary<string, IList<string>> MemberErrors
+        {
+            get { return _memberErrors.Value; }
+        }
+
+        private IList<string> Errors
+        {
+            get { return _errors.Value; }
+        }
 
         #region [====== Put & Add ======]
-
+      
         /// <inheritdoc />
-        public void Put(IErrorMessage errorMessage)
+        public void Add(IErrorMessage errorMessage, string memberName)
         {
-            Put(Format(errorMessage));
+            Add(Format(errorMessage), memberName);
         }
 
         /// <inheritdoc />
-        public void Put(string errorMessage)
+        public virtual void Add(string errorMessage, string memberName)
         {
-            _errorMessage = errorMessage;
-        }
-
-        /// <inheritdoc />
-        public void Add(string memberName, IErrorMessage errorMessage)
-        {
-            Add(memberName, Format(errorMessage));
-        }
-
-        /// <inheritdoc />
-        public void Add(string memberName, string errorMessage)
-        {
-            if (memberName == null)
-            {
-                throw new ArgumentNullException("memberName");
-            }
-            if (_errorMessages.Value.ContainsKey(memberName))
+            if (string.IsNullOrEmpty(errorMessage))
             {
                 return;
             }
-            _errorMessages.Value.Add(memberName, errorMessage);
+            GetOrAddErrorList(memberName).Add(errorMessage);            
+        }
+
+        private IList<string> GetOrAddErrorList(string memberName)
+        {
+            if (string.IsNullOrEmpty(memberName))
+            {
+                return Errors;                
+            }
+            IList<string> errorList;
+
+            if (!MemberErrors.TryGetValue(memberName, out errorList))
+            {
+                MemberErrors.Add(memberName, errorList = CreateErrorList());
+            }
+            return errorList;
         }
         
-        private string Format(IErrorMessage errorMessage)
+        /// <summary>
+        /// Formats the specified <paramref name="errorMessage"/> using the <see cref="FormatProvider" />.
+        /// </summary>
+        /// <param name="errorMessage">The message to format.</param>
+        /// <returns>The formatted message.</returns>
+        protected virtual string Format(IErrorMessage errorMessage)
         {
             return errorMessage == null ? null : errorMessage.ToString(FormatProvider);
         }
@@ -79,25 +95,51 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <returns>A new <see cref="MessageErrorInfo"/> instance.</returns>
         public MessageErrorInfo BuildDataErrorInfo()
         {
-            return BuildDataErrorInfo(_errorMessages.Value, _errorMessage);
+            var memberErrors = _memberErrors.IsValueCreated
+                ? MemberErrors.Select(errors => new KeyValuePair<string, string>(errors.Key, ConvertToSingleErrorMessage(errors.Value)))
+                : Enumerable.Empty<KeyValuePair<string, string>>();
+
+            var error = _errors.IsValueCreated ? ConvertToSingleErrorMessage(Errors) : null;
+
+            return BuildDataErrorInfo(memberErrors, error);
+        }
+
+        /// <summary>
+        /// Converts the specified list of <paramref name="errorMessages"/> to a single error message.
+        /// The list is guaranteed not to be empty.
+        /// </summary>
+        /// <param name="errorMessages">A list of error messages.</param>
+        /// <returns>A single error message.</returns>
+        protected virtual string ConvertToSingleErrorMessage(IList<string> errorMessages)
+        {
+            return errorMessages[0];
         }
 
         /// <summary>
         /// Creates and returns a new <see cref="MessageErrorInfo"/> instance containing all added error messages.
         /// </summary>
         /// <returns>A new <see cref="MessageErrorInfo"/> instance.</returns>
-        protected virtual MessageErrorInfo BuildDataErrorInfo(IDictionary<string, string> errorMessages, string errorMessage)
+        protected virtual MessageErrorInfo BuildDataErrorInfo(IEnumerable<KeyValuePair<string, string>> memberErrors, string error)
         {
-            return new MessageErrorInfo(errorMessages, errorMessage);
+            return new MessageErrorInfo(memberErrors, error);
         }
 
         /// <summary>
         /// Creates and returns a new <see cref="IDictionary{T, S}" /> that will be used to store all error messages.
         /// </summary>
         /// <returns>A new <see cref="IDictionary{T, S}" />.</returns>
-        protected virtual IDictionary<string, string> CreateErrorMessageDictionary()
+        protected virtual IDictionary<string, IList<string>> CreateMemberErrorDictionary()
         {
-            return new Dictionary<string, string>();
+            return new Dictionary<string, IList<string>>();
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="IList{T}" /> that will be used to store error messages.
+        /// </summary>
+        /// <returns>A new <see cref="IList{T}" /> instance.</returns>
+        protected virtual IList<string> CreateErrorList()
+        {
+            return new List<string>();
         }
     }
 }

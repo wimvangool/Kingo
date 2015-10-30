@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrWhiteSpace(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);            
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);            
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrWhiteSpace(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);            
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);            
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrWhiteSpace(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);            
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);            
         }
 
         [TestMethod]
@@ -59,7 +59,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrWhiteSpace();
 
-            validator.Validate(message).AssertError("Member (     ) is not allowed to be null or contain only white space.");
+            validator.Validate(message).AssertMemberError("Member (     ) is not allowed to be null or contain only white space.");
         }
 
         #endregion
@@ -107,7 +107,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNullOrWhiteSpace(RandomErrorMessage);
 
-            validator.Validate(message).AssertError(RandomErrorMessage);
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNullOrWhiteSpace();
 
-            validator.Validate(message).AssertError(string.Format("Member ({0}) must be either null or contain only white space.", message.Member));
+            validator.Validate(message).AssertMemberError(string.Format("Member ({0}) must be either null or contain only white space.", message.Member));
         }
 
         #endregion

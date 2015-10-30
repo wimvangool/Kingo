@@ -43,7 +43,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 v.VerifyThat(value => value.Length).IsNotEqualTo(10, RandomErrorMessage);
             });
 
-            validator.Validate(message).AssertError(RandomErrorMessage, "Member", "Member.Length");
+            validator.Validate(message).AssertMemberError(RandomErrorMessage, "Member", "Member.Length");
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 });
             });
 
-            validator.Validate(message).AssertError(RandomErrorMessage, "Member", "Member.Member", "Member.Member.Length");
+            validator.Validate(message).AssertMemberError(RandomErrorMessage, "Member", "Member.Member", "Member.Member.Length");
         }
 
         [TestMethod]
@@ -76,8 +76,8 @@ namespace Kingo.BuildingBlocks.Constraints
             });
 
             validator.Validate(message)
-                .AssertError("Member (Some value) must be null.", "Member")
-                .AssertError("Member.Length (10) must be equal to '6'.", "Member.Length");
+                .AssertMemberError("Member (Some value) must be null.", "Member")
+                .AssertMemberError("Member.Length (10) must be equal to '6'.", "Member.Length");
         }
 
         #endregion

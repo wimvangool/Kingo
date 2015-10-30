@@ -14,11 +14,7 @@ namespace Kingo.BuildingBlocks.Constraints
             if (valueFactory == null)
             {
                 throw new ArgumentNullException("valueFactory");
-            }
-            if (name == null)
-            {
-                throw new ArgumentNullException("name");
-            }
+            }            
             _parentNames = parentNames;
             _name = name;
             _valueFactory = valueFactory;
