@@ -23,7 +23,7 @@ namespace Kingo.BuildingBlocks.Clocks
         /// Initializes a new instance of the <see cref="HighResolutionClock" /> class.
         /// </summary>
         public HighResolutionClock()
-            : this(SystemClock.Instance) { }
+            : this(Clock.Default) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HighResolutionClock" /> class.
@@ -207,9 +207,9 @@ namespace Kingo.BuildingBlocks.Clocks
         private static readonly Lazy<HighResolutionClock> _Default = new Lazy<HighResolutionClock>(StartNew, true);
 
         /// <summary>
-        /// Returns the default <see cref="HighResolutionClock" /> instance that uses the <see cref="SystemClock" /> as the reference clock.
+        /// Returns the default <see cref="HighResolutionClock" /> instance that uses <see cref="Clock.Default" /> as the reference clock.
         /// </summary>
-        public static HighResolutionClock Default
+        public new static HighResolutionClock Default
         {
             get { return _Default.Value; }
         }

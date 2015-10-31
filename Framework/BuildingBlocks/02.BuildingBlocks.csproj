@@ -49,8 +49,9 @@
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Clocks\AsyncLocalClockContext.cs" />
     <Compile Include="Clocks\Clock.cs" />
+    <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\ClockScope.cs" />
-    <Compile Include="Clocks\ClockWithOffset.cs" />
+    <Compile Include="Clocks\ShiftedClock.cs" />
     <Compile Include="Constraints\BasicConstraints.cs" />
     <Compile Include="Constraints\CollectionConstraints.Array.cs" />
     <Compile Include="Constraints\CollectionConstraints.cs" />
@@ -166,7 +167,7 @@
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="Clocks\StaticClockContext.cs" />
-    <Compile Include="Clocks\SystemClock.cs" />
+    <Compile Include="Clocks\DefaultClock.cs" />
     <Compile Include="Threading\AsyncLocal.T1.cs" />
     <Compile Include="Threading\AsyncMethod.cs" />
   </ItemGroup>

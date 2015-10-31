@@ -7,7 +7,7 @@ namespace Kingo.BuildingBlocks.Clocks
     {        
         private StaticClockContext()
         {
-            CurrentClock = SystemClock.Instance;
+            CurrentClock = Clock.Default;
         }
 
         public IClock CurrentClock
@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Clocks
 
         public IClock Add(TimeSpan offset)
         {
-            return ClockWithOffset.AddOffset(this, offset);
+            return ShiftedClock.Shift(this, offset);
         }        
 
         public static readonly StaticClockContext Instance = new StaticClockContext();        

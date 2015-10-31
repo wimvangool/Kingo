@@ -9,7 +9,7 @@ namespace Kingo.BuildingBlocks.Messaging
     /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
     [Serializable]
-    [DataContract(Namespace = "http://www.kingo.com/buildingblocks")]
+    [DataContract(Namespace = "http://github.com/wimvangool/Kingo.BuildingBlocks")]
     public abstract class Message<TMessage> : Message, IMessage<TMessage> where TMessage : Message<TMessage>
     {        
         /// <summary>

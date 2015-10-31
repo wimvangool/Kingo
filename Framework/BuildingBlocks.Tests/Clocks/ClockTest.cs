@@ -12,7 +12,7 @@ namespace Kingo.BuildingBlocks.Clocks
             var startTime = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
             var stopwatch = new StopwatchClock(startTime);
 
-            using (Clock.OverrideThreadStatic(stopwatch))
+            using (Clock.OverrideAsyncLocal(stopwatch))
             {
                 var dateInsideScope = Clock.Current.UtcDate();
 

@@ -11,7 +11,7 @@ namespace Kingo.BuildingBlocks.Messaging
     public abstract class FunctionalException : Exception
     {
         private const string _FailedMessageKey = "_failedMessage";
-        private readonly IMessage _failedMessage;
+        private readonly object _failedMessage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FunctionalException" /> class.
@@ -20,7 +20,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        internal FunctionalException(IMessage failedMessage)
+        internal FunctionalException(object failedMessage)
         {
             if (failedMessage == null)
             {
@@ -37,7 +37,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        internal FunctionalException(IMessage failedMessage, string message)
+        internal FunctionalException(object failedMessage, string message)
             : base(message)
         {
             if (failedMessage == null)
@@ -56,7 +56,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        internal FunctionalException(IMessage failedMessage, string message, Exception innerException)
+        internal FunctionalException(object failedMessage, string message, Exception innerException)
             : base(message, innerException)
         {
             if (failedMessage == null)
@@ -90,7 +90,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <summary>
         /// The message that could not be processed.
         /// </summary>
-        public IMessage FailedMessage
+        public object FailedMessage
         {
             get { return _failedMessage; }
         }

@@ -66,10 +66,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\FailureMessages.Designer.cs">
+    <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>FailureMessages.resx</DependentUpon>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Messaging\Scenario.cs" />
@@ -90,9 +90,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\FailureMessages.resx">
+    <EmbeddedResource Include="Resources\ErrorMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>FailureMessages.Designer.cs</LastGenOutput>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

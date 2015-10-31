@@ -16,7 +16,7 @@ namespace Kingo.BuildingBlocks.Clocks
         [TestInitialize]
         public void Setup()
         {
-            _clock = new HighResolutionClock(SystemClock.Instance, TimeSpan.FromMilliseconds(10));
+            _clock = new HighResolutionClock(Clock.Default, TimeSpan.FromMilliseconds(10));
             _clock.Start();
         }
 

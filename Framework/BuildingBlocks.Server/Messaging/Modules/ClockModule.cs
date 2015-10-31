@@ -27,7 +27,7 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         /// <inheritdoc />
         public override async Task InvokeAsync(IMessageHandler handler)
         {
-            using (Clock.OverrideThreadStatic(_clock))
+            using (Clock.OverrideAsyncLocal(_clock))
             {
                 await handler.InvokeAsync();
             }

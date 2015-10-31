@@ -54,7 +54,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Clocks\ClockTest.cs" />
-    <Compile Include="Clocks\ClockWithOffsetTest.cs" />
+    <Compile Include="Clocks\ShiftedClockTest.cs" />
     <Compile Include="Constraints\AndConstraintTestOne.cs" />
     <Compile Include="Constraints\AndConstraintTestTwo.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.And.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="Messaging\MessageErrorInfoExtensions.cs" />
     <Compile Include="Clocks\HighResolutionClockTest.cs" />
     <Compile Include="Clocks\StopwatchClockTest.cs" />
-    <Compile Include="Clocks\SystemClockTest.cs" />
+    <Compile Include="Clocks\DefaultClockTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\02.BuildingBlocks.csproj">

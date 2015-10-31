@@ -49,13 +49,6 @@ namespace Kingo.BuildingBlocks.Clocks
         /// <returns>Date and time in UTC-time.</returns>
         DateTimeOffset UtcDateAndTime();
 
-        #endregion
-
-        /// <summary>
-        /// Returns a clock that shows the time of the current clock, plus the given offset.
-        /// </summary>
-        /// <param name="offset">The offset to add to the time of the current clock.</param>
-        /// <returns>A clock that shows the time of the current clock, plus the given offset.</returns>
-        IClock Add(TimeSpan offset);        
+        #endregion               
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.BuildingBlocks.Clocks
 {
     [TestClass]
-    public sealed class ClockWithOffsetTest
+    public sealed class ShiftedClockTest
     {
         [TestMethod]
         public void AddOffset_AddsSomeOffsetToSpecifiedClock()
@@ -13,7 +13,7 @@ namespace Kingo.BuildingBlocks.Clocks
             var offset = new TimeSpan(6, 4, 2, 0);
 
             var stopwatch = new StopwatchClock(startTime);
-            var clock = ClockWithOffset.AddOffset(stopwatch, offset);
+            var clock = ShiftedClock.Shift(stopwatch, offset);
             var dateAndTime = clock.UtcDateAndTime();
 
             Assert.AreEqual(startTime.Add(offset), dateAndTime);
@@ -23,13 +23,13 @@ namespace Kingo.BuildingBlocks.Clocks
         public void SubtractOffset_SubtractsSomeOffsetFromSpecifiedClock()
         {
             var startTime = DateTimeOffset.UtcNow;
-            var offset = new TimeSpan(6, 4, 2, 0);
+            var offset = new TimeSpan(-6, -4, -2, 0);
 
             var stopwatch = new StopwatchClock(startTime);
-            var clock = ClockWithOffset.SubtractOffset(stopwatch, offset);
+            var clock = ShiftedClock.Shift(stopwatch, offset);
             var dateAndTime = clock.UtcDateAndTime();
 
-            Assert.AreEqual(startTime.Subtract(offset), dateAndTime);
+            Assert.AreEqual(startTime.Add(offset), dateAndTime);
         }
     }
 }

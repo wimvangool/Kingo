@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Scenario_NoExceptionWasThrown" xml:space="preserve">
-    <value>Expected an exception of type '{constraint.Type}' but no exception was thrown whatsoever.</value>
+    <value>Expected an exception of type '{type}' but no exception was thrown whatsoever.</value>
   </data>
   <data name="Scenario_UnexpectedExceptionWasThrown" xml:space="preserve">
     <value>Expected an exception of type '{constraint.Type}' but an Exception of type '{member.Type}' was thrown instead.</value>

@@ -56,7 +56,10 @@ namespace Kingo.BuildingBlocks.Clocks
         /// <inheritdoc />
         public override DateTimeOffset UtcDateAndTime()
         {
-            return _startTime.Add(_stopwatch.Elapsed);
+            lock (_stopwatch)
+            {
+                return _startTime.Add(_stopwatch.Elapsed);
+            }
         }
 
         /// <summary>

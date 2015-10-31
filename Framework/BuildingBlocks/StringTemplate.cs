@@ -15,7 +15,7 @@ namespace Kingo.BuildingBlocks
         /// <summary>
         /// The value that is used in templates to represent the <c>null</c>-value.
         /// </summary>
-        public const string NullValue = "<null>";
+        public const string NullValue = "<null>";        
 
         private readonly StringTemplateComponent _template;
 
@@ -162,7 +162,7 @@ namespace Kingo.BuildingBlocks
         /// </exception>
         public static StringTemplate operator +(StringTemplate left, string right)
         {
-            return left + Parse(right);
+            return left + ParseOrNull(right);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace Kingo.BuildingBlocks
         public static StringTemplate operator +(StringTemplate left, StringTemplate right)
         {
             if (left == null)
-            {
+            {                
                 return right;
             }            
             return left.Concat(right);

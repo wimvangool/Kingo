@@ -22,7 +22,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(IMessage failedMessage, string message)
+        public InvalidMessageException(object failedMessage, string message)
             : base(failedMessage, message) { }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception> 
-        public InvalidMessageException(IMessage failedMessage, string message, Exception innerException)
+        public InvalidMessageException(object failedMessage, string message, Exception innerException)
             : base(failedMessage, message, innerException) { }
         
         /// <summary>
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <param name="errorInfo">
         /// If specified, contains all the validation-errors of the <paramref name="failedMessage"/>.
         /// </param>
-        public InvalidMessageException(IMessage failedMessage, string message, MessageErrorInfo errorInfo)
+        public InvalidMessageException(object failedMessage, string message, MessageErrorInfo errorInfo)
             : base(failedMessage, message)
         {
             _errorInfo = errorInfo;

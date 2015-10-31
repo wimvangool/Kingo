@@ -48,7 +48,7 @@ namespace Kingo.BuildingBlocks.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public InvalidMessageException AsInvalidMessageException(IMessage failedMessage)
+        public InvalidMessageException AsInvalidMessageException(object failedMessage)
         {            
             var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
             var message = string.Format(messageFormat, failedMessage.GetType());
@@ -67,7 +67,7 @@ namespace Kingo.BuildingBlocks.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public InvalidMessageException AsInvalidMessageException(IMessage failedMessage, string message)
+        public InvalidMessageException AsInvalidMessageException(object failedMessage, string message)
         {                     
             return AsInvalidMessageException(failedMessage, message, this);
         }
@@ -85,7 +85,7 @@ namespace Kingo.BuildingBlocks.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected virtual InvalidMessageException AsInvalidMessageException(IMessage failedMessage, string message, Exception innerException)
+        protected virtual InvalidMessageException AsInvalidMessageException(object failedMessage, string message, Exception innerException)
         {
             return new InvalidMessageException(failedMessage, message, innerException);
         }
@@ -105,7 +105,7 @@ namespace Kingo.BuildingBlocks.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public CommandExecutionException AsCommandExecutionException(IMessage failedMessage)
+        public CommandExecutionException AsCommandExecutionException(object failedMessage)
         {            
             var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
             var message = string.Format(messageFormat, failedMessage.GetType());
@@ -124,7 +124,7 @@ namespace Kingo.BuildingBlocks.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public CommandExecutionException AsCommandExecutionException(IMessage failedMessage, string message)
+        public CommandExecutionException AsCommandExecutionException(object failedMessage, string message)
         {                        
             return AsCommandExecutionException(failedMessage, message, this);
         }
@@ -142,7 +142,7 @@ namespace Kingo.BuildingBlocks.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        protected virtual CommandExecutionException AsCommandExecutionException(IMessage failedMessage, string message, Exception innerException)
+        protected virtual CommandExecutionException AsCommandExecutionException(object failedMessage, string message, Exception innerException)
         {
             return new CommandExecutionException(failedMessage, message, innerException);
         }

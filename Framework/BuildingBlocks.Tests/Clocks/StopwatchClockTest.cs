@@ -116,7 +116,7 @@ namespace Kingo.BuildingBlocks.Clocks
         public void Stop_WillStopTheClock()
         {
             var stopwatch = new StopwatchClock(DateTimeOffset.UtcNow);
-
+            
             stopwatch.Start();
 
             Thread.Sleep(2);

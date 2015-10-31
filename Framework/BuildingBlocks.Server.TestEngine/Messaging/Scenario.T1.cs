@@ -310,8 +310,8 @@ namespace Kingo.BuildingBlocks.Messaging
         protected IMemberConstraint<Scenario<TMessage>, TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
         {            
             return _memberSet.VerifyThat(scenario => scenario._exception, "ExpectedException")
-                .IsNotNull(FailureMessages.Scenario_NoExceptionWasThrown)              
-                .IsInstanceOf<TException>(FailureMessages.Scenario_UnexpectedExceptionWasThrown);                
+                .IsNotNull(StringTemplate.Parse(ErrorMessages.Scenario_NoExceptionWasThrown).Format("type", typeof(TException)).ToString())              
+                .IsInstanceOf<TException>(ErrorMessages.Scenario_UnexpectedExceptionWasThrown);                
         }        
 
         /// <summary>

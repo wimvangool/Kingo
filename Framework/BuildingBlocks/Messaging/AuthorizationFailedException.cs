@@ -17,7 +17,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public AuthorizationFailedException(IMessage failedMessage) 
+        public AuthorizationFailedException(object failedMessage) 
             : base(failedMessage) {}
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public AuthorizationFailedException(IMessage failedMessage, string message)
+        public AuthorizationFailedException(object failedMessage, string message)
             : base(failedMessage, message) {}
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        public AuthorizationFailedException(IMessage failedMessage, string message, Exception innerException)
+        public AuthorizationFailedException(object failedMessage, string message, Exception innerException)
             : base(failedMessage, message, innerException) {}
 
         /// <summary>
