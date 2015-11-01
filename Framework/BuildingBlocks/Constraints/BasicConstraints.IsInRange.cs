@@ -614,7 +614,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -
         /// the specified instances do not implement the <see cref="IComparable{T}" /> interface.
         /// </exception>
-        public IsNotInRangeConstraint(TValue left, TValue right, RangeOptions options = RangeOptions.None)
+        public IsNotInRangeConstraint(TValue left, TValue right, RangeOptions options = RangeOptions.AllInclusive)
             : this(new Range<TValue>(left, right, null, options)) { }  
  
         /// <summary>
@@ -633,7 +633,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -
         /// <paramref name="comparer"/> is <c>null</c> and the specified instances do not implement the <see cref="IComparable{T}" /> interface.
         /// </exception>
-        public IsNotInRangeConstraint(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.None)
+        public IsNotInRangeConstraint(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.AllInclusive)
             : this(new Range<TValue>(left, right, comparer, options)) { }        
 
         /// <summary>
@@ -741,7 +741,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -
         /// the specified instances do not implement the <see cref="IComparable{T}" /> interface.
         /// </exception>
-        public IsInRangeConstraint(TValue left, TValue right, RangeOptions options = RangeOptions.None)
+        public IsInRangeConstraint(TValue left, TValue right, RangeOptions options = RangeOptions.AllInclusive)
             : this(new Range<TValue>(left, right, null, options)) { }
 
         /// <summary>
@@ -760,7 +760,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -
         /// <paramref name="comparer"/> is <c>null</c> and the specified instances do not implement the <see cref="IComparable{T}" /> interface.
         /// </exception>
-        public IsInRangeConstraint(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.None)
+        public IsInRangeConstraint(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.AllInclusive)
             : this(new Range<TValue>(left, right, comparer, options)) { }
 
         /// <summary>

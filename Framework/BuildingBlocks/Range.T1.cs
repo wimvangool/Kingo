@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Kingo.BuildingBlocks.Constraints;
 using Kingo.BuildingBlocks.Resources;
 
-namespace Kingo.BuildingBlocks.Constraints
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
     /// Represents a range or domain of values.
@@ -30,7 +31,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -
         /// the specified instances do not implement the <see cref="IComparable{T}" /> interface.
         /// </exception>
-        public Range(TValue left, TValue right, RangeOptions options = RangeOptions.None)
+        public Range(TValue left, TValue right, RangeOptions options = RangeOptions.AllInclusive)
             : this(left, right, null, options) { }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -
         /// <paramref name="comparer"/> is <c>null</c> and the specified instances do not implement the <see cref="IComparable{T}" /> interface.
         /// </exception>
-        public Range(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.None)
+        public Range(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.AllInclusive)
         {
             var leftValue = new Comparable<TValue>(left, comparer);
             var rightValue = new Comparable<TValue>(right, comparer);
@@ -74,7 +75,7 @@ namespace Kingo.BuildingBlocks.Constraints
             }
             if (Comparer.IsEqualTo(left.Value, right))
             {
-                return options == RangeOptions.None;
+                return options == RangeOptions.AllInclusive;
             }
             return false;
         }

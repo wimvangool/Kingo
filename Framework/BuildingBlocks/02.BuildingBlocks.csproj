@@ -157,10 +157,10 @@
     <Compile Include="HashCode.cs" />
     <Compile Include="Clocks\IClock.cs" />
     <Compile Include="Clocks\IClockContext.cs" />
-    <Compile Include="Constraints\IRange.T1.cs" />
+    <Compile Include="IRange.T1.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Constraints\Range.T1.cs" />
-    <Compile Include="Constraints\RangeOptions.cs" />
+    <Compile Include="Range.T1.cs" />
+    <Compile Include="RangeOptions.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

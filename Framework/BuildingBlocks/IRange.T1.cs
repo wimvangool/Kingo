@@ -1,4 +1,4 @@
-﻿namespace Kingo.BuildingBlocks.Constraints
+﻿namespace Kingo.BuildingBlocks
 {
     /// <summary>
     /// When implemented by a class, represents a range of values of type <typeparamref name="TValue"/>.

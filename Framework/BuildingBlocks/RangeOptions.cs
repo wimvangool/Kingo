@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.BuildingBlocks.Constraints
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
     /// Represents a set of options that can be used to determine whether or not a <see cref="Range{TValue}" />'s
@@ -12,7 +12,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <summary>
         /// Specifies that both boundaries are included in the range themselves.
         /// </summary>
-        None = 0,
+        AllInclusive = 0,
 
         /// <summary>
         /// Specifies that the left boundary of not part of the range.

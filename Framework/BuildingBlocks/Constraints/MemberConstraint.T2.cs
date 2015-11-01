@@ -15,7 +15,7 @@
         {
             if (_constraint.IsNotSatisfiedBy(value, out errorMessage))
             {
-                errorMessage.Add("member", _member.WithValue(errorMessage.FailedValue));
+                errorMessage.Add(ErrorMessage.MemberIdentifier, _member.WithValue(errorMessage.FailedValue));
                 return true;
             }
             return false;

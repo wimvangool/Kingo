@@ -196,5 +196,33 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         #endregion
+
+        #region [====== Default Member ======]
+
+        private const string _MemberErrorMessage = "| {member.Key} | {member.FullName} | {member.Name} | {member.Type} | {member.Value} |";
+
+        [TestMethod]
+        public void IsNotSatisfiedBy_DefaultsToDefaultMember_IfMemberIsNotSpecifiedAsArgumentForErrorMessage_And_ValueIsNull()
+        {
+            IErrorMessage errorMessage;
+
+            var constraint = new IsEqualToConstraint<string>("Some value").WithErrorMessage(_MemberErrorMessage);
+            
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.AreEqual("| Value | Value | Value | System.String | <null> |", errorMessage.ToString());
+        }
+
+        [TestMethod]
+        public void IsNotSatisfiedBy_DefaultsToDefaultMember_IfMemberIsNotSpecifiedAsArgumentForErrorMessage_And_ValueIsNotNull()
+        {
+            IErrorMessage errorMessage;
+
+            var constraint = new IsEqualToConstraint<int>(0).WithErrorMessage(_MemberErrorMessage);
+
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(1, out errorMessage));
+            Assert.AreEqual("| Value | Value | Value | System.Int32 | 1 |", errorMessage.ToString());
+        }
+
+        #endregion
     }
 }

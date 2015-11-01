@@ -119,7 +119,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
-            Assert.AreEqual(Constraint.DefaultErrorMessage.ToString(), errorMessage.ToString());            
+            Assert.AreEqual("Value (<null>) is not valid.", errorMessage.ToString());            
         }
 
         [TestMethod]
@@ -140,7 +140,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
-            Assert.AreEqual(Constraint.DefaultErrorMessage.ToString(), errorMessage.ToString()); 
+            Assert.AreEqual("Value (<null>) is not valid.", errorMessage.ToString()); 
         }
 
         [TestMethod]

@@ -17,38 +17,9 @@ namespace Kingo.BuildingBlocks.Clocks
 
         private StopwatchClock _stopwatchClock;
         private long _lastTimestampTicks;
-        private bool _isDisposed;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HighResolutionClock" /> class.
-        /// </summary>
-        public HighResolutionClock()
-            : this(Clock.Default) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HighResolutionClock" /> class.
-        /// </summary>
-        /// <param name="referenceClock">The clock that is used to obtain the system time.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="referenceClock "/> is <c>null</c>.
-        /// </exception>       
-        public HighResolutionClock(IClock referenceClock)
-            : this(referenceClock, TimeSpan.FromSeconds(10)) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HighResolutionClock" /> class.
-        /// </summary>
-        /// <param name="referenceClock">
-        /// The clock that will be used as a reference for this clock.
-        /// </param>
-        /// <param name="synchronizationInterval">
-        /// The interval that is used to periodically synchronize this clock with the specified <paramref name="referenceClock"/>.
-        /// A value of <see cref="TimeSpan.Zero" /> means this clock is never synchronized.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="referenceClock "/> is <c>null</c>.
-        /// </exception>
-        public HighResolutionClock(IClock referenceClock, TimeSpan synchronizationInterval)
+        private bool _isDisposed;               
+        
+        private HighResolutionClock(IClock referenceClock, TimeSpan synchronizationInterval)
         {
             if (referenceClock == null)
             {
@@ -68,23 +39,9 @@ namespace Kingo.BuildingBlocks.Clocks
             }                       
         }        
 
-        #region [====== Start, Stop & Dispose ======]
-
-        /// <summary>
-        /// Indicates whether or not this clock is running.
-        /// </summary>
-        public bool IsRunning
-        {
-            get { return _stopwatchClock != null; }
-        }
-
-        /// <summary>
-        /// Starts the clock, counting from the date and time provided by the reference clock.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">
-        /// This clock has already been disposed.
-        /// </exception>        
-        public void Start()
+        #region [====== Start, Stop & Dispose ======]        
+             
+        private void Start()
         {
             if (_isDisposed)
             {
@@ -123,11 +80,8 @@ namespace Kingo.BuildingBlocks.Clocks
                 Interlocked.Exchange(ref _stopwatchClock, StopwatchClock.StartNew(_referenceClock.UtcDateAndTime())).Stop();
             }
         }
-
-        /// <summary>
-        /// Stops the clock, freezing the date and time.
-        /// </summary>        
-        public void Stop()
+              
+        private void Stop()
         {
             if (_isDisposed)
             {
@@ -204,15 +158,10 @@ namespace Kingo.BuildingBlocks.Clocks
             return new DateTimeOffset(newTimestampTicks, TimeSpan.Zero);  
         }
 
-        private static readonly Lazy<HighResolutionClock> _Default = new Lazy<HighResolutionClock>(StartNew, true);
-
         /// <summary>
-        /// Returns the default <see cref="HighResolutionClock" /> instance that uses <see cref="Clock.Default" /> as the reference clock.
+        /// The default synchronization interval used when not explicitly specified is 10 seconds.
         /// </summary>
-        public new static HighResolutionClock Default
-        {
-            get { return _Default.Value; }
-        }
+        public static readonly TimeSpan DefaultSynchronizationInterval = TimeSpan.FromSeconds(10);        
 
         /// <summary>
         /// Creates and returns a new <see cref="HighResolutionClock" /> that is counting from the current date and time.
@@ -220,9 +169,46 @@ namespace Kingo.BuildingBlocks.Clocks
         /// <returns>A new <see cref="HighResolutionClock" />.</returns>
         public static HighResolutionClock StartNew()
         {
-            var clock = new HighResolutionClock();                
+            return StartNew(Default);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.
+        /// </summary> 
+        /// <param name="referenceClock">
+        /// The clock that will be used as a reference for this clock.
+        /// </param>        
+        /// <returns>A new <see cref="HighResolutionClock" />.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="referenceClock "/> is <c>null</c>.
+        /// </exception>         
+        public static HighResolutionClock StartNew(IClock referenceClock)
+        {
+            return StartNew(referenceClock, DefaultSynchronizationInterval);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.
+        /// </summary> 
+        /// <param name="referenceClock">
+        /// The clock that will be used as a reference for this clock.
+        /// </param>
+        /// <param name="synchronizationInterval">
+        /// The interval that is used to periodically synchronize this clock with the specified <paramref name="referenceClock"/>.
+        /// A value of <see cref="TimeSpan.Zero" /> means this clock is never synchronized.
+        /// </param>
+        /// <returns>A new <see cref="HighResolutionClock" />.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="referenceClock "/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="synchronizationInterval"/> is a negative <see cref="TimeSpan" />.
+        /// </exception>               
+        public static HighResolutionClock StartNew(IClock referenceClock, TimeSpan synchronizationInterval)
+        {
+            var clock = new HighResolutionClock(referenceClock, synchronizationInterval);
             clock.Start();
             return clock;
-        }           
+        }
     }
 }
