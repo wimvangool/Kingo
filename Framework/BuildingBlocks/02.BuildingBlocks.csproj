@@ -58,11 +58,15 @@
     <Compile Include="Constraints\CollectionConstraints.Enumerable.cs" />
     <Compile Include="Constraints\CollectionConstraints.Dictionary.cs" />
     <Compile Include="Constraints\CollectionConstraints.List.cs" />
+    <Compile Include="Constraints\ConstraintVisitor.cs" />
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
+    <Compile Include="Constraints\DefaultMember.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
     <Compile Include="Constraints\DelegateConstraint.T2.cs" />
     <Compile Include="Constraints\EnumConstraints.cs" />
     <Compile Include="Constraints\EquatableObject.T1.cs" />
+    <Compile Include="Constraints\IConstraint.cs" />
+    <Compile Include="Constraints\IConstraintVisitor.cs" />
     <Compile Include="Constraints\IMemberTransformation.cs" />
     <Compile Include="Constraints\Member.cs" />
     <Compile Include="Constraints\MemberByTransformation.cs" />
@@ -86,8 +90,6 @@
     <Compile Include="Constraints\Constraint.T1.cs" />
     <Compile Include="Constraints\Constraint.T2.cs" />
     <Compile Include="Constraints\ErrorMessage.cs" />
-    <Compile Include="Constraints\ErrorMessageOfConstraint.cs" />
-    <Compile Include="Constraints\ErrorMessageOfOrConstraint.cs" />
     <Compile Include="Constraints\IConstraint.T1.cs" />
     <Compile Include="Constraints\IConstraint.T2.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />

@@ -91,6 +91,20 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
+        #region [====== Visitor ======]
+
+        /// <inheritdoc />
+        public override void AcceptVisitor(IConstraintVisitor visitor)
+        {
+            if (visitor == null)
+            {
+                throw new ArgumentNullException("visitor");
+            }
+            visitor.VisitInverse(this, _constraint);
+        }
+
+        #endregion
+
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
@@ -116,7 +130,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             if (_constraint.IsSatisfiedBy(value))
             {
-                errorMessage = new ErrorMessageOfConstraint(this, value, _constraint);
+                errorMessage = Constraints.ErrorMessage.Build(this, value);
                 return true;
             }
             errorMessage = null;

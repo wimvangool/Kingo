@@ -187,8 +187,8 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
-            errorMessage.Add("right", "y");
+            errorMessage.Put("left", "x");
+            errorMessage.Put("right", "y");
 
             Assert.AreEqual("Both x and y are not satisfied.", errorMessage.ToString());
         }
@@ -206,7 +206,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("parent", "x");
+            errorMessage.Put("parent", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -220,7 +220,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("parent", "x");
+            errorMessage.Put("parent", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -234,7 +234,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("parent", "x");
+            errorMessage.Put("parent", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -315,14 +315,33 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
-            errorMessage.Add("middle", "y");
-            errorMessage.Add("right", "z");
+            errorMessage.Put("left", "x");
+            errorMessage.Put("middle", "y");
+            errorMessage.Put("right", "z");
 
             Assert.AreEqual("Both x, y and z are not satisfied.", errorMessage.ToString());
         }
 
         #endregion                
+
+        #region [====== Mixed Constraints ======]
+
+        [TestMethod]
+        public void IsNotSatisfiedBy_ReturnsExpectedErrorMessage_IfOrConstraintIsMixedWithAndConstraint()
+        {
+            var isEqualToTwo = new IsEqualToConstraint<int>(2).WithName("a");
+            var isGreaterThanTen = new IsGreaterThanConstraint<int>(10).WithName("b");
+            var isSmallerThanTwenty = new IsSmallerThanConstraint<int>(20).WithName("c");            
+            var constraint = isEqualToTwo.Or(isGreaterThanTen.And(isSmallerThanTwenty))
+                .WithErrorMessage("{member.FullName} ({member.Value}) must be equal to {a.Other} or within the range [{b.Other}, {c.Other}].");
+
+            IErrorMessage errorMessage;
+
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(6, out errorMessage));
+            Assert.AreEqual("Value (6) must be equal to 2 or within the range [10, 20].", errorMessage.ToString());
+        }
+
+        #endregion
 
         private static IConstraintWithErrorMessage<object> CreateOrConstraint(bool left, bool right)
         {

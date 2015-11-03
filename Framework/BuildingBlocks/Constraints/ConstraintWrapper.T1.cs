@@ -41,6 +41,15 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
+        #region [====== Visitor ======]
+        
+        public override void AcceptVisitor(IConstraintVisitor visitor)
+        {
+            _constraint.AcceptVisitor(visitor);
+        }
+
+        #endregion
+
         #region [====== And, Or & Invert ======]
 
         public override IConstraint<TValue> And(IConstraint<TValue> constraint)
@@ -74,18 +83,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public override bool IsSatisfiedBy(TValue value)
         {
             return _constraint.IsSatisfiedBy(value);
-        }
-
-        public override bool IsNotSatisfiedBy(TValue value, out IErrorMessage errorMessage)
-        {
-            if (IsSatisfiedBy(value))
-            {
-                errorMessage = null;
-                return false;
-            }
-            errorMessage = new ErrorMessageOfConstraint(this, value, _constraint);
-            return true;
-        }
+        }        
 
         #endregion
     }

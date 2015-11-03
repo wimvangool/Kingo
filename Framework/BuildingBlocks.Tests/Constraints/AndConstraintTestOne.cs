@@ -154,7 +154,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
+            errorMessage.Put("left", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -168,7 +168,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("right", "y");
+            errorMessage.Put("right", "y");
 
             Assert.AreEqual("y is not satisfied.", errorMessage.ToString());
         }
@@ -182,7 +182,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
+            errorMessage.Put("left", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -200,7 +200,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("parent", "x");
+            errorMessage.Put("parent", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -258,7 +258,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
+            errorMessage.Put("left", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -272,7 +272,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("middle", "y");
+            errorMessage.Put("middle", "y");
 
             Assert.AreEqual("y is not satisfied.", errorMessage.ToString());
         }
@@ -286,7 +286,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("right", "z");
+            errorMessage.Put("right", "z");
 
             Assert.AreEqual("z is not satisfied.", errorMessage.ToString());
         }
@@ -300,7 +300,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
+            errorMessage.Put("left", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }

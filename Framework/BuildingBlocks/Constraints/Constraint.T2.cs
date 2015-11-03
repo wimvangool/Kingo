@@ -112,7 +112,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
 
-        #endregion
+        #endregion        
 
         #region [====== And, Or & Invert ======]
 
@@ -230,7 +230,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 errorMessage = null;
                 return false;
             }
-            errorMessage = new ErrorMessageOfConstraint(this, value);
+            errorMessage = Constraints.ErrorMessage.Build(this, value);
             return true;
         }
 
@@ -242,7 +242,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 errorMessage = null;
                 return false;
             }
-            errorMessage = new ErrorMessageOfConstraint(this, valueIn);
+            errorMessage = Constraints.ErrorMessage.Build(this, valueIn);
             return true;
         }
 

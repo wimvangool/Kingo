@@ -5,7 +5,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// When implemented by a class, represents a constraint with a name and associated error message.
     /// </summary>
-    public interface IConstraintWithErrorMessage
+    public interface IConstraintWithErrorMessage : IConstraint
     {
         /// <summary>
         /// Name of the constraint.

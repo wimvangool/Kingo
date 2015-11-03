@@ -142,7 +142,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
+            errorMessage.Put("left", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -160,7 +160,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("right", "y");
+            errorMessage.Put("right", "y");
 
             Assert.AreEqual("y is not satisfied.", errorMessage.ToString());
         }
@@ -178,7 +178,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("left", "x");
+            errorMessage.Put("left", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }
@@ -200,7 +200,7 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
-            errorMessage.Add("parent", "x");
+            errorMessage.Put("parent", "x");
 
             Assert.AreEqual("x is not satisfied.", errorMessage.ToString());
         }

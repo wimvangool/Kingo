@@ -17,6 +17,15 @@ namespace Kingo.BuildingBlocks.Constraints
             _rightConstraint = constraint;
         }
 
+        public void AcceptVisitor(IConstraintVisitor visitor)
+        {
+            if (visitor == null)
+            {
+                throw new ArgumentNullException("visitor");
+            }
+            visitor.VisitAnd(this, new IConstraint[] { _leftConstraint, _rightConstraint });
+        }
+
         #region [====== And, Or & Invert ======]
 
         public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, string errorMessage = null, string name = null)

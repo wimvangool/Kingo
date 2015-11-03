@@ -6,7 +6,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// When implemented by a class, represents a constraint for a certain value.
     /// </summary>
     /// <typeparam name="TValue">Type of the value.</typeparam>
-    public interface IConstraint<TValue>
+    public interface IConstraint<TValue> : IConstraint
     {
         #region [====== And, Or & Invert ======]
 

@@ -58,6 +58,19 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
+        #region [====== Visitor ======]
+        
+        public override void AcceptVisitor(IConstraintVisitor visitor)
+        {
+            if (visitor == null)
+            {
+                throw new ArgumentNullException("visitor");
+            }
+            visitor.VisitOr(this, _constraints);
+        }
+
+        #endregion
+
         #region [====== And, Or & Invert ======]
 
         public override IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint)
@@ -72,34 +85,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public override bool IsSatisfiedBy(TValue value)
         {
             return _constraints.Any(constraint => constraint.IsSatisfiedBy(value));
-        }
-
-        public override bool IsNotSatisfiedBy(TValue value, out IErrorMessage errorMessage)
-        {
-            // To obtain the error message for an OR-constraint, we first check all child-constraints.
-            // While checking, we collect all of their failed constraints through their error messages.
-            // If any of them passes, the OR-constraint passes as a whole, so in that case we break the
-            // loop immediately. Note that the OR-constraint always has two or more child constraints
-            // to check, so the for-loop is never skipped immediately to return an empty set of failed
-            // constraints.
-            var failedConstraints = new IConstraintWithErrorMessage[_constraints.Length];
-
-            for (int index = 0; index < _constraints.Length; index++)
-            {
-                var constraint = _constraints[index];
-                IErrorMessage childErrorMessage;
-
-                if (constraint.IsNotSatisfiedBy(value, out childErrorMessage))
-                {
-                    failedConstraints[index] = childErrorMessage.FailedConstraint;
-                    continue;
-                }
-                errorMessage = null;
-                return false;
-            }
-            errorMessage = new ErrorMessageOfOrConstraint(this, value, failedConstraints);
-            return true;
-        }        
+        }                       
 
         #endregion
     }

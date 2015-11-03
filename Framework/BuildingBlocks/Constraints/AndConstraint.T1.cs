@@ -23,7 +23,16 @@ namespace Kingo.BuildingBlocks.Constraints
                 throw new ArgumentNullException("constraint");
             }
             _constraints = left._constraints.Add(constraint);
-        }                
+        }
+
+        public void AcceptVisitor(IConstraintVisitor visitor)
+        {
+            if (visitor == null)
+            {
+                throw new ArgumentNullException("visitor");
+            }
+            visitor.VisitAnd(this, _constraints);
+        }
 
         #region [====== And, Or & Invert ======]
 
@@ -110,6 +119,6 @@ namespace Kingo.BuildingBlocks.Constraints
             return false;
         }        
 
-        #endregion
+        #endregion        
     }
 }

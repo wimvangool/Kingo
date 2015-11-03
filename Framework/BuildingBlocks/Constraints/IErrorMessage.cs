@@ -6,26 +6,19 @@ namespace Kingo.BuildingBlocks.Constraints
     /// Represents a (formattable) error message.
     /// </summary>
     public interface IErrorMessage
-    {
+    {        
         /// <summary>
-        /// Returns the constraint that failed.
+        /// Returns the value that did not satisfy a constraint.
         /// </summary>
-        IConstraintWithErrorMessage FailedConstraint
+        object Value
         {
             get;
         }
 
         /// <summary>
-        /// Returns the value that did not satisfy the <see cref="FailedConstraint" />.
-        /// </summary>
-        object FailedValue
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Adds an argument to this error message that will be used to format the message on a call to one of the
-        /// <see cref="ToString(IFormatProvider)" /> overloads.
+        /// Assigns an argument to this error message that will be used to format the message on a call to one of the
+        /// <see cref="ToString(IFormatProvider)" /> overloads. If an argument with the same name was already set, it
+        /// will be replaced by the specified <paramref name="argument"/>.
         /// </summary>
         /// <param name="name">Name of the argument.</param>
         /// <param name="argument">Value of the argument.</param>
@@ -36,11 +29,12 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <paramref name="name" /> is not a valid identifier, or
         /// an argument with the same name has already been added to this error message.
         /// </exception>
-        void Add(string name, object argument);
+        void Put(string name, object argument);
 
         /// <summary>
         /// Adds an argument to this error message that will be used to format the message on a call to one of the
-        /// <see cref="ToString(IFormatProvider)" /> overloads.
+        /// <see cref="ToString(IFormatProvider)" /> overloads. If an argument with the same name was already set, it
+        /// will be replaced by the specified <paramref name="argument"/>.
         /// </summary>
         /// <param name="name">Name of the argument.</param>
         /// <param name="argument">Value of the argument.</param>
@@ -50,7 +44,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// An argument with the same name has already been added to this error message.
         /// </exception>
-        void Add(Identifier name, object argument);
+        void Put(Identifier name, object argument);
 
         /// <summary>
         /// Returns a string-representation of the error message formatted using the specified <paramref name="formatProvider"/>.

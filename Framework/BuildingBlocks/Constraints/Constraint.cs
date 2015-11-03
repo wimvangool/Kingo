@@ -111,6 +111,20 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
+        #region [====== Visitor ======]
+
+        /// <inheritdoc />
+        public virtual void AcceptVisitor(IConstraintVisitor visitor)
+        {
+            if (visitor == null)
+            {
+                throw new ArgumentNullException("visitor");
+            }
+            visitor.Visit(this);
+        }
+
+        #endregion
+
         #region [====== Any & All ======]
 
         /// <summary>
