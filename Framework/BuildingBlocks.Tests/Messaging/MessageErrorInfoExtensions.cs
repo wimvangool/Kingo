@@ -4,13 +4,13 @@ namespace Kingo.BuildingBlocks.Messaging
 {
     internal static class MessageErrorInfoExtensions
     {
-        internal static void AssertNoErrors(this MessageErrorInfo errorInfo)
+        internal static void AssertNoErrors(this ErrorInfo errorInfo)
         {
             Assert.IsNotNull(errorInfo);
             Assert.AreEqual(0, errorInfo.ErrorCount);
         }        
 
-        internal static MessageErrorInfo AssertErrorCountIs(this MessageErrorInfo errorInfo, int count)
+        internal static ErrorInfo AssertErrorCountIs(this ErrorInfo errorInfo, int count)
         {
             Assert.IsNotNull(errorInfo);
             Assert.AreEqual(count, errorInfo.ErrorCount);
@@ -18,20 +18,20 @@ namespace Kingo.BuildingBlocks.Messaging
             return errorInfo;
         }
 
-        internal static MessageErrorInfo AssertError(this MessageErrorInfo errorInfo, string errorMessage)
+        internal static ErrorInfo AssertError(this ErrorInfo errorInfo, string errorMessage)
         {
             Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(errorMessage, errorInfo.MessageError);
+            Assert.AreEqual(errorMessage, errorInfo.Error);
 
             return errorInfo;
         }
 
-        internal static MessageErrorInfo AssertMemberError(this MessageErrorInfo errorInfo, string errorMessage)
+        internal static ErrorInfo AssertMemberError(this ErrorInfo errorInfo, string errorMessage)
         {
             return AssertMemberError(errorInfo, errorMessage, "Member");
         }
 
-        internal static MessageErrorInfo AssertMemberError(this MessageErrorInfo errorInfo, string errorMessage, params string[] memberNames)
+        internal static ErrorInfo AssertMemberError(this ErrorInfo errorInfo, string errorMessage, params string[] memberNames)
         {            
             Assert.IsNotNull(errorInfo);            
 

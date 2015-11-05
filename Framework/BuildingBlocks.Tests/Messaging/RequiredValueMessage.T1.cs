@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Messaging
 
         #region [====== Validation ======]
 
-        protected override IMessageValidator<RequiredValueMessage<TValue>> CreateValidator()
+        protected override IValidator<RequiredValueMessage<TValue>> CreateValidator()
         {
             var validator = new ConstraintValidator<RequiredValueMessage<TValue>>();
 

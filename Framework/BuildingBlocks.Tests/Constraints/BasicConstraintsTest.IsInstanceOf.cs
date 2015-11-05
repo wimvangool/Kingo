@@ -180,12 +180,23 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         [TestMethod]
-        public void ValidateIsInstanceOf_ReturnsExpectedError_IfObjectIsNull()
+        public void ValidateIsInstanceOf_ReturnsNoErrors_IfObjectIsNull_And_TypeIsReferenceType()
         {
             var message = new ValidatedMessage<object>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(object), RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(object));
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void ValidateIsInstanceOf_ReturnsExpectedErrors_IfObjectIsNull_And_TypeIsValueType()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member).IsInstanceOf(typeof(int), RandomErrorMessage);
 
             validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }

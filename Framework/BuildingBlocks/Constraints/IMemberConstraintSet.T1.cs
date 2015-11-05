@@ -4,11 +4,11 @@ using System.Linq.Expressions;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// When implemented by a class, a <see cref="IMemberConstraintSet{TMessage}" /> can be used to validate the values of
+    /// When implemented by a class, a <see cref="IMemberConstraintSet{T}" /> can be used to validate the values of
     /// certain members of another instance.
     /// </summary>
-    /// <typeparam name="TMessage">Type of the message the constraints apply to.</typeparam>
-    public interface IMemberConstraintSet<TMessage>
+    /// <typeparam name="T">Type of the message the constraints apply to.</typeparam>
+    public interface IMemberConstraintSet<T>
     {
         #region [====== VerifyThat ======]
 
@@ -17,7 +17,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// constraints on the message itself instead on one of its particular members.
         /// </summary>
         /// <returns>A new <see cref="IMemberConstraint{TMessage, S}"/>.</returns>
-        IMemberConstraint<TMessage, TMessage> VerifyThatInstance();
+        IMemberConstraint<T, T> VerifyThatInstance();
 
         /// <summary>
         /// Creates and returns a new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
@@ -36,7 +36,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="fieldOrPropertyExpression"/> is not a supported expression.
         /// </exception>
-        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Expression<Func<TMessage, TValue>> fieldOrPropertyExpression);
+        IMemberConstraint<T, TValue> VerifyThat<TValue>(Expression<Func<T, TValue>> fieldOrPropertyExpression);
 
         /// <summary>
         /// Creates and returns a new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
@@ -56,7 +56,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="fieldOrPropertyName"/> is not a valid identifier.
         /// </exception>
-        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> fieldOrProperty, string fieldOrPropertyName); 
+        IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> fieldOrProperty, string fieldOrPropertyName); 
 
         /// <summary>
         /// Creates and returns a new <see cref="IMemberConstraint{TMessage, S}"/> that can be used to define certain
@@ -73,7 +73,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="fieldOrProperty"/> or <paramref name="fieldOrPropertyName"/> is <c>null</c>.
         /// </exception> 
-        IMemberConstraint<TMessage, TValue> VerifyThat<TValue>(Func<TMessage, TValue> fieldOrProperty, Identifier fieldOrPropertyName);                
+        IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> fieldOrProperty, Identifier fieldOrPropertyName);                
 
         #endregion                   
     }

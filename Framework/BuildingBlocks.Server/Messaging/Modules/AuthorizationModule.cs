@@ -12,7 +12,7 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         /// Authorizes the current thread's identity to process a message.
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>        
-        /// <exception cref="AuthorizationFailedException">
+        /// <exception cref="AuthorizationException">
         /// The current thread's identity was not authorized to process the specified message.
         /// </exception>
         public override async Task InvokeAsync(IMessageHandler handler)
@@ -21,7 +21,7 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
             {
                 throw new ArgumentNullException("handler");
             }
-            AuthorizationFailedException exception;
+            AuthorizationException exception;
 
             if (await IsNotAuthorizedAsync(handler.Message, out exception))
             {
@@ -37,13 +37,13 @@ namespace Kingo.BuildingBlocks.Messaging.Modules
         /// <param name="message">The message being authorized.</param>    
         /// <param name="exception">
         /// If this method returns <c>true</c>, this parameter will refer to an instance of
-        /// the <see cref="AuthorizationFailedException" /> class that contains a message and
+        /// the <see cref="AuthorizationException" /> class that contains a message and
         /// information on why the current identity was not authorized.
         /// </param>   
         /// <returns>
         /// <c>true</c> if the current identity is not authorized to further process the specified
         /// <paramref name="message"/>; otherwise <c>false</c>.
         /// </returns>
-        protected abstract Task<bool> IsNotAuthorizedAsync(IMessage message, out AuthorizationFailedException exception);
+        protected abstract Task<bool> IsNotAuthorizedAsync(IMessage message, out AuthorizationException exception);
     }
 }

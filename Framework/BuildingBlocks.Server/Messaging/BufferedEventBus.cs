@@ -68,7 +68,7 @@ namespace Kingo.BuildingBlocks.Messaging
             return string.Format("{0} Event(s) Published", _buffer.Count);
         }
 
-        private static Exception NewInvalidEventException(string paramName, IMessage invalidEvent, MessageErrorInfo errorInfo)
+        private static Exception NewInvalidEventException(string paramName, IMessage invalidEvent, ErrorInfo errorInfo)
         {
             var messageFormat = ExceptionMessages.BufferedEventBus_InvalidMessage;
             var message = string.Format(messageFormat, invalidEvent.GetType().Name);

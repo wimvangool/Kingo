@@ -13,10 +13,9 @@ namespace Kingo.BuildingBlocks.Messaging
     /// Provides a base-implementation of the <see cref="IMessage" /> interface.
     /// </summary>
     [Serializable]
-    [DataContract(Namespace = "http://github.com/wimvangool/Kingo.BuildingBlocks")]
+    [DataContract]
     public abstract class Message : IMessage, IExtensibleDataObject
-    {
-        private const string _ExtensionDataKey = "_extensionData";
+    {        
         private ExtensionDataObject _extensionData;
 
         internal Message() { }
@@ -53,14 +52,23 @@ namespace Kingo.BuildingBlocks.Messaging
             return CopyMessage();
         }
 
-        internal abstract IMessage CopyMessage();
+        internal abstract IMessage CopyMessage();       
 
         #endregion      
 
         #region [====== Validation ======]
+        
+        ErrorInfo IValidateable.Validate()
+        {
+            return ValidateMessage();
+        }
 
-        /// <inheritdoc />
-        public abstract MessageErrorInfo Validate();        
+        public ErrorInfo Validate()
+        {
+            return ValidateMessage();
+        }
+
+        internal abstract ErrorInfo ValidateMessage();
 
         #endregion
 

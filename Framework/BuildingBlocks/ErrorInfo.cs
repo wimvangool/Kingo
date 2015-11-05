@@ -3,43 +3,43 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Kingo.BuildingBlocks.Messaging
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
-    /// Represents a tree of errors that have been detected on a specific message.
+    /// Represents a tree of errors that have been detected on a specific instance.
     /// </summary>
     [Serializable]    
-    public sealed class MessageErrorInfo : IDataErrorInfo
+    public sealed class ErrorInfo : IDataErrorInfo
     {                
         private readonly ReadOnlyDictionary<string, string> _memberErrors;        
         private readonly string _error;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageErrorInfo" /> class.
+        /// Initializes a new instance of the <see cref="ErrorInfo" /> class.
         /// </summary>        
         /// <param name="memberErrors">Error messages indexed by property- or fieldname.</param> 
         /// <param name="error">Error message for the whole object.</param>    
         /// <exception cref="ArgumentException">
         /// <paramref name="memberErrors"/> contains a duplicate key.
         /// </exception>          
-        public MessageErrorInfo(IEnumerable<KeyValuePair<string, string>> memberErrors, string error = null)
+        public ErrorInfo(IEnumerable<KeyValuePair<string, string>> memberErrors, string error = null)
         {
             _memberErrors = CreateDictionary(memberErrors);
             _error = error ?? string.Empty;
         }    
  
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageErrorInfo" /> class.
+        /// Initializes a new instance of the <see cref="ErrorInfo" /> class.
         /// </summary>        
         /// <param name="memberErrors">Error messages indexed by property- or fieldname.</param> 
         /// <param name="error">Error message for the whole object.</param>              
-        public MessageErrorInfo(IDictionary<string, string> memberErrors, string error = null)
+        public ErrorInfo(IDictionary<string, string> memberErrors, string error = null)
         {            
             _memberErrors = new ReadOnlyDictionary<string, string>(memberErrors);
             _error = error ?? string.Empty;         
         }
 
-        private MessageErrorInfo(ReadOnlyDictionary<string, string> errors)
+        private ErrorInfo(ReadOnlyDictionary<string, string> errors)
         {            
             _memberErrors = errors;
             _error = string.Empty;
@@ -62,9 +62,9 @@ namespace Kingo.BuildingBlocks.Messaging
         }       
 
         /// <summary>
-        /// Returns the error message that applies to the entire message.
+        /// Returns the error message that applies to the entire instance.
         /// </summary>
-        public string MessageError
+        public string Error
         {
             get { return _error; }
         }
@@ -78,6 +78,11 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         #region [====== IDataErrorInfo ======]
+
+        string IDataErrorInfo.Error
+        {
+            get { return _error; }
+        } 
         
         string IDataErrorInfo.this[string columnName]
         {
@@ -91,12 +96,7 @@ namespace Kingo.BuildingBlocks.Messaging
                 }
                 return null;
             }
-        }
-        
-        string IDataErrorInfo.Error
-        {
-            get { return _error; }
-        }                
+        }                              
 
         #endregion                                     
 
@@ -109,9 +109,9 @@ namespace Kingo.BuildingBlocks.Messaging
         #region [====== Factory Methods ======]
         
         /// <summary>
-        /// An instance of the <see cref="MessageErrorInfo" /> class without any errors.
+        /// An instance of the <see cref="ErrorInfo" /> class without any errors.
         /// </summary>       
-        public static readonly MessageErrorInfo Empty = new MessageErrorInfo(EmptyDictionary());                    
+        public static readonly ErrorInfo Empty = new ErrorInfo(EmptyDictionary());                    
 
         private static ReadOnlyDictionary<string, string> EmptyDictionary()
         {

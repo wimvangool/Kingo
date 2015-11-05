@@ -2,52 +2,52 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Kingo.BuildingBlocks.Messaging
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
-    /// Represents a <see cref="IMessageValidator{T}" /> that validates a message through
+    /// Represents a <see cref="IValidator{T}" /> that validates an instance through
     /// all <see cref="ValidationAttribute">ValidationAttributes</see> that have been declared on the
-    /// members of a message.
+    /// members of an instance.
     /// </summary>    
-    public sealed class MessageValidator<TMessage> : IMessageValidator<TMessage> where TMessage : class
+    public sealed class Validator<T> : IValidator<T> where T : class
     {        
-        private readonly Func<TMessage, ValidationContext> _validationContextFactory;        
+        private readonly Func<T, ValidationContext> _validationContextFactory;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageValidator{T}" /> class.
+        /// Initializes a new instance of the <see cref="Validator{T}" /> class.
         /// </summary>                
         /// <param name="validationContextFactory">
-        /// The method used to create a <see cref="ValidationContext" /> for a specific message.
+        /// The method used to create a <see cref="ValidationContext" /> for a specific instance.
         /// </param>             
-        public MessageValidator(Func<TMessage, ValidationContext> validationContextFactory = null)
+        public Validator(Func<T, ValidationContext> validationContextFactory = null)
         {                               
-            _validationContextFactory = validationContextFactory ?? (message => new ValidationContext(message, null, null));
+            _validationContextFactory = validationContextFactory ?? (instance => new ValidationContext(instance, null, null));
         }
 
         /// <inheritdoc />
-        public MessageErrorInfo Validate(TMessage message)
+        public ErrorInfo Validate(T instance)
         {
-            if (message == null)
+            if (instance == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException("instance");
             }
-            var errorInfo = Validate(_validationContextFactory.Invoke(message));
+            var errorInfo = Validate(_validationContextFactory.Invoke(instance));
             if (errorInfo.HasErrors)
             {
-                return MessageErrorInfo.Empty;
+                return ErrorInfo.Empty;
             }
             return errorInfo;
         }
 
-        private static MessageErrorInfo Validate(ValidationContext validationContext)
+        private static ErrorInfo Validate(ValidationContext validationContext)
         {
             var validationResults = new List<ValidationResult>();
             var isValid = Validator.TryValidateObject(validationContext.ObjectInstance, validationContext, validationResults, true);
             if (isValid)
             {
-                return MessageErrorInfo.Empty;
+                return ErrorInfo.Empty;
             }
-            return new MessageErrorInfo(CreateErrorMessagesPerMember(validationResults));
+            return new ErrorInfo(CreateErrorMessagesPerMember(validationResults));
         }        
 
         private static Dictionary<string, string> CreateErrorMessagesPerMember(IEnumerable<ValidationResult> validationResults)

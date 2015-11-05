@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Kingo.BuildingBlocks.Constraints
+namespace Kingo.BuildingBlocks
 {
     internal sealed class ReadOnlyCollection<TValue> : IReadOnlyCollection<TValue>
     {

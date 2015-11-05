@@ -9,7 +9,7 @@ namespace Kingo.BuildingBlocks.Messaging
     /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
     [Serializable]
-    [DataContract(Namespace = "http://github.com/wimvangool/Kingo.BuildingBlocks")]
+    [DataContract]
     public abstract class Message<TMessage> : Message, IMessage<TMessage> where TMessage : Message<TMessage>
     {        
         /// <summary>
@@ -61,24 +61,23 @@ namespace Kingo.BuildingBlocks.Messaging
         #endregion               
 
         #region [====== Validation ======]
-
-        /// <inheritdoc />
-        public override MessageErrorInfo Validate()
+       
+        internal override ErrorInfo ValidateMessage()
         {
             var validator = CreateValidator();
             if (validator == null)
             {
-                return MessageErrorInfo.Empty;
+                return ErrorInfo.Empty;
             }
             return validator.Validate(Copy());
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="IMessageValidator{T}" /> that can be used to validate this message,
+        /// Creates and returns a <see cref="IValidator{T}" /> that can be used to validate this message,
         /// or <c>null</c> if this message does not require validation.
         /// </summary>
-        /// <returns>A new <see cref="IMessageValidator{T}" /> that can be used to validate this message.</returns>
-        protected virtual IMessageValidator<TMessage> CreateValidator()
+        /// <returns>A new <see cref="IValidator{T}" /> that can be used to validate this message.</returns>
+        protected virtual IValidator<TMessage> CreateValidator()
         {
             return null;
         }

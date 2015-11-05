@@ -4,22 +4,22 @@ using System.Globalization;
 using System.Linq;
 using Kingo.BuildingBlocks.Constraints;
 
-namespace Kingo.BuildingBlocks.Messaging
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
-    /// A builder that can be used to build an instance of the <see cref="MessageErrorInfo" /> class.
+    /// A builder that can be used to build an instance of the <see cref="ErrorInfo" /> class.
     /// </summary>
-    public class MessageErrorInfoBuilder : IErrorMessageReader
+    public class ErrorInfoBuilder : IErrorMessageReader
     {
         private readonly IFormatProvider _formatProvider;
         private readonly Lazy<IDictionary<string, IList<string>>> _memberErrors;
         private readonly Lazy<IList<string>> _errors;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageErrorInfoBuilder" /> class.
+        /// Initializes a new instance of the <see cref="ErrorInfoBuilder" /> class.
         /// </summary>
         /// <param name="formatProvider">Optional <see cref="IFormatProvider" /> to use when formatting error messages.</param>
-        public MessageErrorInfoBuilder(IFormatProvider formatProvider = null)
+        public ErrorInfoBuilder(IFormatProvider formatProvider = null)
         {
             _formatProvider = formatProvider ?? CultureInfo.CurrentCulture;
             _memberErrors = new Lazy<IDictionary<string, IList<string>>>(CreateMemberErrorDictionary);
@@ -44,7 +44,7 @@ namespace Kingo.BuildingBlocks.Messaging
             get { return _errors.Value; }
         }
 
-        #region [====== Put & Add ======]
+        #region [====== Add ======]
       
         /// <inheritdoc />
         public void Add(IErrorMessage errorMessage, string memberName)
@@ -90,10 +90,10 @@ namespace Kingo.BuildingBlocks.Messaging
         #endregion
 
         /// <summary>
-        /// Creates and returns a new <see cref="MessageErrorInfo"/> instance containing all added error messages.
+        /// Creates and returns a new <see cref="ErrorInfo"/> instance containing all added error messages.
         /// </summary>
-        /// <returns>A new <see cref="MessageErrorInfo"/> instance.</returns>
-        public MessageErrorInfo BuildDataErrorInfo()
+        /// <returns>A new <see cref="ErrorInfo"/> instance.</returns>
+        public ErrorInfo BuildErrorInfo()
         {
             var memberErrors = _memberErrors.IsValueCreated
                 ? MemberErrors.Select(errors => new KeyValuePair<string, string>(errors.Key, ConvertToSingleErrorMessage(errors.Value)))
@@ -116,12 +116,12 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="MessageErrorInfo"/> instance containing all added error messages.
+        /// Creates and returns a new <see cref="ErrorInfo"/> instance containing all added error messages.
         /// </summary>
-        /// <returns>A new <see cref="MessageErrorInfo"/> instance.</returns>
-        protected virtual MessageErrorInfo BuildDataErrorInfo(IEnumerable<KeyValuePair<string, string>> memberErrors, string error)
+        /// <returns>A new <see cref="ErrorInfo"/> instance.</returns>
+        protected virtual ErrorInfo BuildDataErrorInfo(IEnumerable<KeyValuePair<string, string>> memberErrors, string error)
         {
-            return new MessageErrorInfo(memberErrors, error);
+            return new ErrorInfo(memberErrors, error);
         }
 
         /// <summary>

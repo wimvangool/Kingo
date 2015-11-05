@@ -12,7 +12,7 @@ namespace Kingo.BuildingBlocks.Messaging
     public class InvalidMessageException : FunctionalException
     {
         private const string _ErrorTreeKey = "_errorInfo";
-        private readonly MessageErrorInfo _errorInfo;
+        private readonly ErrorInfo _errorInfo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidMessageException" /> class.
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <param name="errorInfo">
         /// If specified, contains all the validation-errors of the <paramref name="failedMessage"/>.
         /// </param>
-        public InvalidMessageException(object failedMessage, string message, MessageErrorInfo errorInfo)
+        public InvalidMessageException(object failedMessage, string message, ErrorInfo errorInfo)
             : base(failedMessage, message)
         {
             _errorInfo = errorInfo;
@@ -60,7 +60,7 @@ namespace Kingo.BuildingBlocks.Messaging
         protected InvalidMessageException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _errorInfo = (MessageErrorInfo) info.GetValue(_ErrorTreeKey, typeof(MessageErrorInfo));
+            _errorInfo = (ErrorInfo) info.GetValue(_ErrorTreeKey, typeof(ErrorInfo));
         }
 
         /// <inheritdoc />
@@ -75,7 +75,7 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <summary>
         /// If specified, contains all the validation-errors of the <see cref="FunctionalException.FailedMessage" />.
         /// </summary>
-        public MessageErrorInfo ErrorInfo
+        public ErrorInfo ErrorInfo
         {
             get { return _errorInfo; }
         }
