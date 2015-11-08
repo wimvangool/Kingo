@@ -2,12 +2,12 @@
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class AndConstraint<TValueIn, TValueMiddle, TValueOut> : IConstraint<TValueIn, TValueOut>
+    internal sealed class AndConstraint<TValueIn, TValueMiddle, TValueOut> : IFilter<TValueIn, TValueOut>
     {        
-        private readonly IConstraint<TValueIn, TValueMiddle> _leftConstraint;
-        private readonly IConstraint<TValueMiddle, TValueOut> _rightConstraint;
+        private readonly IFilter<TValueIn, TValueMiddle> _leftConstraint;
+        private readonly IFilter<TValueMiddle, TValueOut> _rightConstraint;
 
-        internal AndConstraint(IConstraint<TValueIn, TValueMiddle> left, IConstraint<TValueMiddle, TValueOut> constraint)            
+        internal AndConstraint(IFilter<TValueIn, TValueMiddle> left, IFilter<TValueMiddle, TValueOut> constraint)            
         {
             if (constraint == null)
             {
@@ -43,7 +43,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new AndConstraint<TValueIn>(this, constraint);
         }
 
-        public IConstraint<TValueIn, TResult> And<TResult>(IConstraint<TValueOut, TResult> constraint)
+        public IFilter<TValueIn, TResult> And<TResult>(IFilter<TValueOut, TResult> constraint)
         {
             return new AndConstraint<TValueIn, TValueOut, TResult>(this, constraint);
         }
@@ -84,7 +84,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== Conversion ======]
 
-        IConstraint<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput()
+        IFilter<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput()
         {
             return new InputToOutputMapper<TValueIn>(this);
         }

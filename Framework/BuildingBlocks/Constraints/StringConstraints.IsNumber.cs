@@ -58,7 +58,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, byte> IsByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
-            return member.Apply(new StringIsByteConstraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -112,7 +112,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, sbyte> IsSByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
-            return member.Apply(new StringIsSByteConstraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsSByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -135,7 +135,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, char> IsChar<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
-            return member.Apply(new StringIsCharConstraint().WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsCharFilter().WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -189,7 +189,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, short> IsInt16<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
-            return member.Apply(new StringIsInt16Constraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsInt16Filter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion        
@@ -243,7 +243,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, int> IsInt32<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
-            return member.Apply(new StringIsInt32Constraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsInt32Filter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion        
@@ -297,7 +297,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, long> IsInt64<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
-            return member.Apply(new StringIsInt64Constraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsInt64Filter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion      
@@ -351,7 +351,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, float> IsSingle<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
-            return member.Apply(new StringIsSingleConstraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsSingleFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -405,7 +405,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, double> IsDouble<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
-            return member.Apply(new StringIsDoubleConstraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsDoubleFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion
@@ -459,18 +459,18 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, decimal> IsDecimal<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
-            return member.Apply(new StringIsDecimalConstraint(style, formatProvider).WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsDecimalFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
 
         #endregion        
     }
 
-    #region [====== StringIsNumberConstraint ======]
+    #region [====== StringIsNumberFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a specific number type.
+    /// Represents a filter that transforms a string into a number.
     /// </summary>
-    public abstract class StringIsNumberConstraint<TValueOut> : Constraint<string, TValueOut>
+    public abstract class StringIsNumberFilter<TValueOut> : Filter<string, TValueOut>
     {
         /// <summary>
         /// A bitwise combination of enumeration values that indicates the style elements that can be present in the value.
@@ -482,20 +482,20 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </summary>
         public readonly IFormatProvider FormatProvider;
     
-        internal StringIsNumberConstraint(NumberStyles style, IFormatProvider formatProvider)
+        internal StringIsNumberFilter(NumberStyles style, IFormatProvider formatProvider)
         {
             Style = style;
             FormatProvider = formatProvider;
         }
 
-        internal StringIsNumberConstraint(StringIsNumberConstraint<TValueOut> constraint, StringTemplate errorMessage)
+        internal StringIsNumberFilter(StringIsNumberFilter<TValueOut> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             Style = constraint.Style;
             FormatProvider = constraint.FormatProvider;
         }
 
-        internal StringIsNumberConstraint(StringIsNumberConstraint<TValueOut> constraint, Identifier name)
+        internal StringIsNumberFilter(StringIsNumberFilter<TValueOut> constraint, Identifier name)
             : base(constraint, name)
         {
             Style = constraint.Style;
@@ -517,29 +517,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsByteConstraint ======]
+    #region [====== StringIsByteFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a byte.
+    /// Represents a filter that transforms a string into a byte.
     /// </summary>
-    public sealed class StringIsByteConstraint : StringIsNumberConstraint<byte>
+    public sealed class StringIsByteFilter : StringIsNumberFilter<byte>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsByteConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsByteFilter" /> class.
         /// </summary>    
-        public StringIsByteConstraint()
+        public StringIsByteFilter()
             : this(StringConstraints.DefaultByteNumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsByteConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsByteFilter" /> class.
         /// </summary>    
-        public StringIsByteConstraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsByteFilter(NumberStyles style, IFormatProvider formatProvider = null)
         : base(style, formatProvider) { }
 
-        private StringIsByteConstraint(StringIsByteConstraint constraint, StringTemplate errorMessage)
+        private StringIsByteFilter(StringIsByteFilter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) {}
 
-        private StringIsByteConstraint(StringIsByteConstraint constraint, Identifier name)
+        private StringIsByteFilter(StringIsByteFilter constraint, Identifier name)
             : base(constraint, name) {}
 
         #region [====== Name & ErrorMessage ======]
@@ -551,15 +551,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, byte> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, byte> WithName(Identifier name)
         {
-            return new StringIsByteConstraint(this, name);
+            return new StringIsByteFilter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, byte> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, byte> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsByteConstraint(this, errorMessage);
+            return new StringIsByteFilter(this, errorMessage);
         }
 
         #endregion        
@@ -576,29 +576,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsSByteConstraint ======]
+    #region [====== StringIsSByteFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a sbyte.
+    /// Represents a filter that transforms a string into an sbyte.
     /// </summary>
-    public sealed class StringIsSByteConstraint : StringIsNumberConstraint<sbyte>
+    public sealed class StringIsSByteFilter : StringIsNumberFilter<sbyte>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsSByteConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsSByteFilter" /> class.
         /// </summary>    
-        public StringIsSByteConstraint()
+        public StringIsSByteFilter()
             : this(StringConstraints.DefaultSByteNumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsSByteConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsSByteFilter" /> class.
         /// </summary>    
-        public StringIsSByteConstraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsSByteFilter(NumberStyles style, IFormatProvider formatProvider = null)
             : base(style, formatProvider) { }
 
-        private StringIsSByteConstraint(StringIsSByteConstraint constraint, StringTemplate errorMessage)
+        private StringIsSByteFilter(StringIsSByteFilter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private StringIsSByteConstraint(StringIsSByteConstraint constraint, Identifier name)
+        private StringIsSByteFilter(StringIsSByteFilter constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -610,15 +610,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, sbyte> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, sbyte> WithName(Identifier name)
         {
-            return new StringIsSByteConstraint(this, name);
+            return new StringIsSByteFilter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, sbyte> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, sbyte> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsSByteConstraint(this, errorMessage);
+            return new StringIsSByteFilter(this, errorMessage);
         }
 
         #endregion        
@@ -635,22 +635,22 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsCharConstraint ======]
+    #region [====== StringIsCharFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string contains only a single character.
+    /// Represents a filter that transforms a string into a character.
     /// </summary>
-    public sealed class StringIsCharConstraint : Constraint<string, char>
+    public sealed class StringIsCharFilter : Filter<string, char>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsCharConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsCharFilter" /> class.
         /// </summary>    
-        public StringIsCharConstraint() {}
+        public StringIsCharFilter() {}
 
-        private StringIsCharConstraint(StringIsCharConstraint constraint, StringTemplate errorMessage)
+        private StringIsCharFilter(StringIsCharFilter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) {}
 
-        private StringIsCharConstraint(StringIsCharConstraint constraint, Identifier name)
+        private StringIsCharFilter(StringIsCharFilter constraint, Identifier name)
             : base(constraint, name) {}
 
         #region [====== Name & ErrorMessage ======]
@@ -662,15 +662,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, char> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, char> WithName(Identifier name)
         {
-            return new StringIsCharConstraint(this, name);
+            return new StringIsCharFilter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, char> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, char> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsCharConstraint(this, errorMessage);
+            return new StringIsCharFilter(this, errorMessage);
         }
 
         #endregion        
@@ -698,29 +698,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsInt16Constraint ======]
+    #region [====== StringIsInt16Filter ======]
 
     /// <summary>
-    /// Represents a constrashort that checks whether or not a string can be converted to a short.
+    /// Represents a filter that transforms a string into a short.
     /// </summary>
-    public sealed class StringIsInt16Constraint : StringIsNumberConstraint<short>
+    public sealed class StringIsInt16Filter : StringIsNumberFilter<short>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsInt16Constraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsInt16Filter" /> class.
         /// </summary>    
-        public StringIsInt16Constraint()
+        public StringIsInt16Filter()
             : this(StringConstraints.DefaultInt16NumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsInt16Constraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsInt16Filter" /> class.
         /// </summary>    
-        public StringIsInt16Constraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsInt16Filter(NumberStyles style, IFormatProvider formatProvider = null)
             : base(style, formatProvider) { }
 
-        private StringIsInt16Constraint(StringIsInt16Constraint constrashort, StringTemplate errorMessage)
+        private StringIsInt16Filter(StringIsInt16Filter constrashort, StringTemplate errorMessage)
             : base(constrashort, errorMessage) { }
 
-        private StringIsInt16Constraint(StringIsInt16Constraint constrashort, Identifier name)
+        private StringIsInt16Filter(StringIsInt16Filter constrashort, Identifier name)
             : base(constrashort, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -732,15 +732,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, short> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, short> WithName(Identifier name)
         {
-            return new StringIsInt16Constraint(this, name);
+            return new StringIsInt16Filter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, short> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, short> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsInt16Constraint(this, errorMessage);
+            return new StringIsInt16Filter(this, errorMessage);
         }
 
         #endregion        
@@ -757,29 +757,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsInt32Constraint ======]
+    #region [====== StringIsInt32Filter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a int.
+    /// Represents a filter that transforms a string into an int.
     /// </summary>
-    public sealed class StringIsInt32Constraint : StringIsNumberConstraint<int>
+    public sealed class StringIsInt32Filter : StringIsNumberFilter<int>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsInt32Constraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsInt32Filter" /> class.
         /// </summary>    
-        public StringIsInt32Constraint()
+        public StringIsInt32Filter()
             : this(StringConstraints.DefaultInt32NumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsInt32Constraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsInt32Filter" /> class.
         /// </summary>    
-        public StringIsInt32Constraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsInt32Filter(NumberStyles style, IFormatProvider formatProvider = null)
             : base(style, formatProvider) { }
 
-        private StringIsInt32Constraint(StringIsInt32Constraint constraint, StringTemplate errorMessage)
+        private StringIsInt32Filter(StringIsInt32Filter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private StringIsInt32Constraint(StringIsInt32Constraint constraint, Identifier name)
+        private StringIsInt32Filter(StringIsInt32Filter constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -791,15 +791,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, int> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, int> WithName(Identifier name)
         {
-            return new StringIsInt32Constraint(this, name);
+            return new StringIsInt32Filter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, int> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, int> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsInt32Constraint(this, errorMessage);
+            return new StringIsInt32Filter(this, errorMessage);
         }
 
         #endregion       
@@ -816,29 +816,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsInt64Constraint ======]
+    #region [====== StringIsInt64Filter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a long.
+    /// Represents a filter that transforms a string into a long.
     /// </summary>
-    public sealed class StringIsInt64Constraint : StringIsNumberConstraint<long>
+    public sealed class StringIsInt64Filter : StringIsNumberFilter<long>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsInt64Constraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsInt64Filter" /> class.
         /// </summary>    
-        public StringIsInt64Constraint()
+        public StringIsInt64Filter()
             : this(StringConstraints.DefaultInt64NumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsInt64Constraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsInt64Filter" /> class.
         /// </summary>    
-        public StringIsInt64Constraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsInt64Filter(NumberStyles style, IFormatProvider formatProvider = null)
             : base(style, formatProvider) { }
 
-        private StringIsInt64Constraint(StringIsInt64Constraint constraint, StringTemplate errorMessage)
+        private StringIsInt64Filter(StringIsInt64Filter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private StringIsInt64Constraint(StringIsInt64Constraint constraint, Identifier name)
+        private StringIsInt64Filter(StringIsInt64Filter constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -850,15 +850,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, long> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, long> WithName(Identifier name)
         {
-            return new StringIsInt64Constraint(this, name);
+            return new StringIsInt64Filter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, long> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, long> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsInt64Constraint(this, errorMessage);
+            return new StringIsInt64Filter(this, errorMessage);
         }
 
         #endregion        
@@ -875,29 +875,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsSingleConstraint ======]
+    #region [====== StringIsSingleFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a float.
+    /// Represents a filter that transforms a string into a float.
     /// </summary>
-    public sealed class StringIsSingleConstraint : StringIsNumberConstraint<float>
+    public sealed class StringIsSingleFilter : StringIsNumberFilter<float>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsSingleConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsSingleFilter" /> class.
         /// </summary>    
-        public StringIsSingleConstraint()
+        public StringIsSingleFilter()
             : this(StringConstraints.DefaultSingleNumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsSingleConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsSingleFilter" /> class.
         /// </summary>    
-        public StringIsSingleConstraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsSingleFilter(NumberStyles style, IFormatProvider formatProvider = null)
             : base(style, formatProvider) { }
 
-        private StringIsSingleConstraint(StringIsSingleConstraint constraint, StringTemplate errorMessage)
+        private StringIsSingleFilter(StringIsSingleFilter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private StringIsSingleConstraint(StringIsSingleConstraint constraint, Identifier name)
+        private StringIsSingleFilter(StringIsSingleFilter constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -909,15 +909,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, float> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, float> WithName(Identifier name)
         {
-            return new StringIsSingleConstraint(this, name);
+            return new StringIsSingleFilter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, float> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, float> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsSingleConstraint(this, errorMessage);
+            return new StringIsSingleFilter(this, errorMessage);
         }
 
         #endregion        
@@ -934,29 +934,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsDoubleConstraint ======]
+    #region [====== StringIsDoubleFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a double.
+    /// Represents a filter that transforms a string into a double.
     /// </summary>
-    public sealed class StringIsDoubleConstraint : StringIsNumberConstraint<double>
+    public sealed class StringIsDoubleFilter : StringIsNumberFilter<double>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsDoubleConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsDoubleFilter" /> class.
         /// </summary>    
-        public StringIsDoubleConstraint()
+        public StringIsDoubleFilter()
             : this(StringConstraints.DefaultDoubleNumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsDoubleConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsDoubleFilter" /> class.
         /// </summary>    
-        public StringIsDoubleConstraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsDoubleFilter(NumberStyles style, IFormatProvider formatProvider = null)
             : base(style, formatProvider) { }
 
-        private StringIsDoubleConstraint(StringIsDoubleConstraint constraint, StringTemplate errorMessage)
+        private StringIsDoubleFilter(StringIsDoubleFilter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private StringIsDoubleConstraint(StringIsDoubleConstraint constraint, Identifier name)
+        private StringIsDoubleFilter(StringIsDoubleFilter constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -968,15 +968,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, double> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, double> WithName(Identifier name)
         {
-            return new StringIsDoubleConstraint(this, name);
+            return new StringIsDoubleFilter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, double> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, double> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsDoubleConstraint(this, errorMessage);
+            return new StringIsDoubleFilter(this, errorMessage);
         }
 
         #endregion        
@@ -993,29 +993,29 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== StringIsDecimalConstraint ======]
+    #region [====== StringIsDecimalFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to a decimal.
+    /// Represents a filter that transforms a string into a decimal.
     /// </summary>
-    public sealed class StringIsDecimalConstraint : StringIsNumberConstraint<decimal>
+    public sealed class StringIsDecimalFilter : StringIsNumberFilter<decimal>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsDecimalConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsDecimalFilter" /> class.
         /// </summary>    
-        public StringIsDecimalConstraint()
+        public StringIsDecimalFilter()
             : this(StringConstraints.DefaultDecimalNumberStyles) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsDecimalConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsDecimalFilter" /> class.
         /// </summary>    
-        public StringIsDecimalConstraint(NumberStyles style, IFormatProvider formatProvider = null)
+        public StringIsDecimalFilter(NumberStyles style, IFormatProvider formatProvider = null)
             : base(style, formatProvider) { }
 
-        private StringIsDecimalConstraint(StringIsDecimalConstraint constraint, StringTemplate errorMessage)
+        private StringIsDecimalFilter(StringIsDecimalFilter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private StringIsDecimalConstraint(StringIsDecimalConstraint constraint, Identifier name)
+        private StringIsDecimalFilter(StringIsDecimalFilter constraint, Identifier name)
             : base(constraint, name) { }
 
         #region [====== Name & ErrorMessage ======]
@@ -1027,15 +1027,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, decimal> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, decimal> WithName(Identifier name)
         {
-            return new StringIsDecimalConstraint(this, name);
+            return new StringIsDecimalFilter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, decimal> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, decimal> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsDecimalConstraint(this, errorMessage);
+            return new StringIsDecimalFilter(this, errorMessage);
         }
 
         #endregion        

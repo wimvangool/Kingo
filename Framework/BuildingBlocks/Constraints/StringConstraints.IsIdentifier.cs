@@ -26,28 +26,28 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, Identifier> IsIdentifier<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
-            return member.Apply(new StringIsIdentifierConstraint().WithErrorMessage(errorMessage));
+            return member.Apply(new StringIsIdentifierFilter().WithErrorMessage(errorMessage));
         }
 
         #endregion
     }
 
-    #region [====== StringIsIdentifierConstraint ======]
+    #region [====== StringIsIdentifierFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a string can be converted to an <see cref="Identifier" />.
+    /// Represents a filter that transforms a string into an <see cref="Identifier" />.
     /// </summary>
-    public sealed class StringIsIdentifierConstraint : Constraint<string, Identifier>
+    public sealed class StringIsIdentifierFilter : Filter<string, Identifier>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StringIsIdentifierConstraint" /> class.
+        /// Initializes a new instance of the <see cref="StringIsIdentifierFilter" /> class.
         /// </summary>    
-        public StringIsIdentifierConstraint() {}
+        public StringIsIdentifierFilter() {}
 
-        private StringIsIdentifierConstraint(StringIsIdentifierConstraint constraint, StringTemplate errorMessage)
+        private StringIsIdentifierFilter(StringIsIdentifierFilter constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) {}
 
-        private StringIsIdentifierConstraint(StringIsIdentifierConstraint constraint, Identifier name)
+        private StringIsIdentifierFilter(StringIsIdentifierFilter constraint, Identifier name)
             : base(constraint, name) {}
 
         #region [====== Name & ErrorMessage ======]
@@ -59,15 +59,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, Identifier> WithName(Identifier name)
+        public override IFilterWithErrorMessage<string, Identifier> WithName(Identifier name)
         {
-            return new StringIsIdentifierConstraint(this, name);
+            return new StringIsIdentifierFilter(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string, Identifier> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<string, Identifier> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new StringIsIdentifierConstraint(this, errorMessage);
+            return new StringIsIdentifierFilter(this, errorMessage);
         }
 
         #endregion        

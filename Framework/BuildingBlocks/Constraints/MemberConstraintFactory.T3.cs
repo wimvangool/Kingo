@@ -7,12 +7,12 @@ namespace Kingo.BuildingBlocks.Constraints
         private readonly Member<T, TValueIn> _originalMember;
         private readonly MemberByTransformation _transformedMember;
         private readonly IMemberTransformation _transformation;
-        private readonly Func<T, IConstraint<TValueIn, TValueOut>> _constraintFactory;        
+        private readonly Func<T, IFilter<TValueIn, TValueOut>> _constraintFactory;        
 
-        internal MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IConstraint<TValueIn, TValueOut>> constraintFactory)
+        internal MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IFilter<TValueIn, TValueOut>> constraintFactory)
             : this(originalMember, constraintFactory, originalMember.EnableTransformation(), new MemberNameTransformation(null)) { }
 
-        private MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IConstraint<TValueIn, TValueOut>> constraintFactory, MemberByTransformation transformedMember, IMemberTransformation transformation)
+        private MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IFilter<TValueIn, TValueOut>> constraintFactory, MemberByTransformation transformedMember, IMemberTransformation transformation)
         {
             _originalMember = originalMember;
             _transformedMember = transformedMember;
@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return _originalMember.CreateChildMember(_constraintFactory);
         }        
 
-        internal MemberConstraintFactory<T, TValueIn, TResult> And<TResult>(Func<T, IConstraint<TValueOut, TResult>> constraintFactory, IMemberTransformation nextTransformation)
+        internal MemberConstraintFactory<T, TValueIn, TResult> And<TResult>(Func<T, IFilter<TValueOut, TResult>> constraintFactory, IMemberTransformation nextTransformation)
         {
             if (constraintFactory == null)
             {

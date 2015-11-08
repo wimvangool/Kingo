@@ -2,11 +2,11 @@
 
 namespace Kingo.BuildingBlocks.Constraints
 {    
-    internal sealed class DelegateConstaint<TValueIn, TValueOut> : Constraint<TValueIn, TValueOut>
+    internal sealed class DelegateFilter<TValueIn, TValueOut> : Filter<TValueIn, TValueOut>
     {
         private readonly Func<TValueIn, TValueOut> _fieldOrProperty;
    
-        internal DelegateConstaint(Func<TValueIn, TValueOut> fieldOrProperty)
+        internal DelegateFilter(Func<TValueIn, TValueOut> fieldOrProperty)
         {
             if (fieldOrProperty == null)
             {
@@ -15,13 +15,13 @@ namespace Kingo.BuildingBlocks.Constraints
             _fieldOrProperty = fieldOrProperty;
         }
 
-        private DelegateConstaint(DelegateConstaint<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
+        private DelegateFilter(DelegateFilter<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             _fieldOrProperty = constraint._fieldOrProperty;
         }
 
-        private DelegateConstaint(DelegateConstaint<TValueIn, TValueOut> constraint, Identifier name)
+        private DelegateFilter(DelegateFilter<TValueIn, TValueOut> constraint, Identifier name)
             : base(constraint, name)
         {
             _fieldOrProperty = constraint._fieldOrProperty;
@@ -30,15 +30,15 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
         {
-            return new DelegateConstaint<TValueIn, TValueOut>(this, name);
+            return new DelegateFilter<TValueIn, TValueOut>(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new DelegateConstaint<TValueIn, TValueOut>(this, errorMessage);
+            return new DelegateFilter<TValueIn, TValueOut>(this, errorMessage);
         }
 
         #endregion

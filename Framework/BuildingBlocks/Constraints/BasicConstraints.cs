@@ -111,7 +111,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraint<T, TValueOut> member, IConstraint<TValueOut, TOther> constraint, Func<string, string> nameSelector = null)
+        public static IMemberConstraint<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraint<T, TValueOut> member, IFilter<TValueOut, TOther> constraint, Func<string, string> nameSelector = null)
         {
             return EnsureNotNull(member).Satisfies(constraint, nameSelector);
         }
@@ -126,7 +126,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraintFactory"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraint<T, TValueOut> member, Func<T, IConstraint<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null)
+        public static IMemberConstraint<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraint<T, TValueOut> member, Func<T, IFilter<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null)
         {
             return EnsureNotNull(member).Satisfies(constraintFactory, nameSelector);
         }

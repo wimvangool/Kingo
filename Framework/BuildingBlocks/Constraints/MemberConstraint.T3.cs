@@ -40,7 +40,7 @@ namespace Kingo.BuildingBlocks.Constraints
         
         public IMemberConstraint<T, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, Identifier fieldOrPropertyName)
         {
-            return Satisfies(message => new DelegateConstaint<TValueOut, TMember>(fieldOrProperty), new MemberSelectionTransformation(fieldOrPropertyName));
+            return Satisfies(message => new DelegateFilter<TValueOut, TMember>(fieldOrProperty), new MemberSelectionTransformation(fieldOrPropertyName));
         }
         
         public void And(Action<IMemberConstraintSet<TValueOut>> innerConstraintFactory)
@@ -59,13 +59,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />     
         public IMemberConstraint<T, TOther> IsInstanceOf<TOther>(string errorMessage = null)
         {
-            return Satisfies(new IsInstanceOfConstraint<TValueOut, TOther>().WithErrorMessage(errorMessage));            
+            return Satisfies(new IsInstanceOfFilter<TValueOut, TOther>().WithErrorMessage(errorMessage));            
         }
 
         /// <inheritdoc />
         public IMemberConstraint<T, TOther> As<TOther>() where TOther : class
         {
-            return Satisfies(new AsConstraint<TValueOut, TOther>());
+            return Satisfies(new AsFilter<TValueOut, TOther>());
         }
 
         #endregion
@@ -95,7 +95,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return Satisfies(message => constraintFactory.Invoke(message).MapInputToOutput());
         }
         
-        public IMemberConstraint<T, TOther> Satisfies<TOther>(IConstraint<TValueOut, TOther> constraint, Func<string, string> nameSelector = null)
+        public IMemberConstraint<T, TOther> Satisfies<TOther>(IFilter<TValueOut, TOther> constraint, Func<string, string> nameSelector = null)
         {
             if (constraint == null)
             {
@@ -104,12 +104,12 @@ namespace Kingo.BuildingBlocks.Constraints
             return Satisfies(message => constraint, nameSelector);
         }
         
-        public IMemberConstraint<T, TOther> Satisfies<TOther>(Func<T, IConstraint<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null)
+        public IMemberConstraint<T, TOther> Satisfies<TOther>(Func<T, IFilter<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null)
         {
             return Satisfies(constraintFactory, new MemberNameTransformation(nameSelector));
         }
 
-        private IMemberConstraint<T, TOther> Satisfies<TOther>(Func<T, IConstraint<TValueOut, TOther>> constraintFactory, IMemberTransformation transformation)
+        private IMemberConstraint<T, TOther> Satisfies<TOther>(Func<T, IFilter<TValueOut, TOther>> constraintFactory, IMemberTransformation transformation)
         {
             if (constraintFactory == null)
             {

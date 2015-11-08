@@ -71,7 +71,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== Conversion ======]
 
-        public override IConstraint<TValue, TValue> MapInputToOutput()
+        public override IFilter<TValue, TValue> MapInputToOutput()
         {
             return _constraint.MapInputToOutput();
         }

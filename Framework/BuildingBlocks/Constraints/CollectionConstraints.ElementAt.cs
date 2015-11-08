@@ -29,7 +29,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, TValue> ElementAt<T, TValue>(this IMemberConstraint<T, IEnumerable<TValue>> member, int index, string errorMessage = null)
         {
-            return member.Apply(new ElementAtConstraint<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
+            return member.Apply(new ElementAtFilter<TValue>(index).WithErrorMessage(errorMessage), name => NameOfElementAt(name, index));
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </exception>
         public static IMemberConstraint<T, TValue> ElementAt<T, TKey, TValue>(this IMemberConstraint<T, IReadOnlyDictionary<TKey, TValue>> member, TKey key, string errorMessage = null)
         {
-            return member.Apply(new ElementAtConstraint<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));            
+            return member.Apply(new ElementAtFilter<TKey, TValue>(key).WithErrorMessage(errorMessage), name => NameOfElementAt(name, key));            
         }
 
         #endregion
@@ -116,12 +116,12 @@ namespace Kingo.BuildingBlocks.Constraints
         #endregion
     }
 
-    #region [====== ElementAtConstraint<> ======]
+    #region [====== ElementAtFilter<> ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a collection has an element at a specified index.
+    /// Represents a filter that transforms a collection into an element of the collection.
     /// </summary>
-    public sealed class ElementAtConstraint<TValue> : Constraint<IEnumerable<TValue>, TValue>
+    public sealed class ElementAtFilter<TValue> : Filter<IEnumerable<TValue>, TValue>
     {
         /// <summary>
         /// Index of the element.
@@ -129,21 +129,21 @@ namespace Kingo.BuildingBlocks.Constraints
         public readonly int Index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtConstraint{T}" /> class.
+        /// Initializes a new instance of the <see cref="ElementAtFilter{T}" /> class.
         /// </summary>    
         /// <param name="index">Index of the element.</param>
-        public ElementAtConstraint(int index)
+        public ElementAtFilter(int index)
         {
             Index = index;
         }
 
-        private ElementAtConstraint(ElementAtConstraint<TValue> constraint, StringTemplate errorMessage)
+        private ElementAtFilter(ElementAtFilter<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             Index = constraint.Index;
         }
 
-        private ElementAtConstraint(ElementAtConstraint<TValue> constraint, Identifier name)
+        private ElementAtFilter(ElementAtFilter<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             Index = constraint.Index;
@@ -158,15 +158,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>, TValue> WithName(Identifier name)
+        public override IFilterWithErrorMessage<IEnumerable<TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtConstraint<TValue>(this, name);
+            return new ElementAtFilter<TValue>(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<IEnumerable<TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtConstraint<TValue>(this, errorMessage);
+            return new ElementAtFilter<TValue>(this, errorMessage);
         }
 
         #endregion
@@ -196,12 +196,12 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== ElementAtConstraint<,> ======]
+    #region [====== ElementAtFilter<,> ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a dictionary contains an element with the specified key.
+    /// Represents a filter that transforms a dictionary into an element of the dictionary.
     /// </summary>
-    public sealed class ElementAtConstraint<TKey, TValue> : Constraint<IReadOnlyDictionary<TKey, TValue>, TValue>
+    public sealed class ElementAtFilter<TKey, TValue> : Filter<IReadOnlyDictionary<TKey, TValue>, TValue>
     {
         /// <summary>
         /// Key of the element.
@@ -209,21 +209,21 @@ namespace Kingo.BuildingBlocks.Constraints
         public readonly TKey Key;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementAtConstraint{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="ElementAtFilter{T, S}" /> class.
         /// </summary>    
         /// <param name="key">Key of the element.</param>
-        public ElementAtConstraint(TKey key)
+        public ElementAtFilter(TKey key)
         {
             Key = key;
         }
 
-        private ElementAtConstraint(ElementAtConstraint<TKey, TValue> constraint, StringTemplate errorMessage)
+        private ElementAtFilter(ElementAtFilter<TKey, TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
             Key = constraint.Key;
         }
 
-        private ElementAtConstraint(ElementAtConstraint<TKey, TValue> constraint, Identifier name)
+        private ElementAtFilter(ElementAtFilter<TKey, TValue> constraint, Identifier name)
             : base(constraint, name)
         {
             Key = constraint.Key;
@@ -238,15 +238,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IReadOnlyDictionary<TKey, TValue>, TValue> WithName(Identifier name)
+        public override IFilterWithErrorMessage<IReadOnlyDictionary<TKey, TValue>, TValue> WithName(Identifier name)
         {
-            return new ElementAtConstraint<TKey, TValue>(this, name);
+            return new ElementAtFilter<TKey, TValue>(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IReadOnlyDictionary<TKey, TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<IReadOnlyDictionary<TKey, TValue>, TValue> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new ElementAtConstraint<TKey, TValue>(this, errorMessage);
+            return new ElementAtFilter<TKey, TValue>(this, errorMessage);
         }
 
         #endregion

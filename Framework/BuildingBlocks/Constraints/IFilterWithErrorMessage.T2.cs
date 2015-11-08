@@ -3,9 +3,9 @@
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// When implemented by a class, represents a constraint with a name and associated error message.
+    /// When implemented by a class, represents a filter-constraint with a name and associated error message.
     /// </summary>
-    public interface IConstraintWithErrorMessage<TValueIn, TValueOut> : IConstraint<TValueIn, TValueOut>, IConstraintWithErrorMessage<TValueIn>
+    public interface IFilterWithErrorMessage<TValueIn, TValueOut> : IFilter<TValueIn, TValueOut>, IConstraintWithErrorMessage<TValueIn>
     {
         #region [====== Name & ErrorMessage ======]
 
@@ -20,7 +20,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> is not valid <see cref="Identifier" />.
         /// </exception>
-        new IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(string name);
+        new IFilterWithErrorMessage<TValueIn, TValueOut> WithName(string name);
 
         /// <summary>
         /// Creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception>        
-        new IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
+        new IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
 
         /// <summary>
         /// Creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
@@ -43,7 +43,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        new IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage);
+        new IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage);
 
         /// <summary>
         /// Creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
@@ -53,7 +53,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>        
-        new IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
+        new IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
 
         #endregion        
     }

@@ -139,7 +139,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IMemberConstraint<T, TOther> Satisfies<TOther>(IConstraint<TValueOut, TOther> constraint, Func<string, string> nameSelector = null);
+        IMemberConstraint<T, TOther> Satisfies<TOther>(IFilter<TValueOut, TOther> constraint, Func<string, string> nameSelector = null);
 
         /// <summary>
         /// Applies the constraint that is created by the specified <paramref name="constraintFactory"/>.
@@ -150,7 +150,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraintFactory"/> is <c>null</c>.
         /// </exception>
-        IMemberConstraint<T, TOther> Satisfies<TOther>(Func<T, IConstraint<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null);
+        IMemberConstraint<T, TOther> Satisfies<TOther>(Func<T, IFilter<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null);
 
         #endregion
     }

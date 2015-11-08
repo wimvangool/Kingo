@@ -3,21 +3,21 @@
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// When implemented by a class, represents a constraint that transforms an input value to an output value.
+    /// When implemented by a class, represents a filter-constraint that transforms an input value to an output value.
     /// </summary>
     /// <typeparam name="TValueIn">Type in the input value.</typeparam>
     /// <typeparam name="TValueOut">Type of the output value.</typeparam>
-    public interface IConstraint<TValueIn, TValueOut> : IConstraint<TValueIn>
+    public interface IFilter<TValueIn, TValueOut> : IConstraint<TValueIn>
     {
         /// <summary>
-        /// Creates and returns a logical AND constraint for this and the specified <paramref name="constraint"/>.
+        /// Creates and returns a logical AND constraint for this and the specified <paramref name="filter"/>.
         /// </summary>
-        /// <param name="constraint">Another constraint.</param>
+        /// <param name="filter">Another constraint.</param>
         /// <returns>A logical AND constraint.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/> is <c>null</c>.
+        /// <paramref name="filter"/> is <c>null</c>.
         /// </exception>
-        IConstraint<TValueIn, TResult> And<TResult>(IConstraint<TValueOut, TResult> constraint);  
+        IFilter<TValueIn, TResult> And<TResult>(IFilter<TValueOut, TResult> filter);  
 
         /// <summary>
         /// Determines whether or not the specified <paramref name="valueIn"/> satisfies this constraint.

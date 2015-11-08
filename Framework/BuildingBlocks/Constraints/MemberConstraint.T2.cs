@@ -3,9 +3,9 @@
     internal sealed class MemberConstraint<TValueIn, TValueOut>
     {
         private readonly MemberByTransformation _member;
-        private readonly IConstraint<TValueIn, TValueOut> _constraint;        
+        private readonly IFilter<TValueIn, TValueOut> _constraint;        
 
-        internal MemberConstraint(MemberByTransformation member, IConstraint<TValueIn, TValueOut> constraint)
+        internal MemberConstraint(MemberByTransformation member, IFilter<TValueIn, TValueOut> constraint)
         {
             _member = member;
             _constraint = constraint;            

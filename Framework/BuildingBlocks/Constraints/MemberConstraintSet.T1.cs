@@ -143,7 +143,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        private readonly LinkedList<IMemberConstraint<T>> _messageConstraints;
+        private readonly LinkedList<IMemberConstraint<T>> _instanceConstraints;
         private readonly Dictionary<string, LinkedList<IMemberConstraint<T>>> _membersConstraints;
         private readonly Dictionary<string, IErrorMessageWriter<T>> _childConstraintSets;
         private readonly string[] _parentNames;
@@ -160,7 +160,7 @@ namespace Kingo.BuildingBlocks.Constraints
         
         private MemberConstraintSet(bool haltOnFirstError, string[] parentNames)
         {
-            _messageConstraints = new LinkedList<IMemberConstraint<T>>();
+            _instanceConstraints = new LinkedList<IMemberConstraint<T>>();
             _membersConstraints = new Dictionary<string, LinkedList<IMemberConstraint<T>>>();
             _childConstraintSets = new Dictionary<string, IErrorMessageWriter<T>>();
             _parentNames = parentNames;
@@ -261,7 +261,7 @@ namespace Kingo.BuildingBlocks.Constraints
        
         #endregion
 
-        #region [====== VerifyThatDictionary ======]
+        #region [====== VerifyThatDCollection (IReadOnlyDictionary<,>) ======]
 
         public IMemberConstraint<T, IReadOnlyDictionary<TKey, TValue>> VerifyThatCollection<TKey, TValue>(Expression<Func<T, IReadOnlyDictionary<TKey, TValue>>> fieldOrProperty)
         {
@@ -356,7 +356,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var memberKey = constraint.Member.Key;
             if (memberKey == null)
             {
-                if (_messageConstraints.Remove(constraint))
+                if (_instanceConstraints.Remove(constraint))
                 {
                     OnConstraintRemoved(new MemberConstraintEventArgs<T>(constraint));
                     return true;
@@ -403,7 +403,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         private IMemberConstraint<T, TValue> AddNullConstraintFor<TValue>(Member<T, TValue> member)
         {
-            Func<T, IConstraint<TValue, TValue>> nullConstraint = message => new NullConstraint<TValue>().MapInputToOutput();
+            Func<T, IFilter<TValue, TValue>> nullConstraint = message => new NullConstraint<TValue>().MapInputToOutput();
             var memberConstraintFactory = new MemberConstraintFactory<T, TValue, TValue>(member, nullConstraint);
             var memberConstraint = new MemberConstraint<T, TValue, TValue>(this, memberConstraintFactory);
 
@@ -437,7 +437,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             if (memberKey == null)
             {
-                return _messageConstraints; ;
+                return _instanceConstraints; ;
             }
             LinkedList<IMemberConstraint<T>> existingConstraints;
 
@@ -453,37 +453,50 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== WriteErrorMessages ======]
 
         /// <inheritdoc />
-        public bool WriteErrorMessages(T message, IErrorMessageReader reader)
+        public bool WriteErrorMessages(T instance, IErrorMessageReader reader)
         {
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
             }
-            if (_haltOnFirstError)
-            {
-                foreach (var constraint in AllConstraints())
-                {
-                    if (constraint.WriteErrorMessages(message, reader))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            var hasAddedErrorMessages = false;
-
-            foreach (var constraint in AllConstraints())
-            {
-                hasAddedErrorMessages |= constraint.WriteErrorMessages(message, reader);
-            }
-            return hasAddedErrorMessages;          
+            return _haltOnFirstError
+                ? WriteOnlyFirstError(instance, reader)
+                : WriteAllErrors(instance, reader);                   
         }
 
-        private IEnumerable<IErrorMessageWriter<T>> AllConstraints()
+        private bool WriteOnlyFirstError(T instance, IErrorMessageReader reader)
         {
-            return _messageConstraints
-                .Concat(_membersConstraints.Values.SelectMany(constraint => constraint)
-                .Concat(_childConstraintSets.Values));
+            foreach (var constraint in MemberConstraints().Concat(_instanceConstraints))
+            {
+                if (constraint.WriteErrorMessages(instance, reader))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool WriteAllErrors(T instance, IErrorMessageReader reader)
+        {
+            var hasAddedErrorMessages = false;
+
+            foreach (var constraint in MemberConstraints())
+            {
+                hasAddedErrorMessages |= constraint.WriteErrorMessages(instance, reader);
+            }
+            if (!hasAddedErrorMessages)
+            {
+                foreach (var constraint in _instanceConstraints)
+                {
+                    hasAddedErrorMessages |= constraint.WriteErrorMessages(instance, reader);
+                }
+            }
+            return hasAddedErrorMessages; 
+        }
+
+        private IEnumerable<IErrorMessageWriter<T>> MemberConstraints()
+        {
+            return _membersConstraints.Values.SelectMany(constraint => constraint).Concat(_childConstraintSets.Values);
         }
 
         #endregion

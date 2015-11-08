@@ -59,7 +59,7 @@
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DefaultMember.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
-    <Compile Include="Constraints\DelegateConstraint.T2.cs" />
+    <Compile Include="Constraints\DelegateFilter.T2.cs" />
     <Compile Include="Constraints\EnumConstraints.cs" />
     <Compile Include="Constraints\EquatableObject.T1.cs" />
     <Compile Include="Constraints\IConstraint.cs" />
@@ -82,13 +82,13 @@
     <Compile Include="Constraints\MemberConstraintFactory.T3.cs" />
     <Compile Include="Constraints\Constraint.cs" />
     <Compile Include="Constraints\Constraint.T1.cs" />
-    <Compile Include="Constraints\Constraint.T2.cs" />
+    <Compile Include="Constraints\Filter.T2.cs" />
     <Compile Include="Constraints\ErrorMessage.cs" />
     <Compile Include="Constraints\IConstraint.T1.cs" />
-    <Compile Include="Constraints\IConstraint.T2.cs" />
+    <Compile Include="Constraints\IFilter.T2.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
-    <Compile Include="Constraints\IConstraintWithErrorMessage.T2.cs" />
+    <Compile Include="Constraints\IFilterWithErrorMessage.T2.cs" />
     <Compile Include="Constraints\IErrorMessage.cs" />
     <Compile Include="Constraints\IErrorMessageReader.cs" />
     <Compile Include="Constraints\IErrorMessageWriter.T1.cs" />

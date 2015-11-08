@@ -3,40 +3,40 @@
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Provides a base class for the <see cref="IConstraint{T, S}"/> interface.
+    /// Provides a base class for the <see cref="IFilter{T, S}"/> interface.
     /// </summary>
     /// <typeparam name="TValueIn">Type of the input (checked) value.</typeparam>
     /// <typeparam name="TValueOut">Type of the output value.</typeparam>
-    public abstract class Constraint<TValueIn, TValueOut> : Constraint, IConstraintWithErrorMessage<TValueIn, TValueOut>
+    public abstract class Filter<TValueIn, TValueOut> : Constraint, IFilterWithErrorMessage<TValueIn, TValueOut>
     {        
         /// <summary>
         /// Initializes a new instance of the <see cref="Constraint{T}" /> class.
         /// </summary>
-        /// <param name="constraint">Constraint to copy.</param>        
-        protected Constraint(Constraint<TValueIn, TValueOut> constraint = null)
-            : base(constraint) { }
+        /// <param name="filter">Filter to copy.</param>        
+        protected Filter(Filter<TValueIn, TValueOut> filter = null)
+            : base(filter) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Constraint{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="Filter{T, S}" /> class.
         /// </summary>
-        /// <param name="constraint">Constraint to copy.</param>
+        /// <param name="filter">Filter to copy.</param>
         /// <param name="errorMessage">The error message of this constraint.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/> is <c>null</c>.
+        /// <paramref name="filter"/> is <c>null</c>.
         /// </exception>
-        protected Constraint(Constraint<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
-            : base(constraint, errorMessage) { }
+        protected Filter(Filter<TValueIn, TValueOut> filter, StringTemplate errorMessage)
+            : base(filter, errorMessage) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Constraint{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="Filter{T, S}" /> class.
         /// </summary>
-        /// <param name="constraint">Constraint to copy.</param>
+        /// <param name="filter">Filter to copy.</param>
         /// <param name="name">The name of this constraint.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="constraint"/> is <c>null</c>.
+        /// <paramref name="filter"/> is <c>null</c>.
         /// </exception>
-        protected Constraint(Constraint<TValueIn, TValueOut> constraint, Identifier name)
-            : base(constraint, name) { }
+        protected Filter(Filter<TValueIn, TValueOut> filter, Identifier name)
+            : base(filter, name) { }
 
         #region [====== Name & ErrorMessage ======]
 
@@ -55,13 +55,13 @@ namespace Kingo.BuildingBlocks.Constraints
             return WithName(name);
         }
 
-        IConstraintWithErrorMessage<TValueIn, TValueOut> IConstraintWithErrorMessage<TValueIn, TValueOut>.WithName(Identifier name)
+        IFilterWithErrorMessage<TValueIn, TValueOut> IFilterWithErrorMessage<TValueIn, TValueOut>.WithName(Identifier name)
         {
             return WithName(name);
         }
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(string name)
+        public IFilterWithErrorMessage<TValueIn, TValueOut> WithName(string name)
         {
             return WithName(Identifier.ParseOrNull(name));
         }
@@ -74,7 +74,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception>   
-        public abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
+        public abstract IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
 
         internal override IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage)
         {
@@ -91,13 +91,13 @@ namespace Kingo.BuildingBlocks.Constraints
             return WithErrorMessage(errorMessage);
         }
 
-        IConstraintWithErrorMessage<TValueIn, TValueOut> IConstraintWithErrorMessage<TValueIn, TValueOut>.WithErrorMessage(StringTemplate errorMessage)
+        IFilterWithErrorMessage<TValueIn, TValueOut> IFilterWithErrorMessage<TValueIn, TValueOut>.WithErrorMessage(StringTemplate errorMessage)
         {
             return WithErrorMessage(errorMessage);
         }
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage)
+        public IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage)
         {
             return WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
         }
@@ -110,7 +110,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public abstract IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
+        public abstract IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
 
         #endregion        
 
@@ -135,9 +135,9 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public virtual IConstraint<TValueIn, TResult> And<TResult>(IConstraint<TValueOut, TResult> constraint)
+        public virtual IFilter<TValueIn, TResult> And<TResult>(IFilter<TValueOut, TResult> filter)
         {
-            return new AndConstraint<TValueIn, TValueOut, TResult>(this, constraint);
+            return new AndConstraint<TValueIn, TValueOut, TResult>(this, filter);
         }
 
         /// <inheritdoc />
@@ -196,7 +196,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== Conversion ======]
        
-        IConstraint<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput()
+        IFilter<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput()
         {
             return new InputToOutputMapper<TValueIn>(this);
         }

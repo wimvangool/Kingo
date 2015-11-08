@@ -50,7 +50,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return new MemberByTransformation(_parentNames, _name, Type);
         }
 
-        internal Member<T, TValueOut> CreateChildMember<TValueOut>(Func<T, IConstraint<TValue, TValueOut>> constraintFactory)
+        internal Member<T, TValueOut> CreateChildMember<TValueOut>(Func<T, IFilter<TValue, TValueOut>> constraintFactory)
         {
             Func<T, TValueOut> valueFactory = message =>
             {

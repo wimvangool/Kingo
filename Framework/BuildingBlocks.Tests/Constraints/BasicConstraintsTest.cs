@@ -169,6 +169,36 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
+        #region [====== Mixed Constraints on Self and Members ======]
+
+        [TestMethod]
+        public void Validate_ValidatesInstanceConstraints_IfMemberConstraintsPass()
+        {
+            var message = new ValidatedMessage<object>(new object());
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThatInstance().IsNull(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotNull();
+
+            validator.Validate(message).AssertError(RandomErrorMessage);
+        }
+
+        [TestMethod]
+        public void Validate_DoesNotValidateInstanceConstraints_IfMemberConstraintsFail()
+        {
+            var message = new ValidatedMessage<object>(null);
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThatInstance().IsNull();
+            validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
+
+            validator.Validate(message)
+                .AssertErrorCountIs(1)
+                .AssertMemberError(RandomErrorMessage);          
+        }
+
+        #endregion
+
         #region [====== Constraints On Fields Or Properties ======]
 
         [TestMethod]

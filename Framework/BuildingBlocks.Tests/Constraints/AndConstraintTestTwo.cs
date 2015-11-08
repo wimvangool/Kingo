@@ -249,7 +249,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        private static IConstraint<object, object> CreateConstraint(bool left, bool right)
+        private static IFilter<object, object> CreateConstraint(bool left, bool right)
         {
             var leftConstraint = NewConstraint(left).WithErrorMessage(ErrorMessageLeft).MapInputToOutput();
             var rightConstraint = NewConstraint(right).WithErrorMessage(ErrorMessageRight).MapInputToOutput();

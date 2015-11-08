@@ -151,7 +151,7 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== Conversion ======]
 
         /// <inheritdoc />
-        public virtual IConstraint<TValue, TValue> MapInputToOutput()
+        public virtual IFilter<TValue, TValue> MapInputToOutput()
         {
             return new InputToOutputMapper<TValue>(this);
         }

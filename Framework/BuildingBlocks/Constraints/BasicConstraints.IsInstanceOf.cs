@@ -133,7 +133,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("type");
             }
-            var constraintTypeDefinition = typeof(IsInstanceOfConstraint<,>);
+            var constraintTypeDefinition = typeof(IsInstanceOfFilter<,>);
             var constraintType = constraintTypeDefinition.MakeGenericType(typeof(TValue), type);
             return (IConstraintWithErrorMessage<TValue>) Activator.CreateInstance(constraintType);
         }
@@ -141,22 +141,22 @@ namespace Kingo.BuildingBlocks.Constraints
         #endregion
     }
 
-    #region [====== IsInstanceOfConstraint ======]
+    #region [====== IsInstanceOfFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a value is an instance of a specific type.
+    /// Represents a filter that transforms a value into another type of value.
     /// </summary>
-    public sealed class IsInstanceOfConstraint<TValueIn, TValueOut> : Constraint<TValueIn, TValueOut>
+    public sealed class IsInstanceOfFilter<TValueIn, TValueOut> : Filter<TValueIn, TValueOut>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsInstanceOfConstraint{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="IsInstanceOfFilter{T, S}" /> class.
         /// </summary>    
-        public IsInstanceOfConstraint() { }
+        public IsInstanceOfFilter() { }
 
-        private IsInstanceOfConstraint(IsInstanceOfConstraint<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
+        private IsInstanceOfFilter(IsInstanceOfFilter<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) {}
 
-        private IsInstanceOfConstraint(IsInstanceOfConstraint<TValueIn, TValueOut> constraint, Identifier name)
+        private IsInstanceOfFilter(IsInstanceOfFilter<TValueIn, TValueOut> constraint, Identifier name)
             : base(constraint, name) { }
 
         /// <summary>
@@ -176,15 +176,15 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
         {
-            return new IsInstanceOfConstraint<TValueIn, TValueOut>(this, name);
+            return new IsInstanceOfFilter<TValueIn, TValueOut>(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new IsInstanceOfConstraint<TValueIn, TValueOut>(this, errorMessage);
+            return new IsInstanceOfFilter<TValueIn, TValueOut>(this, errorMessage);
         }
 
         #endregion     
@@ -238,37 +238,37 @@ namespace Kingo.BuildingBlocks.Constraints
 
     #endregion
 
-    #region [====== AsConstraint ======]
+    #region [====== AsFilter ======]
 
     /// <summary>
-    /// Represents a constraint that checks whether or not a value is an instance of a specific type. This constraints
+    /// Represents a filter that transforms a value into another type of value. This filter
     /// always succeeds, but outputs a <c>null</c> value if the conversion failed.
     /// </summary>
-    public sealed class AsConstraint<TValueIn, TValueOut> : Constraint<TValueIn, TValueOut> where TValueOut : class
+    public sealed class AsFilter<TValueIn, TValueOut> : Filter<TValueIn, TValueOut> where TValueOut : class
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AsConstraint{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="AsFilter{T, S}" /> class.
         /// </summary>    
-        public AsConstraint() { }
+        public AsFilter() { }
 
-        private AsConstraint(AsConstraint<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
+        private AsFilter(AsFilter<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage) { }
 
-        private AsConstraint(AsConstraint<TValueIn, TValueOut> constraint, Identifier name)
+        private AsFilter(AsFilter<TValueIn, TValueOut> constraint, Identifier name)
             : base(constraint, name) { }        
 
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
         {
-            return new AsConstraint<TValueIn, TValueOut>(this, name);
+            return new AsFilter<TValueIn, TValueOut>(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new AsConstraint<TValueIn, TValueOut>(this, errorMessage);
+            return new AsFilter<TValueIn, TValueOut>(this, errorMessage);
         }
 
         #endregion

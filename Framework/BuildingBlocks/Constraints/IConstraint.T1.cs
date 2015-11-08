@@ -111,7 +111,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// Converts this constraint to a constraint that maps the input to the output.
         /// </summary>
         /// <returns>A new constraint wrapping the current constraint that maps the input to the output.</returns>
-        IConstraint<TValue, TValue> MapInputToOutput();
+        IFilter<TValue, TValue> MapInputToOutput();
 
         /// <summary>
         /// Converts this constraints to a delegate.

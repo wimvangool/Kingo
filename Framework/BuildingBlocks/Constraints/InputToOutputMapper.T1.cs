@@ -4,10 +4,10 @@ namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
     /// Represents a wrapper for an instance implementing the <see cref="IConstraint{T}"/> interface
-    /// so that it can be used as an instance implementing the <see cref="IConstraint{T, S}" /> interface.
+    /// so that it can be used as an instance implementing the <see cref="IFilter{T, S}" /> interface.
     /// </summary>
     /// <typeparam name="TValue">Type of the constraint value.</typeparam>
-    public sealed class InputToOutputMapper<TValue> : IConstraint<TValue, TValue>
+    public sealed class InputToOutputMapper<TValue> : IFilter<TValue, TValue>
     {
         private readonly IConstraint<TValue> _constraint;
 
@@ -53,7 +53,7 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public IConstraint<TValue, TResult> And<TResult>(IConstraint<TValue, TResult> constraint)
+        public IFilter<TValue, TResult> And<TResult>(IFilter<TValue, TResult> constraint)
         {
             if (constraint == null)
             {
@@ -102,7 +102,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== Conversion ======]
 
-        IConstraint<TValue, TValue> IConstraint<TValue>.MapInputToOutput()
+        IFilter<TValue, TValue> IConstraint<TValue>.MapInputToOutput()
         {
             return this;
         }
