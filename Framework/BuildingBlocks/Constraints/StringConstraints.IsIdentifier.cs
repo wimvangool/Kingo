@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, Identifier> IsIdentifier<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, Identifier> IsIdentifier<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return member.Apply(new StringIsIdentifierConstraint().WithErrorMessage(errorMessage));
         }

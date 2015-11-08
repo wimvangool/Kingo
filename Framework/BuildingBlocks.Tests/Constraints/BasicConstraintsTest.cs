@@ -146,25 +146,25 @@ namespace Kingo.BuildingBlocks.Constraints
         [TestMethod]
         public void Validate_ReturnsErrorOfFirstChildConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_FirstChildConstraintFails()
         {
-            var message = new ValidatedMessage<int[]>(new [] { 0 });
+            var message = new ValidatedMessage<int[]>(new[] { 0 });
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
-            validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
+            validator.VerifyThatCollection(m => m.Member).ElementAt(0).IsGreaterThan(0);
+            validator.VerifyThatCollection(m => m.Member).ElementAt(0).IsSmallerThan(10);
 
-            validator.Validate(message).AssertMemberError("Member[0] (0) must be greater than '0'.", "Member[0]");
+            validator.Validate(message).AssertMemberError("Member[0] (0) must be greater than '0'.", "Member[0]");            
         }
 
         [TestMethod]
         public void Validate_ReturnsErrorOfSecondChildConstraint_IfMultipleConstraintsPerMemberAreSpecified_And_SecondChildConstraintFails()
         {
-            var message = new ValidatedMessage<int[]>(new [] { 10 } );
+            var message = new ValidatedMessage<int[]>(new[] { 10 });
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).ElementAt(0).IsGreaterThan(0);
-            validator.VerifyThat(m => m.Member).ElementAt(0).IsSmallerThan(10);
+            validator.VerifyThatCollection(m => m.Member).ElementAt(0).IsGreaterThan(0);
+            validator.VerifyThatCollection(m => m.Member).ElementAt(0).IsSmallerThan(10);
 
-            validator.Validate(message).AssertMemberError("Member[0] (10) must be smaller than '10'.", "Member[0]");
+            validator.Validate(message).AssertMemberError("Member[0] (10) must be smaller than '10'.", "Member[0]");            
         }
 
         #endregion

@@ -25,7 +25,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotStartWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotStartWith<T>(this IMemberConstraint<T, string> member, string prefix, string errorMessage = null)
         {
             return member.DoesNotStartWith(prefix, StringComparison.Ordinal, errorMessage);
         }
@@ -46,7 +46,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotStartWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotStartWith<T>(this IMemberConstraint<T, string> member, string prefix, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringStartsWithConstraint(prefix, compareType).Invert(errorMessage));
         }
@@ -70,7 +70,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> StartsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, string errorMessage = null)
+        public static IMemberConstraint<T, string> StartsWith<T>(this IMemberConstraint<T, string> member, string prefix, string errorMessage = null)
         {
             return member.StartsWith(prefix, StringComparison.Ordinal, errorMessage);
         }
@@ -91,7 +91,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> StartsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string prefix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<T, string> StartsWith<T>(this IMemberConstraint<T, string> member, string prefix, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringStartsWithConstraint(prefix, compareType).WithErrorMessage(errorMessage));
         }
@@ -106,8 +106,15 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class StringStartsWithConstraint : Constraint<string>
     {
-        private readonly string _prefix;
-        private readonly StringComparison _compareType;
+        /// <summary>
+        /// The prefix the value should start with.
+        /// </summary>
+        public readonly string Prefix;
+
+        /// <summary>
+        /// One of the enumeration values that specifies how the strings will be compared.
+        /// </summary>
+        public readonly StringComparison CompareType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StringStartsWithConstraint" /> class.
@@ -123,38 +130,22 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("prefix");
             }
-            _prefix = prefix;
-            _compareType = compareType;
+            Prefix = prefix;
+            CompareType = compareType;
         }
 
         private StringStartsWithConstraint(StringStartsWithConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _prefix = constraint._prefix;
-            _compareType = constraint._compareType;
+            Prefix = constraint.Prefix;
+            CompareType = constraint.CompareType;
         }
 
         private StringStartsWithConstraint(StringStartsWithConstraint constraint, Identifier name)
             : base(constraint, name)
         {
-            _prefix = constraint._prefix;
-            _compareType = constraint._compareType;
-        }
-
-        /// <summary>
-        /// The prefix the value should start with.
-        /// </summary>
-        public string Prefix
-        {
-            get { return _prefix; }
-        }
-
-        /// <summary>
-        /// One of the enumeration values that specifies how the strings will be compared.
-        /// </summary>
-        public StringComparison CompareType
-        {
-            get { return _compareType; }
+            Prefix = constraint.Prefix;
+            CompareType = constraint.CompareType;
         }
 
         #region [====== Name & ErrorMessage ======]
@@ -200,7 +191,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("value");
             }
-            return value.StartsWith(_prefix, _compareType);
+            return value.StartsWith(Prefix, CompareType);
         }
 
         #endregion

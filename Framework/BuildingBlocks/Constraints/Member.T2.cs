@@ -3,20 +3,20 @@ using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {    
-    internal sealed class Member<TMessage, TValue> : Member
+    internal sealed class Member<T, TValue> : Member
     {
         private readonly string[] _parentNames;
-        private readonly string _name;
-        private readonly Func<TMessage, TValue> _valueFactory;
+        private readonly string _name;        
+        private readonly Func<T, TValue> _valueFactory;
 
-        internal Member(string[] parentNames, string name, Func<TMessage, TValue> valueFactory)            
+        internal Member(string[] parentNames, string name, Func<T, TValue> valueFactory)            
         {
             if (valueFactory == null)
             {
                 throw new ArgumentNullException("valueFactory");
             }            
             _parentNames = parentNames;
-            _name = name;
+            _name = name;            
             _valueFactory = valueFactory;
         }
 
@@ -40,9 +40,9 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return typeof(TValue); }
         }                
         
-        internal TValue GetValue(TMessage message)
+        internal TValue GetValue(T instance)
         {
-            return _valueFactory.Invoke(message);
+            return _valueFactory.Invoke(instance);
         }
 
         internal MemberByTransformation EnableTransformation()
@@ -50,9 +50,9 @@ namespace Kingo.BuildingBlocks.Constraints
             return new MemberByTransformation(_parentNames, _name, Type);
         }
 
-        internal Member<TMessage, TValueOut> CreateChildMember<TValueOut>(Func<TMessage, IConstraint<TValue, TValueOut>> constraintFactory)
+        internal Member<T, TValueOut> CreateChildMember<TValueOut>(Func<T, IConstraint<TValue, TValueOut>> constraintFactory)
         {
-            Func<TMessage, TValueOut> valueFactory = message =>
+            Func<T, TValueOut> valueFactory = message =>
             {
                 var value = GetValue(message);
                 var constraint = constraintFactory.Invoke(message);
@@ -65,7 +65,7 @@ namespace Kingo.BuildingBlocks.Constraints
                 }
                 return valueOut;                
             };
-            return new Member<TMessage, TValueOut>(_parentNames, _name, valueFactory);
+            return new Member<T, TValueOut>(_parentNames, _name, valueFactory);
         }
 
         private static Exception NewConstraintFailedException(IErrorMessage errorMessage)

@@ -44,6 +44,11 @@ namespace Kingo.BuildingBlocks
             get { return _errors.Value; }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} error(s)", _errors.Value.Count + _memberErrors.Value.Values.Sum(errors => errors.Count));
+        }
+
         #region [====== Add ======]
       
         /// <inheritdoc />

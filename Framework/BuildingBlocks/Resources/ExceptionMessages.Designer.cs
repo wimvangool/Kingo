@@ -61,11 +61,11 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index cannot be negative: {0}..
+        ///   Looks up a localized string similar to The specified index is outside the rangeof valid values: {0}..
         /// </summary>
-        internal static string CollectionConstraints_NegativeIndex {
+        internal static string CollectionConstraints_IndexOutOfRange {
             get {
-                return ResourceManager.GetString("CollectionConstraints_NegativeIndex", resourceCulture);
+                return ResourceManager.GetString("CollectionConstraints_IndexOutOfRange", resourceCulture);
             }
         }
         
@@ -129,6 +129,15 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string Range_InvalidRange {
             get {
                 return ResourceManager.GetString("Range_InvalidRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified key &apos;{0}&apos; is not a valid index for this collection..
+        /// </summary>
+        internal static string ReadOnlyDictionary_KeyNotFound {
+            get {
+                return ResourceManager.GetString("ReadOnlyDictionary_KeyNotFound", resourceCulture);
             }
         }
         

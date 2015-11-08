@@ -4,7 +4,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
     /// </summary>
     public static class GuidConstraints
     {
@@ -21,7 +21,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<TMessage, Guid> IsNotEmpty<TMessage>(this IMemberConstraint<TMessage, Guid> member, string errorMessage = null)
+        public static IMemberConstraint<T, Guid> IsNotEmpty<T>(this IMemberConstraint<T, Guid> member, string errorMessage = null)
         {
             return member.Apply(new GuidIsNotEmptyConstraint().WithErrorMessage(errorMessage));
         }              
@@ -41,7 +41,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<TMessage, Guid> IsEmpty<TMessage>(this IMemberConstraint<TMessage, Guid> member, string errorMessage = null)
+        public static IMemberConstraint<T, Guid> IsEmpty<T>(this IMemberConstraint<T, Guid> member, string errorMessage = null)
         {
             return member.Apply(new GuidIsEmptyConstraint().WithErrorMessage(errorMessage));
         }              

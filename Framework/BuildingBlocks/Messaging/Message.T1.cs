@@ -64,7 +64,7 @@ namespace Kingo.BuildingBlocks.Messaging
        
         internal override ErrorInfo ValidateMessage()
         {
-            var validator = CreateValidator();
+            var validator = GetOrAddValidator(CreateValidator);
             if (validator == null)
             {
                 return ErrorInfo.Empty;

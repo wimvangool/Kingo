@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, byte> IsByte<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, byte> IsByte<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsByte(member, DefaultByteNumberStyles, null, errorMessage);
         }
@@ -56,7 +56,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, byte> IsByte<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IMemberConstraint<T, byte> IsByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
             return member.Apply(new StringIsByteConstraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -84,7 +84,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, sbyte> IsSByte<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, sbyte> IsSByte<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsSByte(member, DefaultSByteNumberStyles, null, errorMessage);
         }
@@ -110,7 +110,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, sbyte> IsSByte<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<T, sbyte> IsSByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsSByteConstraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -133,7 +133,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, char> IsChar<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, char> IsChar<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return member.Apply(new StringIsCharConstraint().WithErrorMessage(errorMessage));
         }        
@@ -161,7 +161,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, short> IsInt16<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, short> IsInt16<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsInt16(member, DefaultInt16NumberStyles, null, errorMessage);
         }
@@ -187,7 +187,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, short> IsInt16<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<T, short> IsInt16<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsInt16Constraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -215,7 +215,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, int> IsInt32<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, int> IsInt32<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsInt32(member, DefaultInt32NumberStyles, null, errorMessage);
         }
@@ -241,7 +241,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, int> IsInt32<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<T, int> IsInt32<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsInt32Constraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -269,7 +269,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, long> IsInt64<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, long> IsInt64<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsInt64(member, DefaultInt64NumberStyles, null, errorMessage);
         }
@@ -295,7 +295,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, long> IsInt64<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<T, long> IsInt64<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsInt64Constraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -323,7 +323,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, float> IsSingle<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, float> IsSingle<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsSingle(member, DefaultSingleNumberStyles, null, errorMessage);
         }
@@ -349,7 +349,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, float> IsSingle<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<T, float> IsSingle<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsSingleConstraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -377,7 +377,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, double> IsDouble<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, double> IsDouble<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsDouble(member, DefaultDoubleNumberStyles, null, errorMessage);
         }
@@ -403,7 +403,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, double> IsDouble<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<T, double> IsDouble<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsDoubleConstraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -431,7 +431,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, decimal> IsDecimal<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, decimal> IsDecimal<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return IsDecimal(member, DefaultDecimalNumberStyles, null, errorMessage);
         }
@@ -457,7 +457,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, decimal> IsDecimal<TMessage>(this IMemberConstraint<TMessage, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraint<T, decimal> IsDecimal<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsDecimalConstraint(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -472,51 +472,42 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public abstract class StringIsNumberConstraint<TValueOut> : Constraint<string, TValueOut>
     {
-        private readonly NumberStyles _style;
-        private readonly IFormatProvider _formatProvider;
+        /// <summary>
+        /// A bitwise combination of enumeration values that indicates the style elements that can be present in the value.
+        /// </summary>
+        public readonly NumberStyles Style;
+
+        /// <summary>
+        /// An object that supplies culture-specific formatting information about the value.
+        /// </summary>
+        public readonly IFormatProvider FormatProvider;
     
         internal StringIsNumberConstraint(NumberStyles style, IFormatProvider formatProvider)
         {
-            _style = style;
-            _formatProvider = formatProvider;
+            Style = style;
+            FormatProvider = formatProvider;
         }
 
         internal StringIsNumberConstraint(StringIsNumberConstraint<TValueOut> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _style = constraint._style;
-            _formatProvider = constraint._formatProvider;
+            Style = constraint.Style;
+            FormatProvider = constraint.FormatProvider;
         }
 
         internal StringIsNumberConstraint(StringIsNumberConstraint<TValueOut> constraint, Identifier name)
             : base(constraint, name)
         {
-            _style = constraint._style;
-            _formatProvider = constraint._formatProvider;
-        }
-
-        /// <summary>
-        /// A bitwise combination of enumeration values that indicates the style elements that can be present in the value.
-        /// </summary>
-        public NumberStyles Style
-        {
-            get { return _style; }
-        }
-
-        /// <summary>
-        /// An object that supplies culture-specific formatting information about the value.
-        /// </summary>
-        public IFormatProvider FormatProvider
-        {
-            get { return _formatProvider; }
-        }
+            Style = constraint.Style;
+            FormatProvider = constraint.FormatProvider;
+        }        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(string valueIn, out TValueOut valueOut)
         {
-            return TryParse(valueIn, _style, _formatProvider, out valueOut);
+            return TryParse(valueIn, Style, FormatProvider, out valueOut);
         }
         
         internal abstract bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out TValueOut valueOut);

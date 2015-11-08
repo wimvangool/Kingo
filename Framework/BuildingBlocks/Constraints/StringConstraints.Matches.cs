@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotMatch<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotMatch<T>(this IMemberConstraint<T, string> member, string pattern, string errorMessage = null)
         {
             return member.DoesNotMatch(new Regex(pattern), errorMessage);
         }
@@ -47,7 +47,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotMatch<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, RegexOptions options, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotMatch<T>(this IMemberConstraint<T, string> member, string pattern, RegexOptions options, string errorMessage = null)
         {
             return member.DoesNotMatch(new Regex(pattern, options), errorMessage);
         }
@@ -67,7 +67,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotMatch<TMessage>(this IMemberConstraint<TMessage, string> member, Regex pattern, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotMatch<T>(this IMemberConstraint<T, string> member, Regex pattern, string errorMessage = null)
         {
             return member.Apply(new StringMatchesConstraint(pattern).Invert(errorMessage));
         }
@@ -91,7 +91,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> Matches<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, string errorMessage = null)
+        public static IMemberConstraint<T, string> Matches<T>(this IMemberConstraint<T, string> member, string pattern, string errorMessage = null)
         {
             return member.Matches(new Regex(pattern), errorMessage);
         }
@@ -112,7 +112,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> Matches<TMessage>(this IMemberConstraint<TMessage, string> member, string pattern, RegexOptions options, string errorMessage = null)
+        public static IMemberConstraint<T, string> Matches<T>(this IMemberConstraint<T, string> member, string pattern, RegexOptions options, string errorMessage = null)
         {
             return member.Matches(new Regex(pattern, options), errorMessage);
         }
@@ -132,7 +132,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> Matches<TMessage>(this IMemberConstraint<TMessage, string> member, Regex pattern, string errorMessage = null)
+        public static IMemberConstraint<T, string> Matches<T>(this IMemberConstraint<T, string> member, Regex pattern, string errorMessage = null)
         {
             return member.Apply(new StringMatchesConstraint(pattern).WithErrorMessage(errorMessage));
         }
@@ -147,7 +147,10 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class StringMatchesConstraint : Constraint<string>
     {
-        private readonly Regex _pattern;        
+        /// <summary>
+        /// The pattern to match.
+        /// </summary>
+        public readonly Regex Pattern;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StringMatchesConstraint" /> class.
@@ -176,27 +179,19 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("pattern");
             }
-            _pattern = pattern;
+            Pattern = pattern;
         }
 
         private StringMatchesConstraint(StringMatchesConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _pattern = constraint._pattern;
+            Pattern = constraint.Pattern;
         }
 
         private StringMatchesConstraint(StringMatchesConstraint constraint, Identifier name)
             : base(constraint, name)
         {
-            _pattern = constraint._pattern;
-        }
-
-        /// <summary>
-        /// The pattern to match.
-        /// </summary>
-        public Regex Pattern
-        {
-            get { return _pattern; }
+            Pattern = constraint.Pattern;
         }
 
         #region [====== Name & ErrorMessage ======]
@@ -238,7 +233,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override bool IsSatisfiedBy(string value)
         {            
-            return _pattern.IsMatch(value);
+            return Pattern.IsMatch(value);
         }
 
         #endregion

@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CollectionConstraints_NegativeIndex" xml:space="preserve">
-    <value>Index cannot be negative: {0}.</value>
+  <data name="CollectionConstraints_IndexOutOfRange" xml:space="preserve">
+    <value>The specified index is outside the rangeof valid values: {0}.</value>
   </data>
   <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
     <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>
@@ -140,6 +140,9 @@
   </data>
   <data name="Range_InvalidRange" xml:space="preserve">
     <value>The specified range is not valid: {0}.</value>
+  </data>
+  <data name="ReadOnlyDictionary_KeyNotFound" xml:space="preserve">
+    <value>The specified key '{0}' is not a valid index for this collection.</value>
   </data>
   <data name="RequiredAttribute_InvalidStringConstraint" xml:space="preserve">
     <value>Invalid value for StringConstraint specified: {0}.</value>

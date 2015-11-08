@@ -4,7 +4,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
     /// </summary>
     public static partial class BasicConstraints
     {
@@ -25,7 +25,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsNotSameInstanceAs<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotSameInstanceAs<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
         {
             return member.Apply(new IsNotSameInstanceAsConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsNotSameInstanceAs<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, object> otherFactory, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotSameInstanceAs<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, object> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -73,7 +73,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSameInstanceAs<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSameInstanceAs<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
         {
             return member.Apply(new IsSameInstanceAsConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -93,7 +93,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSameInstanceAs<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, object> otherFactory, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSameInstanceAs<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, object> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -112,7 +112,10 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class IsNotSameInstanceAsConstraint<TValue> : Constraint<TValue>
     {
-        private readonly object _other;
+        /// <summary>
+        /// The instance to compare the value to.
+        /// </summary>
+        public readonly object Other;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsNotSameInstanceAsConstraint{T}" /> class.
@@ -120,28 +123,20 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="other">The instance to compare the value to.</param>
         public IsNotSameInstanceAsConstraint(object other)
         {
-            _other = other;
+            Other = other;
         }
 
         private IsNotSameInstanceAsConstraint(IsNotSameInstanceAsConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _other = constraint._other;
+            Other = constraint.Other;
         }
 
         private IsNotSameInstanceAsConstraint(IsNotSameInstanceAsConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
-            _other = constraint._other;
-        }
-
-        /// <summary>
-        /// The instance to compare the value to.
-        /// </summary>
-        public object Other
-        {
-            get { return _other; }
-        }
+            Other = constraint.Other;
+        }               
 
         #region [====== Name & ErrorMessage ======]
 
@@ -180,7 +175,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value)
         {
-            return !ReferenceEquals(value, _other);
+            return !ReferenceEquals(value, Other);
         }
 
         #endregion
@@ -195,7 +190,10 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class IsSameInstanceAsConstraint<TValue> : Constraint<TValue>
     {
-        private readonly object _other;
+        /// <summary>
+        /// The instance to compare the value to.
+        /// </summary>
+        public readonly object Other;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsSameInstanceAsConstraint{T}" /> class.
@@ -203,28 +201,20 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="other">The instance to compare the value to.</param>
         public IsSameInstanceAsConstraint(object other)
         {
-            _other = other;
+            Other = other;
         }
 
         private IsSameInstanceAsConstraint(IsSameInstanceAsConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _other = constraint._other;
+            Other = constraint.Other;
         }
 
         private IsSameInstanceAsConstraint(IsSameInstanceAsConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
-            _other = constraint._other;
-        }
-
-        /// <summary>
-        /// The instance to compare the value to.
-        /// </summary>
-        public object Other
-        {
-            get { return _other; }
-        }
+            Other = constraint.Other;
+        }              
 
         #region [====== Name & ErrorMessage ======]
 
@@ -263,7 +253,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value)
         {
-            return ReferenceEquals(value, _other);
+            return ReferenceEquals(value, Other);
         }
 
         #endregion

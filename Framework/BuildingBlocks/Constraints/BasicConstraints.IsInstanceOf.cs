@@ -4,7 +4,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
     /// </summary>
     public static partial class BasicConstraints
     {
@@ -25,7 +25,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TMessage, TValue> IsNotInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Type type, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInstanceOf<T, TValue>(this IMemberConstraint<T, TValue> member, Type type, string errorMessage = null)
         {
             return member.Apply(NewIsNotInstanceOfConstraint<TValue>(type, errorMessage));
         }
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TMessage, TValue> IsNotInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, Type> typeFactory, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsNotInstanceOf<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, Type> typeFactory, string errorMessage = null)
         {
             if (typeFactory == null)
             {
@@ -88,7 +88,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TMessage, TValue> IsInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Type type, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInstanceOf<T, TValue>(this IMemberConstraint<T, TValue> member, Type type, string errorMessage = null)
         {
             return member.Apply(NewIsInstanceOfConstraint<TValue>(type).WithErrorMessage(errorMessage));
         }
@@ -108,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TMessage, TValue> IsInstanceOf<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, Type> typeFactory, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInstanceOf<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, Type> typeFactory, string errorMessage = null)
         {
             if (typeFactory == null)
             {

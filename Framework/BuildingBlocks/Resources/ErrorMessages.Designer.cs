@@ -232,20 +232,11 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no value with key &apos;{constraint.Key}&apos;..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element with key &apos;{constraint.Key}&apos;..
         /// </summary>
         internal static string CollectionConstraints_ElementAt_Dictionary {
             get {
                 return ResourceManager.GetString("CollectionConstraints_ElementAt_Dictionary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} contains no element at index {constraint.Index}..
-        /// </summary>
-        internal static string CollectionConstraints_ElementAt_Enumerable {
-            get {
-                return ResourceManager.GetString("CollectionConstraints_ElementAt_Enumerable", resourceCulture);
             }
         }
         
@@ -268,16 +259,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} must be null or empty..
-        /// </summary>
-        internal static string CollectionConstraints_IsNullOrEmpty_Enumerable {
-            get {
-                return ResourceManager.GetString("CollectionConstraints_IsNullOrEmpty_Enumerable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count}) does contain an element index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) does contain an element index {constraint.Index}..
         /// </summary>
         internal static string CollectionConstraints_NoElementAt {
             get {
@@ -286,11 +268,11 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} does contain an element index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) does contain an element with key &apos;{constraint.Key}&apos;..
         /// </summary>
-        internal static string CollectionConstraints_NoElementAt_Enumerable {
+        internal static string CollectionConstraints_NoElementAt_Dictionary {
             get {
-                return ResourceManager.GetString("CollectionConstraints_NoElementAt_Enumerable", resourceCulture);
+                return ResourceManager.GetString("CollectionConstraints_NoElementAt_Dictionary", resourceCulture);
             }
         }
         

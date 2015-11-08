@@ -4,7 +4,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
     /// </summary>
     public static class BooleanConstraints
     {
@@ -17,14 +17,14 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
         /// </param>     
-        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <returns>A <see cref="IMemberConstraint{T}" /> instance that contains the member's value.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, bool> IsTrue<TMessage>(this IMemberConstraint<TMessage, bool> member, string errorMessage = null)
+        public static IMemberConstraint<T, bool> IsTrue<T>(this IMemberConstraint<T, bool> member, string errorMessage = null)
         {
             return member.Apply(new BooleanIsTrueConstraint().WithErrorMessage(errorMessage));
         }        
@@ -40,14 +40,14 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
         /// </param>     
-        /// <returns>A <see cref="IMemberConstraint{TMessage}" /> instance that contains the member's value.</returns>
+        /// <returns>A <see cref="IMemberConstraint{T}" /> instance that contains the member's value.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, bool> IsFalse<TMessage>(this IMemberConstraint<TMessage, bool> member, string errorMessage = null)
+        public static IMemberConstraint<T, bool> IsFalse<T>(this IMemberConstraint<T, bool> member, string errorMessage = null)
         {
             return member.Apply(new BooleanIsFalseConstraint().WithErrorMessage(errorMessage));
         }        

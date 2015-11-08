@@ -25,7 +25,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotEndWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotEndWith<T>(this IMemberConstraint<T, string> member, string postfix, string errorMessage = null)
         {
             return member.DoesNotEndWith(postfix, StringComparison.Ordinal, errorMessage);
         }
@@ -46,7 +46,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotEndWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotEndWith<T>(this IMemberConstraint<T, string> member, string postfix, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringEndsWithConstraint(postfix, compareType).Invert(errorMessage));
         }
@@ -70,7 +70,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> EndsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, string errorMessage = null)
+        public static IMemberConstraint<T, string> EndsWith<T>(this IMemberConstraint<T, string> member, string postfix, string errorMessage = null)
         {
             return member.EndsWith(postfix, StringComparison.Ordinal, errorMessage);
         }
@@ -91,7 +91,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> EndsWith<TMessage>(this IMemberConstraint<TMessage, string> member, string postfix, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<T, string> EndsWith<T>(this IMemberConstraint<T, string> member, string postfix, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringEndsWithConstraint(postfix, compareType).WithErrorMessage(errorMessage));
         }
@@ -106,8 +106,15 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class StringEndsWithConstraint : Constraint<string>
     {
-        private readonly string _postfix;
-        private readonly StringComparison _compareType;
+        /// <summary>
+        /// The postfix the value should end with.
+        /// </summary>
+        public readonly string Postfix;
+
+        /// <summary>
+        /// One of the enumeration values that specifies how the strings will be compared.
+        /// </summary>
+        public readonly StringComparison CompareType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Kingo.BuildingBlocks.Constraints.StringEndsWithConstraint" /> class.
@@ -123,39 +130,23 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("postfix");
             }
-            _postfix = postfix;
-            _compareType = compareType;
+            Postfix = postfix;
+            CompareType = compareType;
         }
 
         private StringEndsWithConstraint(StringEndsWithConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _postfix = constraint._postfix;
-            _compareType = constraint._compareType;
+            Postfix = constraint.Postfix;
+            CompareType = constraint.CompareType;
         }
 
         private StringEndsWithConstraint(StringEndsWithConstraint constraint, Identifier name)
             : base(constraint, name)
         {
-            _postfix = constraint._postfix;
-            _compareType = constraint._compareType;
-        }
-
-        /// <summary>
-        /// The postfix the value should end with.
-        /// </summary>
-        public string Postfix
-        {
-            get { return _postfix; }
-        }
-
-        /// <summary>
-        /// One of the enumeration values that specifies how the strings will be compared.
-        /// </summary>
-        public StringComparison CompareType
-        {
-            get { return _compareType; }
-        }
+            Postfix = constraint.Postfix;
+            CompareType = constraint.CompareType;
+        }        
 
         #region [====== Name & ErrorMessage ======]
 
@@ -200,7 +191,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("value");
             }
-            return value.EndsWith(_postfix, _compareType);
+            return value.EndsWith(Postfix, CompareType);
         }
 
         #endregion

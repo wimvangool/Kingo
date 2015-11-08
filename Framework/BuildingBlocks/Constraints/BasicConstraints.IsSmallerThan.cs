@@ -5,7 +5,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
     /// </summary>
     public static partial class BasicConstraints
     {
@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThan<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThan<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
         {
             return member.Apply(new IsSmallerThanConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
         }
@@ -50,7 +50,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThan<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, IComparable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThan<T, TValue>(this IMemberConstraint<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             return member.Apply(new IsSmallerThanConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -74,7 +74,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThan<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, TValue> otherFactory, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThan<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, TValue> otherFactory, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -98,7 +98,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThan<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, IComparable<TValue>> otherFactory, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThan<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, IComparable<TValue>> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -130,7 +130,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThanOrEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
         {
             return member.Apply(new IsSmallerThanOrEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
         }
@@ -150,7 +150,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThanOrEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, IComparable<TValue> other, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             return member.Apply(new IsSmallerThanOrEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -174,7 +174,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThanOrEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, TValue> otherFactory, IComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, TValue> otherFactory, IComparer<TValue> comparer, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -198,7 +198,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraint<TMessage, TValue> IsSmallerThanOrEqualTo<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, Func<TMessage, IComparable<TValue>> otherFactory, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsSmallerThanOrEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, IComparable<TValue>> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -217,7 +217,10 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class IsSmallerThanConstraint<TValue> : Constraint<TValue>
     {
-        private readonly IComparable<TValue> _other;
+        /// <summary>
+        /// Instance to compare the value to.
+        /// </summary>
+        public readonly IComparable<TValue> Other;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsSmallerThanConstraint{T}" /> class.
@@ -233,28 +236,20 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="other">Instance to compare the value to.</param>        
         public IsSmallerThanConstraint(IComparable<TValue> other)
         {
-            _other = other;
+            Other = other;
         }
 
         private IsSmallerThanConstraint(IsSmallerThanConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _other = constraint._other;
+            Other = constraint.Other;
         }
 
         private IsSmallerThanConstraint(IsSmallerThanConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
-            _other = constraint._other;
-        }
-
-        /// <summary>
-        /// Instance to compare the value to.
-        /// </summary>
-        public IComparable<TValue> Other
-        {
-            get { return _other; }
-        }
+            Other = constraint.Other;
+        }       
 
         #region [====== Name & ErrorMessage ======]
 
@@ -283,7 +278,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsGreaterThanOrEqualToConstraint<TValue>(_other).WithErrorMessage(errorMessage).WithName(name);
+            return new IsGreaterThanOrEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
@@ -293,7 +288,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value)
         {
-            return Comparer.IsSmallerThan(value, _other);
+            return Comparer.IsSmallerThan(value, Other);
         }
 
         #endregion
@@ -308,7 +303,10 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class IsSmallerThanOrEqualToConstraint<TValue> : Constraint<TValue>
     {
-        private readonly IComparable<TValue> _other;
+        /// <summary>
+        /// Instance to compare the value to.
+        /// </summary>
+        public readonly IComparable<TValue> Other;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsSmallerThanOrEqualToConstraint{T}" /> class.
@@ -324,28 +322,20 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="other">Instance to compare the value to.</param>        
         public IsSmallerThanOrEqualToConstraint(IComparable<TValue> other)
         {
-            _other = other;
+            Other = other;
         }
 
         private IsSmallerThanOrEqualToConstraint(IsSmallerThanOrEqualToConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _other = constraint._other;
+            Other = constraint.Other;
         }
 
         private IsSmallerThanOrEqualToConstraint(IsSmallerThanOrEqualToConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
-            _other = constraint._other;
-        }
-
-        /// <summary>
-        /// Instance to compare the value to.
-        /// </summary>
-        public IComparable<TValue> Other
-        {
-            get { return _other; }
-        }
+            Other = constraint.Other;
+        }               
 
         #region [====== Name & ErrorMessage ======]
 
@@ -374,7 +364,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new IsGreaterThanConstraint<TValue>(_other).WithErrorMessage(errorMessage).WithName(name);
+            return new IsGreaterThanConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
         }
 
         #endregion
@@ -384,7 +374,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value)
         {
-            return Comparer.IsSmallerThanOrEqualTo(value, _other);
+            return Comparer.IsSmallerThanOrEqualTo(value, Other);
         }
 
         #endregion

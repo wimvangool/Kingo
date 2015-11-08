@@ -126,14 +126,11 @@
   <data name="CollectionConstraints_IsNotNullOrEmpty" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) must not be null and contain at least one element.</value>
   </data>
+  <data name="CollectionConstraints_ElementAt" xml:space="preserve">
+    <value>{member.FullName} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}.</value>
+  </data>
   <data name="CollectionConstraints_IsNullOrEmpty" xml:space="preserve">
     <value>{member.FullName} ({member.Value.Count} item(s)) must be null or empty.</value>
-  </data>
-  <data name="CollectionConstraints_ElementAt_Enumerable" xml:space="preserve">
-    <value>{member.FullName} contains no element at index {constraint.Index}.</value>
-  </data>
-  <data name="CollectionConstraints_IsNullOrEmpty_Enumerable" xml:space="preserve">
-    <value>{member.FullName} must be null or empty.</value>
   </data>
   <data name="GuidConstraints_IsEmpty" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) must be empty.</value>
@@ -258,17 +255,8 @@
   <data name="StringConstraints_StartsWith" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) must start with '{constraint.Prefix}'.</value>
   </data>
-  <data name="CollectionConstraints_ElementAt" xml:space="preserve">
-    <value>{member.FullName} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}.</value>
-  </data>
-  <data name="CollectionConstraints_NoElementAt_Enumerable" xml:space="preserve">
-    <value>{member.FullName} does contain an element index {constraint.Index}.</value>
-  </data>
   <data name="CollectionConstraints_NoElementAt" xml:space="preserve">
-    <value>{member.FullName} ({member.Value.Count}) does contain an element index {constraint.Index}.</value>
-  </data>
-  <data name="CollectionConstraints_ElementAt_Dictionary" xml:space="preserve">
-    <value>{member.FullName} ({member.Value.Count} item(s)) contains no value with key '{constraint.Key}'.</value>
+    <value>{member.FullName} ({member.Value.Count} item(s)) does contain an element index {constraint.Index}.</value>
   </data>
   <data name="StringConstraints_IsIdentifier" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) could not be converted to an identifier.</value>
@@ -281,5 +269,11 @@
   </data>
   <data name="EnumConstraints_IsInRangeOfValidValues" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) has a value or contains bitflags that are not defined by type {constraint.EnumType.Name}.</value>
+  </data>
+  <data name="CollectionConstraints_ElementAt_Dictionary" xml:space="preserve">
+    <value>{member.FullName} ({member.Value.Count} item(s)) contains no element with key '{constraint.Key}'.</value>
+  </data>
+  <data name="CollectionConstraints_NoElementAt_Dictionary" xml:space="preserve">
+    <value>{member.FullName} ({member.Value.Count} item(s)) does contain an element with key '{constraint.Key}'.</value>
   </data>
 </root>

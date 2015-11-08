@@ -53,11 +53,8 @@
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
     <Compile Include="Constraints\BasicConstraints.cs" />
-    <Compile Include="Constraints\CollectionConstraints.Array.cs" />
-    <Compile Include="Constraints\CollectionConstraints.cs" />
-    <Compile Include="Constraints\CollectionConstraints.Enumerable.cs" />
-    <Compile Include="Constraints\CollectionConstraints.Dictionary.cs" />
-    <Compile Include="Constraints\CollectionConstraints.List.cs" />
+    <Compile Include="Constraints\CollectionConstraints.NullOrEmpty.cs" />
+    <Compile Include="Constraints\CollectionConstraints.ElementAt.cs" />
     <Compile Include="Constraints\ConstraintVisitor.cs" />
     <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
     <Compile Include="Constraints\DefaultMember.cs" />
@@ -73,10 +70,7 @@
     <Compile Include="Constraints\MemberConstraint.T2.cs" />
     <Compile Include="Constraints\MemberNameTransformation.cs" />
     <Compile Include="Constraints\MemberSelectionTransformation.cs" />
-    <Compile Include="ReadOnlyCollection.T1.cs" />
-    <Compile Include="ReadOnlyList.T1.cs" />
     <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
-    <Compile Include="Constraints\StringConstraints.Length.cs" />
     <Compile Include="EnumOperators.T1.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
@@ -136,7 +130,6 @@
     <Compile Include="Constraints\Member.T2.cs" />
     <Compile Include="Constraints\BasicConstraints.IsInRange.cs" />
     <Compile Include="Constraints\BooleanConstraints.cs" />
-    <Compile Include="Constraints\CollectionConstraints.Collection.cs" />
     <Compile Include="Constraints\ConstraintValidator.T1.cs" />
     <Compile Include="Constraints\GuidConstraints.cs" />
     <Compile Include="Constraints\IMemberConstraintSet.T1.cs" />

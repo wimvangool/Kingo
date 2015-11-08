@@ -40,12 +40,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public override string ToString()
         {
-            return string.Format("Key = {0}, FullName = {1}, Type = {2}, Value = {3}", Key, FullName, Type, ToString(_value));
-        }  
-
-        private static string ToString(object value)
-        {
-            return ReferenceEquals(value, null) ? StringTemplate.NullValue : value.ToString();
-        }
+            return _member.ToString();
+        }          
     }
 }

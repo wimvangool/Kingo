@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> IsNotEqualTo<TMessage>(this IMemberConstraint<TMessage, string> member, string other, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<T, string> IsNotEqualTo<T>(this IMemberConstraint<T, string> member, string other, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringIsNotEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
         }
@@ -51,7 +51,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> IsEqualTo<TMessage>(this IMemberConstraint<TMessage, string> member, string other, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraint<T, string> IsEqualTo<T>(this IMemberConstraint<T, string> member, string other, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringIsEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
         }
@@ -66,8 +66,15 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class StringIsNotEqualToConstraint : Constraint<string>
     {
-        private readonly string _other;
-        private readonly StringComparison _compareType;
+        /// <summary>
+        /// The value to compare.
+        /// </summary>
+        public readonly string Other;
+
+        /// <summary>
+        /// One of the enumeration values that specifies how the strings will be compared.
+        /// </summary>
+        public readonly StringComparison CompareType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StringIsNotEqualToConstraint" /> class.
@@ -76,39 +83,23 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
         public StringIsNotEqualToConstraint(string other, StringComparison compareType = StringComparison.Ordinal)
         {
-            _other = other;
-            _compareType = compareType;
+            Other = other;
+            CompareType = compareType;
         }
 
         private StringIsNotEqualToConstraint(StringIsNotEqualToConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _other = constraint._other;
-            _compareType = constraint._compareType;
+            Other = constraint.Other;
+            CompareType = constraint.CompareType;
         }
 
         private StringIsNotEqualToConstraint(StringIsNotEqualToConstraint constraint, Identifier name)
             : base(constraint, name)
         {
-            _other = constraint._other;
-            _compareType = constraint._compareType;
-        }
-
-        /// <summary>
-        /// The value to compare.
-        /// </summary>
-        public string Other
-        {
-            get { return _other; }
-        }
-
-        /// <summary>
-        /// One of the enumeration values that specifies how the strings will be compared.
-        /// </summary>
-        public StringComparison CompareType
-        {
-            get { return _compareType; }
-        }
+            Other = constraint.Other;
+            CompareType = constraint.CompareType;
+        }              
 
         #region [====== Name & ErrorMessage ======]
 
@@ -137,7 +128,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new StringIsEqualToConstraint(_other, _compareType)
+            return new StringIsEqualToConstraint(Other, CompareType)
                 .WithErrorMessage(errorMessage)
                 .WithName(name);
         }
@@ -151,9 +142,9 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             if (ReferenceEquals(value, null))
             {
-                return !ReferenceEquals(_other, null);
+                return !ReferenceEquals(Other, null);
             }
-            return !value.Equals(_other, _compareType);
+            return !value.Equals(Other, CompareType);
         }
 
         #endregion
@@ -168,8 +159,15 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class StringIsEqualToConstraint : Constraint<string>
     {
-        private readonly string _other;
-        private readonly StringComparison _compareType;
+        /// <summary>
+        /// The value to compare.
+        /// </summary>
+        public readonly string Other;
+
+        /// <summary>
+        /// One of the enumeration values that specifies how the strings will be compared.
+        /// </summary>
+        public readonly StringComparison CompareType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StringIsEqualToConstraint" /> class.
@@ -178,39 +176,23 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <param name="compareType">One of the enumeration values that specifies how the strings will be compared.</param>
         public StringIsEqualToConstraint(string other, StringComparison compareType = StringComparison.Ordinal)
         {
-            _other = other;
-            _compareType = compareType;
+            Other = other;
+            CompareType = compareType;
         }
 
         private StringIsEqualToConstraint(StringIsEqualToConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _other = constraint._other;
-            _compareType = constraint._compareType;
+            Other = constraint.Other;
+            CompareType = constraint.CompareType;
         }
 
         private StringIsEqualToConstraint(StringIsEqualToConstraint constraint, Identifier name)
             : base(constraint, name)
         {
-            _other = constraint._other;
-            _compareType = constraint._compareType;
-        }
-
-        /// <summary>
-        /// The value to compare.
-        /// </summary>
-        public string Other
-        {
-            get { return _other; }
-        }
-
-        /// <summary>
-        /// One of the enumeration values that specifies how the strings will be compared.
-        /// </summary>
-        public StringComparison CompareType
-        {
-            get { return _compareType; }
-        }
+            Other = constraint.Other;
+            CompareType = constraint.CompareType;
+        }               
 
         #region [====== Name & ErrorMessage ======]
 
@@ -239,7 +221,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new StringIsNotEqualToConstraint(_other, _compareType)
+            return new StringIsNotEqualToConstraint(Other, CompareType)
                 .WithErrorMessage(errorMessage)
                 .WithName(name);
         }
@@ -253,9 +235,9 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             if (ReferenceEquals(value, null))
             {
-                return ReferenceEquals(_other, null);
+                return ReferenceEquals(Other, null);
             }
-            return value.Equals(_other, _compareType);
+            return value.Equals(Other, CompareType);
         }
 
         #endregion

@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> IsNotNullOrWhiteSpace<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, string> IsNotNullOrWhiteSpace<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return member.Apply(new StringIsNotNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage));
         }
@@ -47,7 +47,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> IsNullOrWhiteSpace<TMessage>(this IMemberConstraint<TMessage, string> member, string errorMessage = null)
+        public static IMemberConstraint<T, string> IsNullOrWhiteSpace<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
         {
             return member.Apply(new StringIsNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage));
         }

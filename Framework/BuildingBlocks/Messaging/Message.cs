@@ -57,7 +57,9 @@ namespace Kingo.BuildingBlocks.Messaging
         #endregion      
 
         #region [====== Validation ======]
-        
+
+        private static readonly ConcurrentDictionary<Type, object> _Validators = new ConcurrentDictionary<Type, object>();
+            
         ErrorInfo IValidateable.Validate()
         {
             return ValidateMessage();
@@ -69,6 +71,11 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         internal abstract ErrorInfo ValidateMessage();
+
+        internal IValidator<TMessage> GetOrAddValidator<TMessage>(Func<IValidator<TMessage>> validatorFactory)
+        {
+            return _Validators.GetOrAdd(GetType(), validatorFactory) as IValidator<TMessage>;
+        }
 
         #endregion
 

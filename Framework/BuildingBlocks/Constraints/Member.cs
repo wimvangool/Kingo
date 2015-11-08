@@ -65,7 +65,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public override string ToString()
         {
-            return string.Format("Key = {0}, FullName = {1}, Type = {2}", Key, FullName, Type);
+            return string.Format("{0} ({1})", FullName, Type);
         }
 
         private const string _NameSeparator = "."; 

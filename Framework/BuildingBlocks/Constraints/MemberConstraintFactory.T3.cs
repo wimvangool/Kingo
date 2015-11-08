@@ -2,17 +2,17 @@
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class MemberConstraintFactory<TMessage, TValueIn, TValueOut> : IErrorMessageWriter<TMessage>
+    internal sealed class MemberConstraintFactory<T, TValueIn, TValueOut> : IErrorMessageWriter<T>
     {
-        private readonly Member<TMessage, TValueIn> _originalMember;
+        private readonly Member<T, TValueIn> _originalMember;
         private readonly MemberByTransformation _transformedMember;
         private readonly IMemberTransformation _transformation;
-        private readonly Func<TMessage, IConstraint<TValueIn, TValueOut>> _constraintFactory;        
+        private readonly Func<T, IConstraint<TValueIn, TValueOut>> _constraintFactory;        
 
-        internal MemberConstraintFactory(Member<TMessage, TValueIn> originalMember, Func<TMessage, IConstraint<TValueIn, TValueOut>> constraintFactory)
+        internal MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IConstraint<TValueIn, TValueOut>> constraintFactory)
             : this(originalMember, constraintFactory, originalMember.EnableTransformation(), new MemberNameTransformation(null)) { }
 
-        private MemberConstraintFactory(Member<TMessage, TValueIn> originalMember, Func<TMessage, IConstraint<TValueIn, TValueOut>> constraintFactory, MemberByTransformation transformedMember, IMemberTransformation transformation)
+        private MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IConstraint<TValueIn, TValueOut>> constraintFactory, MemberByTransformation transformedMember, IMemberTransformation transformation)
         {
             _originalMember = originalMember;
             _transformedMember = transformedMember;
@@ -25,12 +25,12 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return _transformedMember; }
         }
 
-        internal Member<TMessage, TValueOut> CreateChildMember()
+        internal Member<T, TValueOut> CreateChildMember()
         {
             return _originalMember.CreateChildMember(_constraintFactory);
         }        
 
-        internal MemberConstraintFactory<TMessage, TValueIn, TResult> And<TResult>(Func<TMessage, IConstraint<TValueOut, TResult>> constraintFactory, IMemberTransformation nextTransformation)
+        internal MemberConstraintFactory<T, TValueIn, TResult> And<TResult>(Func<T, IConstraint<TValueOut, TResult>> constraintFactory, IMemberTransformation nextTransformation)
         {
             if (constraintFactory == null)
             {
@@ -38,7 +38,7 @@ namespace Kingo.BuildingBlocks.Constraints
             }
             var transformedMember = _transformation.Execute(_transformedMember, typeof(TValueOut));
 
-            return new MemberConstraintFactory<TMessage, TValueIn, TResult>(_originalMember, message =>
+            return new MemberConstraintFactory<T, TValueIn, TResult>(_originalMember, message =>
             {
                 var left = _constraintFactory.Invoke(message);
                 var right = constraintFactory.Invoke(message);
@@ -47,7 +47,7 @@ namespace Kingo.BuildingBlocks.Constraints
             }, transformedMember, nextTransformation);
         }
 
-        public bool WriteErrorMessages(TMessage message, IErrorMessageReader reader)
+        public bool WriteErrorMessages(T message, IErrorMessageReader reader)
         {
             if (message == null)
             {
@@ -69,7 +69,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return false;
         }
 
-        private MemberConstraint<TValueIn, TValueOut> CreateConstraint(TMessage message)
+        private MemberConstraint<TValueIn, TValueOut> CreateConstraint(T message)
         {
             return new MemberConstraint<TValueIn, TValueOut>(_transformedMember, _constraintFactory.Invoke(message));
         }        

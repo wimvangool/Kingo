@@ -25,7 +25,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotContain<TMessage>(this IMemberConstraint<TMessage, string> member, char value, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotContain<T>(this IMemberConstraint<T, string> member, char value, string errorMessage = null)
         {
             return member.DoesNotContain(value.ToString(), errorMessage);
         }
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> DoesNotContain<TMessage>(this IMemberConstraint<TMessage, string> member, string value, string errorMessage = null)
+        public static IMemberConstraint<T, string> DoesNotContain<T>(this IMemberConstraint<T, string> member, string value, string errorMessage = null)
         {
             return member.Apply(new StringContainsConstraint(value).Invert(errorMessage));
         }
@@ -69,7 +69,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> Contains<TMessage>(this IMemberConstraint<TMessage, string> member, char value, string errorMessage = null)
+        public static IMemberConstraint<T, string> Contains<T>(this IMemberConstraint<T, string> member, char value, string errorMessage = null)
         {
             return member.Contains(value.ToString(), errorMessage);
         }
@@ -89,7 +89,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<TMessage, string> Contains<TMessage>(this IMemberConstraint<TMessage, string> member, string value, string errorMessage = null)
+        public static IMemberConstraint<T, string> Contains<T>(this IMemberConstraint<T, string> member, string value, string errorMessage = null)
         {
             return member.Apply(new StringContainsConstraint(value).WithErrorMessage(errorMessage));
         }
@@ -104,7 +104,10 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class StringContainsConstraint : Constraint<string>
     {
-        private readonly string _value;
+        /// <summary>
+        /// The value to check for.
+        /// </summary>
+        public readonly string Value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StringContainsConstraint" /> class.
@@ -119,28 +122,20 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("value");
             }
-            _value = value;
+            Value = value;
         }
 
         private StringContainsConstraint(StringContainsConstraint constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _value = constraint._value;
+            Value = constraint.Value;
         }
 
         private StringContainsConstraint(StringContainsConstraint constraint, Identifier name)
             : base(constraint, name)
         {
-            _value = constraint._value;
-        }
-
-        /// <summary>
-        /// The value to check for.
-        /// </summary>
-        public string Value
-        {
-            get { return _value; }
-        }
+            Value = constraint.Value;
+        }               
 
         #region [====== Name & ErrorMessage ======]
 
@@ -185,7 +180,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("value");
             }
-            return value.Contains(_value);
+            return value.Contains(Value);
         }
 
         #endregion

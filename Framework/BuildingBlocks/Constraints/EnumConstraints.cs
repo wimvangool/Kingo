@@ -5,7 +5,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{TMessage, TValue}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T, TValue}" />.
     /// </summary>
     public static class EnumConstraints
     {
@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<TMessage, TValue> IsInRangeOfValidValues<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsInRangeOfValidValues<T, TValue>(this IMemberConstraint<T, TValue> member, string errorMessage = null)
             where TValue : struct
         {
             return member.Apply(new EnumIsInRangeOfValidValuesConstraint<TValue>().WithErrorMessage(errorMessage));
@@ -85,7 +85,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<TMessage, TValue> IsDefined<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> IsDefined<T, TValue>(this IMemberConstraint<T, TValue> member, string errorMessage = null)
             where TValue : struct
         {
             return member.Apply(new EnumIsDefinedConstraint<TValue>().WithErrorMessage(errorMessage));
@@ -132,7 +132,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="flag"/> is not an Enum type or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<TMessage, TValue> HasFlag<TMessage, TValue>(this IMemberConstraint<TMessage, TValue> member, TValue flag, string errorMessage = null)
+        public static IMemberConstraint<T, TValue> HasFlag<T, TValue>(this IMemberConstraint<T, TValue> member, TValue flag, string errorMessage = null)
             where TValue : struct
         {
             return member.Apply(new EnumHasFlagConstraint<TValue>(flag).WithErrorMessage(errorMessage));
@@ -289,32 +289,31 @@ namespace Kingo.BuildingBlocks.Constraints
     public sealed class EnumHasFlagConstraint<TValue> : Constraint<TValue>
         where TValue : struct
     {
-        private readonly Enum _flag;
+        /// <summary>
+        /// The flag(s) to check.
+        /// </summary>
+        public readonly Enum Flag;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumHasFlagConstraint{T}" /> class.
         /// </summary>    
+        /// <param name="flag">The flag(s) to check.</param>
         public EnumHasFlagConstraint(TValue flag)
         {
-            _flag = EnumConstraints.CastToEnum(flag);
+            Flag = EnumConstraints.CastToEnum(flag);
         }
 
         private EnumHasFlagConstraint(EnumHasFlagConstraint<TValue> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _flag = constraint._flag;
+            Flag = constraint.Flag;
         }
 
         private EnumHasFlagConstraint(EnumHasFlagConstraint<TValue> constraint, Identifier name)
             : base(constraint, name)
         {
-            _flag = constraint._flag;
-        }
-
-        public Enum Flag
-        {
-            get { return _flag; }
-        }
+            Flag = constraint.Flag;
+        }        
 
         #region [====== Name & ErrorMessage ======]
 
@@ -343,7 +342,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue value)
         {
-            return EnumConstraints.CastToEnum(value).HasFlag(_flag);
+            return EnumConstraints.CastToEnum(value).HasFlag(Flag);
         }
 
         #endregion

@@ -66,8 +66,7 @@
     <Compile Include="Constraints\BasicConstraintsTest.IsSameInstanceAs.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsSmallerThan.cs" />
     <Compile Include="Constraints\BooleanConstraintsTest.cs" />
-    <Compile Include="Constraints\CollectionConstraintsTest.Array.cs" />
-    <Compile Include="Constraints\CollectionConstraintsTest.Dictionary.cs" />
+    <Compile Include="Constraints\CollectionConstraintsTest.cs" />
     <Compile Include="Constraints\CompositeConstraintTest.cs" />
     <Compile Include="Constraints\ConstraintInverterTest.cs" />
     <Compile Include="Constraints\ConstraintTest.cs" />
@@ -77,7 +76,6 @@
     <Compile Include="Constraints\EnumConstraintsTest.cs" />
     <Compile Include="Constraints\OrConstraintTest.cs" />
     <Compile Include="Constraints\StringConstraintsTest.IsIdentifier.cs" />
-    <Compile Include="Constraints\StringConstraintsTest.Length.cs" />
     <Compile Include="IdentifierTest.cs" />
     <Compile Include="Messaging\ConstraintValidatorExtensions.cs" />
     <Compile Include="Constraints\StringConstraintsTest.Contains.cs" />
@@ -92,12 +90,11 @@
     <Compile Include="Messaging\MessageTest.cs" />
     <Compile Include="Messaging\RequiredValueMessage.T1.cs" />
     <Compile Include="StringTemplateTest.cs" />
-    <Compile Include="Constraints\CollectionConstraintsTest.Collection.cs" />
+    <Compile Include="Constraints\CollectionConstraintsTest.ElementAt.cs" />
     <Compile Include="Constraints\ComparerStub.T1.cs" />
-    <Compile Include="Constraints\CollectionConstraintsTest.Enumerable.cs" />
+    <Compile Include="Constraints\CollectionConstraintsTest.IsNullOrEmpty.cs" />
     <Compile Include="Constraints\EqualityComparerStub.T1.cs" />
     <Compile Include="Constraints\GuidConstraintsTest.cs" />
-    <Compile Include="Constraints\CollectionConstraintsTest.List.cs" />
     <Compile Include="Constraints\NullableConstraintsTest.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.cs" />
     <Compile Include="Constraints\RangeTest.cs" />
