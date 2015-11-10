@@ -18,7 +18,7 @@ namespace Kingo.BuildingBlocks.Messaging
             return errorInfo;
         }
 
-        internal static ErrorInfo AssertError(this ErrorInfo errorInfo, string errorMessage)
+        internal static ErrorInfo AssertInstanceError(this ErrorInfo errorInfo, string errorMessage)
         {
             Assert.IsNotNull(errorInfo);
             Assert.AreEqual(errorMessage, errorInfo.Error);

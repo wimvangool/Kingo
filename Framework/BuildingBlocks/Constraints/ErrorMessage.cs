@@ -49,14 +49,9 @@ namespace Kingo.BuildingBlocks.Constraints
             _value = value;
             _arguments = new Dictionary<Identifier, object>()
             {
-                { MemberIdentifier, new MemberWithValue(new DefaultMember(_failedConstraint), Value) }
+                { MemberIdentifier, new DefaultMember(_failedConstraint, value) }
             };
-        }                
-
-        public object Value
-        {
-            get { return _value; }
-        }
+        }                        
 
         public void Put(string name, object argument)
         {

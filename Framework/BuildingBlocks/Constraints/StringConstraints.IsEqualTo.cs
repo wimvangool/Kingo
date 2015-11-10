@@ -4,7 +4,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{String}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraintBuilder{String}" />.
     /// </summary>
     public static partial class StringConstraints
     {
@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNotEqualTo<T>(this IMemberConstraint<T, string> member, string other, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, string> IsNotEqualTo<T>(this IMemberConstraintBuilder<T, string> member, string other, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringIsNotEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
         }
@@ -51,7 +51,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsEqualTo<T>(this IMemberConstraint<T, string> member, string other, StringComparison compareType, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, string> IsEqualTo<T>(this IMemberConstraintBuilder<T, string> member, string other, StringComparison compareType, string errorMessage = null)
         {
             return member.Apply(new StringIsEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
         }

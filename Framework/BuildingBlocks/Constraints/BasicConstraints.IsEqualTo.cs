@@ -5,7 +5,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraintBuilder{T}" />.
     /// </summary>
     public static partial class BasicConstraints
     {
@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null)
         {
             return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -46,7 +46,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
         {
             return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -67,7 +67,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>     
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
             return member.Apply(new IsNotEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
         }
@@ -87,7 +87,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>           
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
         {
             return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -107,7 +107,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, object> otherFactory, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, object> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -131,7 +131,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, TValue> otherFactory, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, TValue> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -156,7 +156,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>     
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, TValue> otherFactory, IEqualityComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, TValue> otherFactory, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -180,7 +180,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>           
-        public static IMemberConstraint<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, IEquatable<TValue>> otherFactory, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, IEquatable<TValue>> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -208,7 +208,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, object other, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null)
         {
             return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -228,7 +228,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
         {
             return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -249,7 +249,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
             return member.Apply(new IsEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
         }
@@ -269,7 +269,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>    
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
         {
             return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
         }
@@ -289,7 +289,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, object> otherFactory, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, object> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -313,7 +313,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, TValue> otherFactory, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, TValue> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -338,7 +338,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, TValue> otherFactory, IEqualityComparer<TValue> comparer, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, TValue> otherFactory, IEqualityComparer<TValue> comparer, string errorMessage = null)
         {
             if (otherFactory == null)
             {
@@ -362,7 +362,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>    
-        public static IMemberConstraint<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraint<T, TValue> member, Func<T, IEquatable<TValue>> otherFactory, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, IEquatable<TValue>> otherFactory, string errorMessage = null)
         {
             if (otherFactory == null)
             {

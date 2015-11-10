@@ -61,15 +61,6 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified index is outside the rangeof valid values: {0}..
-        /// </summary>
-        internal static string CollectionConstraints_IndexOutOfRange {
-            get {
-                return ResourceManager.GetString("CollectionConstraints_IndexOutOfRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Instance &apos;{0}&apos; of type &apos;{1}&apos; is not supported because it is not an Enum type..
         /// </summary>
         internal static string EnumIsInRangeOfValidValues_UnsupportedValue {
@@ -84,6 +75,15 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string ExpressionExtensions_UnsupportedExpression {
             get {
                 return ResourceManager.GetString("ExpressionExtensions_UnsupportedExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; does not contain an indexer with argument types &apos;[{1}]&apos;..
+        /// </summary>
+        internal static string HasItemFilter_IndexerNotFound {
+            get {
+                return ResourceManager.GetString("HasItemFilter_IndexerNotFound", resourceCulture);
             }
         }
         
@@ -106,11 +106,11 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not obtain value of child member because the constraint that provides this value failed: {0}.
+        ///   Looks up a localized string similar to The specified list of indices cannot be empty..
         /// </summary>
-        internal static string Member_ConstraintFailed {
+        internal static string IndexList_EmptyList {
             get {
-                return ResourceManager.GetString("Member_ConstraintFailed", resourceCulture);
+                return ResourceManager.GetString("IndexList_EmptyList", resourceCulture);
             }
         }
         
@@ -142,15 +142,6 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid value for StringConstraint specified: {0}..
-        /// </summary>
-        internal static string RequiredAttribute_InvalidStringConstraint {
-            get {
-                return ResourceManager.GetString("RequiredAttribute_InvalidStringConstraint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot complete this scope because it is not the current scope..
         /// </summary>
         internal static string Scope_CannotCompleteScope {
@@ -174,15 +165,6 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string Scope_ScopeAlreadyCompleted {
             get {
                 return ResourceManager.GetString("Scope_ScopeAlreadyCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A length cannot be negative: {0}..
-        /// </summary>
-        internal static string StringMemberExtensions_NegativeLength {
-            get {
-                return ResourceManager.GetString("StringMemberExtensions_NegativeLength", resourceCulture);
             }
         }
         

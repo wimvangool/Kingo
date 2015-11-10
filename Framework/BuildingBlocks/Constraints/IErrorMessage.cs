@@ -6,15 +6,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// Represents a (formattable) error message.
     /// </summary>
     public interface IErrorMessage
-    {        
-        /// <summary>
-        /// Returns the value that did not satisfy a constraint.
-        /// </summary>
-        object Value
-        {
-            get;
-        }
-
+    {                
         /// <summary>
         /// Assigns an argument to this error message that will be used to format the message on a call to one of the
         /// <see cref="ToString(IFormatProvider)" /> overloads. If an argument with the same name was already set, it

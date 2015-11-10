@@ -5,7 +5,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{String}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraintBuilder{String}" />.
     /// </summary>
     public static partial class StringConstraints
     {                                                
@@ -30,7 +30,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, byte> IsByte<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, byte> IsByte<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsByte(member, DefaultByteNumberStyles, null, errorMessage);
         }
@@ -56,7 +56,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, byte> IsByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, byte> IsByte<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
         {
             return member.Apply(new StringIsByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -84,7 +84,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, sbyte> IsSByte<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, sbyte> IsSByte<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsSByte(member, DefaultSByteNumberStyles, null, errorMessage);
         }
@@ -110,7 +110,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, sbyte> IsSByte<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, sbyte> IsSByte<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsSByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -133,7 +133,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, char> IsChar<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, char> IsChar<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return member.Apply(new StringIsCharFilter().WithErrorMessage(errorMessage));
         }        
@@ -161,7 +161,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, short> IsInt16<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, short> IsInt16<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsInt16(member, DefaultInt16NumberStyles, null, errorMessage);
         }
@@ -187,7 +187,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, short> IsInt16<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, short> IsInt16<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsInt16Filter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -215,7 +215,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, int> IsInt32<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, int> IsInt32<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsInt32(member, DefaultInt32NumberStyles, null, errorMessage);
         }
@@ -241,7 +241,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, int> IsInt32<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, int> IsInt32<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsInt32Filter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -269,7 +269,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, long> IsInt64<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, long> IsInt64<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsInt64(member, DefaultInt64NumberStyles, null, errorMessage);
         }
@@ -295,7 +295,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, long> IsInt64<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, long> IsInt64<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsInt64Filter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -323,7 +323,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, float> IsSingle<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, float> IsSingle<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsSingle(member, DefaultSingleNumberStyles, null, errorMessage);
         }
@@ -349,7 +349,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, float> IsSingle<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, float> IsSingle<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsSingleFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -377,7 +377,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, double> IsDouble<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, double> IsDouble<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsDouble(member, DefaultDoubleNumberStyles, null, errorMessage);
         }
@@ -403,7 +403,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, double> IsDouble<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, double> IsDouble<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsDoubleFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        
@@ -431,7 +431,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, decimal> IsDecimal<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, decimal> IsDecimal<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return IsDecimal(member, DefaultDecimalNumberStyles, null, errorMessage);
         }
@@ -457,7 +457,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, decimal> IsDecimal<T>(this IMemberConstraint<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, decimal> IsDecimal<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
         {
             return member.Apply(new StringIsDecimalFilter(style, formatProvider).WithErrorMessage(errorMessage));
         }        

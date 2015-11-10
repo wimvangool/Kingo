@@ -4,74 +4,71 @@ namespace Kingo.BuildingBlocks.Constraints
 {
     internal sealed class MemberConstraintFactory<T, TValueIn, TValueOut> : IErrorMessageWriter<T>
     {
-        private readonly Member<T, TValueIn> _originalMember;
-        private readonly MemberByTransformation _transformedMember;
-        private readonly IMemberTransformation _transformation;
-        private readonly Func<T, IFilter<TValueIn, TValueOut>> _constraintFactory;        
+        private readonly MemberFactory<T, TValueIn> _memberFactory;               
+        private readonly Func<T, IMemberConstraint<TValueIn, TValueOut>> _memberConstraintFactory;        
 
-        internal MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IFilter<TValueIn, TValueOut>> constraintFactory)
-            : this(originalMember, constraintFactory, originalMember.EnableTransformation(), new MemberNameTransformation(null)) { }
-
-        private MemberConstraintFactory(Member<T, TValueIn> originalMember, Func<T, IFilter<TValueIn, TValueOut>> constraintFactory, MemberByTransformation transformedMember, IMemberTransformation transformation)
+        internal MemberConstraintFactory(MemberFactory<T, TValueIn> memberFactory, Func<T, IFilter<TValueIn, TValueOut>> constraintFactory)            
         {
-            _originalMember = originalMember;
-            _transformedMember = transformedMember;
-            _transformation = transformation;
-            _constraintFactory = constraintFactory;            
+            _memberFactory = memberFactory;            
+            _memberConstraintFactory = instance => new MemberConstraint<TValueIn, TValueOut>(constraintFactory.Invoke(instance));
+        }
+
+        private MemberConstraintFactory(MemberFactory<T, TValueIn> memberFactory, Func<T, IMemberConstraint<TValueIn, TValueOut>> memberConstraintFactory)
+        {
+            _memberFactory = memberFactory;           
+            _memberConstraintFactory = memberConstraintFactory;            
         }
 
         internal Member Member
         {
-            get { return _transformedMember; }
+            get { return _memberFactory; }
         }
 
-        internal Member<T, TValueOut> CreateChildMember()
+        internal MemberFactory<T, TValueOut> CreateChildMember()
         {
-            return _originalMember.CreateChildMember(_constraintFactory);
+            return _memberFactory.CreateChildMember(_memberConstraintFactory);            
         }        
 
-        internal MemberConstraintFactory<T, TValueIn, TResult> And<TResult>(Func<T, IFilter<TValueOut, TResult>> constraintFactory, IMemberTransformation nextTransformation)
+        internal MemberConstraintFactory<T, TValueIn, TResult> And<TResult>(Func<T, IFilter<TValueOut, TResult>> constraintFactory, MemberTransformer transformer)
         {
             if (constraintFactory == null)
             {
                 throw new ArgumentNullException("constraintFactory");
             }
-            var transformedMember = _transformation.Execute(_transformedMember, typeof(TValueOut));
-
-            return new MemberConstraintFactory<T, TValueIn, TResult>(_originalMember, message =>
+            Func<T, IMemberConstraint<TValueIn, TResult>> memberConstraintFactory = instance =>
             {
-                var left = _constraintFactory.Invoke(message);
-                var right = constraintFactory.Invoke(message);
+                var left = _memberConstraintFactory.Invoke(instance);
+                var right = new MemberConstraint<TValueOut, TResult>(constraintFactory.Invoke(instance), transformer);
 
                 return left.And(right);
-            }, transformedMember, nextTransformation);
-        }
+            };
+            return new MemberConstraintFactory<T, TValueIn, TResult>(_memberFactory, memberConstraintFactory);
+        }        
 
-        public bool WriteErrorMessages(T message, IErrorMessageReader reader)
+        #region [====== ErrorMessageWriter ======]
+
+        public bool WriteErrorMessages(T instance, IErrorMessageReader reader)
         {
-            if (message == null)
+            if (instance == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException("instance");
             }
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
             }            
-            var constraint = CreateConstraint(message);
-            var value = _originalMember.GetValue(message);
-            IErrorMessage errorMessage;
+            var constraint = CreateMemberConstraint(instance);
+            var member = _memberFactory.CreateMember(instance);
+            Member<TValueOut> transformedMember;
 
-            if (constraint.IsNotSatisfiedBy(value, out errorMessage))
-            {                
-                _transformedMember.WriteErrorMessageTo(reader, errorMessage);
-                return true;
-            }
-            return false;
+            return constraint.IsNotSatisfiedBy(member, reader, out transformedMember);
         }
 
-        private MemberConstraint<TValueIn, TValueOut> CreateConstraint(T message)
+        private IMemberConstraint<TValueIn, TValueOut> CreateMemberConstraint(T instance)
         {
-            return new MemberConstraint<TValueIn, TValueOut>(_transformedMember, _constraintFactory.Invoke(message));
-        }        
+            return _memberConstraintFactory.Invoke(instance);
+        }
+
+        #endregion
     }
 }

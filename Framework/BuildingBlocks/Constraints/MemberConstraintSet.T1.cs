@@ -17,12 +17,12 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             private readonly MemberConstraintSet<TOriginal> _parentSet;
             private readonly MemberConstraintSet<TResult> _childSet;
-            private readonly Member<TOriginal, TResult> _member;
+            private readonly MemberFactory<TOriginal, TResult> _member;
 
-            internal ChildConstraintSet(MemberConstraintSet<TOriginal> parentSet, Member<TOriginal, TResult> member)
+            internal ChildConstraintSet(MemberConstraintSet<TOriginal> parentSet, MemberFactory<TOriginal, TResult> member)
             {
                 _parentSet = parentSet;
-                _childSet = new MemberConstraintSet<TResult>(_parentSet._haltOnFirstError, parentSet._parentNames.Add(member.Name));
+                _childSet = new MemberConstraintSet<TResult>(_parentSet._haltOnFirstError, member.NameComponentStack);
                 _childSet.ConstraintRemoved += HandleConstraintRemoved;
                 _childSet.ConstraintAdded += HandleConstraintAdded;
                 _member = member;
@@ -45,7 +45,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             #region [====== VerifyThatInstance ======]
 
-            IMemberConstraint<TResult, TResult> IMemberConstraintSet<TResult>.VerifyThatInstance()
+            IMemberConstraintBuilder<TResult, TResult> IMemberConstraintSet<TResult>.VerifyThatInstance()
             {
                 return _childSet.VerifyThatInstance();
             }
@@ -54,77 +54,39 @@ namespace Kingo.BuildingBlocks.Constraints
 
             #region [====== VerifyThat ======]
 
-            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Expression<Func<TResult, TValue>> fieldOrPropertyExpression)
+            IMemberConstraintBuilder<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Expression<Func<TResult, TValue>> fieldOrPropertyExpression)
             {
                 return _childSet.VerifyThat(fieldOrPropertyExpression);
             }
 
-            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> fieldOrProperty, string fieldOrPropertyName)
+            IMemberConstraintBuilder<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> fieldOrProperty, string fieldOrPropertyName)
             {
                 return _childSet.VerifyThat(fieldOrProperty, fieldOrPropertyName);
             }
 
-            IMemberConstraint<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> fieldOrProperty, Identifier fieldOrPropertyName)
+            IMemberConstraintBuilder<TResult, TValue> IMemberConstraintSet<TResult>.VerifyThat<TValue>(Func<TResult, TValue> fieldOrProperty, Identifier fieldOrPropertyName)
             {
                 return _childSet.VerifyThat(fieldOrProperty, fieldOrPropertyName);
             }
 
-            #endregion
-
-            #region [====== VerifyThatCollection ======]
-
-            IMemberConstraint<TResult, IEnumerable<TValue>> IMemberConstraintSet<TResult>.VerifyThatCollection<TValue>(Expression<Func<TResult, IEnumerable<TValue>>> fieldOrProperty)
-            {
-                return _childSet.VerifyThatCollection(fieldOrProperty);
-            }
-
-            IMemberConstraint<TResult, IEnumerable<TValue>> IMemberConstraintSet<TResult>.VerifyThatCollection<TValue>(Func<TResult, IEnumerable<TValue>> fieldOrProperty, string fieldOrPropertyName)
-            {
-                return _childSet.VerifyThatCollection(fieldOrProperty, fieldOrPropertyName);
-            }
-
-            IMemberConstraint<TResult, IEnumerable<TValue>> IMemberConstraintSet<TResult>.VerifyThatCollection<TValue>(Func<TResult, IEnumerable<TValue>> fieldOrProperty, Identifier fieldOrPropertyName)
-            {
-                return _childSet.VerifyThatCollection(fieldOrProperty, fieldOrPropertyName);
-            }            
-
-            #endregion
-
-            #region [====== VerifyThatDictionary ======]
-
-            IMemberConstraint<TResult, IReadOnlyDictionary<TKey, TValue>> IMemberConstraintSet<TResult>.VerifyThatCollection<TKey, TValue>(Expression<Func<TResult, IReadOnlyDictionary<TKey, TValue>>> fieldOrProperty)
-            {
-                return _childSet.VerifyThatCollection(fieldOrProperty);
-            }
-
-            IMemberConstraint<TResult, IReadOnlyDictionary<TKey, TValue>> IMemberConstraintSet<TResult>.VerifyThatCollection<TKey, TValue>(Func<TResult, IReadOnlyDictionary<TKey, TValue>> fieldOrProperty, string fieldOrPropertyName)
-            {
-                return _childSet.VerifyThatCollection(fieldOrProperty, fieldOrPropertyName);
-            }
-
-            IMemberConstraint<TResult, IReadOnlyDictionary<TKey, TValue>> IMemberConstraintSet<TResult>.VerifyThatCollection<TKey, TValue>(Func<TResult, IReadOnlyDictionary<TKey, TValue>> fieldOrProperty, Identifier fieldOrPropertyName)
-            {
-                return _childSet.VerifyThatCollection(fieldOrProperty, fieldOrPropertyName);
-            }
-
-            #endregion
+            #endregion            
 
             #region [====== WriteErrorMessages ======]
 
             public bool WriteErrorMessages(TOriginal item, IErrorMessageReader reader)
             {
-                return _childSet.WriteErrorMessages(_member.GetValue(item), reader);
+                return _childSet.WriteErrorMessages(_member.CreateMember(item).Value, reader);
             }
 
             #endregion            
         }
 
-        private sealed class ChildConstraint<TOriginal, TResult> : IMemberConstraint<TOriginal>
+        private sealed class ChildConstraint<TOriginal, TResult> : IMemberConstraintBuilder<TOriginal>
         {
-            private readonly IMemberConstraint<TResult> _childMemberConstraint;
-            private readonly Member<TOriginal, TResult> _member;
+            private readonly IMemberConstraintBuilder<TResult> _childMemberConstraint;
+            private readonly MemberFactory<TOriginal, TResult> _member;
 
-            internal ChildConstraint(IMemberConstraint<TResult> childMemberConstraint, Member<TOriginal, TResult> member)
+            internal ChildConstraint(IMemberConstraintBuilder<TResult> childMemberConstraint, MemberFactory<TOriginal, TResult> member)
             {
                 _childMemberConstraint = childMemberConstraint;
                 _member = member;
@@ -137,16 +99,16 @@ namespace Kingo.BuildingBlocks.Constraints
 
             public bool WriteErrorMessages(TOriginal item, IErrorMessageReader reader)
             {
-                return _childMemberConstraint.WriteErrorMessages(_member.GetValue(item), reader);
+                return _childMemberConstraint.WriteErrorMessages(_member.CreateMember(item).Value, reader);
             }
         }
 
         #endregion
 
-        private readonly LinkedList<IMemberConstraint<T>> _instanceConstraints;
-        private readonly Dictionary<string, LinkedList<IMemberConstraint<T>>> _membersConstraints;
+        private readonly LinkedList<IMemberConstraintBuilder<T>> _instanceConstraints;
+        private readonly Dictionary<string, LinkedList<IMemberConstraintBuilder<T>>> _membersConstraints;
         private readonly Dictionary<string, IErrorMessageWriter<T>> _childConstraintSets;
-        private readonly string[] _parentNames;
+        private readonly MemberNameComponentStack _parentNameStack;
         private readonly bool _haltOnFirstError;
 
         /// <summary>
@@ -156,14 +118,14 @@ namespace Kingo.BuildingBlocks.Constraints
         /// Indicates whether or not this constraint set should stop evaluating constraints once a constraint has failed.
         /// </param>
         public MemberConstraintSet(bool haltOnFirstError = false)
-            : this(haltOnFirstError, new string[0]) { }
+            : this(haltOnFirstError, new EmptyStack()) { }
         
-        private MemberConstraintSet(bool haltOnFirstError, string[] parentNames)
+        private MemberConstraintSet(bool haltOnFirstError, MemberNameComponentStack parentNameStack)
         {
-            _instanceConstraints = new LinkedList<IMemberConstraint<T>>();
-            _membersConstraints = new Dictionary<string, LinkedList<IMemberConstraint<T>>>();
+            _instanceConstraints = new LinkedList<IMemberConstraintBuilder<T>>();
+            _membersConstraints = new Dictionary<string, LinkedList<IMemberConstraintBuilder<T>>>();
             _childConstraintSets = new Dictionary<string, IErrorMessageWriter<T>>();
-            _parentNames = parentNames;
+            _parentNameStack = parentNameStack;
             _haltOnFirstError = haltOnFirstError;
         }
 
@@ -183,7 +145,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== ChildMemberConstraints ======]
 
-        internal void AddChildMemberConstraints<TResult>(Action<IMemberConstraintSet<TResult>> innerConstraintFactory, Member<T, TResult> member)
+        internal void AddChildMemberConstraints<TResult>(Action<IMemberConstraintSet<TResult>> innerConstraintFactory, MemberFactory<T, TResult> member)
         {
             if (innerConstraintFactory == null)
             {
@@ -193,7 +155,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             innerConstraintFactory.Invoke(childConstraintSet);
 
-            _childConstraintSets.Add(member.Key, childConstraintSet);            
+            _childConstraintSets.Add(member.FullName, childConstraintSet);            
         }        
 
         #endregion
@@ -201,9 +163,9 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== VerifyThatInstance ======]
 
         /// <inheritdoc />
-        public IMemberConstraint<T, T> VerifyThatInstance()
+        public IMemberConstraintBuilder<T, T> VerifyThatInstance()
         {
-            return AddNullConstraintFor(new Member<T, T>(_parentNames, null, message => message));
+            return AddNullConstraintFor(new MemberFactory<T, T>(_parentNameStack, message => message));
         }
 
         #endregion
@@ -211,78 +173,24 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== VerifyThat ======]
 
         /// <inheritdoc />
-        public IMemberConstraint<T, TValue> VerifyThat<TValue>(Expression<Func<T, TValue>> fieldOrProperty)
+        public IMemberConstraintBuilder<T, TValue> VerifyThat<TValue>(Expression<Func<T, TValue>> fieldOrProperty)
         {
-            if (fieldOrProperty == null)
-            {
-                throw new ArgumentNullException("fieldOrProperty");
-            }
-            return VerifyThat(fieldOrProperty.Compile(), fieldOrProperty.ExtractMemberName());
+            return new MemberConstraintExpression<T, TValue>(this, fieldOrProperty);
         }
 
         /// <inheritdoc />
-        public IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> fieldOrProperty, string fieldOrPropertyName)
+        public IMemberConstraintBuilder<T, TValue> VerifyThat<TValue>(Func<T, TValue> fieldOrProperty, string fieldOrPropertyName)
         {
             return VerifyThat(fieldOrProperty, Identifier.ParseOrNull(fieldOrPropertyName));
         }
 
         /// <inheritdoc />
-        public IMemberConstraint<T, TValue> VerifyThat<TValue>(Func<T, TValue> fieldOrProperty, Identifier fieldOrPropertyName)
+        public IMemberConstraintBuilder<T, TValue> VerifyThat<TValue>(Func<T, TValue> fieldOrProperty, Identifier fieldOrPropertyName)
         {
             return AddNullConstraintFor(fieldOrProperty, fieldOrPropertyName);            
         }
 
-        #endregion
-
-        #region [====== VerifyThatCollection (IEnumerable<>) ======]
-
-        public IMemberConstraint<T, IEnumerable<TValue>> VerifyThatCollection<TValue>(Expression<Func<T, IEnumerable<TValue>>> fieldOrProperty)
-        {
-            if (fieldOrProperty == null)
-            {
-                throw new ArgumentNullException("fieldOrProperty");
-            }
-            return VerifyThatCollection(fieldOrProperty.Compile(), fieldOrProperty.ExtractMemberName());
-        }
-
-        public IMemberConstraint<T, IEnumerable<TValue>> VerifyThatCollection<TValue>(Func<T, IEnumerable<TValue>> fieldOrProperty, string fieldOrPropertyName)
-        {
-            return VerifyThatCollection(fieldOrProperty, Identifier.ParseOrNull(fieldOrPropertyName));
-        }
-
-        public IMemberConstraint<T, IEnumerable<TValue>> VerifyThatCollection<TValue>(Func<T, IEnumerable<TValue>> fieldOrProperty, Identifier fieldOrPropertyName)
-        {
-            if (fieldOrProperty == null)
-            {
-                throw new ArgumentNullException("fieldOrProperty");
-            }            
-            return AddNullConstraintFor(fieldOrProperty, fieldOrPropertyName);
-        }
-       
-        #endregion
-
-        #region [====== VerifyThatDCollection (IReadOnlyDictionary<,>) ======]
-
-        public IMemberConstraint<T, IReadOnlyDictionary<TKey, TValue>> VerifyThatCollection<TKey, TValue>(Expression<Func<T, IReadOnlyDictionary<TKey, TValue>>> fieldOrProperty)
-        {
-            if (fieldOrProperty == null)
-            {
-                throw new ArgumentNullException("fieldOrProperty");
-            }
-            return VerifyThatCollection(fieldOrProperty.Compile(), fieldOrProperty.ExtractMemberName());
-        }
-
-        public IMemberConstraint<T, IReadOnlyDictionary<TKey, TValue>> VerifyThatCollection<TKey, TValue>(Func<T, IReadOnlyDictionary<TKey, TValue>> fieldOrProperty, string fieldOrPropertyName)
-        {
-            return VerifyThatCollection(fieldOrProperty, Identifier.ParseOrNull(fieldOrPropertyName));
-        }
-
-        public IMemberConstraint<T, IReadOnlyDictionary<TKey, TValue>> VerifyThatCollection<TKey, TValue>(Func<T, IReadOnlyDictionary<TKey, TValue>> fieldOrProperty, Identifier fieldOrPropertyName)
-        {
-            return AddNullConstraintFor(fieldOrProperty, fieldOrPropertyName);
-        }        
-
-        #endregion
+        #endregion        
 
         #region [====== Add, Remove & Replace ======]
 
@@ -297,7 +205,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="oldConstraint"/> and <paramref name="newConstraint"/> do not have the same name.
         /// </exception>
-        protected internal void Replace(IMemberConstraint<T> oldConstraint, IMemberConstraint<T> newConstraint)
+        protected internal void Replace(IMemberConstraintBuilder<T> oldConstraint, IMemberConstraintBuilder<T> newConstraint)
         {
             if (ReferenceEquals(oldConstraint, null))
             {
@@ -342,19 +250,19 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        protected bool Remove(IMemberConstraint<T> constraint)
+        protected bool Remove(IMemberConstraintBuilder<T> constraint)
         {
             return Remove(constraint, true);
         }
 
-        private bool Remove(IMemberConstraint<T> constraint, bool removeEmptyList)
+        private bool Remove(IMemberConstraintBuilder<T> constraint, bool removeEmptyList)
         {
             if (constraint == null)
             {
                 throw new ArgumentNullException("constraint");
             }
-            var memberKey = constraint.Member.Key;
-            if (memberKey == null)
+            var memberKey = constraint.Member.FullName;
+            if (memberKey.Length == 0)
             {
                 if (_instanceConstraints.Remove(constraint))
                 {
@@ -364,7 +272,7 @@ namespace Kingo.BuildingBlocks.Constraints
             }
             else
             {
-                LinkedList<IMemberConstraint<T>> existingConstraints;
+                LinkedList<IMemberConstraintBuilder<T>> existingConstraints;
 
                 if (_membersConstraints.TryGetValue(memberKey, out existingConstraints) && existingConstraints.Remove(constraint))
                 {
@@ -396,16 +304,16 @@ namespace Kingo.BuildingBlocks.Constraints
             ConstraintAdded.Raise(this, arguments);
         }
 
-        private IMemberConstraint<T, TValue> AddNullConstraintFor<TValue>(Func<T, TValue> valueFactory, Identifier name)
+        private IMemberConstraintBuilder<T, TValue> AddNullConstraintFor<TValue>(Func<T, TValue> valueFactory, Identifier name)
         {
-            return AddNullConstraintFor(new Member<T, TValue>(_parentNames, name.ToString(), valueFactory));
+            return AddNullConstraintFor(new MemberFactory<T, TValue>(_parentNameStack.Push(name), valueFactory));
         }
 
-        private IMemberConstraint<T, TValue> AddNullConstraintFor<TValue>(Member<T, TValue> member)
+        private IMemberConstraintBuilder<T, TValue> AddNullConstraintFor<TValue>(MemberFactory<T, TValue> member)
         {
             Func<T, IFilter<TValue, TValue>> nullConstraint = message => new NullConstraint<TValue>().MapInputToOutput();
             var memberConstraintFactory = new MemberConstraintFactory<T, TValue, TValue>(member, nullConstraint);
-            var memberConstraint = new MemberConstraint<T, TValue, TValue>(this, memberConstraintFactory);
+            var memberConstraint = new MemberConstraintBuilder<T, TValue, TValue>(this, memberConstraintFactory);
 
             Add(memberConstraint);
 
@@ -419,13 +327,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>        
-        protected void Add(IMemberConstraint<T> constraint)
+        protected void Add(IMemberConstraintBuilder<T> constraint)
         {
             if (constraint == null)
             {
                 throw new ArgumentNullException("constraint");
             }
-            var memberKey = constraint.Member.Key;
+            var memberKey = constraint.Member.FullName;
             var existingConstraints = GetOrAddConstraintListFor(memberKey);
 
             existingConstraints.AddLast(constraint);
@@ -433,17 +341,17 @@ namespace Kingo.BuildingBlocks.Constraints
             OnConstraintAdded(new MemberConstraintEventArgs<T>(constraint));
         }
  
-        private LinkedList<IMemberConstraint<T>> GetOrAddConstraintListFor(string memberKey)
+        private LinkedList<IMemberConstraintBuilder<T>> GetOrAddConstraintListFor(string memberKey)
         {
-            if (memberKey == null)
+            if (memberKey.Length == 0)
             {
                 return _instanceConstraints; ;
             }
-            LinkedList<IMemberConstraint<T>> existingConstraints;
+            LinkedList<IMemberConstraintBuilder<T>> existingConstraints;
 
             if (!_membersConstraints.TryGetValue(memberKey, out existingConstraints))
             {
-                _membersConstraints.Add(memberKey, existingConstraints = new LinkedList<IMemberConstraint<T>>());
+                _membersConstraints.Add(memberKey, existingConstraints = new LinkedList<IMemberConstraintBuilder<T>>());
             }
             return existingConstraints;
         }

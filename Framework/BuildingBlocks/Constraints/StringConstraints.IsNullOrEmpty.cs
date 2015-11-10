@@ -4,7 +4,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{String}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraintBuilder{String}" />.
     /// </summary>
     public static partial class StringConstraints
     {
@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNotNullOrEmpty<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, string> IsNotNullOrEmpty<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return member.Apply(new StringIsNotNullOrEmptyConstraint().WithErrorMessage(errorMessage));
         }
@@ -47,7 +47,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraint<T, string> IsNullOrEmpty<T>(this IMemberConstraint<T, string> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, string> IsNullOrEmpty<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
         {
             return member.Apply(new StringIsNullOrEmptyConstraint().WithErrorMessage(errorMessage));
         }

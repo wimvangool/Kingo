@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraintBuilder{T}" />.
     /// </summary>
     public static partial class BasicConstraints
     {
@@ -19,7 +19,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="memberExpression"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TMember> Select<T, TValueOut, TMember>(this IMemberConstraint<T, TValueOut> member, Expression<Func<TValueOut, TMember>> memberExpression)
+        public static IMemberConstraintBuilder<T, TMember> Select<T, TValueOut, TMember>(this IMemberConstraintBuilder<T, TValueOut> member, Expression<Func<TValueOut, TMember>> memberExpression)
         {
             if (member == null)
             {
@@ -41,7 +41,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="memberName"/> is not a valid identifier.
         /// </exception>
-        public static IMemberConstraint<T, TMember> Select<T, TValueOut, TMember>(this IMemberConstraint<T, TValueOut> member, Func<TValueOut, TMember> memberDelegate, string memberName)
+        public static IMemberConstraintBuilder<T, TMember> Select<T, TValueOut, TMember>(this IMemberConstraintBuilder<T, TValueOut> member, Func<TValueOut, TMember> memberDelegate, string memberName)
         {
             if (member == null)
             {
@@ -60,7 +60,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/>, <paramref name="memberDelegate"/> or <paramref name="memberName" /> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TMember> Select<T, TValueOut, TMember>(this IMemberConstraint<T, TValueOut> member, Func<TValueOut, TMember> memberDelegate, Identifier memberName)
+        public static IMemberConstraintBuilder<T, TMember> Select<T, TValueOut, TMember>(this IMemberConstraintBuilder<T, TValueOut> member, Func<TValueOut, TMember> memberDelegate, Identifier memberName)
         {
             if (member == null)
             {
@@ -78,11 +78,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </summary>
         /// <param name="member">The member to apply the constraint to.</param>
         /// <param name="constraint">The constraint to apply.</param>                
-        /// <returns>A <see cref="IMemberConstraint{T}" /> that has applied the specified <paramref name="constraint"/>.</returns>
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> that has applied the specified <paramref name="constraint"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraint<T, TValueOut> member, IConstraint<TValueOut> constraint)
+        public static IMemberConstraintBuilder<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraintBuilder<T, TValueOut> member, IConstraint<TValueOut> constraint)
         {
             return EnsureNotNull(member).Satisfies(constraint);
         }
@@ -92,11 +92,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// </summary>
         /// <param name="member">The member to apply the constraint to.</param>
         /// <param name="constraintFactory">A delegate used to create the constraint to apply.</param>                
-        /// <returns>A <see cref="IMemberConstraint{T}" /> that has applied the specified <paramref name="constraintFactory"/>.</returns>
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> that has applied the specified <paramref name="constraintFactory"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraintFactory"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraint<T, TValueOut> member, Func<T, IConstraint<TValueOut>> constraintFactory)
+        public static IMemberConstraintBuilder<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraintBuilder<T, TValueOut> member, Func<T, IConstraint<TValueOut>> constraintFactory)
         {
             return EnsureNotNull(member).Satisfies(constraintFactory);
         }
@@ -105,30 +105,28 @@ namespace Kingo.BuildingBlocks.Constraints
         /// Applies the specified <paramref name="constraint"/>.
         /// </summary>
         /// <param name="member">The member to apply the constraint to.</param>
-        /// <param name="constraint">The constraint to apply.</param>        
-        /// <param name="nameSelector">Optional delegate used to convert the current member's name to a new name.</param>
-        /// <returns>A <see cref="IMemberConstraint{T}" /> that has applied the specified <paramref name="constraint"/>.</returns>
+        /// <param name="constraint">The constraint to apply.</param>                
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> that has applied the specified <paramref name="constraint"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraint<T, TValueOut> member, IFilter<TValueOut, TOther> constraint, Func<string, string> nameSelector = null)
+        public static IMemberConstraintBuilder<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraintBuilder<T, TValueOut> member, IFilter<TValueOut, TOther> constraint)
         {
-            return EnsureNotNull(member).Satisfies(constraint, nameSelector);
+            return EnsureNotNull(member).Satisfies(constraint);
         }
 
         /// <summary>
         /// Applies the constraint that is created by the specified <paramref name="constraintFactory"/>.
         /// </summary>
         /// <param name="member">The member to apply the constraint to.</param>
-        /// <param name="constraintFactory">A delegate used to create the constraint to apply.</param>        
-        /// <param name="nameSelector">Optional delegate used to convert the current member's name to a new name.</param>
-        /// <returns>A <see cref="IMemberConstraint{T}" /> that has applied the specified <paramref name="constraintFactory"/>.</returns>
+        /// <param name="constraintFactory">A delegate used to create the constraint to apply.</param>                
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> that has applied the specified <paramref name="constraintFactory"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraintFactory"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraint<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraint<T, TValueOut> member, Func<T, IFilter<TValueOut, TOther>> constraintFactory, Func<string, string> nameSelector = null)
+        public static IMemberConstraintBuilder<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraintBuilder<T, TValueOut> member, Func<T, IFilter<TValueOut, TOther>> constraintFactory)
         {
-            return EnsureNotNull(member).Satisfies(constraintFactory, nameSelector);
+            return EnsureNotNull(member).Satisfies(constraintFactory);
         }
 
         private static TMember EnsureNotNull<TMember>(TMember member) where TMember : class

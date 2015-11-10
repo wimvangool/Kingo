@@ -223,20 +223,11 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element at index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element at {constraint.Indices}..
         /// </summary>
         internal static string CollectionConstraints_ElementAt {
             get {
                 return ResourceManager.GetString("CollectionConstraints_ElementAt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element with key &apos;{constraint.Key}&apos;..
-        /// </summary>
-        internal static string CollectionConstraints_ElementAt_Dictionary {
-            get {
-                return ResourceManager.GetString("CollectionConstraints_ElementAt_Dictionary", resourceCulture);
             }
         }
         
@@ -259,20 +250,11 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) does contain an element index {constraint.Index}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) does contain an element at {constraint.Indices}..
         /// </summary>
         internal static string CollectionConstraints_NoElementAt {
             get {
                 return ResourceManager.GetString("CollectionConstraints_NoElementAt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) does contain an element with key &apos;{constraint.Key}&apos;..
-        /// </summary>
-        internal static string CollectionConstraints_NoElementAt_Dictionary {
-            get {
-                return ResourceManager.GetString("CollectionConstraints_NoElementAt_Dictionary", resourceCulture);
             }
         }
         

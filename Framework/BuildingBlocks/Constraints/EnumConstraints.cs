@@ -5,7 +5,7 @@ using Kingo.BuildingBlocks.Resources;
 namespace Kingo.BuildingBlocks.Constraints
 {
     /// <summary>
-    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraint{T, TValue}" />.
+    /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraintBuilder{T, TValue}" />.
     /// </summary>
     public static class EnumConstraints
     {
@@ -26,7 +26,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<T, TValue> IsInRangeOfValidValues<T, TValue>(this IMemberConstraint<T, TValue> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsInRangeOfValidValues<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, string errorMessage = null)
             where TValue : struct
         {
             return member.Apply(new EnumIsInRangeOfValidValuesConstraint<TValue>().WithErrorMessage(errorMessage));
@@ -85,7 +85,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<T, TValue> IsDefined<T, TValue>(this IMemberConstraint<T, TValue> member, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> IsDefined<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, string errorMessage = null)
             where TValue : struct
         {
             return member.Apply(new EnumIsDefinedConstraint<TValue>().WithErrorMessage(errorMessage));
@@ -132,7 +132,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="flag"/> is not an Enum type or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraint<T, TValue> HasFlag<T, TValue>(this IMemberConstraint<T, TValue> member, TValue flag, string errorMessage = null)
+        public static IMemberConstraintBuilder<T, TValue> HasFlag<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue flag, string errorMessage = null)
             where TValue : struct
         {
             return member.Apply(new EnumHasFlagConstraint<TValue>(flag).WithErrorMessage(errorMessage));

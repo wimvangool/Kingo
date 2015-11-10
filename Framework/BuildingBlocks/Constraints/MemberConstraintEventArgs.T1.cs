@@ -12,7 +12,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <summary>
         /// The member constraint that was added or removed.
         /// </summary>
-        public readonly IMemberConstraint<T> MemberConstraint;
+        public readonly IMemberConstraintBuilder<T> MemberConstraint;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemberConstraintEventArgs{T}" /> class.
@@ -21,7 +21,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="memberConstraint"/> is <c>null</c>.
         /// </exception>
-        public MemberConstraintEventArgs(IMemberConstraint<T> memberConstraint)
+        public MemberConstraintEventArgs(IMemberConstraintBuilder<T> memberConstraint)
         {
             if (memberConstraint == null)
             {

@@ -8,18 +8,15 @@ namespace Kingo.BuildingBlocks.Constraints
         private const string _Name = "Value";
 
         private readonly IConstraintWithErrorMessage _failedConstraint;
+        private readonly object _value;
         private readonly Lazy<Type> _type;
 
-        internal DefaultMember(IConstraintWithErrorMessage failedConstraint)
+        internal DefaultMember(IConstraintWithErrorMessage failedConstraint, object value)
         {
             _failedConstraint = failedConstraint;
+            _value = value;
             _type = new Lazy<Type>(DetermineType);
-        }
-
-        public string Key
-        {
-            get { return _Name; }
-        }
+        }        
 
         public string FullName
         {
@@ -36,15 +33,24 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return _type.Value; }
         }
 
+        public object Value
+        {
+            get { return _value; }
+        }
+
         private Type DetermineType()
         {
-            Type interfaceType;
-
-            if (TryGetImplementedConstraintInterface(_failedConstraint.GetType(), out interfaceType))
+            if (_value == null)
             {
-                return interfaceType.GetGenericArguments()[0];
+                Type interfaceType;
+
+                if (TryGetImplementedConstraintInterface(_failedConstraint.GetType(), out interfaceType))
+                {
+                    return interfaceType.GetGenericArguments()[0];
+                }
+                return typeof(object);
             }
-            return typeof(object);
+            return _value.GetType();
         }
 
         private static bool TryGetImplementedConstraintInterface(Type constraintType, out Type interfaceType)

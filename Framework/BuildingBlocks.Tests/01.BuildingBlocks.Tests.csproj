@@ -90,7 +90,7 @@
     <Compile Include="Messaging\MessageTest.cs" />
     <Compile Include="Messaging\RequiredValueMessage.T1.cs" />
     <Compile Include="StringTemplateTest.cs" />
-    <Compile Include="Constraints\CollectionConstraintsTest.ElementAt.cs" />
+    <Compile Include="Constraints\CollectionConstraintsTest.HasItem.cs" />
     <Compile Include="Constraints\ComparerStub.T1.cs" />
     <Compile Include="Constraints\CollectionConstraintsTest.IsNullOrEmpty.cs" />
     <Compile Include="Constraints\EqualityComparerStub.T1.cs" />

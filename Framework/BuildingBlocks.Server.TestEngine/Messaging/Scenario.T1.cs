@@ -280,8 +280,8 @@ namespace Kingo.BuildingBlocks.Messaging
         /// <summary>
         /// Returns the number of published domain events that can be verified with a fluent syntax.
         /// </summary>
-        /// <returns>A <see cref="IMemberConstraint{T}" /> that can be used to verify the number of published domain events.</returns>        
-        protected IMemberConstraint<Scenario<TMessage>, int> VerifyThatDomainEventCount()
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> that can be used to verify the number of published domain events.</returns>        
+        protected IMemberConstraintBuilder<Scenario<TMessage>, int> VerifyThatDomainEventCount()
         {
             return _memberSet.VerifyThat(scenario => scenario._publishedEvents.Count, "DomainEventCount");
         }        
@@ -290,24 +290,24 @@ namespace Kingo.BuildingBlocks.Messaging
         /// Returns the published domain event at the specified index that can be verified with a fluent syntax.
         /// </summary>
         /// <param name="index">The index of the published event.</param>
-        /// <returns>A <see cref="IMemberConstraint{T}" /> that can be used to verify the event.</returns>
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> that can be used to verify the event.</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> does not point to a valid index.
         /// </exception>
         [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
-        protected IMemberConstraint<Scenario<TMessage>, object> VerifyThatDomainEventAtIndex(int index)
+        protected IMemberConstraintBuilder<Scenario<TMessage>, object> VerifyThatDomainEventAtIndex(int index)
         {
             return _memberSet.VerifyThat(scenario => scenario.GetDomainEventAt(index), string.Format("DomainEvent[{0}]", index));
         }        
 
         /// <summary>
         /// Verifies that an <see cref="Exception" /> of the specified type (<typeparamref name="TException"/>) was thrown
-        /// and returns an instance of this <see cref="Exception" /> in the form of a <see cref="IMemberConstraint{TValue}" /> such that
+        /// and returns an instance of this <see cref="Exception" /> in the form of a <see cref="IMemberConstraintBuilder{TValue}" /> such that
         /// more details about this exception can be verified.
         /// </summary>
         /// <typeparam name="TException">Type of the expected exception.</typeparam>
-        /// <returns>A <see cref="IMemberConstraint{TValue}" /> referring to the exception that was thrown.</returns>
-        protected IMemberConstraint<Scenario<TMessage>, TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
+        /// <returns>A <see cref="IMemberConstraintBuilder{TValue}" /> referring to the exception that was thrown.</returns>
+        protected IMemberConstraintBuilder<Scenario<TMessage>, TException> VerifyThatExceptionIsA<TException>() where TException : FunctionalException
         {            
             return _memberSet.VerifyThat(scenario => scenario._exception, "ExpectedException")
                 .IsNotNull(StringTemplate.Parse(ErrorMessages.Scenario_NoExceptionWasThrown).Format("type", typeof(TException)).ToString())              

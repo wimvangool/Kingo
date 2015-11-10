@@ -117,14 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CollectionConstraints_IndexOutOfRange" xml:space="preserve">
-    <value>The specified index is outside the rangeof valid values: {0}.</value>
-  </data>
   <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
     <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>
   </data>
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
+  </data>
+  <data name="HasItemFilter_IndexerNotFound" xml:space="preserve">
+    <value>Instance of type '{0}' does not contain an indexer with argument types '[{1}]'.</value>
   </data>
   <data name="Identifier_EmptyIdentifier" xml:space="preserve">
     <value>Cannot create an empty identifier.</value>
@@ -132,8 +132,8 @@
   <data name="Identifier_InvalidIdentifier" xml:space="preserve">
     <value>Invalid identifier specified: '{0}'.</value>
   </data>
-  <data name="Member_ConstraintFailed" xml:space="preserve">
-    <value>Could not obtain value of child member because the constraint that provides this value failed: {0}</value>
+  <data name="IndexList_EmptyList" xml:space="preserve">
+    <value>The specified list of indices cannot be empty.</value>
   </data>
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>
@@ -144,9 +144,6 @@
   <data name="ReadOnlyDictionary_KeyNotFound" xml:space="preserve">
     <value>The specified key '{0}' is not a valid index for this collection.</value>
   </data>
-  <data name="RequiredAttribute_InvalidStringConstraint" xml:space="preserve">
-    <value>Invalid value for StringConstraint specified: {0}.</value>
-  </data>
   <data name="Scope_CannotCompleteScope" xml:space="preserve">
     <value>Cannot complete this scope because it is not the current scope.</value>
   </data>
@@ -155,9 +152,6 @@
   </data>
   <data name="Scope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
-  </data>
-  <data name="StringMemberExtensions_NegativeLength" xml:space="preserve">
-    <value>A length cannot be negative: {0}.</value>
   </data>
   <data name="StringTemplateVariable_MemberNotFound" xml:space="preserve">
     <value>Instance of type '{0}' does not contain public field or property '{1}'.</value>

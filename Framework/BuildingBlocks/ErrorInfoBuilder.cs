@@ -110,14 +110,13 @@ namespace Kingo.BuildingBlocks
         }
 
         /// <summary>
-        /// Converts the specified list of <paramref name="errorMessages"/> to a single error message.
-        /// The list is guaranteed not to be empty.
+        /// Converts the specified list of <paramref name="errorMessages"/> to a single error message.        
         /// </summary>
         /// <param name="errorMessages">A list of error messages.</param>
         /// <returns>A single error message.</returns>
         protected virtual string ConvertToSingleErrorMessage(IList<string> errorMessages)
         {
-            return errorMessages[0];
+            return errorMessages.Count == 0 ? null : errorMessages[0];
         }
 
         /// <summary>
