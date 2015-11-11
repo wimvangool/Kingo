@@ -82,6 +82,8 @@
     <Compile Include="Constraints\PushIndexListTransformer.cs" />
     <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="EnumOperators.T1.cs" />
+    <Compile Include="ErrorInheritanceLevel.cs" />
+    <Compile Include="ErrorMessageReader.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />
@@ -93,15 +95,15 @@
     <Compile Include="Constraints\Constraint.cs" />
     <Compile Include="Constraints\Constraint.T1.cs" />
     <Compile Include="Constraints\Filter.T2.cs" />
-    <Compile Include="Constraints\ErrorMessage.cs" />
+    <Compile Include="Constraints\ErrorMessageBuilder.cs" />
     <Compile Include="Constraints\IConstraint.T1.cs" />
     <Compile Include="Constraints\IFilter.T2.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
     <Compile Include="Constraints\IFilterWithErrorMessage.T2.cs" />
-    <Compile Include="Constraints\IErrorMessage.cs" />
-    <Compile Include="Constraints\IErrorMessageReader.cs" />
-    <Compile Include="Constraints\IErrorMessageWriter.T1.cs" />
+    <Compile Include="IErrorMessageBuilder.cs" />
+    <Compile Include="IErrorMessageReader.cs" />
+    <Compile Include="IErrorMessageWriter.T1.cs" />
     <Compile Include="Constraints\IMemberConstraintBuilder.T2.cs" />
     <Compile Include="Constraints\InputToOutputMapper.T1.cs" />
     <Compile Include="Constraints\BasicConstraints.IsEqualTo.cs" />
@@ -131,6 +133,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ErrorMessages.resx</DependentUpon>
     </Compile>
+    <Compile Include="SortedErrorMessageList.cs" />
     <Compile Include="StringTemplate.cs" />
     <Compile Include="StringTemplateComponent.cs" />
     <Compile Include="StringTemplateLiteral.cs" />

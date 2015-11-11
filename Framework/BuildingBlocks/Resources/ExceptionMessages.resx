@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Comparable_IncomparableType" xml:space="preserve">
+    <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'.</value>
+  </data>
   <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
     <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>
+  </data>
+  <data name="ErrorLevel_InvalidErrorLevel" xml:space="preserve">
+    <value>ErrorLevel must be 0 or higher: {0}.</value>
   </data>
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>

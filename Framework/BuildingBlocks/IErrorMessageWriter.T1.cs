@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.BuildingBlocks.Constraints
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
     /// When implemented by a class, represents a producer of error messages.

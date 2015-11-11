@@ -2,18 +2,22 @@
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class MemberExceptionFactory : IErrorMessageReader
+    internal sealed class MemberExceptionFactory : ErrorMessageReader
     {
-        private string _errorMessage;
+        private ErrorInheritanceLevel _inheritanceLevel = ErrorInheritanceLevel.MaxInherited;
+        private string _errorMessage;        
 
-        public void Add(IErrorMessage errorMessage, string memberName)
+        public override void Add(string errorMessage, string memberName, ErrorInheritanceLevel inheritanceLevel)
         {
-            Add(errorMessage.ToString(), memberName);
-        }
-
-        public void Add(string errorMessage, string memberName)
-        {
-            _errorMessage = errorMessage;
+            if (errorMessage == null)
+            {
+                throw new ArgumentNullException("errorMessage");    
+            }
+            if (inheritanceLevel < _inheritanceLevel)
+            {
+                _inheritanceLevel = inheritanceLevel;
+                _errorMessage = errorMessage;
+            }
         }
 
         internal Exception CreateException()

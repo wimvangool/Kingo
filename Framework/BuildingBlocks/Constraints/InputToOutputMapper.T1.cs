@@ -136,13 +136,13 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public bool IsNotSatisfiedBy(TValue value, out IErrorMessage errorMessage)
+        public bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)
         {
             return _constraint.IsNotSatisfiedBy(value, out errorMessage);
         }
 
         /// <inheritdoc />
-        public bool IsNotSatisfiedBy(TValue valueIn, out IErrorMessage errorMessage, out TValue valueOut)
+        public bool IsNotSatisfiedBy(TValue valueIn, out IErrorMessageBuilder errorMessage, out TValue valueOut)
         {
             if (IsNotSatisfiedBy(valueIn, out errorMessage))
             {

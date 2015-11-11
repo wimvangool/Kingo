@@ -224,7 +224,7 @@ namespace Kingo.BuildingBlocks.Constraints
         [TestMethod]
         public void IsNotSatisfiedBy_DefaultsToDefaultMember_IfMemberIsNotSpecifiedAsArgumentForErrorMessage_And_ValueIsNull()
         {
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             var constraint = new IsEqualToConstraint<string>("Some value").WithErrorMessage(_MemberErrorMessage);
             
@@ -235,7 +235,7 @@ namespace Kingo.BuildingBlocks.Constraints
         [TestMethod]
         public void IsNotSatisfiedBy_DefaultsToDefaultMember_IfMemberIsNotSpecifiedAsArgumentForErrorMessage_And_ValueIsNotNull()
         {
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             var constraint = new IsEqualToConstraint<int>(0).WithErrorMessage(_MemberErrorMessage);
 

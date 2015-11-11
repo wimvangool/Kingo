@@ -2,7 +2,7 @@
 using Kingo.BuildingBlocks.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.BuildingBlocks.Constraints
+namespace Kingo.BuildingBlocks
 {
     [TestClass]
     public sealed class RangeTest

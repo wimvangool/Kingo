@@ -106,7 +106,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return _constraints.All(constraint => constraint.IsSatisfiedBy(value));
         }
 
-        public bool IsNotSatisfiedBy(TValue value, out IErrorMessage errorMessage)
+        public bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)
         {
             foreach (var constraint in _constraints)
             {

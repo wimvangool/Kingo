@@ -223,7 +223,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public abstract bool IsSatisfiedBy(TValueIn valueIn, out TValueOut valueOut);
 
         /// <inheritdoc />
-        public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessage errorMessage)
+        public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessageBuilder errorMessage)
         {
             TValueOut valueOut;
 
@@ -231,14 +231,14 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public virtual bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessage errorMessage, out TValueOut valueOut)
+        public virtual bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessageBuilder errorMessage, out TValueOut valueOut)
         {
             if (IsSatisfiedBy(valueIn, out valueOut))
             {
                 errorMessage = null;
                 return false;
             }
-            errorMessage = Constraints.ErrorMessage.Build(this, valueIn);
+            errorMessage = Constraints.ErrorMessageBuilder.Build(this, valueIn);
             return true;
         }
 

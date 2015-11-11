@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Kingo.BuildingBlocks.Constraints
+namespace Kingo.BuildingBlocks
 {
     /// <summary>
-    /// Represents a (formattable) error message.
+    /// Represents a builder of an error message.
     /// </summary>
-    public interface IErrorMessage
+    public interface IErrorMessageBuilder
     {                
         /// <summary>
         /// Assigns an argument to this error message that will be used to format the message on a call to one of the

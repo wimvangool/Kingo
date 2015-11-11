@@ -122,7 +122,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;            
+            IErrorMessageBuilder errorMessage;            
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.AreSame(valueIn, valueOut);
@@ -136,7 +136,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.IsNull(valueOut);
@@ -154,7 +154,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.IsNull(valueOut);
@@ -172,7 +172,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.IsNull(valueOut);
@@ -194,7 +194,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.IsNull(valueOut);
@@ -212,7 +212,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.AreSame(valueIn, valueOut);
@@ -226,7 +226,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.AreSame(valueIn, valueOut);
@@ -240,7 +240,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var valueIn = new object();
             object valueOut;
 
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
             Assert.AreSame(valueIn, valueOut);

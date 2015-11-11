@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class ErrorMessage : IErrorMessage
+    internal sealed class ErrorMessageBuilder : IErrorMessageBuilder
     {
         #region [====== Builder ======]
 
         private sealed class Builder : ConstraintVisitor
         {
-            private readonly ErrorMessage _errorMessage;
+            private readonly ErrorMessageBuilder _errorMessage;
 
-            private Builder(ErrorMessage errorMessage)
+            private Builder(ErrorMessageBuilder errorMessage)
             {
                 _errorMessage = errorMessage;
             }
@@ -27,9 +27,9 @@ namespace Kingo.BuildingBlocks.Constraints
                 _errorMessage.Put(constraint.Name, constraint);
             }
 
-            internal static ErrorMessage BuildErrorMessage(IConstraintWithErrorMessage failedConstraint, object value)
+            internal static ErrorMessageBuilder BuildErrorMessage(IConstraintWithErrorMessage failedConstraint, object value)
             {
-                var builder = new Builder(new ErrorMessage(failedConstraint, value));
+                var builder = new Builder(new ErrorMessageBuilder(failedConstraint, value));
                 failedConstraint.AcceptVisitor(builder);
                 return builder._errorMessage;
             }
@@ -39,14 +39,12 @@ namespace Kingo.BuildingBlocks.Constraints
 
         internal static readonly Identifier MemberIdentifier = Identifier.Parse("member");
 
-        private readonly IConstraintWithErrorMessage _failedConstraint;
-        private readonly object _value;
+        private readonly IConstraintWithErrorMessage _failedConstraint;        
         private readonly Dictionary<Identifier, object> _arguments;
 
-        private ErrorMessage(IConstraintWithErrorMessage failedConstraint, object value)
+        private ErrorMessageBuilder(IConstraintWithErrorMessage failedConstraint, object value)
         {
-            _failedConstraint = failedConstraint;
-            _value = value;
+            _failedConstraint = failedConstraint;            
             _arguments = new Dictionary<Identifier, object>()
             {
                 { MemberIdentifier, new DefaultMember(_failedConstraint, value) }
@@ -78,7 +76,7 @@ namespace Kingo.BuildingBlocks.Constraints
             return _failedConstraint.ErrorMessage.Format(arguments, formatProvider);
         }
 
-        internal static ErrorMessage Build(IConstraintWithErrorMessage failedConstraint, object value)
+        internal static ErrorMessageBuilder Build(IConstraintWithErrorMessage failedConstraint, object value)
         {
             return Builder.BuildErrorMessage(failedConstraint, value);
         }

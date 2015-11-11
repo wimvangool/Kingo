@@ -29,7 +29,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void Any_ReturnsNullConstraint_IfNoConstraintsAreSpecified()
         {            
             var orConstraint = Constraint.Any(new IConstraint<object>[0]);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(orConstraint.IsSatisfiedBy(null));
             Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -41,7 +41,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {            
             var constraint = NewConstraint(true);
             var orConstraint = Constraint.Any(constraint);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(orConstraint.IsSatisfiedBy(null));
             Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -53,7 +53,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             var constraint = NewConstraint(false);
             var orConstraint = Constraint.Any(constraint).WithErrorMessage(ParentErrorMessage);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(orConstraint.IsSatisfiedBy(null));
             Assert.IsTrue(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -73,7 +73,7 @@ namespace Kingo.BuildingBlocks.Constraints
             constraints[randomIndex] = NewConstraint(true);
 
             var orConstraint = Constraint.Any(constraints);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(orConstraint.IsSatisfiedBy(null));
             Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -85,7 +85,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             var constraints = CreateConstraintArray(false);            
             var orConstraint = Constraint.Any(constraints).WithErrorMessage(ParentErrorMessage);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(orConstraint.IsSatisfiedBy(null));
             Assert.IsTrue(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -111,7 +111,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void All_ReturnsNullConstraint_IfNoConstraintsAreSpecified()
         {
             var andConstraint = Constraint.All(new IConstraint<object>[0]);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(andConstraint.IsSatisfiedBy(null));
             Assert.IsFalse(andConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -123,7 +123,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             var constraint = NewConstraint(true);
             var andConstraint = Constraint.All(constraint);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(andConstraint.IsSatisfiedBy(null));
             Assert.IsFalse(andConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -135,7 +135,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             var constraint = NewConstraint(false).WithErrorMessage("{child} is not satisfied.");
             var andConstraint = Constraint.All(constraint);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(andConstraint.IsSatisfiedBy(null));
             Assert.IsTrue(andConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -151,7 +151,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             var constraints = CreateConstraintArray(true);            
             var andConstraint = Constraint.All(constraints);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(andConstraint.IsSatisfiedBy(null));
             Assert.IsFalse(andConstraint.IsNotSatisfiedBy(null, out errorMessage));
@@ -167,7 +167,7 @@ namespace Kingo.BuildingBlocks.Constraints
             constraints[randomIndex] = NewConstraint(false).WithErrorMessage("{child} is not satisfied.");
 
             var andConstraint = Constraint.All(constraints);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(andConstraint.IsSatisfiedBy(null));
             Assert.IsTrue(andConstraint.IsNotSatisfiedBy(null, out errorMessage));

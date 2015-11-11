@@ -115,7 +115,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsTrue_IfDelegateReturnsFalse()
         {
             var constraint = new DelegateConstraint<object>(value => false);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -126,7 +126,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsFalse_IfDelegateReturnsTrue()
         {
             var constraint = new DelegateConstraint<object>(value => true);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNull(errorMessage);
@@ -136,7 +136,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsTrue_IfDelegateReturnsTrue_And_ConstraintIsInverted()
         {
             var constraint = new DelegateConstraint<object>(value => true).Invert();
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -147,7 +147,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsFalse_IfDelegateReturnsFalse_And_ConstraintIsInverted()
         {
             var constraint = new DelegateConstraint<object>(value => false).Invert();
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNull(errorMessage);

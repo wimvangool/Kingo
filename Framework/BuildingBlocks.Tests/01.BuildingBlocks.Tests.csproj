@@ -97,7 +97,7 @@
     <Compile Include="Constraints\GuidConstraintsTest.cs" />
     <Compile Include="Constraints\NullableConstraintsTest.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.cs" />
-    <Compile Include="Constraints\RangeTest.cs" />
+    <Compile Include="RangeTest.cs" />
     <Compile Include="Constraints\StringConstraintsTest.cs" />
     <Compile Include="Constraints\ValidatedMessage.T1.cs" />
     <Compile Include="Messaging\MessageErrorInfoExtensions.cs" />

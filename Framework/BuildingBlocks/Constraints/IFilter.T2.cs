@@ -43,6 +43,6 @@ namespace Kingo.BuildingBlocks.Constraints
         /// otherwise it will be assigned the default value.
         /// </param>
         /// <returns><c>true</c> if the value satisfies this constraint; otherwise <c>false</c>.</returns>
-        bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessage errorMessage, out TValueOut valueOut);
+        bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessageBuilder errorMessage, out TValueOut valueOut);
     }
 }

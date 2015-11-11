@@ -139,7 +139,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// otherwise, it will be <c>null</c>.
         /// </param>
         /// <returns><c>true</c> if the value satisfies this constraint; otherwise <c>false</c>.</returns>
-        bool IsNotSatisfiedBy(TValue value, out IErrorMessage errorMessage);
+        bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage);
 
         #endregion
     }

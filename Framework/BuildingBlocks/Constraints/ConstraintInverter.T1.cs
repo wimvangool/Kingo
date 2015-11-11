@@ -126,11 +126,11 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override bool IsNotSatisfiedBy(TValue value, out IErrorMessage errorMessage)
+        public override bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)
         {
             if (_constraint.IsSatisfiedBy(value))
             {
-                errorMessage = Constraints.ErrorMessage.Build(this, value);
+                errorMessage = Constraints.ErrorMessageBuilder.Build(this, value);
                 return true;
             }
             errorMessage = null;

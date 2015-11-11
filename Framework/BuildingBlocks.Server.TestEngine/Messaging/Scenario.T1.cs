@@ -17,33 +17,28 @@ namespace Kingo.BuildingBlocks.Messaging
     {
         #region [====== ErrorMessageReader ======]
 
-        private sealed class ErrorMessageReader<T> : IErrorMessageReader where T : class, IMessage<T>
+        private sealed class ErrorMessageReader<T> : ErrorMessageReader where T : class, IMessage<T>
         {
             private readonly Scenario<T> _scenario;
 
             internal ErrorMessageReader(Scenario<T> scenario)
             {
                 _scenario = scenario;
-            }            
-
-            public void Add(IErrorMessage errorMessage, string memberName)
-            {
-                Add(Format(errorMessage), memberName);
             }
 
-            public void Add(string errorMessage, string memberName)
-            {                
+            protected override IFormatProvider FormatProvider
+            {
+                get { return _scenario.FormatProvider; }
+            }
+
+            public override void Add(string errorMessage, string memberName, ErrorInheritanceLevel inheritanceLevel)
+            {
                 if (errorMessage == null)
                 {
-                    return;
+                    throw new ArgumentNullException("errorMessage");
                 }
                 _scenario.OnVerificationFailed(errorMessage);
-            }
-            
-            private string Format(IErrorMessage errorMessage)
-            {
-                return errorMessage == null ? null : errorMessage.ToString(_scenario.FormatProvider);
-            }            
+            }                     
         }
 
         #endregion

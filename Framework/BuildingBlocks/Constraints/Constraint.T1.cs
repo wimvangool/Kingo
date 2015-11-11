@@ -170,14 +170,14 @@ namespace Kingo.BuildingBlocks.Constraints
         public abstract bool IsSatisfiedBy(TValue value);
 
         /// <inheritdoc />
-        public virtual bool IsNotSatisfiedBy(TValue value, out IErrorMessage errorMessage)
+        public virtual bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)
         {
             if (IsSatisfiedBy(value))
             {
                 errorMessage = null;
                 return false;
             }
-            errorMessage = Constraints.ErrorMessage.Build(this, value);
+            errorMessage = Constraints.ErrorMessageBuilder.Build(this, value);
             return true;
         }
 

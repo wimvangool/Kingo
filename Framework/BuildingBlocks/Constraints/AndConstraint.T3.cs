@@ -117,14 +117,14 @@ namespace Kingo.BuildingBlocks.Constraints
             return false;
         }
 
-        public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessage errorMessage)
+        public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessageBuilder errorMessage)
         {
             TValueOut valueOut;
 
             return IsNotSatisfiedBy(value, out errorMessage, out valueOut);
         }
 
-        public bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessage errorMessage, out TValueOut valueOut)
+        public bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessageBuilder errorMessage, out TValueOut valueOut)
         {
             TValueMiddle valueMiddle;
 

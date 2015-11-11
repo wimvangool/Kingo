@@ -61,11 +61,29 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Comparable_IncomparableType {
+            get {
+                return ResourceManager.GetString("Comparable_IncomparableType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance &apos;{0}&apos; of type &apos;{1}&apos; is not supported because it is not an Enum type..
         /// </summary>
         internal static string EnumIsInRangeOfValidValues_UnsupportedValue {
             get {
                 return ResourceManager.GetString("EnumIsInRangeOfValidValues_UnsupportedValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ErrorLevel must be 0 or higher: {0}..
+        /// </summary>
+        internal static string ErrorLevel_InvalidErrorLevel {
+            get {
+                return ResourceManager.GetString("ErrorLevel_InvalidErrorLevel", resourceCulture);
             }
         }
         

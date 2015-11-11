@@ -37,13 +37,15 @@ namespace Kingo.BuildingBlocks.Constraints
             return new Member<TOther>(NameComponentStack.Push(indexList), other);
         }
 
-        internal void WriteErrorMessageTo(IErrorMessageReader reader, IErrorMessage errorMessage)
+        internal void WriteErrorMessageTo(IErrorMessageReader reader, IErrorMessageBuilder errorMessage)
         {
             var memberName = NameComponentStack;
+            var inheritanceLevel = ErrorInheritanceLevel.NotInherited;
 
             do
             {
-                reader.Add(errorMessage, memberName.ToString());
+                reader.Add(errorMessage, memberName.ToString(), inheritanceLevel);
+                inheritanceLevel = inheritanceLevel.Increment();
             }
             while (memberName.Pop(out memberName));            
         }        

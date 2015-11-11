@@ -21,12 +21,12 @@
 
         public bool IsNotSatisfiedBy(Member<TValueIn> member, IErrorMessageReader reader, out Member<TValueOut> transformedMember)
         {
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
             TValueOut valueOut;
 
             if (_constraint.IsNotSatisfiedBy(member.Value, out errorMessage, out valueOut))
             {
-                errorMessage.Put(ErrorMessage.MemberIdentifier, member);
+                errorMessage.Put(ErrorMessageBuilder.MemberIdentifier, member);
                 member.WriteErrorMessageTo(reader, errorMessage);
                 transformedMember = null;
                 return true;

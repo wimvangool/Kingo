@@ -139,7 +139,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsFalse_IfLeftAndRightConstraintAreSatisfied()
         {
             var constraint = CreateAndConstraint(true, true);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNull(errorMessage);
@@ -149,7 +149,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsTrue_IfLeftConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, true);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -163,7 +163,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsTrue_IfRightConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, false);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -177,7 +177,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsTrue_IfLeftAndRightConstraintAreNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, false);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -195,7 +195,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsTrue_IfLeftAndRightConstraintAreSatisfied_And_IsInverted()
         {
             var constraint = CreateAndConstraint(true, true).Invert(ParentErrorMessage);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -209,7 +209,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsFalse_IfLeftConstraintIsNotSatisfied_And_IsInverted()
         {
             var constraint = CreateAndConstraint(false, true).Invert();
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNull(errorMessage);            
@@ -219,7 +219,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsFalse_IfRightConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, false).Invert();
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNull(errorMessage);  
@@ -229,7 +229,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy_ReturnsFalse_IfLeftAndRightConstraintAreNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, false).Invert();
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNull(errorMessage);  
@@ -243,7 +243,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy3_ReturnsFalse_IfLeftAndMiddleAndRightConstraintAreSatisfied()
         {
             var constraint = CreateAndConstraint(true, true, true);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNull(errorMessage);
@@ -253,7 +253,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy3_ReturnsTrue_IfLeftConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, true, true);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -267,7 +267,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy3_ReturnsTrue_IfMiddleConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, false, true);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -281,7 +281,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy3_ReturnsTrue_IfRightConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, true, false);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
@@ -295,7 +295,7 @@ namespace Kingo.BuildingBlocks.Constraints
         public void IsNotSatisfiedBy3_ReturnsTrue_IfLeftAndMiddleAndRightConstraintAreNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, false, false);
-            IErrorMessage errorMessage;
+            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
             Assert.IsNotNull(errorMessage);
