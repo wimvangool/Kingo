@@ -6,12 +6,12 @@ using System.Reflection;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class MemberConstraintExpression<T, TValue> : IMemberConstraintBuilder<T, TValue>
+    internal sealed class VerifyThatExpression<T, TValue> : IMemberConstraintBuilder<T, TValue>
     {
         private readonly IMemberConstraintSet<T> _constraintSet;
         private readonly Lazy<IMemberConstraintBuilder<T, TValue>> _member;
 
-        internal MemberConstraintExpression(IMemberConstraintSet<T> constraintSet, Expression<Func<T, TValue>> fieldOrProperty)
+        internal VerifyThatExpression(IMemberConstraintSet<T> constraintSet, Expression<Func<T, TValue>> fieldOrProperty)
         {
             if (fieldOrProperty == null)
             {

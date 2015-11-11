@@ -175,7 +175,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IMemberConstraintBuilder<T, TValue> VerifyThat<TValue>(Expression<Func<T, TValue>> fieldOrProperty)
         {
-            return new MemberConstraintExpression<T, TValue>(this, fieldOrProperty);
+            return new VerifyThatExpression<T, TValue>(this, fieldOrProperty);
         }
 
         /// <inheritdoc />

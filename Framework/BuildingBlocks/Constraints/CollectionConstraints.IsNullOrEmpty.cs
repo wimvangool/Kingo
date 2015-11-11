@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using Kingo.BuildingBlocks.Resources;
 
@@ -26,20 +26,15 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, IEnumerable<TValue>> IsNotNullOrEmpty<T, TValue>(this IMemberConstraintBuilder<T, IEnumerable<TValue>> member, string errorMessage = null)                
+        public static IMemberConstraintBuilder<T, TValue> IsNotNullOrEmpty<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, string errorMessage = null)   
+            where TValue : IEnumerable
         {
-            return member.Apply(new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));                        
-        }
+            return member.Apply(new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));                                    
+        }        
 
-        /// <summary>
-        /// Determines whether or not the specified <paramref name="value"/> is not <c>null</c> and contains at least one element.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the items of the collection.</typeparam>
-        /// <param name="value">A collection.</param>
-        /// <returns><c>true</c> if the value is not <c>null</c> or contains at least one element; otherwise <c>false</c>.</returns>
-        public static bool IsNotNullOrEmpty<TValue>(IEnumerable<TValue> value)
+        internal static bool IsNotNullOrEmpty(IEnumerable value)
         {
-            return !IsNullOrEmpty(value);
+            return value != null && value.Cast<object>().Any();
         }
 
         #endregion
@@ -60,35 +55,11 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, IEnumerable<TValue>> IsNullOrEmpty<T, TValue>(this IMemberConstraintBuilder<T, IEnumerable<TValue>> member, string errorMessage = null)            
+        public static IMemberConstraintBuilder<T, TValue> IsNullOrEmpty<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, string errorMessage = null)            
+            where TValue : IEnumerable
         {
-            return member.Apply(new CollectionIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));                        
-        }   
-     
-        /// <summary>
-        /// Determines whether or not the specified <paramref name="value"/> is <c>null</c> or is an empty collection.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the items of the collection.</typeparam>
-        /// <param name="value">A collection.</param>
-        /// <returns><c>true</c> if the value is either <c>null</c> or contains no elements; otherwise <c>false</c>.</returns>
-        public static bool IsNullOrEmpty<TValue>(IEnumerable<TValue> value)
-        {
-            if (value == null)
-            {
-                return true;
-            }
-            var readonlyCollection = value as IReadOnlyCollection<TValue>;
-            if (readonlyCollection != null)
-            {
-                return readonlyCollection.Count == 0;
-            }
-            var collection = value as ICollection<TValue>;
-            if (collection != null)
-            {
-                return collection.Count == 0;
-            }
-            return !value.Any();
-        }
+            return member.Apply(new CollectionIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));                                    
+        }           
 
         #endregion        
     }    
@@ -98,7 +69,8 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>null</c> or empty.
     /// </summary>
-    public sealed class CollectionIsNotNullOrEmptyConstraint<TValue> : Constraint<IEnumerable<TValue>>        
+    public sealed class CollectionIsNotNullOrEmptyConstraint<TValue> : Constraint<TValue>        
+        where TValue : IEnumerable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectionIsNotNullOrEmptyConstraint{T}" /> class.
@@ -120,13 +92,13 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
             return new CollectionIsNotNullOrEmptyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
             return new CollectionIsNotNullOrEmptyConstraint<TValue>(this, errorMessage);
         }
@@ -136,7 +108,7 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
             return new CollectionIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
@@ -146,7 +118,7 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(IEnumerable<TValue> value)
+        public override bool IsSatisfiedBy(TValue value)
         {
             return CollectionConstraints.IsNotNullOrEmpty(value);
         }
@@ -161,7 +133,8 @@ namespace Kingo.BuildingBlocks.Constraints
     /// <summary>
     /// Represents a constraint that checks whether or not a collection is <c>null</c> or empty.
     /// </summary>
-    public sealed class CollectionIsNullOrEmptyConstraint<TValue> : Constraint<IEnumerable<TValue>>        
+    public sealed class CollectionIsNullOrEmptyConstraint<TValue> : Constraint<TValue>      
+        where TValue : IEnumerable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectionIsNullOrEmptyConstraint{T}" /> class.
@@ -183,13 +156,13 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithName(Identifier name)
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
         {
             return new CollectionIsNullOrEmptyConstraint<TValue>(this, name);
         }
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>> WithErrorMessage(StringTemplate errorMessage)
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
         {
             return new CollectionIsNullOrEmptyConstraint<TValue>(this, errorMessage);
         }
@@ -199,7 +172,7 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<IEnumerable<TValue>> Invert(StringTemplate errorMessage, Identifier name = null)
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
         {
             return new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
         }
@@ -209,9 +182,9 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== IsSatisfiedBy & IsSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(IEnumerable<TValue> value)
+        public override bool IsSatisfiedBy(TValue value)
         {
-            return CollectionConstraints.IsNullOrEmpty(value);
+            return !CollectionConstraints.IsNotNullOrEmpty(value);
         }
 
         #endregion

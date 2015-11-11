@@ -73,7 +73,7 @@
     <Compile Include="Constraints\Member.cs" />
     <Compile Include="Constraints\Member.T1.cs" />
     <Compile Include="Constraints\MemberConstraint.T2.cs" />
-    <Compile Include="Constraints\MemberConstraintExpression.T2.cs" />
+    <Compile Include="Constraints\VerifyThatExpression.T2.cs" />
     <Compile Include="Constraints\MemberExceptionFactory.cs" />
     <Compile Include="Constraints\MemberExpressionPair.cs" />
     <Compile Include="Constraints\MemberNameComponentStack.cs" />
