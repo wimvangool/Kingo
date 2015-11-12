@@ -68,43 +68,40 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public sealed class HasItemFilter<TValueIn> : Filter<TValueIn, object>
     {
-        private readonly IndexList _indices;        
+        private readonly IndexList _indexList;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HasItemFilter{T}" /> class.
         /// </summary>    
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="indices"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="indices"/> is empty.
-        /// </exception>
-        public HasItemFilter(IEnumerable<object> indices)
-            : this(new IndexList(indices)) { }
+        /// <paramref name="indexList"/> is <c>null</c>.
+        /// </exception>        
+        public HasItemFilter(IEnumerable<Tuple<Type, object>> indexList)
+            : this(new IndexList(indexList)) { }
 
         internal HasItemFilter(IndexList indices)
         {
-            _indices = indices;
+            _indexList = indices;
         }
 
         private HasItemFilter(HasItemFilter<TValueIn> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
-            _indices = constraint._indices;            
+            _indexList = constraint._indexList;            
         }
 
         private HasItemFilter(HasItemFilter<TValueIn> constraint, Identifier name)
             : base(constraint, name)
         {
-            _indices = constraint._indices;            
+            _indexList = constraint._indexList;            
         }
 
         /// <summary>
         /// Indices of the element to select.
         /// </summary>
-        public IReadOnlyList<object> Indices
+        public IReadOnlyList<object> IndexList
         {
-            get { return _indices; }
+            get { return _indexList; }
         }                            
 
         #region [====== Name & ErrorMessage ======]
@@ -112,7 +109,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         protected override StringTemplate ErrorMessageIfNotSpecified
         {
-            get { return StringTemplate.Parse(ErrorMessages.CollectionConstraints_ElementAt); }
+            get { return StringTemplate.Parse(ErrorMessages.CollectionConstraints_HasItem); }
         }
 
         /// <inheritdoc />
@@ -134,7 +131,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
         {
-            return new ConstraintInverter<TValueIn>(this, ErrorMessages.CollectionConstraints_NoElementAt)
+            return new ConstraintInverter<TValueIn>(this, ErrorMessages.CollectionConstraints_HasNoItem)
                 .WithErrorMessage(errorMessage)
                 .WithName(name);
         }
@@ -160,15 +157,10 @@ namespace Kingo.BuildingBlocks.Constraints
                 valueOut = null;
                 return false;
             }
-            catch (TargetInvocationException exception)
+            catch (TargetInvocationException)
             {
-                var innerException = exception.InnerException;
-                if (innerException != null && (innerException is ArgumentException || exception.InnerException is KeyNotFoundException))
-                {
-                    valueOut = null;
-                    return false;
-                }
-                throw;
+                valueOut = null;
+                return false;
             }            
         }          
      
@@ -177,10 +169,22 @@ namespace Kingo.BuildingBlocks.Constraints
             var array = value as Array;
             if (array != null)
             {
-                return array.GetValue(_indices.Cast<int>().ToArray());
+                return array.GetValue(ConvertToArrayIndexValues(_indexList));
             }
-            return GetIndexer(value.GetType(), _indices.IndexTypes()).GetValue(value, _indices.Indices);
+            return GetIndexer(value.GetType(), _indexList.Types()).GetValue(value, _indexList.Values().ToArray());
         }
+
+        private static int[] ConvertToArrayIndexValues(IndexList indexList)
+        {
+            try
+            {
+                return indexList.Values().Cast<int>().ToArray();
+            }
+            catch (InvalidCastException exception)
+            {
+                throw NewInvalidArrayIndexValuesSpecified(indexList, exception);
+            }
+        }        
 
         private static PropertyInfo GetIndexer(Type type, IEnumerable<Type> arguments)
         {
@@ -195,11 +199,18 @@ namespace Kingo.BuildingBlocks.Constraints
             return indexer;
         }
 
-        private static Exception NewIndexerNotFoundException(Type type, Type[] argumentTypes)
+        private static Exception NewInvalidArrayIndexValuesSpecified(object indexList, Exception innerException)
+        {
+            var messageFormat = ExceptionMessages.HasItemFilter_InvalidArrayIndexValues;
+            var message = string.Format(messageFormat, indexList);
+            return new IndexerInvocationException(message, innerException);
+        }
+
+        private static Exception NewIndexerNotFoundException(Type type, IEnumerable<Type> argumentTypes)
         {
             var messageFormat = ExceptionMessages.HasItemFilter_IndexerNotFound;
             var message = string.Format(messageFormat, type, string.Join(", ", argumentTypes.Select(argument => argument.FullName)));
-            return new TargetInvocationException(message, null);
+            return new IndexerInvocationException(message, null);
         }
 
         #endregion                

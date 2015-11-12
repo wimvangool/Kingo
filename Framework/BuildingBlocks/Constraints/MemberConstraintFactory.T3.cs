@@ -27,22 +27,18 @@ namespace Kingo.BuildingBlocks.Constraints
         internal MemberFactory<T, TValueOut> CreateChildMember()
         {
             return _memberFactory.CreateChildMember(_memberConstraintFactory);            
-        }        
+        }
 
-        internal MemberConstraintFactory<T, TValueIn, TResult> And<TResult>(Func<T, IFilter<TValueOut, TResult>> constraintFactory, MemberTransformer transformer)
-        {
-            if (constraintFactory == null)
+        internal MemberConstraintFactory<T, TValueIn, TResult> And<TResult>(Func<T, Tuple<IFilter<TValueOut, TResult>, MemberTransformer>> memberConstraintFactory)
+        {                      
+            return new MemberConstraintFactory<T, TValueIn, TResult>(_memberFactory, instance =>
             {
-                throw new ArgumentNullException("constraintFactory");
-            }
-            Func<T, IMemberConstraint<TValueIn, TResult>> memberConstraintFactory = instance =>
-            {
+                var components = memberConstraintFactory.Invoke(instance);                
                 var left = _memberConstraintFactory.Invoke(instance);
-                var right = new MemberConstraint<TValueOut, TResult>(constraintFactory.Invoke(instance), transformer);
+                var right = new MemberConstraint<TValueOut, TResult>(components.Item1, components.Item2);
 
                 return left.And(right);
-            };
-            return new MemberConstraintFactory<T, TValueIn, TResult>(_memberFactory, memberConstraintFactory);
+            });
         }        
 
         #region [====== ErrorMessageWriter ======]

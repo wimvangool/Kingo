@@ -1,5 +1,4 @@
-﻿using Kingo.BuildingBlocks.Clocks;
-using Kingo.BuildingBlocks.Messaging;
+﻿using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Constraints
@@ -243,60 +242,6 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.AreEqual("| Value | Value | System.Int32 | 1 |", errorMessage.ToString());
         }
 
-        #endregion
-
-        #region [====== Complex Expressions ======]
-
-        [TestMethod]
-        public void VerifyThat_ReturnsNoErrors_IfExpressionIsFieldOfMember_And_ConstraintPasses()
-        {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
-            var message = new ValidatedMessage<ValidatedMessage<int>>(new ValidatedMessage<int>(value));
-            var validator = message.CreateConstraintValidator();
-
-            validator.VerifyThat(m => m.Member.Member).IsEqualTo(value);
-
-            validator.Validate(message).AssertNoErrors();
-        }
-
-        [Ignore]
-        [TestMethod]        
-        public void VerifyThat_ReturnsExpectedErrorsIfExpressionIsFieldOfMember_And_ConstraintFails()
-        {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
-            var message = new ValidatedMessage<ValidatedMessage<int>>(new ValidatedMessage<int>(value));
-            var validator = message.CreateConstraintValidator();
-
-            //validator.VerifyThat(m => m.Member).IsNotNull().And(member => member.Member).IsNotEqualTo(value, RandomErrorMessage);
-            validator.VerifyThat(m => m.Member.Member).IsNotEqualTo(value, RandomErrorMessage);
-
-            validator.Validate(message).AssertMemberError(RandomErrorMessage, "Member.Member", "Member");
-        }
-
-        [Ignore]
-        [TestMethod]
-        public void VerifyThat_ReturnsExpectedErrorsIfExpressionIsFieldOfMember_And_InternalMemberIsNull()
-        {            
-            var message = new ValidatedMessage<ValidatedMessage<int>>(null);
-            var validator = message.CreateConstraintValidator();
-
-            validator.VerifyThat(m => m.Member.Member).IsEqualTo(8);
-
-            validator.Validate(message).AssertMemberError("Cannot evaluate constraint because member 'Member' is <null>.");
-        }
-
-        [Ignore]
-        [TestMethod]        
-        public void VerifyThat_ReturnsExpectedError_IfExpressionIsArrayIndexer_And_ConstraintFails()
-        {
-            var message = new ValidatedMessage<int[]>(new[] { 0, 1, 2, 3 });
-            var validator = message.CreateConstraintValidator();
-
-            validator.VerifyThat(m => m.Member[1]).IsEqualTo(5, RandomErrorMessage);
-
-            validator.Validate(message).AssertMemberError(RandomErrorMessage);
-        }
-
-        #endregion
+        #endregion        
     }
 }

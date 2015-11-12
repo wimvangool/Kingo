@@ -106,6 +106,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified values are not valid to index an array: {0}..
+        /// </summary>
+        internal static string HasItemFilter_InvalidArrayIndexValues {
+            get {
+                return ResourceManager.GetString("HasItemFilter_InvalidArrayIndexValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot create an empty identifier..
         /// </summary>
         internal static string Identifier_EmptyIdentifier {
@@ -124,11 +133,11 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified list of indices cannot be empty..
+        ///   Looks up a localized string similar to The specified expression is not supported: &apos;{0}&apos;..
         /// </summary>
-        internal static string IndexList_EmptyList {
+        internal static string MemberExpressionSplitter_ExpressionNotSupported {
             get {
-                return ResourceManager.GetString("IndexList_EmptyList", resourceCulture);
+                return ResourceManager.GetString("MemberExpressionSplitter_ExpressionNotSupported", resourceCulture);
             }
         }
         

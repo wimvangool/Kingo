@@ -58,6 +58,7 @@
     <Compile Include="Constraints\AndConstraintTestOne.cs" />
     <Compile Include="Constraints\AndConstraintTestTwo.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.And.cs" />
+    <Compile Include="Constraints\BasicConstraintsTest.Expressions.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsEqualTo.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsGreaterThan.cs" />
     <Compile Include="Constraints\BasicConstraintsTest.IsInRange.cs" />

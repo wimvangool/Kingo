@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Kingo.BuildingBlocks.Constraints
@@ -111,7 +110,33 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        IMemberConstraintBuilder<T, TItem> HasItem<TItem>(object index, string errorMessage = null);
+        IMemberConstraintBuilder<T, TItem> HasItem<TItem>(int index, string errorMessage = null);
+
+        /// <summary>
+        /// Verifies that this member has an item at the specified <paramref name="index"/> and returns it.
+        /// </summary>               
+        /// <param name="index">Index of the element to select.</param>      
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> instance that contains the member's value.</returns>              
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        IMemberConstraintBuilder<T, TItem> HasItem<TItem>(string index, string errorMessage = null);
+
+        /// <summary>
+        /// Verifies that this member has an item at the specified <paramref name="index"/> and returns it.
+        /// </summary>               
+        /// <param name="index">Index of the element to select.</param>      
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> instance that contains the member's value.</returns>              
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndex>(TIndex index, string errorMessage = null);
 
         /// <summary>
         /// Verifies that this member has an item at the specified indices and returns it.
@@ -125,23 +150,56 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        IMemberConstraintBuilder<T, TItem> HasItem<TItem>(object indexA, object indexB, string errorMessage = null);
+        IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndexA, TIndexB>(TIndexA indexA, TIndexB indexB, string errorMessage = null);
 
         /// <summary>
-        /// Verifies that this member has an item at the specified <paramref name="indices"/> and returns it.
+        /// Verifies that this member has an item at the specified <paramref name="indexFactory"/> and returns it.
         /// </summary>               
-        /// <param name="indices">Indices of the element to select.</param>      
+        /// <param name="indexFactory">Index of the element to select.</param>      
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> instance that contains the member's value.</returns>  
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="indexFactory"/> is <c>null</c>.
+        /// </exception>            
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndex>(Func<T, TIndex> indexFactory, string errorMessage = null);
+
+        /// <summary>
+        /// Verifies that this member has an item at the specified indices and returns it.
+        /// </summary>              
+        /// <param name="indexAFactory">First index of the element to select.</param>      
+        /// <param name="indexBFactory">Second index of the element to select.</param>      
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>     
+        /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> instance that contains the member's value.</returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="indexAFactory" /> or <paramref name="indexBFactory" /> is <c>null</c>.
+        /// </exception>               
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorMessage"/> is not in a correct format.
+        /// </exception>
+        IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndexA, TIndexB>(Func<T, TIndexA> indexAFactory, Func<T, TIndexB> indexBFactory, string errorMessage = null);
+
+        /// <summary>
+        /// Verifies that this member has an item at the indicies that are provided by the specified <paramref name="indexListFactory"/>.
+        /// </summary>               
+        /// <param name="indexListFactory">A list of delegates that return the indices of the element to select.</param>      
         /// <param name="errorMessage">
         /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
         /// </param>     
         /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> instance that contains the member's value.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="indices"/> is <c>null</c>.
+        /// <paramref name="indexListFactory"/> is <c>null</c>.
         /// </exception>       
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        IMemberConstraintBuilder<T, TItem> HasItem<TItem>(IEnumerable<object> indices, string errorMessage = null);               
+        IMemberConstraintBuilder<T, TItem> HasItem<TItem>(IndexListFactory<T> indexListFactory, string errorMessage = null);               
 
         #endregion
 

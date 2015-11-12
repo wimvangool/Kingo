@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -21,7 +20,7 @@ namespace Kingo.BuildingBlocks.Constraints
             _member = new Lazy<IMemberConstraintBuilder<T, TValue>>(() => CreateMemberConstraint(fieldOrProperty));
         }        
 
-        #region [====== Constraint ======]
+        #region [====== Member & Expression Analysis ======]
 
         private IMemberConstraintBuilder<T, TValue> Member
         {
@@ -30,7 +29,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         private IMemberConstraintBuilder<T, TValue> CreateMemberConstraint(Expression<Func<T, TValue>> fieldOrProperty)
         {            
-            //return CreateVerifyThatExpression(fieldOrProperty).Compile().Invoke();            
+            //return CreateVerifyThatExpression(fieldOrProperty).Compile().Invoke();                        
             return _constraintSet.VerifyThat(fieldOrProperty.Compile(), fieldOrProperty.ExtractMemberName());
         }
 
@@ -39,7 +38,7 @@ namespace Kingo.BuildingBlocks.Constraints
             // [m => m.A.B.C] becomes [m => m.A] + [a => a.B.C]
             var memberExpressionPair = MemberExpressionPair.SplitUp(memberExpression);
 
-            // _constraintSet.VerifyThat(m => m.A, "A") returning IMemberConstraint<T, ?>
+            // _constraintSet.VerifyThat(m => m.A, "A")
             var verifyThatMethodCallExpression = CreateVerifyThatMethodCallExpression(memberExpressionPair.LeftExpression);
 
             // If remainder [a => a.B.C] exists, then do _contraintSet.VerifyThat(m => m.A).IsNotNull().And(a => a.B.C).
@@ -136,19 +135,39 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== HasItem ======]
 
-        public IMemberConstraintBuilder<T, TItem> HasItem<TItem>(object index, string errorMessage = null)
+        public IMemberConstraintBuilder<T, TItem> HasItem<TItem>(int index, string errorMessage = null)
         {
             return Member.HasItem<TItem>(index, errorMessage);
         }
 
-        public IMemberConstraintBuilder<T, TItem> HasItem<TItem>(object indexA, object indexB, string errorMessage = null)
+        public IMemberConstraintBuilder<T, TItem> HasItem<TItem>(string index, string errorMessage = null)
         {
-            return Member.HasItem<TItem>(indexA, indexB, errorMessage);
+            return Member.HasItem<TItem>(index, errorMessage);
         }
 
-        public IMemberConstraintBuilder<T, TItem> HasItem<TItem>(IEnumerable<object> indices, string errorMessage = null)
+        public IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndex>(TIndex index, string errorMessage = null)
         {
-            return Member.HasItem<TItem>(indices, errorMessage);
+            return Member.HasItem<TItem, TIndex>(index, errorMessage);
+        }
+
+        public IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndexA, TIndexB>(TIndexA indexA, TIndexB indexB, string errorMessage = null)
+        {
+            return Member.HasItem<TItem, TIndexA, TIndexB>(indexA, indexB, errorMessage);
+        }
+
+        public IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndex>(Func<T, TIndex> indexFactory, string errorMessage = null)
+        {
+            return Member.HasItem<TItem, TIndex>(indexFactory, errorMessage);
+        }
+
+        public IMemberConstraintBuilder<T, TItem> HasItem<TItem, TIndexA, TIndexB>(Func<T, TIndexA> indexAFactory, Func<T, TIndexB> indexBFactory, string errorMessage = null)
+        {
+            return Member.HasItem<TItem, TIndexA, TIndexB>(indexAFactory, indexBFactory, errorMessage);
+        }
+
+        public IMemberConstraintBuilder<T, TItem> HasItem<TItem>(IndexListFactory<T> indexListFactory, string errorMessage = null)
+        {
+            return Member.HasItem<TItem>(indexListFactory, errorMessage);
         }
 
         #endregion
@@ -180,6 +199,6 @@ namespace Kingo.BuildingBlocks.Constraints
             return Member.Satisfies(constraintFactory);
         }
 
-        #endregion
+        #endregion        
     }
 }

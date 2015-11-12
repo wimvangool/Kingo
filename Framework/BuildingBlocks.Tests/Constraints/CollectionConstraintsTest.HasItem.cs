@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Kingo.BuildingBlocks.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,7 +11,7 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== HasItem (object) ======]
 
         [TestMethod]
-        [ExpectedException(typeof(TargetInvocationException))]
+        [ExpectedException(typeof(IndexerInvocationException))]
         public void Validate_Object_Throws_IfMemberDoesNotContainIndexer()
         {
             var message = new ValidatedMessage<object>(new object());

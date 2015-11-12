@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -16,7 +15,9 @@ namespace Kingo.BuildingBlocks.Constraints
 
         internal static MemberExpressionPair SplitUp(LambdaExpression expression)
         {
-            throw new NotImplementedException();
+            var leftExpression = LeftExpressionFactory.CreateLeftExpression(expression);            
+
+            return new MemberExpressionPair(leftExpression, null);
         }
     }
 }

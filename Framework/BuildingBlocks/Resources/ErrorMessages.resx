@@ -126,8 +126,8 @@
   <data name="CollectionConstraints_IsNotNullOrEmpty" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) must not be null and contain at least one element.</value>
   </data>
-  <data name="CollectionConstraints_ElementAt" xml:space="preserve">
-    <value>{member.FullName} ({member.Value.Count} item(s)) contains no element at {constraint.Indices}.</value>
+  <data name="CollectionConstraints_HasItem" xml:space="preserve">
+    <value>{member.FullName} ({member.Value.Count} item(s)) contains no element at {constraint.IndexList}.</value>
   </data>
   <data name="CollectionConstraints_IsNullOrEmpty" xml:space="preserve">
     <value>{member.FullName} ({member.Value.Count} item(s)) must be null or empty.</value>
@@ -255,8 +255,8 @@
   <data name="StringConstraints_StartsWith" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) must start with '{constraint.Prefix}'.</value>
   </data>
-  <data name="CollectionConstraints_NoElementAt" xml:space="preserve">
-    <value>{member.FullName} ({member.Value.Count} item(s)) does contain an element at {constraint.Indices}.</value>
+  <data name="CollectionConstraints_HasNoItem" xml:space="preserve">
+    <value>{member.FullName} ({member.Value.Count} item(s)) does contain an element at {constraint.IndexList}.</value>
   </data>
   <data name="StringConstraints_IsIdentifier" xml:space="preserve">
     <value>{member.FullName} ({member.Value}) could not be converted to an identifier.</value>

@@ -61,9 +61,12 @@
     <Compile Include="Constraints\DefaultMember.cs" />
     <Compile Include="Constraints\DelegateConstraint.T1.cs" />
     <Compile Include="Constraints\DelegateFilter.T2.cs" />
+    <Compile Include="Constraints\IndexerInvocationException.cs" />
+    <Compile Include="Constraints\IndexListFactory.T1.cs" />
     <Compile Include="Constraints\EmptyStack.cs" />
     <Compile Include="Constraints\EnumConstraints.cs" />
     <Compile Include="Constraints\EquatableObject.T1.cs" />
+    <Compile Include="Constraints\ExpressionNotSupportedException.cs" />
     <Compile Include="Constraints\IConstraint.cs" />
     <Compile Include="Constraints\IConstraintVisitor.cs" />
     <Compile Include="Constraints\IdentifierComponent.cs" />
@@ -73,6 +76,7 @@
     <Compile Include="Constraints\Member.cs" />
     <Compile Include="Constraints\Member.T1.cs" />
     <Compile Include="Constraints\MemberConstraint.T2.cs" />
+    <Compile Include="Constraints\LeftExpressionFactory.cs" />
     <Compile Include="Constraints\VerifyThatExpression.T2.cs" />
     <Compile Include="Constraints\MemberExceptionFactory.cs" />
     <Compile Include="Constraints\MemberExpressionPair.cs" />

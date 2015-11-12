@@ -223,11 +223,20 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element at {constraint.Indices}..
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) contains no element at {constraint.IndexList}..
         /// </summary>
-        internal static string CollectionConstraints_ElementAt {
+        internal static string CollectionConstraints_HasItem {
             get {
-                return ResourceManager.GetString("CollectionConstraints_ElementAt", resourceCulture);
+                return ResourceManager.GetString("CollectionConstraints_HasItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) does contain an element at {constraint.IndexList}..
+        /// </summary>
+        internal static string CollectionConstraints_HasNoItem {
+            get {
+                return ResourceManager.GetString("CollectionConstraints_HasNoItem", resourceCulture);
             }
         }
         
@@ -246,15 +255,6 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string CollectionConstraints_IsNullOrEmpty {
             get {
                 return ResourceManager.GetString("CollectionConstraints_IsNullOrEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {member.FullName} ({member.Value.Count} item(s)) does contain an element at {constraint.Indices}..
-        /// </summary>
-        internal static string CollectionConstraints_NoElementAt {
-            get {
-                return ResourceManager.GetString("CollectionConstraints_NoElementAt", resourceCulture);
             }
         }
         

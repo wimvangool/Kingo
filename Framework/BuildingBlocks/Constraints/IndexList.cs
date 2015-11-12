@@ -2,46 +2,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Kingo.BuildingBlocks.Resources;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
-    internal sealed class IndexList : IReadOnlyList<object>
+    internal sealed class IndexList : IReadOnlyList<Tuple<Type, object>>
     {
-        internal readonly object[] Indices;
+        internal readonly Tuple<Type, object>[] Indices;
 
-        internal IndexList(IEnumerable<object> indices)
+        internal IndexList(IEnumerable<Tuple<Type, object>> indices)
         {
-            if (indices == null)
-            {
-                throw new ArgumentNullException("indices");
-            }
-            var indexList = indices.ToArray();
-            if (indexList.Length == 0)
-            {
-                throw NewEmptyIndexListException("indexList");
-            }
-            Indices = indexList;
+            Indices = indices.Where(index => index != null).ToArray();
         }        
 
-        internal IEnumerable<Type> IndexTypes()
+        internal IEnumerable<Type> Types()
         {
-            return Indices.Select(index => index == null ? typeof(object) : index.GetType());
-        }  
+            return Indices.Select(index => index.Item1);
+        }
+
+        internal IEnumerable<object> Values()
+        {
+            return Indices.Select(index => index.Item2);
+        }
 
         public override string ToString()
         {
-            return "[" + string.Join(", ", Indices.Select(index => index == null ? StringTemplate.NullValue : index.ToString())) + "]";
-        }
-
-        private static Exception NewEmptyIndexListException(string paramName)
-        {
-            return new ArgumentException(ExceptionMessages.IndexList_EmptyList, paramName);
-        }
+            return "[" + string.Join(", ", Values().Select(index => index == null ? StringTemplate.NullValue : index.ToString())) + "]";
+        }        
 
         #region [====== ReadOnlyList ======]
 
-        public object this[int index]
+        public Tuple<Type, object> this[int index]
         {
             get { return Indices[index]; }
         }
@@ -51,12 +41,9 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return Indices.Length; }
         }
 
-        public IEnumerator<object> GetEnumerator()
+        public IEnumerator<Tuple<Type, object>> GetEnumerator()
         {
-            foreach (var index in Indices)
-            {
-                yield return index;
-            }
+            return Indices.OfType<Tuple<Type, object>>().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
