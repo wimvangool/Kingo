@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,53 +11,52 @@ namespace Kingo.BuildingBlocks.Constraints
     /// Contains a set of extension methods specific for members of type <see cref="IMemberConstraintBuilder{T}" />.
     /// </summary>
     public static partial class CollectionConstraints
-    {        
-        #region [====== TryGetItem ======]
+    {
+        #region [====== TryGetIndexer ======]
 
-        /// <summary>
-        /// Attempts to retrieve the <paramref name="element"/> at the specified <paramref name="index"/>.
-        /// </summary>
-        /// <typeparam name="TValue">Type of the element.</typeparam>
-        /// <param name="value">The collection to get the element from.</param>
-        /// <param name="index">The index of the element.</param>
-        /// <param name="element">
-        /// If this method returns <c>true</c>, this parameter will refer to the element at the specified <paramref name="index"/>;
-        /// otherwise, it will be set to the default value of <typeparamref name="TValue"/>.
-        /// </param>
-        /// <returns>
-        /// <c>true</c> if the collection contains an element at the specified <paramref name="index"/>;
-        /// otherwise <c>false</c>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="value"/> is <c>null</c>.
-        /// </exception>        
-        public static bool TryGetItem<TValue>(this IEnumerable<TValue> value, int index, out TValue element)
+        private sealed class IndexerSignatureComparer : IEqualityComparer<Tuple<Type, Type[]>>
         {
-            if (value == null)
+            public bool Equals(Tuple<Type, Type[]> x, Tuple<Type, Type[]> y)
             {
-                throw new ArgumentNullException("value");
-            }
-            if (0 <= index)
-            {
-                using (var enumerator = value.GetEnumerator())
+                if (x.Item1 != y.Item1 || x.Item2.Length != y.Item2.Length)
                 {
-                    var indexMinusOne = index - 1;
-                    var currentIndex = -1;
-
-                    while (currentIndex < indexMinusOne && enumerator.MoveNext())
+                    return false;
+                }
+                for (int index = 0; index < x.Item2.Length; index++)
+                {
+                    if (x.Item2[index] != y.Item2[index])
                     {
-                        currentIndex++;
+                        return false;
                     }
-                    if (enumerator.MoveNext())
-                    {
-                        element = enumerator.Current;
-                        return true;
-                    }
-                }                
+                }
+                return true;
             }
-            element = default(TValue);
-            return false;                
-        }                          
+
+            public int GetHashCode(Tuple<Type, Type[]> obj)
+            {
+                return HashCode.Of(obj.Item1);
+            }
+        }
+
+        private static readonly ConcurrentDictionary<Tuple<Type, Type[]>, PropertyInfo> _Indexers =
+            new ConcurrentDictionary<Tuple<Type, Type[]>, PropertyInfo>(new IndexerSignatureComparer());
+
+        internal static bool TryGetIndexer(Type type, IEnumerable<Type> arguments, out PropertyInfo indexer)
+        {
+            var signature = new Tuple<Type, Type[]>(type, arguments.ToArray());
+            
+            return (indexer = _Indexers.GetOrAdd(signature, GetIndexer)) != null;            
+        }
+
+        private static PropertyInfo GetIndexer(Tuple<Type, Type[]> signature)
+        {
+            var instanceType = signature.Item1;
+            var argumentTypes = signature.Item2;
+            var defaultMemberAttribute = instanceType.GetCustomAttribute<DefaultMemberAttribute>();
+            var indexerName = defaultMemberAttribute == null ? "Item" : defaultMemberAttribute.MemberName;
+
+            return instanceType.GetProperty(indexerName, argumentTypes);
+        }
 
         #endregion
     }
@@ -184,19 +184,17 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw NewInvalidArrayIndexValuesSpecified(indexList, exception);
             }
-        }        
+        }                
 
-        private static PropertyInfo GetIndexer(Type type, IEnumerable<Type> arguments)
+        internal static PropertyInfo GetIndexer(Type type, IEnumerable<Type> arguments)
         {
-            var argumentTypes = arguments.ToArray();
-            var defaultMemberAttribute = type.GetCustomAttribute<DefaultMemberAttribute>();
-            var indexerName = defaultMemberAttribute == null ? "Item" : defaultMemberAttribute.MemberName;
-            var indexer = type.GetProperty(indexerName, argumentTypes);
-            if (indexer == null)
+            PropertyInfo indexer;
+
+            if (CollectionConstraints.TryGetIndexer(type, arguments, out indexer))
             {
-                throw NewIndexerNotFoundException(type, argumentTypes);
+                return indexer;
             }
-            return indexer;
+            throw NewIndexerNotFoundException(type, arguments);
         }
 
         private static Exception NewInvalidArrayIndexValuesSpecified(object indexList, Exception innerException)

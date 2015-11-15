@@ -51,6 +51,10 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("fieldOrProperty");
             }            
+            if (fieldOrPropertyName == null)
+            {
+                throw new ArgumentNullException("fieldOrPropertyName");
+            }
             return Satisfies(instance => new DelegateFilter<TValueOut, TMember>(fieldOrProperty), new PushIdentifierTransformer(fieldOrPropertyName));
         }
         

@@ -118,7 +118,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// Indicates whether or not this constraint set should stop evaluating constraints once a constraint has failed.
         /// </param>
         public MemberConstraintSet(bool haltOnFirstError = false)
-            : this(haltOnFirstError, new EmptyStack()) { }
+            : this(haltOnFirstError, new EmptyStack(typeof(T))) { }
         
         private MemberConstraintSet(bool haltOnFirstError, MemberNameComponentStack parentNameStack)
         {
@@ -306,7 +306,12 @@ namespace Kingo.BuildingBlocks.Constraints
 
         private IMemberConstraintBuilder<T, TValue> AddNullConstraintFor<TValue>(Func<T, TValue> valueFactory, Identifier name)
         {
-            return AddNullConstraintFor(new MemberFactory<T, TValue>(_parentNameStack.Push(name), valueFactory));
+            var nameStack = _parentNameStack;
+            if (name != null)
+            {
+                nameStack = nameStack.Push(name);
+            }
+            return AddNullConstraintFor(new MemberFactory<T, TValue>(nameStack, valueFactory));
         }
 
         private IMemberConstraintBuilder<T, TValue> AddNullConstraintFor<TValue>(MemberFactory<T, TValue> member)

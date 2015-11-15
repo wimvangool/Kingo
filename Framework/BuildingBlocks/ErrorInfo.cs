@@ -103,7 +103,7 @@ namespace Kingo.BuildingBlocks
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format("{0} error(s).", _memberErrors.Count);
+            return string.Format("{0} error(s).", ErrorCount);
         }
 
         #region [====== Factory Methods ======]

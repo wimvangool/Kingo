@@ -3,18 +3,16 @@
 namespace Kingo.BuildingBlocks.Constraints
 {
     internal abstract class Member : IMember
-    {
-        internal readonly MemberNameComponentStack NameComponentStack;
-
-        protected Member(MemberNameComponentStack nameComponentStack)
+    {              
+        public string DisplayName
         {
-            NameComponentStack = nameComponentStack;
-        }        
+            get { return NameComponentStack.ToString(true); }
+        }
 
         public string FullName
         {
             get { return NameComponentStack.ToString(); }
-        }        
+        }               
         
         public string Name
         {
@@ -28,7 +26,12 @@ namespace Kingo.BuildingBlocks.Constraints
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", FullName, Type);
-        }        
+            return DisplayName;
+        }
+
+        internal abstract MemberNameComponentStack NameComponentStack
+        {
+            get;
+        }
     }
 }

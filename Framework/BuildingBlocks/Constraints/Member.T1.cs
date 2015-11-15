@@ -3,14 +3,20 @@
 namespace Kingo.BuildingBlocks.Constraints
 {
     internal sealed class Member<TValue> : Member
-    {        
+    {
+        private readonly MemberNameComponentStack _nameComponentStack;
         private readonly TValue _value;
 
-        internal Member(MemberNameComponentStack nameComponentStack, TValue value)
-            : base(nameComponentStack)
-        {            
+        internal Member(MemberNameComponentStack nameComponentStack, TValue value)            
+        {
+            _nameComponentStack = nameComponentStack;
             _value = value;
-        }        
+        }
+
+        internal override MemberNameComponentStack NameComponentStack
+        {
+            get { return _nameComponentStack; }
+        }
 
         public override Type Type
         {

@@ -135,9 +135,9 @@ namespace Kingo.BuildingBlocks.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The specified expression is not supported: &apos;{0}&apos;..
         /// </summary>
-        internal static string MemberExpressionSplitter_ExpressionNotSupported {
+        internal static string MemberExpressionPair_ExpressionNotSupported {
             get {
-                return ResourceManager.GetString("MemberExpressionSplitter_ExpressionNotSupported", resourceCulture);
+                return ResourceManager.GetString("MemberExpressionPair_ExpressionNotSupported", resourceCulture);
             }
         }
         

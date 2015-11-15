@@ -48,6 +48,12 @@ namespace Kingo.BuildingBlocks.Constraints
             _indexFactoryList.Add(indexFactory);
         }
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return "[" + string.Join(", ", _indexFactoryList.Select(indexFactory => indexFactory.Method.ReturnType)) + "]";
+        } 
+
         internal IndexList Materialize(T instance)
         {
             var indexList =

@@ -70,7 +70,7 @@ namespace Kingo.BuildingBlocks.Constraints
         private IsNotNullConstraint(IsNotNullConstraint<TValue> constraint, Identifier name)
             : base(constraint, name) { }
 
-        #region [====== Name & ErrorMessage ======]               
+        #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
         protected override StringTemplate ErrorMessageIfNotSpecified

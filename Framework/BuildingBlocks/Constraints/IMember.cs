@@ -6,7 +6,15 @@ namespace Kingo.BuildingBlocks.Constraints
     /// When implemented by a class, represent a certain member that can be validated.
     /// </summary>
     public interface IMember
-    {        
+    {
+        /// <summary>
+        /// The display name of this member.
+        /// </summary>
+        string DisplayName
+        {
+            get;
+        }
+
         /// <summary>
         /// The full name of this member.
         /// </summary>

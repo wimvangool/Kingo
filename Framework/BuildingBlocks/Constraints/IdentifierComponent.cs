@@ -1,16 +1,24 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
     internal sealed class IdentifierComponent : MemberNameComponentStack
     {
+        private readonly Type _instanceType;
         private readonly Identifier _identifier;
         private readonly MemberNameComponentStack _bottomStack;      
 
-        internal IdentifierComponent(Identifier identifier, MemberNameComponentStack bottomStack)
+        internal IdentifierComponent(Type instanceType, Identifier identifier, MemberNameComponentStack bottomStack)
         {
+            _instanceType = instanceType;
             _identifier = identifier;
             _bottomStack = bottomStack;
+        }
+
+        internal override Type InstanceType
+        {
+            get { return _instanceType; }
         }
 
         internal override string Top
@@ -20,10 +28,11 @@ namespace Kingo.BuildingBlocks.Constraints
 
         internal override bool Pop(out MemberNameComponentStack memberName)
         {
-            return (memberName = _bottomStack) != null;
+            memberName = _bottomStack ?? new EmptyStack(_instanceType);
+            return true;
         }
 
-        internal override void WriteTo(StringBuilder fullName)
+        internal override void WriteTo(StringBuilder fullName, bool displayName)
         {
             if (_bottomStack == null)
             {
@@ -31,7 +40,7 @@ namespace Kingo.BuildingBlocks.Constraints
             }
             else
             {
-                _bottomStack.WriteTo(fullName);
+                _bottomStack.WriteTo(fullName, displayName);
 
                 fullName.Append('.');
                 fullName.Append(Top);

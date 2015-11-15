@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -28,51 +29,224 @@ namespace Kingo.BuildingBlocks.Constraints
         }
 
         private IMemberConstraintBuilder<T, TValue> CreateMemberConstraint(Expression<Func<T, TValue>> fieldOrProperty)
-        {            
-            //return CreateVerifyThatExpression(fieldOrProperty).Compile().Invoke();                        
-            return _constraintSet.VerifyThat(fieldOrProperty.Compile(), fieldOrProperty.ExtractMemberName());
+        {                        
+            return CreateVerifyThatExpression(fieldOrProperty).Compile().Invoke();                                    
         }
 
         private Expression<Func<IMemberConstraintBuilder<T, TValue>>> CreateVerifyThatExpression(Expression<Func<T, TValue>> memberExpression)
         {
-            // [m => m.A.B.C] becomes [m => m.A] + [a => a.B.C]
+            //                          Left          Right
+            // [m => m]         becomes [m => m]    + <null>
+            // [m => m.A]       becomes [m => m.A]  + [a => a]
+            // [m => m.A.B]     becomes [m => m.A]  + [a => a.B]  
+            // [m => m[0]]      becomes [m => m][0] + <null>
+            // [m => m.A[0]]    becomes [m => m.A]  + [a => a[0]]
             var memberExpressionPair = MemberExpressionPair.SplitUp(memberExpression);
+            var left = memberExpressionPair.Left;
+            var right = memberExpressionPair.Right;
 
-            // _constraintSet.VerifyThat(m => m.A, "A")
-            var verifyThatMethodCallExpression = CreateVerifyThatMethodCallExpression(memberExpressionPair.LeftExpression);
-
-            // If remainder [a => a.B.C] exists, then do _contraintSet.VerifyThat(m => m.A).IsNotNull().And(a => a.B.C).
-            var remainderExpression = memberExpressionPair.RightExpression;
-            if (remainderExpression == null)
+            // [m => m]     becomes _constraintSet.VerifyThat(m => m, null)
+            // [m => m[0]]  becomes _constraintSet.VerifyThat(m => m[0], null)
+            // [m => m.A]   becomes _constraintSet.VerifyThat(m => m.A, "A")
+            var methodCallExpression = CreateVerifyThatMethodCallExpression(left);            
+            
+            if (left.IsIndexer)
             {
-                return Expression.Lambda<Func<IMemberConstraintBuilder<T, TValue>>>(verifyThatMethodCallExpression);
+                // Append <left_expression>.HasItem<TItem>(new IndexListFactory<T> { <arguments> })              
+                AppendHasItem(ref methodCallExpression, typeof(TValue), left.Parameter, left.IndexerArguments);                
             }
-            throw new NotImplementedException();
-        }        
+            if (right != null && !right.IsTrivialParameterExpression())
+            {
+                // Append <left_expression>.IsNotNull()
+                if (AppendIsNotNull(ref methodCallExpression))
+                {
+                    // Append <left_expression>.And(<right_expression>);
+                    AppendAnd(ref methodCallExpression, right.Expression);    
+                }                
+            }                    
+            return ConvertToLambda(methodCallExpression);
+        }                   
 
-        private MethodCallExpression CreateVerifyThatMethodCallExpression(LambdaExpression memberExpression)
-        {                       
-            var verifyThatMethod = GetVerifyThatMethod(_constraintSet.GetType(), memberExpression.ReturnType);
+        private MethodCallExpression CreateVerifyThatMethodCallExpression(MemberExpressionLeftNode left)
+        {
+            // IMemberConstraintSet<T>.VerifyThat<TValue>(Func<T, TValue>, Identifier).
+            var verifyThatMethod = GetVerifyThatMethod(_constraintSet.GetType(), left.Expression.ReturnType);
+            var fieldOrPropertyName = left.IsMemberAccess ? left.Expression.ExtractMemberName() : null;
 
             return Expression.Call(
                 Expression.Constant(_constraintSet),
                 verifyThatMethod,
-                memberExpression,
-                Expression.Constant(memberExpression.ExtractMemberName())
+                left.Expression,
+                Expression.Constant(fieldOrPropertyName, typeof(Identifier))
             );            
         }                
 
         private static MethodInfo GetVerifyThatMethod(Type memberConstraintSetType, Type valueType)
         {
+            // IMemberConstraintSet<T>.VerifyThat<TValue>(Func<T, TValue>, Identifier).
             var verifyThatMethod =
                 from method in memberConstraintSetType.GetMethods(BindingFlags.Public | BindingFlags.Instance)                
                 where method.IsGenericMethodDefinition && method.Name == "VerifyThat"
                 let parameters = method.GetParameters()
-                where parameters.Length == 2 && parameters[1].ParameterType == typeof(Identifier)
+                where parameters.Length == 2
+                where parameters[0].ParameterType.IsGenericType
+                where parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(Func<,>)
+                where parameters[1].ParameterType == typeof(Identifier)
                 select method.MakeGenericMethod(valueType);
 
             return verifyThatMethod.Single();
         }
+
+        private static void AppendHasItem(ref MethodCallExpression methodCallExpression, Type itemType, ParameterExpression parameter, IReadOnlyList<Expression> indexerArguments)
+        {
+            // IMemberConstraintBuilder<T, TValue>.HasItem<TItem>(IndexListFactory<T>, string).
+            var valueType = GetValueType(methodCallExpression.Type);
+            var hasItemMethod = GetHasItemMethod(valueType, itemType);
+            var hasItemArguments = CreateHasItemArgumentExpression(parameter, indexerArguments);
+
+            methodCallExpression = Expression.Call(methodCallExpression, hasItemMethod, hasItemArguments, NoErrorMessage());
+        }
+
+        private static MethodInfo GetHasItemMethod(Type valueType, Type itemType)
+        {
+            // IMemberConstraintBuilder<T, TValue>.HasItem<TItem>(IndexListFactory<T>, string).
+            var builderType = MakeMemberConstraintBuilderType(valueType);
+
+            var hasItemMethod =
+                from method in builderType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                where method.IsGenericMethodDefinition && method.Name == "HasItem"
+                let parameters = method.GetParameters()
+                where parameters.Length == 2
+                where parameters[0].ParameterType.IsGenericType
+                where parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IndexListFactory<>)
+                where parameters[1].ParameterType == typeof(string)
+                select method.MakeGenericMethod(itemType);
+
+            return hasItemMethod.Single();
+        }
+
+        private static Expression CreateHasItemArgumentExpression(ParameterExpression parameter, IReadOnlyList<Expression> indexerArguments)
+        {
+            var indexListFactory = new IndexListFactory<T>();
+
+            foreach (var indexerArgument in indexerArguments)
+            {
+                AddIndexerArgumentTo(indexListFactory, parameter, indexerArgument);
+            }
+            return Expression.Constant(indexListFactory);
+        }
+
+        private static void AddIndexerArgumentTo(IndexListFactory<T> indexListFactory, ParameterExpression parameter, Expression indexerArgument)
+        {
+            // indexListFactory.Add<TValue>(Func<T, TValue>)
+            var indexerFunc = Expression.Lambda(indexerArgument, parameter);
+            var indexerType = indexerFunc.ReturnType;
+            var addMethod = GetAddMethod(indexerType);
+
+            addMethod.Invoke(indexListFactory, new object[] { indexerFunc.Compile() });
+        }
+
+        private static MethodInfo GetAddMethod(Type indexerType)
+        {
+            var addMethod =
+                from method in typeof(IndexListFactory<T>).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                where method.IsGenericMethodDefinition && method.Name == "Add"
+                let parameters = method.GetParameters()
+                where parameters.Length == 1
+                where parameters[0].ParameterType.IsGenericType
+                where parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(Func<,>)
+                select method.MakeGenericMethod(indexerType);
+
+            return addMethod.Single();
+        }
+     
+        private static bool AppendIsNotNull(ref MethodCallExpression methodCallExpression)
+        {
+            MethodInfo isNotNullMethod;
+
+            var valueType = GetValueType(methodCallExpression.Type);
+            if (valueType.IsValueType)
+            {
+                if (IsNullable(valueType))
+                {
+                    isNotNullMethod = GetIsNotNullMethod(typeof(NullableConstraints), valueType.GetGenericArguments()[0]);
+                    methodCallExpression = Expression.Call(isNotNullMethod, methodCallExpression, NoErrorMessage());
+                    return false;
+                }                
+                return true;
+            }
+            isNotNullMethod = GetIsNotNullMethod(typeof(BasicConstraints), valueType);
+            methodCallExpression = Expression.Call(isNotNullMethod, methodCallExpression, NoErrorMessage());
+            return true;            
+        }        
+
+        private static bool IsNullable(Type valueType)
+        {
+            return valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        private static MethodInfo GetIsNotNullMethod(Type classType, Type valueType)
+        {
+            // IMemberConstraintBuilder<T, TValue>.IsNotNull<TValue>(string).
+            var isNotNullMethod =
+                from method in classType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                where method.IsGenericMethodDefinition && method.Name == "IsNotNull"
+                let parameters = method.GetParameters()
+                where parameters.Length == 2                
+                where parameters[0].ParameterType.IsGenericType
+                where parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IMemberConstraintBuilder<,>)
+                where parameters[1].ParameterType == typeof(string)
+                select method.MakeGenericMethod(typeof(T), valueType);
+
+            return isNotNullMethod.Single();
+        }
+      
+        private static void AppendAnd(ref MethodCallExpression methodCallExpression, Expression rightExpression)
+        {
+            // IMemberConstraintBuilder<T, TValue>.And<TOther>(Expression<Func<TValue, TOther>>).
+            var valueType = GetValueType(methodCallExpression.Type);
+            var otherType = GetValueType(rightExpression.Type);
+            var andMethod = GetAndMethod(valueType, otherType);
+
+            methodCallExpression = Expression.Call(methodCallExpression, andMethod, Expression.Quote(rightExpression));
+        }
+
+        private static MethodInfo GetAndMethod(Type valueType, Type memberType)
+        {
+            // IMemberConstraintBuilder<T, TValue>.And<TOther>(Expression<Func<TValue, TOther>>).
+            var builderType = MakeMemberConstraintBuilderType(valueType);
+
+            var andMethod =
+                from method in builderType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                where method.IsGenericMethodDefinition && method.Name == "And"
+                let parameters = method.GetParameters()
+                where parameters.Length == 1
+                where parameters[0].ParameterType.IsGenericType
+                where parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(Expression<>)
+                select method.MakeGenericMethod(memberType);
+
+            return andMethod.Single();
+        }        
+
+        private static Type GetValueType(Type builderType)
+        {
+            return builderType.GetGenericArguments()[1];
+        }
+
+        private static Type MakeMemberConstraintBuilderType(Type valueType)
+        {
+            return typeof(IMemberConstraintBuilder<,>).MakeGenericType(typeof(T), valueType);
+        }
+
+        private static Expression NoErrorMessage()
+        {
+            return Expression.Constant(null, typeof(string));
+        }
+
+        private static Expression<Func<IMemberConstraintBuilder<T, TValue>>> ConvertToLambda(MethodCallExpression methodCallExpression)
+        {
+            return Expression.Lambda<Func<IMemberConstraintBuilder<T, TValue>>>(methodCallExpression);
+        } 
 
         #endregion
 

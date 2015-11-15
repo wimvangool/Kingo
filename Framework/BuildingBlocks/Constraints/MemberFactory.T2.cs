@@ -3,18 +3,24 @@
 namespace Kingo.BuildingBlocks.Constraints
 {    
     internal sealed class MemberFactory<T, TValue> : Member
-    {        
+    {
+        private readonly MemberNameComponentStack _nameComponentStack;
         private readonly Func<T, TValue> _valueFactory;
 
-        internal MemberFactory(MemberNameComponentStack nameComponentStack, Func<T, TValue> valueFactory)
-            : base(nameComponentStack)
+        internal MemberFactory(MemberNameComponentStack nameComponentStack, Func<T, TValue> valueFactory)            
         {
             if (valueFactory == null)
             {
                 throw new ArgumentNullException("valueFactory");
             }
+            _nameComponentStack = nameComponentStack;
             _valueFactory = valueFactory;
-        }              
+        }
+
+        internal override MemberNameComponentStack NameComponentStack
+        {
+            get { return _nameComponentStack; }
+        }
 
         public override Type Type
         {

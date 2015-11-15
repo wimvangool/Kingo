@@ -141,7 +141,7 @@
   <data name="Identifier_InvalidIdentifier" xml:space="preserve">
     <value>Invalid identifier specified: '{0}'.</value>
   </data>
-  <data name="MemberExpressionSplitter_ExpressionNotSupported" xml:space="preserve">
+  <data name="MemberExpressionPair_ExpressionNotSupported" xml:space="preserve">
     <value>The specified expression is not supported: '{0}'.</value>
   </data>
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">

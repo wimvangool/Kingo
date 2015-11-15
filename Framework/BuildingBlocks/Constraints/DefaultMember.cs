@@ -3,32 +3,29 @@ using System.Linq;
 
 namespace Kingo.BuildingBlocks.Constraints
 {    
-    internal sealed class DefaultMember : IMember
+    internal sealed class DefaultMember : Member
     {
-        private const string _Name = "Value";
+        private static readonly Identifier _DefaultName = Identifier.Parse("Value");
 
-        private readonly IConstraintWithErrorMessage _failedConstraint;
-        private readonly object _value;
+        private readonly Lazy<MemberNameComponentStack> _nameComponentStack;
         private readonly Lazy<Type> _type;
+        private readonly IConstraintWithErrorMessage _failedConstraint;
+        private readonly object _value;        
 
-        internal DefaultMember(IConstraintWithErrorMessage failedConstraint, object value)
+        internal DefaultMember(IConstraintWithErrorMessage failedConstraint, object value)            
         {
-            _failedConstraint = failedConstraint;
-            _value = value;
+            _nameComponentStack = new Lazy<MemberNameComponentStack>(DefaultName);
             _type = new Lazy<Type>(DetermineType);
-        }        
-
-        public string FullName
-        {
-            get { return _Name; }
+            _failedConstraint = failedConstraint;
+            _value = value;            
         }
 
-        public string Name
+        internal override MemberNameComponentStack NameComponentStack
         {
-            get { return _Name; }
+            get { return _nameComponentStack.Value; }
         }
 
-        public Type Type
+        public override Type Type
         {
             get { return _type.Value; }
         }
@@ -36,6 +33,11 @@ namespace Kingo.BuildingBlocks.Constraints
         public object Value
         {
             get { return _value; }
+        }
+
+        private MemberNameComponentStack DefaultName()
+        {
+            return new IdentifierComponent(Type, _DefaultName, null);
         }
 
         private Type DetermineType()
@@ -60,6 +62,6 @@ namespace Kingo.BuildingBlocks.Constraints
                                    select targetInterface;
 
             return (interfaceType = targetInterfaces.FirstOrDefault()) != null;
-        }
+        }        
     }
 }

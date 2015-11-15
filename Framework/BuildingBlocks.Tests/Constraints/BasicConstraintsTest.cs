@@ -85,7 +85,8 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Other).IsEqualTo(m => m.Member);
 
             validator.Validate(message)
-                .AssertErrorCountIs(2)
+                .AssertErrorCountIs(3)
+                .AssertInstanceError("Member (0) must be equal to '1'.")
                 .AssertMemberError("Member (0) must be equal to '1'.", "Member")
                 .AssertMemberError("Other (1) must be equal to '0'.", "Other");
         }
@@ -100,7 +101,8 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Other).IsEqualTo(m => m.Member);
 
             validator.Validate(message)
-                .AssertErrorCountIs(1)
+                .AssertErrorCountIs(2)
+                .AssertInstanceError("Member (0) must be equal to '1'.")
                 .AssertMemberError("Member (0) must be equal to '1'.", "Member");                
         }
 
@@ -182,7 +184,8 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
 
             validator.Validate(message)
-                .AssertErrorCountIs(1)
+                .AssertErrorCountIs(2)
+                .AssertInstanceError(RandomErrorMessage)
                 .AssertMemberError(RandomErrorMessage);          
         }
 
