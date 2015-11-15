@@ -7,21 +7,18 @@ namespace Kingo.BuildingBlocks.Constraints
     {
         private readonly LambdaExpression _expression;
         private readonly IReadOnlyList<Expression> _indexerArguments;
+        private readonly bool _isArrayLength;
 
-        internal MemberExpressionLeftNode(LambdaExpression expression, IReadOnlyList<Expression> indexerArguments)
+        internal MemberExpressionLeftNode(LambdaExpression expression, IReadOnlyList<Expression> indexerArguments, bool isArrayLength)
         {
             _expression = expression;
             _indexerArguments = indexerArguments;
-        }       
+            _isArrayLength = isArrayLength;
+        }      
 
         internal override LambdaExpression Expression
         {
             get { return _expression; }
-        }
-
-        internal ParameterExpression Parameter
-        {
-            get { return _expression.Parameters[0]; }
         }
 
         internal bool IsIndexer
@@ -34,6 +31,16 @@ namespace Kingo.BuildingBlocks.Constraints
             get { return !IsTrivialParameterExpression() && !IsIndexer; }
         }
 
+        internal bool IsArrayLength
+        {
+            get { return _isArrayLength; }
+        }
+
+        internal ParameterExpression Parameter
+        {
+            get { return _expression.Parameters[0]; }
+        }        
+
         internal IReadOnlyList<Expression> IndexerArguments
         {
             get { return _indexerArguments; }
@@ -43,7 +50,7 @@ namespace Kingo.BuildingBlocks.Constraints
         {
             if (IsTrivialParameterExpression(expression))
             {
-                left = new MemberExpressionLeftNode(expression, null);
+                left = new MemberExpressionLeftNode(expression, null, false);
                 return true;
             }
             left = null;

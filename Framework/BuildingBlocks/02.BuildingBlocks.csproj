@@ -200,6 +200,7 @@
     <None Include="07.BuildingBlocks.nuspec">
       <SubType>Designer</SubType>
     </None>
+    <Compile Include="Constraints\CollectionConstraints.Length.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

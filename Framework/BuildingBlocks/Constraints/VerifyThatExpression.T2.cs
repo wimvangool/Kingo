@@ -50,7 +50,12 @@ namespace Kingo.BuildingBlocks.Constraints
             // [m => m.A]   becomes _constraintSet.VerifyThat(m => m.A, "A")
             var methodCallExpression = CreateVerifyThatMethodCallExpression(left);            
             
-            if (left.IsIndexer)
+            if (left.IsArrayLength)
+            {
+                // Append <left_expression>.Length()
+                AppendLength(ref methodCallExpression);
+            }
+            else if (left.IsIndexer)
             {
                 // Append <left_expression>.HasItem<TItem>(new IndexListFactory<T> { <arguments> })              
                 AppendHasItem(ref methodCallExpression, typeof(TValue), left.Parameter, left.IndexerArguments);                
@@ -95,6 +100,29 @@ namespace Kingo.BuildingBlocks.Constraints
                 select method.MakeGenericMethod(valueType);
 
             return verifyThatMethod.Single();
+        }
+
+        private static void AppendLength(ref MethodCallExpression methodCallExpression)
+        {
+            // IMemberConstraintBuilder<T, TValue>.Length().
+            var valueType = GetValueType(methodCallExpression.Type).GetElementType();
+            var lengthMethod = GetLengthMethod(valueType);
+
+            methodCallExpression = Expression.Call(lengthMethod, methodCallExpression);
+        }
+
+        private static MethodInfo GetLengthMethod(Type valueType)
+        {
+            var lengthMethod =
+                from method in typeof(CollectionConstraints).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                where method.IsGenericMethodDefinition && method.Name == "Length"
+                let parameters = method.GetParameters()
+                where parameters.Length == 1
+                where parameters[0].ParameterType.IsGenericType
+                where parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IMemberConstraintBuilder<,>)
+                select method.MakeGenericMethod(typeof(T), valueType);
+
+            return lengthMethod.Single();
         }
 
         private static void AppendHasItem(ref MethodCallExpression methodCallExpression, Type itemType, ParameterExpression parameter, IReadOnlyList<Expression> indexerArguments)

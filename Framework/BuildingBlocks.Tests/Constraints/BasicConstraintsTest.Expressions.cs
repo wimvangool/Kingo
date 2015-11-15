@@ -8,7 +8,7 @@ namespace Kingo.BuildingBlocks.Constraints
 {
     public sealed partial class BasicConstraintsTest
     {
-        #region [====== Complex Expressions ======]
+        #region [====== Self-Constraints ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -73,6 +73,10 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.Validate(message).AssertInstanceError("ValidatedMessage<Dictionary<String, Object>> is not valid.");
         }
 
+        #endregion
+
+        #region [====== Simple Member Access ======]
+
         [TestMethod]
         public void VerifyThat_ReturnsNoErrors_IfExpressionBody_IsSimpleMemberAccess_And_ConstraintIsSatisfied()
         {
@@ -95,6 +99,34 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.Validate(message).AssertMemberError("Member (<null>) must refer to an instance of an object.", "Member");
         }
+
+        [TestMethod]
+        public void VerifyThat_ReturnsNoErrors_IfExpressionIsFieldOfMember_And_ConstraintIsSatisfied()
+        {
+            var value = Clock.Current.LocalDateAndTime().Millisecond;
+            var message = new ValidatedMessage<ValidatedMessage<int>>(new ValidatedMessage<int>(value));
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member.Member).IsEqualTo(value);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void VerifyThat_ReturnsExpectedErrors_IfExpressionIsFieldOfMember_And_ConstraintIsNotSatisfied()
+        {
+            var value = Clock.Current.LocalDateAndTime().Millisecond;
+            var message = new ValidatedMessage<ValidatedMessage<int>>(new ValidatedMessage<int>(value));
+            var validator = message.CreateConstraintValidator();
+            
+            validator.VerifyThat(m => m.Member.Member).IsNotEqualTo(value, RandomErrorMessage);
+
+            validator.Validate(message).AssertMemberError(RandomErrorMessage, "Member.Member", "Member");
+        }
+
+        #endregion
+
+        #region [====== Nullables ======]
 
         [TestMethod]
         public void VerifyThat_ReturnsExpectedError_IfExpressionIsValueOfNullableMember_And_ParentMemberIsNull()
@@ -131,29 +163,9 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.Validate(message).AssertMemberError("Member (10) must not be equal to '10'.", "Member");
         }
 
-        [TestMethod]
-        public void VerifyThat_ReturnsNoErrors_IfExpressionIsFieldOfMember_And_ConstraintIsSatisfied()
-        {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
-            var message = new ValidatedMessage<ValidatedMessage<int>>(new ValidatedMessage<int>(value));
-            var validator = message.CreateConstraintValidator();
+        #endregion        
 
-            validator.VerifyThat(m => m.Member.Member).IsEqualTo(value);
-
-            validator.Validate(message).AssertNoErrors();
-        }
-
-        [TestMethod]
-        public void VerifyThat_ReturnsExpectedErrors_IfExpressionIsFieldOfMember_And_ConstraintIsNotSatisfied()
-        {
-            var value = Clock.Current.LocalDateAndTime().Millisecond;
-            var message = new ValidatedMessage<ValidatedMessage<int>>(new ValidatedMessage<int>(value));
-            var validator = message.CreateConstraintValidator();
-            
-            validator.VerifyThat(m => m.Member.Member).IsNotEqualTo(value, RandomErrorMessage);
-
-            validator.Validate(message).AssertMemberError(RandomErrorMessage, "Member.Member", "Member");
-        }
+        #region [====== Indexers ======]
 
         [TestMethod]
         public void VerifyThat_ReturnsNoErrors_IfExpressionIsArrayIndexer_And_ConstraintIsSatisfied()
@@ -197,21 +209,73 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m[0.ToString()]).IsEqualTo(2);
 
             validator.Validate(message).AssertMemberError("Dictionary<String, Int32>[0] (1) must be equal to '2'.", "[0]");
+        }              
+
+        #endregion
+
+        #region [====== Array Length ======]
+
+        [TestMethod]
+        public void VerifyThat_ReturnsNoErrors_IfExpressionIsArrayLength_And_ConstraintIsSatisfied()
+        {
+            var message = new[] { 1, 2, 3 };
+            var validator = new ConstraintValidator<int[]>();
+
+            validator.VerifyThat(m => m.Length).IsEqualTo(3);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void VerifyThat_ReturnsExpectedError_IfExpressionIsArrayLength_And_ConstraintIsNotSatisfied()
+        {
+            var message = new[] { 1, 2, 3 };
+            var validator = new ConstraintValidator<int[]>();
+
+            validator.VerifyThat(m => m.Length).IsEqualTo(1);
+
+            validator.Validate(message).AssertMemberError("Length (3) must be equal to '1'.", "Length");
+        }
+
+        #endregion
+
+        #region [====== Expression Analysis - Advanced ======]
+
+        //[TestMethod]
+        public void VerifyThat_ReturnsExpectedError_IfExpressionIsDeeplyNestedMember_And_ParentIsNull()
+        {
+            var message = new ValidatedMessage<ValidatedMessage<string>>(new ValidatedMessage<string>(null));
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member.Member.Length).Satisfies(value => true);
+
+            validator.Validate(message).AssertMemberError("Member.Member (<null>) must refer to an instance of an object.", "Member.Member", "Member");
         }
 
         //[TestMethod]
-        public void VerifyThat_ReturnsExpectedError_IfExpressionIsArrayIndexer_And_ParentIsNull()
+        public void VerifyThat_ReturnsExpectedError_IfExpressionIsDeeplyNestedMember_And_ConstraintIsNotSatisfied()
+        {
+            var message = new ValidatedMessage<ValidatedMessage<string>>(new ValidatedMessage<string>("Some value"));
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member.Member.Length).IsEqualTo(11);
+
+            validator.Validate(message).AssertMemberError("Member.Member.Length (10) must be equal to '11'.", "Member.Member.Length", "Member.Member", "Member");
+        }  
+
+        //[TestMethod]
+        public void VerifyThat_ReturnsExpectedError_IfExpressionIsArrayIndexerOnMember_And_ParentIsNull()
         {
             var message = new ValidatedMessage<int[]>(null);
             var validator = message.CreateConstraintValidator();
-            
+
             validator.VerifyThat(m => m.Member[0]).Satisfies(value => true);
 
             validator.Validate(message).AssertMemberError("Member (<null> must refer to an instance of an object.", "Member");
         }
 
         //[TestMethod]
-        public void VerifyThat_ReturnsExpectedError_IfExpressionIsArrayIndexer_And_ConstraintFails()
+        public void VerifyThat_ReturnsExpectedError_IfExpressionIsArrayIndexerOnMember_And_ConstraintIsNotSatisfied()
         {
             var message = new ValidatedMessage<int[]>(new[] { 0, 1, 2, 3 });
             var validator = message.CreateConstraintValidator();
@@ -219,7 +283,7 @@ namespace Kingo.BuildingBlocks.Constraints
             validator.VerifyThat(m => m.Member[1]).IsEqualTo(5, RandomErrorMessage);
 
             validator.Validate(message).AssertMemberError(RandomErrorMessage);
-        }
+        }  
 
         #endregion
     }

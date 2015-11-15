@@ -37,6 +37,12 @@ namespace Kingo.BuildingBlocks.Constraints
                 private set;
             }
 
+            internal bool IsArrayLength
+            {
+                get;
+                private set;
+            }
+
             internal ParameterExpression RightExpressionParameter
             {
                 get;
@@ -90,6 +96,19 @@ namespace Kingo.BuildingBlocks.Constraints
                 throw NewNotSupportedExpressionException(_expression);
             }
 
+            protected override Expression VisitUnary(UnaryExpression node)
+            {
+                // Check if expression is of the form 'm.Length'.
+                if (node.Operand.NodeType == ExpressionType.Parameter)
+                {
+                    LeftExpressionBody = node.Operand;
+                    IsArrayLength = true;
+
+                    return ReplaceWithParameter(node.Type);
+                }
+                throw NewNotSupportedExpressionException(_expression);
+            }
+
             private ParameterExpression ReplaceWithParameter(Type parameterType)
             {
                 return RightExpressionParameter = Expression.Parameter(parameterType, _expression.Parameters[0].Name);
@@ -99,6 +118,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 return
                     node.NodeType == ExpressionType.ArrayIndex ||
+                    node.NodeType == ExpressionType.ArrayLength ||
                     node.NodeType == ExpressionType.Call ||
                     node.NodeType == ExpressionType.MemberAccess;
             }
@@ -163,7 +183,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var leftExpression = CreateLambdaExpression(leftExpressionBody, expression.Parameters[0]);
             var rightExpression = CreateLambdaExpression(rightExpressionBody, splitter.RightExpressionParameter);
 
-            left = new MemberExpressionLeftNode(leftExpression, splitter.IndexerArguments);
+            left = new MemberExpressionLeftNode(leftExpression, splitter.IndexerArguments, splitter.IsArrayLength);
             right = new MemberExpressionRightNode(rightExpression);
 
             return new MemberExpressionPair(left, right);            
