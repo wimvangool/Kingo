@@ -58,6 +58,14 @@ namespace Kingo.BuildingBlocks.Constraints
             return enumFlags.IsDefined();            
         }              
 
+        /// <summary>
+        /// Determines whether or not the enum is decorated with the <see cref="FlagsAttribute" />.
+        /// </summary>
+        /// <param name="value">The value to check.</param>
+        /// <returns>
+        /// <c>true</c> if the <see cref="FlagsAttribute" /> has been declared on the specified <paramref name="value"/>;
+        /// otherwise <c>false</c>.
+        /// </returns>
         public static bool IsFlagsEnum(this Enum value)
         {
             if (value == null)

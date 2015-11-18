@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Kingo.BuildingBlocks.Constraints.Decoders;
 
 namespace Kingo.BuildingBlocks.Constraints
 {    
@@ -30,32 +31,27 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== And ======]
 
-        public IMemberConstraintBuilder<T, TMember> And<TMember>(Expression<Func<TValueOut, TMember>> fieldOrProperty)
+        public IMemberConstraintBuilder<T, TOther> And<TOther>(Expression<Func<T, TValueOut, TOther>> fieldOrProperty)
         {
-            // TODO: Replace with recursive member expression technique.
-            if (fieldOrProperty == null)
-            {
-                throw new ArgumentNullException("fieldOrProperty");
-            }
-            return And(fieldOrProperty.Compile(), fieldOrProperty.ExtractMemberName());
+            return new AndExpressionDecoder<T, TValueOut, TOther>(this, fieldOrProperty);
         }
 
-        public IMemberConstraintBuilder<T, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, string fieldOrPropertyName)
+        public IMemberConstraintBuilder<T, TOther> And<TOther>(Func<T, TValueOut, TOther> fieldOrProperty, string fieldOrPropertyName)
         {
             return And(fieldOrProperty, Identifier.ParseOrNull(fieldOrPropertyName));
         }
         
-        public IMemberConstraintBuilder<T, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, Identifier fieldOrPropertyName)
+        public IMemberConstraintBuilder<T, TOther> And<TOther>(Func<T, TValueOut, TOther> fieldOrProperty, Identifier fieldOrPropertyName)
         {            
             if (fieldOrProperty == null)
             {
                 throw new ArgumentNullException("fieldOrProperty");
-            }            
-            if (fieldOrPropertyName == null)
-            {
-                throw new ArgumentNullException("fieldOrPropertyName");
             }
-            return Satisfies(instance => new DelegateFilter<TValueOut, TMember>(fieldOrProperty), new PushIdentifierTransformer(fieldOrPropertyName));
+            var transformer = fieldOrPropertyName == null
+                ? new MemberTransformer()
+                : new PushIdentifierTransformer(fieldOrPropertyName);
+
+            return Satisfies(instance => new DelegateFilter<T, TValueOut, TOther>(instance, fieldOrProperty), transformer);
         }
         
         public void And(Action<IMemberConstraintSet<TValueOut>> innerConstraintFactory)

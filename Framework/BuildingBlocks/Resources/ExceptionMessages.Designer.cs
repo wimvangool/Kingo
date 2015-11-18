@@ -88,6 +88,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified node or expression is not supported inside a member expression: &apos;{0}&apos;..
+        /// </summary>
+        internal static string ExpressionBuilder_ExpressionNotSupported {
+            get {
+                return ResourceManager.GetString("ExpressionBuilder_ExpressionNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
         /// </summary>
         internal static string ExpressionExtensions_UnsupportedExpression {
@@ -129,15 +138,6 @@ namespace Kingo.BuildingBlocks.Resources {
         internal static string Identifier_InvalidIdentifier {
             get {
                 return ResourceManager.GetString("Identifier_InvalidIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified expression is not supported: &apos;{0}&apos;..
-        /// </summary>
-        internal static string MemberExpressionPair_ExpressionNotSupported {
-            get {
-                return ResourceManager.GetString("MemberExpressionPair_ExpressionNotSupported", resourceCulture);
             }
         }
         

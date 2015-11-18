@@ -8,7 +8,7 @@ namespace Kingo.BuildingBlocks.Constraints
     /// </summary>
     public static class NullableConstraints
     {        
-        #region [====== IsNotNull ======]
+        #region [====== HasValue ======]
 
         /// <summary>
         /// Verifies whether or not the <paramref name="member"/>'s value is not <c>null</c>.
@@ -24,7 +24,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotNull<T, TValue>(this IMemberConstraintBuilder<T, TValue?> member, string errorMessage = null) where TValue : struct
+        public static IMemberConstraintBuilder<T, TValue> HasValue<T, TValue>(this IMemberConstraintBuilder<T, TValue?> member, string errorMessage = null) where TValue : struct
         {
             return member.Apply(new HasValueFilter<TValue>().WithErrorMessage(errorMessage));
         }        

@@ -126,6 +126,9 @@
   <data name="ErrorLevel_InvalidErrorLevel" xml:space="preserve">
     <value>ErrorLevel must be 0 or higher: {0}.</value>
   </data>
+  <data name="ExpressionBuilder_ExpressionNotSupported" xml:space="preserve">
+    <value>The specified node or expression is not supported inside a member expression: '{0}'.</value>
+  </data>
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
   </data>
@@ -140,9 +143,6 @@
   </data>
   <data name="Identifier_InvalidIdentifier" xml:space="preserve">
     <value>Invalid identifier specified: '{0}'.</value>
-  </data>
-  <data name="MemberExpressionPair_ExpressionNotSupported" xml:space="preserve">
-    <value>The specified expression is not supported: '{0}'.</value>
   </data>
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>

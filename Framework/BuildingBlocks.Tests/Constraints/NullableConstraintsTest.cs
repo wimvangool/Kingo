@@ -7,51 +7,51 @@ namespace Kingo.BuildingBlocks.Constraints
     [TestClass]
     public sealed class NullableConstraintsTest : ConstraintTestBase
     {        
-        #region [====== NotNull ======]
+        #region [====== HasValue ======]
 
         [TestMethod]
-        public void ValidateIsNotNull_ReturnsExpectedError_IfMemberIsNull()
+        public void ValidateIsHasValue_ReturnsExpectedError_IfMemberIsNull()
         {
             var message = new ValidatedMessage<int?>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).HasValue(RandomErrorMessage);
 
             validator.Validate(message).AssertMemberError(RandomErrorMessage);
         }
 
         [TestMethod]
-        public void ValidateIsNotNull_ReturnsDefaultError_IfMemberIsNull_And_NoErrorMessageIsSpecified()
+        public void ValidateIsHasValue_ReturnsDefaultError_IfMemberIsNull_And_NoErrorMessageIsSpecified()
         {
             var message = new ValidatedMessage<int?>(null);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotNull();
+            validator.VerifyThat(m => m.Member).HasValue();
 
             validator.Validate(message).AssertMemberError("Member (<null>) must have a value.");
         }
 
         [TestMethod]
-        public void ValidateIsNotNull_ReturnsNoErrors_IfMemberIsNotNull()
+        public void ValidateIsHasValue_ReturnsNoErrors_IfMemberIsHasValue()
         {
             var member = Clock.Current.UtcDateAndTime().Second;
             var message = new ValidatedMessage<int?>(member);
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).HasValue(RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();
         }
 
         [TestMethod]
-        public void ValidateIsNotNull_ReturnsExpectedValue_IfMemberIsNotNull()
+        public void ValidateIsHasValue_ReturnsExpectedValue_IfMemberIsHasValue()
         {
             var member = Clock.Current.UtcDateAndTime().Second;
             var message = new ValidatedMessage<int?>(member);
             var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member)
-                .IsNotNull(RandomErrorMessage)
+                .HasValue(RandomErrorMessage)
                 .IsEqualTo(member, RandomErrorMessage);
 
             validator.Validate(message).AssertNoErrors();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Kingo.BuildingBlocks.Constraints.Decoders;
 
 namespace Kingo.BuildingBlocks.Constraints
 {
@@ -175,7 +176,7 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public IMemberConstraintBuilder<T, TValue> VerifyThat<TValue>(Expression<Func<T, TValue>> fieldOrProperty)
         {
-            return new VerifyThatExpression<T, TValue>(this, fieldOrProperty);
+            return new VerifyThatExpressionDecoder<T, TValue>(this, fieldOrProperty);
         }
 
         /// <inheritdoc />

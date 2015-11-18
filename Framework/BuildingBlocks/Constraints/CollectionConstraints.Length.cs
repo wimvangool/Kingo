@@ -17,10 +17,10 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> instance that contains the member's value.</returns>        
         public static IMemberConstraintBuilder<T, int> Length<T, TValue>(this IMemberConstraintBuilder<T, TValue[]> member)
         {
-            return member.Apply(new DelegateFilter<TValue[], int>(ArrayLength)).And(length => length, _Length);
+            return member.Apply(instance => new DelegateFilter<T, TValue[], int>(instance, ArrayLength)).And((instance, length) => length, _Length);
         }
 
-        private static int ArrayLength<TValue>(TValue[] value)
+        private static int ArrayLength<T, TValue>(T instance, TValue[] value)
         {
             if (value == null)
             {

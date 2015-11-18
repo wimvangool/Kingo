@@ -65,6 +65,7 @@ namespace Kingo.BuildingBlocks.Messaging
             return ValidateMessage();
         }
 
+        /// <inheritdoc />
         public ErrorInfo Validate()
         {
             return ValidateMessage();

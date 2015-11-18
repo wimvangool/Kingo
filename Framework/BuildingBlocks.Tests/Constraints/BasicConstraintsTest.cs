@@ -199,7 +199,7 @@ namespace Kingo.BuildingBlocks.Constraints
             var message = new ValidatedMessage<string>("Some value");
             var validator = message.CreateConstraintValidator();
 
-            validator.VerifyThat(m => m.Member).IsNotNull().And(member => member.Length).IsEqualTo(0);
+            validator.VerifyThat(m => m.Member).IsNotNull().And((m, member) => member.Length).IsEqualTo(0);
 
             validator.Validate(message).AssertMemberError("Member.Length (10) must be equal to '0'.");
         }
@@ -211,8 +211,8 @@ namespace Kingo.BuildingBlocks.Constraints
             var validator = message.CreateConstraintValidator();
 
             validator.VerifyThat(m => m.Member).IsNotNull()
-                .And(member => member.Member).IsNotNull()
-                .And(member => member.Length).IsEqualTo(0);
+                .And((m, member) => member.Member).IsNotNull()
+                .And((m, member) => member.Length).IsEqualTo(0);
 
             validator.Validate(message).AssertMemberError("Member.Member.Length (10) must be equal to '0'.");
         }

@@ -21,6 +21,7 @@ namespace Kingo.BuildingBlocks.Constraints
             _indexFactoryList = new List<Delegate>(4);
         }
 
+        /// <inheritdoc />
         public int Count
         {
             get { return _indexFactoryList.Count; }

@@ -27,6 +27,7 @@ namespace Kingo.BuildingBlocks.Constraints
             _constraint = constraint;
         }
 
+        /// <inheritdoc />
         public void AcceptVisitor(IConstraintVisitor visitor)
         {
             _constraint.AcceptVisitor(visitor);

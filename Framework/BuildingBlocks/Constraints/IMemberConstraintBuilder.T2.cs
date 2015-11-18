@@ -13,10 +13,10 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== And ======]
 
         /// <summary>
-        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// Selects a field or property of type <typeparamref name="TOther"/> from the current value of type <typeparamref name="TValueOut"/>
         /// with the intention to add some field- or property-specific constraints.
         /// </summary>
-        /// <typeparam name="TMember">Type of the member.</typeparam>
+        /// <typeparam name="TOther">Type of the member.</typeparam>
         /// <param name="fieldOrProperty">The expression that selects the member.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="fieldOrProperty"/> is <c>null</c>.
@@ -24,13 +24,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="fieldOrProperty"/> is not a supported expression.
         /// </exception>
-        IMemberConstraintBuilder<T, TMember> And<TMember>(Expression<Func<TValueOut, TMember>> fieldOrProperty);
+        IMemberConstraintBuilder<T, TOther> And<TOther>(Expression<Func<T, TValueOut, TOther>> fieldOrProperty);
 
         /// <summary>
-        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// Selects a field or property of type <typeparamref name="TOther"/> from the current value of type <typeparamref name="TValueOut"/>
         /// with the intention to add some field- or property-specific constraints.
         /// </summary>
-        /// <typeparam name="TMember">Type of the member.</typeparam>
+        /// <typeparam name="TOther">Type of the member.</typeparam>
         /// <param name="fieldOrProperty">The delegate that selects the member.</param>
         /// <param name="fieldOrPropertyName">Name of the member.</param>
         /// <exception cref="ArgumentNullException">
@@ -39,19 +39,19 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <exception cref="ArgumentException">
         /// <paramref name="fieldOrPropertyName"/> is not a valid identifier.
         /// </exception>
-        IMemberConstraintBuilder<T, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, string fieldOrPropertyName);
+        IMemberConstraintBuilder<T, TOther> And<TOther>(Func<T, TValueOut, TOther> fieldOrProperty, string fieldOrPropertyName);
 
         /// <summary>
-        /// Selects a field or property of type <typeparamref name="TMember"/> from the current value of type <typeparamref name="TValueOut"/>
+        /// Selects a field or property of type <typeparamref name="TOther"/> from the current value of type <typeparamref name="TValueOut"/>
         /// with the intention to add some field- or property-specific constraints.
         /// </summary>
-        /// <typeparam name="TMember">Type of the member.</typeparam>
+        /// <typeparam name="TOther">Type of the member.</typeparam>
         /// <param name="fieldOrProperty">The delegate that selects the member.</param>
         /// <param name="fieldOrPropertyName">Name of the member.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="fieldOrProperty"/> or <paramref name="fieldOrPropertyName" /> is <c>null</c>.
         /// </exception>
-        IMemberConstraintBuilder<T, TMember> And<TMember>(Func<TValueOut, TMember> fieldOrProperty, Identifier fieldOrPropertyName);
+        IMemberConstraintBuilder<T, TOther> And<TOther>(Func<T, TValueOut, TOther> fieldOrProperty, Identifier fieldOrPropertyName);
 
         /// <summary>
         /// Descends one level down in the validation-hierarchy.

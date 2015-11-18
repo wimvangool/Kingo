@@ -2,28 +2,32 @@
 
 namespace Kingo.BuildingBlocks.Constraints
 {    
-    internal sealed class DelegateFilter<TValueIn, TValueOut> : Filter<TValueIn, TValueOut>
+    internal sealed class DelegateFilter<T, TValueIn, TValueOut> : Filter<TValueIn, TValueOut>
     {
-        private readonly Func<TValueIn, TValueOut> _fieldOrProperty;
+        private readonly T _instance;
+        private readonly Func<T, TValueIn, TValueOut> _fieldOrProperty;
    
-        internal DelegateFilter(Func<TValueIn, TValueOut> fieldOrProperty)
+        internal DelegateFilter(T instance, Func<T, TValueIn, TValueOut> fieldOrProperty)
         {
             if (fieldOrProperty == null)
             {
                 throw new ArgumentNullException("fieldOrProperty");
             }
+            _instance = instance;
             _fieldOrProperty = fieldOrProperty;
         }
 
-        private DelegateFilter(DelegateFilter<TValueIn, TValueOut> constraint, StringTemplate errorMessage)
+        private DelegateFilter(DelegateFilter<T, TValueIn, TValueOut> constraint, StringTemplate errorMessage)
             : base(constraint, errorMessage)
         {
+            _instance = constraint._instance;
             _fieldOrProperty = constraint._fieldOrProperty;
         }
 
-        private DelegateFilter(DelegateFilter<TValueIn, TValueOut> constraint, Identifier name)
+        private DelegateFilter(DelegateFilter<T, TValueIn, TValueOut> constraint, Identifier name)
             : base(constraint, name)
         {
+            _instance = constraint._instance;
             _fieldOrProperty = constraint._fieldOrProperty;
         }
 
@@ -32,13 +36,13 @@ namespace Kingo.BuildingBlocks.Constraints
         /// <inheritdoc />
         public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
         {
-            return new DelegateFilter<TValueIn, TValueOut>(this, name);
+            return new DelegateFilter<T, TValueIn, TValueOut>(this, name);
         }
 
         /// <inheritdoc />
         public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
         {
-            return new DelegateFilter<TValueIn, TValueOut>(this, errorMessage);
+            return new DelegateFilter<T, TValueIn, TValueOut>(this, errorMessage);
         }
 
         #endregion
@@ -74,7 +78,7 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("value");
             }
-            valueOut = _fieldOrProperty.Invoke(value);
+            valueOut = _fieldOrProperty.Invoke(_instance, value);
             return true;
         }
 
