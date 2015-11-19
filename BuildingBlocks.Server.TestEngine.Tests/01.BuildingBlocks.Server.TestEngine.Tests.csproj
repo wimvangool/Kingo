@@ -42,10 +42,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>S:\SupportFiles\StrongName\YellowFlare.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Kingo.BuildingBlocks.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -95,6 +95,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Kingo.BuildingBlocks.snk">
+      <Link>Properties\Kingo.BuildingBlocks.snk</Link>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>

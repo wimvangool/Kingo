@@ -33,6 +33,12 @@
     <DocumentationFile>bin\Release\Kingo.BuildingBlocks.Server.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Kingo.BuildingBlocks.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -169,6 +175,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Kingo.BuildingBlocks.snk">
+      <Link>Properties\Kingo.BuildingBlocks.snk</Link>
+    </None>
     <None Include="05.BuildingBlocks.Server.nuspec">
       <SubType>Designer</SubType>
     </None>

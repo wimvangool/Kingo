@@ -42,10 +42,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>S:\SupportFiles\StrongName\YellowFlare.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Kingo.BuildingBlocks.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -96,6 +96,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Kingo.BuildingBlocks.snk">
+      <Link>Properties\Kingo.BuildingBlocks.snk</Link>
+    </None>
     <None Include="02.BuildingBlocks.Server.TestEngine.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
