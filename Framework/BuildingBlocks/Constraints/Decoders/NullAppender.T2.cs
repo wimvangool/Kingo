@@ -18,6 +18,10 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
 
         public override MethodCallDecorator<T, TValue> Append(MethodCallDecorator<T, TValue> appender)
         {
+            if (appender == null)
+            {
+                return this;
+            }
             return appender;
         }        
     }

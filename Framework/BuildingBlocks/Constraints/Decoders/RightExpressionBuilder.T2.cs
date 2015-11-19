@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Kingo.BuildingBlocks.Constraints.Decoders
@@ -9,7 +10,7 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
         private readonly LambdaExpression _leftExpression;
         private readonly Stack<Expression> _rightExpressionSource;
         private readonly Stack<Expression> _rightExpressionDestination;
-        private readonly MethodCallDecorator<T, TValue> _methodCallDecorator;
+        private MethodCallDecorator<T, TValue> _methodCallDecorator;
         private ParameterExpression _valueParameter;
 
         internal RightExpressionBuilder(MemberExpressionDecoder<T, TValue> interpreter, LambdaExpression leftExpression, Stack<Expression> rightExpressionSource, MethodCallDecorator<T, TValue> methodCallDecorator)
@@ -36,14 +37,13 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
             }
 
             // Step 2: Finalize Right Expression by creating a LambdaExpression of it (assuming it exists)
-            //         and finalize the methodCallDecorator if required.
-            var methodCallDecorator = _methodCallDecorator;
+            //         and concatenate .IsNotNull().And(<right_expression>) if required.            
             var rightExpression = CreateRightExpression();
             if (rightExpression != null)
             {
-                methodCallDecorator = methodCallDecorator.Append(new AndCallAppender<T, TValue>(rightExpression));
+                _methodCallDecorator += new IsNotNullAndCallAppender<T, TValue>(rightExpression);
             }            
-            return new MethodCallExpressionBuilder<T, TValue>(_interpreter, _leftExpression, methodCallDecorator);
+            return new MethodCallExpressionBuilder<T, TValue>(_interpreter, _leftExpression, _methodCallDecorator);
         }
 
         private LambdaExpression CreateRightExpression()
@@ -86,11 +86,42 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
             // NB: node.NodeType == ExpressionType.MemberAccess.
             var leftOperand = _rightExpressionDestination.Pop();
 
+            // When the MemberExpression is of the form 'x.Value', where x
+            // is a Nullable<> and Value is thus the Value-property accessor,
+            // we replace the MemberExpression with a checked call to .HasValue()
+            // in the method call chain.
+            // On the stack, we replace the parameter with a parameter of the same
+            // name but with the type that was nulled by the nullable to represent
+            // the result of the .Value-expression.
+            if (leftOperand.NodeType == ExpressionType.Parameter && IsNullableValue(node))
+            {
+                _methodCallDecorator += new HasValueCallAppender<T, TValue>();
+                _rightExpressionDestination.Push(_valueParameter = GetValueOf(_valueParameter));
+
+                return node;
+            }
             _rightExpressionDestination.Push(Expression.MakeMemberAccess(
                 leftOperand,
                 node.Member
             ));
             return node;
+        }        
+
+        private static bool IsNullableValue(MemberExpression node)
+        {
+            return
+                node.Member.Name == "Value" &&
+                node.Expression.Type.IsValueType &&
+                node.Expression.Type.IsGenericType &&
+                node.Expression.Type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        private static ParameterExpression GetValueOf(ParameterExpression parameter)
+        {
+            var valueType = parameter.Type.GetGenericArguments()[0];
+            var name = parameter.Name;
+
+            return Expression.Parameter(valueType, name);
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression node)

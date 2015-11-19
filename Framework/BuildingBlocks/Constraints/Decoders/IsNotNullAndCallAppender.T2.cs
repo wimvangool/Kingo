@@ -6,11 +6,11 @@ using System.Reflection;
 
 namespace Kingo.BuildingBlocks.Constraints.Decoders
 {
-    internal sealed class AndCallAppender<T, TValue> : MethodCallDecorator<T, TValue>
+    internal sealed class IsNotNullAndCallAppender<T, TValue> : MethodCallDecorator<T, TValue>
     {
         private readonly LambdaExpression _rightExpression;
 
-        internal AndCallAppender(LambdaExpression rightExpression)
+        internal IsNotNullAndCallAppender(LambdaExpression rightExpression)
         {
             _rightExpression = rightExpression;
         }
@@ -22,54 +22,29 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
         }
 
         public override MethodCallExpression Decorate(MethodCallExpression expression)
-        {            
-            var valueType = GetGenericArgumentType(expression.Type, 1);
-            if (valueType.IsValueType)
-            {
-                if (IsNullable(valueType))
-                {
-                    // Append <left_expression>.HasValue<TValue>()
-                    expression = AppendHasValue(expression, valueType);                    
-                }
-            }
-            else
-            {
-                // Append <left_expression>.IsNotNull<TValue>().And(<right_expression>)
-                expression = AppendIsNotNull(expression, valueType);
-                expression = AppendAnd(expression, _rightExpression);
-            }
+        {                       
+            // Append <left_expression>.IsNotNull<TValue>().And(<right_expression>)
+            expression = AppendIsNotNull(expression);
+            expression = AppendAnd(expression, _rightExpression);
             return expression;
-        }
+        }        
 
-        private static bool IsNullable(Type valueType)
-        {
-            return valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
+        #region [====== IsNotNull ======]
 
-        #region [====== HasValue & IsNotNull ======]
-
-        private static MethodCallExpression AppendHasValue(MethodCallExpression methodCallExpression, Type nullableType)
-        {
-            // IMemberConstraintBuilder<T, TValue>.HasValue<TValue>(string).
-            var valueType = GetGenericArgumentType(nullableType, 0);
-            var hasValueMethod = GetHasValueOrIsNotNullMethod(typeof(NullableConstraints), valueType, "HasValue");
-
-            return Expression.Call(hasValueMethod, methodCallExpression, NoErrorMessage());
-        }
-
-        private static MethodCallExpression AppendIsNotNull(MethodCallExpression methodCallExpression, Type valueType)
+        private static MethodCallExpression AppendIsNotNull(MethodCallExpression expression)
         {
             // IMemberConstraintBuilder<T, TValue>.IsNotNull<TValue>(string).
-            var isNotNullMethod = GetHasValueOrIsNotNullMethod(typeof(BasicConstraints), valueType, "IsNotNull");
+            var valueType = GetGenericArgumentType(expression.Type, 1);
+            var isNotNullMethod = GetIsNotNullMethod(valueType);
 
-            return Expression.Call(isNotNullMethod, methodCallExpression, NoErrorMessage());
+            return Expression.Call(isNotNullMethod, expression, NoErrorMessage());
         }
 
-        private static MethodInfo GetHasValueOrIsNotNullMethod(Type classType, Type valueType, string methodName)
+        private static MethodInfo GetIsNotNullMethod(Type valueType)
         {
-            var hasValueOrIsNotNullMethod =
-                from method in classType.GetMethods(BindingFlags.Public | BindingFlags.Static)
-                where method.IsGenericMethodDefinition && method.Name == methodName
+            var isNotNullMethod =
+                from method in typeof(BasicConstraints).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                where method.IsGenericMethodDefinition && method.Name == "IsNotNull"
                 let parameters = method.GetParameters()
                 where parameters.Length == 2
                 where parameters[0].ParameterType.IsGenericType
@@ -77,7 +52,7 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
                 where parameters[1].ParameterType == typeof(string)
                 select method.MakeGenericMethod(typeof(T), valueType);
 
-            return hasValueOrIsNotNullMethod.Single();
+            return isNotNullMethod.Single();
         }
 
         #endregion

@@ -57,7 +57,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).HasItem<object>(0);
 
-            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no element at [0].");
+            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no element at key or index [0].");
         }
 
         [TestMethod]
@@ -146,7 +146,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).HasItem<object>(0);
 
-            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no element at [0].");
+            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no element at key or index [0].");
         }
 
         [TestMethod]
@@ -226,7 +226,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).HasItem<object>(_Key);
 
-            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no element at [Key].");
+            validator.Validate(message).AssertMemberError("Member (0 item(s)) contains no element at key or index [Key].");
         }
 
         [TestMethod]

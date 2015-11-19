@@ -223,7 +223,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member} ({member.Value.Count} item(s)) contains no element at {constraint.IndexList}..
+        ///   Looks up a localized string similar to {member} ({member.Value.Count} item(s)) contains no element at key or index {constraint.IndexList}..
         /// </summary>
         internal static string CollectionConstraints_HasItem {
             get {

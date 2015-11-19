@@ -40,6 +40,10 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
 
         public override Expression Visit(Expression node)
         {
+            if (node == null)
+            {
+                return null;
+            }
             if (IsSupported(node.NodeType) || !IsBuildingLeftExpression)
             {
                 return base.Visit(node);
@@ -53,18 +57,16 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
             if (IsBuildingLeftExpression)
             {
                 // Check if expression is of the form 'm[<arguments>]' (array index).
-                if (MatchesLeftExpressionSignature(node, ExpressionType.ArrayIndex, node.Left))
+                if (MatchesPrimaryParameter(node.Left))
                 {
-                    // - VerifyThat(m => m).HasItem<TValue>(<index>)
-                    // - And((m, x) => x).HasItem<TValue>(<index>)
+                    // <expression>.HasItem<TValue>(<index>)                    
                     _leftExpression = _interpreter.CreateLeftExpression(node.Left);
-                    _methodCallDecorator = _methodCallDecorator.Append(new HasItemCallAppender<T, TValue>(_interpreter.InstanceParameter, new[] { node.Right }));
+                    _methodCallDecorator += new HasItemCallAppender<T, TValue>(_interpreter.InstanceParameter, new[] { node.Right });
                     _rightExpressionSource.Push(CreateValueParameter(node.Type));
+
+                    return node;
                 }
-                else
-                {
-                    _rightExpressionSource.Push(node);
-                }
+                _rightExpressionSource.Push(node);
             }
             return base.VisitBinary(node);
         }        
@@ -75,20 +77,17 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
             if (IsBuildingLeftExpression)
             {
                 // Check if expression is of the form 'm.Member' (field or property access).
-                if (MatchesLeftExpressionSignature(node, ExpressionType.MemberAccess, node.Expression))
-                {
-                    // - VerifyThat(m => m.Member)
-                    // - And((m, x) => x.Member)
+                if (MatchesPrimaryParameter(node.Expression))
+                {                    
                     _leftExpression = _interpreter.CreateLeftExpression(node);
-                    _rightExpressionSource.Push(CreateValueParameter(node.Type));                    
-                }
-                else
-                {
-                    _rightExpressionSource.Push(node);
-                }
+                    _rightExpressionSource.Push(CreateValueParameter(node.Type));
+
+                    return node;
+                }                
+                _rightExpressionSource.Push(node);
             }
             return base.VisitMember(node);
-        }
+        }               
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
@@ -98,18 +97,17 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
                 if (IsIndexerExpression(node))
                 {
                     // Check if expression is of the form 'm[<arguments>]' (indexer).
-                    if (MatchesLeftExpressionSignature(node, ExpressionType.Call, node.Object))
+                    if (MatchesPrimaryParameter(node.Object))
                     {
-                        // - VerifyThat(m => m).HasItem<TValue>(<arguments>)
-                        // - And((m, x) => x).HasItem<TValue>(<arguments>)
+                        // <expression>.HasItem<TValue>(<arguments>)                        
                         _leftExpression = _interpreter.CreateLeftExpression(node.Object);
-                        _methodCallDecorator = _methodCallDecorator.Append(new HasItemCallAppender<T, TValue>(_interpreter.InstanceParameter, node.Arguments));
-                        _rightExpressionSource.Push(CreateValueParameter(node.Type));                       
+                        _methodCallDecorator += new HasItemCallAppender<T, TValue>(_interpreter.InstanceParameter, node.Arguments);
+                        _rightExpressionSource.Push(CreateValueParameter(node.Type));
+
+                        return node;
                     }
-                    else
-                    {
-                        _rightExpressionSource.Push(node);
-                    }
+                    _rightExpressionSource.Push(node);
+
                     return base.VisitMethodCall(node);
                 }
                 throw NewNotSupportedExpressionException(node);
@@ -123,18 +121,16 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
             if (IsBuildingLeftExpression)
             {
                 // Check if expression is of the form 'm.Length'.
-                if (MatchesLeftExpressionSignature(node, ExpressionType.ArrayLength, node.Operand))
+                if (MatchesPrimaryParameter(node.Operand))
                 {
-                    // - VerifyThat(m => m).Length()
-                    // - And((m, x) => x).Length()
+                    // <expression>.Length()                    
                     _leftExpression = _interpreter.CreateLeftExpression(node.Operand);
-                    _methodCallDecorator = _methodCallDecorator.Append(new LengthCallAppender<T, TValue>());
-                    _rightExpressionSource.Push(CreateValueParameter(node.Type));                    
+                    _methodCallDecorator += new LengthCallAppender<T, TValue>();
+                    _rightExpressionSource.Push(CreateValueParameter(node.Type));
+
+                    return node;
                 }
-                else
-                {
-                    _rightExpressionSource.Push(node);
-                }
+                _rightExpressionSource.Push(node);
             }
             return base.VisitUnary(node);
         }
@@ -145,18 +141,15 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
             if (IsBuildingLeftExpression)
             {
                 _leftExpression = FieldOrPropertyExpression;
+
+                return node;
             }
             return base.VisitParameter(node);
-        }
+        }        
 
-        private bool MatchesLeftExpressionSignature(Expression node, ExpressionType expressionType, Expression childExpression)
+        private bool MatchesPrimaryParameter(Expression childExpression)
         {
-            return node.NodeType == expressionType && MatchesPrimaryParameter(childExpression);
-        }
-
-        private bool MatchesPrimaryParameter(Expression expression)
-        {
-            return ReferenceEquals(_interpreter.PrimaryParameter, expression);
+            return ReferenceEquals(_interpreter.PrimaryParameter, childExpression);
         }
 
         private static bool IsIndexerExpression(MethodCallExpression expression)
@@ -176,8 +169,7 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
         private static bool IsIndexerCandidate(MethodCallExpression expression)
         {
             return
-                expression.Object != null &&
-                expression.Object.NodeType == ExpressionType.Parameter &&
+                expression.Object != null &&                
                 expression.Method.MemberType == MemberTypes.Method &&
                 expression.Arguments.Count > 0 &&
                 expression.Method.Name.StartsWith("get_");

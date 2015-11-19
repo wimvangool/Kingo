@@ -127,7 +127,7 @@
     <value>{member} ({member.Value}) must not be null and contain at least one element.</value>
   </data>
   <data name="CollectionConstraints_HasItem" xml:space="preserve">
-    <value>{member} ({member.Value.Count} item(s)) contains no element at {constraint.IndexList}.</value>
+    <value>{member} ({member.Value.Count} item(s)) contains no element at key or index {constraint.IndexList}.</value>
   </data>
   <data name="CollectionConstraints_IsNullOrEmpty" xml:space="preserve">
     <value>{member} ({member.Value.Count} item(s)) must be null or empty.</value>

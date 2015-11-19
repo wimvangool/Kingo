@@ -52,7 +52,8 @@
     <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
-    <Compile Include="Constraints\Decoders\AndCallAppender.T2.cs" />
+    <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />
+    <Compile Include="Constraints\Decoders\IsNotNullAndCallAppender.T2.cs" />
     <Compile Include="Constraints\Decoders\AndExpressionDecoder.T3.cs" />
     <Compile Include="Constraints\AndMemberConstraint.T3.cs" />
     <Compile Include="Constraints\Decoders\ExpressionBuilder.T2.cs" />
