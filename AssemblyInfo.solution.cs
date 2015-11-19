@@ -1,7 +1,5 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Resources;
-using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("Wim van Gool")]
 [assembly: AssemblyProduct("King.BuildingBlocks Framework")]
