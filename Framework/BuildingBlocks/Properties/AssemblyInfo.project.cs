@@ -3,11 +3,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: Guid("4669F913-79B7-4581-921A-78F32A0946C6")]
-[assembly: AssemblyTitle("ServiceComponents.Messaging")]
-[assembly: AssemblyDescription("Contains components to build applications based on messaging patterns.")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: AssemblyTitle("Kingo.BuildingBlocks")]
+[assembly: AssemblyDescription("A core utility assembly primarily useful for Business Application Development.")]
+[assembly: AssemblyVersion("2.0.1")]
+[assembly: AssemblyFileVersion("2.0.1")]
+[assembly: AssemblyInformationalVersion("2.0.1-beta")]
 
 [assembly: InternalsVisibleTo("Kingo.BuildingBlocks.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +

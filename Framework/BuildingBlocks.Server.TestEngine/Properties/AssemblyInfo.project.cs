@@ -3,11 +3,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: Guid("c6102b0a-4d14-4f2b-9ef5-0e645cc438ba")]
-[assembly: AssemblyTitle("ServiceComponents.Messaging.TestEngine")]
+[assembly: AssemblyTitle("Kingo.BuildingBlocks.Server.TestEngine")]
 [assembly: AssemblyDescription("Represents a test-engine for projects that are built using messaging-patterns.")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: AssemblyVersion("2.0.1")]
+[assembly: AssemblyFileVersion("2.0.1")]
+[assembly: AssemblyInformationalVersion("2.0.1")]
 
 [assembly: InternalsVisibleTo("Kingo.BuildingBlocks.Server.TestEngine.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2, " +

@@ -53,6 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Clocks\ClockTest.cs" />
     <Compile Include="Clocks\ShiftedClockTest.cs" />
     <Compile Include="Constraints\AndConstraintTestOne.cs" />
@@ -112,9 +113,7 @@
       <Name>02.BuildingBlocks</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
