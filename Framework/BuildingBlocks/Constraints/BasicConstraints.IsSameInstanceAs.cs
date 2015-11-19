@@ -51,7 +51,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsNotSameInstanceAsConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsNotSameInstanceAsConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         #endregion
@@ -99,7 +101,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsSameInstanceAsConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsSameInstanceAsConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         #endregion

@@ -113,7 +113,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -137,7 +139,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -162,7 +166,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -186,7 +192,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsNotEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         #endregion
@@ -295,7 +303,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -319,7 +329,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -344,7 +356,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -368,7 +382,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         #endregion

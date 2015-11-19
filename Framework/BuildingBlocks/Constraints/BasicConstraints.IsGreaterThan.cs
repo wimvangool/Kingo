@@ -80,7 +80,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsGreaterThanConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsGreaterThanConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -104,7 +106,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsGreaterThanConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsGreaterThanConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         #endregion
@@ -180,7 +184,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsGreaterThanOrEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsGreaterThanOrEqualToConstraint<TValue>(otherFactory.Invoke(message), comparer).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -204,7 +210,9 @@ namespace Kingo.BuildingBlocks.Constraints
             {
                 throw new ArgumentNullException("otherFactory");
             }
-            return member.Apply(message => new IsGreaterThanOrEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessage));        
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsGreaterThanOrEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));        
         }
 
         #endregion
