@@ -8,37 +8,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		AssemblyInfo.solution.cs = AssemblyInfo.solution.cs
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChessApplication", "ChessApplication", "{DF86ABE4-CF9F-4D08-8168-FFBDCCADDB31}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{CA698FFB-466B-4FB9-83F1-AE78BB5F6602}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.BuildingBlocks.Client", "A.BuildingBlocks.Client", "{C3F19C5E-9EAD-4324-9B07-129C32CFA05B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.BuildingBlocks.Client.DataVirtualizationDemo", "Framework\BuildingBlocks.Client.DataVirtualizationDemo\01.BuildingBlocks.Client.DataVirtualizationDemo.csproj", "{2DEC2193-16A6-4F74-87B0-44096BBB0A26}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.BuildingBlocks.Client.Tests", "Framework\BuildingBlocks.Client.Tests\02.BuildingBlocks.Client.Tests.csproj", "{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.BuildingBlocks.Client", "Framework\BuildingBlocks.Client\03.BuildingBlocks.Client.csproj", "{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.BuildingBlocks.Server", "B.BuildingBlocks.Server", "{72205C90-C23B-4086-8580-050201371032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.BuildingBlocks.Server.TestEngine.Tests", "Framework\BuildingBlocks.Server.TestEngine.Tests\01.BuildingBlocks.Server.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.BuildingBlocks.Server.TestEngine.Tests", "BuildingBlocks.Server.TestEngine.Tests\01.BuildingBlocks.Server.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.BuildingBlocks.Server.TestEngine", "Framework\BuildingBlocks.Server.TestEngine\02.BuildingBlocks.Server.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.BuildingBlocks.Server.TestEngine", "BuildingBlocks.Server.TestEngine\02.BuildingBlocks.Server.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.BuildingBlocks.Server.Tests", "Framework\BuildingBlocks.Server.Tests\03.BuildingBlocks.Server.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.BuildingBlocks.Server.Tests", "BuildingBlocks.Server.Tests\03.BuildingBlocks.Server.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.BuildingBlocks.Server", "Framework\BuildingBlocks.Server\04.BuildingBlocks.Server.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.BuildingBlocks.Server", "BuildingBlocks.Server\04.BuildingBlocks.Server.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.BuildingBlocks.Server.Unity.Tests", "Framework\BuildingBlocks.Server.Unity.Tests\05.BuildingBlocks.Server.Unity.Tests.csproj", "{1D19D39A-15C6-4FDE-90C5-93188F2FC644}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.BuildingBlocks.Server.Unity.Tests", "BuildingBlocks.Server.Unity.Tests\05.BuildingBlocks.Server.Unity.Tests.csproj", "{1D19D39A-15C6-4FDE-90C5-93188F2FC644}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.BuildingBlocks.Server.Unity", "Framework\BuildingBlocks.Server.Unity\06.BuildingBlocks.Server.Unity.csproj", "{77F45326-E908-47EB-B924-A3BD26CAD6B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06.BuildingBlocks.Server.Unity", "BuildingBlocks.Server.Unity\06.BuildingBlocks.Server.Unity.csproj", "{77F45326-E908-47EB-B924-A3BD26CAD6B0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.BuildingBlocks", "C.BuildingBlocks", "{9A9694D3-C449-4492-B7EF-9AD0E3E8034C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.BuildingBlocks.Tests", "Framework\BuildingBlocks.Tests\01.BuildingBlocks.Tests.csproj", "{9697EACA-8E8F-451B-AE46-CF081559E0ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.BuildingBlocks.Tests", "BuildingBlocks.Tests\01.BuildingBlocks.Tests.csproj", "{9697EACA-8E8F-451B-AE46-CF081559E0ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.BuildingBlocks", "Framework\BuildingBlocks\02.BuildingBlocks.csproj", "{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.BuildingBlocks", "BuildingBlocks\02.BuildingBlocks.csproj", "{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,18 +36,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DEC2193-16A6-4F74-87B0-44096BBB0A26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4FE972F0-2046-4039-9461-45D0B7E6229F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4FE972F0-2046-4039-9461-45D0B7E6229F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FE972F0-2046-4039-9461-45D0B7E6229F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,18 +73,12 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C3F19C5E-9EAD-4324-9B07-129C32CFA05B} = {CA698FFB-466B-4FB9-83F1-AE78BB5F6602}
-		{2DEC2193-16A6-4F74-87B0-44096BBB0A26} = {C3F19C5E-9EAD-4324-9B07-129C32CFA05B}
-		{72BAB2FF-0D51-4387-A5B8-867B2EFDD071} = {C3F19C5E-9EAD-4324-9B07-129C32CFA05B}
-		{5BFA208F-AD26-4CA9-8B6A-0421F8DEE286} = {C3F19C5E-9EAD-4324-9B07-129C32CFA05B}
-		{72205C90-C23B-4086-8580-050201371032} = {CA698FFB-466B-4FB9-83F1-AE78BB5F6602}
 		{4FE972F0-2046-4039-9461-45D0B7E6229F} = {72205C90-C23B-4086-8580-050201371032}
 		{FA31C09F-6319-484B-96EC-88BF3C3FDB81} = {72205C90-C23B-4086-8580-050201371032}
 		{303380DB-4167-4BB0-8B78-63C959B65C4B} = {72205C90-C23B-4086-8580-050201371032}
 		{757D77D3-7B32-4F21-9617-88274D50B517} = {72205C90-C23B-4086-8580-050201371032}
 		{1D19D39A-15C6-4FDE-90C5-93188F2FC644} = {72205C90-C23B-4086-8580-050201371032}
 		{77F45326-E908-47EB-B924-A3BD26CAD6B0} = {72205C90-C23B-4086-8580-050201371032}
-		{9A9694D3-C449-4492-B7EF-9AD0E3E8034C} = {CA698FFB-466B-4FB9-83F1-AE78BB5F6602}
 		{9697EACA-8E8F-451B-AE46-CF081559E0ED} = {9A9694D3-C449-4492-B7EF-9AD0E3E8034C}
 		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0} = {9A9694D3-C449-4492-B7EF-9AD0E3E8034C}
 	EndGlobalSection
