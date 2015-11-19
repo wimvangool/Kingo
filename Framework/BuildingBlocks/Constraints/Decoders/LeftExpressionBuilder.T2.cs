@@ -154,22 +154,36 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
 
         private static bool IsIndexerExpression(MethodCallExpression expression)
         {
-            PropertyInfo indexer;
-
-            if (IsIndexerCandidate(expression) && TryGetIndexer(expression.Object, expression.Arguments, out indexer))
+            if (expression.Object != null)
             {
-                // Here we try to match, e.g., 'get_Item' with 'Item', to ensure
-                // the specified method is actually an indexer instead of a regular method
-                // with the same internal name of an indexer.
-                return expression.Method.Name.Substring(4) == indexer.Name;
+                // First check if we are dealing with an index-operation on a multi-dimensional array.
+                if (expression.Object.Type.IsArray)
+                {
+                    return IsMultiDimensionalArrayIndexer(expression);
+                }
+                PropertyInfo indexer;
+
+                if (IsIndexerCandidate(expression) && TryGetIndexer(expression.Object, expression.Arguments, out indexer))
+                {
+                    // Here we try to match, e.g., 'get_Item' with 'Item', to ensure
+                    // the specified method is actually an indexer instead of a regular method
+                    // with the same internal name of an indexer.
+                    return expression.Method.Name.Substring(4) == indexer.Name;
+                }
             }
             return false;
         }
 
-        private static bool IsIndexerCandidate(MethodCallExpression expression)
+        private static bool IsMultiDimensionalArrayIndexer(MethodCallExpression expression)
         {
             return
-                expression.Object != null &&                
+                expression.Method.Name == "Get" &&
+                expression.Arguments.Count > 1;
+        }
+
+        private static bool IsIndexerCandidate(MethodCallExpression expression)
+        {
+            return                
                 expression.Method.MemberType == MemberTypes.Method &&
                 expression.Arguments.Count > 0 &&
                 expression.Method.Name.StartsWith("get_");

@@ -212,7 +212,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion        
 
-        #region [====== Indexers ======]
+        #region [====== Indexers - Arrays ======]
 
         [TestMethod]
         public void VerifyThat_ReturnsNoErrors_IfExpressionIsArrayIndexer_And_ConstraintIsSatisfied()
@@ -246,6 +246,47 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.Validate(message).AssertMemberError("Int32[0] (1) must not be equal to '1'.", "[0]");
         }
+
+        #endregion
+
+        #region [====== Indexers - MultiDimensional Arrays ======]
+
+        [TestMethod]
+        public void VerifyThat_ReturnsNoErrors_IfExpressionIsMultiDimensionalArrayIndexer_And_ConstraintIsSatisfied()
+        {
+            var message = new[,] { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+            var validator = new ConstraintValidator<int[,]>();
+
+            validator.VerifyThat(m => m[0, 0]).IsEqualTo(1);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void VerifyThat_ReturnsNoErrors_IfExpressionIsMultiDimensionalArrayIndexer_And_IndexerArgumentUsesParameter_And_ConstraintIsSatisfied()
+        {
+            var message = new[,] { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+            var validator = new ConstraintValidator<int[,]>();
+
+            validator.VerifyThat(m => m[1, m.GetLength(1) - 1]).IsEqualTo(4);
+
+            validator.Validate(message).AssertNoErrors();
+        }
+
+        [TestMethod]
+        public void VerifyThat_ReturnsExpectedError_IfExpressionIsMultiDimensionalArrayIndexer_And_ConstraintIsNotSatisfied()
+        {
+            var message = new[,] { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+            var validator = new ConstraintValidator<int[,]>();
+
+            validator.VerifyThat(m => m[1, m.GetLength(1) - 1]).IsEqualTo(6);
+
+            validator.Validate(message).AssertMemberError("Int32[1, 1] (4) must be equal to '6'.", "[1, 1]");
+        }
+
+        #endregion
+
+        #region [====== Indexers - Dictionaries ======]
 
         [TestMethod]
         public void VerifyThat_ReturnsNoErrors_IfExpressionIsDictionaryIndexer_And_ConstraintIsSatisfied()

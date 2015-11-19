@@ -35,19 +35,24 @@ namespace Kingo.BuildingBlocks.Constraints
         internal override void WriteTo(StringBuilder fullName, bool displayName)
         {
             if (_bottomStack == null && displayName)
-            {
-                var instanceName = InstanceName;
-                if (instanceName.EndsWith("[]"))
-                {
-                    instanceName = InstanceName.Substring(0, instanceName.Length - 2);
-                }
-                fullName.Append(instanceName);
+            {                
+                fullName.Append(RemoveEmptyIndexerBrackets(InstanceName));
             }
             else if (_bottomStack != null)
             {
                 _bottomStack.WriteTo(fullName, displayName);
             }
             fullName.Append(Top);
+        }
+
+        private static string RemoveEmptyIndexerBrackets(string instanceName)
+        {
+            var openBracketIndex = instanceName.IndexOf('[');
+            if (openBracketIndex >= 0)
+            {
+                return instanceName.Substring(0, openBracketIndex);
+            }
+            return instanceName;
         }
     }
 }
