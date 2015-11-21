@@ -58,6 +58,7 @@
     <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\ClockScope.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
+    <Compile Include="CompositeValidator.T1.cs" />
     <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />
     <Compile Include="Constraints\Decoders\IsNotNullAndCallAppender.T2.cs" />
     <Compile Include="Constraints\Decoders\AndExpressionDecoder.T3.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Messaging\FunctionalException.cs" />
     <Compile Include="Messaging\InvalidMessageException.cs" />
     <Compile Include="Messaging\AuthorizationException.cs" />
+    <Compile Include="NullValidator.T1.cs" />
     <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -134,5 +134,66 @@ namespace Kingo.BuildingBlocks
         }
 
         #endregion
+        
+        /// <summary>
+        /// Merges two <see cref="ErrorInfo" /> instances into one uisng the specified <paramref name="builder"/>.
+        /// </summary>
+        /// <param name="left">The first error info instance.</param>
+        /// <param name="right">The second error info instance.</param>
+        /// <param name="builder">Builder that is used to build the merged instance.</param>
+        /// <returns>
+        /// A new <see cref="ErrorInfo" /> instance that contains all errors of both <paramref name="left"/> and <paramref name="right"/>.        
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="left"/> or <paramref name="right"/> is <c>null</c>.
+        /// </exception>
+        public static ErrorInfo Merge(ErrorInfo left, ErrorInfo right, ErrorInfoBuilder builder = null)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException("left");
+            }
+            if (right == null)
+            {
+                throw new ArgumentNullException("right");
+            }
+            if (builder == null)
+            {
+                builder = new ErrorInfoBuilder();
+            }
+            if (left.HasErrors && right.HasErrors)
+            {
+                // First, all error messages of the left instance are copied to the builder.
+                var inheritanceLevel = ErrorInheritanceLevel.NotInherited;
+
+                foreach (var memberError in left.MemberErrors)
+                {
+                    builder.Add(memberError.Value, memberError.Key, inheritanceLevel);
+                }
+                builder.Add(left.Error, null, inheritanceLevel);
+
+                // Second, the inheritance level is increased, so that by default the left
+                // error messages take precedence over the right error messages. Then, all
+                // error message of the right instance are copied.
+                inheritanceLevel = inheritanceLevel.Increment();
+
+                foreach (var memberError in right.MemberErrors)
+                {
+                    builder.Add(memberError.Value, memberError.Key, inheritanceLevel);
+                }
+                builder.Add(right.Error, null, inheritanceLevel);
+
+                return builder.BuildErrorInfo();
+            }
+            if (left.HasErrors)
+            {
+                return left;
+            }
+            if (right.HasErrors)
+            {
+                return right;
+            }
+            return Empty;
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace Kingo.BuildingBlocks.Constraints
 
             validator.VerifyThat(m => m.Member).IsNotNullOrEmpty();
 
-            validator.Validate(message).AssertMemberError("Member (<null>) must not be null and contain at least one element.");
+            validator.Validate(message).AssertMemberError("Member must not be null and contain at least one element.");
         }
 
         [TestMethod]
@@ -103,111 +103,111 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #endregion
 
-        //#region [====== IsNotNullOrEmpty (Array) ======]
+        #region [====== IsNotNullOrEmpty (Array) ======]
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNotNullOrEmpty_ReturnsExpectedError_IfCollectionIsNull()
-        //{
-        //    var message = new ValidatedMessage<object[]>(null);
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNotNullOrEmpty_ReturnsExpectedError_IfCollectionIsNull()
+        {
+            var message = new ValidatedMessage<object[]>(null);
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
 
-        //    validator.Validate(message).AssertMemberError(RandomErrorMessage);
-        //}
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
+        }
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNotNullOrEmpty_ReturnsDefaultError_IfCollectionIsNull_And_NoErrorMessageIsSpecified()
-        //{
-        //    var message = new ValidatedMessage<object[]>(null);
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNotNullOrEmpty_ReturnsDefaultError_IfCollectionIsNull_And_NoErrorMessageIsSpecified()
+        {
+            var message = new ValidatedMessage<object[]>(null);
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNotNullOrEmpty();
+            validator.VerifyThat(m => m.Member).IsNotNullOrEmpty();
 
-        //    validator.Validate(message).AssertMemberError("Member (<null>) must not be null and contain at least one element.");
-        //}
+            validator.Validate(message).AssertMemberError("Member must not be null and contain at least one element.");
+        }
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNotNullOrEmpty_ReturnsExpectedError_IfCollectionIsEmpty()
-        //{
-        //    var message = new ValidatedMessage<object[]>(new object[0]);
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNotNullOrEmpty_ReturnsExpectedError_IfCollectionIsEmpty()
+        {
+            var message = new ValidatedMessage<object[]>(new object[0]);
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
 
-        //    validator.Validate(message).AssertMemberError(RandomErrorMessage);
-        //}
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
+        }
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNotNullOrEmpty_ReturnsDefaultError_IfCollectionIsEmpty_And_NoErrorMessageIsSpecified()
-        //{
-        //    var message = new ValidatedMessage<object[]>(new object[0]);
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNotNullOrEmpty_ReturnsDefaultError_IfCollectionIsEmpty_And_NoErrorMessageIsSpecified()
+        {
+            var message = new ValidatedMessage<object[]>(new object[0]);
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNotNullOrEmpty();
+            validator.VerifyThat(m => m.Member).IsNotNullOrEmpty();
 
-        //    validator.Validate(message).AssertMemberError("Member (System.Object[]) must not be null and contain at least one element.");
-        //}
+            validator.Validate(message).AssertMemberError("Member must not be null and contain at least one element.");
+        }
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNotNullOrEmpty_ReturnsNoErrors_IfCollectionHasOneElement()
-        //{
-        //    var message = new ValidatedMessage<object[]>(new[] { new object() });
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNotNullOrEmpty_ReturnsNoErrors_IfCollectionHasOneElement()
+        {
+            var message = new ValidatedMessage<object[]>(new[] { new object() });
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNotNullOrEmpty(RandomErrorMessage);
 
-        //    validator.Validate(message).AssertNoErrors();
-        //}
+            validator.Validate(message).AssertNoErrors();
+        }
 
-        //#endregion
+        #endregion
 
-        //#region [====== IsNullOrEmpty (Array) ======]
+        #region [====== IsNullOrEmpty (Array) ======]
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNullOrEmpty_ReturnsNoErrors_IfCollectionIsNull()
-        //{
-        //    var message = new ValidatedMessage<object[]>(null);
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNullOrEmpty_ReturnsNoErrors_IfCollectionIsNull()
+        {
+            var message = new ValidatedMessage<object[]>(null);
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNullOrEmpty();
+            validator.VerifyThat(m => m.Member).IsNullOrEmpty();
 
-        //    validator.Validate(message).AssertNoErrors();
-        //}
+            validator.Validate(message).AssertNoErrors();
+        }
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNullOrEmpty_ReturnsNoErrors_IfCollectionIsEmpty()
-        //{
-        //    var message = new ValidatedMessage<object[]>(new object[0]);
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNullOrEmpty_ReturnsNoErrors_IfCollectionIsEmpty()
+        {
+            var message = new ValidatedMessage<object[]>(new object[0]);
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNullOrEmpty();
+            validator.VerifyThat(m => m.Member).IsNullOrEmpty();
 
-        //    validator.Validate(message).AssertNoErrors();
-        //}
+            validator.Validate(message).AssertNoErrors();
+        }
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNullOrEmpty_ReturnsExpectedError_IfCollectionHasOneElement()
-        //{
-        //    var message = new ValidatedMessage<object[]>(new[] { new object() });
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNullOrEmpty_ReturnsExpectedError_IfCollectionHasOneElement()
+        {
+            var message = new ValidatedMessage<object[]>(new[] { new object() });
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNullOrEmpty(RandomErrorMessage);
+            validator.VerifyThat(m => m.Member).IsNullOrEmpty(RandomErrorMessage);
 
-        //    validator.Validate(message).AssertMemberError(RandomErrorMessage);
-        //}
+            validator.Validate(message).AssertMemberError(RandomErrorMessage);
+        }
 
-        //[TestMethod]
-        //public void Validate_Collection_IsNullOrEmpty_ReturnsDefaultError_IfCollectionHasOneElement_And_NoErrorMessageIsSpecified()
-        //{
-        //    var message = new ValidatedMessage<object[]>(new[] { new object() });
-        //    var validator = message.CreateConstraintValidator();
+        [TestMethod]
+        public void Validate_Collection_IsNullOrEmpty_ReturnsDefaultError_IfCollectionHasOneElement_And_NoErrorMessageIsSpecified()
+        {
+            var message = new ValidatedMessage<object[]>(new[] { new object() });
+            var validator = message.CreateConstraintValidator();
 
-        //    validator.VerifyThat(m => m.Member).IsNullOrEmpty();
+            validator.VerifyThat(m => m.Member).IsNullOrEmpty();
 
-        //    validator.Validate(message).AssertMemberError("Member (1 item(s)) must be null or empty.");
-        //}
+            validator.Validate(message).AssertMemberError("Member (1 item(s)) must be null or empty.");
+        }
 
-        //#endregion
+        #endregion
     }
 }

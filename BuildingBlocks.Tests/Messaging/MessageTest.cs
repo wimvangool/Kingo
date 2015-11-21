@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Kingo.BuildingBlocks.Clocks;
+using Kingo.BuildingBlocks.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.BuildingBlocks.Messaging
@@ -35,6 +37,16 @@ namespace Kingo.BuildingBlocks.Messaging
                 Value = value;
                 Values = new List<int>(values);
             }
+
+            protected override IValidator<MessageWithPrimitiveMembers> CreateValidator()
+            {
+                var validator = new ConstraintValidator<MessageWithPrimitiveMembers>();
+
+                validator.VerifyThat(m => m.Value).IsGreaterThan(0);
+                validator.VerifyThat(m => m.Values).IsNotNullOrEmpty();
+
+                return validator;
+            }
         }
 
         #endregion
@@ -55,6 +67,8 @@ namespace Kingo.BuildingBlocks.Messaging
         }
 
         #endregion        
+
+        #region [====== Copy ======]
 
         [TestMethod]
         [ExpectedException(typeof(InvalidDataContractException))]
@@ -103,7 +117,36 @@ namespace Kingo.BuildingBlocks.Messaging
             Assert.IsNotNull(copy.Child);
             Assert.AreNotSame(child, copy.Child);
             Assert.AreEqual(child.Value, copy.Child.Value);
-        }        
+        }
+
+        #endregion
+
+        #region [====== Validate ======]
+
+        [TestMethod]
+        public void Validate_ReturnsNoErrors_IfMessageIsValid()
+        {
+            var message = new MessageWithPrimitiveMembers(1, Enumerable.Range(0, 10));
+            var errorInfo = message.Validate();
+
+            Assert.IsNotNull(errorInfo);
+            Assert.IsFalse(errorInfo.HasErrors);
+        }
+
+        [TestMethod]
+        public void Validate_ReturnsExpectedErrors_IfMessageIsNotValid()
+        {
+            var message = new MessageWithPrimitiveMembers(0, Enumerable.Empty<int>());
+            var errorInfo = message.Validate();
+
+            Assert.IsNotNull(errorInfo);
+            Assert.IsTrue(errorInfo.HasErrors);            
+            Assert.AreEqual(2, errorInfo.MemberErrors.Count);
+            Assert.AreEqual("Value (0) must be greater than '0'.", errorInfo.MemberErrors["Value"]);
+            Assert.AreEqual("Values must not be null and contain at least one element.", errorInfo.MemberErrors["Values"]);
+        }
+
+        #endregion
 
         private static int RandomValue()
         {

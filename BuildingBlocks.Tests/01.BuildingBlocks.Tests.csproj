@@ -62,6 +62,8 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="CompositeValidatorTest.cs" />
+    <Compile Include="ErrorInfoTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Clocks\ClockTest.cs" />
     <Compile Include="Clocks\ShiftedClockTest.cs" />

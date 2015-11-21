@@ -25,15 +25,15 @@ namespace Kingo.BuildingBlocks.Constraints
         #region [====== Validate ======]
 
         /// <inheritdoc />
-        public ErrorInfo Validate(T message)
+        public ErrorInfo Validate(T instance)
         {
-            if (ReferenceEquals(message, null))
+            if (ReferenceEquals(instance, null))
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException("instance");
             }
             var builder = CreateErrorInfoBuilder(_formatProvider);
 
-            WriteErrorMessages(message, builder);
+            WriteErrorMessages(instance, builder);
 
             return builder.BuildErrorInfo();
         }     
@@ -48,6 +48,15 @@ namespace Kingo.BuildingBlocks.Constraints
         protected virtual ErrorInfoBuilder CreateErrorInfoBuilder(IFormatProvider formatProvider)
         {
             return new ErrorInfoBuilder(formatProvider);
+        }
+
+        #endregion
+
+        #region [====== Append ======]
+        
+        IValidator<T> IValidator<T>.Append(IValidator<T> validator, bool haltOnFirstError)
+        {
+            return CompositeValidator<T>.Append(this, validator, haltOnFirstError);
         }
 
         #endregion

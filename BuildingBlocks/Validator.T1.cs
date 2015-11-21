@@ -9,7 +9,7 @@ namespace Kingo.BuildingBlocks
     /// all <see cref="ValidationAttribute">ValidationAttributes</see> that have been declared on the
     /// members of an instance.
     /// </summary>    
-    public class Validator<T> : IValidator<T> where T : class
+    public class Validator<T> : IValidator<T>
     {
         private readonly IFormatProvider _formatProvider;
         private readonly Func<T, ValidationContext> _validationContextFactory;        
@@ -38,10 +38,12 @@ namespace Kingo.BuildingBlocks
             get { return _formatProvider; }
         }
 
+        #region [====== Validate ======]
+
         /// <inheritdoc />
         public ErrorInfo Validate(T instance)
         {
-            if (instance == null)
+            if (ReferenceEquals(instance, null))
             {
                 throw new ArgumentNullException("instance");
             }
@@ -84,6 +86,17 @@ namespace Kingo.BuildingBlocks
                 errorInfoBuilder.Add(result.ErrorMessage, member);
             }
             return errorInfoBuilder.BuildErrorInfo();
-        }                
+        }        
+
+        #endregion
+
+        #region [====== Append ======]
+        
+        IValidator<T> IValidator<T>.Append(IValidator<T> validator, bool haltOnFirstError)
+        {            
+            return CompositeValidator<T>.Append(this, validator, haltOnFirstError);
+        }
+
+        #endregion
     }
 }

@@ -241,7 +241,7 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {member} ({member.Value}) must not be null and contain at least one element..
+        ///   Looks up a localized string similar to {member} must not be null and contain at least one element..
         /// </summary>
         internal static string CollectionConstraints_IsNotNullOrEmpty {
             get {

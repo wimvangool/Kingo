@@ -69,17 +69,16 @@ namespace Kingo.BuildingBlocks.Messaging
             {
                 return ErrorInfo.Empty;
             }
-            return validator.Validate(Copy());
+            return validator.Validate((TMessage) this);
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="IValidator{T}" /> that can be used to validate this message,
-        /// or <c>null</c> if this message does not require validation.
+        /// Creates and returns a <see cref="IValidator{T}" /> that can be used to validate this message.        
         /// </summary>
         /// <returns>A new <see cref="IValidator{T}" /> that can be used to validate this message.</returns>
         protected virtual IValidator<TMessage> CreateValidator()
         {
-            return null;
+            return new NullValidator<TMessage>();
         }
 
         #endregion

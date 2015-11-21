@@ -75,7 +75,7 @@ namespace Kingo.BuildingBlocks.Messaging
 
         internal IValidator<TMessage> GetOrAddValidator<TMessage>(Func<IValidator<TMessage>> validatorFactory)
         {
-            return _Validators.GetOrAdd(GetType(), validatorFactory) as IValidator<TMessage>;
+            return _Validators.GetOrAdd(GetType(), type => validatorFactory.Invoke()) as IValidator<TMessage>;            
         }
 
         #endregion
