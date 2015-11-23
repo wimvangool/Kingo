@@ -153,6 +153,17 @@ namespace Kingo.BuildingBlocks.Constraints
             Assert.IsNull(errorMessage);
         }
 
+        [TestMethod]
+        public void IsNotSatisfiedBy_ReturnsExpectedErrorMessage_IfErrorMessageArgumentIsNotNull()
+        {
+            var constraint = new DelegateConstraint<object>(value => false, new { Other = 6 }).WithErrorMessage("{constraint.Other}");
+            IErrorMessageBuilder errorMessage;
+
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsNotNull(errorMessage);
+            Assert.AreEqual("6", errorMessage.ToString()); 
+        }
+
         #endregion
 
         private static bool IsValid(object value)

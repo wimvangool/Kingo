@@ -136,9 +136,9 @@ namespace Kingo.BuildingBlocks.Constraints
 
         #region [====== Satisfies ======]
 
-        public IMemberConstraintBuilder<T, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null)
+        public IMemberConstraintBuilder<T, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null, object errorMessageArgument = null)
         {
-            return Satisfies(new DelegateConstraint<TValueOut>(constraint).WithErrorMessage(errorMessage));
+            return Satisfies(new DelegateConstraint<TValueOut>(constraint, errorMessageArgument).WithErrorMessage(errorMessage));
         }
 
         public IMemberConstraintBuilder<T, TValueOut> Satisfies(IConstraint<TValueOut> constraint)

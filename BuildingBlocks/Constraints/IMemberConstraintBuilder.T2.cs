@@ -209,12 +209,15 @@ namespace Kingo.BuildingBlocks.Constraints
         /// Applies the specified <paramref name="constraint"/>.
         /// </summary>
         /// <param name="constraint">The constraint to apply.</param>   
-        /// <param name="errorMessage">Error message of the constraint.</param>             
+        /// <param name="errorMessage">Error message of the constraint.</param>  
+        /// <param name="errorMessageArgument">
+        /// The object that is used to format the error message on behalf of this constraint.
+        /// </param>               
         /// <returns>A <see cref="IMemberConstraintBuilder{T}" /> that has applied the specified <paramref name="constraint"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IMemberConstraintBuilder<T, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null);
+        IMemberConstraintBuilder<T, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null, object errorMessageArgument = null);        
 
         /// <summary>
         /// Applies the specified <paramref name="constraint"/>.

@@ -165,9 +165,9 @@ namespace Kingo.BuildingBlocks.Constraints.Decoders
 
         #region [====== MemberConstraintBuilder<T, TValue>.Satisfies ======]
 
-        public IMemberConstraintBuilder<T, TValue> Satisfies(Func<TValue, bool> constraint, string errorMessage = null)
+        public IMemberConstraintBuilder<T, TValue> Satisfies(Func<TValue, bool> constraint, string errorMessage = null, object errorMessageArgument = null)
         {
-            return Member.Satisfies(constraint, errorMessage);
+            return Member.Satisfies(constraint, errorMessage, errorMessageArgument);
         }
 
         public IMemberConstraintBuilder<T, TValue> Satisfies(IConstraint<TValue> constraint)
