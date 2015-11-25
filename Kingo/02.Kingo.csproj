@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kingo</RootNamespace>
+    <AssemblyName>Kingo</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Kingo.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="Clocks\Clock.cs" />
+    <Compile Include="Clocks\ClockExtensions.cs" />
+    <Compile Include="Clocks\ShiftedClock.cs" />
+    <Compile Include="CompositeValidator.T1.cs" />
+    <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />
+    <Compile Include="Constraints\Decoders\IsNotNullAndCallAppender.T2.cs" />
+    <Compile Include="Constraints\Decoders\AndExpressionDecoder.T3.cs" />
+    <Compile Include="Constraints\AndMemberConstraint.T3.cs" />
+    <Compile Include="Constraints\Decoders\ExpressionBuilder.T2.cs" />
+    <Compile Include="Constraints\Decoders\LeftExpressionBuilder.T2.cs" />
+    <Compile Include="Constraints\Decoders\LengthCallAppender.T2.cs" />
+    <Compile Include="Constraints\BasicConstraints.cs" />
+    <Compile Include="Constraints\CollectionConstraints.IsNullOrEmpty.cs" />
+    <Compile Include="Constraints\CollectionConstraints.HasItem.cs" />
+    <Compile Include="Constraints\Decoders\CompositeAppender.T2.cs" />
+    <Compile Include="Constraints\ConstraintVisitor.cs" />
+    <Compile Include="Constraints\ConstraintWrapper.T1.cs" />
+    <Compile Include="Constraints\DefaultMember.cs" />
+    <Compile Include="Constraints\DelegateConstraint.T1.cs" />
+    <Compile Include="Constraints\DelegateFilter.T3.cs" />
+    <Compile Include="Constraints\Decoders\HasItemCallAppender.T2.cs" />
+    <Compile Include="Constraints\IndexerInvocationException.cs" />
+    <Compile Include="Constraints\IndexListFactory.T1.cs" />
+    <Compile Include="Constraints\EmptyStack.cs" />
+    <Compile Include="Constraints\EnumConstraints.cs" />
+    <Compile Include="Constraints\EquatableObject.T1.cs" />
+    <Compile Include="Constraints\ExpressionNotSupportedException.cs" />
+    <Compile Include="Constraints\IConstraint.cs" />
+    <Compile Include="Constraints\IConstraintVisitor.cs" />
+    <Compile Include="Constraints\IdentifierComponent.cs" />
+    <Compile Include="Constraints\IMemberConstraint.T2.cs" />
+    <Compile Include="Constraints\IndexList.cs" />
+    <Compile Include="Constraints\IndexListComponent.cs" />
+    <Compile Include="Constraints\Decoders\MethodCallExpressionBuilder.T2.cs" />
+    <Compile Include="Constraints\Decoders\MethodCallExpressionFactory.T2.cs" />
+    <Compile Include="Constraints\Member.cs" />
+    <Compile Include="Constraints\Member.T1.cs" />
+    <Compile Include="Constraints\MemberConstraint.T2.cs" />
+    <Compile Include="Constraints\Decoders\MemberExpressionDecoder.T2.cs" />
+    <Compile Include="Constraints\Decoders\MethodCallDecorator.T2.cs" />
+    <Compile Include="Constraints\Decoders\NullAppender.T2.cs" />
+    <Compile Include="Constraints\Decoders\RightExpressionBuilder.T2.cs" />
+    <Compile Include="Constraints\Decoders\VerifyThatExpressionDecoder.T2.cs" />
+    <Compile Include="Constraints\MemberExceptionFactory.cs" />
+    <Compile Include="Constraints\MemberNameComponentStack.cs" />
+    <Compile Include="Constraints\MemberTransformer.cs" />
+    <Compile Include="Constraints\PushIdentifierTransformer.cs" />
+    <Compile Include="Constraints\PushIndexListTransformer.cs" />
+    <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
+    <Compile Include="EnumOperators.T1.cs" />
+    <Compile Include="ErrorInheritanceLevel.cs" />
+    <Compile Include="ErrorMessageReader.cs" />
+    <Compile Include="Identifier.cs" />
+    <Compile Include="Messaging\CommandExecutionException.cs" />
+    <Compile Include="Constraints\AndConstraint.T1.cs" />
+    <Compile Include="Constraints\AndConstraint.T3.cs" />
+    <Compile Include="Constraints\Comparable.T1.cs" />
+    <Compile Include="Constraints\Comparer.cs" />
+    <Compile Include="LambdaExpressionExtensions.cs" />
+    <Compile Include="Constraints\MemberConstraintFactory.T3.cs" />
+    <Compile Include="Constraints\Constraint.cs" />
+    <Compile Include="Constraints\Constraint.T1.cs" />
+    <Compile Include="Constraints\Filter.T2.cs" />
+    <Compile Include="Constraints\ErrorMessageBuilder.cs" />
+    <Compile Include="Constraints\IConstraint.T1.cs" />
+    <Compile Include="Constraints\IFilter.T2.cs" />
+    <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />
+    <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
+    <Compile Include="Constraints\IFilterWithErrorMessage.T2.cs" />
+    <Compile Include="IErrorMessageBuilder.cs" />
+    <Compile Include="IErrorMessageReader.cs" />
+    <Compile Include="IErrorMessageWriter.T1.cs" />
+    <Compile Include="Constraints\IMemberConstraintBuilder.T2.cs" />
+    <Compile Include="Constraints\InputToOutputMapper.T1.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsEqualTo.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsGreaterThan.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsInstanceOf.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsNull.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsSameInstanceAs.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsSmallerThan.cs" />
+    <Compile Include="Constraints\MemberConstraintEventArgs.T1.cs" />
+    <Compile Include="Constraints\ConstraintInverter.T1.cs" />
+    <Compile Include="Constraints\NullConstraint.T1.cs" />
+    <Compile Include="Constraints\OrConstraint.T1.cs" />
+    <Compile Include="Constraints\StringConstraints.Contains.cs" />
+    <Compile Include="Constraints\StringConstraints.EndsWith.cs" />
+    <Compile Include="Constraints\StringConstraints.IsEqualTo.cs" />
+    <Compile Include="Constraints\StringConstraints.IsNullOrEmpty.cs" />
+    <Compile Include="Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />
+    <Compile Include="Constraints\StringConstraints.Matches.cs" />
+    <Compile Include="Constraints\StringConstraints.StartsWith.cs" />
+    <Compile Include="IValidateable.cs" />
+    <Compile Include="ErrorInfoBuilder.cs" />
+    <Compile Include="Messaging\FunctionalException.cs" />
+    <Compile Include="Messaging\InvalidMessageException.cs" />
+    <Compile Include="Messaging\AuthorizationException.cs" />
+    <Compile Include="NullValidator.T1.cs" />
+    <Compile Include="Resources\ErrorMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SortedErrorMessageList.cs" />
+    <Compile Include="StringTemplate.cs" />
+    <Compile Include="StringTemplateComponent.cs" />
+    <Compile Include="StringTemplateLiteral.cs" />
+    <Compile Include="StringTemplateVariable.cs" />
+    <Compile Include="Constraints\IMemberConstraintBuilder.T1.cs" />
+    <Compile Include="Constraints\MemberFactory.T2.cs" />
+    <Compile Include="Constraints\BasicConstraints.IsInRange.cs" />
+    <Compile Include="Constraints\BooleanConstraints.cs" />
+    <Compile Include="Constraints\ConstraintValidator.T1.cs" />
+    <Compile Include="Constraints\GuidConstraints.cs" />
+    <Compile Include="Constraints\IMemberConstraintSet.T1.cs" />
+    <Compile Include="Constraints\IMember.cs" />
+    <Compile Include="Constraints\MemberConstraintBuilder.T3.cs" />
+    <Compile Include="Constraints\MemberConstraintSet.T1.cs" />
+    <Compile Include="Constraints\NullableConstraints.cs" />
+    <Compile Include="Constraints\StringConstraints.IsNumber.cs" />
+    <Compile Include="Messaging\IMessage.cs" />
+    <Compile Include="Messaging\IMessage.T1.cs" />
+    <Compile Include="IValidator.T1.cs" />
+    <Compile Include="Messaging\Message.cs" />
+    <Compile Include="Messaging\Message.T1.cs" />
+    <Compile Include="Threading\Context.T1.cs" />
+    <Compile Include="Validator.T1.cs" />
+    <Compile Include="ErrorInfo.cs" />
+    <Compile Include="Clocks\HighResolutionClock.cs" />
+    <Compile Include="Clocks\StopwatchClock.cs" />
+    <Compile Include="Constraints\EquatableValue.T1.cs" />
+    <Compile Include="EventHandlerExtensions.cs" />
+    <Compile Include="HashCode.cs" />
+    <Compile Include="Clocks\IClock.cs" />
+    <Compile Include="IRange.T1.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Range.T1.cs" />
+    <Compile Include="RangeOptions.cs" />
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Clocks\DefaultClock.cs" />
+    <Compile Include="Threading\AsyncLocal.T1.cs" />
+    <Compile Include="Threading\AsyncMethod.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ErrorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Kingo.snk">
+      <Link>Properties\Kingo.snk</Link>
+    </None>
+    <None Include="07.BuildingBlocks.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <Compile Include="Constraints\CollectionConstraints.Length.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

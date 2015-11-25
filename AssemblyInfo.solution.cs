@@ -2,6 +2,6 @@
 using System.Resources;
 
 [assembly: AssemblyCompany("Wim van Gool")]
-[assembly: AssemblyProduct("King.BuildingBlocks Framework")]
+[assembly: AssemblyProduct("King Framework")]
 [assembly: AssemblyCopyright("Copyright © Wim van Gool 2015")]
 [assembly: NeutralResourcesLanguage("en-US")]
