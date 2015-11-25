@@ -219,7 +219,7 @@ namespace Kingo.Threading
         /// </summary>
         /// <param name="value">The value to set.</param>
         /// <returns>The scope that is to be disposed when ended.</returns>
-        public IDisposable CreateThreadLocalScope(TValue value)
+        public IDisposable OverrideThreadLocal(TValue value)
         {
             if (_isDisposed)
             {
@@ -240,7 +240,7 @@ namespace Kingo.Threading
         /// <exception cref="InvalidOperationException">
         /// The call is made inside a thread local scope.
         /// </exception>
-        public IDisposable CreateAsyncLocalScope(TValue value)
+        public IDisposable OverrideAsyncLocal(TValue value)
         {
             if (_isDisposed)
             {
@@ -254,7 +254,7 @@ namespace Kingo.Threading
 
             try
             {
-                return CreateAsyncLocalScopeCore(value);
+                return OverrideAsyncLocalCore(value);
             }
             finally
             {
@@ -262,7 +262,7 @@ namespace Kingo.Threading
             }
         }
 
-        private IDisposable CreateAsyncLocalScopeCore(TValue value)
+        private IDisposable OverrideAsyncLocalCore(TValue value)
         {
             var oldValue = _currentAsyncLocal.Value;
             var newValue = _currentAsyncLocal.Value = new Tuple<TValue>(value);
@@ -279,7 +279,7 @@ namespace Kingo.Threading
         /// <exception cref="InvalidOperationException">
         /// The call is made inside an async local or thread local scope.
         /// </exception>
-        public IDisposable CreateScope(TValue value)
+        public IDisposable Override(TValue value)
         {
             if (_isDisposed)
             {
@@ -293,7 +293,7 @@ namespace Kingo.Threading
 
             try
             {
-                return CreateScopeCore(value);
+                return OverrideCore(value);
             }
             finally
             {
@@ -301,7 +301,7 @@ namespace Kingo.Threading
             }
         } 
        
-        private IDisposable CreateScopeCore(TValue value)
+        private IDisposable OverrideCore(TValue value)
         {
             if (IsInsideAsyncLocalScope)
             {

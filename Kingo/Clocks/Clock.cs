@@ -81,13 +81,13 @@ namespace Kingo.Clocks
         /// <exception cref="ArgumentNullException">
         /// <paramref name="clock"/> is <c>null</c>.
         /// </exception>        
-        public static IDisposable CreateThreadLocalScope(IClock clock)
+        public static IDisposable OverrideThreadLocal(IClock clock)
         {
             if (clock == null)
             {
                 throw new ArgumentNullException("clock");
             }
-            return _Context.CreateThreadLocalScope(clock);
+            return _Context.OverrideThreadLocal(clock);
         }
 
         /// <summary>
@@ -102,13 +102,13 @@ namespace Kingo.Clocks
         /// <exception cref="InvalidOperationException">
         /// The call is made inside a thread local scope.
         /// </exception>
-        public static IDisposable CreateAsyncLocalScope(IClock clock)
+        public static IDisposable OverrideAsyncLocal(IClock clock)
         {
             if (clock == null)
             {
                 throw new ArgumentNullException("clock");
             }
-            return _Context.CreateAsyncLocalScope(clock);
+            return _Context.OverrideAsyncLocal(clock);
         }
 
         /// <summary>
@@ -123,13 +123,13 @@ namespace Kingo.Clocks
         /// <exception cref="InvalidOperationException">
         /// The call is made inside an async local or thread local scope.
         /// </exception>      
-        public static IDisposable CreateScope(IClock clock)
+        public static IDisposable Override(IClock clock)
         {
             if (clock == null)
             {
                 throw new ArgumentNullException("clock");
             }
-            return _Context.CreateScope(clock);
+            return _Context.Override(clock);
         }           
 
         #endregion

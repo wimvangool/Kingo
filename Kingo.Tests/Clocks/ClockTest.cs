@@ -35,37 +35,37 @@ namespace Kingo.Clocks
 
         #endregion
 
-        #region [====== CreateScope ======]
+        #region [====== Override ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void CreateScope_Throws_IfClockIsNull()
+        public void Override_Throws_IfClockIsNull()
         {
-            Clock.CreateScope(null);
+            Clock.Override(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateScope_Throws_IfCalledInsideAsyncLocalScope()
+        public void Override_Throws_IfCalledInsideAsyncLocalScope()
         {
-            using (Clock.CreateAsyncLocalScope(CreateClock()))
-            using (Clock.CreateScope(CreateClock()));
+            using (Clock.OverrideAsyncLocal(CreateClock()))
+            using (Clock.Override(CreateClock()));
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateScope_Throws_IfCalledInsideThreadLocalScope()
+        public void Override_Throws_IfCalledInsideThreadLocalScope()
         {
-            using (Clock.CreateThreadLocalScope(CreateClock()))
-            using (Clock.CreateScope(CreateClock())) ;
+            using (Clock.OverrideThreadLocal(CreateClock()))
+            using (Clock.Override(CreateClock())) ;
         }
 
         [TestMethod]
-        public void CreateScope_WillSetClockForAllThreads()
+        public void Override_WillSetClockForAllThreads()
         {
             var clock = CreateClock();
 
-            using (Clock.CreateScope(clock))
+            using (Clock.Override(clock))
             {
                 AssertIsCurrent(clock);          
                 AssertIsCurrentOnOtherThread(clock);
@@ -74,14 +74,14 @@ namespace Kingo.Clocks
         }
 
         [TestMethod]
-        public void CreateScope_IsOverriddenBy_CreateScope()
+        public void Override_IsOverriddenBy_Override()
         {
             var clockA = CreateClock();
             var clockB = CreateClock();
 
-            using (Clock.CreateScope(clockA))
+            using (Clock.Override(clockA))
             {                
-                using (Clock.CreateScope(clockB))
+                using (Clock.Override(clockB))
                 {
                     AssertIsCurrent(clockB);                  
                     AssertIsCurrentOnOtherThread(clockB);
@@ -95,29 +95,29 @@ namespace Kingo.Clocks
 
         #endregion
 
-        #region [====== CreateAsyncLocalScope ======]
+        #region [====== OverrideAsyncLocal ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void CreateAsyncLocalScope_Throws_IfClockIsNull()
+        public void OverrideAsyncLocal_Throws_IfClockIsNull()
         {
-            Clock.CreateAsyncLocalScope(null);
+            Clock.OverrideAsyncLocal(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CreateAsyncLocalScope_Throws_IfCalledInsideThreadLocalScope()
+        public void OverrideAsyncLocal_Throws_IfCalledInsideThreadLocalScope()
         {
-            using (Clock.CreateThreadLocalScope(CreateClock()))
-            using (Clock.CreateAsyncLocalScope(CreateClock())) ;
+            using (Clock.OverrideThreadLocal(CreateClock()))
+            using (Clock.OverrideAsyncLocal(CreateClock())) ;
         }
 
         [TestMethod]
-        public void CreateAsyncLocalScope_WillSetClockForCurrentThread()
+        public void OverrideAsyncLocal_WillSetClockForCurrentThread()
         {
             var clock = CreateClock();
 
-            using (Clock.CreateAsyncLocalScope(clock))
+            using (Clock.OverrideAsyncLocal(clock))
             {
                 AssertIsCurrent(clock);
                 AssertIsCurrentOnOtherThread(clock);
@@ -126,14 +126,14 @@ namespace Kingo.Clocks
         }        
 
         [TestMethod]
-        public void CreateAsyncLocalScope_IsOverriddenBy_CreateAsyncLocalScope()
+        public void OverrideAsyncLocal_IsOverriddenBy_OverrideAsyncLocal()
         {
             var clockA = CreateClock();
             var clockB = CreateClock();
 
-            using (Clock.CreateAsyncLocalScope(clockA))
+            using (Clock.OverrideAsyncLocal(clockA))
             {                
-                using (Clock.CreateAsyncLocalScope(clockB))
+                using (Clock.OverrideAsyncLocal(clockB))
                 {
                     AssertIsCurrent(clockB);
                     AssertIsCurrentOnOtherThread(clockB);
@@ -147,21 +147,21 @@ namespace Kingo.Clocks
 
         #endregion
 
-        #region [====== CreateThreadLocalScope ======]
+        #region [====== OverrideThreadLocal ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void CreateThreadLocalScope_Throws_IfClockIsNull()
+        public void OverrideThreadLocal_Throws_IfClockIsNull()
         {
-            Clock.CreateThreadLocalScope(null);
+            Clock.OverrideThreadLocal(null);
         }
 
         [TestMethod]
-        public void CreateThreadLocalScope_WillSetClockForCurrentThread()
+        public void OverrideThreadLocal_WillSetClockForCurrentThread()
         {
             var clock = CreateClock();
 
-            using (Clock.CreateThreadLocalScope(clock))
+            using (Clock.OverrideThreadLocal(clock))
             {
                 AssertIsCurrent(clock);
                 AssertIsNotCurrentOnOtherThread(clock);
@@ -170,14 +170,14 @@ namespace Kingo.Clocks
         }               
 
         [TestMethod]
-        public void CreateThreadLocalScope_IsOverriddenBy_CreateThreadLocalScope()
+        public void OverrideThreadLocal_IsOverriddenBy_OverrideThreadLocal()
         {
             var clockA = CreateClock();
             var clockB = CreateClock();
 
-            using (Clock.CreateThreadLocalScope(clockA))
+            using (Clock.OverrideThreadLocal(clockA))
             {                
-                using (Clock.CreateThreadLocalScope(clockB))
+                using (Clock.OverrideThreadLocal(clockB))
                 {
                     AssertIsCurrent(clockB);
                     AssertIsNotCurrentOnOtherThread(clockB);
@@ -195,10 +195,10 @@ namespace Kingo.Clocks
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Dispose_Throws_If_CreateScope_And_CreateScope_AreNestedIncorrectly()
+        public void Dispose_Throws_If_Override_And_Override_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.CreateScope(Clock.Default))
-            using (Clock.CreateScope(Clock.Default))
+            using (var outerScope = Clock.Override(Clock.Default))
+            using (Clock.Override(Clock.Default))
             {
                 outerScope.Dispose();
             }
@@ -206,10 +206,10 @@ namespace Kingo.Clocks
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Dispose_Throws_If_CreateScope_And_CreateAsyncLocalScope_AreNestedIncorrectly()
+        public void Dispose_Throws_If_Override_And_OverrideAsyncLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.CreateScope(Clock.Default))
-            using (Clock.CreateAsyncLocalScope(Clock.Default))
+            using (var outerScope = Clock.Override(Clock.Default))
+            using (Clock.OverrideAsyncLocal(Clock.Default))
             {
                 outerScope.Dispose();
             }
@@ -217,10 +217,10 @@ namespace Kingo.Clocks
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Dispose_Throws_If_CreateScope_And_CreateThreadLocalScope_AreNestedIncorrectly()
+        public void Dispose_Throws_If_Override_And_OverrideThreadLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.CreateScope(Clock.Default))
-            using (Clock.CreateThreadLocalScope(Clock.Default))
+            using (var outerScope = Clock.Override(Clock.Default))
+            using (Clock.OverrideThreadLocal(Clock.Default))
             {
                 outerScope.Dispose();
             }
@@ -228,10 +228,10 @@ namespace Kingo.Clocks
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Dispose_Throws_If_CreateAsyncLocalScope_And_CreateAsyncLocalScope_AreNestedIncorrectly()
+        public void Dispose_Throws_If_OverrideAsyncLocal_And_OverrideAsyncLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.CreateAsyncLocalScope(Clock.Default))
-            using (Clock.CreateAsyncLocalScope(Clock.Default))
+            using (var outerScope = Clock.OverrideAsyncLocal(Clock.Default))
+            using (Clock.OverrideAsyncLocal(Clock.Default))
             {
                 outerScope.Dispose();
             }
@@ -239,10 +239,10 @@ namespace Kingo.Clocks
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Dispose_Throws_If_CreateAsyncLocalScope_And_CreateThreadLocalScope_AreNestedIncorrectly()
+        public void Dispose_Throws_If_OverrideAsyncLocal_And_OverrideThreadLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.CreateAsyncLocalScope(Clock.Default))
-            using (Clock.CreateThreadLocalScope(Clock.Default))
+            using (var outerScope = Clock.OverrideAsyncLocal(Clock.Default))
+            using (Clock.OverrideThreadLocal(Clock.Default))
             {
                 outerScope.Dispose();
             }
@@ -250,10 +250,10 @@ namespace Kingo.Clocks
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Dispose_Throws_If_CreateThreadLocalScope_And_CreateThreadLocalScope_AreNestedIncorrectly()
+        public void Dispose_Throws_If_OverrideThreadLocal_And_OverrideThreadLocal_AreNestedIncorrectly()
         {
-            using (var outerScope = Clock.CreateThreadLocalScope(Clock.Default))
-            using (Clock.CreateThreadLocalScope(Clock.Default))
+            using (var outerScope = Clock.OverrideThreadLocal(Clock.Default))
+            using (Clock.OverrideThreadLocal(Clock.Default))
             {
                 outerScope.Dispose();
             }
