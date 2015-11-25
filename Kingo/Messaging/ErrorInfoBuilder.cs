@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// A builder that can be used to build an instance of the <see cref="ErrorInfo" /> class.

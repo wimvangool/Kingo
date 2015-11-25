@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a list of error messages that is sorted by its inheritance level.

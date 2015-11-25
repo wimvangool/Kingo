@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Kingo.Messaging;
 using Kingo.Resources;
 
 namespace Kingo.Constraints

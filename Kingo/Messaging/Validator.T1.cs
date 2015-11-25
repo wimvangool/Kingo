@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a <see cref="IValidator{T}" /> that validates an instance through

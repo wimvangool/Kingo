@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a tree of errors that have been detected on a specific instance.

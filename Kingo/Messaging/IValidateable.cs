@@ -1,4 +1,4 @@
-﻿namespace Kingo
+﻿namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represent an object that can be validated.

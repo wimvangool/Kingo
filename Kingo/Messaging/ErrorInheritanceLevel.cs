@@ -1,7 +1,7 @@
 ﻿using System;
 using Kingo.Resources;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a level of severity of an error message in relation to a certain member. The level

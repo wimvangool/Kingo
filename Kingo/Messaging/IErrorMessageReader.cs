@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represents a reader or consumer of error messages.

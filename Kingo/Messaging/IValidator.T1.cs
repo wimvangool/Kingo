@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represents a validator for a specific instance.

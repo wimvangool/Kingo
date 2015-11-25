@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.Messaging;
 
 namespace Kingo.Constraints
 {

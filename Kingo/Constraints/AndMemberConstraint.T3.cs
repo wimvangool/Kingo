@@ -1,4 +1,6 @@
-﻿namespace Kingo.Constraints
+﻿using Kingo.Messaging;
+
+namespace Kingo.Constraints
 {
     internal sealed class AndMemberConstraint<TValueIn, TMiddle, TValueOut> : IMemberConstraint<TValueIn, TValueOut>
     {

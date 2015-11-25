@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a validator that is composed of two other validators.

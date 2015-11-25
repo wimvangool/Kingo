@@ -56,7 +56,7 @@
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
-    <Compile Include="CompositeValidator.T1.cs" />
+    <Compile Include="Messaging\CompositeValidator.T1.cs" />
     <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />
     <Compile Include="Constraints\Decoders\IsNotNullAndCallAppender.T2.cs" />
     <Compile Include="Constraints\Decoders\AndExpressionDecoder.T3.cs" />
@@ -103,8 +103,8 @@
     <Compile Include="Constraints\PushIndexListTransformer.cs" />
     <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="EnumOperators.T1.cs" />
-    <Compile Include="ErrorInheritanceLevel.cs" />
-    <Compile Include="ErrorMessageReader.cs" />
+    <Compile Include="Messaging\ErrorInheritanceLevel.cs" />
+    <Compile Include="Messaging\ErrorMessageReader.cs" />
     <Compile Include="Identifier.cs" />
     <Compile Include="Messaging\CommandExecutionException.cs" />
     <Compile Include="Constraints\AndConstraint.T1.cs" />
@@ -122,9 +122,9 @@
     <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
     <Compile Include="Constraints\IFilterWithErrorMessage.T2.cs" />
-    <Compile Include="IErrorMessageBuilder.cs" />
-    <Compile Include="IErrorMessageReader.cs" />
-    <Compile Include="IErrorMessageWriter.T1.cs" />
+    <Compile Include="Messaging\IErrorMessageBuilder.cs" />
+    <Compile Include="Messaging\IErrorMessageReader.cs" />
+    <Compile Include="Messaging\IErrorMessageWriter.T1.cs" />
     <Compile Include="Constraints\IMemberConstraintBuilder.T2.cs" />
     <Compile Include="Constraints\InputToOutputMapper.T1.cs" />
     <Compile Include="Constraints\BasicConstraints.IsEqualTo.cs" />
@@ -144,18 +144,18 @@
     <Compile Include="Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />
     <Compile Include="Constraints\StringConstraints.Matches.cs" />
     <Compile Include="Constraints\StringConstraints.StartsWith.cs" />
-    <Compile Include="IValidateable.cs" />
-    <Compile Include="ErrorInfoBuilder.cs" />
+    <Compile Include="Messaging\IValidateable.cs" />
+    <Compile Include="Messaging\ErrorInfoBuilder.cs" />
     <Compile Include="Messaging\FunctionalException.cs" />
     <Compile Include="Messaging\InvalidMessageException.cs" />
     <Compile Include="Messaging\AuthorizationException.cs" />
-    <Compile Include="NullValidator.T1.cs" />
+    <Compile Include="Messaging\NullValidator.T1.cs" />
     <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ErrorMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="SortedErrorMessageList.cs" />
+    <Compile Include="Messaging\SortedErrorMessageList.cs" />
     <Compile Include="StringTemplate.cs" />
     <Compile Include="StringTemplateComponent.cs" />
     <Compile Include="StringTemplateLiteral.cs" />
@@ -174,12 +174,12 @@
     <Compile Include="Constraints\StringConstraints.IsNumber.cs" />
     <Compile Include="Messaging\IMessage.cs" />
     <Compile Include="Messaging\IMessage.T1.cs" />
-    <Compile Include="IValidator.T1.cs" />
+    <Compile Include="Messaging\IValidator.T1.cs" />
     <Compile Include="Messaging\Message.cs" />
     <Compile Include="Messaging\Message.T1.cs" />
     <Compile Include="Threading\Context.T1.cs" />
-    <Compile Include="Validator.T1.cs" />
-    <Compile Include="ErrorInfo.cs" />
+    <Compile Include="Messaging\Validator.T1.cs" />
+    <Compile Include="Messaging\ErrorInfo.cs" />
     <Compile Include="Clocks\HighResolutionClock.cs" />
     <Compile Include="Clocks\StopwatchClock.cs" />
     <Compile Include="Constraints\EquatableValue.T1.cs" />

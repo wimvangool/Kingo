@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Kingo.Constraints.Decoders;
+using Kingo.Messaging;
 
 namespace Kingo.Constraints
 {

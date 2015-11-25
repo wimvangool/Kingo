@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo
+namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a builder of an error message.

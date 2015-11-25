@@ -1,4 +1,6 @@
-﻿namespace Kingo.Constraints
+﻿using Kingo.Messaging;
+
+namespace Kingo.Constraints
 {
     internal sealed class MemberConstraint<TValueIn, TValueOut> : IMemberConstraint<TValueIn, TValueOut>
     {        
