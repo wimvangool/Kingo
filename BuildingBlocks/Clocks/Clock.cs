@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Remoting.Messaging;
+using Kingo.BuildingBlocks.Threading;
 
 namespace Kingo.BuildingBlocks.Clocks
 {
@@ -26,7 +27,7 @@ namespace Kingo.BuildingBlocks.Clocks
         public virtual DateTimeOffset LocalDateAndTime()
         {
             return UtcDateAndTime().ToLocalTime();
-        }
+        }        
 
         #endregion
 
@@ -47,53 +48,90 @@ namespace Kingo.BuildingBlocks.Clocks
         /// <inheritdoc />
         public abstract DateTimeOffset UtcDateAndTime();        
 
-        #endregion              
+        #endregion    
+        
+        private static DateTimeOffset StripTimeOfDay(DateTimeOffset value)
+        {
+            return new DateTimeOffset(value.Year, value.Month, value.Day, 0, 0, 0, value.Offset);
+        }
 
+        #region [====== Current ======]
+        
         /// <summary>
         /// Returns the default clock of this system.
         /// </summary>
-        public static readonly IClock Default = new DefaultClock(); 
+        public static readonly IClock Default = new DefaultClock();
+
+        private static readonly Context<IClock> _Context = new Context<IClock>(Default);              
 
         /// <summary>
         /// Returns the clock associated to the current thread.
         /// </summary>
         public static IClock Current
         {
-            get { return AsyncLocalClockContext.Instance.CurrentClock; }
+            get { return _Context.Current; }
         }
 
         /// <summary>
-        /// Sets a clock that is globally accessible through <see cref="Clock.Current" /> as long as the scope is active.
-        /// Note that the specified <paramref name="clock"/> will only be accessible through <see cref="Clock.Current"/> as long as
-        /// <see cref="OverrideAsyncLocal(IClock)" /> has not been called for the current <see cref="LogicalCallContext" />.
+        /// Sets the current clock that is accessible by the current thread through <see cref="Current" />
+        /// only as long as the scope is active.
         /// </summary>
-        /// <param name="clock">The clock to use.</param>
+        /// <param name="clock">The clock to set.</param>
         /// <returns>The scope that is to be disposed when ended.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="clock"/> is <c>null</c>.
         /// </exception>        
-        public static IDisposable Override(IClock clock)
+        public static IDisposable CreateThreadLocalScope(IClock clock)
         {
-            return new ClockScope(StaticClockContext.Instance, clock);
+            if (clock == null)
+            {
+                throw new ArgumentNullException("clock");
+            }
+            return _Context.CreateThreadLocalScope(clock);
         }
 
         /// <summary>
-        /// Sets a clock that is accessible through <see cref="Clock.Current" /> on the current <see cref="LogicalCallContext" />
-        /// as long as the scope is active.
+        /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
+        /// through <see cref="Current" /> as long as the scope is active.
         /// </summary>
-        /// <param name="clock">The clock to use.</param>
+        /// <param name="clock">The clock to set.</param>
         /// <returns>The scope that is to be disposed when ended.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="clock"/> is <c>null</c>.
         /// </exception>
-        public static IDisposable OverrideAsyncLocal(IClock clock)
+        /// <exception cref="InvalidOperationException">
+        /// The call is made inside a thread local scope.
+        /// </exception>
+        public static IDisposable CreateAsyncLocalScope(IClock clock)
         {
-            return new ClockScope(AsyncLocalClockContext.Instance, clock);
+            if (clock == null)
+            {
+                throw new ArgumentNullException("clock");
+            }
+            return _Context.CreateAsyncLocalScope(clock);
         }
 
-        private static DateTimeOffset StripTimeOfDay(DateTimeOffset value)
+        /// <summary>
+        /// Sets the current value that is accessible by all threads
+        /// through <see cref="Current" /> as long as the scope is active.
+        /// </summary>
+        /// <param name="clock">The clock to set.</param>
+        /// <returns>The scope that is to be disposed when ended.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="clock"/> is <c>null</c>.
+        /// </exception>  
+        /// <exception cref="InvalidOperationException">
+        /// The call is made inside an async local or thread local scope.
+        /// </exception>      
+        public static IDisposable CreateScope(IClock clock)
         {
-            return new DateTimeOffset(value.Year, value.Month, value.Day, 0, 0, 0, value.Offset);
-        }
+            if (clock == null)
+            {
+                throw new ArgumentNullException("clock");
+            }
+            return _Context.CreateScope(clock);
+        }           
+
+        #endregion
     }
 }

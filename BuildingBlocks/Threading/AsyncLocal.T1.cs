@@ -35,7 +35,7 @@ namespace Kingo.BuildingBlocks.Threading
         public AsyncLocal(T defaultValue)
         {
             _key = Guid.NewGuid().ToString("N");
-            _defaultValue = defaultValue;
+            _defaultValue = defaultValue;            
         }
 
         /// <summary>

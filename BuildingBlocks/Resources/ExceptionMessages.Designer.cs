@@ -70,6 +70,15 @@ namespace Kingo.BuildingBlocks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
+        /// </summary>
+        internal static string Context_IllegalScopeStarted {
+            get {
+                return ResourceManager.GetString("Context_IllegalScopeStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance &apos;{0}&apos; of type &apos;{1}&apos; is not supported because it is not an Enum type..
         /// </summary>
         internal static string EnumIsInRangeOfValidValues_UnsupportedValue {

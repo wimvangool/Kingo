@@ -120,6 +120,9 @@
   <data name="Comparable_IncomparableType" xml:space="preserve">
     <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'.</value>
   </data>
+  <data name="Context_IllegalScopeStarted" xml:space="preserve">
+    <value>Cannot start this scope because a more restrive scope is still active.</value>
+  </data>
   <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
     <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>
   </data>
