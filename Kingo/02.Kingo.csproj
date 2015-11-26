@@ -55,6 +55,7 @@
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockExtensions.cs" />
+    <Compile Include="Clocks\DelegateClock.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
     <Compile Include="Messaging\CompositeValidator.T1.cs" />
     <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />

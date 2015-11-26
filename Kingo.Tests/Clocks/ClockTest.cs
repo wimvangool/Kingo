@@ -41,7 +41,14 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(ArgumentNullException))]
         public void Override_Throws_IfClockIsNull()
         {
-            Clock.Override(null);
+            Clock.Override(null as IClock);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Override_Throws_IfDelegateIsNull()
+        {
+            Clock.Override(null as Func<DateTimeOffset>);
         }
 
         [TestMethod]
@@ -49,7 +56,7 @@ namespace Kingo.Clocks
         public void Override_Throws_IfCalledInsideAsyncLocalScope()
         {
             using (Clock.OverrideAsyncLocal(CreateClock()))
-            using (Clock.Override(CreateClock()));
+            using (Clock.Override(CreateClock())) { }
         }
 
         [TestMethod]
@@ -57,7 +64,7 @@ namespace Kingo.Clocks
         public void Override_Throws_IfCalledInsideThreadLocalScope()
         {
             using (Clock.OverrideThreadLocal(CreateClock()))
-            using (Clock.Override(CreateClock())) ;
+            using (Clock.Override(CreateClock())) { }
         }
 
         [TestMethod]
@@ -101,7 +108,14 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(ArgumentNullException))]
         public void OverrideAsyncLocal_Throws_IfClockIsNull()
         {
-            Clock.OverrideAsyncLocal(null);
+            Clock.OverrideAsyncLocal(null as IClock);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void OverrideAsyncLocal_Throws_IfDelegateIsNull()
+        {
+            Clock.OverrideAsyncLocal(null as Func<DateTimeOffset>);
         }
 
         [TestMethod]
@@ -109,7 +123,7 @@ namespace Kingo.Clocks
         public void OverrideAsyncLocal_Throws_IfCalledInsideThreadLocalScope()
         {
             using (Clock.OverrideThreadLocal(CreateClock()))
-            using (Clock.OverrideAsyncLocal(CreateClock())) ;
+            using (Clock.OverrideAsyncLocal(CreateClock())) { }
         }
 
         [TestMethod]
@@ -153,7 +167,14 @@ namespace Kingo.Clocks
         [ExpectedException(typeof(ArgumentNullException))]
         public void OverrideThreadLocal_Throws_IfClockIsNull()
         {
-            Clock.OverrideThreadLocal(null);
+            Clock.OverrideThreadLocal(null as IClock);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void OverrideThreadLocal_Throws_IfDelegateIsNull()
+        {
+            Clock.OverrideThreadLocal(null as Func<DateTimeOffset>);
         }
 
         [TestMethod]
