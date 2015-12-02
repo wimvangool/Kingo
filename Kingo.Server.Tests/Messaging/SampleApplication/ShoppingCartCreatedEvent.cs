@@ -8,6 +8,18 @@ namespace Kingo.Messaging.SampleApplication
         public Guid ShoppingCartId;
         public int ShoppingCartVersion;
 
+        internal ShoppingCartCreatedEvent(Guid shoppingCartId)
+        {
+            ShoppingCartId = shoppingCartId;
+            ShoppingCartVersion = 1;
+        }
+
+        private ShoppingCartCreatedEvent(ShoppingCartCreatedEvent message)
+        {
+            ShoppingCartId = message.ShoppingCartId;
+            ShoppingCartVersion = message.ShoppingCartVersion;
+        }
+
         Guid IKeyedObject<Guid>.Key
         {
             get { return ShoppingCartId; }
@@ -20,11 +32,7 @@ namespace Kingo.Messaging.SampleApplication
 
         public override ShoppingCartCreatedEvent Copy()
         {
-            return new ShoppingCartCreatedEvent
-            {
-                ShoppingCartId = ShoppingCartId,
-                ShoppingCartVersion = ShoppingCartVersion
-            };
+            return new ShoppingCartCreatedEvent(this);
         }
     }
 }

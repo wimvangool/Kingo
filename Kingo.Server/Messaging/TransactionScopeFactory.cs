@@ -70,7 +70,7 @@ namespace Kingo.Messaging
 
         private static TransactionScope CreateTransactionScope(TransactionScopeOption option, TransactionOptions options)
         {
-            return new TransactionScope(option, options, TransactionScopeAsyncFlowOption.Enabled);
+            return new TransactionScope(option, options);
         }        
 
         private static TransactionOptions ApplyIsolationLevel(TransactionOptions options, IsolationLevel isolationLevel)

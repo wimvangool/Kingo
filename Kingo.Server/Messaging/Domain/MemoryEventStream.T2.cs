@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Kingo.Messaging.Domain
 {
@@ -34,6 +36,25 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// Appends the specified event to this stream.
         /// </summary>
+        /// <param name="event">Event to append.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="event"/> is <c>null</c>.
+        /// </exception>
+        public void Write(IVersionedObject<TKey, TVersion> @event)
+        {
+            if (@event == null)
+            {
+                throw new ArgumentNullException("event");
+            }
+            var writeMethodDefinition = _WriteMethod.Value;
+            var writeMethod = writeMethodDefinition.MakeGenericMethod(@event.GetType());
+
+            writeMethod.Invoke(this, new object[] { @event });
+        }
+
+        /// <summary>
+        /// Appends the specified event to this stream.
+        /// </summary>
         /// <typeparam name="TEvent">Type of event to append.</typeparam>
         /// <param name="event">Event to append.</param>
         /// <exception cref="ArgumentNullException">
@@ -61,6 +82,18 @@ namespace Kingo.Messaging.Domain
             {
                 _buffer.Dequeue().WriteTo(stream);
             }          
+        }
+
+        private static readonly Lazy<MethodInfo> _WriteMethod = new Lazy<MethodInfo>(GetWriteMethod);
+
+        private static MethodInfo GetWriteMethod()
+        {
+            var writeMethod =
+                from method in typeof(MemoryEventStream<TKey, TVersion>).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                where method.IsGenericMethodDefinition && method.Name == "Write"                
+                select method;
+
+            return writeMethod.Single();
         }
     }
 }

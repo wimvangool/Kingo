@@ -11,8 +11,11 @@ namespace Kingo.Messaging.SampleApplication
         private readonly List<ShoppingCartItem> _items;
         private int _version;
 
+        public ShoppingCart(Guid shoppingCartId)
+            : this(new ShoppingCartCreatedEvent(shoppingCartId)) { }
+
         private ShoppingCart(ShoppingCartCreatedEvent @event)
-            : base(NewEvent(@event))
+            : base(@event)
         {
             _id = @event.ShoppingCartId;
             _version = @event.ShoppingCartVersion;
@@ -60,15 +63,6 @@ namespace Kingo.Messaging.SampleApplication
         private bool TryGetItem(int productId, out ShoppingCartItem item)
         {
             return (item = _items.SingleOrDefault(i => i.ProductId == productId)) != null;            
-        }
-
-        public static ShoppingCart CreateShoppingCart(Guid shoppingCartId)
-        {
-            return new ShoppingCart(new ShoppingCartCreatedEvent
-            {
-                ShoppingCartId = shoppingCartId,
-                ShoppingCartVersion = 1
-            });            
-        }
+        }        
     }
 }

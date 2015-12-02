@@ -17,22 +17,21 @@ namespace Kingo.Messaging.Domain
         private readonly MemoryEventStream<TKey, TVersion> _eventsToPublish;
 
         internal AggregateRoot()
-            : this(new MemoryEventStream<TKey, TVersion>()) { }
+        {
+            _eventsToPublish = new MemoryEventStream<TKey, TVersion>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
-        /// <param name="eventsToPublish">An event stream containing all events that need to be published.</param>
+        /// <param name="event">An event stream containing all events that need to be published.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="eventsToPublish"/> is <c>null</c>.
+        /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        protected AggregateRoot(MemoryEventStream<TKey, TVersion> eventsToPublish)
-        {
-            if (eventsToPublish == null)
-            {
-                throw new ArgumentNullException("eventsToPublish");
-            }
-            _eventsToPublish = eventsToPublish;
+        protected AggregateRoot(IVersionedObject<TKey, TVersion> @event)
+        {            
+            _eventsToPublish = new MemoryEventStream<TKey, TVersion>();
+            _eventsToPublish.Write(@event);
         }
 
         /// <summary>
@@ -52,25 +51,7 @@ namespace Kingo.Messaging.Domain
         public override string ToString()
         {
             return string.Format("{0} ({1} event(s) to be published.)", GetType().Name, EventCount);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="MemoryEventStream{T, K}" /> that contains the specified <paramref name="event"/>.
-        /// This method can be used to initialize an <see cref="AggregateRoot{T, K}" /> with a single event.
-        /// </summary>
-        /// <typeparam name="TEvent">Type of the event.</typeparam>
-        /// <param name="event">The event to add to the event stream.</param>
-        /// <returns>a new <see cref="MemoryEventStream{T, K}" />.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="event"/> is <c>null</c>.
-        /// </exception>
-        protected static MemoryEventStream<TKey, TVersion> NewEvent<TEvent>(TEvent @event)
-            where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
-        {
-            var stream = new MemoryEventStream<TKey, TVersion>();
-            stream.Write(@event);
-            return stream;
-        }
+        }        
 
         #region [====== Version ======]
 

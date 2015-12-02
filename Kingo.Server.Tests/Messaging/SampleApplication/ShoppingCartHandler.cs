@@ -23,7 +23,7 @@ namespace Kingo.Messaging.SampleApplication
         public Task HandleAsync(CreateShoppingCartCommand message)
         {
             return AsyncMethod.RunSynchronously(() =>
-                _carts.Add(ShoppingCart.CreateShoppingCart(message.ShoppingCartId))
+                _carts.Add(new ShoppingCart(message.ShoppingCartId))
             );            
         }
 
