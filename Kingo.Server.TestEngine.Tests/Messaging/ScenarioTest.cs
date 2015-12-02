@@ -72,7 +72,7 @@ namespace Kingo.Messaging
 
             protected override TheCommand When()
             {
-                return new TheCommand()
+                return new TheCommand
                 {
                     ExceptionToThrow = _exceptionToThrow
                 };
@@ -92,7 +92,7 @@ namespace Kingo.Messaging
 
             protected override TheCommand When()
             {
-                return new TheCommand()
+                return new TheCommand
                 {
                     DomainEventsToPublish = _messagesToPublish
                 };

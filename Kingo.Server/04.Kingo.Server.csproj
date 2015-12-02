@@ -40,6 +40,14 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Nito.AsyncEx, Version=3.0.1.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\Nito.AsyncEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment, Version=3.0.1.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\Nito.AsyncEx.Enlightenment.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -58,19 +66,19 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Messaging\Domain\Aggregate.T1.cs" />
+    <Compile Include="Messaging\Domain\AggregateSet.T1.cs" />
+    <Compile Include="Messaging\Domain\DomainEventStream.T2.cs" />
+    <Compile Include="Messaging\Domain\DuplicateKeyException.T2.cs" />
+    <Compile Include="Messaging\Domain\EventStreamRepository.T3.cs" />
+    <Compile Include="Messaging\Domain\IRepository.T2.cs" />
+    <Compile Include="Messaging\Domain\SnapshotRepository.T3.cs" />
     <Compile Include="Messaging\IDependencyConfiguration.cs" />
     <Compile Include="Messaging\ClassAndMethodAttributeProvider.cs" />
-    <Compile Include="Messaging\Domain\ConstraintViolationException.T1.cs" />
-    <Compile Include="Messaging\Domain\DuplicateKeyException.T2.cs" />
-    <Compile Include="Messaging\Domain\IExceptionFilter.cs" />
-    <Compile Include="Messaging\Domain\ThrowsAttribute.cs" />
     <Compile Include="Messaging\DependencyToConfigurationMapping.cs" />
     <Compile Include="Messaging\Domain\AggregateNotFoundByKeyException.T2.cs" />
-    <Compile Include="Messaging\Domain\ConstraintViolationException.cs" />
-    <Compile Include="Messaging\Domain\BusinessRuleViolationException.cs" />
     <Compile Include="Messaging\Domain\Entity.T1.cs" />
     <Compile Include="Messaging\Domain\IKeyedObject.T1.cs" />
-    <Compile Include="Messaging\Domain\InvalidValueException.T1.cs" />
     <Compile Include="Messaging\EmptySequence.cs" />
     <Compile Include="Messaging\IMessageHandlerOrQuery.cs" />
     <Compile Include="Messaging\IMessageHandlerConfiguration.cs" />
@@ -85,7 +93,7 @@
     <Compile Include="Messaging\MessageSequenceNode.T1.cs" />
     <Compile Include="Messaging\MessageSequencePair.cs" />
     <Compile Include="Messaging\MessageToStrategyMapping.cs" />
-    <Compile Include="Messaging\Modules\ClockModule.cs" />
+    <Compile Include="Clocks\ClockModule.cs" />
     <Compile Include="Messaging\IMessageToStrategyMapping.T1.cs" />
     <Compile Include="Messaging\IQuery.T1.cs" />
     <Compile Include="Messaging\MessageHandlerDependencyAttribute.cs" />
@@ -106,26 +114,24 @@
     <Compile Include="Messaging\QueryModule.T1.cs" />
     <Compile Include="Messaging\QueryPipeline.cs" />
     <Compile Include="Messaging\QueryWrapper.T2.cs" />
-    <Compile Include="Messaging\Modules\AuthorizationModule.cs" />
-    <Compile Include="Messaging\Modules\ITransactionScopeFactory.cs" />
-    <Compile Include="Messaging\Modules\TransactionScopeAttribute.cs" />
-    <Compile Include="Messaging\Modules\TransactionScopeFactory.cs" />
-    <Compile Include="Messaging\Modules\TransactionScopeModule.cs" />
+    <Compile Include="Messaging\AuthorizationModule.cs" />
+    <Compile Include="Messaging\ITransactionScopeFactory.cs" />
+    <Compile Include="Messaging\TransactionScopeAttribute.cs" />
+    <Compile Include="Messaging\TransactionScopeFactory.cs" />
+    <Compile Include="Messaging\TransactionScopeModule.cs" />
     <Compile Include="Messaging\Query.T2.cs" />
     <Compile Include="AssemblySet.cs" />
     <Compile Include="Messaging\MessageHandlerDelegate.T1.cs" />
     <Compile Include="CompositeConnection.cs" />
     <Compile Include="Messaging\DependencyClass.cs" />
     <Compile Include="Messaging\Domain\AggregateNotFoundException.cs" />
-    <Compile Include="Messaging\Domain\AggregateRootSet.T3.cs" />
     <Compile Include="Messaging\Domain\EventBuffer.T3.cs" />
     <Compile Include="Messaging\Domain\AggregateRoot.T2.cs" />
-    <Compile Include="Messaging\Domain\AggregateRootVersionTracker.T3.cs" />
     <Compile Include="Messaging\MessageHandlerDelegate.T2.cs" />
     <Compile Include="Messaging\IMessageProcessorBusConnection.cs" />
     <Compile Include="Messaging\IQuery.T2.cs" />
     <Compile Include="Messaging\MessageHandlerDecorator.T1.cs" />
-    <Compile Include="Messaging\Modules\MessageValidationModule.cs" />
+    <Compile Include="Messaging\MessageValidationModule.cs" />
     <Compile Include="Messaging\Domain\Repository.T3.cs" />
     <Compile Include="Messaging\Domain\DomainException.cs" />
     <Compile Include="Messaging\Domain\IVersionedObject.T2.cs" />
@@ -150,7 +156,7 @@
     <Compile Include="Messaging\MessagePointer.cs" />
     <Compile Include="Messaging\DependencyCacheEntry.T1.cs" />
     <Compile Include="Messaging\DependencyCacheRelay.cs" />
-    <Compile Include="Messaging\BufferedEventBus.cs" />
+    <Compile Include="Messaging\DomainEventBus.cs" />
     <Compile Include="Messaging\IEventBuffer.cs" />
     <Compile Include="Messaging\IDependencyCache.cs" />
     <Compile Include="Messaging\IDependencyCacheEntry.T1.cs" />
@@ -194,6 +200,10 @@
   <PropertyGroup>
     <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"
 </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

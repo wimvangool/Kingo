@@ -233,7 +233,8 @@ namespace Kingo.Constraints
         public void Validate_Dictionary_HasItem_ReturnsExpectedError_IfCollectionDoesNotContainsElementWithSpecifiedKey()
         {
             var value = new object();
-            var dictionary = new Dictionary<string, object>() { { _Key, value } };
+            var dictionary = new Dictionary<string, object>
+            { { _Key, value } };
             var message = new ValidatedMessage<Dictionary<string, object>>(dictionary);
             var validator = message.CreateConstraintValidator();
 
@@ -248,7 +249,8 @@ namespace Kingo.Constraints
         public void Validate_Dictionary_HasItem_ReturnsNoErrors_IfCollectionContainsElement()
         {
             var value = new object();
-            var dictionary = new Dictionary<string, object>() { { _Key, value } };
+            var dictionary = new Dictionary<string, object>
+            { { _Key, value } };
             var message = new ValidatedMessage<Dictionary<string, object>>(dictionary);
             var validator = message.CreateConstraintValidator();
 
@@ -263,7 +265,8 @@ namespace Kingo.Constraints
         public void Validate_Dictionary_HasItem_ChangesMemberNameAsExpected()
         {
             var value = new object();
-            var dictionary = new Dictionary<string, object>() { { _Key, value } };
+            var dictionary = new Dictionary<string, object>
+            { { _Key, value } };
             var message = new ValidatedMessage<Dictionary<string, object>>(dictionary);
             var validator = message.CreateConstraintValidator();
 

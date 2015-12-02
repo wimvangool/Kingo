@@ -263,7 +263,8 @@ namespace Kingo
         /// </returns>
         public static implicit operator AssemblySet(Assembly assembly)
         {
-            return assembly == null ? null : new AssemblySet() { assembly };
+            return assembly == null ? null : new AssemblySet
+            { assembly };
         }
 
         /// <summary>

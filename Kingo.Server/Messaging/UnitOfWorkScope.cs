@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kingo.Resources;
+using Kingo.Threading;
 
 namespace Kingo.Messaging
 {    
@@ -9,38 +10,16 @@ namespace Kingo.Messaging
     /// </summary>        
     internal sealed class UnitOfWorkScope : IDisposable
     {
-        private readonly UnitOfWorkContext _context;
-        private readonly BufferedEventBus _eventBus;
+        private readonly ContextScope<UnitOfWorkContext> _scope;
         private readonly bool _isContextOwner;
         private bool _hasCompleted;
         private bool _isDisposed;                            
                 
-        internal UnitOfWorkScope(MessageProcessor processor)
-        {                      
-            _isContextOwner = StartScope(out _context);
-            _eventBus = _context.StartScope(processor);
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">
-        /// This scope was incorrectly nested with another scope.
-        /// </exception>
-        /// <remarks>
-        /// The Dispose()-method marks the end of the current scope's lifetime and will set
-        /// <see cref="UnitOfWorkContext.Current" /> back to <c>null</c> after disposing it.
-        /// </remarks>
-        public void Dispose()
+        internal UnitOfWorkScope(ContextScope<UnitOfWorkContext> scope, bool isContextOwner)
         {
-            if (_isDisposed)
-            {
-                return;
-            }            
-            EndScope(this);
-
-            _isDisposed = true;                       
-        }        
+            _scope = scope;
+            _isContextOwner = isContextOwner;
+        }
 
         /// <summary>
         /// Completes the scope by flushing all registered wrappers.
@@ -60,40 +39,33 @@ namespace Kingo.Messaging
             if (_hasCompleted)
             {
                 throw NewScopeAlreadyCompletedException();
-            }            
+            }
             if (_isContextOwner)
             {
-                await _context.FlushAsync();                
+                await _scope.Value.FlushAsync();
             }
-            _hasCompleted = true;                                       
-        }        
+            _hasCompleted = true;
+        }  
 
-        private static bool StartScope(out UnitOfWorkContext context)
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// This scope was incorrectly nested with another scope.
+        /// </exception>
+        /// <remarks>
+        /// The Dispose()-method marks the end of the current scope's lifetime and will set
+        /// <see cref="UnitOfWorkContext.Current" /> back to <c>null</c> after disposing it.
+        /// </remarks>
+        public void Dispose()
         {
-            context = UnitOfWorkContext.Current;
-
-            if (context == null)
+            if (_isDisposed)
             {
-                context = UnitOfWorkContext.Current = new UnitOfWorkContext();
-                return true;
-            }
-            return false;
-        }
-
-        private static void EndScope(UnitOfWorkScope scope)
-        {            
-            var eventBus = scope._context.EndScope();
-            if (eventBus != scope._eventBus)
-            {
-                throw NewIncorrectNestingOrWrongThreadException();
-            }
-            if (scope._isContextOwner)
-            {
-                scope._context.Dispose();
-
-                UnitOfWorkContext.Current = null;
-            }
-        }
+                return;
+            }                        
+            _scope.Dispose();
+            _isDisposed = true;                       
+        }                                      
 
         private static Exception NewScopeAlreadyDisposedException()
         {
@@ -103,12 +75,7 @@ namespace Kingo.Messaging
         private static Exception NewScopeAlreadyCompletedException()
         {
             return new InvalidOperationException(ExceptionMessages.TransactionScope_ScopeAlreadyCompleted);
-        }
-
-        private static Exception NewIncorrectNestingOrWrongThreadException()
-        {
-            return new InvalidOperationException(ExceptionMessages.UnitOfWorkScope_IncorrectNestingOrWrongThread);
-        }
+        }        
     }
 }
 

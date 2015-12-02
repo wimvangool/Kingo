@@ -1,32 +1,76 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Represents an aggregate that is modeled as a stream of events.
+    /// Represents an aggregate root as defined by the principles of Domain Driven Design.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
-    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
+    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>  
     [Serializable]
-    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IVersionedObject<TKey, TVersion>
+    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-    {        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateRoot{K, V}" /> class.
-        /// </summary>
-        protected AggregateRoot() { }
+    {
+        [NonSerialized]
+        private readonly MemoryEventStream<TKey, TVersion> _eventsToPublish;
+
+        internal AggregateRoot()
+            : this(new MemoryEventStream<TKey, TVersion>()) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateRoot{TKey, TVersion}" /> class.
+        /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected AggregateRoot(SerializationInfo info, StreamingContext context) { }
+        /// <param name="eventsToPublish">An event stream containing all events that need to be published.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="eventsToPublish"/> is <c>null</c>.
+        /// </exception>
+        protected AggregateRoot(MemoryEventStream<TKey, TVersion> eventsToPublish)
+        {
+            if (eventsToPublish == null)
+            {
+                throw new ArgumentNullException("eventsToPublish");
+            }
+            _eventsToPublish = eventsToPublish;
+        }
+
+        /// <summary>
+        /// Returns the number of events that were published by this aggregate.
+        /// </summary>
+        protected int EventCount
+        {
+            get { return _eventsToPublish.Count; }
+        }
+
+        void IReadableEventStream<TKey, TVersion>.WriteTo(IWritableEventStream<TKey, TVersion> stream)
+        {
+            _eventsToPublish.WriteTo(stream);
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format("{0} ({1} event(s) to be published.)", GetType().Name, EventCount);
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="MemoryEventStream{T, K}" /> that contains the specified <paramref name="event"/>.
+        /// This method can be used to initialize an <see cref="AggregateRoot{T, K}" /> with a single event.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event.</typeparam>
+        /// <param name="event">The event to add to the event stream.</param>
+        /// <returns>a new <see cref="MemoryEventStream{T, K}" />.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="event"/> is <c>null</c>.
+        /// </exception>
+        protected static MemoryEventStream<TKey, TVersion> NewEvent<TEvent>(TEvent @event)
+            where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
+        {
+            var stream = new MemoryEventStream<TKey, TVersion>();
+            stream.Write(@event);
+            return stream;
+        }
 
         #region [====== Version ======]
 
@@ -45,51 +89,24 @@ namespace Kingo.Messaging.Domain
         }
 
         /// <summary>
-        /// Creates and returns a new version as compared to the current version of the aggregate.
+        /// Returns a incremented version number relative to the current version.
         /// </summary>
-        /// <returns>A new version.</returns>
-        protected abstract TVersion NewVersion();
-        
-        /// <summary>
-        /// Compares the specified <paramref name="version"/> with the <paramref name="newVersion"/>
-        /// and assigns the new version to <paramref name="version"/> if it is newer.
-        /// </summary>
-        /// <param name="version">The current version.</param>
-        /// <param name="newVersion">The new version.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="newVersion"/> is smaller than or equal to <paramref name="version"/>.
-        /// </exception>
-        protected static void SetVersion(ref TVersion version, TVersion newVersion)
+        /// <returns>The increment version of the current version.</returns>
+        protected TVersion NextVersion()
         {
-            if (version.CompareTo(newVersion) < 0)
-            {
-                version = newVersion;
-                return;
-            }
-            throw NewInvalidVersionException(newVersion, version);
+            return NextVersion(Version);
         }
 
-        #endregion                
-
         /// <summary>
-        /// Publishes the event that is created using the specified <paramref name="eventFactory"/>.        
+        /// Increments the specified <paramref name="version"/> to obtain the next version for this aggregate.
         /// </summary>
-        /// <typeparam name="TEvent">Type of the event that is created and written.</typeparam>
-        /// <param name="eventFactory">The factory that is used to created the event.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="eventFactory"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
-        /// </exception>
-        protected void Publish<TEvent>(Func<TKey, TVersion, TEvent> eventFactory) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
-        {
-            if (eventFactory == null)
-            {
-                throw new ArgumentNullException("eventFactory");
-            }
-            Publish(eventFactory.Invoke(Id, NewVersion()));
-        }
+        /// <param name="version">The version to increment.</param>
+        /// <returns>The incremented version.</returns>
+        protected abstract TVersion NextVersion(TVersion version);
+
+        #endregion                        
+
+        #region [====== Publish & Apply ======]
 
         /// <summary>
         /// Publishes the specified <paramref name="event"/>.
@@ -98,38 +115,24 @@ namespace Kingo.Messaging.Domain
         /// <param name="event">The event to publish.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
-        /// </exception>
-        internal virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
-        {            
-            if (@event == null)
-            {
-                throw new ArgumentNullException("event");
-            }
-            Apply(@event);
+        /// </exception>        
+        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
+        {
+            _eventsToPublish.Write(@event);
 
-            MessageProcessor.Publish(@event);
+            Apply(@event);            
         }
 
         internal virtual void Apply<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>
-        {
-            if (@event == null)
-            {
-                throw new ArgumentNullException("event");
-            }
+        {            
             if (@event.Key.Equals(Id))
             {
-                try
+                if (Version.CompareTo(@event.Version) < 0)
                 {
                     Version = @event.Version;
+                    return;
                 }
-                catch (ArgumentOutOfRangeException)
-                {
-                    throw NewInvalidVersionException(@event, Version);
-                }                                
-                return;
+                throw NewInvalidVersionException(@event, Version);
             }
             throw NewInvalidKeyException(@event, Id);                                  
         }
@@ -139,20 +142,15 @@ namespace Kingo.Messaging.Domain
             var messageFormat = ExceptionMessages.AggregateRoot_InvalidKey;
             var message = string.Format(messageFormat, @event.Key, aggregateKey);
             return new ArgumentException(message, "event");
-        }
-
-        private static Exception NewInvalidVersionException(TVersion newVersion, TVersion oldVersion)
-        {
-            var messageFormat = ExceptionMessages.AggregateRoot_InvalidVersion;
-            var message = string.Format(messageFormat, newVersion, oldVersion);
-            return new ArgumentException(message, "newVersion");
-        } 
+        }        
 
         private static Exception NewInvalidVersionException<TEvent>(TEvent @event, TVersion aggregateVersion) where TEvent : class, IVersionedObject<TKey, TVersion>
         {
             var messageFormat = ExceptionMessages.AggregateRoot_InvalidVersion;
             var message = string.Format(messageFormat, @event.Version, aggregateVersion);
             return new ArgumentException(message, "event");
-        }        
+        }
+
+        #endregion
     }
 }

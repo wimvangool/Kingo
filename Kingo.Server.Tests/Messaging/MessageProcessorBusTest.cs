@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 
 namespace Kingo.Messaging
 {
@@ -13,7 +12,7 @@ namespace Kingo.Messaging
         [TestInitialize]
         public void Setup()
         {
-            _bus = new MessageProcessorBus(new MessageProcessorStub(), false);
+            _bus = new MessageProcessorBus(new MessageProcessorStub());
         }        
 
         #region [====== ConnectGenericHandler ======]
@@ -58,28 +57,34 @@ namespace Kingo.Messaging
         {
             var handler = new MessageHandlerSpy();
 
-            using (var connection = _bus.Connect<MessageOne>(handler, true))
-            using (var waitHandle = new ManualResetEventSlim(false))
+            using (var connection = _bus.Connect<MessageOne>(handler, true))            
             {
                 Assert.IsNotNull(connection);
 
-                Task.Factory.StartNew(() =>
-                {
-                    _bus.PublishAsync(new MessageOne());
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
 
-                    waitHandle.Set();
-                });
+                Assert.AreEqual(1, handler.MessageOneCount);
+                Assert.AreEqual(0, handler.MessageTwoCount);                
+            }
+        }
 
-                _bus.PublishAsync(new MessageOne());
-                _bus.PublishAsync(new MessageTwo());
+        [TestMethod]
+        public void ConnectGenericHandler_CanBeCalledForDifferentMessageTypes()
+        {
+            var handler = new MessageHandlerSpy();
 
-                if (waitHandle.Wait(TimeSpan.FromSeconds(5)))
-                {
-                    Assert.AreEqual(2, handler.MessageOneCount);
-                    Assert.AreEqual(0, handler.MessageTwoCount);
-                    return;
-                }
-                Assert.Fail("Something went wrong with publishing the message asynchronously.");
+            using (var connectionA = _bus.Connect<MessageOne>(handler, true))
+            using (var connectionB = _bus.Connect<MessageTwo>(handler, true))
+            {
+                Assert.IsNotNull(connectionA);
+                Assert.IsNotNull(connectionB);
+
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
+
+                Assert.AreEqual(1, handler.MessageOneCount);
+                Assert.AreEqual(1, handler.MessageTwoCount);
             }
         }
 
@@ -88,28 +93,14 @@ namespace Kingo.Messaging
         {
             var handler = new MessageHandlerSpy();
 
-            using (var connection = _bus.Connect<MessageOne>(handler, false))
-            using (var waitHandle = new ManualResetEventSlim(false))
+            using (var connection = _bus.Connect<MessageOne>(handler, false))            
             {
                 Assert.IsNotNull(connection);
 
-                Task.Factory.StartNew(() =>
-                {
-                    _bus.PublishAsync(new MessageOne());
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
 
-                    waitHandle.Set();
-                });
-
-                _bus.PublishAsync(new MessageOne());
-                _bus.PublishAsync(new MessageTwo());
-
-                if (waitHandle.Wait(TimeSpan.FromSeconds(5)))
-                {
-                    Assert.AreEqual(0, handler.MessageOneCount);
-                    Assert.AreEqual(0, handler.MessageTwoCount);
-                    return;
-                }
-                Assert.Fail("Something went wrong with publishing the message asynchronously.");
+                Assert.AreEqual(0, handler.MessageOneCount);
+                Assert.AreEqual(0, handler.MessageTwoCount);  
             }
         }
 
@@ -118,32 +109,23 @@ namespace Kingo.Messaging
         {
             var handler = new MessageHandlerSpy();
 
-            using (var connection = _bus.Connect<MessageOne>(handler, true))
-            using (var waitHandle = new ManualResetEventSlim(false))
+            using (var connection = _bus.Connect<MessageOne>(handler, true))            
             {
                 Assert.IsNotNull(connection);
 
-                Task.Factory.StartNew(() =>
-                {
-                    _bus.PublishAsync(new MessageOne());
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));                
 
-                    waitHandle.Set();
-                });
+                Assert.AreEqual(2, handler.MessageOneCount);
+                Assert.AreEqual(0, handler.MessageTwoCount);
 
-                _bus.PublishAsync(new MessageOne());
-                _bus.PublishAsync(new MessageTwo());                
+                connection.Close();
 
-                if (waitHandle.Wait(TimeSpan.FromSeconds(5)))
-                {
-                    connection.Close();
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));                
 
-                    _bus.PublishAsync(new MessageOne());
-
-                    Assert.AreEqual(2, handler.MessageOneCount);
-                    Assert.AreEqual(0, handler.MessageTwoCount);
-                    return;
-                }
-                Assert.Fail("Something went wrong with publishing the message asynchronously.");
+                Assert.AreEqual(2, handler.MessageOneCount);
+                Assert.AreEqual(0, handler.MessageTwoCount);
             }
         }
 
@@ -187,32 +169,19 @@ namespace Kingo.Messaging
         }
 
         [TestMethod]
-        public void ConnectHandler_ConnectsHandlerToBusForSpecificMessage()
+        public void ConnectHandler_ConnectsHandlerToBusForAllSupportedMessages()
         {
             var handler = new MessageHandlerSpy();
 
-            using (var connection = _bus.Connect(handler, true))
-            using (var waitHandle = new ManualResetEventSlim(false))
+            using (var connection = _bus.Connect(handler, true))            
             {
                 Assert.IsNotNull(connection);
 
-                Task.Factory.StartNew(() =>
-                {
-                    _bus.PublishAsync(new MessageOne());
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
 
-                    waitHandle.Set();
-                });
-
-                _bus.PublishAsync(new MessageOne());
-                _bus.PublishAsync(new MessageTwo());
-
-                if (waitHandle.Wait(TimeSpan.FromSeconds(5)))
-                {
-                    Assert.AreEqual(2, handler.MessageOneCount);
-                    Assert.AreEqual(1, handler.MessageTwoCount);
-                    return;
-                }
-                Assert.Fail("Something went wrong with publishing the message asynchronously.");
+                Assert.AreEqual(1, handler.MessageOneCount);
+                Assert.AreEqual(1, handler.MessageTwoCount);      
             }
         }
 
@@ -221,28 +190,15 @@ namespace Kingo.Messaging
         {
             var handler = new MessageHandlerSpy();
 
-            using (var connection = _bus.Connect(handler, false))
-            using (var waitHandle = new ManualResetEventSlim(false))
+            using (var connection = _bus.Connect(handler, false))            
             {
                 Assert.IsNotNull(connection);
 
-                Task.Factory.StartNew(() =>
-                {
-                    _bus.PublishAsync(new MessageOne());
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
 
-                    waitHandle.Set();
-                });
-
-                _bus.PublishAsync(new MessageOne());
-                _bus.PublishAsync(new MessageTwo());
-
-                if (waitHandle.Wait(TimeSpan.FromSeconds(5)))
-                {
-                    Assert.AreEqual(0, handler.MessageOneCount);
-                    Assert.AreEqual(0, handler.MessageTwoCount);
-                    return;
-                }
-                Assert.Fail("Something went wrong with publishing the message asynchronously.");
+                Assert.AreEqual(0, handler.MessageOneCount);
+                Assert.AreEqual(0, handler.MessageTwoCount);      
             }
         }
 
@@ -251,32 +207,23 @@ namespace Kingo.Messaging
         {
             var handler = new MessageHandlerSpy();
 
-            using (var connection = _bus.Connect(handler, true))
-            using (var waitHandle = new ManualResetEventSlim(false))
+            using (var connection = _bus.Connect(handler, true))            
             {
                 Assert.IsNotNull(connection);
 
-                Task.Factory.StartNew(() =>
-                {
-                    _bus.PublishAsync(new MessageOne());
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
 
-                    waitHandle.Set();
-                });
+                Assert.AreEqual(1, handler.MessageOneCount);
+                Assert.AreEqual(1, handler.MessageTwoCount);
 
-                _bus.PublishAsync(new MessageOne());
-                _bus.PublishAsync(new MessageTwo());
+                connection.Close();
 
-                if (waitHandle.Wait(TimeSpan.FromSeconds(5)))
-                {
-                    connection.Close();
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
 
-                    _bus.PublishAsync(new MessageOne());
-
-                    Assert.AreEqual(2, handler.MessageOneCount);
-                    Assert.AreEqual(1, handler.MessageTwoCount);
-                    return;
-                }
-                Assert.Fail("Something went wrong with publishing the message asynchronously.");
+                Assert.AreEqual(1, handler.MessageOneCount);
+                Assert.AreEqual(1, handler.MessageTwoCount);
             }
         }
 

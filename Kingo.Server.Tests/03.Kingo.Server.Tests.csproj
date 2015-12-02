@@ -44,17 +44,31 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
     </Reference>
     <Reference Include="Moq">
-      <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+      <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx, Version=3.0.1.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\Nito.AsyncEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment, Version=3.0.1.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\Nito.AsyncEx.Enlightenment.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -79,7 +93,6 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Messaging\InvalidMessageExceptionTest.cs" />
     <Compile Include="Messaging\MessageStub.cs" />
     <Compile Include="Messaging\MessageOne.cs" />
     <Compile Include="Messaging\MessageTwo.cs" />
@@ -98,13 +111,13 @@
     <Compile Include="Messaging\MessageHandlerClassTest.cs" />
     <Compile Include="Messaging\MessageHandlerFactoryStub.cs" />
     <Compile Include="Messaging\MessageProcessorTest.cs" />
-    <Compile Include="Messaging\SampleApplication\Infrastructure\ShoppingCartRepository.cs" />
+    <Compile Include="Messaging\SampleApplication\ShoppingCartRepository.cs" />
     <Compile Include="Messaging\SampleApplication\IShoppingCartRepository.cs" />
-    <Compile Include="Messaging\SampleApplication\MessageHandlers\ShoppingCartHandler.cs" />
-    <Compile Include="Messaging\SampleApplication\Messages\AddProductToCartCommand.cs" />
-    <Compile Include="Messaging\SampleApplication\Messages\CreateShoppingCartCommand.cs" />
-    <Compile Include="Messaging\SampleApplication\Messages\ProductAddedToCartEvent.cs" />
-    <Compile Include="Messaging\SampleApplication\Messages\ShoppingCartCreatedEvent.cs" />
+    <Compile Include="Messaging\SampleApplication\ShoppingCartHandler.cs" />
+    <Compile Include="Messaging\SampleApplication\AddProductToCartCommand.cs" />
+    <Compile Include="Messaging\SampleApplication\CreateShoppingCartCommand.cs" />
+    <Compile Include="Messaging\SampleApplication\ProductAddedToCartEvent.cs" />
+    <Compile Include="Messaging\SampleApplication\ShoppingCartCreatedEvent.cs" />
     <Compile Include="Messaging\SampleApplication\ShoppingCart.cs" />
     <Compile Include="Messaging\SampleApplication\ShoppingCartItem.cs" />
     <Compile Include="Messaging\SampleHandlers\Command.cs" />
@@ -118,7 +131,7 @@
     <Compile Include="Messaging\UnitOfWorkControllerTest.cs" />
     <Compile Include="Messaging\UnitOfWorkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="TaskExtensions.cs" />
+    <Compile Include="Threading\TaskExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo.Server\04.Kingo.Server.csproj">
@@ -165,6 +178,10 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -14,10 +14,10 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
     [SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
-    public class FakeRepository<TAggregate, TKey, TVersion> : Repository<TAggregate, TKey, TVersion>
-        where TAggregate : class, IVersionedObject<TKey, TVersion>
+    public class FakeRepository<TKey, TVersion, TAggregate> : SnapshotRepository<TKey, TVersion, TAggregate>        
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+        where TAggregate : class, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
     {        
         /// <summary>
         /// Returns a <see cref="IDictionary{TKey,TValue}" /> that contains all stored aggregates.
@@ -64,7 +64,7 @@ namespace Kingo.Messaging.Domain
         }
 
         /// <inheritdoc />
-        protected override Task DeleteAsync(TKey key)
+        protected override Task DeleteAsync(TKey key, IWritableEventStream<TKey, TVersion> domainEventStream)
         {
             return AsyncMethod.RunSynchronously(() => Aggregates.Remove(key));
         }        

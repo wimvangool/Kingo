@@ -37,10 +37,12 @@ namespace Kingo
         [TestMethod]
         public void Merge_ReturnsCorrectlyMergedResult_IfBothLeftAndRightContainMemberErrors_And_ErrorsDoNotOverlap()
         {
-            var leftErrors = new Dictionary<string, string>() { { "A", "left" } };
+            var leftErrors = new Dictionary<string, string>
+            { { "A", "left" } };
             var left = new ErrorInfo(leftErrors);
 
-            var rightErrors = new Dictionary<string, string>() { { "B", "right" } };
+            var rightErrors = new Dictionary<string, string>
+            { { "B", "right" } };
             var right = new ErrorInfo(rightErrors);
 
             var errorInfo = ErrorInfo.Merge(left, right);
@@ -54,10 +56,12 @@ namespace Kingo
         [TestMethod]
         public void Merge_ReturnsCorrectlyMergedResult_IfBothLeftAndRightContainMemberErrors_And_ErrorsOverlap()
         {
-            var leftErrors = new Dictionary<string, string>() { { "A", "left" } };
+            var leftErrors = new Dictionary<string, string>
+            { { "A", "left" } };
             var left = new ErrorInfo(leftErrors);
 
-            var rightErrors = new Dictionary<string, string>() { { "A", "right" }, { "B", "right" } };
+            var rightErrors = new Dictionary<string, string>
+            { { "A", "right" }, { "B", "right" } };
             var right = new ErrorInfo(rightErrors);
 
             var errorInfo = ErrorInfo.Merge(left, right);

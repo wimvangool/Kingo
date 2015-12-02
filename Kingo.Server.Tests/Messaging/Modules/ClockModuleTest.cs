@@ -53,14 +53,14 @@ namespace Kingo.Messaging.Modules
             var message = new DefaultMessage();
             var handler = new MessageHandlerWrapper<DefaultMessage>(message, spy);
 
-            var module = new ClockModule(HighResolutionClock.Default);
+            var module = new ClockModule(Clock.Default);
             var clockBefore = Clock.Current;
             
             module.InvokeAsync(handler).Wait();
 
             Assert.AreSame(clockBefore, Clock.Current);
 
-            spy.VerifyThatClockWas(HighResolutionClock.Default);
+            spy.VerifyThatClockWas(Clock.Default);
         }
     }
 }

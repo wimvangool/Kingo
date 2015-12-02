@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Transactions;
 using Kingo.Messaging.SampleApplication;
-using Kingo.Messaging.SampleApplication.Messages;
+using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -34,25 +34,32 @@ namespace Kingo.Messaging
         {
             MessageStub messageA = new MessageStub();
             object messageB = null;
-
-            SampleApplicationProcessor.Instance.Handle(messageA, message => messageB = MessageProcessor.CurrentMessage.Message);
+            
+            SampleApplicationProcessor.Instance.Handle(messageA, message =>
+            {                
+                messageB = MessageProcessor.CurrentMessage.Message;
+            });
 
             Assert.IsNotNull(messageB);
             Assert.AreNotSame(messageA, messageB);
             Assert.AreSame(messageA.GetType(), messageB.GetType());
             Assert.IsNull(MessageProcessor.CurrentMessage);
         }
-
+                
         [TestMethod]
         public void MessagePointer_ReturnsEntireHistoryOfMessages_IfMessagesAreHandledInANestedFashion()
         {
-            MessageStub messageA = new MessageStub();
-            MessageStub messageB = new MessageStub();
+            var messageA = new MessageStub();
+            var messageB = new MessageStub();
             MessagePointer messagePointer = null;
 
             SampleApplicationProcessor.Instance.Handle(messageA, a =>
-                SampleApplicationProcessor.Instance.Handle(messageB, b => messagePointer = MessageProcessor.CurrentMessage)
-            );
+            {
+                SampleApplicationProcessor.Instance.Handle(messageB, b =>
+                {
+                    messagePointer = MessageProcessor.CurrentMessage;
+                });
+            });
 
             Assert.IsNotNull(messagePointer);
             Assert.AreSame(messageB.GetType(), messagePointer.Message.GetType());
@@ -85,7 +92,7 @@ namespace Kingo.Messaging
         [TestMethod]        
         public void CreateShoppingCart_Throws_IfSameCartWasAlreadyCreated()
         {
-            Guid shoppingCartId = Guid.NewGuid();
+            var shoppingCartId = Guid.NewGuid();
 
             SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
             {
@@ -94,7 +101,7 @@ namespace Kingo.Messaging
             SampleApplicationProcessor.Instance.HandleAsync(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
-            }).WaitAndHandle<InvalidMessageException>();                       
+            }).WaitAndHandle<CommandExecutionException>();                       
         }
 
         [TestMethod]

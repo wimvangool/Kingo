@@ -61,6 +61,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A handler for event &apos;{0}&apos; has already been registered..
+        /// </summary>
+        internal static string AggregateEventStream_HandlerAlreadyRegistered {
+            get {
+                return ResourceManager.GetString("AggregateEventStream_HandlerAlreadyRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No event-handler was specified for domain-event of type &apos;{0}&apos;..
         /// </summary>
         internal static string AggregateEventStream_MissingEventHandler {
@@ -142,15 +151,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A handler for event &apos;{0}&apos; has already been registered..
-        /// </summary>
-        internal static string EventSourcedAggregate_HandlerAlreadyRegistered {
-            get {
-                return ResourceManager.GetString("EventSourcedAggregate_HandlerAlreadyRegistered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Version cannot be negative: {0}..
         /// </summary>
         internal static string IntXXVersion_NegativeValue {
@@ -196,47 +196,11 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not enlist &apos;{0}&apos; to the current logical transaction because no such logical transaction is running..
-        /// </summary>
-        internal static string MessageProcessor_EnlistFailed {
-            get {
-                return ResourceManager.GetString("MessageProcessor_EnlistFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot publish event &apos;{0}&apos; because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope..
-        /// </summary>
-        internal static string MessageProcessor_NoEventBusAvailable {
-            get {
-                return ResourceManager.GetString("MessageProcessor_NoEventBusAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot add a new mapping because the mapping has been switched to read-only state..
         /// </summary>
         internal static string MessageToStrategyMapping_IsReadOnly {
             get {
                 return ResourceManager.GetString("MessageToStrategyMapping_IsReadOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid timeout specified: {0}..
-        /// </summary>
-        internal static string QueryCacheOptionsAttribute_InvalidTimeoutSpecified {
-            get {
-                return ResourceManager.GetString("QueryCacheOptionsAttribute_InvalidTimeoutSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid query cache kind specified: {0}..
-        /// </summary>
-        internal static string QueryCacheStrategy_InvalidKindSpecified {
-            get {
-                return ResourceManager.GetString("QueryCacheStrategy_InvalidKindSpecified", resourceCulture);
             }
         }
         
@@ -255,6 +219,15 @@ namespace Kingo.Resources {
         internal static string Repository_AggregateNotFoundByKey {
             get {
                 return ResourceManager.GetString("Repository_AggregateNotFoundByKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot delete aggregate of type &apos;{0}&apos; because the operation is not supported..
+        /// </summary>
+        internal static string Repository_DeleteNotSupported {
+            get {
+                return ResourceManager.GetString("Repository_DeleteNotSupported", resourceCulture);
             }
         }
         
@@ -282,15 +255,6 @@ namespace Kingo.Resources {
         internal static string TransactionScope_ScopeAlreadyCompleted {
             get {
                 return ResourceManager.GetString("TransactionScope_ScopeAlreadyCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The scope was incorrectly nested or was called from a different thread than it was created on..
-        /// </summary>
-        internal static string UnitOfWorkScope_IncorrectNestingOrWrongThread {
-            get {
-                return ResourceManager.GetString("UnitOfWorkScope_IncorrectNestingOrWrongThread", resourceCulture);
             }
         }
     }

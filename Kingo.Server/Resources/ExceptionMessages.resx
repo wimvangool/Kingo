@@ -120,9 +120,6 @@
   <data name="Repository_AggregateNotFoundByKey" xml:space="preserve">
     <value>No aggregate of type '{0}' with the specified key ({1}) was found.</value>
   </data>
-  <data name="MessageProcessor_NoEventBusAvailable" xml:space="preserve">
-    <value>Cannot publish event '{0}' because no bus is currently available. Make sure all publishing takes place inside a UnitOfWorkScope.</value>
-  </data>
   <data name="CacheRelay_NotAvailable" xml:space="preserve">
     <value>Cannot perform the operation because the cache is currently not available.</value>
   </data>
@@ -135,7 +132,7 @@
   <data name="DomainModelException_CommandFailed" xml:space="preserve">
     <value>Command '{0}' failed.</value>
   </data>
-  <data name="EventSourcedAggregate_HandlerAlreadyRegistered" xml:space="preserve">
+  <data name="AggregateEventStream_HandlerAlreadyRegistered" xml:space="preserve">
     <value>A handler for event '{0}' has already been registered.</value>
   </data>
   <data name="IntXXVersion_NegativeValue" xml:space="preserve">
@@ -143,9 +140,6 @@
   </data>
   <data name="MessageHandlerClass_InvalidInstanceLifetimeMode" xml:space="preserve">
     <value>Invalid InstanceLifetime was specified on class '{0}': {1}. </value>
-  </data>
-  <data name="UnitOfWorkScope_IncorrectNestingOrWrongThread" xml:space="preserve">
-    <value>The scope was incorrectly nested or was called from a different thread than it was created on.</value>
   </data>
   <data name="TransactionScope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
@@ -165,12 +159,6 @@
   <data name="ReadOnlyDictionary_NotSupported" xml:space="preserve">
     <value>Cannot change this collection because it is read-only.</value>
   </data>
-  <data name="QueryCacheStrategy_InvalidKindSpecified" xml:space="preserve">
-    <value>Invalid query cache kind specified: {0}.</value>
-  </data>
-  <data name="QueryCacheOptionsAttribute_InvalidTimeoutSpecified" xml:space="preserve">
-    <value>Invalid timeout specified: {0}.</value>
-  </data>
   <data name="MessageOut_InvalidMessageType" xml:space="preserve">
     <value>A module in the query execution pipeline returned an invalid result. Expected result of type '{0}' but was '{1}'.</value>
   </data>
@@ -186,13 +174,13 @@
   <data name="AggregateRoot_InvalidVersion" xml:space="preserve">
     <value>The version of the event ({0}) must be newer than the version of the aggregate ({1}).</value>
   </data>
-  <data name="MessageProcessor_EnlistFailed" xml:space="preserve">
-    <value>Could not enlist '{0}' to the current logical transaction because no such logical transaction is running.</value>
-  </data>
   <data name="Repository_DuplicateKey" xml:space="preserve">
     <value>Another aggregate with the same key already exists: '{0}'.</value>
   </data>
   <data name="MessageHandler_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on MessageHandler '{0}' are assignable to '{1}'.</value>
+  </data>
+  <data name="Repository_DeleteNotSupported" xml:space="preserve">
+    <value>Cannot delete aggregate of type '{0}' because the operation is not supported.</value>
   </data>
 </root>

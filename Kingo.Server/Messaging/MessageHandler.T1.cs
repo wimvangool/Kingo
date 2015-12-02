@@ -13,19 +13,21 @@ namespace Kingo.Messaging
         public abstract Task HandleAsync(TMessage message);
 
         /// <summary>
-        /// Publishes the specified <paramref name="message"/> as part of the current Unit of Work.
+        /// Publishes the specified <paramref name="message"/> as part of the current Unit of Work,
+        /// if a <see cref="UnitOfWorkContext" /> is active.
         /// </summary>
-        /// <typeparam name="T">Type of the message to publish.</typeparam>
+        /// <typeparam name="TEvent">Type of the message to publish.</typeparam>
         /// <param name="message">The message to publish.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
-        /// </exception>
-        public static void Publish<T>(T message) where T : class, IMessage<T>
+        /// </exception>        
+        protected virtual void Publish<TEvent>(TEvent message) where TEvent : class, IMessage<TEvent>
         {
-            MessageProcessor.Publish(message);
+            var context = UnitOfWorkContext.Current;
+            if (context != null)
+            {
+                context.Publish(message);
+            }
         }
     }
 }

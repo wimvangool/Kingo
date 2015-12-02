@@ -12,12 +12,12 @@ namespace Kingo.Messaging.Domain
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>
-        /// Flushed this stream to the specified <paramref name="stream"/>.
+        /// Writes the contents of this stream to the specified <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">The stream to flush to.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="stream"/> is <c>null</c>.
         /// </exception>
-        void FlushTo(IWritableEventStream<TKey, TVersion> stream);
+        void WriteTo(IWritableEventStream<TKey, TVersion> stream);
     }
 }

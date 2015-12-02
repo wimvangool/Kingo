@@ -53,7 +53,7 @@ namespace Kingo.Messaging
 
         #region [====== MessageWithMemberOfOwnType ======]
 
-        [DataContract()]
+        [DataContract]
         private sealed class MessageWithMemberOfOwnType : Message<MessageWithMemberOfOwnType>
         {
             [DataMember] internal readonly int Value;

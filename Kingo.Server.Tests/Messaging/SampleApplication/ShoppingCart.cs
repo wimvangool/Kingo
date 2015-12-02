@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using Kingo.Messaging.Domain;
-using Kingo.Messaging.SampleApplication.Messages;
 
 namespace Kingo.Messaging.SampleApplication
 {
     public sealed class ShoppingCart : AggregateRoot<Guid, int>
     {
-        private readonly Guid _id;
+        private readonly Guid _id;         
+        private readonly List<ShoppingCartItem> _items;
         private int _version;
 
-        private readonly List<ShoppingCartItem> _items;
-
-        private ShoppingCart(Guid id)
+        private ShoppingCart(ShoppingCartCreatedEvent @event)
+            : base(NewEvent(@event))
         {
-            _id = id;            
+            _id = @event.ShoppingCartId;
+            _version = @event.ShoppingCartVersion;
             _items = new List<ShoppingCartItem>(2);
         }
 
@@ -27,12 +27,12 @@ namespace Kingo.Messaging.SampleApplication
         protected override int Version
         {
             get { return _version; }
-            set { SetVersion(ref _version, value); }
+            set { _version = value; }
         }
 
-        protected override int NewVersion()
+        protected override int NextVersion(int version)
         {
-            return _version + 1;
+            return version + 1;
         }
 
         public void AddProduct(int productId, int quantity)
@@ -47,10 +47,10 @@ namespace Kingo.Messaging.SampleApplication
 
             item.AddQuantity(quantity);
 
-            Publish((id, version) => new ProductAddedToCartEvent
+            Publish(new ProductAddedToCartEvent
             {
-                ShoppingCartId = id,
-                ShoppingCartVersion = version,
+                ShoppingCartId = _id,
+                ShoppingCartVersion = NextVersion(),
                 ProductId = productId,
                 OldQuantity = oldQuantity,
                 NewQuantity = item.Quantity
@@ -64,14 +64,11 @@ namespace Kingo.Messaging.SampleApplication
 
         public static ShoppingCart CreateShoppingCart(Guid shoppingCartId)
         {
-            var cart = new ShoppingCart(shoppingCartId);
-
-            cart.Publish((id, version) => new ShoppingCartCreatedEvent
+            return new ShoppingCart(new ShoppingCartCreatedEvent
             {
-                ShoppingCartId = id,
-                ShoppingCartVersion = version
-            });
-            return cart;
+                ShoppingCartId = shoppingCartId,
+                ShoppingCartVersion = 1
+            });            
         }
     }
 }

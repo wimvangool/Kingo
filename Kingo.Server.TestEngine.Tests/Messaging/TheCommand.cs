@@ -11,7 +11,7 @@ namespace Kingo.Messaging
 
         public override TheCommand Copy()
         {
-            return new TheCommand()
+            return new TheCommand
             {
                 ExceptionToThrow = ExceptionToThrow,
                 DomainEventsToPublish = DomainEventsToPublish

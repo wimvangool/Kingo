@@ -291,7 +291,8 @@ namespace Kingo.Constraints
         [TestMethod]
         public void VerifyThat_ReturnsNoErrors_IfExpressionIsDictionaryIndexer_And_ConstraintIsSatisfied()
         {
-            var message = new Dictionary<string, int>() { { "0", 1 }, { "1", 2 } };
+            var message = new Dictionary<string, int>
+            { { "0", 1 }, { "1", 2 } };
             var validator = new ConstraintValidator<Dictionary<string, int>>();
 
             validator.VerifyThat(m => m[0.ToString()]).IsEqualTo(1);
@@ -302,7 +303,8 @@ namespace Kingo.Constraints
         [TestMethod]
         public void VerifyThat_ReturnsExpectedError_IfExpressionIsDictionaryIndexer_And_ConstraintIsNotSatisfied()
         {
-            var message = new Dictionary<string, int>() { { "0", 1 }, { "1", 2 } };
+            var message = new Dictionary<string, int>
+            { { "0", 1 }, { "1", 2 } };
             var validator = new ConstraintValidator<Dictionary<string, int>>();
 
             validator.VerifyThat(m => m[0.ToString()]).IsEqualTo(2);
@@ -425,7 +427,7 @@ namespace Kingo.Constraints
         [TestMethod]
         public void VerifyThat_ReturnsExpectedError_IfExpressionIsDictionaryIndexerOnMember_And_IndexIsOutOfRange()
         {
-            var message = new ValidatedMessage<Dictionary<char, string>>(new Dictionary<char, string>()
+            var message = new ValidatedMessage<Dictionary<char, string>>(new Dictionary<char, string>
             {
                 { 'a', "Apple" },
                 { 'b', "Banana" },
@@ -441,7 +443,7 @@ namespace Kingo.Constraints
         [TestMethod]
         public void VerifyThat_ReturnsExpectedError_IfExpressionIsDictionaryIndexerOnMember_And_ConstraintIsNotSatisfied()
         {
-            var message = new ValidatedMessage<Dictionary<char, string>>(new Dictionary<char, string>()
+            var message = new ValidatedMessage<Dictionary<char, string>>(new Dictionary<char, string>
             {
                 { 'a', "Apple" },
                 { 'b', "Banana" },
@@ -457,7 +459,7 @@ namespace Kingo.Constraints
         [TestMethod]
         public void VerifyThat_ReturnsNoErrors_IfExpressionIsDictionaryIndexerOnMember_And_ConstraintIsSatisfied()
         {
-            var message = new ValidatedMessage<Dictionary<char, string>>(new Dictionary<char, string>()
+            var message = new ValidatedMessage<Dictionary<char, string>>(new Dictionary<char, string>
             {
                 { 'a', "Apple" },
                 { 'b', "Banana" },

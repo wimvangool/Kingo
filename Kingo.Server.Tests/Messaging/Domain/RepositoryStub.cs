@@ -5,7 +5,7 @@ using Kingo.Threading;
 
 namespace Kingo.Messaging.Domain
 {
-    internal sealed class RepositoryStub : Repository<AggregateStub, Guid, int>
+    internal sealed class RepositoryStub : SnapshotRepository<Guid, int, AggregateStub>
     {
         private readonly AggregateStub _aggregate;
 
@@ -25,30 +25,52 @@ namespace Kingo.Messaging.Domain
             private set;
         }
 
-        protected override void Enlist()
+        protected override void OnAggregateSelected(AggregateStub aggregate)
         {
             WasEnlisted = true;
+
+            base.OnAggregateSelected(aggregate);
         }
 
-        public override Task FlushAsync()
+        protected override void OnAggregateAdded(AggregateStub aggregate)
+        {
+            WasEnlisted = true;
+
+            base.OnAggregateAdded(aggregate);
+        }
+
+        protected override void OnAggregateRemoved<T>(T key)
+        {
+            WasEnlisted = true;
+
+            base.OnAggregateRemoved(key);
+        }
+
+        protected override Task FlushAsync(IWritableEventStream<Guid, int> domainEventStream)
         {
             WasEnlisted = false;
 
-            return base.FlushAsync();
+            return base.FlushAsync(domainEventStream);
         }
 
         #region [====== SelectByKey ======]
 
-        private readonly Dictionary<Guid, int> _selectedKeys = new Dictionary<Guid, int>();
+        private readonly Dictionary<Guid, int> _selectedPrimaryKeys = new Dictionary<Guid, int>();
+        private readonly Dictionary<int, int> _selectedSurrogateKeys = new Dictionary<int, int>();
 
         internal int SelectCountOf(Guid key)
         {
-            return CountOf(key, _selectedKeys);
+            return CountOf(key, _selectedPrimaryKeys);
+        }
+
+        internal int SelectCountOf(int key)
+        {
+            return CountOf(key, _selectedSurrogateKeys);
         }
 
         protected override Task<AggregateStub> SelectByKeyAsync(Guid key)
         {
-            Add(key, _selectedKeys);
+            Add(key, _selectedPrimaryKeys);
 
             return AsyncMethod.RunSynchronously(() =>
             {                              
@@ -58,7 +80,26 @@ namespace Kingo.Messaging.Domain
                 }
                 return null;
             });
-        }        
+        }      
+  
+        public Task<AggregateStub> GetByAlternateIdAsync(int key)
+        {
+            return GetOrSelectByIdAsync(key, aggregate => aggregate.AlternateKey, SelectByAlternateKey);
+        }
+
+        private Task<AggregateStub> SelectByAlternateKey(int key)
+        {
+            Add(key, _selectedSurrogateKeys);
+
+            return AsyncMethod.RunSynchronously(() =>
+            {
+                if (_aggregate != null && _aggregate.AlternateKey.Equals(key))
+                {
+                    return _aggregate;
+                }
+                return null;
+            });
+        }
 
         #endregion
 
@@ -107,7 +148,7 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _deletedKeys);
         }
 
-        protected override Task DeleteAsync(Guid key)
+        protected override Task DeleteAsync(Guid key, IWritableEventStream<Guid, int> domainEventStream)
         {
             Add(key, _deletedKeys);
 
@@ -116,7 +157,7 @@ namespace Kingo.Messaging.Domain
 
         #endregion
 
-        private static int CountOf(Guid key, IDictionary<Guid, int> keys)
+        private static int CountOf<TKey>(TKey key, IDictionary<TKey, int> keys)
         {
             int count;
 
@@ -127,7 +168,7 @@ namespace Kingo.Messaging.Domain
             return 0;
         }
 
-        private static void Add(Guid key, IDictionary<Guid, int> keys)
+        private static void Add<TKey>(TKey key, IDictionary<TKey, int> keys)
         {
             int count;
 

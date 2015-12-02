@@ -131,7 +131,7 @@ namespace Kingo.Constraints
         {
             if (_constraint.IsSatisfiedBy(value))
             {
-                errorMessage = Constraints.ErrorMessageBuilder.Build(this, value);
+                errorMessage = ErrorMessageBuilder.Build(this, value);
                 return true;
             }
             errorMessage = null;

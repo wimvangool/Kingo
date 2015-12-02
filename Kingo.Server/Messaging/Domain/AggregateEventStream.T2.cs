@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
@@ -11,37 +9,22 @@ namespace Kingo.Messaging.Domain
     /// Represents an aggregate that is modeled as a stream of events and can also be restored as such.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
-    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>
+    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>    
     [Serializable]
-    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IReadableEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
+    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-    {
-        private const string _BufferKey = "_buffer";
-        private readonly MemoryEventStream<TKey, TVersion> _buffer;        
+    {                     
+        [NonSerialized]
         private readonly Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> _eventHandlers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateEventStream{TKey, TVersion}" /> class.
         /// </summary>
         protected AggregateEventStream()
-        {
-            _buffer = new MemoryEventStream<TKey, TVersion>();
+        {            
             _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateEventStream{TKey, TVersion}" /> class.
-        /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected AggregateEventStream(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            _buffer = (MemoryEventStream<TKey, TVersion>) info.GetValue(_BufferKey, typeof(MemoryEventStream<TKey, TVersion>));
-            _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
-        }
+        }        
 
         /// <summary>
         /// Registers a handler that is invoked when the aggregate writes an event of the specified type.
@@ -68,15 +51,7 @@ namespace Kingo.Messaging.Domain
             {
                 throw NewHandlerForTypeAlreadyRegisteredException(typeof(TEvent));
             }            
-        }
-
-        /// <inheritdoc />
-        internal override void Publish<TEvent>(TEvent @event)
-        {
-            base.Publish(@event);
-
-            _buffer.Write(@event);
-        }
+        }        
 
         void IWritableEventStream<TKey, TVersion>.Write<TEvent>(TEvent @event)
         {
@@ -97,16 +72,11 @@ namespace Kingo.Messaging.Domain
             {
                 throw NewMissingEventHandlerException(eventType);
             }            
-        }
-
-        void IReadableEventStream<TKey, TVersion>.FlushTo(IWritableEventStream<TKey, TVersion> stream)
-        {
-            _buffer.FlushTo(stream);
-        }
+        }        
 
         private static Exception NewHandlerForTypeAlreadyRegisteredException(Type domainEventType)
         {
-            var messageFormat = ExceptionMessages.EventSourcedAggregate_HandlerAlreadyRegistered;
+            var messageFormat = ExceptionMessages.AggregateEventStream_HandlerAlreadyRegistered;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, domainEventType.Name);
             return new ArgumentException(message);
         }

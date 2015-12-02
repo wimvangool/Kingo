@@ -45,7 +45,8 @@ namespace Kingo
 
             public ValidatorStub(string error, string memberName)
             {
-                _errorInfo = new ErrorInfo(new Dictionary<string, string>() { { memberName, error} });
+                _errorInfo = new ErrorInfo(new Dictionary<string, string>
+                { { memberName, error} });
             }
 
             public ErrorInfo Validate(object instance)

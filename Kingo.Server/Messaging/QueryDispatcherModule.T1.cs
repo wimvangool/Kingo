@@ -30,7 +30,7 @@ namespace Kingo.Messaging
         {
             ThrowIfCancellationRequested();
 
-            using (var scope = _processor.CreateUnitOfWorkScope())
+            using (var scope = UnitOfWorkContext.StartUnitOfWorkScope(_processor))
             {
                 MessageOut = await ExecuteQueryAsync();
 

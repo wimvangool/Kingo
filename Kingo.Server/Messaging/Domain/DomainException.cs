@@ -33,64 +33,7 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
-        protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-
-        #region [====== AsInvalidMessageException ======]
-
-        /// <summary>
-        /// Converts this instance into an instance of <see cref="InvalidMessageException" />.
-        /// </summary>
-        /// <param name="failedMessage">The message that caused the exception.</param>
-        /// <returns>
-        /// An instance of <see cref="InvalidMessageException" /> that wraps this exception and the inner
-        /// exception.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public InvalidMessageException AsInvalidMessageException(object failedMessage)
-        {            
-            var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
-            var message = string.Format(messageFormat, failedMessage.GetType());
-            return AsInvalidMessageException(failedMessage, message);
-        }
-
-        /// <summary>
-        /// Converts this instance into an instance of <see cref="InvalidMessageException" />.
-        /// </summary>
-        /// <param name="failedMessage">The message that caused the exception.</param>
-        /// <param name="message">Message of the exception.</param>
-        /// <returns>
-        /// An instance of <see cref="InvalidMessageException" /> that wraps this exception and the inner
-        /// exception.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public InvalidMessageException AsInvalidMessageException(object failedMessage, string message)
-        {                     
-            return AsInvalidMessageException(failedMessage, message, this);
-        }
-
-        /// <summary>
-        /// Converts this instance into an instance of <see cref="InvalidMessageException" />.
-        /// </summary>
-        /// <param name="failedMessage">The message that caused the exception.</param>
-        /// <param name="message">Message of the exception.</param>
-        /// <param name="innerException">This <see cref="DomainException" />.</param>
-        /// <returns>
-        /// An instance of <see cref="InvalidMessageException" /> that wraps this exception and the inner
-        /// exception.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        protected virtual InvalidMessageException AsInvalidMessageException(object failedMessage, string message, Exception innerException)
-        {
-            return new InvalidMessageException(failedMessage, message, innerException);
-        }
-
-        #endregion
+        protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) { }        
 
         #region [====== AsCommandExecutionException ======]
 
@@ -109,7 +52,7 @@ namespace Kingo.Messaging.Domain
         {            
             var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
             var message = string.Format(messageFormat, failedMessage.GetType());
-            return new CommandExecutionException(failedMessage, message, this);
+            return AsCommandExecutionException(failedMessage, message, this);
         }
 
         /// <summary>

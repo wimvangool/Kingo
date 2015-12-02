@@ -239,7 +239,7 @@ namespace Kingo.Constraints
                 errorMessage = null;
                 return false;
             }
-            errorMessage = Constraints.ErrorMessageBuilder.Build(this, valueIn);
+            errorMessage = ErrorMessageBuilder.Build(this, valueIn);
             return true;
         }
 

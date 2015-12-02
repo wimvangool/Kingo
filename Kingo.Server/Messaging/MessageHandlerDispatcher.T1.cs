@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
 using Kingo.Messaging.Domain;
+using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
@@ -27,7 +27,7 @@ namespace Kingo.Messaging
         {
             ThrowIfCancellationRequested();
 
-            using (var scope = _processor.CreateUnitOfWorkScope())
+            using (var scope = UnitOfWorkContext.StartUnitOfWorkScope(_processor))
             {
                 await InvokeAsync(_message);
                 await scope.CompleteAsync();
@@ -36,7 +36,9 @@ namespace Kingo.Messaging
         }                       
 
         private async Task InvokeAsync(TMessage message)
-        {
+        {            
+            // If a specific handler to handle the message was specified, that handler is used.
+            // If not, then the MessageHandlerFactory is used to instantiate a set of handlers.
             if (_handler == null)
             {
                 var messageHandlerFactory = _processor.MessageHandlerFactory;
@@ -44,6 +46,10 @@ namespace Kingo.Messaging
                 {
                     return;
                 }
+                // Before the handlers are instantiated, it is checked whether the message comes
+                // from an external source, or whether it is an event that was published as a result
+                // of processing a previous message. This matters because some handlers may only
+                // handle external messages whereas other may only handle internal messages.
                 var source = MessageProcessor.CurrentMessage.DetermineMessageSourceOf(message);
 
                 foreach (var handler in messageHandlerFactory.CreateMessageHandlersFor(message, source))
@@ -58,7 +64,7 @@ namespace Kingo.Messaging
         }
 
         private async Task InvokeAsync(TMessage message, MessageHandlerInstance<TMessage> handler)
-        {
+        {           
             var messageHandler = new MessageHandlerWrapper<TMessage>(message, handler);            
             var pipeline = _processor.BuildCommandOrEventHandlerPipeline().ConnectTo(messageHandler);
 
@@ -68,36 +74,25 @@ namespace Kingo.Messaging
             }            
             catch (DomainException exception)
             {
-                FunctionalException functionalException;
-
-                if (TryConvertToFunctionalException(messageHandler, exception, out functionalException))
+                // When a DomainException is thrown, a BusinessRule or some other
+                // Constraint-By-Design was broken. That means that if the message
+                // is a Command, the Exception is promoted to a FunctionalException,
+                // which will communicate an intentional or pre-condition failure as
+                // opposed to a technical or post-condition failure.
+                if (_processor.IsCommand(message))
                 {
-                    throw functionalException;
+                    throw NewCommandFailedException(message, exception);
                 }
                 throw;
             }
             ThrowIfCancellationRequested();
-        }     
+        }        
         
-        private static bool TryConvertToFunctionalException(IMessageHandler handler, DomainException exception, out FunctionalException functionalException)
+        private static Exception NewCommandFailedException(object command, DomainException exception)
         {
-            foreach (var exceptionFilter in GetDomainExceptionFilters(handler))
-            {
-                if (exceptionFilter.TryConvertToFunctionalException(handler.Message, exception, out functionalException))
-                {
-                    return true;
-                }
-            }
-            functionalException = null;
-            return false;
-        }
-
-        private static IEnumerable<IDomainExceptionFilter> GetDomainExceptionFilters(IMessageHandler handler)
-        {
-            var classAttributes = handler.GetClassAttributesOfType<IDomainExceptionFilter>();
-            var methodAttributes = handler.GetMethodAttributesOfType<IDomainExceptionFilter>();
-
-            return classAttributes.Concat(methodAttributes);
+            var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
+            var message = string.Format(messageFormat, command.GetType());
+            return exception.AsCommandExecutionException(command, message);
         }
     }
 }

@@ -5,18 +5,22 @@ namespace Kingo.Messaging.Domain
     internal sealed class EventBuffer<TKey, TVersion, TEvent> : IEventBuffer<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TEvent : class, IVersionedObject<TKey, TVersion>
+        where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
     {
-        private readonly TEvent _domainEvent;
+        private readonly TEvent _event;
 
-        internal EventBuffer(TEvent domainEvent)
-        {            
-            _domainEvent = domainEvent;
+        internal EventBuffer(TEvent @event)
+        {
+            if (@event == null)
+            {
+                throw new ArgumentNullException("event");
+            }
+            _event = @event;
         }
 
         public void WriteTo(IWritableEventStream<TKey, TVersion> stream)
         {
-            stream.Write(_domainEvent);
+            stream.Write(_event);
         }
     }
 }

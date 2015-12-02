@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kingo.Messaging
@@ -9,14 +8,12 @@ namespace Kingo.Messaging
     internal sealed class MessageProcessorBus : IMessageProcessorBus
     {        
         private readonly ICollection<IMessageProcessorBusConnection> _connections;        
-        private readonly IMessageProcessor _processor;
-        private readonly bool _useSynchronizationContext;
+        private readonly IMessageProcessor _processor;        
         
-        internal MessageProcessorBus(IMessageProcessor processor, bool useSynchronizationContext)
+        internal MessageProcessorBus(IMessageProcessor processor)
         {            
             _connections = new SynchronizedCollection<IMessageProcessorBusConnection>();            
-            _processor = processor;
-            _useSynchronizationContext = useSynchronizationContext;
+            _processor = processor;            
         }
 
         #region [====== Connect ======]
@@ -65,19 +62,7 @@ namespace Kingo.Messaging
         }
 
         private async Task InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-        {
-            if (_useSynchronizationContext)
-            {
-                var context = SynchronizationContext.Current;
-                if (context == null)
-                {
-                    ThreadPool.QueueUserWorkItem(async state => await _processor.HandleAsync(state as TMessage), message.Copy());
-                }
-                else
-                {
-                    context.Post(async state => await _processor.HandleAsync(state as TMessage), message.Copy());
-                }
-            }
+        {            
             await _processor.HandleAsync(message);
         }              
 

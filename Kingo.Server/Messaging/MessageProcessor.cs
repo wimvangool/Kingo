@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using Kingo.Resources;
-using Kingo.Threading;
+using Nito.AsyncEx;
 
 namespace Kingo.Messaging
 {
@@ -21,21 +20,16 @@ namespace Kingo.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageProcessor" /> class.
         /// </summary>        
-        public MessageProcessor(bool useSynchronizationContext = false)
+        public MessageProcessor()
         {                       
-            _domainEventBus = new MessageProcessorBus(this, useSynchronizationContext);               
+            _domainEventBus = new MessageProcessorBus(this);               
         }                
 
         /// <inheritdoc />
         public virtual IMessageProcessorBus EventBus
         {
             get { return _domainEventBus; }
-        }        
-
-        internal UnitOfWorkScope CreateUnitOfWorkScope()
-        {
-            return new UnitOfWorkScope(this);
-        }
+        }                
 
         /// <summary>
         /// Returns the <see cref="MessageHandlerFactory" /> of this processor.
@@ -100,6 +94,10 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
             HandleAsync(message, handler, CancellationToken.None).Wait();
         }
 
@@ -146,18 +144,34 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
-        {
+        public async Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        {            
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            return HandleAsyncCore(message, handler, token);
+            if (CurrentMessage == null)
+            {
+                // When a new message comes in, we create a dedicated message loop and
+                // SynchronizationContext that will force all continuations to be run
+                // on the same thread.
+                using (var thread = new AsyncContextThread())
+                {                    
+                    await thread.Factory.StartNew(() => HandleAsyncCore(message, handler, token), token).Unwrap();                    
+                }
+            }
+            else
+            {
+                // If a Message is already being handled on the current thread, the current call is actually
+                // a recursive call, which means we don't have to create a new message loop but can just handle
+                // the message immediately.
+                await HandleAsyncCore(message, handler, token);
+            }
         }
 
         private async Task HandleAsyncCore<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
         {
-            PushMessage(ref message, token);
+            PushMessage(ref message, token);            
 
             try
             {
@@ -169,6 +183,19 @@ namespace Kingo.Messaging
             {
                 PopMessage();
             } 
+        }
+
+        /// <summary>
+        /// Determines whether or not the specified message is a Command. By default,
+        /// this method returns <c>true</c> when the type-name ends with 'Command'.
+        /// </summary>
+        /// <param name="message">The message to analyze.</param>
+        /// <returns>
+        /// <c>true</c> if the specified <paramref name="message"/> is a command; otherwise <c>false</c>.
+        /// </returns>
+        protected internal virtual bool IsCommand(object message)
+        {
+            return message.GetType().Name.EndsWith("Command");
         }
 
         #endregion      
@@ -240,7 +267,7 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
+        public async Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {                        
@@ -248,7 +275,20 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException("message");
             }
-            return ExecuteAsyncCore(message, query, token);
+            if (CurrentMessage == null)
+            {
+                // When a new message comes in, we create a dedicated message loop and
+                // SynchronizationContext that will force all continuations to be run
+                // on the same thread.
+                using (var thread = new AsyncContextThread())
+                {
+                    return await thread.Factory.StartNew(() => ExecuteAsyncCore(message, query, token), token).Unwrap();
+                }
+            }
+            // If a Message is already being handled on the current thread, the current call is actually
+            // a recursive call, which means we don't have to create a new message loop but can just handle
+            // the message immediately.
+            return await ExecuteAsyncCore(message, query, token);          
         }
 
         private async Task<TMessageOut> ExecuteAsyncCore<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
@@ -269,7 +309,7 @@ namespace Kingo.Messaging
             {
                 PopMessage();
             }
-        }  
+        }
 
         #endregion                      
 
@@ -325,54 +365,12 @@ namespace Kingo.Messaging
             return null;
         }
 
-        #endregion
-
-        #region [====== Task Factories ======]
-
-        /// <summary>
-        /// Creates, starts and returns a new <see cref="Task" /> that is used to execute this command.
-        /// </summary>
-        /// <param name="command">The action that will be invoked on the background thread.</param>
-        /// <param name="messageType">Type of the message that is being handled.</param>
-        /// <param name="token">Optional token that can be used to cancel the operation.</param>
-        /// <returns>The newly created task.</returns>
-        /// <remarks>
-        /// The default implementation uses the <see cref="TaskFactory.StartNew(Action)">StartNew</see>-method
-        /// to start and return a new <see cref="Task" />. You may want to override this method to specify
-        /// more options when creating this task.
-        /// </remarks>
-        protected virtual Task Start(Action command, Type messageType, CancellationToken? token)
-        {
-            return token.HasValue
-                ? Task.Factory.StartNew(command, token.Value)
-                : Task.Factory.StartNew(command);
-        }
-
-        /// <summary>
-        /// Creates, starts and returns a new <see cref="Task{T}" /> that is used to execute this query.
-        /// </summary>
-        /// <param name="query">The action that will be invoked on the background thread.</param>
-        /// <param name="messageType">Type of the message that is being handled.</param>
-        /// <param name="token">Optional token that can be used to cancel the operation.</param>
-        /// <returns>The newly created task.</returns>
-        /// <remarks>
-        /// The default implementation uses the <see cref="TaskFactory{T}.StartNew(Func{T})">StartNew</see>-method
-        /// to start and return a new <see cref="Task{T}" />. You may want to override this method to specify
-        /// more options when creating this task.
-        /// </remarks>
-        protected virtual Task<TMessageOut> Start<TMessageOut>(Func<TMessageOut> query, Type messageType, CancellationToken? token)
-        {
-            return token.HasValue
-                ? Task<TMessageOut>.Factory.StartNew(query, token.Value)
-                : Task<TMessageOut>.Factory.StartNew(query);
-        }
-
-        #endregion        
+        #endregion             
 
         #region [====== CurrentMessage ======]
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static readonly AsyncLocal<MessagePointer> _CurrentMessage = new AsyncLocal<MessagePointer>();
+        private static readonly ThreadLocal<MessagePointer> _CurrentMessage = new ThreadLocal<MessagePointer>();
 
         /// <summary>
         /// Returns a <see cref="MessagePointer">pointer</see> to the message that is currently being handled.
@@ -393,102 +391,9 @@ namespace Kingo.Messaging
         private static void PopMessage()
         {
             CurrentMessage = CurrentMessage.ParentPointer;
-        } 
+        }       
 
-        #endregion
-
-        #region [====== Publish ======]
-
-        /// <summary>
-        /// Publishes the specified <paramref name="message"/> as part of the current Unit of Work.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message to publish.</typeparam>
-        /// <param name="message">The message to publish.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The method is not being called inside a <see cref="UnitOfWorkScope" />.
-        /// </exception>
-        public static void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-        {
-            if (TryPublish(message))
-            {
-                return;
-            }
-            throw NoEventBusAvailableException(message);
-        }        
-
-        /// <summary>
-        /// Publishes the specified <paramref name="message"/> as part of the current Unit of Work, if and only if
-        /// the method is being called inside a <see cref="UnitOfWorkScope" />.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message to publish.</typeparam>
-        /// <param name="message">The message to publish.</param>
-        /// <returns><c>true</c> if the message was published; otherwise <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        public static bool TryPublish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-            var context = UnitOfWorkContext.Current;
-            if (context != null)
-            {
-                context.Publish(message);
-                return true;
-            }
-            return false;
-        }
-
-        private static Exception NoEventBusAvailableException(object theMessage)
-        {
-            var messageFormat = ExceptionMessages.MessageProcessor_NoEventBusAvailable;
-            var message = string.Format(messageFormat, theMessage);
-            return new InvalidOperationException(message);
-        }
-
-        #endregion
-
-        #region [====== Enlist ======]
-
-        /// <summary>
-        /// Enlists the specified <paramref name="unitOfWork"/> with the current unit of work, if it is present.
-        /// If no unit of work is present, the specified unit is flushed immediately if required.
-        /// </summary>
-        /// <param name="unitOfWork">The unit of work to enlist.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="unitOfWork"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// Enlistment failed because no message is currently being handled.
-        /// </exception>
-        public static void Enlist(IUnitOfWork unitOfWork)
-        {
-            if (unitOfWork == null)
-            {
-                throw new ArgumentNullException("unitOfWork");
-            }
-            var context = UnitOfWorkContext.Current;
-            if (context != null)
-            {
-                context.Enlist(unitOfWork);
-                return;
-            }
-            throw NewEnlistFailedException(unitOfWork);
-        }
-
-        private static Exception NewEnlistFailedException(IUnitOfWork unitOfWork)
-        {
-            var messageFormat = ExceptionMessages.MessageProcessor_EnlistFailed;
-            var message = string.Format(messageFormat, unitOfWork.GetType().Name);
-            return new InvalidOperationException(message);
-        }        
-
-        #endregion
+        #endregion        
 
         #region [====== InvokePostCommit ======]
 
@@ -545,6 +450,6 @@ namespace Kingo.Messaging
             return transaction.TransactionInformation.Status == TransactionStatus.Committed;
         }
 
-        #endregion                      
+        #endregion
     }
 }

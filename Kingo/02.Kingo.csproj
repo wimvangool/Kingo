@@ -178,6 +178,7 @@
     <Compile Include="Messaging\IValidator.T1.cs" />
     <Compile Include="Messaging\Message.cs" />
     <Compile Include="Messaging\Message.T1.cs" />
+    <Compile Include="Threading\AsyncMethod.cs" />
     <Compile Include="Threading\Context.T1.cs" />
     <Compile Include="Messaging\Validator.T1.cs" />
     <Compile Include="Messaging\ErrorInfo.cs" />
@@ -198,7 +199,7 @@
     </Compile>
     <Compile Include="Clocks\DefaultClock.cs" />
     <Compile Include="Threading\AsyncLocal.T1.cs" />
-    <Compile Include="Threading\AsyncMethod.cs" />
+    <Compile Include="Threading\ContextScope.T1.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ErrorMessages.resx">

@@ -46,7 +46,7 @@ namespace Kingo.Constraints
         private ErrorMessageBuilder(IConstraintWithErrorMessage failedConstraint, object value)
         {
             _failedConstraint = failedConstraint;            
-            _arguments = new Dictionary<Identifier, object>()
+            _arguments = new Dictionary<Identifier, object>
             {
                 { MemberIdentifier, new DefaultMember(_failedConstraint, value) }
             };

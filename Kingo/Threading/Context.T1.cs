@@ -12,35 +12,9 @@ namespace Kingo.Threading
     /// <typeparam name="TValue">Type of the value to store.</typeparam>
     public sealed class Context<TValue> : IDisposable
     {
-        #region [====== Scopes ======]
+        #region [====== Scopes ======]       
 
-        private abstract class Scope<T> : IDisposable
-        {            
-            private bool _isDisposed;            
-
-            public void Dispose()
-            {
-                if (_isDisposed)
-                {
-                    return;
-                }
-                if (RestoreOldValue())
-                {
-                    _isDisposed = true;
-                    return;
-                }
-                throw NewIncorrectNestingOfScopesException();
-            }
-
-            protected abstract bool RestoreOldValue();            
-
-            private static Exception NewIncorrectNestingOfScopesException()
-            {
-                return new InvalidOperationException(ExceptionMessages.Scope_IncorrectNesting);
-            }
-        }
-
-        private sealed class ThreadLocalScope<T> : Scope<T>
+        private sealed class ThreadLocalScope<T> : ContextScope<T>
         {
             private readonly Context<T> _context;
             private readonly Tuple<T> _oldValue;
@@ -53,7 +27,12 @@ namespace Kingo.Threading
                 _newValue = newValue;
             }
 
-            protected override bool RestoreOldValue()
+            public override T Value
+            {
+                get { return _newValue.Item1; }
+            }
+
+            internal override bool RestoreOldValue()
             {
                 if (_context._currentThreadLocal.Value == _newValue)
                 {
@@ -64,7 +43,7 @@ namespace Kingo.Threading
             }
         }
 
-        private sealed class AsyncLocalScope<T> : Scope<T>
+        private sealed class AsyncLocalScope<T> : ContextScope<T>
         {
             private readonly Context<T> _context;
             private readonly Tuple<T> _oldValue;
@@ -77,7 +56,12 @@ namespace Kingo.Threading
                 _newValue = newValue;
             }
 
-            protected override bool RestoreOldValue()
+            public override T Value
+            {
+                get { return _newValue.Item1; }
+            }
+
+            internal override bool RestoreOldValue()
             {
                 _context._readerWriterLock.EnterWriteLock();
 
@@ -103,7 +87,7 @@ namespace Kingo.Threading
             }
         }
 
-        private sealed class DefaultScope<T> : Scope<T>
+        private sealed class DefaultScope<T> : ContextScope<T>
         {
             private readonly Context<T> _context;
             private readonly Tuple<T> _oldValue;
@@ -116,7 +100,12 @@ namespace Kingo.Threading
                 _newValue = newValue;
             }
 
-            protected override bool RestoreOldValue()
+            public override T Value
+            {
+                get { return _newValue.Item1; }
+            }
+
+            internal override bool RestoreOldValue()
             {
                 _context._readerWriterLock.EnterWriteLock();
 
@@ -219,7 +208,7 @@ namespace Kingo.Threading
         /// </summary>
         /// <param name="value">The value to set.</param>
         /// <returns>The scope that is to be disposed when ended.</returns>
-        public IDisposable OverrideThreadLocal(TValue value)
+        public ContextScope<TValue> OverrideThreadLocal(TValue value)
         {
             if (_isDisposed)
             {
@@ -240,7 +229,7 @@ namespace Kingo.Threading
         /// <exception cref="InvalidOperationException">
         /// The call is made inside a thread local scope.
         /// </exception>
-        public IDisposable OverrideAsyncLocal(TValue value)
+        public ContextScope<TValue> OverrideAsyncLocal(TValue value)
         {
             if (_isDisposed)
             {
@@ -262,7 +251,7 @@ namespace Kingo.Threading
             }
         }
 
-        private IDisposable OverrideAsyncLocalCore(TValue value)
+        private ContextScope<TValue> OverrideAsyncLocalCore(TValue value)
         {
             var oldValue = _currentAsyncLocal.Value;
             var newValue = _currentAsyncLocal.Value = new Tuple<TValue>(value);
@@ -279,7 +268,7 @@ namespace Kingo.Threading
         /// <exception cref="InvalidOperationException">
         /// The call is made inside an async local or thread local scope.
         /// </exception>
-        public IDisposable Override(TValue value)
+        public ContextScope<TValue> Override(TValue value)
         {
             if (_isDisposed)
             {
@@ -299,9 +288,9 @@ namespace Kingo.Threading
             {
                 _readerWriterLock.ExitWriteLock();
             }
-        } 
-       
-        private IDisposable OverrideCore(TValue value)
+        }
+
+        private ContextScope<TValue> OverrideCore(TValue value)
         {
             if (IsInsideAsyncLocalScope)
             {

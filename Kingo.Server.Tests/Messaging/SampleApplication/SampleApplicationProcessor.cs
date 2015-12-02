@@ -48,7 +48,7 @@ namespace Kingo.Messaging.SampleApplication
 
         private static bool IsHandlerForMessageProcessorTests(Type type)
         {
-            return type.Namespace.EndsWith("SampleApplication.MessageHandlers");
+            return type.Namespace.EndsWith("SampleApplication");
         }
 
         private static bool IsRepositoryInterface(Type type)
