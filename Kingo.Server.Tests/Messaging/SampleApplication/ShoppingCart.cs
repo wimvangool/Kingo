@@ -31,12 +31,7 @@ namespace Kingo.Messaging.SampleApplication
         {
             get { return _version; }
             set { _version = value; }
-        }
-
-        protected override int NextVersion(int version)
-        {
-            return version + 1;
-        }
+        }        
 
         public void AddProduct(int productId, int quantity)
         {

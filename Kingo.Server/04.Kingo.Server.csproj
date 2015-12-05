@@ -78,7 +78,6 @@
     <Compile Include="Messaging\DependencyToConfigurationMapping.cs" />
     <Compile Include="Messaging\Domain\AggregateNotFoundByKeyException.T2.cs" />
     <Compile Include="Messaging\Domain\Entity.T1.cs" />
-    <Compile Include="Messaging\Domain\IKeyedObject.T1.cs" />
     <Compile Include="Messaging\EmptySequence.cs" />
     <Compile Include="Messaging\IMessageHandlerOrQuery.cs" />
     <Compile Include="Messaging\IMessageHandlerConfiguration.cs" />
@@ -134,7 +133,6 @@
     <Compile Include="Messaging\MessageValidationModule.cs" />
     <Compile Include="Messaging\Domain\Repository.T3.cs" />
     <Compile Include="Messaging\Domain\DomainException.cs" />
-    <Compile Include="Messaging\Domain\IVersionedObject.T2.cs" />
     <Compile Include="Messaging\Domain\AggregateEventStream.T2.cs" />
     <Compile Include="Messaging\Domain\IEventBuffer.T2.cs" />
     <Compile Include="Messaging\Domain\IReadableEventStream.T2.cs" />
@@ -167,6 +165,7 @@
     <Compile Include="Messaging\UnitOfWorkContext.cs" />
     <Compile Include="Messaging\DependencyCache.cs" />
     <Compile Include="Messaging\UnitOfWorkScope.cs" />
+    <Compile Include="Messaging\Version.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>

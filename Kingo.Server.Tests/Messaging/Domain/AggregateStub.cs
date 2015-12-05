@@ -5,8 +5,7 @@ namespace Kingo.Messaging.Domain
     internal sealed class AggregateStub : AggregateRoot<Guid, int>
     {
         private readonly Guid _id;
-        private readonly int _alternateKey;
-        private int _version;
+        private readonly int _alternateKey;        
 
         internal AggregateStub(Guid id, int alternateKey = 0)
         {
@@ -30,15 +29,9 @@ namespace Kingo.Messaging.Domain
         /// <inheritdoc />
         protected override int Version
         {
-            get { return _version; }
-            set { _version = value; }
-        }
-
-        /// <inheritdoc />
-        protected override int NextVersion(int version)
-        {
-            return version + 1;
-        }        
+            get;
+            set;
+        }                
 
         #endregion
 

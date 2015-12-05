@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.Messaging.Domain
+namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represents an object that can be identified by a unique key.

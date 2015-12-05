@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging
 {
-    internal static class MessageErrorInfoExtensions
+    internal static class ErrorInfoExtensions
     {
         internal static void AssertNoErrors(this ErrorInfo errorInfo)
         {

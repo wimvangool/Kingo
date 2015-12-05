@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Kingo.Server.TestEngine")]
 [assembly: AssemblyDescription("Represents a test-engine for projects that are built using messaging-patterns.")]
-[assembly: AssemblyVersion("2.0.1")]
-[assembly: AssemblyFileVersion("2.0.1")]
-[assembly: AssemblyInformationalVersion("2.0.1-beta")]
+[assembly: AssemblyVersion("2.0.7")]
+[assembly: AssemblyFileVersion("2.0.7")]
+[assembly: AssemblyInformationalVersion("2.0.7-beta")]
 
 [assembly: InternalsVisibleTo("Kingo.Server.TestEngine.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

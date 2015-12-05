@@ -183,4 +183,7 @@
   <data name="Repository_DeleteNotSupported" xml:space="preserve">
     <value>Cannot delete aggregate of type '{0}' because the operation is not supported.</value>
   </data>
+  <data name="Version_IncrementNotSupported" xml:space="preserve">
+    <value>Auto-increment of type '{0}' is not supported. Please override AggregateRoot&lt;,&gt;.NextVersion() or change the version type of the aggregate.</value>
+  </data>
 </root>

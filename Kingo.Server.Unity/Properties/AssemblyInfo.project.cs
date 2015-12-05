@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Kingo.Server.Unity")]
 [assembly: AssemblyDescription("Contains a Unity-implementation of the MessageHandlerFactory.")]
-[assembly: AssemblyVersion("2.1.505")]
-[assembly: AssemblyFileVersion("2.1.505")]
-[assembly: AssemblyInformationalVersion("2.1.505")]
+[assembly: AssemblyVersion("4.0.1")]
+[assembly: AssemblyFileVersion("4.0.1")]
+[assembly: AssemblyInformationalVersion("4.0.1")]
 
 [assembly: InternalsVisibleTo("Kingo.Server.Unity.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

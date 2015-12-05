@@ -13,6 +13,8 @@ namespace Kingo.Messaging.Domain
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
+        private static readonly Func<TVersion, TVersion> _IncrementMethod = Messaging.Version.IncrementMethod<TVersion>();
+
         [NonSerialized]
         private readonly MemoryEventStream<TKey, TVersion> _eventsToPublish;
 
@@ -73,17 +75,10 @@ namespace Kingo.Messaging.Domain
         /// Returns a incremented version number relative to the current version.
         /// </summary>
         /// <returns>The increment version of the current version.</returns>
-        protected TVersion NextVersion()
+        protected virtual TVersion NextVersion()
         {
-            return NextVersion(Version);
-        }
-
-        /// <summary>
-        /// Increments the specified <paramref name="version"/> to obtain the next version for this aggregate.
-        /// </summary>
-        /// <param name="version">The version to increment.</param>
-        /// <returns>The incremented version.</returns>
-        protected abstract TVersion NextVersion(TVersion version);
+            return _IncrementMethod.Invoke(Version);
+        }        
 
         #endregion                        
 

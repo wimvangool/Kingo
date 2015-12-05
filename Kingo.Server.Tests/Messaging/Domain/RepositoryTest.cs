@@ -487,7 +487,7 @@ namespace Kingo.Messaging.Domain
         #region [====== Removing & Deleting ======]
 
         [TestMethod]
-        public void RemoveByKey_MarksTheSpecifiedKeyAsDeleted_IfAggregateWasNotSelectedOrAddedBefore()
+        public void RemoveById_MarksTheSpecifiedKeyAsDeleted_IfAggregateWasNotSelectedOrAddedBefore()
         {
             using (var repository = new RepositoryStub())
             {
@@ -499,7 +499,28 @@ namespace Kingo.Messaging.Domain
                 Assert.IsTrue(repository.WasEnlisted);
                 Assert.IsTrue(repository.RequiresFlush());
             }
-        }        
+        }   
+     
+        [TestMethod]
+        public void RemoveById_CanBeCalled_IfAggregateWasFirstSelected_ThenRemoved_ThenAdded_AndThenDeleted()
+        {
+            var aggregateId = Guid.NewGuid();
+            var aggregateA = new AggregateStub(aggregateId);
+
+            using (var repository = new RepositoryStub(aggregateA))
+            {
+                var aggregateB = repository.GetByIdAsync(aggregateId).Result;
+
+                Assert.AreSame(aggregateA, aggregateB);
+
+                repository.RemoveById(aggregateId);
+                repository.Add(aggregateA);
+                repository.RemoveById(aggregateId);
+                repository.FlushAsync().Wait();
+
+                Assert.AreEqual(1, repository.DeleteCountOf(aggregateId));                               
+            }
+        }
 
         [TestMethod]
         public void FlushAsync_DeletesRemovedAggregate_IfAggregateWasRemoved()

@@ -104,6 +104,8 @@
     <Compile Include="Constraints\PushIndexListTransformer.cs" />
     <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="EnumOperators.T1.cs" />
+    <Compile Include="Messaging\IKeyedObject.T1.cs" />
+    <Compile Include="Messaging\IVersionedObject.T2.cs" />
     <Compile Include="Messaging\ErrorInheritanceLevel.cs" />
     <Compile Include="Messaging\ErrorMessageReader.cs" />
     <Compile Include="Identifier.cs" />

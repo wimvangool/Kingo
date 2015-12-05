@@ -1,5 +1,4 @@
 ﻿using System;
-using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging.SampleApplication
 {
