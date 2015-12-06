@@ -79,6 +79,51 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value of member &apos;{0}.{1}&apos; of type &apos;{2}&apos; could not be converted to an instance of type &apos;{3}&apos;..
+        /// </summary>
+        internal static string DomainEvent_IncompatibleMemberType {
+            get {
+                return ResourceManager.GetString("DomainEvent_IncompatibleMemberType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} declared on property &apos;{1}.{2}&apos; cannot be declared on indexers..
+        /// </summary>
+        internal static string DomainEvent_IndexerNotSupported {
+            get {
+                return ResourceManager.GetString("DomainEvent_IndexerNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not resolve member of type &apos;{0}&apos; on event of type &apos;{1}&apos;. Consider decorating the appropriate member with the {2}..
+        /// </summary>
+        internal static string DomainEvent_MemberNotFound {
+            get {
+                return ResourceManager.GetString("DomainEvent_MemberNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not decide on a member of type &apos;{0}&apos; on event of type &apos;{1}&apos; because multiple members were decorated with this attribute..
+        /// </summary>
+        internal static string DomainEvent_MultipleAttributesDeclared {
+            get {
+                return ResourceManager.GetString("DomainEvent_MultipleAttributesDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not decide on a member of type &apos;{0}&apos; on event of type &apos;{1}&apos; because multiple candidate members were found. Consider decorating the appropriate member with the {2}..
+        /// </summary>
+        internal static string DomainEvent_MultipleCandidateMembersFound {
+            get {
+                return ResourceManager.GetString("DomainEvent_MultipleCandidateMembersFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance &apos;{0}&apos; of type &apos;{1}&apos; is not supported because it is not an Enum type..
         /// </summary>
         internal static string EnumIsInRangeOfValidValues_UnsupportedValue {

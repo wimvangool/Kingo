@@ -165,7 +165,7 @@
     <Compile Include="Messaging\UnitOfWorkContext.cs" />
     <Compile Include="Messaging\DependencyCache.cs" />
     <Compile Include="Messaging\UnitOfWorkScope.cs" />
-    <Compile Include="Messaging\Version.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>

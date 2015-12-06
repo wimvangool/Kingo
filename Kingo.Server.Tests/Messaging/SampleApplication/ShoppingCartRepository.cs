@@ -25,7 +25,7 @@ namespace Kingo.Messaging.SampleApplication
 
         Task<ShoppingCart> IShoppingCartRepository.GetById(Guid id)
         {
-            return GetByIdAsync(id);
+            return GetByKeyAsync(id);
         }
 
         public int FlushCount

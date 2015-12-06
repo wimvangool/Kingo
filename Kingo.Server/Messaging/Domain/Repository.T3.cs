@@ -250,7 +250,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="AggregateNotFoundByKeyException{T}">
         /// No aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/> was found.
         /// </exception>
-        public Task<TAggregate> GetByIdAsync(TKey key)
+        public Task<TAggregate> GetByKeyAsync(TKey key)
         {
             return GetOrSelectByIdAsync(key, SelectPrimaryKey, SelectByKeyAsync);
         } 
@@ -532,9 +532,9 @@ namespace Kingo.Messaging.Domain
         /// Marks the aggregate with the specified <paramref name="key"/> as deleted.
         /// </summary>
         /// <param name="key">Key of the aggregate to remove.</param>
-        public void RemoveById(TKey key)
+        public void RemoveByKey(TKey key)
         {
-             RemoveById(key, SelectPrimaryKey, DeleteAsync);
+             RemoveByKey(key, SelectPrimaryKey, DeleteAsync);
         }
 
         /// <summary>
@@ -551,7 +551,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="keySelector"/> or <paramref name="deleteMethod"/> is <c>null</c>.
         /// </exception>
-        protected void RemoveById<T>(T key, Func<TAggregate, T> keySelector, Func<T, IWritableEventStream<TKey, TVersion>, Task> deleteMethod)
+        protected void RemoveByKey<T>(T key, Func<TAggregate, T> keySelector, Func<T, IWritableEventStream<TKey, TVersion>, Task> deleteMethod)
             where T : struct, IEquatable<T>
         {
             if (keySelector == null)

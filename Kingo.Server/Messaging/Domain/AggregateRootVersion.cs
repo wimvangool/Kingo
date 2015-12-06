@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Kingo.Clocks;
 using Kingo.Resources;
 
-namespace Kingo.Messaging
+namespace Kingo.Messaging.Domain
 {
-    internal static class Version
+    internal static class AggregateRootVersion
     {
         private static readonly Func<byte, byte> _IncrementByte = version => { checked { return (byte) (version + 1); } };
         private static readonly Func<short, short> _IncrementInt16 = version => { checked { return (short) (version + 1); } };
@@ -31,7 +31,7 @@ namespace Kingo.Messaging
             {
                 return (Func<TVersion, TVersion>) method;
             }
-            return version => { throw new NotSupportedException(ExceptionMessages.Version_IncrementNotSupported); };
+            return version => { throw new InvalidOperationException(ExceptionMessages.Version_IncrementNotSupported); };
         }                
     }
 }

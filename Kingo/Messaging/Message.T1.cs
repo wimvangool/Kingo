@@ -8,6 +8,7 @@ namespace Kingo.Messaging
     /// <summary>
     /// Serves as a simple base-implementation of the <see cref="IMessage{TMessage}" /> interface.
     /// </summary>
+    /// <typeparam name="TMessage">Type of the implementing message.</typeparam>
     [Serializable]
     [DataContract]
     public abstract class Message<TMessage> : Message, IMessage<TMessage> where TMessage : Message<TMessage>

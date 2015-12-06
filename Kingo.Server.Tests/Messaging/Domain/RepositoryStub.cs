@@ -82,7 +82,7 @@ namespace Kingo.Messaging.Domain
             });
         }      
   
-        public Task<AggregateStub> GetByAlternateIdAsync(int key)
+        public Task<AggregateStub> GetByAlternateKeyAsync(int key)
         {
             return GetOrSelectByIdAsync(key, aggregate => aggregate.AlternateKey, SelectByAlternateKey);
         }

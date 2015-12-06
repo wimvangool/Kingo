@@ -13,7 +13,7 @@ namespace Kingo.Messaging.Domain
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
-        private static readonly Func<TVersion, TVersion> _IncrementMethod = Messaging.Version.IncrementMethod<TVersion>();
+        private static readonly Func<TVersion, TVersion> _IncrementMethod = AggregateRootVersion.IncrementMethod<TVersion>();
 
         [NonSerialized]
         private readonly MemoryEventStream<TKey, TVersion> _eventsToPublish;

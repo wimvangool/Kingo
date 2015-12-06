@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.Messaging
+namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// Represents an Aggregate, following the definition of a Domain Driven Design.
