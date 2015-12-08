@@ -58,22 +58,19 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Messaging\Domain\FakeRepository.T3.cs" />
-    <Compile Include="Messaging\ScenarioCache.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Messaging\AlternateFlow.T1.cs" />
+    <Compile Include="Messaging\ExecutionFlow.T1.cs" />
+    <Compile Include="Messaging\HappyFlow.T1.cs" />
+    <Compile Include="Messaging\IExecutable.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Messaging\Scenario.cs" />
+    <Compile Include="Messaging\Scenario.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\ErrorMessages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ErrorMessages.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Messaging\Scenario.cs" />
-    <Compile Include="Messaging\Scenario.T1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo.Server\04.Kingo.Server.csproj">
@@ -89,10 +86,6 @@
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\ErrorMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

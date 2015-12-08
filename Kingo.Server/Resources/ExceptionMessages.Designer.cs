@@ -106,15 +106,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot perform the operation because the cache is currently not available..
-        /// </summary>
-        internal static string CacheRelay_NotAvailable {
-            get {
-                return ResourceManager.GetString("CacheRelay_NotAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The connection is already closed..
         /// </summary>
         internal static string Connection_AlreadyClosed {
@@ -138,15 +129,6 @@ namespace Kingo.Resources {
         internal static string DependencyClass_AmbigiousMatch {
             get {
                 return ResourceManager.GetString("DependencyClass_AmbigiousMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
-        /// </summary>
-        internal static string DomainModelException_CommandFailed {
-            get {
-                return ResourceManager.GetString("DomainModelException_CommandFailed", resourceCulture);
             }
         }
         

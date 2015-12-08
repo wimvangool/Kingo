@@ -7,6 +7,7 @@ namespace Kingo
     /// <summary>
     /// Represents an identifier as defined by the C# language.
     /// </summary>
+    [Serializable]
     public sealed class Identifier : IEquatable<Identifier>
     {
         #region [====== Builder ======]
@@ -274,6 +275,18 @@ namespace Kingo
                 return !ReferenceEquals(right, null);
             }
             return !left.Equals(right);
+        }
+
+        /// <summary>
+        /// Implicitly converts an identifier back to its string representation.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>
+        /// The string-representation of the identifier, or <c>null</c> if <paramref name="value"/> is <c>null</c>.
+        /// </returns>
+        public static implicit operator string(Identifier value)
+        {
+            return value == null ? null : value._value;
         }
 
         #endregion

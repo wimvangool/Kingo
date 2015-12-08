@@ -12,23 +12,7 @@ namespace Kingo.Messaging.Domain
     public abstract class AggregateNotFoundException : DomainException
     {
         private const string _AggregateTypeKey = "_aggregateType";
-        private readonly Type _aggregateType;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
-        /// </summary>                
-        /// <param name="aggregateType">Type of the aggregate that was not found.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="aggregateType" /> is <c>null</c>.
-        /// </exception>
-        protected AggregateNotFoundException(Type aggregateType)
-        {
-            if (aggregateType == null)
-            {
-                throw new ArgumentNullException("aggregateType");
-            }
-            _aggregateType = aggregateType;
-        }       
+        private readonly Type _aggregateType;              
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.

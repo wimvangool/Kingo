@@ -108,6 +108,7 @@
     <Compile Include="Messaging\Domain\AggregateMemberType.cs" />
     <Compile Include="Messaging\Domain\DomainEvent.cs" />
     <Compile Include="Messaging\Domain\DomainEvent.T3.cs" />
+    <Compile Include="Messaging\Domain\DomainException.cs" />
     <Compile Include="Messaging\Domain\IKeyedObject.T1.cs" />
     <Compile Include="Messaging\Domain\IVersionedObject.T2.cs" />
     <Compile Include="Messaging\ErrorInheritanceLevel.cs" />
@@ -140,7 +141,6 @@
     <Compile Include="Constraints\BasicConstraints.IsNull.cs" />
     <Compile Include="Constraints\BasicConstraints.IsSameInstanceAs.cs" />
     <Compile Include="Constraints\BasicConstraints.IsSmallerThan.cs" />
-    <Compile Include="Constraints\MemberConstraintEventArgs.T1.cs" />
     <Compile Include="Constraints\ConstraintInverter.T1.cs" />
     <Compile Include="Constraints\NullConstraint.T1.cs" />
     <Compile Include="Constraints\OrConstraint.T1.cs" />

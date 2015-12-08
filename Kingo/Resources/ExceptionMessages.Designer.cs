@@ -124,6 +124,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
+        /// </summary>
+        internal static string DomainModelException_CommandFailed {
+            get {
+                return ResourceManager.GetString("DomainModelException_CommandFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance &apos;{0}&apos; of type &apos;{1}&apos; is not supported because it is not an Enum type..
         /// </summary>
         internal static string EnumIsInRangeOfValidValues_UnsupportedValue {

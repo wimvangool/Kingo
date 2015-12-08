@@ -7,23 +7,9 @@ namespace Kingo.ComponentModel.Server
     /// <summary>
     /// A LifetimeManager for Unity that registers it's dependencies at the current <see cref="UnitOfWorkContext" />.
     /// </summary>
-    public sealed class CacheBasedLifetimeManager : LifetimeManager
-    {
-        private readonly IDependencyCache _cache;
-        private IDependencyCacheEntry<object> _entry;    
-    
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CacheBasedLifetimeManager" /> class.
-        /// </summary>
-        /// <param name="cache">The cache that is used to store all values.</param>
-        public CacheBasedLifetimeManager(IDependencyCache cache)
-        {
-            if (cache == null)
-            {
-                throw new ArgumentNullException("cache");
-            }
-            _cache = cache;
-        }
+    public sealed class PerUnitOfWorkLifetimeManager : LifetimeManager
+    {       
+        private IDependencyCacheEntry<object> _entry;           
 
         /// <inheritdoc />
         public override object GetValue()
@@ -50,8 +36,29 @@ namespace Kingo.ComponentModel.Server
 
         /// <inheritdoc />
         public override void SetValue(object newValue)
-        {            
-            _entry = _cache.Add(newValue, HandleValueInvalidated);
+        {
+            IDependencyCache cache;
+
+            if (TryGetDependencyCache(out cache))
+            {
+                _entry = cache.Add(newValue, HandleValueInvalidated);
+            }
+            else
+            {
+                HandleValueInvalidated(newValue);
+            }
+        }
+
+        private static bool TryGetDependencyCache(out IDependencyCache cache)
+        {
+            var context = UnitOfWorkContext.Current;
+            if (context == null)
+            {
+                cache = null;
+                return false;
+            }
+            cache = context.Cache;
+            return true;
         }
 
         private static void HandleValueInvalidated(object value)

@@ -12,25 +12,15 @@ namespace Kingo.Messaging
     public abstract class MessageHandlerFactory
     {
         [DebuggerDisplay("Count = {_messageHandlers.Count}")]
-        private readonly List<MessageHandlerClass> _messageHandlers;
-        private readonly UnitOfWorkCache _unitOfWorkCache;
+        private readonly List<MessageHandlerClass> _messageHandlers;        
         
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerFactory" /> class.
         /// </summary>        
         protected MessageHandlerFactory()
         {
-            _messageHandlers = new List<MessageHandlerClass>();    
-            _unitOfWorkCache = new UnitOfWorkCache();
-        }        
-
-        /// <summary>
-        /// Returns the cache that can be used to store dependencies with a lifetime of <see cref="InstanceLifetime.PerUnitOfWork" />.
-        /// </summary>
-        protected IDependencyCache UnitOfWorkCache
-        {
-            get { return _unitOfWorkCache; }
-        }
+            _messageHandlers = new List<MessageHandlerClass>();                
+        }               
 
         /// <summary>
         /// Returns the number of classes implementing the <see cref="IMessageHandler{T}" /> interface have been registered in this factory.

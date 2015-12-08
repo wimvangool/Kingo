@@ -132,7 +132,6 @@
     <Compile Include="Messaging\MessageHandlerDecorator.T1.cs" />
     <Compile Include="Messaging\MessageValidationModule.cs" />
     <Compile Include="Messaging\Domain\Repository.T3.cs" />
-    <Compile Include="Messaging\Domain\DomainException.cs" />
     <Compile Include="Messaging\Domain\AggregateEventStream.T2.cs" />
     <Compile Include="Messaging\Domain\IEventBuffer.T2.cs" />
     <Compile Include="Messaging\Domain\IReadableEventStream.T2.cs" />
@@ -153,13 +152,11 @@
     <Compile Include="Messaging\MessageProcessorBusConnection.T1.cs" />
     <Compile Include="Messaging\MessagePointer.cs" />
     <Compile Include="Messaging\DependencyCacheEntry.T1.cs" />
-    <Compile Include="Messaging\DependencyCacheRelay.cs" />
     <Compile Include="Messaging\DomainEventBus.cs" />
     <Compile Include="Messaging\IEventBuffer.cs" />
     <Compile Include="Messaging\IDependencyCache.cs" />
     <Compile Include="Messaging\IDependencyCacheEntry.T1.cs" />
     <Compile Include="Messaging\IDomainEventBus.cs" />
-    <Compile Include="Messaging\UnitOfWorkCache.cs" />
     <Compile Include="Messaging\UnitOfWorkController.cs" />
     <Compile Include="Messaging\IUnitOfWork.cs" />
     <Compile Include="Messaging\UnitOfWorkContext.cs" />

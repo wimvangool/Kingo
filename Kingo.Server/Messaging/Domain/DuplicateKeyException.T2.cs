@@ -12,16 +12,7 @@ namespace Kingo.Messaging.Domain
         where TKey : struct, IEquatable<TKey>
     {
         private const string _KeyKey = "_key";
-        private readonly TKey _key;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DuplicateKeyException{T}" /> class.
-        /// </summary>		
-        /// <param name="key">The key that was already assigned to another aggregate.</param>
-        public DuplicateKeyException(TKey key)
-        {
-            _key = key;
-        }
+        private readonly TKey _key;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DuplicateKeyException{T}" /> class.

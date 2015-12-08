@@ -62,7 +62,11 @@ namespace Kingo.Messaging
             if (_isDisposed)
             {
                 return;
-            }                        
+            }
+            if (_isContextOwner)
+            {
+                _scope.Value.Dispose();
+            }
             _scope.Dispose();
             _isDisposed = true;                       
         }                                      

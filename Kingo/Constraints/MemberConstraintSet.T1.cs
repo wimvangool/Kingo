@@ -16,34 +16,15 @@ namespace Kingo.Constraints
         #region [====== ChildConstraintSet  & ChildConstraint ======]
 
         private sealed class ChildConstraintSet<TOriginal, TResult> : IErrorMessageWriter<TOriginal>, IMemberConstraintSet<TResult>            
-        {
-            private readonly MemberConstraintSet<TOriginal> _parentSet;
+        {            
             private readonly MemberConstraintSet<TResult> _childSet;
             private readonly MemberFactory<TOriginal, TResult> _member;
 
             internal ChildConstraintSet(MemberConstraintSet<TOriginal> parentSet, MemberFactory<TOriginal, TResult> member)
-            {
-                _parentSet = parentSet;
-                _childSet = new MemberConstraintSet<TResult>(_parentSet._haltOnFirstError, member.NameComponentStack);
-                _childSet.ConstraintRemoved += HandleConstraintRemoved;
-                _childSet.ConstraintAdded += HandleConstraintAdded;
+            {                
+                _childSet = new MemberConstraintSet<TResult>(parentSet._haltOnFirstError, member.NameComponentStack);                
                 _member = member;
-            }
-
-            private void HandleConstraintRemoved(object sender, MemberConstraintEventArgs<TResult> arguments)
-            {
-                _parentSet.OnConstraintRemoved(Convert(arguments));
-            }
-
-            private void HandleConstraintAdded(object sender, MemberConstraintEventArgs<TResult> arguments)
-            {
-                _parentSet.OnConstraintAdded(Convert(arguments));
-            }
-
-            private MemberConstraintEventArgs<TOriginal> Convert(MemberConstraintEventArgs<TResult> arguments)
-            {
-                return new MemberConstraintEventArgs<TOriginal>(new ChildConstraint<TOriginal,TResult>(arguments.MemberConstraint, _member));
-            }
+            }                        
 
             #region [====== VerifyThatInstance ======]
 
@@ -81,35 +62,13 @@ namespace Kingo.Constraints
             }
 
             #endregion            
-        }
-
-        private sealed class ChildConstraint<TOriginal, TResult> : IMemberConstraintBuilder<TOriginal>
-        {
-            private readonly IMemberConstraintBuilder<TResult> _childMemberConstraint;
-            private readonly MemberFactory<TOriginal, TResult> _member;
-
-            internal ChildConstraint(IMemberConstraintBuilder<TResult> childMemberConstraint, MemberFactory<TOriginal, TResult> member)
-            {
-                _childMemberConstraint = childMemberConstraint;
-                _member = member;
-            }
-
-            public IMember Member
-            {
-                get { return _childMemberConstraint.Member; }
-            }
-
-            public bool WriteErrorMessages(TOriginal item, IErrorMessageReader reader)
-            {
-                return _childMemberConstraint.WriteErrorMessages(_member.CreateMember(item).Value, reader);
-            }
-        }
+        }        
 
         #endregion
 
         private readonly LinkedList<IMemberConstraintBuilder<T>> _instanceConstraints;
         private readonly Dictionary<string, LinkedList<IMemberConstraintBuilder<T>>> _membersConstraints;
-        private readonly Dictionary<string, IErrorMessageWriter<T>> _childConstraintSets;
+        private readonly List<IErrorMessageWriter<T>> _childConstraintSets;
         private readonly MemberNameComponentStack _parentNameStack;
         private readonly bool _haltOnFirstError;
 
@@ -126,7 +85,7 @@ namespace Kingo.Constraints
         {
             _instanceConstraints = new LinkedList<IMemberConstraintBuilder<T>>();
             _membersConstraints = new Dictionary<string, LinkedList<IMemberConstraintBuilder<T>>>();
-            _childConstraintSets = new Dictionary<string, IErrorMessageWriter<T>>();
+            _childConstraintSets = new List<IErrorMessageWriter<T>>();
             _parentNameStack = parentNameStack;
             _haltOnFirstError = haltOnFirstError;
         }
@@ -157,7 +116,7 @@ namespace Kingo.Constraints
 
             innerConstraintFactory.Invoke(childConstraintSet);
 
-            _childConstraintSets.Add(member.FullName, childConstraintSet);            
+            _childConstraintSets.Add(childConstraintSet);            
         }        
 
         #endregion
@@ -225,24 +184,7 @@ namespace Kingo.Constraints
             {
                 Add(newConstraint);
             }            
-        }
-
-        /// <summary>
-        /// Occurs when a constraint was removed from this set.
-        /// </summary>
-        public event EventHandler<MemberConstraintEventArgs<T>> ConstraintRemoved;
-
-        /// <summary>
-        /// Raises the <see cref="ConstraintRemoved"/> event.
-        /// </summary>
-        /// <param name="arguments">The arguments of the event.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="arguments"/> is <c>null</c>.
-        /// </exception>
-        protected virtual void OnConstraintRemoved(MemberConstraintEventArgs<T> arguments)
-        {
-            ConstraintRemoved.Raise(this, arguments);
-        }
+        }        
 
         /// <summary>
         /// Removes the specified <paramref name="constraint"/> from the set.
@@ -267,8 +209,7 @@ namespace Kingo.Constraints
             if (memberKey.Length == 0)
             {
                 if (_instanceConstraints.Remove(constraint))
-                {
-                    OnConstraintRemoved(new MemberConstraintEventArgs<T>(constraint));
+                {                    
                     return true;
                 }
             }
@@ -281,30 +222,12 @@ namespace Kingo.Constraints
                     if (removeEmptyList && existingConstraints.Count == 0)
                     {
                         _membersConstraints.Remove(memberKey);
-                    }
-                    OnConstraintRemoved(new MemberConstraintEventArgs<T>(constraint));
+                    }                    
                     return true;
                 }
             }            
             return false;
-        }
-
-        /// <summary>
-        /// Occurs when a constraint was added to this set.
-        /// </summary>
-        public event EventHandler<MemberConstraintEventArgs<T>> ConstraintAdded;
-
-        /// <summary>
-        /// Raises the <see cref="ConstraintAdded"/> event.
-        /// </summary>
-        /// <param name="arguments">The arguments of the event.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="arguments"/> is <c>null</c>.
-        /// </exception>
-        protected virtual void OnConstraintAdded(MemberConstraintEventArgs<T> arguments)
-        {
-            ConstraintAdded.Raise(this, arguments);
-        }
+        }        
 
         private IMemberConstraintBuilder<T, TValue> AddNullConstraintFor<TValue>(Func<T, TValue> valueFactory, Identifier name)
         {
@@ -343,9 +266,7 @@ namespace Kingo.Constraints
             var memberKey = constraint.Member.FullName;
             var existingConstraints = GetOrAddConstraintListFor(memberKey);
 
-            existingConstraints.AddLast(constraint);
-
-            OnConstraintAdded(new MemberConstraintEventArgs<T>(constraint));
+            existingConstraints.AddLast(constraint);           
         }
  
         private LinkedList<IMemberConstraintBuilder<T>> GetOrAddConstraintListFor(string memberKey)
@@ -411,7 +332,7 @@ namespace Kingo.Constraints
 
         private IEnumerable<IErrorMessageWriter<T>> MemberConstraints()
         {
-            return _membersConstraints.Values.SelectMany(constraint => constraint).Concat(_childConstraintSets.Values);
+            return _membersConstraints.Values.SelectMany(constraint => constraint).Concat(_childConstraintSets);
         }
 
         #endregion

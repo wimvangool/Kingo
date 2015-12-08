@@ -138,6 +138,9 @@
   <data name="DomainEvent_MultipleCandidateMembersFound" xml:space="preserve">
     <value>Could not decide on a member of type '{0}' on event of type '{1}' because multiple candidate members were found. Consider decorating the appropriate member with the {2}.</value>
   </data>
+  <data name="DomainModelException_CommandFailed" xml:space="preserve">
+    <value>Command '{0}' failed.</value>
+  </data>
   <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
     <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>
   </data>

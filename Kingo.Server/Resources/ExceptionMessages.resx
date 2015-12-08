@@ -120,17 +120,11 @@
   <data name="Repository_AggregateNotFoundByKey" xml:space="preserve">
     <value>No aggregate of type '{0}' with the specified key ({1}) was found.</value>
   </data>
-  <data name="CacheRelay_NotAvailable" xml:space="preserve">
-    <value>Cannot perform the operation because the cache is currently not available.</value>
-  </data>
   <data name="Connection_AlreadyClosed" xml:space="preserve">
     <value>The connection is already closed.</value>
   </data>
   <data name="Connection_AlreadyOpen" xml:space="preserve">
     <value>The connection is already open.</value>
-  </data>
-  <data name="DomainModelException_CommandFailed" xml:space="preserve">
-    <value>Command '{0}' failed.</value>
   </data>
   <data name="AggregateEventStream_HandlerAlreadyRegistered" xml:space="preserve">
     <value>A handler for event '{0}' has already been registered.</value>

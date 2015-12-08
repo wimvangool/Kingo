@@ -13,21 +13,7 @@ namespace Kingo.Messaging.Domain
     public class AggregateNotFoundByKeyException<TKey> : AggregateNotFoundException where TKey : struct, IEquatable<TKey>
     {
         private const string _AggregateKeyKey = "_aggregateKey";
-        private readonly TKey _aggregateKey;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T}" /> class.
-        /// </summary>
-        /// <param name="aggregateType">Type of the aggregate that was not found.</param>
-        /// <param name="aggregateKey">Key of the aggregate that was not found.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="aggregateType" /> is <c>null</c>.
-        /// </exception>
-        public AggregateNotFoundByKeyException(Type aggregateType, TKey aggregateKey)
-            : base(aggregateType)
-        {
-            _aggregateKey = aggregateKey;
-        }
+        private readonly TKey _aggregateKey;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundByKeyException{T}" /> class.

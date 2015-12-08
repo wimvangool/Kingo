@@ -7,7 +7,7 @@ namespace Kingo.Messaging
     /// <summary>
     /// Represents the context in which a certain message is being handled.
     /// </summary>    
-    internal sealed class UnitOfWorkContext : IDisposable
+    public sealed class UnitOfWorkContext : IDisposable
     {
         private readonly MessageProcessor _processor;
         private readonly DomainEventBus _eventBus;
@@ -28,7 +28,10 @@ namespace Kingo.Messaging
             get { return _processor; }
         }
         
-        internal IDependencyCache Cache
+        /// <summary>
+        /// Returns the cache associated with this unit of work.
+        /// </summary>
+        public IDependencyCache Cache
         {
             get { return _cache; }
         }  

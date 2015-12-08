@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Kingo.Messaging.Domain;
-using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
@@ -77,22 +75,15 @@ namespace Kingo.Messaging
                 // When a DomainException is thrown, a BusinessRule or some other
                 // Constraint-By-Design was broken. That means that if the message
                 // is a Command, the Exception is promoted to a FunctionalException,
-                // which will communicate an intentional or pre-condition failure as
-                // opposed to a technical or post-condition failure.
+                // which will communicate an intentional (pre-condition) failure as
+                // opposed to a technical (post-condition) failure.
                 if (_processor.IsCommand(message))
                 {
-                    throw NewCommandFailedException(message, exception);
+                    throw exception.AsCommandExecutionException(message);
                 }
                 throw;
             }
             ThrowIfCancellationRequested();
-        }        
-        
-        private static Exception NewCommandFailedException(object command, DomainException exception)
-        {
-            var messageFormat = ExceptionMessages.DomainModelException_CommandFailed;
-            var message = string.Format(messageFormat, command.GetType());
-            return exception.AsCommandExecutionException(command, message);
-        }
+        }                       
     }
 }

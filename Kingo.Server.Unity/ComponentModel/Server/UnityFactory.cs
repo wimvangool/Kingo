@@ -50,13 +50,13 @@ namespace Kingo.ComponentModel.Server
         /// <inheritdoc />
         protected override void RegisterWithPerUnitOfWorkLifetime(Type type)
         {
-            _container.RegisterType(type, PerUnitOfWorkLifetime());
+            _container.RegisterType(type, new PerUnitOfWorkLifetimeManager());
         }
 
         /// <inheritdoc />
         protected override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType)
         {
-            _container.RegisterType(concreteType, PerUnitOfWorkLifetime());
+            _container.RegisterType(concreteType, new PerUnitOfWorkLifetimeManager());
             _container.RegisterType(abstractType, concreteType);
         }        
 
@@ -77,12 +77,7 @@ namespace Kingo.ComponentModel.Server
         protected override object CreateMessageHandler(Type type)
         {
             return _container.Resolve(type);
-        }
-
-        private LifetimeManager PerUnitOfWorkLifetime()
-        {
-            return new CacheBasedLifetimeManager(UnitOfWorkCache);
-        }        
+        }                
 
         #endregion
     }

@@ -117,16 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ScenarioClock_RequestNotFound" xml:space="preserve">
-    <value>No request for a date or time was found at the specified index: {0}.</value>
-  </data>
   <data name="Scenario_EmptyCollectionSpecified" xml:space="preserve">
-    <value>The collection of type '{0}' does not contain any elements to choose from.</value>
+    <value>Cannot pick a value of type '{0}' because the specified collection is empty.</value>
   </data>
-  <data name="Scenario_EventNotFound" xml:space="preserve">
-    <value>No event was found at the specified index ({0}).</value>
+  <data name="Scenario_EventExpectationAlreadySet" xml:space="preserve">
+    <value>Cannot set an expectation for event on index {0} because an expectation has alreayd been set for this event.</value>
   </data>
-  <data name="Scenario_EventNotOfSpecifiedType" xml:space="preserve">
-    <value>The event at index '{0}' of type '{1}' could not be cast to type '{2}'.</value>
+  <data name="Scenario_ExceptionExpectationAlreadySet" xml:space="preserve">
+    <value>Cannot set the expectation for exception of type '{0}' because another expectation has already been set.</value>
+  </data>
+  <data name="Scenario_ExpectedExceptionNotThrown" xml:space="preserve">
+    <value>Expected exception was not thrown.</value>
+  </data>
+  <data name="Scenario_InvalidEventCount" xml:space="preserve">
+    <value>Invalid event count specified: {0}. Number must be 0 or higher.</value>
+  </data>
+  <data name="Scenario_NegativeIndex" xml:space="preserve">
+    <value>Index cannot be negative: {0}.</value>
+  </data>
+  <data name="Scenario_UnexpectedEventCount" xml:space="preserve">
+    <value>Unexpected amount of events were published. Expected: {0}, actual: {1}.</value>
   </data>
 </root>

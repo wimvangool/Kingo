@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Kingo.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,28 +16,13 @@ namespace Kingo.Messaging
         {                                                     
             protected override IMessageProcessor MessageProcessor
             {
-                get { return null; }
+                get { return ScenarioTestProcessor.Instance; }
             }
 
             protected override Exception NewScenarioFailedException(string message)
             {
                 return new AssertFailedException(message);
-            }
-
-            public void VerifyThatEventsWerePublished(params object[] events)
-            {
-                VerifyThatDomainEventCount().IsEqualTo(events.Length);
-
-                for (int index = 0; index < events.Length; index++)
-                {
-                    VerifyThatDomainEventAtIndex(index).IsEqualTo(events[index]);
-                }                
-            }        
-    
-            public void VerifyThatExceptionWasThrown<TException>(TException exception) where TException : FunctionalException
-            {
-                VerifyThatExceptionIsA<TException>().IsSameInstanceAs(exception);
-            }
+            }            
         }
 
         private sealed class ErroneousScenario : ScenarioUnderTest
@@ -56,16 +42,14 @@ namespace Kingo.Messaging
             protected override TheCommand When()
             {
                 return null;
-            }
-
-            public override void Then() { }
+            }           
         }
 
-        private sealed class ExceptionalFlowScenario : ScenarioUnderTest
+        private sealed class AlternateFlowScenario : ScenarioUnderTest
         {
             private readonly Exception _exceptionToThrow;
 
-            public ExceptionalFlowScenario(Exception exceptionToThrow)
+            public AlternateFlowScenario(Exception exceptionToThrow)
             {
                 _exceptionToThrow = exceptionToThrow;
             }
@@ -78,16 +62,21 @@ namespace Kingo.Messaging
                 };
             }
 
-            public override void Then() { }
+            public override async Task ExecuteAsync()
+            {
+                await SetupAlternateFlow().Expect<InvalidMessageException>().ExecuteAsync();
+            }
         }
 
         private sealed class HappyFlowScenario : ScenarioUnderTest
         {
-            private readonly IEnumerable<DomainEvent> _messagesToPublish;
+            private readonly IReadOnlyList<DomainEvent> _messagesToPublish;
+            private readonly HappyFlowScenarioCase _testcase;
 
-            public HappyFlowScenario(IEnumerable<DomainEvent> messagesToPublish)
+            public HappyFlowScenario(IEnumerable<DomainEvent> messagesToPublish, HappyFlowScenarioCase testcase)
             {
-                _messagesToPublish = messagesToPublish;
+                _messagesToPublish = messagesToPublish.ToArray();
+                _testcase = testcase;
             }
 
             protected override TheCommand When()
@@ -98,7 +87,64 @@ namespace Kingo.Messaging
                 };
             }
 
-            public override void Then() { }
+            public override async Task ExecuteAsync()
+            {
+                switch (_testcase)
+                {
+                    case HappyFlowScenarioCase.InvalidEventCount:
+                        await ExecuteInvalidEventCountCaseAsync();
+                        return;
+                    case HappyFlowScenarioCase.InvalidExpectedEventType:
+                        await ExecuteInvalidExpectedEventTypeCaseAsync();
+                        return;
+                    case HappyFlowScenarioCase.InvalidExpectedEventValues:
+                        await ExecuteInvalidExpectedEventValuesCaseAsync();
+                        return;
+                    default:
+                        await ExecuteDefaultCaseAsync();
+                        return;
+                }                
+            }
+
+            private async Task ExecuteInvalidEventCountCaseAsync()
+            {
+                await SetupHappyFlow(3).ExecuteAsync();
+            }
+
+            private async Task ExecuteInvalidExpectedEventTypeCaseAsync()
+            {
+                await SetupHappyFlow(2)
+                    .Expect<TheCommand>(0)
+                    .Expect<DomainEvent>(1)
+                    .ExecuteAsync();
+            }
+
+            private async Task ExecuteInvalidExpectedEventValuesCaseAsync()
+            {
+                await SetupHappyFlow(2)
+                    .Expect<DomainEvent>(0, validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[0].Value))
+                    .Expect<DomainEvent>(1, validator => validator.VerifyThat(m => m.Value).IsNotEqualTo(_messagesToPublish[1].Value))
+                    .ExecuteAsync();
+            }
+
+            private async Task ExecuteDefaultCaseAsync()
+            {
+                await SetupHappyFlow(2)
+                    .Expect<DomainEvent>(0, validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[0].Value))
+                    .Expect<DomainEvent>(1, validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[1].Value))
+                    .ExecuteAsync();
+            }
+        }
+
+        private enum HappyFlowScenarioCase
+        {            
+            Default,
+
+            InvalidEventCount,
+
+            InvalidExpectedEventType,
+
+            InvalidExpectedEventValues
         }
 
         #endregion 
@@ -106,35 +152,42 @@ namespace Kingo.Messaging
         #region [====== Happy Flow ======]
 
         [TestMethod]
-        public void TheNumberOfPublishedEventsIs_Succeeds_IfAllExpectedDomainEventsWerePublished()
+        public async Task Execute_Succeeds_IfHappyFlowIsSetup_And_AllExpectedDomainEventsWerePublished()
         {            
             var messages = new[] { new DomainEvent(), new DomainEvent() };
-            var scenario = new HappyFlowScenario(messages);
+            var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.Default);
 
-            scenario.ProcessWith(ScenarioTestProcessor.Instance);
-            scenario.VerifyThatEventsWerePublished(messages[0], messages[1]);
+            await scenario.ExecuteAsync();
+        }
+       
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task Execute_Throws_IfAnUnexpectedNumberOfDomainEventsWasPublished()
+        {            
+            var messages = new[] { new DomainEvent(), new DomainEvent() };
+            var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.InvalidEventCount);
+
+            await scenario.ExecuteAsync();          
+        }
+   
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task Execute_Throws_IfTheWrongDomainEventsWerePublished()
+        {            
+            var messages = new[] { new DomainEvent(), new DomainEvent() };
+            var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.InvalidExpectedEventType);
+
+            await scenario.ExecuteAsync();
         }
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
-        public void TheNumberOfPublishedEventsIs_Fails_IfAnUnexpectedNumberOfDomainEventsWasPublished()
-        {            
+        public async Task Execute_Throws_IfValidationOfPublishedEventFails()
+        {
             var messages = new[] { new DomainEvent(), new DomainEvent() };
-            var scenario = new HappyFlowScenario(messages);
+            var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.InvalidExpectedEventValues);
 
-            scenario.ProcessWith(ScenarioTestProcessor.Instance);
-            scenario.VerifyThatEventsWerePublished(messages[0]);            
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(AssertFailedException))]
-        public void TheNumberOfPublishedEventsIs_Fails_IfTheWrongDomainEventsWerePublished()
-        {            
-            var messages = new[] { new DomainEvent(), new DomainEvent() };
-            var scenario = new HappyFlowScenario(messages);
-
-            scenario.ProcessWith(ScenarioTestProcessor.Instance);
-            scenario.VerifyThatEventsWerePublished(messages[0], new DomainEvent());
+            await scenario.ExecuteAsync();
         }
 
         #endregion      
@@ -142,52 +195,59 @@ namespace Kingo.Messaging
         #region [====== Alternate Flow ======]
 
         [TestMethod]        
-        public void ProcessWith_Throws_IfExceptionWasThrownByGiven()
+        public async Task Execute_Throws_IfExceptionWasThrownByGiven()
         {            
-            var exception = new InvalidOperationException();
-            var scenario = new ErroneousScenario(exception);
+            var exceptionToThrow = new InvalidOperationException();
+            var scenario = new ErroneousScenario(exceptionToThrow);
 
             try
             {
-                scenario.ProcessWith(ScenarioTestProcessor.Instance);
+                await scenario.ExecuteAsync();
 
-                Assert.Fail("Expected exception of type '{0}' was not thrown.", exception.GetType().Name);
+                Assert.Fail("Expected exception of type '{0}' was not thrown.", exceptionToThrow.GetType().Name);
             }
-            catch (AggregateException aggregateException)
-            {                
-                Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
-                Assert.AreSame(exception, aggregateException.InnerExceptions[0]);
+            catch (InvalidOperationException exception)
+            {                               
+                Assert.AreSame(exceptionToThrow, exception);
             }            
         }
 
         [TestMethod]        
-        public void TheExceptionThatWasThrownIsOfType_Succeeds_IfExpectedExceptionWasThrownn()
+        public async Task Execute_Succeeds_IfAlternateFlowIsSetup_And_ExpectedExceptionWasThrownn()
         {            
             var exception = NewInvalidMessageException();
-            var scenario = new ExceptionalFlowScenario(exception);
+            var scenario = new AlternateFlowScenario(exception);
 
-            scenario.ProcessWith(ScenarioTestProcessor.Instance);
-            scenario.VerifyThatExceptionWasThrown(exception);
+            await scenario.ExecuteAsync();
         }
 
         [TestMethod]
-        [ExpectedException(typeof(AggregateException))]
-        public void TheExceptionThatWasThrownIsOfType_Fails_IfUnexpectedExceptionWasThrown()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task Execute_Throws_IfUnexpectedTechnicalExceptionWasThrown()
         {            
             var exception = new InvalidOperationException();
-            var scenario = new ExceptionalFlowScenario(exception);
+            var scenario = new AlternateFlowScenario(exception);
 
-            scenario.ProcessWith(ScenarioTestProcessor.Instance);            
+            await scenario.ExecuteAsync();           
         }
 
         [TestMethod]
         [ExpectedException(typeof(AssertFailedException))]
-        public void TheExceptionThatWasThrownIsOfType_Fails_IfNoExceptionWasThrown()
-        {            
-            var scenario = new HappyFlowScenario(Enumerable.Empty<DomainEvent>());
+        public async Task Execute_Throws_IfUnexpectedFunctionalExceptionWasThrown()
+        {
+            var exception = new CommandExecutionException(new object());
+            var scenario = new AlternateFlowScenario(exception);
 
-            scenario.ProcessWith(ScenarioTestProcessor.Instance);
-            scenario.VerifyThatExceptionWasThrown(NewInvalidMessageException());
+            await scenario.ExecuteAsync();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task Execute_Throws_IfAlternateFlowIsSetup_And_NoExceptionWasThrown()
+        {            
+            var scenario = new AlternateFlowScenario(null);
+
+            await scenario.ExecuteAsync();
         }
 
         private static InvalidMessageException NewInvalidMessageException()

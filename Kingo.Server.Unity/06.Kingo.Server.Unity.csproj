@@ -72,7 +72,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="ComponentModel\Server\CacheBasedLifetimeManager.cs" />
+    <Compile Include="ComponentModel\Server\PerUnitOfWorkLifetimeManager.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

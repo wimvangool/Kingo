@@ -1,6 +1,6 @@
 ﻿using System;
-using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace Kingo.ComponentModel.Server
 {
@@ -10,13 +10,13 @@ namespace Kingo.ComponentModel.Server
         #region [====== Setup and Teardown ======]
 
         private UnityTestProcessor _processor;
-        private CacheBasedLifetimeManager _lifetimeManager;
+        private PerUnitOfWorkLifetimeManager _lifetimeManager;
 
         [TestInitialize]
         public void Setup()
         {
             _processor = new UnityTestProcessor();
-            _lifetimeManager = new CacheBasedLifetimeManager(new UnitOfWorkCache());
+            _lifetimeManager = new PerUnitOfWorkLifetimeManager();
         }
 
         #endregion
@@ -51,11 +51,15 @@ namespace Kingo.ComponentModel.Server
             Assert.IsNull(_lifetimeManager.GetValue());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void RemoveValue_Throws_IfCalledOutsideContextScope()
+        [TestMethod]        
+        public void RemoveValue_ImmediatelyDisposesValue_IfCalledOutsideContextScope()
         {
-            _lifetimeManager.SetValue(new object());
+            var valueMock = new Mock<IDisposable>();
+            valueMock.Setup(value => value.Dispose());
+
+            _lifetimeManager.SetValue(valueMock.Object);
+
+            valueMock.VerifyAll();
         }
 
         [TestMethod]
@@ -71,14 +75,7 @@ namespace Kingo.ComponentModel.Server
                 Assert.IsNull(_lifetimeManager.GetValue());                
             });
             Assert.IsNull(_lifetimeManager.GetValue());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void SetValue_Throws_IfCalledOutsideContextScope()
-        {
-            _lifetimeManager.SetValue(new object());
-        }
+        }        
 
         #endregion        
     }

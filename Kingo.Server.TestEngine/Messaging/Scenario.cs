@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 using Kingo.Resources;
-using Kingo.Threading;
 
 namespace Kingo.Messaging
 {
@@ -15,7 +13,7 @@ namespace Kingo.Messaging
     /// Represents a scenario that follows the Behavior Driven Development (BDD) style, which is characterized
     /// by the Given-When-Then pattern.
     /// </summary>           
-    public abstract class Scenario : MessageSequence
+    public abstract class Scenario : MessageSequence, IExecutable
     {
         #region [====== Execution ======]
 
@@ -25,54 +23,26 @@ namespace Kingo.Messaging
         protected abstract IMessageProcessor MessageProcessor
         {
             get;
-        }        
+        }
 
-        /// <summary>
-        /// Executes this <see cref="Scenario" />.
-        /// </summary>
+        /// <inheritdoc />
         public void Execute()
         {
-            ExecuteAsync().Wait();
+            ExecuteCoreAsync().Wait();
         }
 
-        /// <summary>
-        /// Executes this <see cref="Scenario" /> asynchronously.
-        /// </summary>
-        /// <returns>A task carrying out this operation.</returns>
-        public async Task ExecuteAsync()
+        /// <inheritdoc />
+        public virtual Task ExecuteAsync()
         {
-            var previousCache = Cache;
-
-            Cache = new DependencyCache();
-
-            try
-            {
-                await ProcessWithAsync(MessageProcessor);
-            }
-            finally
-            {
-                Cache.Dispose();
-                Cache = previousCache;
-            } 
+            return ExecuteCoreAsync();
         }
 
-        #endregion
-
-        #region [====== Cache ======]
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static readonly AsyncLocal<DependencyCache> _Cache = new AsyncLocal<DependencyCache>();
-
-        /// <summary>
-        /// Returns the <see cref="Scenario" /> that is currently being executed on this thread.
-        /// </summary>
-        internal static DependencyCache Cache
+        internal Task ExecuteCoreAsync()
         {
-            get {  return _Cache.Value; }
-            private set { _Cache.Value = value; }
-        }
+            return ProcessWithAsync(MessageProcessor);
+        }        
 
-        #endregion
+        #endregion        
 
         #region [====== Test Value Randomization ======]
 
@@ -149,7 +119,7 @@ namespace Kingo.Messaging
             }
             if (values.Count == 0)
             {
-                throw NewEmptyCollectionException(values);
+                throw NewEmptyCollectionException(typeof(TValue));
             }
             if (values.Count == 1)
             {
@@ -159,10 +129,10 @@ namespace Kingo.Messaging
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
-        private static Exception NewEmptyCollectionException(object values)
+        private static Exception NewEmptyCollectionException(Type valueType)
         {
             var messageFormat = ExceptionMessages.Scenario_EmptyCollectionSpecified;
-            var message = string.Format(messageFormat, values.GetType());
+            var message = string.Format(messageFormat, valueType.Name);
             return new ArgumentException(message, "values");
         }
 

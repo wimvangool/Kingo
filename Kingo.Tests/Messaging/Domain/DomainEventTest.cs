@@ -7,6 +7,7 @@ namespace Kingo.Messaging.Domain
     [TestClass]
     public sealed class DomainEventTest
     {
+#pragma warning disable
         #region [====== DomainEvents ======]
 
         private sealed class MissingMembersEvent : DomainEvent<MissingMembersEvent, Guid, int> { }  
@@ -95,6 +96,7 @@ namespace Kingo.Messaging.Domain
         }
 
         #endregion
+#pragma warning restore
 
         #region [====== Key ======]
 

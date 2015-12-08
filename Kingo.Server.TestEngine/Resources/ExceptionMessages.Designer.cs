@@ -61,7 +61,7 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The collection of type &apos;{0}&apos; does not contain any elements to choose from..
+        ///   Looks up a localized string similar to Cannot pick a value of type &apos;{0}&apos; because the specified collection is empty..
         /// </summary>
         internal static string Scenario_EmptyCollectionSpecified {
             get {
@@ -70,29 +70,56 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No event was found at the specified index ({0})..
+        ///   Looks up a localized string similar to Cannot set an expectation for event on index {0} because an expectation has alreayd been set for this event..
         /// </summary>
-        internal static string Scenario_EventNotFound {
+        internal static string Scenario_EventExpectationAlreadySet {
             get {
-                return ResourceManager.GetString("Scenario_EventNotFound", resourceCulture);
+                return ResourceManager.GetString("Scenario_EventExpectationAlreadySet", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The event at index &apos;{0}&apos; of type &apos;{1}&apos; could not be cast to type &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Cannot set the expectation for exception of type &apos;{0}&apos; because another expectation has already been set..
         /// </summary>
-        internal static string Scenario_EventNotOfSpecifiedType {
+        internal static string Scenario_ExceptionExpectationAlreadySet {
             get {
-                return ResourceManager.GetString("Scenario_EventNotOfSpecifiedType", resourceCulture);
+                return ResourceManager.GetString("Scenario_ExceptionExpectationAlreadySet", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No request for a date or time was found at the specified index: {0}..
+        ///   Looks up a localized string similar to Expected exception was not thrown..
         /// </summary>
-        internal static string ScenarioClock_RequestNotFound {
+        internal static string Scenario_ExpectedExceptionNotThrown {
             get {
-                return ResourceManager.GetString("ScenarioClock_RequestNotFound", resourceCulture);
+                return ResourceManager.GetString("Scenario_ExpectedExceptionNotThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid event count specified: {0}. Number must be 0 or higher..
+        /// </summary>
+        internal static string Scenario_InvalidEventCount {
+            get {
+                return ResourceManager.GetString("Scenario_InvalidEventCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Index cannot be negative: {0}..
+        /// </summary>
+        internal static string Scenario_NegativeIndex {
+            get {
+                return ResourceManager.GetString("Scenario_NegativeIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected amount of events were published. Expected: {0}, actual: {1}..
+        /// </summary>
+        internal static string Scenario_UnexpectedEventCount {
+            get {
+                return ResourceManager.GetString("Scenario_UnexpectedEventCount", resourceCulture);
             }
         }
     }
