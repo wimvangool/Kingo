@@ -36,7 +36,13 @@ namespace Kingo.Constraints
 
         internal Member<TOther> Transform<TOther>(TOther other, Identifier identifier)
         {
-            return new Member<TOther>(NameComponentStack.Push(identifier), other);
+            var name = NameComponentStack;
+
+            if (identifier != null)
+            {
+                name = name.Push(identifier);
+            }
+            return new Member<TOther>(name, other);
         }
 
         internal Member<TOther> Transform<TOther>(TOther other, IndexList indexList)

@@ -7,6 +7,7 @@ namespace Kingo.Constraints.Decoders
 {
     internal sealed class VerifyThatExpressionDecoder<T, TValue> : MemberExpressionDecoder<T, TValue>
     {
+        private readonly Guid _key;
         private readonly IMemberConstraintSet<T> _constraintSet;
         private readonly Expression<Func<T, TValue>> _fieldOrProperty;
 
@@ -16,8 +17,14 @@ namespace Kingo.Constraints.Decoders
             {
                 throw new ArgumentNullException("fieldOrProperty");
             }
+            _key = Guid.NewGuid();
             _constraintSet = constraintSet;
             _fieldOrProperty = fieldOrProperty;
+        }
+
+        public override Guid Key
+        {
+            get { return _key; }
         }
 
         protected internal override LambdaExpression FieldOrPropertyExpression

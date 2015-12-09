@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     internal sealed class DomainEvent : Message<DomainEvent>       
     {
-        public readonly Guid Value;
+        public readonly int Value;
 
-        public DomainEvent()
+        public DomainEvent(int value = 0)
         {
-            Value = Guid.NewGuid();
+            Value = value;
         }
 
         private DomainEvent(DomainEvent message) : base(message)

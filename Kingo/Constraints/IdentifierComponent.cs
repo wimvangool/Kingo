@@ -10,7 +10,7 @@ namespace Kingo.Constraints
         private readonly MemberNameComponentStack _bottomStack;      
 
         internal IdentifierComponent(Type instanceType, Identifier identifier, MemberNameComponentStack bottomStack)
-        {
+        {            
             _instanceType = instanceType;
             _identifier = identifier;
             _bottomStack = bottomStack;

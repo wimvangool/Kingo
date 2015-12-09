@@ -1,4 +1,5 @@
-﻿using Kingo.Messaging;
+﻿using System;
+using Kingo.Messaging;
 
 namespace Kingo.Constraints
 {
@@ -9,9 +10,9 @@ namespace Kingo.Constraints
     public interface IMemberConstraintBuilder<in T> : IErrorMessageWriter<T>
     {
         /// <summary>
-        /// The member the constraint is applied to.
+        /// Returns a unique identifier of the constraint.
         /// </summary>
-        IMember Member
+        Guid Key
         {
             get;
         }        

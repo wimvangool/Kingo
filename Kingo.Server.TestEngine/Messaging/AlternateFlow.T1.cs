@@ -20,9 +20,8 @@ namespace Kingo.Messaging
             _scenario = scenario;
             _rethrowException = rethrowException;
         }
-
-        /// <inheritdoc />
-        protected override Scenario<TMessage> Scenario
+        
+        internal override Scenario<TMessage> Scenario
         {
             get { return _scenario; }
         }

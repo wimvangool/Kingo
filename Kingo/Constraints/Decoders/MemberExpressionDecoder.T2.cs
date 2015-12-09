@@ -70,15 +70,15 @@ namespace Kingo.Constraints.Decoders
 
         #region [====== MemberConstraintBuilder<T, TValue>.IMemberConstraint<T> ======]
 
+        public abstract Guid Key
+        {
+            get;
+        } 
+
         public bool WriteErrorMessages(T instance, IErrorMessageReader reader)
         {
             return Member.WriteErrorMessages(instance, reader);
-        }         
-
-        IMember IMemberConstraintBuilder<T>.Member
-        {
-            get { return Member.Member; }
-        }               
+        }                      
 
         #endregion
 

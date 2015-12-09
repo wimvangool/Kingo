@@ -80,6 +80,38 @@ namespace Kingo.Constraints
                 .AssertMemberError("Member.Length (10) must be equal to '6'.", "Member.Length");
         }
 
+        [TestMethod]
+        public void And_ReturnsExpectedError_IfParentNameIsTransformedName()
+        {
+            var message = new ValidatedMessage<object[]>(new object[]{ "", "Some value", null });
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member[1]).IsInstanceOf<string>().And(v =>
+            {
+                v.VerifyThat(value => value.Length).IsEqualTo(3);
+            });
+
+            validator.Validate(message).AssertMemberError("Member[1].Length (10) must be equal to '3'.", "Member[1].Length", "Member[1]", "Member");
+        }
+
+        [TestMethod]
+        public void And_ReturnsExpectedError_IfParentAndChildNameAreTransformedNames()
+        {
+            var message = new ValidatedMessage<object[][]>(new [] { new object[] { null, "Some value" } });
+            var validator = message.CreateConstraintValidator();
+
+            validator.VerifyThat(m => m.Member[0]).IsNotNull().And(v =>
+            {
+                v.VerifyThat(array => array.Length).IsEqualTo(2);
+                v.VerifyThat(array => array[1]).IsInstanceOf<string>().And(v2 =>
+                {
+                    v2.VerifyThat(value => value.Length).IsEqualTo(3);
+                });
+            });
+
+            validator.Validate(message).AssertMemberError("Member[0][1].Length (10) must be equal to '3'.", "Member[0][1].Length", "Member[0][1]", "Member[0]", "Member");
+        }
+
         #endregion
     }
 }

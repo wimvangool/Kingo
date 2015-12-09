@@ -19,17 +19,18 @@ namespace Kingo.Messaging
             _validator = new MemberConstraintSet<Scenario<TMessage>>(true);
         }
 
+        /// <inheritdoc />
         protected override IFormatProvider FormatProvider
         {
             get { return Scenario.FormatProvider; }
         }
 
-        protected abstract Scenario<TMessage> Scenario
+        internal abstract Scenario<TMessage> Scenario
         {
             get;
         }
 
-        protected IMemberConstraintSet<Scenario<TMessage>> Validator
+        internal IMemberConstraintSet<Scenario<TMessage>> Validator
         {
             get { return _validator; }
         }
@@ -43,11 +44,12 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         public abstract Task ExecuteAsync();
 
-        protected void ValidateExpectations()
+        internal void ValidateExpectations()
         {
             _validator.WriteErrorMessages(Scenario, this);
         }
 
+        /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void Add(string errorMessage, string memberName, ErrorInheritanceLevel inheritanceLevel)
         {
@@ -58,7 +60,7 @@ namespace Kingo.Messaging
             Scenario.OnVerificationFailed(errorMessage);
         } 
 
-        protected static void Rethrow(Exception exception)
+        internal static void Rethrow(Exception exception)
         {
             ExceptionDispatchInfo.Capture(exception).Throw();
         }

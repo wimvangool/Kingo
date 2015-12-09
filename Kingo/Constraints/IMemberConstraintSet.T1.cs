@@ -79,6 +79,6 @@ namespace Kingo.Constraints
         /// </exception> 
         IMemberConstraintBuilder<T, TValue> VerifyThat<TValue>(Func<T, TValue> fieldOrProperty, Identifier fieldOrPropertyName);        
 
-        #endregion                         
+        #endregion                                   
     }
 }

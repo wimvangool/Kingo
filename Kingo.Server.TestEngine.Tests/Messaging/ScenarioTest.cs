@@ -180,14 +180,20 @@ namespace Kingo.Messaging
             await scenario.ExecuteAsync();
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(AssertFailedException))]
+        [TestMethod]        
         public async Task Execute_Throws_IfValidationOfPublishedEventFails()
         {
-            var messages = new[] { new DomainEvent(), new DomainEvent() };
+            var messages = new[] { new DomainEvent(1), new DomainEvent(2) };
             var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.InvalidExpectedEventValues);
 
-            await scenario.ExecuteAsync();
+            try
+            {
+                await scenario.ExecuteAsync();
+            }
+            catch (AssertFailedException exception)
+            {
+                Assert.AreEqual("PublishedEvents[1].Value (2) must not be equal to '2'.", exception.Message);               
+            }            
         }
 
         #endregion      

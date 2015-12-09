@@ -2,42 +2,46 @@
 
 namespace Kingo.Constraints
 {    
-    internal sealed class MemberFactory<T, TValue> : Member
-    {
-        private readonly MemberNameComponentStack _nameComponentStack;
-        private readonly Func<T, TValue> _valueFactory;
+    internal sealed class MemberFactory<T, TValue>
+    {        
+        private readonly Func<T, Member<TValue>> _memberFactory;        
 
-        internal MemberFactory(MemberNameComponentStack nameComponentStack, Func<T, TValue> valueFactory)            
-        {
-            if (valueFactory == null)
+        internal MemberFactory(Func<T, TValue> fieldOrProperty, Identifier fieldOrPropertyName = null)            
+        {            
+            if (fieldOrProperty == null)
             {
-                throw new ArgumentNullException("valueFactory");
-            }
-            _nameComponentStack = nameComponentStack;
-            _valueFactory = valueFactory;
-        }
+                throw new ArgumentNullException("fieldOrProperty");
+            }            
+            _memberFactory = instance =>
+            {
+                MemberNameComponentStack name = new EmptyStack(typeof(T));
 
-        internal override MemberNameComponentStack NameComponentStack
-        {
-            get { return _nameComponentStack; }
-        }
+                if (fieldOrPropertyName != null)
+                {
+                    name = name.Push(fieldOrPropertyName);
+                }
+                var value = fieldOrProperty.Invoke(instance);
 
-        public override Type Type
+                return new Member<TValue>(name, value);
+            };
+        } 
+        
+        private MemberFactory(Func<T, Member<TValue>> memberFactory)
         {
-            get { return typeof(TValue); }
-        }                
+            _memberFactory = memberFactory;
+        }
         
         internal Member<TValue> CreateMember(T instance)
         {
-            return new Member<TValue>(NameComponentStack, _valueFactory.Invoke(instance));
+            return _memberFactory.Invoke(instance);
         }                
 
         internal MemberFactory<T, TValueOut> CreateChildMember<TValueOut>(Func<T, IMemberConstraint<TValue, TValueOut>> memberConstraintFactory)
         {
-            Func<T, TValueOut> valueFactory = message =>
+            Func<T, Member<TValueOut>> memberFactory = instance =>
             {
-                var member = CreateMember(message);
-                var memberConstraint = memberConstraintFactory.Invoke(message);
+                var member = CreateMember(instance);
+                var memberConstraint = memberConstraintFactory.Invoke(instance);
                 var exceptionFactory = new MemberExceptionFactory();
                 Member<TValueOut> transformedMember;
 
@@ -45,9 +49,22 @@ namespace Kingo.Constraints
                 {
                     throw exceptionFactory.CreateException();
                 }
-                return transformedMember.Value;                
+                return transformedMember;               
             };
-            return new MemberFactory<T, TValueOut>(NameComponentStack, valueFactory);
-        }        
+            return new MemberFactory<T, TValueOut>(memberFactory);
+        }
+
+        internal MemberFactory<TValue, TResult> Transform<TResult>(Func<TValue, TResult> fieldOrProperty, Identifier fieldOrPropertyName, Func<T> valueProvider)
+        {
+            Func<TValue, Member<TResult>> memberFactory = instance =>
+            {
+                var value = valueProvider.Invoke();
+                var member = _memberFactory.Invoke(value);
+                var fieldOrPropertyValue = fieldOrProperty.Invoke(member.Value);
+
+                return member.Transform(fieldOrPropertyValue, fieldOrPropertyName);
+            };
+            return new MemberFactory<TValue, TResult>(memberFactory);
+        }
     }
 }

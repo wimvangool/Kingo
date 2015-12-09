@@ -20,6 +20,11 @@ namespace Kingo.Constraints.Decoders
             _fieldOrProperty = fieldOrProperty;
         }
 
+        public override Guid Key
+        {
+            get { return _builder.Key; }
+        }
+
         protected internal override LambdaExpression FieldOrPropertyExpression
         {
             get { return _fieldOrProperty; }

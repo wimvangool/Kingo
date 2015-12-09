@@ -23,9 +23,8 @@ namespace Kingo.Messaging
             _scenario = scenario;            
             _expectations = new bool[expectedEventCount];
         }
-
-        /// <inheritdoc />
-        protected override Scenario<TMessage> Scenario
+        
+        internal override Scenario<TMessage> Scenario
         {
             get { return _scenario; }
         }

@@ -18,12 +18,7 @@ namespace Kingo.Constraints
         {
             _memberFactory = memberFactory;           
             _memberConstraintFactory = memberConstraintFactory;            
-        }
-
-        internal Member Member
-        {
-            get { return _memberFactory; }
-        }
+        }        
 
         internal MemberFactory<T, TValueOut> CreateChildMember()
         {

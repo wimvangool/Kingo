@@ -7,20 +7,22 @@ namespace Kingo.Constraints
 {    
     internal sealed class MemberConstraintBuilder<T, TValueIn, TValueOut> : IMemberConstraintBuilder<T, TValueOut>
     {
+        private readonly Guid _key;
         private readonly MemberConstraintSet<T> _memberConstraintSet;        
         private readonly MemberConstraintFactory<T, TValueIn, TValueOut> _memberConstraintFactory;                
 
-        internal MemberConstraintBuilder(MemberConstraintSet<T> memberConstraintSet, MemberConstraintFactory<T, TValueIn, TValueOut> memberConstraintFactory)
+        internal MemberConstraintBuilder(Guid key, MemberConstraintSet<T> memberConstraintSet, MemberConstraintFactory<T, TValueIn, TValueOut> memberConstraintFactory)
         {
+            _key = key;
             _memberConstraintSet = memberConstraintSet;            
             _memberConstraintFactory = memberConstraintFactory;
         }
 
         #region [====== IMemberConstraint<T> ======]
 
-        IMember IMemberConstraintBuilder<T>.Member
+        Guid IMemberConstraintBuilder<T>.Key
         {
-            get { return _memberConstraintFactory.Member; }
+            get { return _key; }
         }        
 
         bool IErrorMessageWriter<T>.WriteErrorMessages(T message, IErrorMessageReader reader)
@@ -186,7 +188,7 @@ namespace Kingo.Constraints
         private IMemberConstraintBuilder<T, TOther> Satisfies<TOther>(Func<T, Tuple<IFilter<TValueOut, TOther>, MemberTransformer>> memberConstraintFactory)
         {            
             var newConstraintFactory = _memberConstraintFactory.And(memberConstraintFactory);
-            var newMemberConstraint = new MemberConstraintBuilder<T, TValueIn, TOther>(_memberConstraintSet, newConstraintFactory);
+            var newMemberConstraint = new MemberConstraintBuilder<T, TValueIn, TOther>(_key, _memberConstraintSet, newConstraintFactory);
 
             _memberConstraintSet.Replace(this, newMemberConstraint);
 
