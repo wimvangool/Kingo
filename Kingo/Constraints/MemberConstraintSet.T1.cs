@@ -81,8 +81,17 @@ namespace Kingo.Constraints
             }
 
             public bool WriteErrorMessages(TOriginal instance, IErrorMessageReader reader)
-            {               
-                return _childSet.WriteErrorMessages(_memberFactory.CreateMember(_instance = instance).Value, reader);
+            {
+                _instance = instance;
+
+                try
+                {
+                    return _childSet.WriteErrorMessages(_memberFactory.CreateMember(instance).Value, reader);
+                }
+                finally
+                {
+                    _instance = default(TOriginal);
+                }                
             }
         }               
 
