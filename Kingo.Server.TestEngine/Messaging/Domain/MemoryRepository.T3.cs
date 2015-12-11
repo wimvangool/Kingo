@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.Threading;
@@ -18,54 +19,56 @@ namespace Kingo.Messaging.Domain
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
     {
-        private readonly Dictionary<TKey, TAggregate> _aggregates;
+        private readonly ConcurrentDictionary<TKey, TAggregate> _aggregates;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryRepository{T, S, R}" /> class.
         /// </summary>
         protected MemoryRepository()
         {
-            _aggregates = new Dictionary<TKey, TAggregate>();
+            _aggregates = new ConcurrentDictionary<TKey, TAggregate>();
+        }        
+
+        /// <summary>
+        /// Returns a thread-safe dictionary of aggregates.
+        /// </summary>
+        protected IDictionary<TKey, TAggregate> Aggregates
+        {
+            get { return _aggregates; }
         }
 
+        /// <inheritdoc />
         protected override Task<TAggregate> SelectByKeyAsync(TKey key)
         {
             return AsyncMethod.RunSynchronously(() =>
-            {               
-                lock (_aggregates)
-                {
-                    TAggregate aggregate;
+            {
+                TAggregate aggregate;
 
-                    if (_aggregates.TryGetValue(key, out aggregate))
-                    {
-                        return aggregate;
-                    }
+                if (Aggregates.TryGetValue(key, out aggregate))
+                {
+                    return aggregate;
                 }
-                return null;
+                return null;              
             });           
         }
 
+        /// <inheritdoc />
         protected override Task UpdateAsync(TAggregate aggregate, TVersion originalVersion)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                lock (_aggregates)
-                {
-                    _aggregates[aggregate.Key] = aggregate;
-                }
+                Aggregates[aggregate.Key] = aggregate;
             });               
         }
 
+        /// <inheritdoc />
         protected override Task InsertAsync(TAggregate aggregate)
         {
             return AsyncMethod.RunSynchronously(() =>
-            {
+            {                
                 try
                 {
-                    lock (_aggregates)
-                    {
-                        _aggregates.Add(aggregate.Key, aggregate);
-                    }
+                    Aggregates.Add(aggregate.Key, aggregate);
                 }
                 catch (ArgumentException)
                 {
