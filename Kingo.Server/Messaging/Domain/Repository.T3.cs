@@ -477,7 +477,14 @@ namespace Kingo.Messaging.Domain
                         
         internal abstract Task InsertAsync(TAggregate aggregate, IWritableEventStream<TKey, TVersion> domainEventStream);                
 
-        private static Exception NewDuplicateKeyException<T>(T key)
+        /// <summary>
+        /// Creates and returns a new <see cref="DuplicateKeyException{T}" /> indicating that an aggregate could not
+        /// be added to the repository because an aggregate with the same key already exists.
+        /// </summary>
+        /// <typeparam name="T">Type of the key.</typeparam>
+        /// <param name="key">The key that was already present.</param>
+        /// <returns>A new <see cref="DuplicateKeyException{T}" /> that can be thrown when an insert failed.</returns>
+        protected static Exception NewDuplicateKeyException<T>(T key)
             where T : struct, IEquatable<T>
         {
             var messageFormat = ExceptionMessages.Repository_DuplicateKey;

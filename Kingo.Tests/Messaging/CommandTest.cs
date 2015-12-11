@@ -45,8 +45,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void HasChanges_IsNotChanged_WhenNewValueIsEqualToOldValue()
         {
-            var value = RandomValue();
-            var wasRaised = false;
+            var value = RandomValue();            
             var command = new CommandUnderTest(value);
             
             command.Value = value;

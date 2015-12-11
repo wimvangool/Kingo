@@ -112,13 +112,10 @@ namespace Kingo.Messaging
         
         internal static UnitOfWorkScope StartUnitOfWorkScope(MessageProcessor processor)
         {
-            // A new UnitOfWorkContext is only created if it doesn't already exist. Note that
-            // the new scope is always set on ThreadLocal storage, even though we are supporting
-            // asynchronous operations, because the MessageProcessor ensures all continuations
-            // are handled on the same thread.
+            // A new UnitOfWorkContext is only created if it doesn't already exist.
             var isContextOwner = Current == null;
             var context = isContextOwner ? new UnitOfWorkContext(processor) : Current;
-            var scope = _Context.OverrideThreadLocal(context);
+            var scope = _Context.OverrideAsyncLocal(context);
 
             return new UnitOfWorkScope(scope, isContextOwner);
         }

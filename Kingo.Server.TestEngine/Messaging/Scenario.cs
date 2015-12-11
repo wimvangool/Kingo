@@ -37,7 +37,7 @@ namespace Kingo.Messaging
             return ExecuteCoreAsync();
         }
 
-        internal Task ExecuteCoreAsync()
+        internal virtual Task ExecuteCoreAsync()
         {
             return ProcessWithAsync(MessageProcessor);
         }        

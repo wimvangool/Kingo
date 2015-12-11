@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kingo.Threading;
-using Nito.AsyncEx;
 
 namespace Kingo.Messaging
 {
@@ -28,12 +27,7 @@ namespace Kingo.Messaging
                 throw new ArgumentNullException("handler");
             }            
             _handler = message =>
-            {
-                var context = AsyncContext.Current;
-                if (context == null)
-                {
-                    return Task.Run(() => handler.Invoke(message));
-                }
+            {                
                 return AsyncMethod.RunSynchronously(() => handler.Invoke(message));
             };
         }

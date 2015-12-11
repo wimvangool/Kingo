@@ -15,7 +15,13 @@ namespace Kingo.Messaging
         IMessageProcessorBus EventBus
         {
             get;
-        }                
+        }
+
+        /// <summary>
+        /// Creates and returns a new <see cref="UnitOfWorkScope" /> that is associated to this processor.
+        /// </summary>
+        /// <returns>A new <see cref="UnitOfWorkScope" />.</returns>
+        UnitOfWorkScope CreateUnitOfWorkScope();
 
         #region [====== Commands & Events ======]
 

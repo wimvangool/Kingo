@@ -8,7 +8,7 @@ namespace Kingo.Messaging
     /// <summary>
     /// Represents a scope that controls the lifetime of a <see cref="UnitOfWorkContext" />.
     /// </summary>        
-    internal sealed class UnitOfWorkScope : IDisposable
+    public sealed class UnitOfWorkScope : IDisposable
     {
         private readonly ContextScope<UnitOfWorkContext> _scope;
         private readonly bool _isContextOwner;
@@ -30,7 +30,7 @@ namespace Kingo.Messaging
         /// <exception cref="InvalidOperationException">
         /// The scope has already been completed.
         /// </exception>
-        internal async Task CompleteAsync()
+        public async Task CompleteAsync()
         {
             if (_isDisposed)
             {

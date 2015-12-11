@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using Nito.AsyncEx;
+using Kingo.Threading;
 
 namespace Kingo.Messaging
 {
@@ -37,6 +37,12 @@ namespace Kingo.Messaging
         protected internal virtual MessageHandlerFactory MessageHandlerFactory
         {
             get { return null; }
+        }
+
+        /// <inheritdoc />
+        public UnitOfWorkScope CreateUnitOfWorkScope()
+        {
+            return UnitOfWorkContext.StartUnitOfWorkScope(this);
         }
 
         #region [====== ToString ======]
@@ -150,28 +156,7 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException("message");
             }
-            if (CurrentMessage == null)
-            {
-                // When a new message comes in, we create a dedicated message loop and
-                // SynchronizationContext that will force all continuations to be run
-                // on the same thread.
-                using (var thread = new AsyncContextThread())
-                {                    
-                    await thread.Factory.StartNew(() => HandleAsyncCore(message, handler, token), token).Unwrap();                    
-                }
-            }
-            else
-            {
-                // If a Message is already being handled on the current thread, the current call is actually
-                // a recursive call, which means we don't have to create a new message loop but can just handle
-                // the message immediately.
-                await HandleAsyncCore(message, handler, token);
-            }
-        }
-
-        private async Task HandleAsyncCore<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
-        {
-            PushMessage(ref message, token);            
+            PushMessage(ref message, token);
 
             try
             {
@@ -183,7 +168,7 @@ namespace Kingo.Messaging
             {
                 PopMessage();
             } 
-        }
+        }        
 
         /// <summary>
         /// Determines whether or not the specified message is a Command. By default,
@@ -275,26 +260,6 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException("message");
             }
-            if (CurrentMessage == null)
-            {
-                // When a new message comes in, we create a dedicated message loop and
-                // SynchronizationContext that will force all continuations to be run
-                // on the same thread.
-                using (var thread = new AsyncContextThread())
-                {
-                    return await thread.Factory.StartNew(() => ExecuteAsyncCore(message, query, token), token).Unwrap();
-                }
-            }
-            // If a Message is already being handled on the current thread, the current call is actually
-            // a recursive call, which means we don't have to create a new message loop but can just handle
-            // the message immediately.
-            return await ExecuteAsyncCore(message, query, token);          
-        }
-
-        private async Task<TMessageOut> ExecuteAsyncCore<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
-        {            
             PushMessage(ref message, token);
 
             try
@@ -308,8 +273,8 @@ namespace Kingo.Messaging
             finally
             {
                 PopMessage();
-            }
-        }
+            }        
+        }        
 
         #endregion                      
 
@@ -370,7 +335,7 @@ namespace Kingo.Messaging
         #region [====== CurrentMessage ======]
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private static readonly ThreadLocal<MessagePointer> _CurrentMessage = new ThreadLocal<MessagePointer>();
+        private static readonly AsyncLocal<MessagePointer> _CurrentMessage = new AsyncLocal<MessagePointer>();
 
         /// <summary>
         /// Returns a <see cref="MessagePointer">pointer</see> to the message that is currently being handled.
