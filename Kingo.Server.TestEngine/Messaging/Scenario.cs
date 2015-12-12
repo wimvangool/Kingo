@@ -40,14 +40,24 @@ namespace Kingo.Messaging
             get;
         }
 
+        void IExecutable.Execute()
+        {
+            Then();
+        }
+
+        Task IExecutable.ExecuteAsync()
+        {
+            return ThenAsync();
+        }
+
         /// <inheritdoc />
-        public void Execute()
+        public void Then()
         {
             ExecuteCoreAsync().Wait();
         }
 
         /// <inheritdoc />
-        public virtual Task ExecuteAsync()
+        public virtual Task ThenAsync()
         {
             return ExecuteCoreAsync();
         }
@@ -179,6 +189,6 @@ namespace Kingo.Messaging
             return new ArgumentException(message, "values");
         }
 
-        #endregion
+        #endregion        
     }
 }

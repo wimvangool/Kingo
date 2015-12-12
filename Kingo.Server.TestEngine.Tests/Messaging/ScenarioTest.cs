@@ -62,9 +62,9 @@ namespace Kingo.Messaging
                 };
             }
 
-            public override async Task ExecuteAsync()
+            public override async Task ThenAsync()
             {
-                await SetupAlternateFlow().Expect<InvalidMessageException>().ExecuteAsync();
+                await Exception().Expect<InvalidMessageException>().ExecuteAsync();
             }
         }
 
@@ -87,7 +87,7 @@ namespace Kingo.Messaging
                 };
             }
 
-            public override async Task ExecuteAsync()
+            public override async Task ThenAsync()
             {
                 switch (_testcase)
                 {
@@ -108,30 +108,30 @@ namespace Kingo.Messaging
 
             private async Task ExecuteInvalidEventCountCaseAsync()
             {
-                await SetupHappyFlow(3).ExecuteAsync();
+                await Events().Expect<DomainEvent>().ExecuteAsync();
             }
 
             private async Task ExecuteInvalidExpectedEventTypeCaseAsync()
             {
-                await SetupHappyFlow(2)
-                    .Expect<TheCommand>(0)
-                    .Expect<DomainEvent>(1)
+                await Events()
+                    .Expect<TheCommand>()
+                    .Expect<DomainEvent>()
                     .ExecuteAsync();
             }
 
             private async Task ExecuteInvalidExpectedEventValuesCaseAsync()
             {
-                await SetupHappyFlow(2)
-                    .Expect<DomainEvent>(0, validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[0].Value))
-                    .Expect<DomainEvent>(1, validator => validator.VerifyThat(m => m.Value).IsNotEqualTo(_messagesToPublish[1].Value))
+                await Events()
+                    .Expect<DomainEvent>(validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[0].Value))
+                    .Expect<DomainEvent>(validator => validator.VerifyThat(m => m.Value).IsNotEqualTo(_messagesToPublish[1].Value))
                     .ExecuteAsync();
             }
 
             private async Task ExecuteDefaultCaseAsync()
             {
-                await SetupHappyFlow(2)
-                    .Expect<DomainEvent>(0, validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[0].Value))
-                    .Expect<DomainEvent>(1, validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[1].Value))
+                await Events()
+                    .Expect<DomainEvent>(validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[0].Value))
+                    .Expect<DomainEvent>(validator => validator.VerifyThat(m => m.Value).IsEqualTo(_messagesToPublish[1].Value))
                     .ExecuteAsync();
             }
         }
@@ -157,7 +157,7 @@ namespace Kingo.Messaging
             var messages = new[] { new DomainEvent(), new DomainEvent() };
             var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.Default);
 
-            await scenario.ExecuteAsync();
+            await scenario.ThenAsync();
         }
        
         [TestMethod]
@@ -167,7 +167,7 @@ namespace Kingo.Messaging
             var messages = new[] { new DomainEvent(), new DomainEvent() };
             var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.InvalidEventCount);
 
-            await scenario.ExecuteAsync();          
+            await scenario.ThenAsync();          
         }
    
         [TestMethod]
@@ -177,7 +177,7 @@ namespace Kingo.Messaging
             var messages = new[] { new DomainEvent(), new DomainEvent() };
             var scenario = new HappyFlowScenario(messages, HappyFlowScenarioCase.InvalidExpectedEventType);
 
-            await scenario.ExecuteAsync();
+            await scenario.ThenAsync();
         }
 
         [TestMethod]        
@@ -188,7 +188,7 @@ namespace Kingo.Messaging
 
             try
             {
-                await scenario.ExecuteAsync();
+                await scenario.ThenAsync();
             }
             catch (AssertFailedException exception)
             {
@@ -208,7 +208,7 @@ namespace Kingo.Messaging
 
             try
             {
-                await scenario.ExecuteAsync();
+                await scenario.ThenAsync();
 
                 Assert.Fail("Expected exception of type '{0}' was not thrown.", exceptionToThrow.GetType().Name);
             }
@@ -224,7 +224,7 @@ namespace Kingo.Messaging
             var exception = NewInvalidMessageException();
             var scenario = new AlternateFlowScenario(exception);
 
-            await scenario.ExecuteAsync();
+            await scenario.ThenAsync();
         }
 
         [TestMethod]
@@ -234,7 +234,7 @@ namespace Kingo.Messaging
             var exception = new InvalidOperationException();
             var scenario = new AlternateFlowScenario(exception);
 
-            await scenario.ExecuteAsync();           
+            await scenario.ThenAsync();           
         }
 
         [TestMethod]
@@ -244,7 +244,7 @@ namespace Kingo.Messaging
             var exception = new CommandExecutionException(new object());
             var scenario = new AlternateFlowScenario(exception);
 
-            await scenario.ExecuteAsync();
+            await scenario.ThenAsync();
         }
 
         [TestMethod]
@@ -253,7 +253,7 @@ namespace Kingo.Messaging
         {            
             var scenario = new AlternateFlowScenario(null);
 
-            await scenario.ExecuteAsync();
+            await scenario.ThenAsync();
         }
 
         private static InvalidMessageException NewInvalidMessageException()

@@ -39,7 +39,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// Gets the <see cref="FunctionalException" /> that was caught during the When-phase.
         /// </summary>
-        protected internal FunctionalException Exception
+        protected internal FunctionalException ThrownException
         {
             get;
             private set;
@@ -54,26 +54,19 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public override async Task ExecuteAsync()
+        public override async Task ThenAsync()
         {
-            await SetupHappyFlow(0).ExecuteAsync();
+            await Events().ExecuteAsync();
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="HappyFlow{T}" /> which can be used to set some
-        /// expectations on the <paramref name="expectedEventCount"/> and the particular events
-        /// themselves.
-        /// </summary>
-        /// <param name="expectedEventCount">
-        /// The number of events that is expected to be published.
-        /// </param>
-        /// <returns>A happy flow.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="expectedEventCount"/> is negative.
-        /// </exception>
-        protected HappyFlow<TMessage> SetupHappyFlow(int expectedEventCount)
+        /// Creates and returns a new <see cref="HappyFlow{T}" /> which can be used to define
+        /// which events are expected to be published.
+        /// </summary>        
+        /// <returns>A happy flow.</returns>        
+        protected HappyFlow<TMessage> Events()
         {
-            return new HappyFlow<TMessage>(this, expectedEventCount);
+            return new HappyFlow<TMessage>(this);
         }
 
         /// <summary>
@@ -84,7 +77,7 @@ namespace Kingo.Messaging
         /// Indicates whether or not the exception should be rethron after it has been caught.
         /// </param>
         /// <returns>An alternate flow.</returns>
-        protected AlternateFlow<TMessage> SetupAlternateFlow(bool rethrowException = false)
+        protected AlternateFlow<TMessage> Exception(bool rethrowException = false)
         {
             return new AlternateFlow<TMessage>(this, rethrowException);
         }
@@ -106,7 +99,7 @@ namespace Kingo.Messaging
             }                   
             catch (FunctionalException exception)
             {                
-                Exception = exception;                
+                ThrownException = exception;                
             }
             finally
             {
@@ -182,10 +175,10 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="Exception" /> that will be thrown to mark the failure of this scenario.
+        /// Creates and returns a new <see cref="ThrownException" /> that will be thrown to mark the failure of this scenario.
         /// </summary>
         /// <param name="errorMessage">The reason why the scenario failed.</param>
-        /// <returns>A new <see cref="Exception" />-instance with the specfied <paramref name="errorMessage"/>.</returns>
+        /// <returns>A new <see cref="ThrownException" />-instance with the specfied <paramref name="errorMessage"/>.</returns>
         protected abstract Exception NewScenarioFailedException(string errorMessage);
 
         #endregion

@@ -40,7 +40,7 @@ namespace Kingo.Messaging
             {
                 throw NewExpectationAlreadySetException(typeof(TException));
             }
-            var constraint = Validator.VerifyThat(scenario => scenario.Exception).IsInstanceOf<TException>();
+            var constraint = Validator.VerifyThat(scenario => scenario.ThrownException).IsInstanceOf<TException>();
 
             if (validateMethod != null)
             {
@@ -55,7 +55,7 @@ namespace Kingo.Messaging
         {
             await _scenario.ExecuteCoreAsync();
 
-            if (_scenario.Exception == null)
+            if (_scenario.ThrownException == null)
             {
                 OnExpectedExceptionNotThrown();
             }

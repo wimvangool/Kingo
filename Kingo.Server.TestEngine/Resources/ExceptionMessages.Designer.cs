@@ -70,15 +70,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot set an expectation for event on index {0} because an expectation has alreayd been set for this event..
-        /// </summary>
-        internal static string Scenario_EventExpectationAlreadySet {
-            get {
-                return ResourceManager.GetString("Scenario_EventExpectationAlreadySet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot set the expectation for exception of type &apos;{0}&apos; because another expectation has already been set..
         /// </summary>
         internal static string Scenario_ExceptionExpectationAlreadySet {
@@ -97,15 +88,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid event count specified: {0}. Number must be 0 or higher..
-        /// </summary>
-        internal static string Scenario_InvalidEventCount {
-            get {
-                return ResourceManager.GetString("Scenario_InvalidEventCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invalid mode has been set for scenario &apos;{0}&apos;: {1}..
         /// </summary>
         internal static string Scenario_InvalidMode {
@@ -115,16 +97,7 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index cannot be negative: {0}..
-        /// </summary>
-        internal static string Scenario_NegativeIndex {
-            get {
-                return ResourceManager.GetString("Scenario_NegativeIndex", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected amount of events were published. Expected: {0}, actual: {1}..
+        ///   Looks up a localized string similar to The amount of expected events ({0}) does not match the actual amount of published events ({1})..
         /// </summary>
         internal static string Scenario_UnexpectedEventCount {
             get {

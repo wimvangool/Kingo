@@ -120,25 +120,16 @@
   <data name="Scenario_EmptyCollectionSpecified" xml:space="preserve">
     <value>Cannot pick a value of type '{0}' because the specified collection is empty.</value>
   </data>
-  <data name="Scenario_EventExpectationAlreadySet" xml:space="preserve">
-    <value>Cannot set an expectation for event on index {0} because an expectation has alreayd been set for this event.</value>
-  </data>
   <data name="Scenario_ExceptionExpectationAlreadySet" xml:space="preserve">
     <value>Cannot set the expectation for exception of type '{0}' because another expectation has already been set.</value>
   </data>
   <data name="Scenario_ExpectedExceptionNotThrown" xml:space="preserve">
     <value>Expected exception was not thrown.</value>
   </data>
-  <data name="Scenario_InvalidEventCount" xml:space="preserve">
-    <value>Invalid event count specified: {0}. Number must be 0 or higher.</value>
-  </data>
   <data name="Scenario_InvalidMode" xml:space="preserve">
     <value>Invalid mode has been set for scenario '{0}': {1}.</value>
   </data>
-  <data name="Scenario_NegativeIndex" xml:space="preserve">
-    <value>Index cannot be negative: {0}.</value>
-  </data>
   <data name="Scenario_UnexpectedEventCount" xml:space="preserve">
-    <value>Unexpected amount of events were published. Expected: {0}, actual: {1}.</value>
+    <value>The amount of expected events ({0}) does not match the actual amount of published events ({1}).</value>
   </data>
 </root>
