@@ -15,7 +15,22 @@ namespace Kingo.Messaging
     /// </summary>           
     public abstract class Scenario : MessageSequence, IExecutable
     {
+        private readonly ScenarioMode _mode;
+        
+        internal Scenario(ScenarioMode mode = ScenarioMode.WriteOnly)
+        {
+            _mode = mode;
+        }
+
         #region [====== Execution ======]
+
+        /// <summary>
+        /// The mode this scenario will execute in.
+        /// </summary>
+        protected ScenarioMode Mode
+        {
+            get { return _mode; }
+        }
 
         /// <summary>
         /// Returns the processor that is used to execute this <see cref="Scenario" />.
@@ -37,9 +52,37 @@ namespace Kingo.Messaging
             return ExecuteCoreAsync();
         }
 
-        internal virtual Task ExecuteCoreAsync()
+        internal async Task ExecuteCoreAsync()
+        {            
+            if (Mode == ScenarioMode.WriteOnly)
+            {
+                // When a scenario is in write-only mode, the whole scenario is executed inside
+                // a single UnitOfWorkScope. This is because write-only mode assumes in-memory repositories
+                // are used to store the aggregates, which need to be available throughout the entire
+                // lifetime of the scenario.
+                using (var scope = MessageProcessor.CreateUnitOfWorkScope())
+                {
+                    await ProcessWithAsync(MessageProcessor);
+                    await scope.CompleteAsync();
+                }
+            }
+            else if (Mode == ScenarioMode.ReadWrite)
+            {
+                // In read-write mode, it is assumed that the scenario executes against a database,
+                // so each unit of work can be scoped normally (that is, per message/transaction).
+                await ProcessWithAsync(MessageProcessor);
+            }
+            else
+            {
+                throw NewInvalidModeException(GetType(), Mode);
+            }
+        }
+
+        private static Exception NewInvalidModeException(Type scenarioType, ScenarioMode mode)
         {
-            return ProcessWithAsync(MessageProcessor);
+            var messageFormat = ExceptionMessages.Scenario_InvalidMode;
+            var message = string.Format(messageFormat, scenarioType.Name, mode);
+            return new InvalidOperationException(message);
         }        
 
         #endregion        

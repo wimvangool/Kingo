@@ -64,7 +64,7 @@
     <Compile Include="Messaging\ExecutionFlow.T1.cs" />
     <Compile Include="Messaging\HappyFlow.T1.cs" />
     <Compile Include="Messaging\IExecutable.cs" />
-    <Compile Include="Messaging\WriteOnlyScenario.T1.cs" />
+    <Compile Include="Messaging\ScenarioMode.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Messaging\Scenario.cs" />
     <Compile Include="Messaging\Scenario.T1.cs" />

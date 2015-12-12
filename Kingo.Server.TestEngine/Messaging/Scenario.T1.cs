@@ -13,18 +13,20 @@ namespace Kingo.Messaging
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>    
     public abstract class Scenario<TMessage> : Scenario where TMessage : class, IMessage<TMessage>
-    {                
+    {        
         private readonly Lazy<TMessage> _message;                       
         private readonly List<object> _publishedEvents;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scenario{TMessage}" /> class.
         /// </summary>
-        protected Scenario()
-        {                        
+        /// <param name="mode">The mode this scenario will execute in.</param>
+        protected Scenario(ScenarioMode mode = ScenarioMode.WriteOnly)
+            : base(mode)
+        {           
             _message = new Lazy<TMessage>(When);            
             _publishedEvents = new List<object>();
-        }
+        }        
 
         /// <summary>
         /// Returns the last message that was handled in the When-phase.

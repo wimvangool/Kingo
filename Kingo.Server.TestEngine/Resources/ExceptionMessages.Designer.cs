@@ -106,6 +106,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid mode has been set for scenario &apos;{0}&apos;: {1}..
+        /// </summary>
+        internal static string Scenario_InvalidMode {
+            get {
+                return ResourceManager.GetString("Scenario_InvalidMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index cannot be negative: {0}..
         /// </summary>
         internal static string Scenario_NegativeIndex {
