@@ -223,24 +223,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot complete this scope because it is not the current scope..
-        /// </summary>
-        internal static string TransactionScope_CannotCompleteScope {
-            get {
-                return ResourceManager.GetString("TransactionScope_CannotCompleteScope", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The scope has already completed..
-        /// </summary>
-        internal static string TransactionScope_ScopeAlreadyCompleted {
-            get {
-                return ResourceManager.GetString("TransactionScope_ScopeAlreadyCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Auto-increment of type &apos;{0}&apos; is not supported. Please override AggregateRoot&lt;,&gt;.NextVersion() or change the version type of the aggregate..
         /// </summary>
         internal static string Version_IncrementNotSupported {

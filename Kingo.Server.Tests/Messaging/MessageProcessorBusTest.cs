@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Nito.AsyncEx;
 
 namespace Kingo.Messaging
 {
@@ -61,8 +60,8 @@ namespace Kingo.Messaging
             {
                 Assert.IsNotNull(connection);
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageTwo()).Wait();
 
                 Assert.AreEqual(1, handler.MessageOneCount);
                 Assert.AreEqual(0, handler.MessageTwoCount);                
@@ -80,8 +79,8 @@ namespace Kingo.Messaging
                 Assert.IsNotNull(connectionA);
                 Assert.IsNotNull(connectionB);
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageTwo()).Wait();
 
                 Assert.AreEqual(1, handler.MessageOneCount);
                 Assert.AreEqual(1, handler.MessageTwoCount);
@@ -97,7 +96,7 @@ namespace Kingo.Messaging
             {
                 Assert.IsNotNull(connection);
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
+                _bus.PublishAsync(new MessageOne()).Wait();
 
                 Assert.AreEqual(0, handler.MessageOneCount);
                 Assert.AreEqual(0, handler.MessageTwoCount);  
@@ -113,16 +112,16 @@ namespace Kingo.Messaging
             {
                 Assert.IsNotNull(connection);
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));                
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageOne()).Wait();                
 
                 Assert.AreEqual(2, handler.MessageOneCount);
                 Assert.AreEqual(0, handler.MessageTwoCount);
 
                 connection.Close();
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));                
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageOne()).Wait();                
 
                 Assert.AreEqual(2, handler.MessageOneCount);
                 Assert.AreEqual(0, handler.MessageTwoCount);
@@ -177,8 +176,8 @@ namespace Kingo.Messaging
             {
                 Assert.IsNotNull(connection);
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageTwo()).Wait();
 
                 Assert.AreEqual(1, handler.MessageOneCount);
                 Assert.AreEqual(1, handler.MessageTwoCount);      
@@ -194,8 +193,8 @@ namespace Kingo.Messaging
             {
                 Assert.IsNotNull(connection);
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageTwo()).Wait();
 
                 Assert.AreEqual(0, handler.MessageOneCount);
                 Assert.AreEqual(0, handler.MessageTwoCount);      
@@ -211,16 +210,16 @@ namespace Kingo.Messaging
             {
                 Assert.IsNotNull(connection);
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageTwo()).Wait();
 
                 Assert.AreEqual(1, handler.MessageOneCount);
                 Assert.AreEqual(1, handler.MessageTwoCount);
 
                 connection.Close();
 
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageOne()));
-                AsyncContext.Run(() => _bus.PublishAsync(new MessageTwo()));
+                _bus.PublishAsync(new MessageOne()).Wait();
+                _bus.PublishAsync(new MessageTwo()).Wait();
 
                 Assert.AreEqual(1, handler.MessageOneCount);
                 Assert.AreEqual(1, handler.MessageTwoCount);

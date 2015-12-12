@@ -1,6 +1,4 @@
-﻿using Kingo.ComponentModel.Server;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     internal sealed class MessageProcessorStub : MessageProcessor
     {

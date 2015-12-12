@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Resources;
 using Kingo.Threading;
 
 namespace Kingo.Messaging
@@ -11,8 +10,7 @@ namespace Kingo.Messaging
     public sealed class UnitOfWorkScope : IDisposable
     {
         private readonly ContextScope<UnitOfWorkContext> _scope;
-        private readonly bool _isContextOwner;
-        private bool _hasCompleted;
+        private readonly bool _isContextOwner;        
         private bool _isDisposed;                            
                 
         internal UnitOfWorkScope(ContextScope<UnitOfWorkContext> scope, bool isContextOwner)
@@ -26,25 +24,14 @@ namespace Kingo.Messaging
         /// </summary>
         /// <exception cref="ObjectDisposedException">
         /// The scope has already been disposed.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The scope has already been completed.
-        /// </exception>
+        /// </exception>        
         public async Task CompleteAsync()
         {
             if (_isDisposed)
             {
                 throw NewScopeAlreadyDisposedException();
             }
-            if (_hasCompleted)
-            {
-                throw NewScopeAlreadyCompletedException();
-            }
-            if (_isContextOwner)
-            {
-                await _scope.Value.FlushAsync();
-            }
-            _hasCompleted = true;
+            await _scope.Value.FlushAsync();
         }  
 
         /// <summary>
@@ -74,12 +61,7 @@ namespace Kingo.Messaging
         private static Exception NewScopeAlreadyDisposedException()
         {
             return new ObjectDisposedException(typeof(UnitOfWorkScope).Name);
-        }                               
-
-        private static Exception NewScopeAlreadyCompletedException()
-        {
-            return new InvalidOperationException(ExceptionMessages.TransactionScope_ScopeAlreadyCompleted);
-        }        
+        }                                           
     }
 }
 

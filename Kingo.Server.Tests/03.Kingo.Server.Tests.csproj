@@ -62,14 +62,6 @@
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="Nito.AsyncEx, Version=3.0.1.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Nito.AsyncEx.3.0.1\Nito.AsyncEx.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.AsyncEx.Enlightenment, Version=3.0.1.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Nito.AsyncEx.3.0.1\Nito.AsyncEx.Enlightenment.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Runtime.Caching" />
@@ -130,6 +122,7 @@
     <Compile Include="Messaging\SampleHandlers\ForTryRegisterInTests\MessageHandlerWithSingleLifetime.cs" />
     <Compile Include="Messaging\UnitOfWorkControllerTest.cs" />
     <Compile Include="Messaging\UnitOfWorkCacheTest.cs" />
+    <Compile Include="Messaging\UnityFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Threading\TaskExtensions.cs" />
   </ItemGroup>
@@ -137,10 +130,6 @@
     <ProjectReference Include="..\Kingo.Server\04.Kingo.Server.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
       <Name>04.Kingo.Server</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kingo.Server.Unity\06.Kingo.Server.Unity.csproj">
-      <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
-      <Name>06.Kingo.Server.Unity</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kingo.Tests\01.Kingo.Tests.csproj">
       <Project>{9697eaca-8e8f-451b-ae46-cf081559e0ed}</Project>

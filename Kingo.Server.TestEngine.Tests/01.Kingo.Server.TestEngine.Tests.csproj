@@ -89,13 +89,13 @@
     <Compile Include="Messaging\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Kingo.Server.Tests\03.Kingo.Server.Tests.csproj">
+      <Project>{303380db-4167-4bb0-8b78-63c959b65c4b}</Project>
+      <Name>03.Kingo.Server.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kingo.Server\04.Kingo.Server.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
       <Name>04.Kingo.Server</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kingo.Server.Unity\06.Kingo.Server.Unity.csproj">
-      <Project>{77f45326-e908-47eb-b924-a3bd26cad6b0}</Project>
-      <Name>06.Kingo.Server.Unity</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kingo.Server.TestEngine\02.Kingo.Server.TestEngine.csproj">
       <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>

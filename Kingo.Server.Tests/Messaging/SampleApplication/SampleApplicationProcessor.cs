@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Kingo.ComponentModel.Server;
 
 namespace Kingo.Messaging.SampleApplication
 {

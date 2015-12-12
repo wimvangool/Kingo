@@ -8,7 +8,7 @@ namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// Represents an in-memory repository of aggregates that can be used in combination with
-    /// <see cref="WriteOnlyScenario{T}">WriteOnlyScenarios</see> to temporarily store data
+    /// write-only scenarios to temporarily store data
     /// when testing business logic.
     /// </summary>
     /// <typeparam name="TKey">Type of the key that identifies an aggregate.</typeparam>

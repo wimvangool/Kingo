@@ -135,14 +135,8 @@
   <data name="MessageHandlerClass_InvalidInstanceLifetimeMode" xml:space="preserve">
     <value>Invalid InstanceLifetime was specified on class '{0}': {1}. </value>
   </data>
-  <data name="TransactionScope_ScopeAlreadyCompleted" xml:space="preserve">
-    <value>The scope has already completed.</value>
-  </data>
   <data name="AggregateEventStream_MissingEventHandler" xml:space="preserve">
     <value>No event-handler was specified for domain-event of type '{0}'.</value>
-  </data>
-  <data name="TransactionScope_CannotCompleteScope" xml:space="preserve">
-    <value>Cannot complete this scope because it is not the current scope.</value>
   </data>
   <data name="DependencyClass_AmbigiousMatch" xml:space="preserve">
     <value>More than one type found that could be used as an implementation of dependency '{0}': {1}.</value>
