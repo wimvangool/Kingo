@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Kingo.Constraints;
 
@@ -58,11 +57,6 @@ namespace Kingo.Messaging
                 throw new ArgumentNullException("errorMessage");
             }
             Scenario.OnVerificationFailed(errorMessage);
-        } 
-
-        internal static void Rethrow(Exception exception)
-        {
-            ExceptionDispatchInfo.Capture(exception).Throw();
-        }
+        }         
     }
 }

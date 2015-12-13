@@ -57,6 +57,7 @@
     <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\DelegateClock.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
+    <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Messaging\Command.T1.cs" />
     <Compile Include="Messaging\CompositeValidator.T1.cs" />
     <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Clocks\DefaultClock.cs" />
     <Compile Include="Threading\AsyncLocal.T1.cs" />
     <Compile Include="Threading\ContextScope.T1.cs" />
+    <Compile Include="Threading\TaskExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ErrorMessages.resx">

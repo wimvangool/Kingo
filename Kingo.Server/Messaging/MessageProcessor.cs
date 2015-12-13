@@ -104,7 +104,7 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException("message");
             }
-            HandleAsync(message, handler, CancellationToken.None).Wait();
+            HandleAsync(message, handler, CancellationToken.None).Await();
         }
 
         /// <inheritdoc />
@@ -208,7 +208,7 @@ namespace Kingo.Messaging
             where TMessageIn : class, IMessage<TMessageIn>
             where TMessageOut : class, IMessage<TMessageOut>
         {
-            return ExecuteAsync(message, query, CancellationToken.None).Result;            
+            return ExecuteAsync(message, query, CancellationToken.None).Await();
         }
 
         /// <inheritdoc />

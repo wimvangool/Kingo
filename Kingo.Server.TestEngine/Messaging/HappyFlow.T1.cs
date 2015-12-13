@@ -64,7 +64,7 @@ namespace Kingo.Messaging
             }
             else
             {
-                Rethrow(_scenario.ThrownException); 
+                _scenario.ThrownException.Rethrow();
             }
         }              
 
