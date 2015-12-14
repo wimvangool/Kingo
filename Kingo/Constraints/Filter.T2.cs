@@ -118,13 +118,13 @@ namespace Kingo.Constraints
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, string errorMessage = null, string name = null)
+        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, string errorMessage = null, string name = null)
         {
             return And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
         }
 
         /// <inheritdoc />
-        public IConstraint<TValueIn> And(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null)
         {
             return And(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
@@ -142,13 +142,13 @@ namespace Kingo.Constraints
         }
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn> Or(Func<TValueIn, bool> constraint, string errorMessage = null, string name = null)
+        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, string errorMessage = null, string name = null)
         {
             return Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
         }
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn> Or(Func<TValueIn, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null)
         {
             return Or(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
@@ -203,7 +203,7 @@ namespace Kingo.Constraints
         }
 
         /// <inheritdoc />
-        public virtual Func<TValueIn, bool> ToDelegate()
+        public virtual Predicate<TValueIn> ToDelegate()
         {
             return IsSatisfiedBy;
         }

@@ -37,12 +37,12 @@ namespace Kingo.Constraints
 
         #region [====== And, Or & Invert ======]
 
-        public IConstraint<TValue> And(Func<TValue, bool> constraint, string errorMessage = null, string name = null)
+        public IConstraint<TValue> And(Predicate<TValue> constraint, string errorMessage = null, string name = null)
         {
             return And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
         }
 
-        public IConstraint<TValue> And(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        public IConstraint<TValue> And(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null)
         {
             return And(new DelegateConstraint<TValue>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
@@ -52,12 +52,12 @@ namespace Kingo.Constraints
             return new AndConstraint<TValue>(this, constraint);
         }
 
-        public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, string errorMessage = null, string name = null)
+        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, string errorMessage = null, string name = null)
         {
             return Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
         }
 
-        public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null)
         {
             return Or(new DelegateConstraint<TValue>(constraint).WithErrorMessage(errorMessage).WithName(name));
         }
@@ -93,7 +93,7 @@ namespace Kingo.Constraints
             return new InputToOutputMapper<TValue>(this);
         }
         
-        public Func<TValue, bool> ToDelegate()
+        public Predicate<TValue> ToDelegate()
         {
             return IsSatisfiedBy;
         }

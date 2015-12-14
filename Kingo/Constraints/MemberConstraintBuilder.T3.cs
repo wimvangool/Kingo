@@ -139,7 +139,7 @@ namespace Kingo.Constraints
 
         #region [====== Satisfies ======]
 
-        public IMemberConstraintBuilder<T, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null, object errorMessageArgument = null)
+        public IMemberConstraintBuilder<T, TValueOut> Satisfies(Predicate<TValueOut> constraint, string errorMessage = null, object errorMessageArgument = null)
         {
             return Satisfies(new DelegateConstraint<TValueOut>(constraint, errorMessageArgument).WithErrorMessage(errorMessage));
         }

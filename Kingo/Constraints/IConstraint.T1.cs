@@ -21,7 +21,7 @@ namespace Kingo.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IConstraint<TValue> And(Func<TValue, bool> constraint, string errorMessage = null, string name = null);
+        IConstraint<TValue> And(Predicate<TValue> constraint, string errorMessage = null, string name = null);
 
         /// <summary>
         /// Creates and returns a logical AND constraint for this and the specified <paramref name="constraint"/>.
@@ -33,7 +33,7 @@ namespace Kingo.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IConstraint<TValue> And(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null); 
+        IConstraint<TValue> And(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null); 
 
         /// <summary>
         /// Creates and returns a logical AND constraint for this and the specified <paramref name="constraint"/>.
@@ -55,7 +55,7 @@ namespace Kingo.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, string errorMessage = null, string name = null);
+        IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, string errorMessage = null, string name = null);
 
         /// <summary>
         /// Creates and returns a logical OR constraint for this and the specified <paramref name="constraint"/>.
@@ -67,7 +67,7 @@ namespace Kingo.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null);
+        IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null);
 
         /// <summary>
         /// Creates and returns a logical OR constraint for this and the specified <paramref name="constraint"/>.
@@ -118,7 +118,7 @@ namespace Kingo.Constraints
         /// Converts this constraints to a delegate.
         /// </summary>
         /// <returns>A delegate that represents this constraint.</returns>
-        Func<TValue, bool> ToDelegate();
+        Predicate<TValue> ToDelegate();
 
         #endregion
 

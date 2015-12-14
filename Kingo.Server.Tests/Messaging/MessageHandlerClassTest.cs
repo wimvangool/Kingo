@@ -126,7 +126,7 @@ namespace Kingo.Messaging
             return typeof(MessageHandlerClass).GetMethod("TryRegisterIn", BindingFlags.NonPublic | BindingFlags.Static);
         }
 
-        private static bool TryRegisterIn(MessageHandlerFactory factory, Type type, Func<Type, bool> typeSelector, out MessageHandlerClass handlerClass)
+        private static bool TryRegisterIn(MessageHandlerFactory factory, Type type, Predicate<Type> typeSelector, out MessageHandlerClass handlerClass)
         {
             var arguments = new object[]
             {

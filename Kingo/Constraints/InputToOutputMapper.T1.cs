@@ -37,13 +37,13 @@ namespace Kingo.Constraints
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public IConstraint<TValue> And(Func<TValue, bool> constraint, string errorMessage = null, string name = null)
+        public IConstraint<TValue> And(Predicate<TValue> constraint, string errorMessage = null, string name = null)
         {
             return _constraint.And(constraint, errorMessage, name);
         }
 
         /// <inheritdoc />
-        public IConstraint<TValue> And(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        public IConstraint<TValue> And(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null)
         {
             return _constraint.And(constraint, errorMessage, name);
         }
@@ -65,13 +65,13 @@ namespace Kingo.Constraints
         }
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, string errorMessage = null, string name = null)
+        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, string errorMessage = null, string name = null)
         {
             return _constraint.Or(constraint, errorMessage, name);
         }
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValue> Or(Func<TValue, bool> constraint, StringTemplate errorMessage, Identifier name = null)
+        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null)
         {
             return _constraint.Or(constraint, errorMessage, name);
         }
@@ -110,7 +110,7 @@ namespace Kingo.Constraints
         }
 
         /// <inheritdoc />
-        public Func<TValue, bool> ToDelegate()
+        public Predicate<TValue> ToDelegate()
         {
             return IsSatisfiedBy;
         }

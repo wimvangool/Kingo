@@ -166,7 +166,7 @@ namespace Kingo.Constraints.Decoders
 
         #region [====== MemberConstraintBuilder<T, TValue>.Satisfies ======]
 
-        public IMemberConstraintBuilder<T, TValue> Satisfies(Func<TValue, bool> constraint, string errorMessage = null, object errorMessageArgument = null)
+        public IMemberConstraintBuilder<T, TValue> Satisfies(Predicate<TValue> constraint, string errorMessage = null, object errorMessageArgument = null)
         {
             return Member.Satisfies(constraint, errorMessage, errorMessageArgument);
         }

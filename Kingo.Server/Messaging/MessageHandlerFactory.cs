@@ -65,7 +65,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public void RegisterMessageHandlers(AssemblySet assemblies, Func<Type, bool> typeSelector, MessageHandlerToConfigurationMapping configurationPerType = null)
+        public void RegisterMessageHandlers(AssemblySet assemblies, Predicate<Type> typeSelector, MessageHandlerToConfigurationMapping configurationPerType = null)
         {
             foreach (var messageHandler in MessageHandlerClass.RegisterMessageHandlers(this, assemblies, typeSelector, configurationPerType))
             {
@@ -149,7 +149,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public void RegisterDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
+        public void RegisterDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
         {
             DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, configurationPerType);
         }        
@@ -174,7 +174,7 @@ namespace Kingo.Messaging
         /// <remarks>
         /// By default, all types will be registered with a <see cref="InstanceLifetime.PerUnitOfWork" /> lifetime.
         /// </remarks>
-        public void RegisterDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
+        public void RegisterDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
         {
             DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, abstractTypePredicate, configurationPerType);
         }        

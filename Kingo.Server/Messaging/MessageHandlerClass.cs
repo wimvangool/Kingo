@@ -90,7 +90,7 @@ namespace Kingo.Messaging
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
         private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>); 
         
-        internal static IEnumerable<MessageHandlerClass> RegisterMessageHandlers(MessageHandlerFactory factory, AssemblySet assemblies, Func<Type, bool> typeSelector, MessageHandlerToConfigurationMapping configurationPerType)
+        internal static IEnumerable<MessageHandlerClass> RegisterMessageHandlers(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> typeSelector, MessageHandlerToConfigurationMapping configurationPerType)
         {
             if (assemblies == null)
             {
@@ -110,7 +110,7 @@ namespace Kingo.Messaging
             return messageHandlers;
         }
 
-        private static bool TryRegisterIn(MessageHandlerFactory container, Type type, Func<Type, bool> predicate, MessageHandlerToConfigurationMapping configurationPerType, out MessageHandlerClass handler)
+        private static bool TryRegisterIn(MessageHandlerFactory container, Type type, Predicate<Type> predicate, MessageHandlerToConfigurationMapping configurationPerType, out MessageHandlerClass handler)
         {            
             if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !SatisfiesPredicate(type, predicate))
             {
@@ -165,7 +165,7 @@ namespace Kingo.Messaging
             return true;
         }        
 
-        private static bool SatisfiesPredicate(Type type, Func<Type, bool> predicate)
+        private static bool SatisfiesPredicate(Type type, Predicate<Type> predicate)
         {
             return predicate == null || predicate.Invoke(type);
         }

@@ -218,7 +218,7 @@ namespace Kingo.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        IMemberConstraintBuilder<T, TValueOut> Satisfies(Func<TValueOut, bool> constraint, string errorMessage = null, object errorMessageArgument = null);        
+        IMemberConstraintBuilder<T, TValueOut> Satisfies(Predicate<TValueOut> constraint, string errorMessage = null, object errorMessageArgument = null);        
 
         /// <summary>
         /// Applies the specified <paramref name="constraint"/>.

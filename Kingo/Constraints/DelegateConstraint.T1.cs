@@ -8,7 +8,7 @@ namespace Kingo.Constraints
     /// </summary>
     public sealed class DelegateConstraint<TValue> : Constraint<TValue>
     {
-        private readonly Func<TValue, bool> _constraint;
+        private readonly Predicate<TValue> _constraint;
         private readonly object _errorMessageArgument;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace Kingo.Constraints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public DelegateConstraint(Func<TValue, bool> constraint, object errorMessageArgument = null)          
+        public DelegateConstraint(Predicate<TValue> constraint, object errorMessageArgument = null)          
         {
             if (constraint == null)
             {
@@ -64,7 +64,7 @@ namespace Kingo.Constraints
         #region [====== Conversion ======]
 
         /// <inheritdoc />
-        public override Func<TValue, bool> ToDelegate()
+        public override Predicate<TValue> ToDelegate()
         {
             return _constraint;
         }

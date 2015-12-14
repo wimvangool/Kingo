@@ -82,7 +82,7 @@ namespace Kingo.Messaging
 
         #region [====== Static Members ======]
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
         {            
             if (assemblies == null)
             {
@@ -94,14 +94,14 @@ namespace Kingo.Messaging
             }
         }
 
-        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
         {
             return from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)   
                    let configuration = DetermineConfigurationOf(concreteType, configurationPerType)    
                    select new DependencyClass(concreteType, null, configuration);
         }
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
         {
             if (assemblies == null)
             {
@@ -113,7 +113,7 @@ namespace Kingo.Messaging
             }
         }
 
-        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Func<Type, bool> concreteTypePredicate, Func<Type, bool> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
         {            
             return from abstractType in FindAbstractTypes(assemblies, abstractTypePredicate)
                    from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)                   
@@ -144,7 +144,7 @@ namespace Kingo.Messaging
             }
         }
 
-        private static IEnumerable<Type> FindAbstractTypes(AssemblySet assemblies, Func<Type, bool> predicate)
+        private static IEnumerable<Type> FindAbstractTypes(AssemblySet assemblies, Predicate<Type> predicate)
         {
             return from type in assemblies.GetTypes()
                    where IsPublicAbstractType(type) && SatisfiesPredicate(type, predicate)
@@ -156,7 +156,7 @@ namespace Kingo.Messaging
             return type.IsPublic && ((type.IsClass && type.IsAbstract) || type.IsInterface);
         }
 
-        private static IEnumerable<Type> FindConcreteTypes(AssemblySet assemblies, Func<Type, bool> predicate)
+        private static IEnumerable<Type> FindConcreteTypes(AssemblySet assemblies, Predicate<Type> predicate)
         {
             return from type in assemblies.GetTypes()
                    where IsPublicConcreteType(type) && SatisfiesPredicate(type, predicate)
@@ -168,7 +168,7 @@ namespace Kingo.Messaging
             return type.IsPublic && type.IsClass && !type.IsAbstract;
         }
 
-        private static bool SatisfiesPredicate(Type type, Func<Type, bool> predicate)
+        private static bool SatisfiesPredicate(Type type, Predicate<Type> predicate)
         {
             return predicate == null || predicate.Invoke(type);
         }
