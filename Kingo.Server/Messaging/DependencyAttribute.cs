@@ -7,15 +7,15 @@ namespace Kingo.Messaging
     /// by the <see cref="MessageHandlerFactory" /> class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public sealed class MessageHandlerDependencyAttribute : Attribute, IDependencyConfiguration
+    public sealed class DependencyAttribute : Attribute, IDependencyConfiguration
     {
         private readonly InstanceLifetime _lifetime;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageHandlerDependencyAttribute" /> class.
+        /// Initializes a new instance of the <see cref="DependencyAttribute" /> class.
         /// </summary>
         /// <param name="lifetime">The lifetime of the dependency.</param>
-        public MessageHandlerDependencyAttribute(InstanceLifetime lifetime)
+        public DependencyAttribute(InstanceLifetime lifetime)
         {
             _lifetime = lifetime;
         }

@@ -115,7 +115,41 @@ namespace Kingo
 
         #region [====== Factory Methods ======]
 
-        private const string _DefaultSearchPattern = "*.dll";        
+        private const string _DefaultSearchPattern = "*.dll";
+
+        /// <summary>
+        /// Creates and returns a set of assemblies that are found in the directory in which the calling assembly
+        /// has been deployed.
+        /// </summary>
+        /// <param name="searchPatterns">The patterns that are used to match specified files/assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates whether or not only the top-level directory is to be searched.        
+        /// </param>
+        /// <returns>A set of assemblies that are found in the specified location(s).</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="searchPatterns"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="searchOption"/> is not a valid option.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public static AssemblySet FromCurrentDirectory(IEnumerable<string> searchPatterns, SearchOption searchOption = SearchOption.TopDirectoryOnly)
+        {
+            if (searchPatterns == null)
+            {
+                throw new ArgumentNullException("searchPatterns");
+            }
+            var assemblies =
+                from searchPattern in searchPatterns
+                select FromCurrentDirectory(searchPattern, searchOption);
+
+            return Join(assemblies);
+        }
 
         /// <summary>
         /// Creates and returns a set of assemblies that are found in the directory in which the calling assembly

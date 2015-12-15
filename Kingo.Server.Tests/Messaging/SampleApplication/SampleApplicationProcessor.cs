@@ -40,7 +40,7 @@ namespace Kingo.Messaging.SampleApplication
             var factory = new UnityFactory();
 
             factory.RegisterMessageHandlers(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
-            factory.RegisterDependencies(Assembly.GetExecutingAssembly(), null, IsRepositoryInterface);
+            factory.RegisterDependencies(Assembly.GetExecutingAssembly(), null, IsRepositoryInterface, null);
 
             return factory;
         }

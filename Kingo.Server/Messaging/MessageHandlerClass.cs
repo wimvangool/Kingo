@@ -90,7 +90,7 @@ namespace Kingo.Messaging
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
         private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>); 
         
-        internal static IEnumerable<MessageHandlerClass> RegisterMessageHandlers(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> typeSelector, MessageHandlerToConfigurationMapping configurationPerType)
+        internal static IEnumerable<MessageHandlerClass> RegisterMessageHandlers(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> typeSelector, Func<Type, IMessageHandlerConfiguration> configurationFactory)
         {
             if (assemblies == null)
             {
@@ -102,7 +102,7 @@ namespace Kingo.Messaging
             {
                 MessageHandlerClass handler;
 
-                if (TryRegisterIn(factory, type, typeSelector, configurationPerType, out handler))
+                if (TryRegisterIn(factory, type, typeSelector, configurationFactory, out handler))
                 {
                     messageHandlers.Add(handler);
                 }
@@ -110,7 +110,7 @@ namespace Kingo.Messaging
             return messageHandlers;
         }
 
-        private static bool TryRegisterIn(MessageHandlerFactory container, Type type, Predicate<Type> predicate, MessageHandlerToConfigurationMapping configurationPerType, out MessageHandlerClass handler)
+        private static bool TryRegisterIn(MessageHandlerFactory container, Type type, Predicate<Type> predicate, Func<Type, IMessageHandlerConfiguration> configurationFactory, out MessageHandlerClass handler)
         {            
             if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters || !SatisfiesPredicate(type, predicate))
             {
@@ -123,18 +123,18 @@ namespace Kingo.Messaging
                 handler = null;
                 return false;
             }
-            var configuration = DetermineMessageHandlerConfiguration(type, configurationPerType);
+            var configuration = DetermineMessageHandlerConfiguration(type, configurationFactory);
 
             handler = new MessageHandlerClass(container, type, interfaceTypes, configuration);
             handler.Register();
             return true;            
         }
 
-        private static IMessageHandlerConfiguration DetermineMessageHandlerConfiguration(Type type, MessageHandlerToConfigurationMapping configurationPerType)
+        private static IMessageHandlerConfiguration DetermineMessageHandlerConfiguration(Type type, Func<Type, IMessageHandlerConfiguration> configurationFactory)
         {
             IMessageHandlerConfiguration configuration;
 
-            if (configurationPerType == null)
+            if (configurationFactory == null || (configuration = configurationFactory.Invoke(type)) == null)
             {
                 if (TryGetMessageHandlerAttribute(type, out configuration))
                 {
@@ -142,15 +142,7 @@ namespace Kingo.Messaging
                 }
                 return MessageHandlerConfiguration.Default;
             }
-            if (configurationPerType.TryGetValue(type, out configuration))
-            {
-                return configuration;
-            }
-            if (TryGetMessageHandlerAttribute(type, out configuration))
-            {
-                return configuration;
-            }
-            return configurationPerType.DefaultConfiguration;
+            return configuration;
         }
 
         private static bool TryGetMessageHandlerAttribute(Type classType, out IMessageHandlerConfiguration attribute)

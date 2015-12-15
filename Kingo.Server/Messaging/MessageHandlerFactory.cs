@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Security;
 
 namespace Kingo.Messaging
 {
@@ -39,16 +41,99 @@ namespace Kingo.Messaging
         #region [====== MessageHandlers ======]
 
         /// <summary>
-        /// Registers all handlers found in the specified <paramref name="assemblies"/> with this factory.
-        /// </summary>
-        /// <param name="assemblies">A set of assemblies to search through.</param>
+        /// Registers all handlers that are found in the assemblies located in the current directory and
+        /// filtered by the specified <paramref name="searchPattern"/>.
+        /// </summary>        
+        /// <param name="searchPattern">A search pattern that is used to locate a set of assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates where the assemblies should be located.
+        /// </param>
+        /// <param name="typeSelector">
+        /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
+        /// </param>
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
+        /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// <paramref name="searchPattern"/> is <c>null</c>.
         /// </exception>
-        public void RegisterMessageHandlers(AssemblySet assemblies)
+        /// <exception cref="ArgumentException">
+        /// <paramref name="searchOption"/> is not a valid option.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterMessageHandlers(string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly, Predicate<Type> typeSelector = null, Func<Type, IMessageHandlerConfiguration> configurationFactory = null)
         {
-            RegisterMessageHandlers(assemblies, null);
+            if (searchPattern == null)
+            {
+                throw new ArgumentNullException("searchPattern");
+            }            
+            RegisterMessageHandlers(new [] { searchPattern }, searchOption, typeSelector, configurationFactory);
         }
+
+        /// <summary>
+        /// Registers all handlers that are found in the assemblies located in the current directory and
+        /// filtered by the specified search patterns.
+        /// </summary>        
+        /// <param name="searchPatternA">First search pattern that is used to locate a set of assemblies.</param>
+        /// <param name="searchPatternB">Second search pattern that is used to locate a set of assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates where the assemblies should be located.
+        /// </param>
+        /// <param name="typeSelector">
+        /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
+        /// </param>
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
+        /// </param>        
+        /// <exception cref="ArgumentException">
+        /// <paramref name="searchOption"/> is not a valid option.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterMessageHandlers(string searchPatternA, string searchPatternB, SearchOption searchOption = SearchOption.TopDirectoryOnly, Predicate<Type> typeSelector = null, Func<Type, IMessageHandlerConfiguration> configurationFactory = null)
+        {            
+            RegisterMessageHandlers(new[] { searchPatternA, searchPatternB }, searchOption, typeSelector, configurationFactory);
+        } 
+
+        /// <summary>
+        /// Registers all handlers that are found in the assemblies located in the current directory and
+        /// filtered by the specified <paramref name="searchPatterns"/>.
+        /// </summary>        
+        /// <param name="searchPatterns">A collection of search pattern that are used to locate multiple sets of assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates where the assemblies should be located.
+        /// </param>
+        /// <param name="typeSelector">
+        /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
+        /// </param>
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="searchPatterns"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="searchOption"/> is not a valid option.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterMessageHandlers(IEnumerable<string> searchPatterns, SearchOption searchOption = SearchOption.TopDirectoryOnly, Predicate<Type> typeSelector = null, Func<Type, IMessageHandlerConfiguration> configurationFactory = null)
+        {                        
+            RegisterMessageHandlers(AssemblySet.FromCurrentDirectory(searchPatterns, searchOption), typeSelector, configurationFactory);
+        }                
 
         /// <summary>
         /// Registers all handlers found in the specified <paramref name="assemblies"/> and satisfy
@@ -56,18 +141,23 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="assemblies">A set of assemblies to search through.</param>
         /// <param name="typeSelector">
-        /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes from the
-        /// complete set found in the specified <paramref name="assemblies"/>.
+        /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
         /// </param>
-        /// <param name="configurationPerType">
-        /// A mapping from certain <see cref="IMessageHandler{T}" /> classes to their own respective configurations.
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public void RegisterMessageHandlers(AssemblySet assemblies, Predicate<Type> typeSelector, MessageHandlerToConfigurationMapping configurationPerType = null)
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterMessageHandlers(AssemblySet assemblies, Predicate<Type> typeSelector = null, Func<Type, IMessageHandlerConfiguration> configurationFactory = null)
         {
-            foreach (var messageHandler in MessageHandlerClass.RegisterMessageHandlers(this, assemblies, typeSelector, configurationPerType))
+            foreach (var messageHandler in MessageHandlerClass.RegisterMessageHandlers(this, assemblies, typeSelector, configurationFactory))
             {
                 _messageHandlers.Add(messageHandler);
             }          
@@ -98,22 +188,110 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== Dependencies ======]
+        #region [====== Repositories ======]
+
+        /// <summary>        
+        /// Registers all repository types that are found in the assemblies located in the current directory and
+        /// filtered by the specified <paramref name="searchPattern"/>.
+        /// </summary>
+        /// <param name="searchPattern">A search pattern that is used to locate a set of assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates where the assemblies should be located.
+        /// </param>
+        /// <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a dependency based on its type.
+        /// </param>        
+        /// <exception cref="ArgumentException">
+        /// <paramref name="searchOption"/> is not a valid option.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterRepositories(string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly, string postfix = null, Func<Type, IDependencyConfiguration> configurationFactory = null)
+        {
+            RegisterRepositories(new [] { searchPattern }, searchOption, postfix, configurationFactory);
+        }
+
+        /// <summary>        
+        /// Registers all repository types that are found in the assemblies located in the current directory and
+        /// filtered by the specified search patterns.
+        /// </summary>
+        /// <param name="searchPatternA">First search pattern that is used to locate a set of assemblies.</param>
+        /// <param name="searchPatternB">Second search pattern that is used to locate a set of assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates where the assemblies should be located.
+        /// </param>
+        /// <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a dependency based on its type.
+        /// </param>        
+        /// <exception cref="ArgumentException">
+        /// <paramref name="searchOption"/> is not a valid option.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterRepositories(string searchPatternA, string searchPatternB, SearchOption searchOption = SearchOption.TopDirectoryOnly, string postfix = null, Func<Type, IDependencyConfiguration> configurationFactory = null)
+        {
+            RegisterRepositories(new [] { searchPatternA, searchPatternB }, searchOption, postfix, configurationFactory);
+        }
+
+        /// <summary>        
+        /// Registers all repository types that are found in the assemblies located in the current directory and
+        /// filtered by the specified <paramref name="searchPatterns"/>.
+        /// </summary>
+        /// <param name="searchPatterns">A collection of search patterns that are used to locate multiple sets of assemblies.</param>
+        /// <param name="searchOption">
+        /// Indicates where the assemblies should be located.
+        /// </param>
+        /// <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a dependency based on its type.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="searchPatterns"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="searchOption"/> is not a valid option.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterRepositories(IEnumerable<string> searchPatterns, SearchOption searchOption = SearchOption.TopDirectoryOnly, string postfix = null, Func<Type, IDependencyConfiguration> configurationFactory = null)
+        {
+            RegisterRepositories(AssemblySet.FromCurrentDirectory(searchPatterns, searchOption), postfix, configurationFactory);
+        }
 
         /// <summary>
         /// Registers all repository interface types that are found inside the specified <paramref name="assemblies"/> with their implementations.
         /// </summary>
         /// <param name="assemblies">A set of assemblies to search through.</param>
         /// <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
-        /// <param name="configurationPerType">
-        /// A mapping from certain dependencies to their own respective configurations.
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a dependency based on its type.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public void RegisterRepositories(AssemblySet assemblies, string postfix = null, DependencyToConfigurationMapping configurationPerType = null)
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterRepositories(AssemblySet assemblies, string postfix = null, Func<Type, IDependencyConfiguration> configurationFactory = null)
         {
-            RegisterDependencies(assemblies, null, type => IsRepositoryInterface(type, postfix), configurationPerType);
+            RegisterDependencies(assemblies, null, type => IsRepositoryInterface(type, postfix), configurationFactory);
         }
 
         private static bool IsRepositoryInterface(Type type, string postfix)
@@ -121,62 +299,58 @@ namespace Kingo.Messaging
             return type.Name.EndsWith(postfix ?? "Repository");
         }
 
-        /// <summary>
-        /// Registers a set of types that are found in the InterfaceLayer and Data Access Layer as dependencies
-        /// and are marked with the <see cref="MessageHandlerDependencyAttribute"/>.
-        /// </summary>      
-        /// <param name="assemblies">A set of assemblies to search through.</param>  
-        /// <param name="configurationPerType">
-        /// A mapping from certain dependencies to their own respective configurations.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="assemblies"/> is <c>null</c>.
-        /// </exception>
-        public void RegisterDependencies(AssemblySet assemblies, DependencyToConfigurationMapping configurationPerType = null)
-        {
-            RegisterDependencies(assemblies, null, configurationPerType);
-        }
+        #endregion
+
+        #region [====== Dependencies ======]            
 
         /// <summary>
-        /// Registers a set of types that are found in the InterfaceLayer and Data Access Layer as dependencies
-        /// and are marked with the <see cref="MessageHandlerDependencyAttribute"/>.
+        /// Registers a set of types that are found in the specified assembies
+        /// and are selected by the specified <paramref name="concreteTypePredicate"/>.
         /// </summary>
         /// <param name="assemblies">A set of assemblies to search through.</param>
         /// <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>    
-        /// <param name="configurationPerType">
-        /// A mapping from certain dependencies to their own respective configurations.
-        /// </param>   
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a dependency based on its type.
+        /// </param>  
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// <paramref name="assemblies"/> or <paramref name="concreteTypePredicate"/> is <c>null</c>.
         /// </exception>
-        public void RegisterDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory = null)
         {
-            DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, configurationPerType);
+            DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, configurationFactory);
         }        
 
         /// <summary>
-        /// Registers a set of types that are found in the InterfaceLayer and Data Access Layer as dependencies that are
-        /// implementations of certain abstract types (interfaces or abstract classes) that are found in the Application Layer
-        /// or Domain Layer and are marked with the <see cref="MessageHandlerDependencyAttribute"/>.
+        /// Registers a set of abstract types that are mapped to a set of concrete types. Both sets are found in the specified assembies
+        /// and are selected by the specified <paramref name="concreteTypePredicate"/> and <paramref name="abstractTypePredicate"/>.
         /// </summary>
         /// <param name="assemblies">A set of assemblies to search through.</param>
-        /// <param name="concreteTypePredicate">A predicate that identifies which concrete types should be registered as dependencies.</param>
+        /// <param name="concreteTypePredicate">A predicate that identifies which concrete types should be registered as dependencies (optional).</param>
         /// <param name="abstractTypePredicate">A predicate that identifies which abstract types should be registered as dependencies.</param>
-        /// <param name="configurationPerType">
-        /// A mapping from certain dependencies to their own respective configurations.
+        /// <param name="configurationFactory">
+        /// Optional delegate that can be used to configure a dependency based on its type.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="assemblies"/> is <c>null</c>.
+        /// <paramref name="assemblies"/> or <paramref name="abstractTypePredicate"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// One or more types specified by <paramref name="abstractTypePredicate"/> match with multiple concrete implementations.
+        /// </exception>        
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
         /// </exception>
-        /// <remarks>
-        /// By default, all types will be registered with a <see cref="InstanceLifetime.PerUnitOfWork" /> lifetime.
-        /// </remarks>
-        public void RegisterDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType = null)
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public void RegisterDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory = null)
         {
-            DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, abstractTypePredicate, configurationPerType);
+            DependencyClass.RegisterDependencies(this, assemblies, concreteTypePredicate, abstractTypePredicate, configurationFactory);
         }        
 
         #endregion

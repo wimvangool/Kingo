@@ -82,52 +82,60 @@ namespace Kingo.Messaging
 
         #region [====== Static Members ======]
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {            
             if (assemblies == null)
             {
                 throw new ArgumentNullException("assemblies");
             }
-            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, configurationPerType))
+            if (concreteTypePredicate == null)
+            {
+                throw new ArgumentNullException("concreteTypePredicate");
+            }
+            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, configurationFactory))
             {
                 dependency.RegisterIn(factory);
             }
         }
 
-        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {
             return from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)   
-                   let configuration = DetermineConfigurationOf(concreteType, configurationPerType)    
+                   let configuration = DetermineConfigurationOf(concreteType, configurationFactory)    
                    select new DependencyClass(concreteType, null, configuration);
         }
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {
             if (assemblies == null)
             {
                 throw new ArgumentNullException("assemblies");
+            }           
+            if (abstractTypePredicate == null)
+            {
+                throw new ArgumentNullException("abstractTypePredicate");
             }
-            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, abstractTypePredicate, configurationPerType))
+            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, abstractTypePredicate, configurationFactory))
             {
                 dependency.RegisterIn(factory);
             }
         }
 
-        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, DependencyToConfigurationMapping configurationPerType)
+        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {            
             return from abstractType in FindAbstractTypes(assemblies, abstractTypePredicate)
                    from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)                   
                    where abstractType.IsAssignableFrom(concreteType)
                    group concreteType by abstractType into typeMapping
                    where typeMapping.Any()
-                   select CreateDependencyClass(typeMapping, configurationPerType);                   
-        }        
+                   select CreateDependencyClass(typeMapping, configurationFactory);                   
+        }
 
-        private static DependencyClass CreateDependencyClass(IGrouping<Type, Type> typeMapping, DependencyToConfigurationMapping configurationPerType)
+        private static DependencyClass CreateDependencyClass(IGrouping<Type, Type> typeMapping, Func<Type, IDependencyConfiguration> configurationFactory)
         {            
             var abstractType = typeMapping.Key;
             var concreteType = GetConcreteType(typeMapping);
-            var configuration = DetermineConfigurationOf(concreteType, configurationPerType);
+            var configuration = DetermineConfigurationOf(concreteType, configurationFactory);
 
             return new DependencyClass(concreteType, abstractType, configuration);
         }
@@ -173,34 +181,29 @@ namespace Kingo.Messaging
             return predicate == null || predicate.Invoke(type);
         }
 
-        private static IDependencyConfiguration DetermineConfigurationOf(Type concreteType, DependencyToConfigurationMapping configurationPerType)
+        private static IDependencyConfiguration DetermineConfigurationOf(Type concreteType, Func<Type, IDependencyConfiguration> configurationFactory)
         {
+            // If no factory is specified or the provided factory does not return a configuration for this type,
+            // we try to obtain the configuration through the DependencyAttribute. If this attribute is
+            // not declared on the specified type, we fall back to the default configuration.
             IDependencyConfiguration configuration;
 
-            if (configurationPerType == null)
+            if (configurationFactory == null || (configuration = configurationFactory.Invoke(concreteType)) == null)
             {
                 if (TryGetDependencyAttribute(concreteType, out configuration))
                 {
                     return configuration;
                 }
                 return DependencyConfiguration.Default;
-            }
-            if (configurationPerType.TryGetValue(concreteType, out configuration))
-            {
-                return configuration;
-            }
-            if (TryGetDependencyAttribute(concreteType, out configuration))
-            {
-                return configuration;
-            }
-            return configurationPerType.DefaultConfiguration;
+            }            
+            return configuration;
         }
 
         private static bool TryGetDependencyAttribute(Type concreteType, out IDependencyConfiguration configuration)
         {
             configuration = concreteType
-                .GetCustomAttributes(typeof(MessageHandlerDependencyAttribute), false)
-                .Cast<MessageHandlerDependencyAttribute>()
+                .GetCustomAttributes(typeof(DependencyAttribute), false)
+                .Cast<DependencyAttribute>()
                 .SingleOrDefault();
 
             return configuration != null;

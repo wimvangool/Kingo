@@ -7,7 +7,7 @@ using Kingo.Threading;
 
 namespace Kingo.Messaging.SampleApplication
 {
-    [MessageHandlerDependency(InstanceLifetime.Singleton)]
+    [Dependency(InstanceLifetime.Singleton)]
     public sealed class ShoppingCartRepository : SnapshotRepository<Guid, int, ShoppingCart>, IShoppingCartRepository
     {        
         private readonly Dictionary<Guid, ShoppingCart> _carts;
