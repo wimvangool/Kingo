@@ -223,6 +223,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot complete this scope because it has already been completed..
+        /// </summary>
+        internal static string UnitOfWorkScope_AlreadyCompleted {
+            get {
+                return ResourceManager.GetString("UnitOfWorkScope_AlreadyCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto-increment of type &apos;{0}&apos; is not supported. Please override AggregateRoot&lt;,&gt;.NextVersion() or change the version type of the aggregate..
         /// </summary>
         internal static string Version_IncrementNotSupported {

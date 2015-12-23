@@ -174,4 +174,7 @@
   <data name="Version_IncrementNotSupported" xml:space="preserve">
     <value>Auto-increment of type '{0}' is not supported. Please override AggregateRoot&lt;,&gt;.NextVersion() or change the version type of the aggregate.</value>
   </data>
+  <data name="UnitOfWorkScope_AlreadyCompleted" xml:space="preserve">
+    <value>Cannot complete this scope because it has already been completed.</value>
+  </data>
 </root>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Resources;
 using Kingo.Threading;
 
 namespace Kingo.Messaging
@@ -10,7 +11,8 @@ namespace Kingo.Messaging
     public sealed class UnitOfWorkScope : IDisposable
     {
         private readonly ContextScope<UnitOfWorkContext> _scope;
-        private readonly bool _isContextOwner;        
+        private readonly bool _isContextOwner;
+        private bool _hasCompleted;
         private bool _isDisposed;                            
                 
         internal UnitOfWorkScope(ContextScope<UnitOfWorkContext> scope, bool isContextOwner)
@@ -31,8 +33,19 @@ namespace Kingo.Messaging
             {
                 throw NewScopeAlreadyDisposedException();
             }
-            await _scope.Value.FlushAsync();
-        }  
+            if (_hasCompleted)
+            {
+                throw NewScopeAlreadyCompletedException();
+            }
+            try
+            {
+                await _scope.Value.FlushAsync();
+            }
+            finally
+            {
+                _hasCompleted = true;
+            }                        
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -61,7 +74,12 @@ namespace Kingo.Messaging
         private static Exception NewScopeAlreadyDisposedException()
         {
             return new ObjectDisposedException(typeof(UnitOfWorkScope).Name);
-        }                                           
+        }
+
+        private static Exception NewScopeAlreadyCompletedException()
+        {
+            return new InvalidOperationException(ExceptionMessages.UnitOfWorkScope_AlreadyCompleted);
+        }
     }
 }
 
