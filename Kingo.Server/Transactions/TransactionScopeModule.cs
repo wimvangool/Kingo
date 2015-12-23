@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Transactions;
+using Kingo.Messaging;
 
-namespace Kingo.Messaging
+namespace Kingo.Transactions
 {
     /// <summary>
     /// Represents a module that creates a <see cref="TransactionScope" /> before calling the next handler.

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Messaging;
 
-namespace Kingo.Messaging
+namespace Kingo.Security
 {
     /// <summary>
     /// This module is used to authorize any further processing of messages based on the current thread's identity.

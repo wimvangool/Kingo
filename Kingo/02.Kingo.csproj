@@ -153,7 +153,7 @@
     <Compile Include="Messaging\ErrorInfoBuilder.cs" />
     <Compile Include="Messaging\FunctionalException.cs" />
     <Compile Include="Messaging\InvalidMessageException.cs" />
-    <Compile Include="Messaging\AuthorizationException.cs" />
+    <Compile Include="Security\AuthorizationException.cs" />
     <Compile Include="Messaging\NullValidator.T1.cs" />
     <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>

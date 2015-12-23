@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Transactions;
+using Kingo.Messaging;
 using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Messaging.Modules
+namespace Kingo.Transactions
 {
     [TestClass]
     public sealed class TransactionScopeModuleTest

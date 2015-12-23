@@ -1,6 +1,6 @@
 ﻿using System.Transactions;
 
-namespace Kingo.Messaging
+namespace Kingo.Transactions
 {
     /// <summary>
     /// When implemented by a class, represents a factory for <see cref="TransactionScope">TransactionScopes</see>.

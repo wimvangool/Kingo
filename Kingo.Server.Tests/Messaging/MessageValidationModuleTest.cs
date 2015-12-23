@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace Kingo.Messaging.Modules
+namespace Kingo.Messaging
 {
     [TestClass]
     public sealed class MessageValidationModuleTest

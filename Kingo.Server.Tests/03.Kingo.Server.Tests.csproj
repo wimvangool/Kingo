@@ -74,7 +74,7 @@
     <Compile Include="Messaging\MessageStub.cs" />
     <Compile Include="Messaging\MessageOne.cs" />
     <Compile Include="Messaging\MessageTwo.cs" />
-    <Compile Include="Messaging\Modules\ClockModuleTest.cs" />
+    <Compile Include="Clocks\ClockModuleTest.cs" />
     <Compile Include="Messaging\Domain\RepositoryStub.cs" />
     <Compile Include="Messaging\Domain\AggregateStub.cs" />
     <Compile Include="Messaging\Domain\RepositoryTest.cs" />
@@ -83,9 +83,9 @@
     <Compile Include="Messaging\MessageProcessorBusTest.cs" />
     <Compile Include="Messaging\MessageProcessorStub.cs" />
     <Compile Include="Messaging\MessageToStrategyMappingTest.cs" />
-    <Compile Include="Messaging\Modules\MessageValidationModuleTest.cs" />
+    <Compile Include="Messaging\MessageValidationModuleTest.cs" />
     <Compile Include="Messaging\SampleApplication\SampleApplicationProcessor.cs" />
-    <Compile Include="Messaging\Modules\TransactionScopeModuleTest.cs" />
+    <Compile Include="Transactions\TransactionScopeModuleTest.cs" />
     <Compile Include="Messaging\MessageHandlerClassTest.cs" />
     <Compile Include="Messaging\MessageHandlerFactoryStub.cs" />
     <Compile Include="Messaging\MessageProcessorTest.cs" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Transactions;
 
-namespace Kingo.Messaging
+namespace Kingo.Transactions
 {
     /// <summary>
     /// This attribute can be applied to messages to specify how a <see cref="TransactionScope" /> should be created.

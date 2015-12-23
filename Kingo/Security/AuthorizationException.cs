@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Kingo.Messaging;
 
-namespace Kingo.Messaging
+namespace Kingo.Security
 {
     /// <summary>
     /// This exception is thrown when the current user, typically the identity of the sender of a message,

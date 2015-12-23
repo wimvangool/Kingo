@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Clocks;
+using Kingo.Messaging;
 using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Messaging.Modules
+namespace Kingo.Clocks
 {
     [TestClass]
     public sealed class ClockModuleTest
