@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Kingo.Messaging
     /// </summary>    
     public class MessageProcessor : IMessageProcessor
     {        
+        private static readonly ConcurrentDictionary<Type, MessageHandlerFactory> _MessageHandlerFactories = new ConcurrentDictionary<Type, MessageHandlerFactory>();
         private readonly IMessageProcessorBus _domainEventBus;        
 
         /// <summary>
@@ -34,9 +36,20 @@ namespace Kingo.Messaging
         /// <summary>
         /// Returns the <see cref="MessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected internal virtual MessageHandlerFactory MessageHandlerFactory
+        protected internal MessageHandlerFactory MessageHandlerFactory
         {
-            get { return null; }
+            get { return _MessageHandlerFactories.GetOrAdd(GetType(), type => CreateMessageHandlerFactory()); }
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="MessageHandlerFactory" /> for this processor.
+        /// </summary>
+        /// <returns>
+        /// A new <see cref="MessageHandlerFactory" /> to be used by this processor,
+        /// or <c>null</c> if this processor does not use any factory.</returns>
+        protected virtual MessageHandlerFactory CreateMessageHandlerFactory()
+        {
+            return null;
         }
 
         /// <inheritdoc />

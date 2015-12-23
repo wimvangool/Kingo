@@ -10,12 +10,14 @@ namespace Kingo.Messaging
     public sealed class MessageProcessorTest
     {        
         #region [====== Setup and Teardown ======]
-        
+
+        private SampleApplicationProcessor _processor;
         private Random _random;
 
         [TestInitialize]
         public void Setup()
-        {                                   
+        {                       
+            _processor = new SampleApplicationProcessor();
             _random = new Random();
         }                      
 
@@ -31,11 +33,11 @@ namespace Kingo.Messaging
 
         [TestMethod]
         public void MessagePointer_TakesValueOfTheMessageThatIsBeingHandled()
-        {
-            MessageStub messageA = new MessageStub();
+        {            
+            var messageA = new MessageStub();
             object messageB = null;
             
-            SampleApplicationProcessor.Instance.Handle(messageA, message =>
+            _processor.Handle(messageA, message =>
             {                
                 messageB = MessageProcessor.CurrentMessage.Message;
             });
@@ -48,14 +50,14 @@ namespace Kingo.Messaging
                 
         [TestMethod]
         public void MessagePointer_ReturnsEntireHistoryOfMessages_IfMessagesAreHandledInANestedFashion()
-        {
+        {            
             var messageA = new MessageStub();
             var messageB = new MessageStub();
             MessagePointer messagePointer = null;
 
-            SampleApplicationProcessor.Instance.Handle(messageA, a =>
+            _processor.Handle(messageA, a =>
             {
-                SampleApplicationProcessor.Instance.Handle(messageB, b =>
+                _processor.Handle(messageB, b =>
                 {
                     messagePointer = MessageProcessor.CurrentMessage;
                 });
@@ -73,13 +75,13 @@ namespace Kingo.Messaging
 
         [TestMethod]
         public void CreateShoppingCart_PublishesShoppingCartCreated_IfCartWasCreated()
-        {
-            Guid shoppingCartId = Guid.NewGuid();
+        {            
+            var shoppingCartId = Guid.NewGuid();
             ShoppingCartCreatedEvent createdEvent = null;
 
-            using (SampleApplicationProcessor.Instance.EventBus.Connect<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
+            using (_processor.EventBus.Connect<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
             {
-                SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
+                _processor.Handle(new CreateShoppingCartCommand
                 {
                     ShoppingCartId = shoppingCartId
                 });
@@ -94,11 +96,11 @@ namespace Kingo.Messaging
         {
             var shoppingCartId = Guid.NewGuid();
 
-            SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
+            _processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            SampleApplicationProcessor.Instance.HandleAsync(new CreateShoppingCartCommand
+            _processor.HandleAsync(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             }).WaitAndHandle<CommandExecutionException>();                       
@@ -108,9 +110,9 @@ namespace Kingo.Messaging
         public void AddProductToCart_PublishesProductAddedToChart_IfProductWasNotAddedToCartBefore()
         {
             // Ensure the cart exists before any product are added to it.
-            Guid shoppingCartId = Guid.NewGuid();                        
+            var shoppingCartId = Guid.NewGuid();                        
 
-            SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
+            _processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
@@ -120,9 +122,9 @@ namespace Kingo.Messaging
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);
 
-            using (SampleApplicationProcessor.Instance.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (_processor.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {                
-                SampleApplicationProcessor.Instance.Handle(new AddProductToCartCommand
+                _processor.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,
@@ -145,11 +147,11 @@ namespace Kingo.Messaging
             int productId = _random.Next(0, 100);
             int quantity = _random.Next(0, 4);            
 
-            SampleApplicationProcessor.Instance.Handle(new CreateShoppingCartCommand
+            _processor.Handle(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
             });
-            SampleApplicationProcessor.Instance.Handle(new AddProductToCartCommand
+            _processor.Handle(new AddProductToCartCommand
             {
                 ShoppingCartId = shoppingCartId,
                 ProductId = productId,
@@ -160,9 +162,9 @@ namespace Kingo.Messaging
             ProductAddedToCartEvent productAddedEvent = null;
             int extraQuantity = _random.Next(3, 6);
 
-            using (SampleApplicationProcessor.Instance.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
+            using (_processor.EventBus.Connect<ProductAddedToCartEvent>(e => productAddedEvent = e, true))
             {
-                SampleApplicationProcessor.Instance.Handle(new AddProductToCartCommand
+                _processor.Handle(new AddProductToCartCommand
                 {
                     ShoppingCartId = shoppingCartId,
                     ProductId = productId,

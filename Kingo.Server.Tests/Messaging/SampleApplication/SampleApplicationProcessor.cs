@@ -7,35 +7,8 @@ namespace Kingo.Messaging.SampleApplication
     /// Represents a <see cref="MessageProcessor" />.
     /// </summary>
     public sealed class SampleApplicationProcessor : MessageProcessor
-    {
-        private readonly UnityFactory _messageHandlerFactory;
-
-        private SampleApplicationProcessor(UnityFactory messageHandlerFactory)
-        {
-            _messageHandlerFactory = messageHandlerFactory;
-        }
-
-        protected internal override MessageHandlerFactory MessageHandlerFactory
-        {
-            get { return _messageHandlerFactory; }
-        }
-
-        private static readonly Lazy<SampleApplicationProcessor> _Instance = new Lazy<SampleApplicationProcessor>(CreateProcessor, true);
-
-        /// <summary>
-        /// Returns the instance of <see cref="SampleApplicationProcessor" />.
-        /// </summary>
-        public static SampleApplicationProcessor Instance
-        {
-            get { return _Instance.Value; }
-        }
-
-        private static SampleApplicationProcessor CreateProcessor()
-        {
-            return new SampleApplicationProcessor(CreateMessageHandlerFactory());
-        }
-        
-        private static UnityFactory CreateMessageHandlerFactory()
+    {                
+        protected override MessageHandlerFactory CreateMessageHandlerFactory()
         {
             var factory = new UnityFactory();
 

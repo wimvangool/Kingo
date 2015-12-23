@@ -2,16 +2,9 @@
 {
     internal sealed class MessageProcessorStub : MessageProcessor
     {
-        private readonly UnityFactory _messageHandlerFactory;
-
-        internal MessageProcessorStub()
+        protected override MessageHandlerFactory CreateMessageHandlerFactory()
         {
-            _messageHandlerFactory = new UnityFactory();
+            return new UnityFactory();
         }
-
-        protected internal override MessageHandlerFactory MessageHandlerFactory
-        {
-            get { return _messageHandlerFactory; }
-        }       
     }
 }

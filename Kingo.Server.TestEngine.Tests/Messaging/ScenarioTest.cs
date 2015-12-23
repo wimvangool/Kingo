@@ -13,10 +13,17 @@ namespace Kingo.Messaging
         #region [====== Nested Types ======]
 
         private abstract class ScenarioUnderTest : Scenario<TheCommand>
-        {                                                     
+        {
+            private readonly ScenarioTestProcessor _processor;
+
+            protected ScenarioUnderTest()
+            {
+                _processor = new ScenarioTestProcessor();
+            }
+
             protected override IMessageProcessor MessageProcessor
             {
-                get { return ScenarioTestProcessor.Instance; }
+                get { return _processor; }
             }
 
             protected override Exception NewScenarioFailedException(string message)
