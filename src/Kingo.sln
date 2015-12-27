@@ -1,0 +1,80 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{002BBBBE-42B2-4618-B560-509798888BE6}"
+	ProjectSection(SolutionItems) = preProject
+		AssemblyInfo.solution.cs = AssemblyInfo.solution.cs
+		Kingo.snk = Kingo.snk
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.Kingo.Client", "A.Kingo.Client", "{C3F19C5E-9EAD-4324-9B07-129C32CFA05B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.Kingo.Server", "B.Kingo.Server", "{72205C90-C23B-4086-8580-050201371032}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Kingo.Server.TestEngine.Tests", "Kingo.Server.TestEngine.Tests\01.Kingo.Server.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Kingo.Server.TestEngine", "Kingo.Server.TestEngine\02.Kingo.Server.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Kingo.Server.Tests", "Kingo.Server.Tests\03.Kingo.Server.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Kingo.Server", "Kingo.Server\04.Kingo.Server.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.Kingo", "C.Kingo", "{9A9694D3-C449-4492-B7EF-9AD0E3E8034C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Kingo.Tests", "Kingo.Tests\01.Kingo.Tests.csproj", "{9697EACA-8E8F-451B-AE46-CF081559E0ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Kingo", "Kingo\02.Kingo.csproj", "{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6739EFCD-B334-47F1-88E1-44CAE51B4E46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4FE972F0-2046-4039-9461-45D0B7E6229F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FE972F0-2046-4039-9461-45D0B7E6229F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FE972F0-2046-4039-9461-45D0B7E6229F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FE972F0-2046-4039-9461-45D0B7E6229F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA31C09F-6319-484B-96EC-88BF3C3FDB81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA31C09F-6319-484B-96EC-88BF3C3FDB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA31C09F-6319-484B-96EC-88BF3C3FDB81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA31C09F-6319-484B-96EC-88BF3C3FDB81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{303380DB-4167-4BB0-8B78-63C959B65C4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{757D77D3-7B32-4F21-9617-88274D50B517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4FE972F0-2046-4039-9461-45D0B7E6229F} = {72205C90-C23B-4086-8580-050201371032}
+		{FA31C09F-6319-484B-96EC-88BF3C3FDB81} = {72205C90-C23B-4086-8580-050201371032}
+		{303380DB-4167-4BB0-8B78-63C959B65C4B} = {72205C90-C23B-4086-8580-050201371032}
+		{757D77D3-7B32-4F21-9617-88274D50B517} = {72205C90-C23B-4086-8580-050201371032}
+		{9697EACA-8E8F-451B-AE46-CF081559E0ED} = {9A9694D3-C449-4492-B7EF-9AD0E3E8034C}
+		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0} = {9A9694D3-C449-4492-B7EF-9AD0E3E8034C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
+	EndGlobalSection
+	GlobalSection(TestsCaseManagementSettings) = postSolution
+		CategoryFile = YellowFlare.Cqrs.vsmdi
+	EndGlobalSection
+EndGlobal

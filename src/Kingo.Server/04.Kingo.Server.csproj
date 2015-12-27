@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{757D77D3-7B32-4F21-9617-88274D50B517}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kingo</RootNamespace>
+    <AssemblyName>Kingo.Server</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Kingo.Server.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="Messaging\DependencyConfiguration.cs" />
+    <Compile Include="Messaging\Domain\Aggregate.T1.cs" />
+    <Compile Include="Messaging\Domain\AggregateSet.T1.cs" />
+    <Compile Include="Messaging\Domain\DomainEventStream.T2.cs" />
+    <Compile Include="Messaging\Domain\DuplicateKeyException.T2.cs" />
+    <Compile Include="Messaging\Domain\EventStreamRepository.T3.cs" />
+    <Compile Include="Messaging\Domain\IRepository.T2.cs" />
+    <Compile Include="Messaging\Domain\SnapshotRepository.T3.cs" />
+    <Compile Include="Messaging\ClassAndMethodAttributeProvider.cs" />
+    <Compile Include="Messaging\Domain\AggregateNotFoundByKeyException.T2.cs" />
+    <Compile Include="Messaging\Domain\Entity.T1.cs" />
+    <Compile Include="Messaging\EmptySequence.cs" />
+    <Compile Include="Messaging\IDependencyConfiguration.cs" />
+    <Compile Include="Messaging\IMessageHandlerOrQuery.cs" />
+    <Compile Include="Messaging\IMessageHandlerConfiguration.cs" />
+    <Compile Include="Messaging\IMessageSequence.cs" />
+    <Compile Include="Messaging\InvalidEventException.cs" />
+    <Compile Include="Messaging\MessageHandlerConfiguration.cs" />
+    <Compile Include="Messaging\MessageHandlerDispatcher.cs" />
+    <Compile Include="Messaging\MessageHandlerInstance.T1.cs" />
+    <Compile Include="Messaging\MessageSequence.cs" />
+    <Compile Include="Messaging\MessageSequenceConcatenation.cs" />
+    <Compile Include="Messaging\MessageSequenceNode.T1.cs" />
+    <Compile Include="Messaging\MessageSequencePair.cs" />
+    <Compile Include="Messaging\MessageToStrategyMapping.cs" />
+    <Compile Include="Clocks\ClockModule.cs" />
+    <Compile Include="Messaging\IMessageToStrategyMapping.T1.cs" />
+    <Compile Include="Messaging\IQuery.T1.cs" />
+    <Compile Include="Messaging\DependencyAttribute.cs" />
+    <Compile Include="Messaging\IMessageHandler.cs" />
+    <Compile Include="Messaging\MessageHandler.cs" />
+    <Compile Include="Messaging\MessageHandler.T1.cs" />
+    <Compile Include="Messaging\MessageHandlerModule.cs" />
+    <Compile Include="Messaging\MessageHandlerModule.T1.cs" />
+    <Compile Include="Messaging\MessageHandlerPipeline.cs" />
+    <Compile Include="Messaging\MessageHandlerWrapper.T1.cs" />
+    <Compile Include="Messaging\MessageProcessorPipeline.T1.cs" />
+    <Compile Include="Messaging\MessageSources.cs" />
+    <Compile Include="Messaging\MessageHandlerDispatcher.T1.cs" />
+    <Compile Include="Messaging\MessageToStrategyMapping.T1.cs" />
+    <Compile Include="Messaging\Query.T1.cs" />
+    <Compile Include="Messaging\QueryDispatcherModule.T1.cs" />
+    <Compile Include="Messaging\QueryModule.cs" />
+    <Compile Include="Messaging\QueryModule.T1.cs" />
+    <Compile Include="Messaging\QueryPipeline.cs" />
+    <Compile Include="Messaging\QueryWrapper.T2.cs" />
+    <Compile Include="Transactions\ITransactionScopeFactory.cs" />
+    <Compile Include="Transactions\TransactionScopeAttribute.cs" />
+    <Compile Include="Transactions\TransactionScopeFactory.cs" />
+    <Compile Include="Transactions\TransactionScopeModule.cs" />
+    <Compile Include="Messaging\Query.T2.cs" />
+    <Compile Include="AssemblySet.cs" />
+    <Compile Include="Messaging\MessageHandlerDelegate.T1.cs" />
+    <Compile Include="CompositeConnection.cs" />
+    <Compile Include="Messaging\DependencyClass.cs" />
+    <Compile Include="Messaging\Domain\AggregateNotFoundException.cs" />
+    <Compile Include="Messaging\Domain\EventBuffer.T3.cs" />
+    <Compile Include="Messaging\Domain\AggregateRoot.T2.cs" />
+    <Compile Include="Messaging\MessageHandlerDelegate.T2.cs" />
+    <Compile Include="Messaging\IMessageProcessorBusConnection.cs" />
+    <Compile Include="Messaging\IQuery.T2.cs" />
+    <Compile Include="Messaging\MessageHandlerDecorator.T1.cs" />
+    <Compile Include="Messaging\MessageValidationModule.cs" />
+    <Compile Include="Messaging\Domain\Repository.T3.cs" />
+    <Compile Include="Messaging\Domain\AggregateEventStream.T2.cs" />
+    <Compile Include="Messaging\Domain\IEventBuffer.T2.cs" />
+    <Compile Include="Messaging\Domain\IReadableEventStream.T2.cs" />
+    <Compile Include="Messaging\Domain\IWritableEventStream.T2.cs" />
+    <Compile Include="Messaging\Domain\MemoryEventStream.T2.cs" />
+    <Compile Include="Messaging\EventBuffer.T1.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="IConnection.cs" />
+    <Compile Include="Messaging\IMessageHandler.T1.cs" />
+    <Compile Include="Messaging\IMessageProcessor.cs" />
+    <Compile Include="Messaging\IMessageProcessorBus.cs" />
+    <Compile Include="Messaging\InstanceLifetime.cs" />
+    <Compile Include="Messaging\MessageHandlerAttribute.cs" />
+    <Compile Include="Messaging\MessageHandlerClass.cs" />
+    <Compile Include="Messaging\MessageHandlerFactory.cs" />
+    <Compile Include="Messaging\MessageProcessor.cs" />
+    <Compile Include="Messaging\MessageProcessorBus.cs" />
+    <Compile Include="Messaging\MessageProcessorBusConnection.T1.cs" />
+    <Compile Include="Messaging\MessagePointer.cs" />
+    <Compile Include="Messaging\DependencyCacheEntry.T1.cs" />
+    <Compile Include="Messaging\DomainEventBus.cs" />
+    <Compile Include="Messaging\IEventBuffer.cs" />
+    <Compile Include="Messaging\IDependencyCache.cs" />
+    <Compile Include="Messaging\IDependencyCacheEntry.T1.cs" />
+    <Compile Include="Messaging\IDomainEventBus.cs" />
+    <Compile Include="Messaging\UnitOfWorkController.cs" />
+    <Compile Include="Messaging\IUnitOfWork.cs" />
+    <Compile Include="Messaging\UnitOfWorkContext.cs" />
+    <Compile Include="Messaging\DependencyCache.cs" />
+    <Compile Include="Messaging\UnitOfWorkScope.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootVersion.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Kingo.snk">
+      <Link>Properties\Kingo.snk</Link>
+    </None>
+    <None Include="05.BuildingBlocks.Server.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Kingo\02.Kingo.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>02.Kingo</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
