@@ -7,8 +7,7 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the key of this entity.</typeparam>
     [Serializable]
-    public abstract class Entity<TKey> : IKeyedObject<TKey>
-        where TKey : struct, IEquatable<TKey>
+    public abstract class Entity<TKey> : IKeyedObject<TKey>        
     {        
         #region [====== Key ======]
 

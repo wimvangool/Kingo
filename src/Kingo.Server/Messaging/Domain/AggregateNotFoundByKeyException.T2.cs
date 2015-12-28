@@ -10,7 +10,7 @@ namespace Kingo.Messaging.Domain
     /// </summary>    
     /// <typeparam name="TKey">Type of the key of the aggregate.</typeparam>
     [Serializable]
-    public class AggregateNotFoundByKeyException<TKey> : AggregateNotFoundException where TKey : struct, IEquatable<TKey>
+    public class AggregateNotFoundByKeyException<TKey> : AggregateNotFoundException
     {
         private const string _AggregateKeyKey = "_aggregateKey";
         private readonly TKey _aggregateKey;        
@@ -22,11 +22,15 @@ namespace Kingo.Messaging.Domain
         /// <param name="aggregateKey">Key of the aggregate that was not found.</param>
         /// <param name="message">Message of the exception.</param>  
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// <paramref name="aggregateType" /> or <paramref name="aggregateKey"/> is <c>null</c>.
         /// </exception>      
         public AggregateNotFoundByKeyException(Type aggregateType, TKey aggregateKey, string message)
             : base(aggregateType, message)
         {
+            if (ReferenceEquals(aggregateKey, null))
+            {
+                throw new ArgumentNullException("aggregateKey");
+            }
             _aggregateKey = aggregateKey;
         }
 
@@ -38,11 +42,15 @@ namespace Kingo.Messaging.Domain
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of the exception.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="aggregateType" /> is <c>null</c>.
+        /// <paramref name="aggregateType" /> or <paramref name="aggregateKey"/> is <c>null</c>.
         /// </exception>
         public AggregateNotFoundByKeyException(Type aggregateType, TKey aggregateKey, string message, Exception innerException)
             : base(aggregateType, message, innerException)
         {
+            if (ReferenceEquals(aggregateKey, null))
+            {
+                throw new ArgumentNullException("aggregateKey");
+            }
             _aggregateKey = aggregateKey;
         }
 

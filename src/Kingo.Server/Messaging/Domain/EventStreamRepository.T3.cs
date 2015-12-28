@@ -9,8 +9,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the key that identifies an aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
-    public abstract class EventStreamRepository<TKey, TVersion, TAggregate> : Repository<TKey, TVersion, TAggregate>
-        where TKey : struct, IEquatable<TKey>
+    public abstract class EventStreamRepository<TKey, TVersion, TAggregate> : Repository<TKey, TVersion, TAggregate>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
     {

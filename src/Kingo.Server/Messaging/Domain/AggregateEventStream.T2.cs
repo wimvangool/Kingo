@@ -11,8 +11,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>    
     [Serializable]
-    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
-        where TKey : struct, IEquatable<TKey>
+    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {                     
         [NonSerialized]

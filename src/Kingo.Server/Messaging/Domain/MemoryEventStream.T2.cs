@@ -11,8 +11,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
     [Serializable]
-    public sealed class MemoryEventStream<TKey, TVersion> : IReadableEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
-        where TKey : struct, IEquatable<TKey>
+    public sealed class MemoryEventStream<TKey, TVersion> : IReadableEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>       
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         private readonly Queue<IEventBuffer<TKey, TVersion>> _buffer;

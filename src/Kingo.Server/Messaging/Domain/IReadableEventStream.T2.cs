@@ -7,8 +7,7 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
-    public interface IReadableEventStream<out TKey, out TVersion>
-        where TKey : struct, IEquatable<TKey>
+    public interface IReadableEventStream<out TKey, out TVersion>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>

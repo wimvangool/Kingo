@@ -9,8 +9,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>  
     [Serializable]
-    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
-        where TKey : struct, IEquatable<TKey>
+    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         private static readonly Func<TVersion, TVersion> _IncrementMethod = AggregateRootVersion.IncrementMethod<TVersion>();

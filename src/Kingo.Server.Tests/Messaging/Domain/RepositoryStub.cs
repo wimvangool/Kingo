@@ -84,7 +84,7 @@ namespace Kingo.Messaging.Domain
   
         public Task<AggregateStub> GetByAlternateKeyAsync(int key)
         {
-            return GetOrSelectByIdAsync(key, aggregate => aggregate.AlternateKey, SelectByAlternateKey);
+            return GetOrSelectByKeyAsync(key, aggregate => aggregate.AlternateKey, SelectByAlternateKey);
         }
 
         private Task<AggregateStub> SelectByAlternateKey(int key)

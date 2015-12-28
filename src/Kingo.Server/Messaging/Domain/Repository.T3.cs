@@ -16,8 +16,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the key that identifies an aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
-    public abstract class Repository<TKey, TVersion, TAggregate> : IUnitOfWork, IDisposable        
-        where TKey : struct, IEquatable<TKey>
+    public abstract class Repository<TKey, TVersion, TAggregate> : IUnitOfWork, IDisposable                
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
     {                
@@ -252,7 +251,7 @@ namespace Kingo.Messaging.Domain
         /// </exception>
         public Task<TAggregate> GetByKeyAsync(TKey key)
         {
-            return GetOrSelectByIdAsync(key, SelectPrimaryKey, SelectByKeyAsync);
+            return GetOrSelectByKeyAsync(key, SelectPrimaryKey, SelectByKeyAsync);
         } 
         
         /// <summary>
@@ -268,11 +267,14 @@ namespace Kingo.Messaging.Domain
         /// </param>
         /// <returns>A task representing the operation.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="keySelector"/> or <paramref name="selectMethod"/> is <c>null</c>.
+        /// <paramref name="key"/>, <paramref name="keySelector"/> or <paramref name="selectMethod"/> is <c>null</c>.
         /// </exception>
-        protected async Task<TAggregate> GetOrSelectByIdAsync<T>(T key, Func<TAggregate, T> keySelector, Func<T, Task<TAggregate>> selectMethod)
-            where T : struct, IEquatable<T>
+        protected async Task<TAggregate> GetOrSelectByKeyAsync<T>(T key, Func<TAggregate, T> keySelector, Func<T, Task<TAggregate>> selectMethod)            
         {
+            if (ReferenceEquals(key, null))
+            {
+                throw new ArgumentNullException("key");
+            }
             if (keySelector == null)
             {
                 throw new ArgumentNullException("keySelector");
@@ -371,8 +373,7 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         /// <param name="key">Key of the aggregate that was not found.</param>
         /// <returns>A new <see cref="AggregateNotFoundByKeyException{T}" />.</returns>
-        protected AggregateNotFoundByKeyException<T> NewAggregateNotFoundByKeyException<T>(T key)
-            where T : struct, IEquatable<T>
+        protected AggregateNotFoundByKeyException<T> NewAggregateNotFoundByKeyException<T>(T key)            
         {
             var messageFormat = ExceptionMessages.Repository_AggregateNotFoundByKey;
             var message = string.Format(messageFormat, typeof(TAggregate), key);
@@ -484,8 +485,7 @@ namespace Kingo.Messaging.Domain
         /// <typeparam name="T">Type of the key.</typeparam>
         /// <param name="key">The key that was already present.</param>
         /// <returns>A new <see cref="DuplicateKeyException{T}" /> that can be thrown when an insert failed.</returns>
-        protected static Exception NewDuplicateKeyException<T>(T key)
-            where T : struct, IEquatable<T>
+        protected static Exception NewDuplicateKeyException<T>(T key)           
         {
             var messageFormat = ExceptionMessages.Repository_DuplicateKey;
             var message = string.Format(messageFormat, key);
@@ -496,8 +496,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Removing and Deleting ======]
 
-        private sealed class RemovedAggregate<T> : Aggregate<TKey, TVersion, TAggregate>
-            where T : struct, IEquatable<T>
+        private sealed class RemovedAggregate<T> : Aggregate<TKey, TVersion, TAggregate>           
         {
             private readonly Repository<TKey, TVersion, TAggregate> _repository;
             private readonly T _key;
@@ -556,11 +555,14 @@ namespace Kingo.Messaging.Domain
         /// Delegate that is used to delete an aggregate from the Data Store using the specified <paramref name="key"/>.
         /// </param>        
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="keySelector"/> or <paramref name="deleteMethod"/> is <c>null</c>.
+        /// <paramref name="key"/>, <paramref name="keySelector"/> or <paramref name="deleteMethod"/> is <c>null</c>.
         /// </exception>
-        protected void RemoveByKey<T>(T key, Func<TAggregate, T> keySelector, Func<T, IWritableEventStream<TKey, TVersion>, Task> deleteMethod)
-            where T : struct, IEquatable<T>
+        protected void RemoveByKey<T>(T key, Func<TAggregate, T> keySelector, Func<T, IWritableEventStream<TKey, TVersion>, Task> deleteMethod)            
         {
+            if (ReferenceEquals(key, null))
+            {
+                throw new ArgumentNullException("key");
+            }
             if (keySelector == null)
             {
                 throw new ArgumentNullException("keySelector");
@@ -608,8 +610,7 @@ namespace Kingo.Messaging.Domain
         /// this method, make sure you call the base implementation.
         /// </summary>
         /// <param name="key">Key of the aggregate that was removed.</param>
-        protected virtual void OnAggregateRemoved<T>(T key)
-            where T : struct, IEquatable<T>
+        protected virtual void OnAggregateRemoved<T>(T key)            
         {
             if (EnlistAutomatically)
             {

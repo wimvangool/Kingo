@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging.Domain
 {
-    internal sealed class AggregateSet<TKey, TVersion, TAggregate>
-        where TKey : struct, IEquatable<TKey>
+    internal sealed class AggregateSet<TKey, TVersion, TAggregate>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>
     {
@@ -37,14 +36,12 @@ namespace Kingo.Messaging.Domain
             return _aggregates.Values.Any(a => a.Matches(aggregate));
         }
 
-        internal bool ContainsKey<T>(T key, Func<TAggregate, T> keySelector)
-             where T : struct, IEquatable<T>
+        internal bool ContainsKey<T>(T key, Func<TAggregate, T> keySelector)             
         {
             return _aggregates.ContainsKey(key) || _aggregates.Values.Any(aggregate => HasKey(key, keySelector, aggregate));
         }
 
-        internal bool TryGetValue<T>(T key, Func<TAggregate, T> keySelector, out TAggregate aggregate)
-            where T : struct, IEquatable<T>
+        internal bool TryGetValue<T>(T key, Func<TAggregate, T> keySelector, out TAggregate aggregate)            
         {
             return TryGetValueByKey(key, out aggregate) || TryGetValueFromValues(key, keySelector, out aggregate);
         }
@@ -62,8 +59,7 @@ namespace Kingo.Messaging.Domain
             return false;
         }
 
-        private bool TryGetValueFromValues<T>(T key, Func<TAggregate, T> keySelector, out TAggregate aggregate)
-            where T : struct, IEquatable<T>
+        private bool TryGetValueFromValues<T>(T key, Func<TAggregate, T> keySelector, out TAggregate aggregate)            
         {
             var aggregateWrapper = _aggregates.Values.FirstOrDefault(a => HasKey(key, keySelector, a));
             if (aggregateWrapper == null)
@@ -80,8 +76,7 @@ namespace Kingo.Messaging.Domain
             _aggregates.Add(key, aggregate);
         }
 
-        internal void RemoveByKey<T>(T key, Func<TAggregate, T> keySelector)
-            where T : struct, IEquatable<T>
+        internal void RemoveByKey<T>(T key, Func<TAggregate, T> keySelector)            
         {
             object otherKey;
 
@@ -95,8 +90,7 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        private bool TryGetKey<T>(T key, Func<TAggregate, T> keySelector, out object otherKey)
-            where T : struct, IEquatable<T>
+        private bool TryGetKey<T>(T key, Func<TAggregate, T> keySelector, out object otherKey)            
         {
             foreach (var keyValuePair in _aggregates)
             {
@@ -110,8 +104,7 @@ namespace Kingo.Messaging.Domain
             return false;
         }
 
-        private static bool HasKey<T>(T key, Func<TAggregate, T> keySelector, Aggregate<TKey, TVersion, TAggregate> aggregate)
-            where T : struct, IEquatable<T>
+        private static bool HasKey<T>(T key, Func<TAggregate, T> keySelector, Aggregate<TKey, TVersion, TAggregate> aggregate)            
         {
             if (aggregate.Value == null)
             {

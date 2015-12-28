@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging.Domain
 {
-    internal abstract class Aggregate<TKey, TVersion, TAggregate>
-        where TKey : struct, IEquatable<TKey>
+    internal abstract class Aggregate<TKey, TVersion, TAggregate>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>
     {

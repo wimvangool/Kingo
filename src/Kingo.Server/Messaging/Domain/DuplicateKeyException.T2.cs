@@ -8,8 +8,7 @@ namespace Kingo.Messaging.Domain
     /// This exception is thrown when ....
     /// </summary>
     [Serializable]
-    public sealed class DuplicateKeyException<TKey> : DomainException      
-        where TKey : struct, IEquatable<TKey>
+    public sealed class DuplicateKeyException<TKey> : DomainException             
     {
         private const string _KeyKey = "_key";
         private readonly TKey _key;        
