@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.Constraints;
 using Kingo.Resources;
@@ -10,13 +11,52 @@ namespace Kingo.Messaging
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>
     public sealed class HappyFlow<TMessage> : ExecutionFlow<TMessage> where TMessage : class, IMessage<TMessage>
-    {        
+    {
+        #region [====== ExpectedEvents ======]
+
+        private abstract class ExpectedEvent
+        {
+            internal abstract void Apply();
+        }
+
+        private sealed class ExpectedEvent<TEvent> : ExpectedEvent
+        {
+            private readonly HappyFlow<TMessage> _happyFlow;
+            private readonly Action<IMemberConstraintSet<TEvent>> _validateMethod;
+            private bool _hasBeenApplied;
+
+            internal ExpectedEvent(HappyFlow<TMessage> happyFlow, Action<IMemberConstraintSet<TEvent>> validateMethod)
+            {
+                _happyFlow = happyFlow;
+                _validateMethod = validateMethod;
+            }
+
+            internal override void Apply()
+            {
+                if (_hasBeenApplied)
+                {
+                    return;
+                }
+                var index = _happyFlow._expectedEvents.IndexOf(this);
+                var constraint = _happyFlow.Validator.VerifyThat(scenario => scenario.PublishedEvents[index]).IsInstanceOf<TEvent>();
+
+                if (_validateMethod != null)
+                {
+                    constraint.And(_validateMethod);
+                }
+                _hasBeenApplied = true;
+            }
+        }
+
+        #endregion
+
         private readonly Scenario<TMessage> _scenario;
-        private int _expectedEventCount;
+        private readonly List<ExpectedEvent> _expectedEvents;
 
         internal HappyFlow(Scenario<TMessage> scenario)
         {                       
-            _scenario = scenario;                        
+            _scenario = scenario;   
+            _expectedEvents = new List<ExpectedEvent>();         
         }
         
         internal override Scenario<TMessage> Scenario
@@ -34,14 +74,7 @@ namespace Kingo.Messaging
         /// <returns>This flow.</returns>                
         public HappyFlow<TMessage> Expect<TEvent>(Action<IMemberConstraintSet<TEvent>> validateMethod = null)
         {
-            var index = _expectedEventCount;
-            var constraint = Validator.VerifyThat(scenario => scenario.PublishedEvents[index]).IsInstanceOf<TEvent>();
-
-            if (validateMethod != null)
-            {
-                constraint.And(validateMethod);
-            }
-            _expectedEventCount++;
+            _expectedEvents.Add(new ExpectedEvent<TEvent>(this, validateMethod));            
             return this;
         }
 
@@ -49,17 +82,21 @@ namespace Kingo.Messaging
         public override async Task ExecuteAsync()
         {
  	        await _scenario.ExecuteCoreAsync();
-
+            
             if (_scenario.ThrownException == null)
             {
                 var actualEventCount = Scenario.PublishedEvents.Count;
-                if (actualEventCount == _expectedEventCount)
+                if (actualEventCount == _expectedEvents.Count)
                 {
+                    foreach (var expectedEvent in _expectedEvents)
+                    {
+                        expectedEvent.Apply();
+                    }
                     ValidateExpectations();
                 }
                 else
                 {
-                    OnUnexpectedNumberOfEventsPublished(_expectedEventCount, actualEventCount);
+                    OnUnexpectedNumberOfEventsPublished(_expectedEvents.Count, actualEventCount);
                 }             
             }
             else
