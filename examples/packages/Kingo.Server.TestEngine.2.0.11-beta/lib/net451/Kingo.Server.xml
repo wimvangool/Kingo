@@ -219,7 +219,7 @@
             No aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/> was found.
             </exception>
         </member>
-        <member name="M:Kingo.Messaging.Domain.Repository`3.GetOrSelectByIdAsync``1(``0,System.Func{`2,``0},System.Func{``0,System.Threading.Tasks.Task{`2}})">
+        <member name="M:Kingo.Messaging.Domain.Repository`3.GetOrSelectByKeyAsync``1(``0,System.Func{`2,``0},System.Func{``0,System.Threading.Tasks.Task{`2}})">
             <summary>
             Gets an aggregate with the specified <paramref name="key"/> from the cache or selects it from the Data Store if it wasn't loaded yet.
             </summary>
@@ -233,7 +233,7 @@
             </param>
             <returns>A task representing the operation.</returns>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="keySelector"/> or <paramref name="selectMethod"/> is <c>null</c>.
+            <paramref name="key"/>, <paramref name="keySelector"/> or <paramref name="selectMethod"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.Messaging.Domain.Repository`3.OnAggregateSelected(`2)">
@@ -322,7 +322,7 @@
             Delegate that is used to delete an aggregate from the Data Store using the specified <paramref name="key"/>.
             </param>        
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="keySelector"/> or <paramref name="deleteMethod"/> is <c>null</c>.
+            <paramref name="key"/>, <paramref name="keySelector"/> or <paramref name="deleteMethod"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.Messaging.Domain.Repository`3.OnAggregateRemoved``1(``0)">
@@ -531,7 +531,7 @@
             <param name="aggregateKey">Key of the aggregate that was not found.</param>
             <param name="message">Message of the exception.</param>  
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="aggregateType"/> is <c>null</c>.
+            <paramref name="aggregateType"/> or <paramref name="aggregateKey"/> is <c>null</c>.
             </exception>      
         </member>
         <member name="M:Kingo.Messaging.Domain.AggregateNotFoundByKeyException`1.#ctor(System.Type,`0,System.String,System.Exception)">
@@ -543,7 +543,7 @@
             <param name="message">Message of the exception.</param>
             <param name="innerException">Cause of the exception.</param>
             <exception cref="T:System.ArgumentNullException">
-            <paramref name="aggregateType"/> is <c>null</c>.
+            <paramref name="aggregateType"/> or <paramref name="aggregateKey"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:Kingo.Messaging.Domain.AggregateNotFoundByKeyException`1.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
@@ -1212,36 +1212,6 @@
         </member>
         <member name="P:Kingo.Messaging.QueryWrapper`2.MessageIn">
             <inheritdoc />
-        </member>
-        <member name="T:Kingo.Security.AuthorizationModule">
-            <summary>
-            This module is used to authorize any further processing of messages based on the current thread's identity.
-            </summary>    
-        </member>
-        <member name="M:Kingo.Security.AuthorizationModule.InvokeAsync(Kingo.Messaging.IMessageHandler)">
-            <summary>
-            Authorizes the current thread's identity to process a message.
-            </summary>
-            <param name="handler">The handler to invoke.</param>        
-            <exception cref="T:Kingo.Security.AuthorizationException">
-            The current thread's identity was not authorized to process the specified message.
-            </exception>
-        </member>
-        <member name="M:Kingo.Security.AuthorizationModule.IsNotAuthorizedAsync(Kingo.Messaging.IMessage,Kingo.Security.AuthorizationException@)">
-            <summary>
-            Determines whether or not the current identity is allowed/authorized to
-            further process the specified <paramref name="message"/>.
-            </summary>
-            <param name="message">The message being authorized.</param>    
-            <param name="exception">
-            If this method returns <c>true</c>, this parameter will refer to an instance of
-            the <see cref="T:Kingo.Security.AuthorizationException"/> class that contains a message and
-            information on why the current identity was not authorized.
-            </param>   
-            <returns>
-            <c>true</c> if the current identity is not authorized to further process the specified
-            <paramref name="message"/>; otherwise <c>false</c>.
-            </returns>
         </member>
         <member name="T:Kingo.Transactions.ITransactionScopeFactory">
             <summary>

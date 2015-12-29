@@ -8,6 +8,19 @@ namespace Kingo.Samples.Chess.Players
     {
         private const string _Name = "Name";
 
+        Task<Player> IPlayerRepository.GetByIdAsync(Guid playerId)
+        {
+            return GetByKeyAsync(playerId);
+        }
+
+        protected override async Task<Player> SelectByKeyAsync(Guid key)
+        {
+            using (var command = DatabaseCommand.CreateSelectByKeyCommand("sp_Players_SelectByKey", key))
+            {
+                return await command.ExecuteAggregateAsync<Player>();
+            }
+        }  
+
         async Task<bool> IPlayerRepository.HasBeenRegisteredAsync(Identifier playerName)
         {
             using (var command = new DatabaseCommand("sp_Players_HasBeenRegistered"))
@@ -21,12 +34,7 @@ namespace Kingo.Samples.Chess.Players
         void IPlayerRepository.Add(Player player)
         {
             Add(player);
-        }
-
-        protected override Task<Player> SelectByKeyAsync(Guid key)
-        {
-            throw new NotImplementedException();
-        }
+        }              
 
         protected override async Task InsertAsync(Player aggregate)
         {
@@ -41,6 +49,6 @@ namespace Kingo.Samples.Chess.Players
         protected override Task UpdateAsync(Player aggregate, int originalVersion)
         {
             throw new NotImplementedException();
-        }               
+        }        
     }
 }

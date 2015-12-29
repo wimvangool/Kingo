@@ -21,6 +21,11 @@ namespace Clients.ConsoleApp.Commandlets
             {
                 throw new UnknownCommandArgumentException(args[1]);
             }
+            Execute();
+        }
+
+        internal void Execute()
+        {
             var response = _playerService.GetPlayersAsync(new GetPlayersRequest()).Result;
 
             Console.WriteLine();

@@ -22,7 +22,7 @@ namespace Kingo.Samples.Chess
         protected override MessageHandlerFactory CreateMessageHandlerFactory()
         {
             var factory = new UnityFactory();
-            factory.RegisterMessageHandlers("*.Application.dll");
+            factory.RegisterMessageHandlers("*.Application.dll", "*.DataAccess.dll");
             factory.RegisterRepositories("*.Domain.dll", "*.DataAccess.dll");
             return factory;
         }

@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Players_GetPlayers]
 AS
 BEGIN
-	SELECT  [Name]
+	SELECT  [Key], [Name]
 	FROM	[dbo].[Players];
 END

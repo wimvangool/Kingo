@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Kingo.Samples.Chess.Players
 {
@@ -6,10 +7,14 @@ namespace Kingo.Samples.Chess.Players
     public sealed class RegisteredPlayer
     {
         [DataMember]
+        public readonly Guid Id;
+
+        [DataMember]
         public readonly string Name;
 
-        public RegisteredPlayer(string name)
+        public RegisteredPlayer(Guid id, string name)
         {
+            Id = id;
             Name = name;
         }
     }

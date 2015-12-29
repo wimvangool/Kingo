@@ -1,21 +1,40 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Kingo.Threading;
 
 namespace Kingo.Samples.Chess
 {
+    [DataContract]
     public sealed class Session
-    {        
+    {
+        public static readonly string HeaderName = typeof(Session).Name;
+        public const string HeaderNamespace = @"Kingo.Samples.Chess";
+
+        [DataMember]
+        private readonly Guid _playerId;
+
+        [DataMember]
         private readonly string _playerName;
 
-        private Session(string playerName)
+        public Session(Guid playerId, string playerName)
         {
+            if (playerName == null)
+            {
+                throw new ArgumentNullException("playerName");
+            }
+            _playerId = playerId;
             _playerName = playerName;
+        }
+
+        public Guid PlayerId
+        {
+            get { return _playerId; }
         }
 
         public string PlayerName
         {
             get { return _playerName; }
-        }
+        }        
 
         #region [====== Current ======]
 
@@ -26,15 +45,16 @@ namespace Kingo.Samples.Chess
             get { return _Context.Current; }
         }
 
-        public static IDisposable CreateSession(string playerName)
-        {
-            if (playerName == null)
-            {
-                throw new ArgumentNullException("playerName");
-            }
-            return _Context.OverrideAsyncLocal(new Session(playerName));
+        public static IDisposable CreateSessionScope(Guid playerId, string playerName)
+        {            
+            return CreateSessionScope(new Session(playerId, playerName));
         }
 
-        #endregion
+        public static IDisposable CreateSessionScope(Session session)
+        {
+            return _Context.OverrideAsyncLocal(session);
+        }
+
+        #endregion        
     }
 }

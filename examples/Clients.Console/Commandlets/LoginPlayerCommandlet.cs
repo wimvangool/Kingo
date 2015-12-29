@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Clients.ConsoleApp.Proxies;
 using Clients.ConsoleApp.States;
 using Kingo.Samples.Chess;
@@ -40,11 +39,11 @@ namespace Clients.ConsoleApp.Commandlets
 
         private void Execute(string enteredName)
         {
-            string playerName;
+            RegisteredPlayer player;
 
-            if (TryGetPlayerName(enteredName, out playerName))
+            if (_playerService.TryGetRegisteredPlayer(enteredName, out player))
             {
-                var session = Session.CreateSession(playerName);
+                var session = Session.CreateSessionScope(player.Id, player.Name);
                 var loggedInState = new LoggedInState(_application, session);
 
                 _application.SwitchTo(loggedInState);
@@ -56,17 +55,6 @@ namespace Clients.ConsoleApp.Commandlets
                     Console.WriteLine("Cannot log in as player '{0}' because this player has not been registered.", enteredName);
                 }
             }
-        }
-
-        private bool TryGetPlayerName(string enteredName, out string playerName)
-        {
-            var response = _playerService.GetPlayersAsync(new GetPlayersRequest()).Result;
-            var matches =
-                from player in response.Players
-                where string.Compare(player.Name, enteredName, StringComparison.OrdinalIgnoreCase) == 0
-                select player.Name;
-
-            return (playerName = matches.FirstOrDefault()) != null;
-        }
+        }        
     }
 }

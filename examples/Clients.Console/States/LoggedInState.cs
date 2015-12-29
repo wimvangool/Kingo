@@ -10,6 +10,7 @@ namespace Clients.ConsoleApp.States
         private readonly LogoutPlayerCommandlet _logoutPlayerCommand;
         private readonly ChallengePlayerCommandlet _challengePlayerCommand;
         private readonly GetPlayerCommandlet _getPlayerCommand;
+        private readonly GetChallengeCommandlet _getChallengeCommandlet;
 
         internal LoggedInState(ChessApplication application, IDisposable session)
             : base(application)
@@ -17,6 +18,7 @@ namespace Clients.ConsoleApp.States
             _logoutPlayerCommand = new LogoutPlayerCommandlet(application, session);
             _challengePlayerCommand = new ChallengePlayerCommandlet();
             _getPlayerCommand = new GetPlayerCommandlet();
+            _getChallengeCommandlet = new GetChallengeCommandlet();
         }        
 
         protected internal override IEnumerable<Commandlet> SupportedCommandLets()
@@ -26,7 +28,8 @@ namespace Clients.ConsoleApp.States
             {
                 _logoutPlayerCommand,
                 _challengePlayerCommand,
-                _getPlayerCommand
+                _getPlayerCommand,
+                _getChallengeCommandlet
             };
             return thisCommands.Concat(baseCommands);
         }

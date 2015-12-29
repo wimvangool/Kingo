@@ -36,17 +36,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo, Version=2.0.9.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo, Version=2.0.11.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.TestEngine.2.0.9-beta\lib\net451\Kingo.dll</HintPath>
+      <HintPath>..\packages\Kingo.Server.TestEngine.2.0.11-beta\lib\net451\Kingo.dll</HintPath>
     </Reference>
-    <Reference Include="Kingo.Server, Version=2.0.9.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo.Server, Version=2.0.11.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.TestEngine.2.0.9-beta\lib\net451\Kingo.Server.dll</HintPath>
+      <HintPath>..\packages\Kingo.Server.TestEngine.2.0.11-beta\lib\net451\Kingo.Server.dll</HintPath>
     </Reference>
-    <Reference Include="Kingo.Server.TestEngine, Version=2.0.9.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo.Server.TestEngine, Version=2.0.11.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.TestEngine.2.0.9-beta\lib\net451\Kingo.Server.TestEngine.dll</HintPath>
+      <HintPath>..\packages\Kingo.Server.TestEngine.2.0.11-beta\lib\net451\Kingo.Server.TestEngine.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -83,10 +83,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ChallengePlayer\PlayerNotLoggedInScenario.cs" />
-    <Compile Include="RegisterPlayer\PlayerIsRegisteredScenario.cs" />
-    <Compile Include="RegisterPlayer\PlayerAlreadyRegisteredScenario.cs" />
-    <Compile Include="RegisterPlayer\PlayerRepository.cs" />
+    <Compile Include="Challenges\ChallengePlayer\PlayerIsChallengedScenario.cs" />
+    <Compile Include="Challenges\ChallengePlayer\ReceiverNotRegisteredScenario.cs" />
+    <Compile Include="Challenges\ChallengePlayer\SenderEqualToReceiverScenario.cs" />
+    <Compile Include="Challenges\ChallengePlayer\SenderNotRegisteredScenario.cs" />
+    <Compile Include="Challenges\MemoryChallengeRepository.cs" />
+    <Compile Include="Players\RegisterPlayer\PlayerIsRegisteredScenario.cs" />
+    <Compile Include="Players\RegisterPlayer\PlayerAlreadyRegisteredScenario.cs" />
+    <Compile Include="Players\MemoryPlayerRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WriteOnlyProcessor.cs" />
     <Compile Include="WriteOnlyScenario.T1.cs" />
@@ -114,7 +118,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

@@ -69,6 +69,12 @@
     <Build Include="dbo\Programmability\Stored Procedures\sp_Players_Insert.sql" />
     <Build Include="dbo\Programmability\Stored Procedures\sp_Players_HasBeenRegistered.sql" />
     <Build Include="dbo\Programmability\Stored Procedures\sp_Players_GetPlayers.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_Insert.sql" />
+    <Build Include="dbo\Tables\Challenges.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Players_SelectByKey.sql" />
+    <Build Include="dbo\Tables\PendingChallenges.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_InsertPendingChallenge.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_GetPendingChallenges.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Release.publish.xml" />

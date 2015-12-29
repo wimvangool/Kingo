@@ -17,5 +17,14 @@ namespace Clients.ConsoleApp.Proxies
         }
 
         #endregion
+
+        #region [====== Read Methods ======]
+
+        public Task<GetPendingChallengesResponse> GetPendingChallenges(GetPendingChallengesRequest request)
+        {
+            return Channel.GetPendingChallenges(request);
+        }
+
+        #endregion
     }
 }

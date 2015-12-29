@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using Kingo.Messaging.Domain;
@@ -37,6 +38,11 @@ namespace Kingo.Samples.Chess
             get { return _command.Parameters; }
         }
 
+        internal async Task<TAggregate> ExecuteAggregateAsync<TAggregate>()
+        {
+            return Deserialize<TAggregate>(await ExecuteScalarAsync<string>());
+        }
+
         internal async Task<TValue> ExecuteScalarAsync<TValue>()
         {
             await _connection.OpenAsync();
@@ -49,6 +55,13 @@ namespace Kingo.Samples.Chess
             {
                 _connection.Close();
             }            
+        }               
+
+        internal async Task<SqlDataReader> ExecuteDataReaderAsync()
+        {
+            await _connection.OpenAsync();
+
+            return await _command.ExecuteReaderAsync(CommandBehavior.CloseConnection | CommandBehavior.SingleResult);
         }
 
         internal async Task ExecuteNonQueryAsync()
@@ -57,23 +70,17 @@ namespace Kingo.Samples.Chess
 
             try
             {
+                // TODO: throw concurrency exception.
                 var rowCount = await _command.ExecuteNonQueryAsync();
                 if (rowCount == 0)
-                {
-                    // TODO: throw concurrency exception.
+                {                    
+                    Debug.Fail("Concurrency Exception");
                 }
             }
             finally
             {
                 _connection.Close();
-            }            
-        }
-
-        internal async Task<SqlDataReader> ExecuteDataReader()
-        {
-            await _connection.OpenAsync();
-
-            return await _command.ExecuteReaderAsync(CommandBehavior.CloseConnection | CommandBehavior.SingleResult);
+            }
         }
 
         #endregion
@@ -82,7 +89,14 @@ namespace Kingo.Samples.Chess
 
         private const string _Key = "Key";
         private const string _Version = "Version";
-        private const string _Value = "Value";        
+        private const string _Value = "Value"; 
+       
+        internal static DatabaseCommand CreateSelectByKeyCommand<TKey>(string commandText, TKey key)
+        {
+            var command = new DatabaseCommand(commandText);
+            command.Parameters.AddWithValue(_Key, key);
+            return command;
+        }
 
         internal static DatabaseCommand CreateInsertCommand<TKey, TVersion, TAggregate>(string commandText, TAggregate aggregate)
             where TKey : struct, IEquatable<TKey>
@@ -111,7 +125,9 @@ namespace Kingo.Samples.Chess
         private static readonly JsonSerializerSettings _SerializerSettings = new JsonSerializerSettings
         {            
             ContractResolver = new DefaultContractResolver
-            { IgnoreSerializableAttribute = false },
+            {
+                IgnoreSerializableAttribute = false
+            },
             Formatting = Formatting.None,
             TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
             TypeNameHandling = TypeNameHandling.None            
@@ -124,7 +140,7 @@ namespace Kingo.Samples.Chess
 
         private static TAggregate Deserialize<TAggregate>(string value)
         {
-            throw new NotImplementedException();
+            return JsonConvert.DeserializeObject<TAggregate>(value, _SerializerSettings);
         }
 
         #endregion

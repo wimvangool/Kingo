@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.Messaging;
-using Kingo.Samples.Chess.Players;
+using Kingo.Samples.Chess.Players.RegisterPlayer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Samples.Chess.RegisterPlayer
+namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
 {
     [TestClass]
-    public sealed class PlayerAlreadyRegisteredScenario : WriteOnlyScenario<RegisterPlayerCommand>
+    public sealed class ReceiverNotRegisteredScenario : WriteOnlyScenario<ChallengePlayerCommand>
     {
         private readonly PlayerIsRegisteredScenario _playerIsRegistered;
 
-        public PlayerAlreadyRegisteredScenario()
+        public ReceiverNotRegisteredScenario()
         {
             _playerIsRegistered = new PlayerIsRegisteredScenario();
         }
@@ -22,14 +22,21 @@ namespace Kingo.Samples.Chess.RegisterPlayer
             yield return _playerIsRegistered;
         }
 
-        protected override RegisterPlayerCommand When()
+        protected override ChallengePlayerCommand When()
         {
-            return new RegisterPlayerCommand(Guid.NewGuid(), _playerIsRegistered.Message.PlayerName);
+            return new ChallengePlayerCommand(Guid.NewGuid(), Guid.NewGuid());
         }
+
+        protected override Session CreateSession()
+        {
+            var player = _playerIsRegistered.PlayerRegisteredEvent;
+
+            return new Session(player.PlayerId, player.PlayerName);
+        }        
 
         [TestMethod]
         public override async Task ThenAsync()
-        {
+        {            
             await Exception().Expect<CommandExecutionException>().ExecuteAsync();
         }
     }

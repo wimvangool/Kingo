@@ -3,7 +3,7 @@
     [Name]    NVARCHAR (20)    NOT NULL,
     [Version] INT              NOT NULL,
     [Value]    NVARCHAR (MAX)   NOT NULL,
-    CONSTRAINT [PK_Players_Id] PRIMARY KEY CLUSTERED ([Key] ASC),
+    CONSTRAINT [PK_Players_Key] PRIMARY KEY CLUSTERED ([Key] ASC),
     CONSTRAINT [CK_Players_Version] CHECK ([Version]>(0))
 );
 

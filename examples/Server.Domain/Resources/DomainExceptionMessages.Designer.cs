@@ -61,6 +61,15 @@ namespace Kingo.Samples.Chess.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Player &apos;{0}&apos; attempted to challenge himself..
+        /// </summary>
+        public static string Players_PlayerCannotChallengeHimself {
+            get {
+                return ResourceManager.GetString("Players_PlayerCannotChallengeHimself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot register player &apos;{0}&apos; because another player with the same name has already been registered..
         /// </summary>
         public static string Players_PlayerNameAlreadyRegistered {

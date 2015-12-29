@@ -12,12 +12,12 @@ namespace Kingo.Samples.Chess.Challenges
         public readonly Guid ChallengeId;
 
         [DataMember]
-        public readonly string PlayerName;
+        public readonly Guid PlayerId;
 
-        public ChallengePlayerCommand(Guid challengeId, string playerName)
+        public ChallengePlayerCommand(Guid challengeId, Guid playerId)
         {
             ChallengeId = challengeId;
-            PlayerName = playerName;
+            PlayerId = playerId;
         }
 
         protected override IValidator<ChallengePlayerCommand> CreateValidator()
@@ -25,7 +25,7 @@ namespace Kingo.Samples.Chess.Challenges
             var validator = new ConstraintValidator<ChallengePlayerCommand>();
 
             validator.VerifyThat(m => m.ChallengeId).IsNotEmpty();
-            validator.VerifyThat(m => m.PlayerName).IsNotNullOrEmpty().IsIdentifier();
+            validator.VerifyThat(m => m.PlayerId).IsNotEmpty();
 
             return validator;
         }

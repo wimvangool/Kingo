@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Kingo.Messaging;
-using Kingo.Samples.Chess.Challenges;
-using Kingo.Samples.Chess.RegisterPlayer;
-using Kingo.Security;
+using Kingo.Samples.Chess.Players.RegisterPlayer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Samples.Chess.ChallengePlayer
+namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
 {
     [TestClass]
-    public sealed class PlayerNotLoggedInScenario : WriteOnlyScenario<ChallengePlayerCommand>
+    public sealed class SenderNotRegisteredScenario : WriteOnlyScenario<ChallengePlayerCommand>
     {
         private readonly PlayerIsRegisteredScenario _playerIsRegistered;
 
-        public PlayerNotLoggedInScenario()
+        public SenderNotRegisteredScenario()
         {
             _playerIsRegistered = new PlayerIsRegisteredScenario();
         }
@@ -28,13 +24,18 @@ namespace Kingo.Samples.Chess.ChallengePlayer
 
         protected override ChallengePlayerCommand When()
         {
-            return new ChallengePlayerCommand(Guid.NewGuid(), _playerIsRegistered.PlayerRegisteredEvent.PlayerName);
+            return new ChallengePlayerCommand(Guid.NewGuid(), _playerIsRegistered.PlayerRegisteredEvent.PlayerId);
+        }
+
+        protected override Session CreateSession()
+        {
+            return new Session(Guid.NewGuid(), "Sender");
         }
 
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await Exception().Expect<AuthorizationException>().ExecuteAsync();
+            await Exception().Expect<CommandExecutionException>().ExecuteAsync();
         }
     }
 }

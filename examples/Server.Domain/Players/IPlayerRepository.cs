@@ -9,6 +9,13 @@ namespace Kingo.Samples.Chess.Players
     public interface IPlayerRepository
     {
         /// <summary>
+        /// Returns the player with the specified name.
+        /// </summary>
+        /// <param name="playerId">Name of the player.</param>
+        /// <returns>The player with the specified name.</returns>        
+        Task<Player> GetByIdAsync(Guid playerId);
+
+        /// <summary>
         /// Indicates whether or not a player with a certain name has been registered.
         /// </summary>
         /// <param name="playerName">Name of the player to check.</param>

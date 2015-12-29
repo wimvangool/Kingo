@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Configuration;
@@ -8,7 +7,7 @@ using System.ServiceModel.Dispatcher;
 
 namespace Kingo.Samples.Chess
 {
-    public sealed class SessionHeaderBehavior : IEndpointBehavior, IClientMessageInspector, IDispatchMessageInspector
+    public sealed class SessionBehavior : IEndpointBehavior, IClientMessageInspector, IDispatchMessageInspector
     {
         #region [====== ExtensionElement ======]
 
@@ -16,12 +15,12 @@ namespace Kingo.Samples.Chess
         {
             public override Type BehaviorType
             {
-                get { return typeof(SessionHeaderBehavior); }
+                get { return typeof(SessionBehavior); }
             }
 
             protected override object CreateBehavior()
             {
-                return new SessionHeaderBehavior();
+                return new SessionBehavior();
             }
         }
 
@@ -52,14 +51,14 @@ namespace Kingo.Samples.Chess
             var session = Session.Current;
             if (session != null)
             {
-                request.Headers.Add(NewSessionHeader(session.PlayerName));
+                request.Headers.Add(NewSessionHeader(session));
             }
             return null;
         }
 
-        private static MessageHeader NewSessionHeader(string playerName)
+        private static MessageHeader NewSessionHeader(Session session)
         {
-            return MessageHeader.CreateHeader(SessionHeader.Name, SessionHeader.Namespace, new SessionHeader(playerName));
+            return MessageHeader.CreateHeader(Session.HeaderName, Session.HeaderNamespace, session);
         }
 
         public void AfterReceiveReply(ref Message reply, object correlationState) { }
@@ -69,29 +68,27 @@ namespace Kingo.Samples.Chess
         #region [====== DispatchMessageInspector ======]
 
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
-        {
-            Debug.Assert(Session.Current == null);
+        {            
+            Session session;
 
-            SessionHeader header;
-
-            if (TryGetSessionHeader(request.Headers, out header))
+            if (TryGetSessionHeader(request.Headers, out session))
             {
-                Session.CreateSession(header.PlayerName);
+                Session.CreateSessionScope(session.PlayerId, session.PlayerName);
             }            
             return null;
-        }
+        }        
 
         public void BeforeSendReply(ref Message reply, object correlationState) { }
 
-        private static bool TryGetSessionHeader(MessageHeaders headers, out SessionHeader header)
+        private static bool TryGetSessionHeader(MessageHeaders headers, out Session session)
         {
-            var headerIndex = headers.FindHeader(SessionHeader.Name, SessionHeader.Namespace);
+            var headerIndex = headers.FindHeader(Session.HeaderName, Session.HeaderNamespace);
             if (headerIndex >= 0)
             {
-                header = headers.GetHeader<SessionHeader>(headerIndex);
+                session = headers.GetHeader<Session>(headerIndex);
                 return true;
             }
-            header = null;
+            session = null;
             return false;
         }
 

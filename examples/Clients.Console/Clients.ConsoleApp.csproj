@@ -33,9 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo, Version=2.0.9.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo, Version=2.0.11.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.2.0.9-beta\lib\net45\Kingo.dll</HintPath>
+      <HintPath>..\packages\Kingo.2.0.11-beta\lib\net45\Kingo.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -54,6 +54,7 @@
     <Compile Include="ChessApplicationState.cs" />
     <Compile Include="Commandlets\ChallengePlayerCommandlet.cs" />
     <Compile Include="Commandlets\ExitApplicationCommandlet.cs" />
+    <Compile Include="Commandlets\GetChallengeCommandlet.cs" />
     <Compile Include="Commandlets\GetPlayerCommandlet.cs" />
     <Compile Include="Commandlets\LoginPlayerCommandlet.cs" />
     <Compile Include="Commandlets\LogoutPlayerCommandlet.cs" />

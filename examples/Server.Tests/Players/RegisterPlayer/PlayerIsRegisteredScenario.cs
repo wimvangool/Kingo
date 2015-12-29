@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kingo.Constraints;
-using Kingo.Messaging.Domain;
-using Kingo.Samples.Chess.Players;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Samples.Chess.RegisterPlayer
+namespace Kingo.Samples.Chess.Players.RegisterPlayer
 {
     [TestClass]
     public sealed class PlayerIsRegisteredScenario : WriteOnlyScenario<RegisterPlayerCommand>
     {
+        private readonly string _playerName;
+
+        public PlayerIsRegisteredScenario()
+            : this("John") { }
+
+        public PlayerIsRegisteredScenario(string playerName)
+        {
+            if (playerName == null)
+            {
+                throw new ArgumentNullException("playerName");
+            }
+            _playerName = playerName;
+        }
+
         public PlayerRegisteredEvent PlayerRegisteredEvent
         {
             get { return (PlayerRegisteredEvent) PublishedEvents[0]; }
@@ -17,7 +29,7 @@ namespace Kingo.Samples.Chess.RegisterPlayer
 
         protected override RegisterPlayerCommand When()
         {
-            return new RegisterPlayerCommand(Guid.NewGuid(), "John");
+            return new RegisterPlayerCommand(Guid.NewGuid(), _playerName);
         }
 
         [TestMethod]

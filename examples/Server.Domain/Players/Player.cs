@@ -1,5 +1,7 @@
 ﻿using System;
 using Kingo.Messaging.Domain;
+using Kingo.Samples.Chess.Challenges;
+using Kingo.Samples.Chess.Resources;
 
 namespace Kingo.Samples.Chess.Players
 {
@@ -33,10 +35,30 @@ namespace Kingo.Samples.Chess.Players
             get { return _version; }
             set { _version = value;}
         }   
-     
+
+        public Challenge Challenge(Guid challengeId, Player other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+            if (Id == other.Id)
+            {
+                throw NewCannotChallengeYourselfException(Name);
+            }
+            return new Challenge(new PlayerChallengedEvent(challengeId, 1, Id, other.Id));
+        }        
+
         public static Player Register(Guid id, Identifier name)
         {
             return new Player(id, 1, name);
+        }
+
+        private static Exception NewCannotChallengeYourselfException(Identifier playerName)
+        {
+            var messageFormat = DomainExceptionMessages.Players_PlayerCannotChallengeHimself;
+            var message = string.Format(messageFormat, playerName);
+            return new DomainException(message);
         }
     }
 }

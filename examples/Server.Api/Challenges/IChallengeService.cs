@@ -21,5 +21,20 @@ namespace Kingo.Samples.Chess.Challenges
         Task ChallengePlayerAsync(ChallengePlayerCommand command);
 
         #endregion
+
+        #region [====== Read Methods ======]
+
+        /// <summary>
+        /// Returns all received and pending challenges for the plyer that has been logged in.
+        /// </summary>
+        /// <param name="request">The request to execute.</param>
+        /// <returns>A <see cref="Task{T}" /> representing the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="request"/> is <c>null</c>.
+        /// </exception> 
+        [OperationContract]
+        Task<GetPendingChallengesResponse> GetPendingChallenges(GetPendingChallengesRequest request);
+
+        #endregion
     }
 }
