@@ -21,6 +21,11 @@ namespace Clients.ConsoleApp.Proxies
             return Channel.AcceptChallengeAsync(command);
         }
 
+        public Task RejectChallengeAsync(RejectChallengeCommand command)
+        {
+            return Channel.RejectChallengeAsync(command);
+        }
+
         #endregion
 
         #region [====== Read Methods ======]
@@ -30,6 +35,6 @@ namespace Clients.ConsoleApp.Proxies
             return Channel.GetPendingChallenges(request);
         }
 
-        #endregion
+        #endregion       
     }
 }

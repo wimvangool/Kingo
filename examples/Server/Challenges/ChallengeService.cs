@@ -16,6 +16,11 @@ namespace Kingo.Samples.Chess.Challenges
             return HandleAsync(command);
         }
 
+        public Task RejectChallengeAsync(RejectChallengeCommand command)
+        {
+            return HandleAsync(command);
+        }
+
         #endregion
 
         #region [====== Read Methods ======]
@@ -25,6 +30,6 @@ namespace Kingo.Samples.Chess.Challenges
             return ExecuteAsync(request, new GetPendingChallengesQuery());
         }
 
-        #endregion
+        #endregion        
     }
 }

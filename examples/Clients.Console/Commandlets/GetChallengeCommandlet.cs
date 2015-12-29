@@ -9,7 +9,7 @@ namespace Clients.ConsoleApp.Commandlets
     internal sealed class GetChallengeCommandlet : Commandlet
     {
         private const char _AcceptChallenge = 'a';
-        private const char _DenyChallenge = 'd';
+        private const char _RejectChallenge = 'r';
         private const char _SkipChallenge = 's';
 
         private readonly ChallengeServiceProxy _challengeService;
@@ -48,22 +48,41 @@ namespace Clients.ConsoleApp.Commandlets
 
             do
             {
-                Console.Write("You received a challenge from '{0}'. Please accept ({1}), deny ({2}) or skip ({3}).> ",
+                Console.Write("You received a challenge from '{0}'. Please accept ({1}), reject ({2}) or skip ({3}).> ",
                     challenge.PlayerName,
                     _AcceptChallenge,
-                    _DenyChallenge,
+                    _RejectChallenge,
                     _SkipChallenge);
             }
             while (PromptUserForAction(out choice));
             
             if (choice == _AcceptChallenge)
             {
-                _challengeService.AcceptChallengeAsync(new AcceptChallengeCommand(challenge.ChallengeId)).Await();
+                Accept(challenge);
+            }
+            else if (choice == _RejectChallenge)
+            {
+                Reject(challenge);
+            }
+        }
 
-                using (ChessApplication.UseColor(ConsoleColor.Green))
-                {
-                    Console.WriteLine("Challenge from '{0}' was accepted.", challenge.PlayerName);
-                }
+        private void Accept(PendingChallenge challenge)
+        {
+            _challengeService.AcceptChallengeAsync(new AcceptChallengeCommand(challenge.ChallengeId)).Await();
+
+            using (ChessApplication.UseColor(ConsoleColor.Green))
+            {
+                Console.WriteLine("Challenge from '{0}' was accepted.", challenge.PlayerName);
+            }
+        }
+
+        private void Reject(PendingChallenge challenge)
+        {
+            _challengeService.RejectChallengeAsync(new RejectChallengeCommand(challenge.ChallengeId)).Await();
+
+            using (ChessApplication.UseColor(ConsoleColor.Green))
+            {
+                Console.WriteLine("Challenge from '{0}' was rejected.", challenge.PlayerName);
             }
         }
         
@@ -73,7 +92,7 @@ namespace Clients.ConsoleApp.Commandlets
 
             Console.WriteLine();
 
-            return !(choice == _AcceptChallenge || choice == _DenyChallenge || choice == _SkipChallenge);
+            return !(choice == _AcceptChallenge || choice == _RejectChallenge || choice == _SkipChallenge);
         }
     }
 }

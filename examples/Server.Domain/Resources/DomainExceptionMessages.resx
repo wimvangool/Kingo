@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Challenges_AlreadyAccepted" xml:space="preserve">
+    <value>A challenge cannot be accepted or rejected when it has already been accepted.</value>
+  </data>
+  <data name="Challenges_AlreadyRejected" xml:space="preserve">
+    <value>A challenge cannot be accepted or rejected when it has already been rejected.</value>
+  </data>
   <data name="Challenges_PlayerCannotAcceptChallenge" xml:space="preserve">
     <value>Player '{0}' cannot accept the specified challenge because he is not the receiver of that challenge.</value>
   </data>

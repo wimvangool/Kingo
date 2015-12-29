@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Challenges\AcceptChallengeCommand.cs" />
+    <Compile Include="Challenges\ChallengeRejectedEvent.cs" />
     <Compile Include="Challenges\ChallengeAcceptedEvent.cs" />
     <Compile Include="Challenges\ChallengePlayerCommand.cs" />
     <Compile Include="Challenges\GetChallengesRequest.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Challenges\IChallengeService.cs" />
     <Compile Include="Challenges\PendingChallenge.cs" />
     <Compile Include="Challenges\PlayerChallengedEvent.cs" />
+    <Compile Include="Challenges\RejectChallengeCommand.cs" />
     <Compile Include="SessionBehavior.cs" />
     <Compile Include="Players\GetPlayersRequest.cs" />
     <Compile Include="Players\GetPlayersResponse.cs" />

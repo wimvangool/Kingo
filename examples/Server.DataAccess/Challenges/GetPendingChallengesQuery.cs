@@ -10,7 +10,8 @@ namespace Kingo.Samples.Chess.Challenges
     [MessageHandler(InstanceLifetime.PerResolve, MessageSources.InternalMessageBus)]
     public sealed class GetPendingChallengesQuery : IQuery<GetPendingChallengesRequest, GetPendingChallengesResponse>,
                                                     IMessageHandler<PlayerChallengedEvent>,
-                                                    IMessageHandler<ChallengeAcceptedEvent>
+                                                    IMessageHandler<ChallengeAcceptedEvent>,
+                                                    IMessageHandler<ChallengeRejectedEvent>
     {
         private const string _ChallengeKey = "ChallengeKey";
         private const string _SenderKey = "SenderKey";        
@@ -31,6 +32,11 @@ namespace Kingo.Samples.Chess.Challenges
         }
 
         Task IMessageHandler<ChallengeAcceptedEvent>.HandleAsync(ChallengeAcceptedEvent message)
+        {
+            return DeletePendingChallenge(message.ChallengeId);
+        }
+
+        Task IMessageHandler<ChallengeRejectedEvent>.HandleAsync(ChallengeRejectedEvent message)
         {
             return DeletePendingChallenge(message.ChallengeId);
         }

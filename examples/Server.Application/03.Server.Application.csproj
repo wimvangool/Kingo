@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Challenges\AcceptChallengeHandler.cs" />
     <Compile Include="Challenges\ChallengePlayerHandler.cs" />
+    <Compile Include="Challenges\RejectChallengeHandler.cs" />
     <Compile Include="Players\RegisterPlayerHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

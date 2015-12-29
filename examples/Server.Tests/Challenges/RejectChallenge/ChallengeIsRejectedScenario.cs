@@ -5,21 +5,21 @@ using Kingo.Messaging;
 using Kingo.Samples.Chess.Challenges.ChallengePlayer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Samples.Chess.Challenges.AcceptChallenge
+namespace Kingo.Samples.Chess.Challenges.RejectChallenge
 {
     [TestClass]
-    public sealed class ChallengeIsAcceptedScenario : WriteOnlyScenario<AcceptChallengeCommand>
+    public sealed class ChallengeIsRejectedScenario : WriteOnlyScenario<RejectChallengeCommand>
     {
         public readonly PlayerIsChallengedScenario PlayerIsChallenged;
 
-        public ChallengeIsAcceptedScenario()
+        public ChallengeIsRejectedScenario()
         {
             PlayerIsChallenged = new PlayerIsChallengedScenario();
         }
 
-        public ChallengeAcceptedEvent ChallengeAcceptedEvent
+        public ChallengeRejectedEvent ChallengeRejectedEvent
         {
-            get { return (ChallengeAcceptedEvent) PublishedEvents[0]; }
+            get { return (ChallengeRejectedEvent) PublishedEvents[0]; }
         }
 
         protected override IEnumerable<IMessageSequence> Given()
@@ -27,9 +27,9 @@ namespace Kingo.Samples.Chess.Challenges.AcceptChallenge
             yield return PlayerIsChallenged;
         }
 
-        protected override AcceptChallengeCommand When()
+        protected override RejectChallengeCommand When()
         {
-            return new AcceptChallengeCommand(PlayerIsChallenged.PlayerChallengedEvent.ChallengeId);
+            return new RejectChallengeCommand(PlayerIsChallenged.PlayerChallengedEvent.ChallengeId);
         }
 
         protected override Session CreateSession()
@@ -43,10 +43,10 @@ namespace Kingo.Samples.Chess.Challenges.AcceptChallenge
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await Events().Expect<ChallengeAcceptedEvent>(Validate).ExecuteAsync();
+            await Events().Expect<ChallengeRejectedEvent>(Validate).ExecuteAsync();
         }
 
-        private void Validate(IMemberConstraintSet<ChallengeAcceptedEvent> validator)
+        private void Validate(IMemberConstraintSet<ChallengeRejectedEvent> validator)
         {
             validator.VerifyThat(m => m.ChallengeId).IsEqualTo(PlayerIsChallenged.PlayerChallengedEvent.ChallengeId);
             validator.VerifyThat(m => m.ChallengeVersion).IsGreaterThan(PlayerIsChallenged.PlayerChallengedEvent.ChallengeVersion);

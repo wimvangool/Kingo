@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Challenges\Challenge.cs" />
+    <Compile Include="Challenges\ChallengeState.cs" />
     <Compile Include="Challenges\IChallengeRepository.cs" />
     <Compile Include="Players\IPlayerRepository.cs" />
     <Compile Include="Players\Player.cs" />

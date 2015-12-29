@@ -83,6 +83,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Challenges\AcceptChallenge\ChallengeAlreadyRejectedScenario.cs" />
+    <Compile Include="Challenges\AcceptChallenge\ChallengeAlreadyAcceptedScenario.cs" />
     <Compile Include="Challenges\AcceptChallenge\ChallengeDoesNotExistScenario.cs" />
     <Compile Include="Challenges\AcceptChallenge\ChallengeIsAcceptedScenario.cs" />
     <Compile Include="Challenges\AcceptChallenge\PlayerIsNotReceiverScenario.cs" />
@@ -91,6 +93,11 @@
     <Compile Include="Challenges\ChallengePlayer\SenderEqualToReceiverScenario.cs" />
     <Compile Include="Challenges\ChallengePlayer\SenderNotRegisteredScenario.cs" />
     <Compile Include="Challenges\MemoryChallengeRepository.cs" />
+    <Compile Include="Challenges\RejectChallenge\ChallengeAlreadyRejectedScenario.cs" />
+    <Compile Include="Challenges\RejectChallenge\ChallengeAlreadyAcceptedScenario.cs" />
+    <Compile Include="Challenges\RejectChallenge\ChallengeDoesNotExistScenario.cs" />
+    <Compile Include="Challenges\RejectChallenge\ChallengeIsRejectedScenario.cs" />
+    <Compile Include="Challenges\RejectChallenge\PlayerIsNotReceiverScenario.cs" />
     <Compile Include="Players\RegisterPlayer\PlayerIsRegisteredScenario.cs" />
     <Compile Include="Players\RegisterPlayer\PlayerAlreadyRegisteredScenario.cs" />
     <Compile Include="Players\MemoryPlayerRepository.cs" />

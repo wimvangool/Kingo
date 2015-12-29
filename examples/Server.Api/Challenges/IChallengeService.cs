@@ -31,6 +31,17 @@ namespace Kingo.Samples.Chess.Challenges
         [OperationContract]
         Task AcceptChallengeAsync(AcceptChallengeCommand command);
 
+        /// <summary>
+        /// Rejects the specified challenge.
+        /// </summary>
+        /// <param name="command">The command to execute.</param>
+        /// <returns>A <see cref="Task" /> representing the operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="command"/> is <c>null</c>.
+        /// </exception>    
+        [OperationContract]
+        Task RejectChallengeAsync(RejectChallengeCommand command);
+
         #endregion
 
         #region [====== Read Methods ======]

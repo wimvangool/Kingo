@@ -10,6 +10,8 @@ namespace Kingo.Samples.Chess.Challenges
         private readonly Guid _id;
         private readonly Guid _senderId;
         private readonly Guid _receiverId;
+
+        private ChallengeState _state;
         private int _version;
 
         internal Challenge(PlayerChallengedEvent @event)
@@ -18,6 +20,8 @@ namespace Kingo.Samples.Chess.Challenges
             _id = @event.ChallengeId;
             _senderId = @event.SenderId;
             _receiverId = @event.ReceiverId;
+
+            _state = ChallengeState.Pending;
             _version = @event.ChallengeVersion;
         }
 
@@ -34,12 +38,40 @@ namespace Kingo.Samples.Chess.Challenges
 
         public void Accept()
         {
-            if (_receiverId.Equals(Session.Current.PlayerId))
+            if (!_receiverId.Equals(Session.Current.PlayerId))
             {
-                Publish(new ChallengeAcceptedEvent(_id, NextVersion()));
-                return;
+                throw NewPlayerCannotAcceptChallengeException(Session.Current.PlayerName);                
             }
-            throw NewPlayerCannotAcceptChallengeException(Session.Current.PlayerName);
+            if (_state == ChallengeState.Accepted)
+            {
+                throw NewChallengeAlreadyAcceptedException();
+            }
+            if (_state == ChallengeState.Rejected)
+            {
+                throw NewChallengeAlreadyRejectedException();
+            }
+            _state = ChallengeState.Accepted;
+
+            Publish(new ChallengeAcceptedEvent(_id, NextVersion()));                
+        }
+
+        public void Reject()
+        {
+            if (!_receiverId.Equals(Session.Current.PlayerId))
+            {
+                throw NewPlayerCannotAcceptChallengeException(Session.Current.PlayerName);
+            }
+            if (_state == ChallengeState.Accepted)
+            {
+                throw NewChallengeAlreadyAcceptedException();
+            }
+            if (_state == ChallengeState.Rejected)
+            {
+                throw NewChallengeAlreadyRejectedException();
+            }
+            _state = ChallengeState.Rejected;
+
+            Publish(new ChallengeRejectedEvent(_id, NextVersion()));                
         }
 
         private static Exception NewPlayerCannotAcceptChallengeException(string playerName)
@@ -48,5 +80,15 @@ namespace Kingo.Samples.Chess.Challenges
             var message = string.Format(messageFormat, playerName);
             return new DomainException(message);
         }
+
+        private static Exception NewChallengeAlreadyAcceptedException()
+        {
+            return new DomainException(DomainExceptionMessages.Challenges_AlreadyAccepted);
+        }
+
+        private static Exception NewChallengeAlreadyRejectedException()
+        {
+            return new DomainException(DomainExceptionMessages.Challenges_AlreadyRejected);
+        }    
     }
 }

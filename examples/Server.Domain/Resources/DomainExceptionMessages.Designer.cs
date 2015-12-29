@@ -61,6 +61,24 @@ namespace Kingo.Samples.Chess.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A challenge cannot be accepted or rejected when it has already been accepted..
+        /// </summary>
+        public static string Challenges_AlreadyAccepted {
+            get {
+                return ResourceManager.GetString("Challenges_AlreadyAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A challenge cannot be accepted or rejected when it has already been rejected..
+        /// </summary>
+        public static string Challenges_AlreadyRejected {
+            get {
+                return ResourceManager.GetString("Challenges_AlreadyRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player &apos;{0}&apos; cannot accept the specified challenge because he is not the receiver of that challenge..
         /// </summary>
         public static string Challenges_PlayerCannotAcceptChallenge {
