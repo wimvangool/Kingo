@@ -15,12 +15,9 @@ namespace Kingo.Messaging.Domain
         private static readonly Func<TVersion, TVersion> _IncrementMethod = AggregateRootVersion.IncrementMethod<TVersion>();
 
         [NonSerialized]
-        private readonly MemoryEventStream<TKey, TVersion> _eventsToPublish;
+        private MemoryEventStream<TKey, TVersion> _eventsToPublish;
 
-        internal AggregateRoot()
-        {
-            _eventsToPublish = new MemoryEventStream<TKey, TVersion>();
-        }
+        internal AggregateRoot() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
@@ -30,9 +27,20 @@ namespace Kingo.Messaging.Domain
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
         protected AggregateRoot(IVersionedObject<TKey, TVersion> @event)
-        {            
-            _eventsToPublish = new MemoryEventStream<TKey, TVersion>();
-            _eventsToPublish.Write(@event);
+        {                        
+            EventsToPublish.Write(@event);
+        }
+
+        private MemoryEventStream<TKey, TVersion> EventsToPublish
+        {
+            get
+            {
+                if (_eventsToPublish == null)
+                {
+                    _eventsToPublish = new MemoryEventStream<TKey, TVersion>();
+                }
+                return _eventsToPublish;
+            }
         }
 
         /// <summary>
@@ -40,12 +48,12 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         protected int EventCount
         {
-            get { return _eventsToPublish.Count; }
+            get { return EventsToPublish.Count; }
         }
 
         void IReadableEventStream<TKey, TVersion>.WriteTo(IWritableEventStream<TKey, TVersion> stream)
         {
-            _eventsToPublish.WriteTo(stream);
+            EventsToPublish.WriteTo(stream);
         }
 
         /// <inheritdoc />
@@ -93,8 +101,7 @@ namespace Kingo.Messaging.Domain
         /// </exception>        
         protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
         {
-            _eventsToPublish.Write(@event);
-
+            EventsToPublish.Write(@event);
             Apply(@event);            
         }
 
