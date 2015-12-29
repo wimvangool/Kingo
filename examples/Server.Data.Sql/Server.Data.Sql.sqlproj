@@ -75,6 +75,9 @@
     <Build Include="dbo\Tables\PendingChallenges.sql" />
     <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_InsertPendingChallenge.sql" />
     <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_GetPendingChallenges.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_DeletePendingChallenge.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_SelectByKey.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Release.publish.xml" />

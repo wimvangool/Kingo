@@ -37,6 +37,11 @@ namespace Clients.ConsoleApp.Commandlets
         private void Execute(string playerName)
         {
             _playerService.RegisterPlayerAsync(new RegisterPlayerCommand(Guid.NewGuid(), playerName)).Await();
+
+            using (ChessApplication.UseColor(ConsoleColor.Green))
+            {
+                Console.WriteLine("Player '{0}' was registered.", playerName);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Kingo.Messaging.Domain;
+using Kingo.Samples.Chess.Resources;
 
 namespace Kingo.Samples.Chess.Challenges
 {
@@ -29,6 +30,23 @@ namespace Kingo.Samples.Chess.Challenges
         {
             get { return _version; }
             set { _version = value; }
-        }        
+        }
+
+        public void Accept()
+        {
+            if (_receiverId.Equals(Session.Current.PlayerId))
+            {
+                Publish(new ChallengeAcceptedEvent(_id, NextVersion()));
+                return;
+            }
+            throw NewPlayerCannotAcceptChallengeException(Session.Current.PlayerName);
+        }
+
+        private static Exception NewPlayerCannotAcceptChallengeException(string playerName)
+        {
+            var messageFormat = DomainExceptionMessages.Challenges_PlayerCannotAcceptChallenge;
+            var message = string.Format(messageFormat, playerName);
+            return new DomainException(message);
+        }
     }
 }

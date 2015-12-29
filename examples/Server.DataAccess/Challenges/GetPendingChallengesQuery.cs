@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
@@ -8,11 +9,14 @@ namespace Kingo.Samples.Chess.Challenges
 {
     [MessageHandler(InstanceLifetime.PerResolve, MessageSources.InternalMessageBus)]
     public sealed class GetPendingChallengesQuery : IQuery<GetPendingChallengesRequest, GetPendingChallengesResponse>,
-                                                    IMessageHandler<PlayerChallengedEvent>
+                                                    IMessageHandler<PlayerChallengedEvent>,
+                                                    IMessageHandler<ChallengeAcceptedEvent>
     {
         private const string _ChallengeKey = "ChallengeKey";
         private const string _SenderKey = "SenderKey";        
         private const string _ReceiverKey = "ReceiverKey";
+
+        #region [====== Read Model Updates ======]
 
         async Task IMessageHandler<PlayerChallengedEvent>.HandleAsync(PlayerChallengedEvent message)
         {
@@ -25,6 +29,25 @@ namespace Kingo.Samples.Chess.Challenges
                 await command.ExecuteNonQueryAsync();
             }
         }
+
+        Task IMessageHandler<ChallengeAcceptedEvent>.HandleAsync(ChallengeAcceptedEvent message)
+        {
+            return DeletePendingChallenge(message.ChallengeId);
+        }
+
+        private static async Task DeletePendingChallenge(Guid challengeId)
+        {
+            using (var command = new DatabaseCommand("sp_Challenges_DeletePendingChallenge"))
+            {
+                command.Parameters.AddWithValue(_ChallengeKey, challengeId);
+
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+
+        #endregion
+
+        #region [====== Query ======]
 
         public async Task<GetPendingChallengesResponse> ExecuteAsync(GetPendingChallengesRequest message)
         {
@@ -59,5 +82,7 @@ namespace Kingo.Samples.Chess.Challenges
         {
             return new PendingChallenge(record.GetGuid(0), record.GetString(1));
         }
+
+        #endregion
     }
 }

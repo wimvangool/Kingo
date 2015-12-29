@@ -35,13 +35,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo, Version=2.0.11.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo, Version=2.0.12.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.2.0.11-beta\lib\net451\Kingo.dll</HintPath>
+      <HintPath>..\packages\Kingo.Server.2.0.12-beta\lib\net451\Kingo.dll</HintPath>
     </Reference>
-    <Reference Include="Kingo.Server, Version=2.0.11.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo.Server, Version=2.0.12.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.2.0.11-beta\lib\net451\Kingo.Server.dll</HintPath>
+      <HintPath>..\packages\Kingo.Server.2.0.12-beta\lib\net451\Kingo.Server.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">

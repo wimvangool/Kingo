@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Challenges_PlayerCannotAcceptChallenge" xml:space="preserve">
+    <value>Player '{0}' cannot accept the specified challenge because he is not the receiver of that challenge.</value>
+  </data>
   <data name="Players_PlayerCannotChallengeHimself" xml:space="preserve">
     <value>Player '{0}' attempted to challenge himself.</value>
   </data>

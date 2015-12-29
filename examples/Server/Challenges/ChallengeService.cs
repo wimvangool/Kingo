@@ -11,6 +11,11 @@ namespace Kingo.Samples.Chess.Challenges
             return HandleAsync(command);
         }
 
+        public Task AcceptChallengeAsync(AcceptChallengeCommand command)
+        {
+            return HandleAsync(command);
+        }
+
         #endregion
 
         #region [====== Read Methods ======]

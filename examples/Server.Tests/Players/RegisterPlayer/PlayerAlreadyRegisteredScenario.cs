@@ -9,21 +9,21 @@ namespace Kingo.Samples.Chess.Players.RegisterPlayer
     [TestClass]
     public sealed class PlayerAlreadyRegisteredScenario : WriteOnlyScenario<RegisterPlayerCommand>
     {
-        private readonly PlayerIsRegisteredScenario _playerIsRegistered;
+        public readonly PlayerIsRegisteredScenario PlayerIsRegistered;
 
         public PlayerAlreadyRegisteredScenario()
         {
-            _playerIsRegistered = new PlayerIsRegisteredScenario();
+            PlayerIsRegistered = new PlayerIsRegisteredScenario();
         }
 
         protected override IEnumerable<IMessageSequence> Given()
         {
-            yield return _playerIsRegistered;
+            yield return PlayerIsRegistered;
         }
 
         protected override RegisterPlayerCommand When()
         {
-            return new RegisterPlayerCommand(Guid.NewGuid(), _playerIsRegistered.Message.PlayerName);
+            return new RegisterPlayerCommand(Guid.NewGuid(), PlayerIsRegistered.Message.PlayerName);
         }
 
         [TestMethod]

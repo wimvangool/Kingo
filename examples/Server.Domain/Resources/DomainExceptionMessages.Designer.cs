@@ -61,6 +61,15 @@ namespace Kingo.Samples.Chess.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Player &apos;{0}&apos; cannot accept the specified challenge because he is not the receiver of that challenge..
+        /// </summary>
+        public static string Challenges_PlayerCannotAcceptChallenge {
+            get {
+                return ResourceManager.GetString("Challenges_PlayerCannotAcceptChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player &apos;{0}&apos; attempted to challenge himself..
         /// </summary>
         public static string Players_PlayerCannotChallengeHimself {

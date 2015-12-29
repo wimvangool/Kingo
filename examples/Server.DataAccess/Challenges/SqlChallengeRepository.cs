@@ -8,14 +8,25 @@ namespace Kingo.Samples.Chess.Challenges
     {
         #region [====== Getting & Updating ======]
 
-        protected override Task<Challenge> SelectByKeyAsync(Guid key)
+        Task<Challenge> IChallengeRepository.GetByIdAsync(Guid challengeId)
         {
-            throw new NotImplementedException();
+            return GetByKeyAsync(challengeId);
         }
 
-        protected override Task UpdateAsync(Challenge aggregate, int originalVersion)
+        protected override async Task<Challenge> SelectByKeyAsync(Guid key)
         {
-            throw new NotImplementedException();
+            using (var command = DatabaseCommand.CreateSelectByKeyCommand("sp_Challenges_SelectByKey", key))
+            {
+                return await command.ExecuteAggregateAsync<Challenge>();
+            }
+        }      
+
+        protected override async Task UpdateAsync(Challenge aggregate, int originalVersion)
+        {
+            using (var command = DatabaseCommand.CreateUpdateCommand<Guid, int, Challenge>("sp_Challenges_Update", aggregate, originalVersion))
+            {
+                await command.ExecuteNonQueryAsync();
+            }
         }
 
         #endregion

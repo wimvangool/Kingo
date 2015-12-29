@@ -11,29 +11,34 @@ namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
     [TestClass]
     public sealed class PlayerIsChallengedScenario : WriteOnlyScenario<ChallengePlayerCommand>
     {
-        private readonly PlayerIsRegisteredScenario _senderIsRegistered;
-        private readonly PlayerIsRegisteredScenario _receiverIsRegistered;
+        public readonly PlayerIsRegisteredScenario SenderIsRegistered;
+        public readonly PlayerIsRegisteredScenario ReceiverIsRegistered;
 
         public PlayerIsChallengedScenario()
         {
-            _senderIsRegistered = new PlayerIsRegisteredScenario("Wim");
-            _receiverIsRegistered = new PlayerIsRegisteredScenario("Peter");
+            SenderIsRegistered = new PlayerIsRegisteredScenario("Wim");
+            ReceiverIsRegistered = new PlayerIsRegisteredScenario("Peter");
+        }
+
+        public PlayerChallengedEvent PlayerChallengedEvent
+        {
+            get { return (PlayerChallengedEvent) PublishedEvents[0]; }
         }
 
         protected override IEnumerable<IMessageSequence> Given()
         {
-            yield return _senderIsRegistered;
-            yield return _receiverIsRegistered;
+            yield return SenderIsRegistered;
+            yield return ReceiverIsRegistered;
         }
 
         protected override ChallengePlayerCommand When()
         {
-            return new ChallengePlayerCommand(Guid.NewGuid(), _receiverIsRegistered.PlayerRegisteredEvent.PlayerId);
+            return new ChallengePlayerCommand(Guid.NewGuid(), ReceiverIsRegistered.PlayerRegisteredEvent.PlayerId);
         }
 
         protected override Session CreateSession()
         {
-            var sender = _senderIsRegistered.PlayerRegisteredEvent;
+            var sender = SenderIsRegistered.PlayerRegisteredEvent;
 
             return new Session(sender.PlayerId, sender.PlayerName);
         }
@@ -48,8 +53,8 @@ namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
         {
             validator.VerifyThat(m => m.ChallengeId).IsEqualTo(Message.ChallengeId);
             validator.VerifyThat(m => m.ChallengeVersion).IsEqualTo(1);
-            validator.VerifyThat(m => m.SenderId).IsEqualTo(_senderIsRegistered.PlayerRegisteredEvent.PlayerId);
-            validator.VerifyThat(m => m.ReceiverId).IsEqualTo(_receiverIsRegistered.PlayerRegisteredEvent.PlayerId);
+            validator.VerifyThat(m => m.SenderId).IsEqualTo(SenderIsRegistered.PlayerRegisteredEvent.PlayerId);
+            validator.VerifyThat(m => m.ReceiverId).IsEqualTo(ReceiverIsRegistered.PlayerRegisteredEvent.PlayerId);
         }
     }
 }

@@ -115,7 +115,12 @@ namespace Kingo.Samples.Chess
             where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
             where TAggregate : class, IVersionedObject<TKey, TVersion>
         {
-            throw new NotImplementedException();
+            var command = new DatabaseCommand(commandText);
+            command.Parameters.AddWithValue(_Key, aggregate.Key);
+            command.Parameters.AddWithValue("OldVersion", originalVersion);
+            command.Parameters.AddWithValue("NewVersion", aggregate.Version);
+            command.Parameters.AddWithValue(_Value, Serialize(aggregate));
+            return command;
         }
 
         #endregion

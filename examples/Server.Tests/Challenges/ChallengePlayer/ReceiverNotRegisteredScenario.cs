@@ -10,16 +10,16 @@ namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
     [TestClass]
     public sealed class ReceiverNotRegisteredScenario : WriteOnlyScenario<ChallengePlayerCommand>
     {
-        private readonly PlayerIsRegisteredScenario _playerIsRegistered;
+        public readonly PlayerIsRegisteredScenario PlayerIsRegistered;
 
         public ReceiverNotRegisteredScenario()
         {
-            _playerIsRegistered = new PlayerIsRegisteredScenario();
+            PlayerIsRegistered = new PlayerIsRegisteredScenario();
         }
 
         protected override IEnumerable<IMessageSequence> Given()
         {
-            yield return _playerIsRegistered;
+            yield return PlayerIsRegistered;
         }
 
         protected override ChallengePlayerCommand When()
@@ -29,7 +29,7 @@ namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
 
         protected override Session CreateSession()
         {
-            var player = _playerIsRegistered.PlayerRegisteredEvent;
+            var player = PlayerIsRegistered.PlayerRegisteredEvent;
 
             return new Session(player.PlayerId, player.PlayerName);
         }        

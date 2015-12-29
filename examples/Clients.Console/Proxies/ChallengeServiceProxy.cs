@@ -16,6 +16,11 @@ namespace Clients.ConsoleApp.Proxies
             return Channel.ChallengePlayerAsync(command);
         }
 
+        public Task AcceptChallengeAsync(AcceptChallengeCommand command)
+        {
+            return Channel.AcceptChallengeAsync(command);
+        }
+
         #endregion
 
         #region [====== Read Methods ======]
