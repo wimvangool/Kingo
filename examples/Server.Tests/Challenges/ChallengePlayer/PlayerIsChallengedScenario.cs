@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
 {
     [TestClass]
-    public sealed class PlayerIsChallengedScenario : WriteOnlyScenario<ChallengePlayerCommand>
+    public sealed class PlayerIsChallengedScenario : MemoryScenario<ChallengePlayerCommand>
     {
         public readonly PlayerIsRegisteredScenario SenderIsRegistered;
         public readonly PlayerIsRegisteredScenario ReceiverIsRegistered;

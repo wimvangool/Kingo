@@ -1,11 +1,24 @@
 ﻿using System.Collections.Generic;
 using Kingo.Messaging;
 using Kingo.Transactions;
+using NServiceBus;
 
 namespace Kingo.Samples.Chess
 {
-    public abstract class WcfServiceProcessor : MessageProcessor
+    internal sealed class WcfServiceProcessor : ServerProcessor
     {
+        private readonly IBus _enterpriseServiceBus;
+
+        internal WcfServiceProcessor(IBus enterpriseServiceBus)
+        {
+            _enterpriseServiceBus = enterpriseServiceBus;
+        }
+
+        protected override IBus EnterpriseServiceBus
+        {
+            get { return _enterpriseServiceBus; }
+        }
+
         #region [====== Pipeline Configuration ======]
 
         protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
@@ -17,16 +30,6 @@ namespace Kingo.Samples.Chess
 
         #endregion
 
-        #region [====== MessageHandlerFactory ======]
-        
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
-        {
-            var factory = new UnityFactory();
-            factory.RegisterMessageHandlers("*.Application.dll", "*.DataAccess.dll");
-            factory.RegisterRepositories("*.Domain.dll", "*.DataAccess.dll");
-            return factory;
-        }
-
-        #endregion        
+             
     }
 }

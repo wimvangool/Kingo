@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Challenges.AcceptChallenge
 {
     [TestClass]
-    public sealed class ChallengeDoesNotExistScenario : WriteOnlyScenario<AcceptChallengeCommand>
+    public sealed class ChallengeDoesNotExistScenario : MemoryScenario<AcceptChallengeCommand>
     {        
         protected override AcceptChallengeCommand When()
         {

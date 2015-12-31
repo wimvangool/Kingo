@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using Kingo.Constraints;
 using Kingo.Messaging;
 using Kingo.Samples.Chess.Resources;
+using NServiceBus;
 
 namespace Kingo.Samples.Chess.Players
 {
@@ -10,7 +11,7 @@ namespace Kingo.Samples.Chess.Players
     /// Represents a request to register a new player.
     /// </summary>
     [DataContract]
-    public sealed class RegisterPlayerCommand : Message<RegisterPlayerCommand>
+    public sealed class RegisterPlayerCommand : Message<RegisterPlayerCommand>, ICommand
     {
         /// <summary>
         /// Identifier of the player.

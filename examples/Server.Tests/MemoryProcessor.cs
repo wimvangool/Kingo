@@ -2,7 +2,7 @@
 
 namespace Kingo.Samples.Chess
 {
-    internal sealed class WriteOnlyProcessor : MessageProcessor
+    internal sealed class MemoryProcessor : MessageProcessor
     {
         #region [====== MessageHandlerFactory ======]        
 

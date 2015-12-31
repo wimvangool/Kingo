@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NServiceBus.ObjectBuilder.Unity</name>
+    </assembly>
+    <members>
+        <member name="T:NServiceBus.UnityBuilder">
+            <summary>
+            Unity Container
+            </summary>
+        </member>
+        <member name="M:NServiceBus.UnityBuilder.CreateContainer(NServiceBus.Settings.ReadOnlySettings)">
+            <summary>
+                Implementers need to new up a new container.
+            </summary>
+            <param name="settings">The settings to check if an existing container exists.</param>
+            <returns>The new container wrapper.</returns>
+        </member>
+        <member name="T:NServiceBus.UnityConfigExtensions">
+            <summary>
+            Extensions for unity specific config
+            </summary>
+        </member>
+        <member name="M:NServiceBus.UnityConfigExtensions.UseExistingContainer(NServiceBus.Container.ContainerCustomizations,Microsoft.Practices.Unity.IUnityContainer)">
+            <summary>
+            Use the a pre-configured <see cref="T:Microsoft.Practices.Unity.IUnityContainer"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

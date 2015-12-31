@@ -6,13 +6,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess
 {
     [TestClass]
-    public abstract class WriteOnlyScenario<TMessage> : Scenario<TMessage> where TMessage : class, IMessage<TMessage>
+    public abstract class MemoryScenario<TMessage> : Scenario<TMessage> where TMessage : class, IMessage<TMessage>
     {
-        private readonly WriteOnlyProcessor _processor;
+        private readonly MemoryProcessor _processor;
 
-        protected WriteOnlyScenario()
+        protected MemoryScenario()
         {
-            _processor = new WriteOnlyProcessor();
+            _processor = new MemoryProcessor();
         }
 
         protected override IMessageProcessor MessageProcessor

@@ -831,6 +831,91 @@
             <param name="message">A message.</param>
             <returns>A task carrying out the invocation.</returns>        
         </member>
+        <member name="T:Kingo.Messaging.MessageProcessorBusDecorator">
+            <summary>
+            Represents a <see cref="T:Kingo.Messaging.IMessageProcessorBus"/> that decorates another message processor bus.
+            </summary>
+        </member>
+        <member name="T:Kingo.Messaging.IMessageProcessorBus">
+            <summary>
+            When implemented by a class, represents a <see cref="T:Kingo.Messaging.MessageProcessorBus"/> to which event-handlers can subscribe.
+            </summary>
+        </member>
+        <member name="T:Kingo.Messaging.IDomainEventBus">
+            <summary>
+            Represents an internal message-bus that can be used to publish domain events and let all subscribers,
+            direct or indirect, handle these events within the same session/transaction they were raised in.
+            </summary> 
+        </member>
+        <member name="M:Kingo.Messaging.IDomainEventBus.PublishAsync``1(``0)">
+            <summary>
+            Publishes the specified event on this bus.
+            </summary>
+            <typeparam name="TMessage">Type of event to publish.</typeparam>
+            <param name="message">The event to publish.</param>                
+        </member>
+        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect(System.Object,System.Boolean)">
+            <summary>
+            Connects the specified handler to the bus.
+            </summary>
+            <param name="handler">The handler to connect.</param>
+            <param name="openConnection">
+            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
+            </param>
+            <returns>The created connection.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="handler"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(System.Action{``0},System.Boolean)">
+            <summary>
+            Connects the specified callback to the bus.
+            </summary>
+            <typeparam name="TMessage">Type of event to listen to.</typeparam>
+            <param name="handler">
+            Callback that will handle any events of type <paramtyperef name="TMessage"/>.
+            </param>
+            <param name="openConnection">
+            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
+            </param>
+            <returns>The created connection.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="handler"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(Kingo.Messaging.IMessageHandler{``0},System.Boolean)">
+            <summary>
+            Connects the specified handler to the bus.
+            </summary>
+            <typeparam name="TMessage">Type of event to listen to.</typeparam>
+            <param name="handler">
+            Handler that will handle any events of type <paramtyperef name="TMessage"/>.
+            </param>
+            <param name="openConnection">
+            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
+            </param>
+            <returns>The created connection.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="handler"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.Connect(System.Object,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.Connect``1(System.Action{``0},System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.Connect``1(Kingo.Messaging.IMessageHandler{``0},System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.PublishAsync``1(``0)">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.Messaging.MessageProcessorBusDecorator.Bus">
+            <summary>
+            The decorated bus.
+            </summary>
+        </member>
         <member name="T:Kingo.Messaging.MessageSequenceNode`1">
             <summary>
             Represents a sequence containing just a single message.
@@ -2224,69 +2309,6 @@
             <summary>
             Returns the <see cref="T:Kingo.Messaging.IMessageProcessorBus"/> of this processor.
             </summary>
-        </member>
-        <member name="T:Kingo.Messaging.IMessageProcessorBus">
-            <summary>
-            When implemented by a class, represents a <see cref="T:Kingo.Messaging.MessageProcessorBus"/> to which event-handlers can subscribe.
-            </summary>
-        </member>
-        <member name="T:Kingo.Messaging.IDomainEventBus">
-            <summary>
-            Represents an internal message-bus that can be used to publish domain events and let all subscribers,
-            direct or indirect, handle these events within the same session/transaction they were raised in.
-            </summary> 
-        </member>
-        <member name="M:Kingo.Messaging.IDomainEventBus.PublishAsync``1(``0)">
-            <summary>
-            Publishes the specified event on this bus.
-            </summary>
-            <typeparam name="TMessage">Type of event to publish.</typeparam>
-            <param name="message">The event to publish.</param>                
-        </member>
-        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect(System.Object,System.Boolean)">
-            <summary>
-            Connects the specified handler to the bus.
-            </summary>
-            <param name="handler">The handler to connect.</param>
-            <param name="openConnection">
-            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
-            </param>
-            <returns>The created connection.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="handler"/> is <c>null</c>.
-            </exception>        
-        </member>
-        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(System.Action{``0},System.Boolean)">
-            <summary>
-            Connects the specified callback to the bus.
-            </summary>
-            <typeparam name="TMessage">Type of event to listen to.</typeparam>
-            <param name="handler">
-            Callback that will handle any events of type <paramtyperef name="TMessage"/>.
-            </param>
-            <param name="openConnection">
-            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
-            </param>
-            <returns>The created connection.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="handler"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(Kingo.Messaging.IMessageHandler{``0},System.Boolean)">
-            <summary>
-            Connects the specified handler to the bus.
-            </summary>
-            <typeparam name="TMessage">Type of event to listen to.</typeparam>
-            <param name="handler">
-            Handler that will handle any events of type <paramtyperef name="TMessage"/>.
-            </param>
-            <param name="openConnection">
-            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
-            </param>
-            <returns>The created connection.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="handler"/> is <c>null</c>.
-            </exception>
         </member>
         <member name="T:Kingo.Messaging.InstanceLifetime">
             <summary>

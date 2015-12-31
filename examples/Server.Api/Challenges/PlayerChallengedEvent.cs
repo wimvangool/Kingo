@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Kingo.Messaging.Domain;
+using NServiceBus;
 
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class PlayerChallengedEvent : DomainEvent<PlayerChallengedEvent, Guid, int>
+    public sealed class PlayerChallengedEvent : DomainEvent<PlayerChallengedEvent, Guid, int>, IEvent
     {
         [DataMember]
         [AggregateMember(AggregateMemberType.Key)]

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Players.RegisterPlayer
 {
     [TestClass]
-    public sealed class PlayerIsRegisteredScenario : WriteOnlyScenario<RegisterPlayerCommand>
+    public sealed class PlayerIsRegisteredScenario : MemoryScenario<RegisterPlayerCommand>
     {
         private readonly string _playerName;
 
