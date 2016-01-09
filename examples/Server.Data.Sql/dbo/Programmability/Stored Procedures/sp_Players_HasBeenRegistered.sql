@@ -1,5 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Players_HasBeenRegistered]
-	@Name nvarchar(20)
+(
+	@Name NVARCHAR(20)
+)
 AS
 BEGIN
 	SELECT	COUNT([Key]) AS HasBeenRegistered

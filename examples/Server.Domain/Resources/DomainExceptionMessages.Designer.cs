@@ -88,6 +88,24 @@ namespace Kingo.Samples.Chess.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot perform the operation because the game already ended..
+        /// </summary>
+        public static string Game_GameAlreadyEnded {
+            get {
+                return ResourceManager.GetString("Game_GameAlreadyEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot perform the operation because the sender ({0}) is no player of the game..
+        /// </summary>
+        public static string Game_SenderNoPlayer {
+            get {
+                return ResourceManager.GetString("Game_SenderNoPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player &apos;{0}&apos; attempted to challenge himself..
         /// </summary>
         public static string Players_PlayerCannotChallengeHimself {

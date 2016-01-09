@@ -32,8 +32,19 @@ namespace Clients.ConsoleApp.Commandlets
         internal void Execute()
         {
             var response = _challengeService.GetPendingChallenges(new GetPendingChallengesRequest()).Result;
-
-            Console.WriteLine();
+            if (response.Challenges.Length == 0)
+            {
+                using (ChessApplication.UseColor(ConsoleColor.Yellow))
+                {
+                    Console.WriteLine("No challenges found.");
+                }
+                return;
+            }
+            Console.WriteLine("You have received {0} challenge(s). Please accept ({1}), reject ({2}) or skip ({3}) each challenge...",
+                response.Challenges.Length,
+                _AcceptChallenge,
+                _RejectChallenge,
+                _SkipChallenge);
 
             foreach (var challenge in response.Challenges.OrderBy(c => c.PlayerName))
             {
@@ -48,11 +59,7 @@ namespace Clients.ConsoleApp.Commandlets
 
             do
             {
-                Console.Write("You received a challenge from '{0}'. Please accept ({1}), reject ({2}) or skip ({3}).> ",
-                    challenge.PlayerName,
-                    _AcceptChallenge,
-                    _RejectChallenge,
-                    _SkipChallenge);
+                Console.Write("\tChallenge from '{0}'.> ", challenge.PlayerName);
             }
             while (PromptUserForAction(out choice));
             
@@ -72,7 +79,7 @@ namespace Clients.ConsoleApp.Commandlets
 
             using (ChessApplication.UseColor(ConsoleColor.Green))
             {
-                Console.WriteLine("Challenge from '{0}' was accepted.", challenge.PlayerName);
+                Console.WriteLine("\tChallenge from '{0}' was accepted.", challenge.PlayerName);
             }
         }
 

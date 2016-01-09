@@ -10,16 +10,16 @@ namespace Kingo.Samples.Chess.Challenges
     [DataContract]
     public sealed class ChallengeAcceptedEvent : DomainEvent<ChallengeAcceptedEvent, Guid, int>, IEvent
     {
-        [DataMember]
+        [DataMember]        
         public readonly Guid ChallengeId;
 
-        [DataMember]
-        public readonly int ChallengeVersion;
+        [DataMember]        
+        public readonly int ChallengeVersion;        
 
         public ChallengeAcceptedEvent(Guid challengeId, int challengeVersion)
         {
             ChallengeId = challengeId;
-            ChallengeVersion = challengeVersion;
+            ChallengeVersion = challengeVersion;            
         }
 
         protected override IValidator<ChallengeAcceptedEvent> CreateValidator()
@@ -27,7 +27,7 @@ namespace Kingo.Samples.Chess.Challenges
             var validator = new ConstraintValidator<ChallengeAcceptedEvent>();
 
             validator.VerifyThat(m => m.ChallengeId).IsNotEmpty();
-            validator.VerifyThat(m => m.ChallengeVersion).IsGreaterThan(1);
+            validator.VerifyThat(m => m.ChallengeVersion).IsGreaterThan(1);            
 
             return validator;
         }

@@ -17,7 +17,7 @@ namespace Kingo.Samples.Chess.Players
         {
             using (var command = DatabaseCommand.CreateSelectByKeyCommand("sp_Players_SelectByKey", key))
             {
-                return await command.ExecuteAggregateAsync<Player>();
+                return await command.ExecuteSnapshotAsync<Player>();
             }
         }  
 
@@ -44,11 +44,6 @@ namespace Kingo.Samples.Chess.Players
 
                 await command.ExecuteNonQueryAsync();
             }            
-        }
-
-        protected override Task UpdateAsync(Player aggregate, int originalVersion)
-        {
-            throw new NotImplementedException();
-        }        
+        }              
     }
 }

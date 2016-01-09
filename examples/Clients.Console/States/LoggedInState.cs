@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Clients.ConsoleApp.Commandlets;
+using Kingo.Samples.Chess;
 
 namespace Clients.ConsoleApp.States
 {
@@ -11,6 +12,7 @@ namespace Clients.ConsoleApp.States
         private readonly ChallengePlayerCommandlet _challengePlayerCommand;
         private readonly GetPlayerCommandlet _getPlayerCommand;
         private readonly GetChallengeCommandlet _getChallengeCommandlet;
+        private readonly GetGameCommandlet _getGameCommandlet;
 
         internal LoggedInState(ChessApplication application, IDisposable session)
             : base(application)
@@ -19,7 +21,13 @@ namespace Clients.ConsoleApp.States
             _challengePlayerCommand = new ChallengePlayerCommandlet();
             _getPlayerCommand = new GetPlayerCommandlet();
             _getChallengeCommandlet = new GetChallengeCommandlet();
-        }        
+            _getGameCommandlet = new GetGameCommandlet(application, session);
+        }
+
+        protected override string CommandPrompt()
+        {
+            return Session.Current.PlayerName;
+        }
 
         protected internal override IEnumerable<Commandlet> SupportedCommandLets()
         {
@@ -29,7 +37,8 @@ namespace Clients.ConsoleApp.States
                 _logoutPlayerCommand,
                 _challengePlayerCommand,
                 _getPlayerCommand,
-                _getChallengeCommandlet
+                _getChallengeCommandlet,
+                _getGameCommandlet
             };
             return thisCommands.Concat(baseCommands);
         }

@@ -39,7 +39,7 @@ namespace Clients.ConsoleApp
         {
             try
             {
-                Commandlet.ExecuteOneOf(SupportedCommandLets());
+                Commandlet.ExecuteNextCommand(CommandPrompt(), SupportedCommandLets());
             }
             catch (UnknownCommandException exception)
             {
@@ -61,7 +61,12 @@ namespace Clients.ConsoleApp
             {
                 WriteError("Command failed: {0}", exception.Message);
             }
-        }        
+        }
+        
+        protected virtual string CommandPrompt()
+        {
+            return string.Empty;
+        }
 
         private static void WriteError(string message, params object[] arguments)
         {

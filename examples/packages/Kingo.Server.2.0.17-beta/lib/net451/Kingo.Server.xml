@@ -72,6 +72,64 @@
         <member name="P:Kingo.Messaging.DependencyConfiguration.Lifetime">
             <inheritdoc />
         </member>
+        <member name="T:Kingo.Messaging.Domain.ConcurrencyException">
+            <summary>
+            This exception is thrown when an aggregate could not be updated because of a concurrency conflict.
+            </summary>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.ConcurrencyException.#ctor(System.Object,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.Domain.ConcurrencyException"/> class.
+            </summary>
+            <param name="aggregate">The aggregate that could not be updated.</param>
+            <param name="originalVersion">Version of the aggregate before it was updated.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="aggregate"/> or <paramref name="originalVersion"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.ConcurrencyException.#ctor(System.Object,System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.Domain.ConcurrencyException"/> class.
+            </summary>
+            <param name="aggregate">The aggregate that could not be updated.</param>
+            <param name="originalVersion">Version of the aggregate before it was updated.</param>
+            <param name="message">Message of the exception.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="aggregate"/> or <paramref name="originalVersion"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.Domain.ConcurrencyException.#ctor(System.Object,System.Object,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.Domain.ConcurrencyException"/> class.
+            </summary>        
+            <param name="aggregate">The aggregate that could not be updated.</param>
+            <param name="originalVersion">Version of the aggregate before it was updated.</param>
+            <param name="message">Message of the exception.</param>
+            <param name="innerException">Cause of this exception.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="aggregate"/> or <paramref name="originalVersion"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.ConcurrencyException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.Domain.ConcurrencyException"/> class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The streaming context.</param>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.ConcurrencyException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.Messaging.Domain.ConcurrencyException.Aggregate">
+            <summary>
+            The aggregate that could not be updated.
+            </summary>
+        </member>
+        <member name="P:Kingo.Messaging.Domain.ConcurrencyException.OriginalVersion">
+            <summary>
+            Version of the aggregate before it was updated.
+            </summary>
+        </member>
         <member name="T:Kingo.Messaging.Domain.IWritableEventStream`2">
             <summary>
             Represents a stream of <see cref="T:Kingo.Messaging.Domain.IVersionedObject`2"/> that can be written to.
@@ -357,6 +415,37 @@
             automatically when (possible) changes are detected. Default is <c>true</c>.
             </summary>
         </member>
+        <member name="M:Kingo.Messaging.Domain.EventStreamRepository`3.FlushEventsAsync(`2,System.Nullable{`1},System.Collections.Generic.IList{Kingo.Messaging.Domain.IVersionedObject{`0,`1}})">
+            <summary>
+            When implemented, appends all specified <paramref name="events"/> to the event store. As an optimization technique,
+            this method can also be used to store a snapshot of the specified <paramref name="aggregate"/>, so that the number of
+            events required to read from the event store can be maximized.
+            </summary>
+            <param name="aggregate">The aggregate that was created or updated.</param>
+            <param name="originalVersion">The original version of the aggregate. Will be <c>null</c> if the aggregate is new.</param>
+            <param name="events">A collection of events that were published during this session and need to be stored in the event store.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> representing the flush operation. This task should return
+            <c>true</c> if the flush succeeded or <c>false</c> if a concurrency conflict was detected.
+            </returns>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.EventStreamRepository`3.FromEvents(System.Collections.Generic.IEnumerable{Kingo.Messaging.Domain.IVersionedObject{`0,`1}},`2)">
+            <summary>
+            Restores an aggregate from a set of historic events.
+            </summary>
+            <param name="events">The collection of historic events.</param>
+            <param name="snapshot">
+            If specified, represents a snapshot of the aggregate from which the resulting aggregate is constructed.
+            </param>
+            <returns>The aggregate that was restored from the specified <paramref name="events"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="events"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="snapshot"/> is not <c>null</c> and represents a newer version of the aggregate than implied by the
+            specified <paramref name="events"/>.
+            </exception>
+        </member>
         <member name="T:Kingo.Messaging.Domain.IRepository`2">
             <summary>
             When implemented by a class, represents a generic repository of a certain type of aggregate.
@@ -403,12 +492,16 @@
         </member>
         <member name="M:Kingo.Messaging.Domain.SnapshotRepository`3.UpdateAsync(`2,`1)">
             <summary>
-            Updates / overwrites a previous version with a new version.
+            When overridden, updates / overwrites a previous version with a new version.
             </summary>
             <param name="aggregate">The instance to update.</param>        
             <param name="originalVersion">
             The version of the aggregate before it was updated.
             </param> 
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> representing the update operation. This task should return
+            <c>true</c> if the update succeeded or <c>false</c> if a concurrency conflict was detected.
+            </returns>
         </member>
         <member name="M:Kingo.Messaging.Domain.SnapshotRepository`3.InsertAsync(`2)">
             <summary>
@@ -830,91 +923,6 @@
             </summary>
             <param name="message">A message.</param>
             <returns>A task carrying out the invocation.</returns>        
-        </member>
-        <member name="T:Kingo.Messaging.MessageProcessorBusDecorator">
-            <summary>
-            Represents a <see cref="T:Kingo.Messaging.IMessageProcessorBus"/> that decorates another message processor bus.
-            </summary>
-        </member>
-        <member name="T:Kingo.Messaging.IMessageProcessorBus">
-            <summary>
-            When implemented by a class, represents a <see cref="T:Kingo.Messaging.MessageProcessorBus"/> to which event-handlers can subscribe.
-            </summary>
-        </member>
-        <member name="T:Kingo.Messaging.IDomainEventBus">
-            <summary>
-            Represents an internal message-bus that can be used to publish domain events and let all subscribers,
-            direct or indirect, handle these events within the same session/transaction they were raised in.
-            </summary> 
-        </member>
-        <member name="M:Kingo.Messaging.IDomainEventBus.PublishAsync``1(``0)">
-            <summary>
-            Publishes the specified event on this bus.
-            </summary>
-            <typeparam name="TMessage">Type of event to publish.</typeparam>
-            <param name="message">The event to publish.</param>                
-        </member>
-        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect(System.Object,System.Boolean)">
-            <summary>
-            Connects the specified handler to the bus.
-            </summary>
-            <param name="handler">The handler to connect.</param>
-            <param name="openConnection">
-            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
-            </param>
-            <returns>The created connection.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="handler"/> is <c>null</c>.
-            </exception>        
-        </member>
-        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(System.Action{``0},System.Boolean)">
-            <summary>
-            Connects the specified callback to the bus.
-            </summary>
-            <typeparam name="TMessage">Type of event to listen to.</typeparam>
-            <param name="handler">
-            Callback that will handle any events of type <paramtyperef name="TMessage"/>.
-            </param>
-            <param name="openConnection">
-            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
-            </param>
-            <returns>The created connection.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="handler"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(Kingo.Messaging.IMessageHandler{``0},System.Boolean)">
-            <summary>
-            Connects the specified handler to the bus.
-            </summary>
-            <typeparam name="TMessage">Type of event to listen to.</typeparam>
-            <param name="handler">
-            Handler that will handle any events of type <paramtyperef name="TMessage"/>.
-            </param>
-            <param name="openConnection">
-            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
-            </param>
-            <returns>The created connection.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="handler"/> is <c>null</c>.
-            </exception>
-        </member>
-        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.Connect(System.Object,System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.Connect``1(System.Action{``0},System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.Connect``1(Kingo.Messaging.IMessageHandler{``0},System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.Messaging.MessageProcessorBusDecorator.PublishAsync``1(``0)">
-            <inheritdoc />
-        </member>
-        <member name="P:Kingo.Messaging.MessageProcessorBusDecorator.Bus">
-            <summary>
-            The decorated bus.
-            </summary>
         </member>
         <member name="T:Kingo.Messaging.MessageSequenceNode`1">
             <summary>
@@ -1781,7 +1789,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:Kingo.Messaging.Domain.AggregateRoot`2"/> class.
             </summary>
-            <param name="event">An event stream containing all events that need to be published.</param>
+            <param name="event">The event of that represents the creation of this aggregate.</param>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="event"/> is <c>null</c>.
             </exception>
@@ -1879,9 +1887,18 @@
             <typeparam name="TKey">Type of the aggregate-key.</typeparam>
             <typeparam name="TVersion">Type of the aggregate-version.</typeparam>    
         </member>
-        <member name="M:Kingo.Messaging.Domain.AggregateEventStream`2.#ctor">
+        <member name="M:Kingo.Messaging.Domain.AggregateEventStream`2.#ctor(Kingo.Messaging.Domain.IVersionedObject{`0,`1})">
             <summary>
             Initializes a new instance of the <see cref="T:Kingo.Messaging.Domain.AggregateEventStream`2"/> class.
+            </summary>
+            <param name="event">The event of that represents the creation of this aggregate.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="event"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.AggregateEventStream`2.RegisterEventHandlers">
+            <summary>
+            When overridden, registers all event handlers of this aggregate through the <see cref="M:Kingo.Messaging.Domain.AggregateEventStream`2.RegisterEventHandler``1(System.Action{``0})"/> method.
             </summary>
         </member>
         <member name="M:Kingo.Messaging.Domain.AggregateEventStream`2.RegisterEventHandler``1(System.Action{``0})">
@@ -1936,6 +1953,12 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="stream"/> is <c>null</c>.
             </exception>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.MemoryEventStream`2.ToList">
+            <summary>
+            Converts this stream to a list of events.
+            </summary>
+            <returns>A list of events.</returns>
         </member>
         <member name="P:Kingo.Messaging.Domain.MemoryEventStream`2.Count">
             <summary>
@@ -2309,6 +2332,69 @@
             <summary>
             Returns the <see cref="T:Kingo.Messaging.IMessageProcessorBus"/> of this processor.
             </summary>
+        </member>
+        <member name="T:Kingo.Messaging.IMessageProcessorBus">
+            <summary>
+            When implemented by a class, represents a <see cref="T:Kingo.Messaging.MessageProcessorBus"/> to which event-handlers can subscribe.
+            </summary>
+        </member>
+        <member name="T:Kingo.Messaging.IDomainEventBus">
+            <summary>
+            Represents an internal message-bus that can be used to publish domain events and let all subscribers,
+            direct or indirect, handle these events within the same session/transaction they were raised in.
+            </summary> 
+        </member>
+        <member name="M:Kingo.Messaging.IDomainEventBus.PublishAsync``1(``0)">
+            <summary>
+            Publishes the specified event on this bus.
+            </summary>
+            <typeparam name="TMessage">Type of event to publish.</typeparam>
+            <param name="message">The event to publish.</param>                
+        </member>
+        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect(System.Object,System.Boolean)">
+            <summary>
+            Connects the specified handler to the bus.
+            </summary>
+            <param name="handler">The handler to connect.</param>
+            <param name="openConnection">
+            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
+            </param>
+            <returns>The created connection.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="handler"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(System.Action{``0},System.Boolean)">
+            <summary>
+            Connects the specified callback to the bus.
+            </summary>
+            <typeparam name="TMessage">Type of event to listen to.</typeparam>
+            <param name="handler">
+            Callback that will handle any events of type <paramtyperef name="TMessage"/>.
+            </param>
+            <param name="openConnection">
+            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
+            </param>
+            <returns>The created connection.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="handler"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.IMessageProcessorBus.Connect``1(Kingo.Messaging.IMessageHandler{``0},System.Boolean)">
+            <summary>
+            Connects the specified handler to the bus.
+            </summary>
+            <typeparam name="TMessage">Type of event to listen to.</typeparam>
+            <param name="handler">
+            Handler that will handle any events of type <paramtyperef name="TMessage"/>.
+            </param>
+            <param name="openConnection">
+            Indicates whether or not the returned <see cref="T:Kingo.IConnection"/> must be immediately opened.
+            </param>
+            <returns>The created connection.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="handler"/> is <c>null</c>.
+            </exception>
         </member>
         <member name="T:Kingo.Messaging.InstanceLifetime">
             <summary>
@@ -2689,6 +2775,13 @@
             <returns>
             A new <see cref="P:Kingo.Messaging.MessageProcessor.MessageHandlerFactory"/> to be used by this processor,
             or <c>null</c> if this processor does not use any factory.</returns>
+        </member>
+        <member name="M:Kingo.Messaging.MessageProcessor.OnPublishing``1(``0)">
+            <summary>
+            This method is invoked just before an event is published and subsequently handled by this processor.
+            </summary>
+            <typeparam name="TEvent">Type of the event that is about to be published.</typeparam>
+            <param name="event">The event that is about to be published.</param>        
         </member>
         <member name="M:Kingo.Messaging.MessageProcessor.CreateUnitOfWorkScope">
             <inheritdoc />
@@ -3116,6 +3209,11 @@
               Looks up a localized string similar to No aggregate of type &apos;{0}&apos; with the specified key ({1}) was found..
             </summary>
         </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.Repository_ConcurrenyException">
+            <summary>
+              Looks up a localized string similar to Aggregate of type &apos;{0}&apos; could not be updated because of a concurreny conflict. The expected version in the data store was &apos;{1}&apos;. .
+            </summary>
+        </member>
         <member name="P:Kingo.Resources.ExceptionMessages.Repository_DeleteNotSupported">
             <summary>
               Looks up a localized string similar to Cannot delete aggregate of type &apos;{0}&apos; because the operation is not supported..
@@ -3124,6 +3222,11 @@
         <member name="P:Kingo.Resources.ExceptionMessages.Repository_DuplicateKey">
             <summary>
               Looks up a localized string similar to Another aggregate with the same key already exists: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.Repository_UpdateNotSupported">
+            <summary>
+              Looks up a localized string similar to Cannot update aggregate of type &apos;{0}&apos; because updates are not supported by repository &apos;{1}&apos;..
             </summary>
         </member>
         <member name="P:Kingo.Resources.ExceptionMessages.UnitOfWorkScope_AlreadyCompleted">

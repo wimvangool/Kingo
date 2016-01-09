@@ -17,15 +17,15 @@ namespace Kingo.Samples.Chess.Challenges
         {
             using (var command = DatabaseCommand.CreateSelectByKeyCommand("sp_Challenges_SelectByKey", key))
             {
-                return await command.ExecuteAggregateAsync<Challenge>();
+                return await command.ExecuteSnapshotAsync<Challenge>();
             }
         }      
 
-        protected override async Task UpdateAsync(Challenge aggregate, int originalVersion)
+        protected override async Task<bool> UpdateAsync(Challenge aggregate, int originalVersion)
         {
             using (var command = DatabaseCommand.CreateUpdateCommand<Guid, int, Challenge>("sp_Challenges_Update", aggregate, originalVersion))
             {
-                await command.ExecuteNonQueryAsync();
+                return await command.ExecuteNonQueryAsync();
             }
         }
 

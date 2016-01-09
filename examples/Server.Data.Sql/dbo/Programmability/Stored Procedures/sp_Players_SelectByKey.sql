@@ -1,5 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Players_SelectByKey]
-	@Key uniqueidentifier
+(
+	@Key UNIQUEIDENTIFIER
+)
 AS
 BEGIN
 	SELECT	[Value]

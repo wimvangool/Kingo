@@ -126,6 +126,12 @@
   <data name="Challenges_PlayerCannotAcceptChallenge" xml:space="preserve">
     <value>Player '{0}' cannot accept the specified challenge because he is not the receiver of that challenge.</value>
   </data>
+  <data name="Game_GameAlreadyEnded" xml:space="preserve">
+    <value>Cannot perform the operation because the game already ended.</value>
+  </data>
+  <data name="Game_SenderNoPlayer" xml:space="preserve">
+    <value>Cannot perform the operation because the sender ({0}) is no player of the game.</value>
+  </data>
   <data name="Players_PlayerCannotChallengeHimself" xml:space="preserve">
     <value>Player '{0}' attempted to challenge himself.</value>
   </data>

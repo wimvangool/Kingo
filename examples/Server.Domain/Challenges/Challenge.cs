@@ -1,5 +1,7 @@
 ﻿using System;
+using Kingo.Clocks;
 using Kingo.Messaging.Domain;
+using Kingo.Samples.Chess.Games;
 using Kingo.Samples.Chess.Resources;
 
 namespace Kingo.Samples.Chess.Challenges
@@ -55,6 +57,13 @@ namespace Kingo.Samples.Chess.Challenges
             Publish(new ChallengeAcceptedEvent(_id, NextVersion()));                
         }
 
+        private static Exception NewPlayerCannotAcceptChallengeException(string playerName)
+        {
+            var messageFormat = DomainExceptionMessages.Challenges_PlayerCannotAcceptChallenge;
+            var message = string.Format(messageFormat, playerName);
+            return new DomainException(message);
+        }
+
         public void Reject()
         {
             if (!_receiverId.Equals(Session.Current.PlayerId))
@@ -74,11 +83,20 @@ namespace Kingo.Samples.Chess.Challenges
             Publish(new ChallengeRejectedEvent(_id, NextVersion()));                
         }
 
-        private static Exception NewPlayerCannotAcceptChallengeException(string playerName)
+        public Game StartGame()
         {
-            var messageFormat = DomainExceptionMessages.Challenges_PlayerCannotAcceptChallenge;
-            var message = string.Format(messageFormat, playerName);
-            return new DomainException(message);
+            return new Game(CreateGameStartedEvent());
+        }
+
+        private GameStartedEvent CreateGameStartedEvent()
+        {
+            // We leave the assignment of white and black up to chance.
+            var milliseconds = Clock.Current.UtcDateAndTime().Millisecond;
+            if (milliseconds < 500)
+            {
+                return new GameStartedEvent(_id, 1, _senderId, _receiverId);
+            }
+            return new GameStartedEvent(_id, 1, _receiverId, _senderId);
         }
 
         private static Exception NewChallengeAlreadyAcceptedException()
@@ -89,6 +107,6 @@ namespace Kingo.Samples.Chess.Challenges
         private static Exception NewChallengeAlreadyRejectedException()
         {
             return new DomainException(DomainExceptionMessages.Challenges_AlreadyRejected);
-        }    
+        }        
     }
 }

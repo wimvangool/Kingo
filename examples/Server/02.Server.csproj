@@ -46,11 +46,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo">
-      <HintPath>..\packages\Kingo.Server.2.0.13-beta\lib\net451\Kingo.dll</HintPath>
+    <Reference Include="Kingo, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.dll</HintPath>
     </Reference>
-    <Reference Include="Kingo.Server">
-      <HintPath>..\packages\Kingo.Server.2.0.13-beta\lib\net451\Kingo.Server.dll</HintPath>
+    <Reference Include="Kingo.Server, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.Server.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -97,9 +99,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Challenges\ChallengeService.cs" />
+    <Compile Include="Games\GameService.cs" />
     <Compile Include="NServiceBusConfig.cs" />
     <Compile Include="FaultExceptionModule.cs" />
-    <Compile Include="Games\ChallengeAcceptedHandler.cs" />
     <Compile Include="NServiceBusProcessor.cs" />
     <Compile Include="Players\PlayerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

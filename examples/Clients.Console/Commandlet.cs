@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kingo.Samples.Chess;
 
 namespace Clients.ConsoleApp
 {
@@ -28,28 +27,27 @@ namespace Clients.ConsoleApp
 
         public abstract void Execute(string[] args);
 
-        public static void ExecuteOneOf(IEnumerable<Commandlet> commands)
+        public static void ExecuteNextCommand(string commandPrompt, IEnumerable<Commandlet> commands)
         {
-            var command = NextCommand();
+            var command = NextCommand(commandPrompt);
             var commandName = command[0];
 
             var commandToExecute = commands.FirstOrDefault(c => c.IsMatch(commandName));
-            if (commandToExecute == null)
+            if (commandToExecute != null)
             {
-                throw new UnknownCommandException(commandName);
+                commandToExecute.Execute(command);
+                return;
             }
-            commandToExecute.Execute(command);
+            throw new UnknownCommandException(commandName);
         }        
 
-        private static string[] NextCommand()
-        {
-            var session = Session.Current;
-            var playerName = session == null ? null : session.PlayerName;
+        private static string[] NextCommand(string commandPrompt)
+        {            
             string command;
 
             do
             {
-                Console.Write(playerName);
+                Console.Write(commandPrompt);
                 Console.Write('>');
 
                 command = Console.ReadLine();

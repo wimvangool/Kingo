@@ -1,7 +1,9 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Challenges_Insert]
-	@Key uniqueidentifier,	
-	@Version int,
-	@Value nvarchar(MAX)	
+(
+	@Key UNIQUEIDENTIFIER,	
+	@Version INT,
+	@Value NVARCHAR(MAX)	
+)
 AS
 BEGIN
 	INSERT INTO [dbo].[Challenges] ([Key], [Version], [Value])

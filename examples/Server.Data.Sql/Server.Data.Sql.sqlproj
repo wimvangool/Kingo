@@ -63,6 +63,8 @@
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Programmability" />
     <Folder Include="dbo\Programmability\Stored Procedures" />
+    <Folder Include="dbo\Programmability\Types" />
+    <Folder Include="dbo\Programmability\Types\User-Defined Table Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Players.sql" />
@@ -78,8 +80,18 @@
     <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_DeletePendingChallenge.sql" />
     <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_SelectByKey.sql" />
     <Build Include="dbo\Programmability\Stored Procedures\sp_Challenges_Update.sql" />
+    <Build Include="dbo\Programmability\Types\User-Defined Table Types\Events.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Games_InsertEvents.sql" />
+    <Build Include="dbo\Tables\Games.sql" />
+    <Build Include="dbo\Tables\ActiveGames.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Games_InsertActiveGame.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Games_DeleteActiveGame.sql" />
+    <Build Include="dbo\Programmability\Stored Procedures\sp_Games_GetActiveGames.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Release.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Server.Data.Sql.refactorlog" />
   </ItemGroup>
 </Project>

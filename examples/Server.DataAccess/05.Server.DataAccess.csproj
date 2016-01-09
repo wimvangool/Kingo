@@ -31,11 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo">
-      <HintPath>..\packages\Kingo.Server.2.0.13-beta\lib\net451\Kingo.dll</HintPath>
+    <Reference Include="Kingo, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.dll</HintPath>
     </Reference>
-    <Reference Include="Kingo.Server">
-      <HintPath>..\packages\Kingo.Server.2.0.13-beta\lib\net451\Kingo.Server.dll</HintPath>
+    <Reference Include="Kingo.Server, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.Server.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -61,6 +63,8 @@
     <Compile Include="Challenges\GetPendingChallengesQuery.cs" />
     <Compile Include="Challenges\SqlChallengeRepository.cs" />
     <Compile Include="DatabaseCommand.cs" />
+    <Compile Include="Games\GetActiveGamesQuery.cs" />
+    <Compile Include="Games\SqlGameRepository.cs" />
     <Compile Include="Players\GetPlayersQuery.cs" />
     <Compile Include="Players\SqlPlayerRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,9 +82,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Games\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

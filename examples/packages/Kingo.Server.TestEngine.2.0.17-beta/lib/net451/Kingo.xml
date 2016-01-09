@@ -2753,7 +2753,7 @@
         </member>
         <member name="M:Kingo.Constraints.Filter`2.WithName(Kingo.Identifier)">
             <summary>
-            Creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
+            When overridden, creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
             </summary>
             <param name="name">New name of the constraint.</param>
             <returns>A copy of this constraint with the specified <paramref name="name"/>.</returns>
@@ -2766,7 +2766,7 @@
         </member>
         <member name="M:Kingo.Constraints.Filter`2.WithErrorMessage(Kingo.StringTemplate)">
             <summary>
-            Creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
+            When overridden, creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
             </summary>
             <param name="errorMessage">New error message of the constraint.</param>
             <returns>A copy of this constraint with the specified <paramref name="errorMessage"/>.</returns>
@@ -4516,6 +4516,48 @@
             <paramref name="failedMessage"/> is <c>null</c>.
             </exception>
         </member>
+        <member name="M:Kingo.Messaging.Domain.DomainException.AsTechnicalException(System.Object)">
+            <summary>
+            Converts this instance into an instance of <see cref="T:Kingo.Messaging.TechnicalException"/>.
+            </summary>
+            <param name="failedMessage">The message that caused the exception.</param>
+            <returns>
+            An instance of <see cref="T:Kingo.Messaging.TechnicalException"/> that wraps this exception and the inner
+            exception.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="failedMessage"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.DomainException.AsTechnicalException(System.Object,System.String)">
+            <summary>
+            Converts this instance into an instance of <see cref="T:Kingo.Messaging.TechnicalException"/>.
+            </summary>
+            <param name="failedMessage">The message that caused the exception.</param>
+            <param name="message">Message of the exception.</param>
+            <returns>
+            An instance of <see cref="T:Kingo.Messaging.TechnicalException"/> that wraps this exception and the inner
+            exception.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="failedMessage"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.Domain.DomainException.AsTechnicalException(System.Object,System.String,System.Exception)">
+            <summary>
+            Converts this instance into an instance of <see cref="T:Kingo.Messaging.TechnicalException"/>.
+            </summary>
+            <param name="failedMessage">The message that caused the exception.</param>
+            <param name="message">Message of the exception.</param>
+            <param name="innerException">This <see cref="T:Kingo.Messaging.Domain.DomainException"/>.</param>
+            <returns>
+            An instance of <see cref="T:Kingo.Messaging.TechnicalException"/> that wraps this exception and the inner
+            exception.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="failedMessage"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="T:Kingo.Messaging.ErrorInheritanceLevel">
             <summary>
             Represents a level of severity of an error message in relation to a certain member. The level
@@ -4769,7 +4811,7 @@
         </member>
         <member name="T:Kingo.Messaging.FunctionalException">
             <summary>
-            This exception is thrown when an application's precondition for handling a certain message failed.   
+            This exception is thrown when an application's pre-condition for handling a certain message failed.   
             </summary>
         </member>
         <member name="M:Kingo.Messaging.FunctionalException.#ctor(System.Object)">
@@ -4931,6 +4973,56 @@
             If <c>null</c>, the default formatter is used.
             </param>
             <returns>A string-representation of the error message.</returns>
+        </member>
+        <member name="T:Kingo.Messaging.TechnicalException">
+            <summary>
+            This exception can be thrown when an application's post-condition for handling a certain message failed.   
+            </summary>
+        </member>
+        <member name="M:Kingo.Messaging.TechnicalException.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.FunctionalException"/> class.
+            </summary>
+            <param name="failedMessage">The message that could not be processed.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="failedMessage"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.TechnicalException.#ctor(System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.FunctionalException"/> class.
+            </summary>
+            <param name="failedMessage">The message that could not be processed.</param>
+            <param name="message">Message of the exception.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="failedMessage"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.TechnicalException.#ctor(System.Object,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.FunctionalException"/> class.
+            </summary>
+            <param name="failedMessage">The message that could not be processed.</param>
+            <param name="message">Message of the exception.</param>
+            <param name="innerException">Cause of this exception.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="failedMessage"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.TechnicalException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.FunctionalException"/> class.
+            </summary>
+            <param name="info">The serialization info.</param>
+            <param name="context">The streaming context.</param>
+        </member>
+        <member name="M:Kingo.Messaging.TechnicalException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
+        <member name="P:Kingo.Messaging.TechnicalException.FailedMessage">
+            <summary>
+            The message that could not be processed.
+            </summary>
         </member>
         <member name="T:Kingo.Constraints.InputToOutputMapper`1">
             <summary>
@@ -7740,6 +7832,16 @@
               Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
             </summary>
         </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.Constraint_WithErrorMessageNotSupported">
+            <summary>
+              Looks up a localized string similar to WithErrorMessage is not supported by constraint &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.Constraint_WithNameNotSupported">
+            <summary>
+              Looks up a localized string similar to WithName is not supported by constraint &apos;{0}&apos;..
+            </summary>
+        </member>
         <member name="P:Kingo.Resources.ExceptionMessages.Context_IllegalScopeStarted">
             <summary>
               Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
@@ -7773,6 +7875,11 @@
         <member name="P:Kingo.Resources.ExceptionMessages.DomainModelException_CommandFailed">
             <summary>
               Looks up a localized string similar to Command &apos;{0}&apos; failed..
+            </summary>
+        </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.DomainModelException_EventFailed">
+            <summary>
+              Looks up a localized string similar to An error occurred while processing event &apos;{0}&apos;..
             </summary>
         </member>
         <member name="P:Kingo.Resources.ExceptionMessages.EnumIsInRangeOfValidValues_UnsupportedValue">

@@ -49,7 +49,7 @@ namespace Kingo.Samples.Chess.Challenges.AcceptChallenge
         private void Validate(IMemberConstraintSet<ChallengeAcceptedEvent> validator)
         {
             validator.VerifyThat(m => m.ChallengeId).IsEqualTo(PlayerIsChallenged.PlayerChallengedEvent.ChallengeId);
-            validator.VerifyThat(m => m.ChallengeVersion).IsGreaterThan(PlayerIsChallenged.PlayerChallengedEvent.ChallengeVersion);
+            validator.VerifyThat(m => m.ChallengeVersion).IsGreaterThan(PlayerIsChallenged.PlayerChallengedEvent.ChallengeVersion);            
         }
     }
 }

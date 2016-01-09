@@ -1,5 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Challenges_GetPendingChallenges]
+(
 	@ReceiverKey UNIQUEIDENTIFIER
+)
 AS
 BEGIN
 	SELECT	[ChallengeKey], [SenderName]

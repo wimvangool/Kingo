@@ -8,7 +8,7 @@ namespace Kingo.Samples.Chess.Challenges
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public sealed class ChallengeService : WcfService, IChallengeService
     {
-        private readonly IBus _enterpriseServiceBus;
+        private readonly IBus _enterpriseServiceBus;        
 
         public ChallengeService(IBus enterpriseServiceBus)
         {
@@ -16,13 +16,13 @@ namespace Kingo.Samples.Chess.Challenges
             {
                 throw new ArgumentNullException("enterpriseServiceBus");
             }
-            _enterpriseServiceBus = enterpriseServiceBus;
+            _enterpriseServiceBus = enterpriseServiceBus;            
         }
 
         protected override IBus EnterpriseServiceBus
         {
             get { return _enterpriseServiceBus; }
-        }
+        }        
 
         #region [====== Write Methods ======]
 
@@ -50,6 +50,6 @@ namespace Kingo.Samples.Chess.Challenges
             return Processor.ExecuteAsync(request, new GetPendingChallengesQuery());
         }
 
-        #endregion        
+        #endregion                  
     }
 }

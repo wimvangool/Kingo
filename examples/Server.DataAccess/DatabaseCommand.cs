@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using Kingo.Messaging.Domain;
@@ -38,7 +38,7 @@ namespace Kingo.Samples.Chess
             get { return _command.Parameters; }
         }
 
-        internal async Task<TAggregate> ExecuteAggregateAsync<TAggregate>()
+        internal async Task<TAggregate> ExecuteSnapshotAsync<TAggregate>()
         {
             return Deserialize<TAggregate>(await ExecuteScalarAsync<string>());
         }
@@ -64,18 +64,13 @@ namespace Kingo.Samples.Chess
             return await _command.ExecuteReaderAsync(CommandBehavior.CloseConnection | CommandBehavior.SingleResult);
         }
 
-        internal async Task ExecuteNonQueryAsync()
+        internal async Task<bool> ExecuteNonQueryAsync()
         {
             await _connection.OpenAsync();
 
             try
-            {
-                // TODO: throw concurrency exception.
-                var rowCount = await _command.ExecuteNonQueryAsync();
-                if (rowCount == 0)
-                {                    
-                    Debug.Fail("Concurrency Exception");
-                }
+            {                
+                return await _command.ExecuteNonQueryAsync() > 0;                
             }
             finally
             {
@@ -89,7 +84,8 @@ namespace Kingo.Samples.Chess
 
         private const string _Key = "Key";
         private const string _Version = "Version";
-        private const string _Value = "Value"; 
+        private const string _Value = "Value";
+        private const string _EventsTableType = "dbo.Events";
        
         internal static DatabaseCommand CreateSelectByKeyCommand<TKey>(string commandText, TKey key)
         {
@@ -98,8 +94,7 @@ namespace Kingo.Samples.Chess
             return command;
         }
 
-        internal static DatabaseCommand CreateInsertCommand<TKey, TVersion, TAggregate>(string commandText, TAggregate aggregate)
-            where TKey : struct, IEquatable<TKey>
+        internal static DatabaseCommand CreateInsertCommand<TKey, TVersion, TAggregate>(string commandText, TAggregate aggregate)            
             where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
             where TAggregate : class, IVersionedObject<TKey, TVersion>
         {
@@ -110,8 +105,7 @@ namespace Kingo.Samples.Chess
             return command;
         }
 
-        internal static DatabaseCommand CreateUpdateCommand<TKey, TVersion, TAggregate>(string commandText, TAggregate aggregate, TVersion originalVersion)
-            where TKey : struct, IEquatable<TKey>
+        internal static DatabaseCommand CreateUpdateCommand<TKey, TVersion, TAggregate>(string commandText, TAggregate aggregate, TVersion originalVersion)            
             where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
             where TAggregate : class, IVersionedObject<TKey, TVersion>
         {
@@ -121,6 +115,45 @@ namespace Kingo.Samples.Chess
             command.Parameters.AddWithValue("NewVersion", aggregate.Version);
             command.Parameters.AddWithValue(_Value, Serialize(aggregate));
             return command;
+        }
+
+        internal static DatabaseCommand CreateInsertEventsCommand<TKey, TVersion, TAggregate>(string commandText, TAggregate aggregate, IList<IVersionedObject<TKey, TVersion>> events, TVersion? originalVersion)            
+            where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+            where TAggregate : class, IVersionedObject<TKey, TVersion>
+        {
+            var command = new DatabaseCommand(commandText);
+            command.Parameters.AddWithValue(_Key, aggregate.Key);
+            command.Parameters.AddWithValue("OldVersion", ValueOrDBNull(originalVersion));
+
+            var eventsParameter = command.Parameters.AddWithValue("Events", ConvertToTable(events));
+            eventsParameter.SqlDbType = SqlDbType.Structured;
+            eventsParameter.TypeName = _EventsTableType;
+            return command;
+        }
+
+        private static DataTable ConvertToTable<TKey, TVersion>(IEnumerable<IVersionedObject<TKey, TVersion>> events)
+            where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+        {
+            var table = CreateEventsTable();
+
+            foreach (var @event in events)
+            {
+                table.Rows.Add(@event.Version, Serialize(@event));
+            }
+            return table;
+        }
+
+        private static DataTable CreateEventsTable()
+        {
+            var table = new DataTable(_EventsTableType);
+            table.Columns.Add(_Version);
+            table.Columns.Add(_Value);
+            return table;
+        }
+
+        private static object ValueOrDBNull(object value)
+        {
+            return value ?? DBNull.Value;
         }
 
         #endregion
