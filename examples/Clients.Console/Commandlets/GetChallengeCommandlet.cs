@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Clients.ConsoleApp.Proxies;
 using Kingo.Samples.Chess.Challenges;
@@ -20,15 +21,11 @@ namespace Clients.ConsoleApp.Commandlets
             _challengeService = new ChallengeServiceProxy();
         }
 
-        public override void Execute(string[] args)
+        internal override void Execute(IReadOnlyList<string> arguments)
         {
-            if (args.Length > 1)
-            {
-                throw new UnknownCommandArgumentException(args[1]);
-            }
             Execute();
-        }
-
+        }     
+   
         internal void Execute()
         {
             var response = _challengeService.GetPendingChallenges(new GetPendingChallengesRequest()).Result;
@@ -48,7 +45,7 @@ namespace Clients.ConsoleApp.Commandlets
 
             foreach (var challenge in response.Challenges.OrderBy(c => c.PlayerName))
             {
-                Prompt(challenge);    
+                Prompt(challenge);
             }
             Console.WriteLine();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Clients.ConsoleApp.Proxies;
 using Clients.ConsoleApp.States;
 using Kingo.Samples.Chess;
@@ -24,20 +25,17 @@ namespace Clients.ConsoleApp.Commandlets
             return string.Format("{0} {1}", Name, _PlayerArgument);
         }
 
-        public override void Execute(string[] args)
+        protected override IEnumerable<string> Arguments()
         {
-            if (args.Length <= 1)
-            {
-                throw new MissingCommandArgumentException(_PlayerArgument);
-            }
-            if (args.Length > 2)
-            {
-                throw new UnknownCommandArgumentException(args[2]);
-            }
-            Execute(args[1]);
+            yield return _PlayerArgument;
         }
 
-        private void Execute(string enteredName)
+        internal override void Execute(IReadOnlyList<string> arguments)
+        {            
+            Execute(arguments[0]);
+        }
+
+        internal void Execute(string enteredName)
         {
             RegisteredPlayer player;
 

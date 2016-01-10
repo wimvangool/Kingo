@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Clients.ConsoleApp.Proxies;
 using Kingo.Samples.Chess.Challenges;
 using Kingo.Samples.Chess.Players;
@@ -19,18 +20,14 @@ namespace Clients.ConsoleApp.Commandlets
             _challengeService = new ChallengeServiceProxy();
         }
 
-        public override void Execute(string[] args)
+        protected override IEnumerable<string> Arguments()
         {
-            if (args.Length <= 1)
-            {
-                throw new MissingCommandArgumentException(_PlayerArgument);
-            }
-            if (args.Length == 2)
-            {
-                Execute(args[1]);
-                return;
-            }
-            throw new UnknownCommandArgumentException(args[2]);
+            yield return _PlayerArgument;
+        }
+
+        internal override void Execute(IReadOnlyList<string> arguments)
+        {
+            Execute(arguments[0]);
         }
 
         internal void Execute(string playerName)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Clients.ConsoleApp.Proxies;
 using Clients.ConsoleApp.States;
 using Kingo.Samples.Chess;
@@ -23,15 +24,11 @@ namespace Clients.ConsoleApp.Commandlets
             _gameService = new GameServiceProxy();
         }
 
-        public override void Execute(string[] args)
+        internal override void Execute(IReadOnlyList<string> arguments)
         {
-            if (args.Length > 1)
-            {
-                throw new UnknownCommandArgumentException(args[1]);
-            }
             Execute();
-        }
-
+        } 
+       
         internal void Execute()
         {
             var response = _gameService.GetActiveGames(new GetActiveGamesRequest()).Result;
@@ -46,14 +43,14 @@ namespace Clients.ConsoleApp.Commandlets
             Console.WriteLine("You currently participate in {0} game(s). Please choose which to enter ({1}) or skip ({2})...",
                 response.Games.Length,
                 _EnterGame,
-                _SkipGame);           
+                _SkipGame);
 
             foreach (var game in response.Games)
             {
                 string opponentName;
 
                 if (UserWantsToEnter(game, out opponentName))
-                {                    
+                {
                     Console.WriteLine("\tEntering game against {0}...", opponentName);
 
                     _application.SwitchTo(new PlayingGameState(_application, _session, game));

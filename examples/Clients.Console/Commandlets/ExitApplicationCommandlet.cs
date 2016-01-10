@@ -1,4 +1,5 @@
-﻿using Clients.ConsoleApp.States;
+﻿using System.Collections.Generic;
+using Clients.ConsoleApp.States;
 
 namespace Clients.ConsoleApp.Commandlets
 {
@@ -12,15 +13,11 @@ namespace Clients.ConsoleApp.Commandlets
             _application = application;
         }
 
-        public override void Execute(string[] args)
+        internal override void Execute(IReadOnlyList<string> arguments)
         {
-            if (args.Length > 1)
-            {
-                throw new UnknownCommandArgumentException(args[1]);
-            }
             Execute();
-        }
-
+        }  
+     
         internal void Execute()
         {
             _application.SwitchTo(new StoppedState(_application));                

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Clients.ConsoleApp.Commandlets
 {
@@ -12,12 +13,8 @@ namespace Clients.ConsoleApp.Commandlets
             _state = state;
         }
 
-        public override void Execute(string[] args)
+        internal override void Execute(IReadOnlyList<string> arguments)
         {
-            if (args.Length > 1)
-            {
-                throw new UnknownCommandArgumentException(args[1]);
-            }
             Execute();
         }
 
@@ -34,7 +31,7 @@ namespace Clients.ConsoleApp.Commandlets
                     Console.WriteLine("    - {0}", command.Description);
                     Console.WriteLine();
                 }
-            }  
+            } 
         }
     }
 }

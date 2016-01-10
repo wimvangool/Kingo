@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Clients.ConsoleApp.Proxies;
 using Kingo.Samples.Chess.Players;
@@ -15,15 +16,11 @@ namespace Clients.ConsoleApp.Commandlets
             _playerService = new PlayerServiceProxy();
         }
 
-        public override void Execute(string[] args)
+        internal override void Execute(IReadOnlyList<string> arguments)
         {
-            if (args.Length > 1)
-            {
-                throw new UnknownCommandArgumentException(args[1]);
-            }
             Execute();
-        }
-
+        }   
+     
         internal void Execute()
         {
             var response = _playerService.GetPlayersAsync(new GetPlayersRequest()).Result;

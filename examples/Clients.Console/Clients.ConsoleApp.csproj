@@ -58,6 +58,7 @@
     <Compile Include="Commandlets\ChallengePlayerCommandlet.cs" />
     <Compile Include="Commandlets\ExitApplicationCommandlet.cs" />
     <Compile Include="Commandlets\ExitGameCommandlet.cs" />
+    <Compile Include="Commandlets\ForfeitGameCommandlet.cs" />
     <Compile Include="Commandlets\GetChallengeCommandlet.cs" />
     <Compile Include="Commandlets\GetGameCommandlet.cs" />
     <Compile Include="Commandlets\GetPlayerCommandlet.cs" />

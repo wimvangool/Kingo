@@ -13,7 +13,7 @@ namespace Clients.ConsoleApp
         {
             Name = name;
             Description = description;
-        }
+        }        
 
         private bool IsMatch(string commandName)
         {
@@ -25,7 +25,27 @@ namespace Clients.ConsoleApp
             return Name;
         }        
 
-        public abstract void Execute(string[] args);
+        private void ExecuteRaw(string[] arguments)
+        {
+            var expectedArguments = Arguments().ToArray();
+            var actualArguments = arguments.Skip(1).ToArray();
+            if (actualArguments.Length < expectedArguments.Length)
+            {
+                throw new MissingCommandArgumentException(expectedArguments[actualArguments.Length]);
+            }
+            if (actualArguments.Length > expectedArguments.Length)
+            {
+                throw new UnknownCommandArgumentException(actualArguments[expectedArguments.Length]);
+            }
+            Execute(actualArguments);
+        }
+
+        internal abstract void Execute(IReadOnlyList<string> arguments);
+
+        protected virtual IEnumerable<string> Arguments()
+        {
+            return Enumerable.Empty<string>();
+        }
 
         public static void ExecuteNextCommand(string commandPrompt, IEnumerable<Commandlet> commands)
         {
@@ -35,7 +55,7 @@ namespace Clients.ConsoleApp
             var commandToExecute = commands.FirstOrDefault(c => c.IsMatch(commandName));
             if (commandToExecute != null)
             {
-                commandToExecute.Execute(command);
+                commandToExecute.ExecuteRaw(command);
                 return;
             }
             throw new UnknownCommandException(commandName);

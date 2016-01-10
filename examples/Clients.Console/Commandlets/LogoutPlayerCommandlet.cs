@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Clients.ConsoleApp.States;
 
 namespace Clients.ConsoleApp.Commandlets
@@ -15,16 +16,12 @@ namespace Clients.ConsoleApp.Commandlets
             _session = session;
         }
 
-        public override void Execute(string[] args)
+        internal override void Execute(IReadOnlyList<string> arguments)
         {
-            if (args.Length > 1)
-            {
-                throw new UnknownCommandArgumentException(args[1]);
-            }
             Execute();
         }
 
-        private void Execute()
+        internal void Execute()
         {
             _session.Dispose();
             _application.SwitchTo(new StartedState(_application));
