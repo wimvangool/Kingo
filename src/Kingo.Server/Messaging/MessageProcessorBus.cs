@@ -8,9 +8,9 @@ namespace Kingo.Messaging
     internal sealed class MessageProcessorBus : IMessageProcessorBus
     {        
         private readonly ICollection<IMessageProcessorBusConnection> _connections;        
-        private readonly IMessageProcessor _processor;        
+        private readonly MessageProcessor _processor;        
         
-        internal MessageProcessorBus(IMessageProcessor processor)
+        internal MessageProcessorBus(MessageProcessor processor)
         {            
             _connections = new SynchronizedCollection<IMessageProcessorBusConnection>();            
             _processor = processor;            
@@ -55,18 +55,20 @@ namespace Kingo.Messaging
 
         #endregion        
 
-        public async Task PublishAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        public async Task PublishAsync<TMessage>(TMessage message) where TMessage : class, IMessage
         {
+            _processor.OnPublishing(message);
+
             await InvokeRegisteredHandlers(message);
             await InvokeConnectedHandlers(message);                            
         }
 
-        private async Task InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        private async Task InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class, IMessage
         {            
             await _processor.HandleAsync(message);
         }              
 
-        private async Task InvokeConnectedHandlers<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        private async Task InvokeConnectedHandlers<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             await Task.WhenAll(_connections.Select(connection => connection.HandleAsync(_processor, message)));                      
         }

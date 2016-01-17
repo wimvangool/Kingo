@@ -3,7 +3,7 @@ using Kingo.Messaging;
 
 namespace Kingo.Constraints
 {   
-    internal sealed class ValidatedMessage<TValue> : Message<ValidatedMessage<TValue>>
+    internal sealed class ValidatedMessage<TValue> : Message
     {
         internal readonly TValue Member;
         internal readonly TValue Other;
@@ -38,7 +38,7 @@ namespace Kingo.Constraints
             Right = message.Right;
         }
 
-        public override ValidatedMessage<TValue> Copy()
+        public override Message Copy()
         {
             return new ValidatedMessage<TValue>(this);
         }

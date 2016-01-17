@@ -18,6 +18,6 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>;
+        void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage;
     }
 }

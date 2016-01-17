@@ -52,15 +52,25 @@
     </Compile>
     <Compile Include="Messaging\DependencyConfiguration.cs" />
     <Compile Include="Messaging\Domain\Aggregate.T1.cs" />
+    <Compile Include="Messaging\Domain\AggregateEventStreamFactory.T2.cs" />
     <Compile Include="Messaging\Domain\AggregateSet.T1.cs" />
+    <Compile Include="Messaging\Domain\ConcurrencyException.cs" />
     <Compile Include="Messaging\Domain\DomainEventStream.T2.cs" />
     <Compile Include="Messaging\Domain\DuplicateKeyException.T2.cs" />
-    <Compile Include="Messaging\Domain\EventStreamRepository.T3.cs" />
+    <Compile Include="Messaging\Domain\AggregateEventStreamRepository.T3.cs" />
+    <Compile Include="Messaging\Domain\Event.T2.cs" />
+    <Compile Include="Messaging\Domain\IAggregateRoot.T2.cs" />
     <Compile Include="Messaging\Domain\IRepository.T2.cs" />
-    <Compile Include="Messaging\Domain\SnapshotRepository.T3.cs" />
+    <Compile Include="Messaging\Domain\ISnapshot.T2.cs" />
+    <Compile Include="Messaging\Domain\ITypeToContractMap.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootRepository.T3.cs" />
     <Compile Include="Messaging\ClassAndMethodAttributeProvider.cs" />
     <Compile Include="Messaging\Domain\AggregateNotFoundByKeyException.T2.cs" />
     <Compile Include="Messaging\Domain\Entity.T1.cs" />
+    <Compile Include="Messaging\Domain\Snapshot.T2.cs" />
+    <Compile Include="Messaging\Domain\SnapshotOrEvent.T2.cs" />
+    <Compile Include="Messaging\Domain\TypeToContractMap.cs" />
+    <Compile Include="Messaging\Domain\TypeToContractMapException.cs" />
     <Compile Include="Messaging\EmptySequence.cs" />
     <Compile Include="Messaging\IDependencyConfiguration.cs" />
     <Compile Include="Messaging\IMessageHandlerOrQuery.cs" />

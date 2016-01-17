@@ -38,7 +38,7 @@ namespace Kingo.Messaging
             _connections.Remove(this);
         }
 
-        public async Task HandleAsync<TPublished>(IMessageProcessor processor, TPublished message) where TPublished : class, IMessage<TPublished>
+        public async Task HandleAsync<TPublished>(IMessageProcessor processor, TPublished message) where TPublished : class, IMessage
         {
             var handler = _handler as IMessageHandler<TPublished>;
             if (handler == null)

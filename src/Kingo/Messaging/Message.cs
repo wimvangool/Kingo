@@ -2,9 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
@@ -18,13 +20,15 @@ namespace Kingo.Messaging
     {        
         private ExtensionDataObject _extensionData;
 
-        internal Message() { }
-
-        internal Message(Message message)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Message" /> class.
+        /// </summary>
+        /// <param name="message">If specified, the constructor copies all extension data from this message.</param>
+        protected Message(Message message = null)
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                return;
             }
             _extensionData = message._extensionData;
         }                       
@@ -44,38 +48,57 @@ namespace Kingo.Messaging
 
         object ICloneable.Clone()
         {
-            return CopyMessage();
+            return Copy();
         }
-
+        
         IMessage IMessage.Copy()
         {
-            return CopyMessage();
+            return Copy();
         }
 
-        internal abstract IMessage CopyMessage();       
+        /// <summary>
+        /// Creates and returns a copy of this message. The default implementation uses
+        /// the <see cref="DataContractSerializer" /> to copy this instance.
+        /// </summary>
+        /// <returns>A copy of this message.</returns>
+        public virtual Message Copy()
+        {
+            var memoryStream = new MemoryStream();
+            var writer = XmlDictionaryWriter.CreateBinaryWriter(memoryStream);
+            var reader = XmlDictionaryReader.CreateBinaryReader(memoryStream, XmlDictionaryReaderQuotas.Max);
+            var serializer = new DataContractSerializer(GetType());
+
+            serializer.WriteObject(writer, this);
+            writer.Flush();
+            memoryStream.Position = 0;
+
+            return (Message) serializer.ReadObject(reader);
+        }    
 
         #endregion      
 
         #region [====== Validation ======]
 
-        private static readonly ConcurrentDictionary<Type, object> _Validators = new ConcurrentDictionary<Type, object>();
-            
-        ErrorInfo IValidateable.Validate()
-        {
-            return ValidateMessage();
-        }
+        private static readonly ConcurrentDictionary<Type, IValidator> _Validators = new ConcurrentDictionary<Type, IValidator>();                    
 
         /// <inheritdoc />
         public ErrorInfo Validate()
         {
-            return ValidateMessage();
+            return GetOrAddValidator(CreateValidator).Validate(this); 
+        }        
+
+        internal IValidator GetOrAddValidator(Func<IValidator> validatorFactory)
+        {
+            return _Validators.GetOrAdd(GetType(), type => validatorFactory.Invoke());            
         }
 
-        internal abstract ErrorInfo ValidateMessage();
-
-        internal IValidator<TMessage> GetOrAddValidator<TMessage>(Func<IValidator<TMessage>> validatorFactory)
+        /// <summary>
+        /// Creates and returns a <see cref="IValidator" /> that can be used to validate this message.        
+        /// </summary>
+        /// <returns>A new <see cref="IValidator" /> that can be used to validate this message.</returns>
+        protected virtual IValidator CreateValidator()
         {
-            return _Validators.GetOrAdd(GetType(), type => validatorFactory.Invoke()) as IValidator<TMessage>;            
+            return new NullValidator();
         }
 
         #endregion

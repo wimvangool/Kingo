@@ -54,8 +54,7 @@
     <Compile Include="Clocks\DelegateClock.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
     <Compile Include="ExceptionExtensions.cs" />
-    <Compile Include="Messaging\Command.T1.cs" />
-    <Compile Include="Messaging\CompositeValidator.T1.cs" />
+    <Compile Include="Messaging\Command.cs" />
     <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />
     <Compile Include="Constraints\Decoders\IsNotNullAndCallAppender.T2.cs" />
     <Compile Include="Constraints\Decoders\AndExpressionDecoder.T3.cs" />
@@ -102,10 +101,10 @@
     <Compile Include="Constraints\PushIndexListTransformer.cs" />
     <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="EnumOperators.T1.cs" />
-    <Compile Include="Messaging\Domain\AggregateMemberAttribute.cs" />
+    <Compile Include="Messaging\CompositeValidator.cs" />
     <Compile Include="Messaging\Domain\AggregateMemberType.cs" />
     <Compile Include="Messaging\Domain\DomainEvent.cs" />
-    <Compile Include="Messaging\Domain\DomainEvent.T3.cs" />
+    <Compile Include="Messaging\Domain\DomainEvent.T2.cs" />
     <Compile Include="Messaging\Domain\DomainException.cs" />
     <Compile Include="Messaging\Domain\IKeyedObject.T1.cs" />
     <Compile Include="Messaging\Domain\IVersionedObject.T2.cs" />
@@ -128,6 +127,8 @@
     <Compile Include="Constraints\IConstraintWithErrorMessage.cs" />
     <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
     <Compile Include="Constraints\IFilterWithErrorMessage.T2.cs" />
+    <Compile Include="Messaging\IValidator.cs" />
+    <Compile Include="Messaging\TechnicalException.cs" />
     <Compile Include="Messaging\IErrorMessageBuilder.cs" />
     <Compile Include="Messaging\IErrorMessageReader.cs" />
     <Compile Include="Messaging\IErrorMessageWriter.T1.cs" />
@@ -154,7 +155,7 @@
     <Compile Include="Messaging\FunctionalException.cs" />
     <Compile Include="Messaging\InvalidMessageException.cs" />
     <Compile Include="Security\AuthorizationException.cs" />
-    <Compile Include="Messaging\NullValidator.T1.cs" />
+    <Compile Include="Messaging\NullValidator.cs" />
     <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -178,13 +179,11 @@
     <Compile Include="Constraints\NullableConstraints.cs" />
     <Compile Include="Constraints\StringConstraints.IsNumber.cs" />
     <Compile Include="Messaging\IMessage.cs" />
-    <Compile Include="Messaging\IMessage.T1.cs" />
     <Compile Include="Messaging\IValidator.T1.cs" />
     <Compile Include="Messaging\Message.cs" />
-    <Compile Include="Messaging\Message.T1.cs" />
     <Compile Include="Threading\AsyncMethod.cs" />
     <Compile Include="Threading\Context.T1.cs" />
-    <Compile Include="Messaging\Validator.T1.cs" />
+    <Compile Include="Messaging\DataAnnotationValidator.cs" />
     <Compile Include="Messaging\ErrorInfo.cs" />
     <Compile Include="Clocks\HighResolutionClock.cs" />
     <Compile Include="Clocks\StopwatchClock.cs" />

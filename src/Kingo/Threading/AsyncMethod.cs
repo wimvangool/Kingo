@@ -125,6 +125,6 @@ namespace Kingo.Threading
             return taskCompletionSource.Task;
         }
 
-        #endregion                   
+        #endregion                              
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Kingo.Messaging.SampleApplication
 {
-    internal class CreateShoppingCartCommand : Message<CreateShoppingCartCommand>
+    internal class CreateShoppingCartCommand : Message
     {
         public Guid ShoppingCartId;
 
-        public override CreateShoppingCartCommand Copy()
+        public override Message Copy()
         {
             return new CreateShoppingCartCommand
             {

@@ -13,6 +13,6 @@ namespace Kingo.Messaging
         /// </summary>
         /// <typeparam name="TMessage">Type of event to publish.</typeparam>
         /// <param name="message">The event to publish.</param>                
-        Task PublishAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
+        Task PublishAsync<TMessage>(TMessage message) where TMessage : class, IMessage;
     }
 }

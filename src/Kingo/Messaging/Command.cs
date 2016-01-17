@@ -10,11 +10,10 @@ namespace Kingo.Messaging
     /// Represents a command that re-validates itself on every change and implements the <see cref="INotifyPropertyChanging" />,
     /// <see cref="INotifyPropertyChanged" /> and <see cref="IDataErrorInfo" /> interfaces so that it can easily be bound to
     /// in WPF applications.
-    /// </summary>
-    /// <typeparam name="TMessage"></typeparam>
+    /// </summary>    
     [DataContract]
     [Serializable]
-    public abstract class Command<TMessage> : Message<TMessage>, INotifyPropertyChanging, INotifyPropertyChanged, IDataErrorInfo where TMessage : Command<TMessage>
+    public abstract class Command : Message, INotifyPropertyChanging, INotifyPropertyChanged, IDataErrorInfo
     {
         private const string _HasChangesProperty = "HasChanges";
         private const string _ErrorInfoProperty = "ErrorInfo";
@@ -23,21 +22,13 @@ namespace Kingo.Messaging
         private ErrorInfo _errorInfo;
 
         [NonSerialized]
-        private bool _hasChanges;        
+        private bool _hasChanges;                
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Command{T}" /> class.
+        /// Initializes a new instance of the <see cref="Command" /> class.
         /// </summary>
-        protected Command() { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Command{T}" /> class.
-        /// </summary>
-        /// <param name="message">The message to copy.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        protected Command(Command<TMessage> message)
+        /// <param name="message">The message to copy.</param>        
+        protected Command(Command message = null)
             : base(message) { }
 
         #region [====== HasChanges ======]

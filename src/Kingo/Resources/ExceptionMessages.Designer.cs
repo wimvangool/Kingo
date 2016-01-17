@@ -70,6 +70,24 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to WithErrorMessage is not supported by constraint &apos;{0}&apos;..
+        /// </summary>
+        internal static string Constraint_WithErrorMessageNotSupported {
+            get {
+                return ResourceManager.GetString("Constraint_WithErrorMessageNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WithName is not supported by constraint &apos;{0}&apos;..
+        /// </summary>
+        internal static string Constraint_WithNameNotSupported {
+            get {
+                return ResourceManager.GetString("Constraint_WithNameNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
         /// </summary>
         internal static string Context_IllegalScopeStarted {
@@ -88,16 +106,7 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The {0} declared on property &apos;{1}.{2}&apos; cannot be declared on indexers..
-        /// </summary>
-        internal static string DomainEvent_IndexerNotSupported {
-            get {
-                return ResourceManager.GetString("DomainEvent_IndexerNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not resolve member of type &apos;{0}&apos; on event of type &apos;{1}&apos;. Consider decorating the appropriate member with the {2}..
+        ///   Looks up a localized string similar to Could not resolve member of type &apos;{0}&apos; on event of type &apos;{1}&apos;. Consider overriding the Key and Version properties..
         /// </summary>
         internal static string DomainEvent_MemberNotFound {
             get {
@@ -106,16 +115,7 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not decide on a member of type &apos;{0}&apos; on event of type &apos;{1}&apos; because multiple members were decorated with this attribute..
-        /// </summary>
-        internal static string DomainEvent_MultipleAttributesDeclared {
-            get {
-                return ResourceManager.GetString("DomainEvent_MultipleAttributesDeclared", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not decide on a member of type &apos;{0}&apos; on event of type &apos;{1}&apos; because multiple candidate members were found. Consider decorating the appropriate member with the {2}..
+        ///   Looks up a localized string similar to Could not decide on a member of type &apos;{0}&apos; on event of type &apos;{1}&apos; because multiple candidate members were found. Consider overriding the Key and Version properties..
         /// </summary>
         internal static string DomainEvent_MultipleCandidateMembersFound {
             get {
@@ -129,6 +129,15 @@ namespace Kingo.Resources {
         internal static string DomainModelException_CommandFailed {
             get {
                 return ResourceManager.GetString("DomainModelException_CommandFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while processing event &apos;{0}&apos;..
+        /// </summary>
+        internal static string DomainModelException_EventFailed {
+            get {
+                return ResourceManager.GetString("DomainModelException_EventFailed", resourceCulture);
             }
         }
         

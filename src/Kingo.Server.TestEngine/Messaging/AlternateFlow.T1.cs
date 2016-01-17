@@ -9,7 +9,7 @@ namespace Kingo.Messaging
     /// Represents an alterate flow, in which a certain type of <see cref="FunctionalException" /> is to be thrown.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>
-    public sealed class AlternateFlow<TMessage> : ExecutionFlow<TMessage> where TMessage : class, IMessage<TMessage>
+    public sealed class AlternateFlow<TMessage> : ExecutionFlow<TMessage> where TMessage : class, IMessage
     {        
         private readonly Scenario<TMessage> _scenario;        
         private readonly bool _rethrowException;

@@ -12,7 +12,7 @@ namespace Kingo.Messaging
     {        
         #region [====== MessageWithoutAttributes ======]
 
-        private sealed class MessageWithoutAttributes : Message<MessageWithoutAttributes>
+        private sealed class MessageWithoutAttributes : Message
         {
             internal readonly int Value;
     
@@ -27,7 +27,7 @@ namespace Kingo.Messaging
         #region [====== MessageWithPrimitiveMembers ======]
 
         [DataContract]
-        private sealed class MessageWithPrimitiveMembers : Message<MessageWithPrimitiveMembers>
+        private sealed class MessageWithPrimitiveMembers : Message
         {
             [DataMember] internal readonly int Value;
             [DataMember] internal readonly List<int> Values;
@@ -38,7 +38,7 @@ namespace Kingo.Messaging
                 Values = new List<int>(values);
             }
 
-            protected override IValidator<MessageWithPrimitiveMembers> CreateValidator()
+            protected override IValidator CreateValidator()
             {
                 var validator = new ConstraintValidator<MessageWithPrimitiveMembers>();
 
@@ -54,7 +54,7 @@ namespace Kingo.Messaging
         #region [====== MessageWithMemberOfOwnType ======]
 
         [DataContract]
-        private sealed class MessageWithMemberOfOwnType : Message<MessageWithMemberOfOwnType>
+        private sealed class MessageWithMemberOfOwnType : Message
         {
             [DataMember] internal readonly int Value;
             [DataMember] internal readonly MessageWithMemberOfOwnType Child;           
@@ -92,7 +92,7 @@ namespace Kingo.Messaging
         {
             var values = new[] { RandomValue(), RandomValue() + 1, RandomValue() + 2 };
             var message = new MessageWithPrimitiveMembers(RandomValue(), values);
-            var copy = message.Copy();
+            var copy = (MessageWithPrimitiveMembers) message.Copy();
 
             Assert.IsNotNull(copy);
             Assert.AreNotSame(message, copy);
@@ -109,7 +109,7 @@ namespace Kingo.Messaging
         {
             var child = new MessageWithMemberOfOwnType(RandomValue(), null);
             var message = new MessageWithMemberOfOwnType(RandomValue() + 1, child);
-            var copy = message.Copy();
+            var copy = (MessageWithMemberOfOwnType) message.Copy();
 
             Assert.IsNotNull(copy);
             Assert.AreNotSame(message, copy);

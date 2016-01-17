@@ -26,13 +26,13 @@ namespace Kingo.Messaging
             });  
         } 
        
-        internal void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        internal void Publish<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
-            var messageCopy = message.Copy();
+            var messageCopy = (TMessage) message.Copy();
 
             var errorInfo = messageCopy.Validate();
             if (errorInfo.HasErrors)

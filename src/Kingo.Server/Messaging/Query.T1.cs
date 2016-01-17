@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
-    internal sealed class Query<TMessageOut> : IQuery<TMessageOut> where TMessageOut : class, IMessage<TMessageOut>
+    internal sealed class Query<TMessageOut> : IQuery<TMessageOut> where TMessageOut : class, IMessage
     {
         private readonly IQuery<TMessageOut> _nextQuery;
         private readonly QueryModule _nextModule;

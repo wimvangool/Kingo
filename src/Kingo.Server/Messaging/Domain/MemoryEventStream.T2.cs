@@ -14,6 +14,25 @@ namespace Kingo.Messaging.Domain
     public sealed class MemoryEventStream<TKey, TVersion> : IReadableEventStream<TKey, TVersion>, IWritableEventStream<TKey, TVersion>       
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
+        #region [====== ListFactory ======]
+
+        private sealed class ListFactory : IWritableEventStream<TKey, TVersion>
+        {
+            internal readonly List<IVersionedObject<TKey, TVersion>> Events;
+
+            internal ListFactory()
+            {
+                Events = new List<IVersionedObject<TKey, TVersion>>();
+            }
+
+            public void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage
+            {
+                Events.Add(@event);
+            }
+        }
+
+        #endregion
+
         private readonly Queue<IEventBuffer<TKey, TVersion>> _buffer;
 
         /// <summary>
@@ -59,7 +78,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        public void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
+        public void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage
         {            
             _buffer.Enqueue(new EventBuffer<TKey, TVersion, TEvent>(@event));
         }
@@ -81,6 +100,21 @@ namespace Kingo.Messaging.Domain
             {
                 _buffer.Dequeue().WriteTo(stream);
             }          
+        }
+
+        /// <summary>
+        /// Converts this stream to a list of events.
+        /// </summary>
+        /// <returns>A list of events.</returns>
+        public IList<IVersionedObject<TKey, TVersion>> ToList()
+        {
+            var listFactory = new ListFactory();
+
+            foreach (var eventBuffer in _buffer)
+            {
+                eventBuffer.WriteTo(listFactory);
+            }
+            return listFactory.Events;
         }
 
         private static readonly Lazy<MethodInfo> _WriteMethod = new Lazy<MethodInfo>(GetWriteMethod);

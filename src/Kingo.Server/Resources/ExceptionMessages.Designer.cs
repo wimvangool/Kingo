@@ -79,6 +79,24 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not restore aggregate of type &apos;{0}&apos; because it has no default constructor. Either declare a default constructor, or configure the factory to create the instance without calling a constructor..
+        /// </summary>
+        internal static string AggregateEventStreamFactory_ConstructorNotFound {
+            get {
+                return ResourceManager.GetString("AggregateEventStreamFactory_ConstructorNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not restore aggregate of type &apos;{0}&apos; because one of the specified events could not be applied to it. See inner exception for details..
+        /// </summary>
+        internal static string AggregateEventStreamFactory_InvalidEvents {
+            get {
+                return ResourceManager.GetString("AggregateEventStreamFactory_InvalidEvents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The key of the event ({0}) must match the key of the aggregate ({1})..
         /// </summary>
         internal static string AggregateRoot_InvalidKey {
@@ -205,6 +223,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; could not be updated because of a concurreny conflict. The expected version in the data store was &apos;{1}&apos;. .
+        /// </summary>
+        internal static string Repository_ConcurrenyException {
+            get {
+                return ResourceManager.GetString("Repository_ConcurrenyException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot delete aggregate of type &apos;{0}&apos; because the operation is not supported..
         /// </summary>
         internal static string Repository_DeleteNotSupported {
@@ -219,6 +246,42 @@ namespace Kingo.Resources {
         internal static string Repository_DuplicateKey {
             get {
                 return ResourceManager.GetString("Repository_DuplicateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot update aggregate of type &apos;{0}&apos; because updates are not supported by repository &apos;{1}&apos;..
+        /// </summary>
+        internal static string Repository_UpdateNotSupported {
+            get {
+                return ResourceManager.GetString("Repository_UpdateNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No mapping exists for type &apos;{0}&apos;..
+        /// </summary>
+        internal static string TypeToContractMap_ContractNotFound {
+            get {
+                return ResourceManager.GetString("TypeToContractMap_ContractNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Both type &apos;{0}&apos; and type &apos;{1}&apos; are mapped to contract &apos;{2}&apos;..
+        /// </summary>
+        internal static string TypeToContractMap_SharedContract {
+            get {
+                return ResourceManager.GetString("TypeToContractMap_SharedContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No mapping exists for contract &apos;{0}&apos;..
+        /// </summary>
+        internal static string TypeToContractMap_TypeNotFound {
+            get {
+                return ResourceManager.GetString("TypeToContractMap_TypeNotFound", resourceCulture);
             }
         }
         

@@ -6,7 +6,7 @@ namespace Kingo.Messaging
     /// When implemented by a class, represents a <see cref="IQuery{TMessageIn, TMessageOut}" /> ready to be executed.
     /// </summary>
     /// <typeparam name="TMessageOut">Type of the result of the query.</typeparam>
-    public interface IQuery<TMessageOut> : IMessageHandlerOrQuery where TMessageOut : class, IMessage<TMessageOut>
+    public interface IQuery<TMessageOut> : IMessageHandlerOrQuery where TMessageOut : class, IMessage
     {
         /// <summary>
         /// Message containing the parameters of the query.

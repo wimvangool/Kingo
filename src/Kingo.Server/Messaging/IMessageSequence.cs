@@ -58,7 +58,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
+        IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage;
 
         /// <summary>
         /// Appends the specified message to the current sequence and returns the resulting sequence.
@@ -70,7 +70,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        IMessageSequence Append<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>;
+        IMessageSequence Append<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Appends the specified message to the current sequence and returns the resulting sequence.
@@ -82,7 +82,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        IMessageSequence Append<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>;
+        IMessageSequence Append<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Appends the specified message to the current sequence and returns the resulting sequence.
@@ -94,6 +94,6 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        IMessageSequence Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>;
+        IMessageSequence Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage;
     }
 }

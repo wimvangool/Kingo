@@ -9,21 +9,37 @@ namespace Kingo.Messaging.Domain
     /// Represents an aggregate that is modeled as a stream of events and can also be restored as such.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
-    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>    
+    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>        
     [Serializable]
     public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>        
-        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {                     
         [NonSerialized]
-        private readonly Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> _eventHandlers;
+        private Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> _eventHandlers;
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateEventStream{T, S}" /> class.
+        /// </summary>
+        /// <param name="event">The event of that represents the creation of this aggregate.</param>        
+        protected AggregateEventStream(IVersionedObject<TKey, TVersion> @event = null)
+            : base(@event) { }
+
+        private Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> EventHandlers
+        {
+            get
+            {
+                if (_eventHandlers == null)
+                {
+                    _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
+                }
+                return _eventHandlers;
+            }
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateEventStream{TKey, TVersion}" /> class.
+        /// When overridden, registers all event handlers of this aggregate through the <see cref="RegisterEventHandler{T}" /> method.
         /// </summary>
-        protected AggregateEventStream()
-        {            
-            _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
-        }        
+        protected abstract void RegisterEventHandlers();
 
         /// <summary>
         /// Registers a handler that is invoked when the aggregate writes an event of the specified type.
@@ -44,7 +60,7 @@ namespace Kingo.Messaging.Domain
             }
             try
             {
-                _eventHandlers.Add(typeof(TEvent), @event => eventHandler.Invoke((TEvent) @event));
+                EventHandlers.Add(typeof(TEvent), @event => eventHandler.Invoke((TEvent) @event));
             }
             catch (ArgumentException)
             {
@@ -59,13 +75,20 @@ namespace Kingo.Messaging.Domain
 
         internal override void Apply<TEvent>(TEvent @event)
         {
+            // The EventHandlers are registered just-in-time. Since we expect at least one handler
+            // to be registered (to handle the created event), we can check this by looking at the
+            // the number of handlers that were registered.
+            if (EventHandlers.Count == 0)
+            {
+                RegisterEventHandlers();
+            }
             base.Apply(@event);
 
             var eventType = typeof(TEvent);
 
             try
             {
-                _eventHandlers[eventType].Invoke(@event);                
+                EventHandlers[eventType].Invoke(@event);                
             }
             catch (KeyNotFoundException)
             {

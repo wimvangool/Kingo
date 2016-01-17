@@ -87,6 +87,13 @@ namespace Kingo.Constraints
 
         internal abstract IConstraintWithErrorMessage WithNameCore(Identifier name);
 
+        internal Exception NewWithNameNotSupportedException()
+        {
+            var messageFormat = ExceptionMessages.Constraint_WithNameNotSupported;
+            var message = string.Format(messageFormat, GetType().Name);
+            return new NotSupportedException(message);
+        }             
+
         IConstraintWithErrorMessage IConstraintWithErrorMessage.WithErrorMessage(string errorMessage)
         {
             return WithErrorMessageCore(StringTemplate.ParseOrNull(errorMessage));
@@ -99,6 +106,13 @@ namespace Kingo.Constraints
 
         internal abstract IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage);
 
+        internal Exception NewWithErrorMessageNotSupportedException()
+        {
+            var messageFormat = ExceptionMessages.Constraint_WithErrorMessageNotSupported;
+            var message = string.Format(messageFormat, GetType().Name);
+            return new NotSupportedException(message);
+        }
+
         /// <summary>
         /// Represents the default name of a constraint when no name has been specified explicitly.
         /// </summary>
@@ -107,7 +121,7 @@ namespace Kingo.Constraints
         /// <summary>
         /// Represents the default error message of a constraint when no error message has been specified explicitly.
         /// </summary>
-        public static readonly StringTemplate DefaultErrorMessage = StringTemplate.Parse(ErrorMessages.BasicConstraints_Default);                
+        public static readonly StringTemplate DefaultErrorMessage = StringTemplate.Parse(ErrorMessages.BasicConstraints_Default);           
 
         #endregion
 

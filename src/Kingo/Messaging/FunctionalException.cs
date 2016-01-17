@@ -5,7 +5,7 @@ using System.Security.Permissions;
 namespace Kingo.Messaging
 {
     /// <summary>
-    /// This exception is thrown when an application's precondition for handling a certain message failed.   
+    /// This exception is thrown when an application's pre-condition for handling a certain message failed.   
     /// </summary>
     [Serializable]
     public abstract class FunctionalException : Exception

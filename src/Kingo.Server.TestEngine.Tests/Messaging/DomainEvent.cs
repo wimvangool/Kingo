@@ -1,6 +1,6 @@
 ﻿namespace Kingo.Messaging
 {
-    internal sealed class DomainEvent : Message<DomainEvent>       
+    internal sealed class DomainEvent : Message
     {
         public readonly int Value;
 
@@ -37,7 +37,7 @@
             return Value.GetHashCode();
         }
 
-        public override DomainEvent Copy()
+        public override Message Copy()
         {
             return new DomainEvent(this);
         }

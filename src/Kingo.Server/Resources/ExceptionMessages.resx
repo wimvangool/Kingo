@@ -177,4 +177,25 @@
   <data name="UnitOfWorkScope_AlreadyCompleted" xml:space="preserve">
     <value>Cannot complete this scope because it has already been completed.</value>
   </data>
+  <data name="Repository_UpdateNotSupported" xml:space="preserve">
+    <value>Cannot update aggregate of type '{0}' because updates are not supported by repository '{1}'.</value>
+  </data>
+  <data name="Repository_ConcurrenyException" xml:space="preserve">
+    <value>Aggregate of type '{0}' could not be updated because of a concurreny conflict. The expected version in the data store was '{1}'. </value>
+  </data>
+  <data name="TypeToContractMap_SharedContract" xml:space="preserve">
+    <value>Both type '{0}' and type '{1}' are mapped to contract '{2}'.</value>
+  </data>
+  <data name="TypeToContractMap_ContractNotFound" xml:space="preserve">
+    <value>No mapping exists for type '{0}'.</value>
+  </data>
+  <data name="TypeToContractMap_TypeNotFound" xml:space="preserve">
+    <value>No mapping exists for contract '{0}'.</value>
+  </data>
+  <data name="AggregateEventStreamFactory_ConstructorNotFound" xml:space="preserve">
+    <value>Could not restore aggregate of type '{0}' because it has no default constructor. Either declare a default constructor, or configure the factory to create the instance without calling a constructor.</value>
+  </data>
+  <data name="AggregateEventStreamFactory_InvalidEvents" xml:space="preserve">
+    <value>Could not restore aggregate of type '{0}' because one of the specified events could not be applied to it. See inner exception for details.</value>
+  </data>
 </root>

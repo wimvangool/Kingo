@@ -2,13 +2,13 @@
 
 namespace Kingo.Messaging.SampleApplication
 {
-    internal sealed class AddProductToCartCommand : Message<AddProductToCartCommand>
+    internal sealed class AddProductToCartCommand : Message
     {
         public Guid ShoppingCartId;
         public int ProductId;
         public int Quantity;
 
-        public override AddProductToCartCommand Copy()
+        public override Message Copy()
         {
             return new AddProductToCartCommand
             {

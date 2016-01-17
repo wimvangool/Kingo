@@ -7,7 +7,7 @@ namespace Kingo.Messaging
         internal QueryPipeline(IEnumerable<QueryModule> modules)
             : base(modules) { }
 
-        internal IQuery<TMessageOut> ConnectTo<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage<TMessageOut>
+        internal IQuery<TMessageOut> ConnectTo<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage
         {            
             foreach (var module in Modules)
             {

@@ -6,7 +6,7 @@ namespace Kingo.Constraints
     /// <summary>
     /// Represents a <see cref="IValidator{T}" /> that is implemented using constraints.
     /// </summary>    
-    public class ConstraintValidator<T> : MemberConstraintSet<T>, IValidator<T>
+    public class ConstraintValidator<T> : MemberConstraintSet<T>, IValidator<T> where T : class
     {                
         private readonly IFormatProvider _formatProvider;
 
@@ -25,12 +25,17 @@ namespace Kingo.Constraints
 
         #region [====== Validate ======]
 
+        ErrorInfo IValidator.Validate(object instance)
+        {
+            return Validate(instance as T);
+        }
+
         /// <inheritdoc />
         public ErrorInfo Validate(T instance)
         {
-            if (ReferenceEquals(instance, null))
+            if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                return ErrorInfo.Empty;
             }
             var builder = CreateErrorInfoBuilder(_formatProvider);
 
@@ -51,13 +56,14 @@ namespace Kingo.Constraints
             return new ErrorInfoBuilder(formatProvider);
         }
 
-        #endregion
+        #endregion        
+    
+        #region [====== MergeWith ======]
 
-        #region [====== Append ======]
-        
-        IValidator<T> IValidator<T>.Append(IValidator<T> validator, bool haltOnFirstError)
+        /// <inheritdoc />
+        public IValidator MergeWith(IValidator validator, bool haltOnFirstError = false)
         {
-            return CompositeValidator<T>.Append(this, validator, haltOnFirstError);
+            return CompositeValidator.Merge(this, validator, haltOnFirstError);
         }
 
         #endregion

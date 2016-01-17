@@ -9,7 +9,7 @@ namespace Kingo.Messaging
     /// Represents a certain type of flow that can be defines for a scenario.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>
-    public abstract class ExecutionFlow<TMessage> : ErrorMessageReader, IExecutable where TMessage : class, IMessage<TMessage>
+    public abstract class ExecutionFlow<TMessage> : ErrorMessageReader, IExecutable where TMessage : class, IMessage
     {
         private readonly MemberConstraintSet<Scenario<TMessage>> _validator;
 

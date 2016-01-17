@@ -27,7 +27,7 @@ namespace Kingo.Messaging
         }                
 
         /// <inheritdoc />
-        public virtual IMessageProcessorBus EventBus
+        public IMessageProcessorBus EventBus
         {
             get { return _domainEventBus; }
         }                
@@ -51,6 +51,13 @@ namespace Kingo.Messaging
             return null;
         }
 
+        /// <summary>
+        /// This method is invoked just before an event is published and subsequently handled by this processor.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the event that is about to be published.</typeparam>
+        /// <param name="event">The event that is about to be published.</param>        
+        protected internal virtual void OnPublishing<TEvent>(TEvent @event) where TEvent : class, IMessage { }
+
         /// <inheritdoc />
         public UnitOfWorkScope CreateUnitOfWorkScope()
         {
@@ -70,25 +77,25 @@ namespace Kingo.Messaging
         #region [====== Commands & Events ======]
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             Handle(message, NullHandler<TMessage>());
         }
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage
         {
             Handle(message, new MessageHandlerDelegate<TMessage>(handler));
         }
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage
         {
             Handle(message, new MessageHandlerDelegate<TMessage>(handler));
         }
 
         /// <inheritdoc />
-        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        public void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage
         {
             if (message == null)
             {
@@ -98,49 +105,49 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             return HandleAsync(message, NullHandler<TMessage>(), CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, CancellationToken token) where TMessage : class, IMessage
         {
             return HandleAsync(message, NullHandler<TMessage>(), token);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage
         {
             return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken token) where TMessage : class, IMessage
         {
             return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), token);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage
         {
             return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler, CancellationToken token) where TMessage : class, IMessage
         {
             return HandleAsync(message, new MessageHandlerDelegate<TMessage>(handler), token);
         }
 
         /// <inheritdoc />
-        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage
         {
             return HandleAsync(message, handler, CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        public async Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage
         {            
             if (message == null)
             {
@@ -179,72 +186,72 @@ namespace Kingo.Messaging
 
         /// <inheritdoc />
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {
             return Execute(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query));
         }
 
         /// <inheritdoc />
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {
             return Execute(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query));
         }
 
         /// <inheritdoc />
         public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {
             return ExecuteAsync(message, query, CancellationToken.None).Await();
         }
 
         /// <inheritdoc />
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {
             return ExecuteAsync(message, query, CancellationToken.None);
         }
 
         /// <inheritdoc />
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken token)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {
             return ExecuteAsync(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query), token);
         }  
 
         /// <inheritdoc />
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {
             return ExecuteAsync(message, query, CancellationToken.None);
         }
 
         /// <inheritdoc />
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query, CancellationToken token)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {
             return ExecuteAsync(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query), token);
         }        
 
         /// <inheritdoc />
         public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {            
             return ExecuteAsync(message, query, CancellationToken.None);
         }
 
         /// <inheritdoc />
         public async Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
         {                        
             if (message == null)
             {
@@ -336,11 +343,11 @@ namespace Kingo.Messaging
             private set { _CurrentMessage.Value = value; }
         }
 
-        private static void PushMessage<TMessage>(ref TMessage message, CancellationToken token) where TMessage : class, IMessage<TMessage>
+        private static void PushMessage<TMessage>(ref TMessage message, CancellationToken token) where TMessage : class, IMessage
         {
             CurrentMessage = CurrentMessage == null ?
-                new MessagePointer(message = message.Copy(), token) :
-                CurrentMessage.CreateChildPointer(message = message.Copy(), token);
+                new MessagePointer(message = (TMessage) message.Copy(), token) :
+                CurrentMessage.CreateChildPointer(message = (TMessage) message.Copy(), token);
         }
 
         private static void PopMessage()

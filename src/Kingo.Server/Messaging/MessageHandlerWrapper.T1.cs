@@ -9,7 +9,7 @@ namespace Kingo.Messaging
     /// that can be used within a <see cref="IMessageProcessor" />'s pipeline.
     /// </summary>
     /// <typeparam name="TMessage">Type of message to handle.</typeparam>
-    public sealed class MessageHandlerWrapper<TMessage> : IMessageHandler where TMessage : class, IMessage<TMessage>
+    public sealed class MessageHandlerWrapper<TMessage> : IMessageHandler where TMessage : class, IMessage
     {
         private readonly TMessage _message;
         private readonly MessageHandlerInstance<TMessage> _handler;

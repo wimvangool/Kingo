@@ -47,7 +47,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentException">
         /// The specified <paramref name="message"/> is not valid.
         /// </exception>
-        public void Publish<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        public void Publish<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             _eventBus.Publish(message);
         }

@@ -8,14 +8,14 @@ using Kingo.Threading;
 namespace Kingo.Messaging.SampleApplication
 {
     [Dependency(InstanceLifetime.Singleton)]
-    public sealed class ShoppingCartRepository : SnapshotRepository<Guid, int, ShoppingCart>, IShoppingCartRepository
+    public sealed class ShoppingCartRepository : AggregateRootRepository<Guid, int, ShoppingCart>, IShoppingCartRepository
     {        
-        private readonly Dictionary<Guid, ShoppingCart> _carts;
+        private readonly Dictionary<Guid, ISnapshot<Guid, int>> _carts;
         private int _flushCount;
 
         public ShoppingCartRepository()
         {            
-            _carts = new Dictionary<Guid, ShoppingCart>(4);
+            _carts = new Dictionary<Guid, ISnapshot<Guid, int>>(4);
         }        
 
         void IShoppingCartRepository.Add(ShoppingCart cart)
@@ -40,19 +40,23 @@ namespace Kingo.Messaging.SampleApplication
             return base.FlushAsync(domainEventStream);
         }
 
-        protected override Task<ShoppingCart> SelectByKeyAsync(Guid key)
+        protected override Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key)
         {
             return AsyncMethod.RunSynchronously(() => _carts[key]);
         }
 
-        protected override Task InsertAsync(ShoppingCart aggregate)
+        protected override Task InsertAsync(ISnapshot<Guid, int> snapshot)
         {
-            return AsyncMethod.RunSynchronously(() => _carts.Add(aggregate.Id, aggregate));
+            return AsyncMethod.RunSynchronously(() => _carts.Add(snapshot.Key, snapshot));
         }
 
-        protected override Task UpdateAsync(ShoppingCart aggregate, int originalVersion)
+        protected override Task<bool> UpdateAsync(ISnapshot<Guid, int> snapshot, int originalVersion)
         {
-            return AsyncMethod.RunSynchronously(() => _carts[aggregate.Id] = aggregate);            
+            return AsyncMethod.RunSynchronously(() =>
+            {
+                _carts[snapshot.Key] = snapshot;
+                return true;
+            });            
         }        
 
         protected override Task DeleteAsync(Guid key, IWritableEventStream<Guid, int> domainEventStream)

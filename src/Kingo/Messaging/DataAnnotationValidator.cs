@@ -9,13 +9,13 @@ namespace Kingo.Messaging
     /// all <see cref="ValidationAttribute">ValidationAttributes</see> that have been declared on the
     /// members of an instance.
     /// </summary>    
-    public class Validator<T> : IValidator<T>
+    public class DataAnnotationValidator : IValidator
     {
         private readonly IFormatProvider _formatProvider;
-        private readonly Func<T, ValidationContext> _validationContextFactory;        
+        private readonly Func<object, ValidationContext> _validationContextFactory;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Validator{T}" /> class.
+        /// Initializes a new instance of the <see cref="DataAnnotationValidator" /> class.
         /// </summary>  
         /// <param name="formatProvider">
         /// Optional <see cref="IFormatProvider" /> to use when formatting error messages.
@@ -24,7 +24,7 @@ namespace Kingo.Messaging
         /// The method used to create a <see cref="ValidationContext" /> for a specific instance. Specify <c>null</c>
         /// to use the default factory.
         /// </param>             
-        public Validator(IFormatProvider formatProvider = null, Func<T, ValidationContext> validationContextFactory = null)
+        public DataAnnotationValidator(IFormatProvider formatProvider = null, Func<object, ValidationContext> validationContextFactory = null)
         {
             _formatProvider = formatProvider;     
             _validationContextFactory = validationContextFactory ?? (instance => new ValidationContext(instance, null, null));
@@ -41,11 +41,11 @@ namespace Kingo.Messaging
         #region [====== Validate ======]
 
         /// <inheritdoc />
-        public ErrorInfo Validate(T instance)
+        public ErrorInfo Validate(object instance)
         {
-            if (ReferenceEquals(instance, null))
+            if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                return ErrorInfo.Empty;
             }
             var errorInfo = Validate(_validationContextFactory.Invoke(instance));
             if (errorInfo.HasErrors)
@@ -90,11 +90,12 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== Append ======]
-        
-        IValidator<T> IValidator<T>.Append(IValidator<T> validator, bool haltOnFirstError)
-        {            
-            return CompositeValidator<T>.Append(this, validator, haltOnFirstError);
+        #region [====== MergeWith ======]
+
+        /// <inheritdoc />
+        public IValidator MergeWith(IValidator validator, bool haltOnFirstError = false)
+        {
+            return CompositeValidator.Merge(this, validator, haltOnFirstError);
         }
 
         #endregion

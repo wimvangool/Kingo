@@ -120,26 +120,29 @@
   <data name="Comparable_IncomparableType" xml:space="preserve">
     <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'.</value>
   </data>
+  <data name="Constraint_WithErrorMessageNotSupported" xml:space="preserve">
+    <value>WithErrorMessage is not supported by constraint '{0}'.</value>
+  </data>
+  <data name="Constraint_WithNameNotSupported" xml:space="preserve">
+    <value>WithName is not supported by constraint '{0}'.</value>
+  </data>
   <data name="Context_IllegalScopeStarted" xml:space="preserve">
     <value>Cannot start this scope because a more restrive scope is still active.</value>
   </data>
   <data name="DomainEvent_IncompatibleMemberType" xml:space="preserve">
     <value>Value of member '{0}.{1}' of type '{2}' could not be converted to an instance of type '{3}'.</value>
   </data>
-  <data name="DomainEvent_IndexerNotSupported" xml:space="preserve">
-    <value>The {0} declared on property '{1}.{2}' cannot be declared on indexers.</value>
-  </data>
   <data name="DomainEvent_MemberNotFound" xml:space="preserve">
-    <value>Could not resolve member of type '{0}' on event of type '{1}'. Consider decorating the appropriate member with the {2}.</value>
-  </data>
-  <data name="DomainEvent_MultipleAttributesDeclared" xml:space="preserve">
-    <value>Could not decide on a member of type '{0}' on event of type '{1}' because multiple members were decorated with this attribute.</value>
+    <value>Could not resolve member of type '{0}' on event of type '{1}'. Consider overriding the Key and Version properties.</value>
   </data>
   <data name="DomainEvent_MultipleCandidateMembersFound" xml:space="preserve">
-    <value>Could not decide on a member of type '{0}' on event of type '{1}' because multiple candidate members were found. Consider decorating the appropriate member with the {2}.</value>
+    <value>Could not decide on a member of type '{0}' on event of type '{1}' because multiple candidate members were found. Consider overriding the Key and Version properties.</value>
   </data>
   <data name="DomainModelException_CommandFailed" xml:space="preserve">
     <value>Command '{0}' failed.</value>
+  </data>
+  <data name="DomainModelException_EventFailed" xml:space="preserve">
+    <value>An error occurred while processing event '{0}'.</value>
   </data>
   <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
     <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>

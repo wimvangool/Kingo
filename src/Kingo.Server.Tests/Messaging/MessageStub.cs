@@ -1,8 +1,8 @@
 ﻿namespace Kingo.Messaging
 {
-    internal sealed class MessageStub : Message<MessageStub>
+    internal sealed class MessageStub : Message
     {
-        public override MessageStub Copy()
+        public override Message Copy()
         {
             return new MessageStub();
         }

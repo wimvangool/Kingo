@@ -173,5 +173,62 @@ namespace Kingo.Messaging.Domain
         }
 
         #endregion
+
+        #region [====== AsTechnicalException ======]
+
+        /// <summary>
+        /// Converts this instance into an instance of <see cref="TechnicalException" />.
+        /// </summary>
+        /// <param name="failedMessage">The message that caused the exception.</param>
+        /// <returns>
+        /// An instance of <see cref="TechnicalException" /> that wraps this exception and the inner
+        /// exception.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="failedMessage"/> is <c>null</c>.
+        /// </exception>
+        public TechnicalException AsTechnicalException(object failedMessage)
+        {
+            var messageFormat = ExceptionMessages.DomainModelException_EventFailed;
+            var message = string.Format(messageFormat, failedMessage.GetType());
+            return AsTechnicalException(failedMessage, message, this);
+        }
+
+        /// <summary>
+        /// Converts this instance into an instance of <see cref="TechnicalException" />.
+        /// </summary>
+        /// <param name="failedMessage">The message that caused the exception.</param>
+        /// <param name="message">Message of the exception.</param>
+        /// <returns>
+        /// An instance of <see cref="TechnicalException" /> that wraps this exception and the inner
+        /// exception.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="failedMessage"/> is <c>null</c>.
+        /// </exception>
+        public TechnicalException AsTechnicalException(object failedMessage, string message)
+        {
+            return AsTechnicalException(failedMessage, message, this);
+        }
+
+        /// <summary>
+        /// Converts this instance into an instance of <see cref="TechnicalException" />.
+        /// </summary>
+        /// <param name="failedMessage">The message that caused the exception.</param>
+        /// <param name="message">Message of the exception.</param>
+        /// <param name="innerException">This <see cref="DomainException" />.</param>
+        /// <returns>
+        /// An instance of <see cref="TechnicalException" /> that wraps this exception and the inner
+        /// exception.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="failedMessage"/> is <c>null</c>.
+        /// </exception>
+        protected virtual TechnicalException AsTechnicalException(object failedMessage, string message, Exception innerException)
+        {
+            return new TechnicalException(failedMessage, message, innerException);
+        }
+
+        #endregion
     }
 }

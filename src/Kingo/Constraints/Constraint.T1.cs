@@ -57,7 +57,10 @@ namespace Kingo.Constraints
         }
 
         /// <inheritdoc />
-        public abstract IConstraintWithErrorMessage<TValue> WithName(Identifier name);
+        public virtual IConstraintWithErrorMessage<TValue> WithName(Identifier name)
+        {
+            throw NewWithNameNotSupportedException();
+        }        
 
         internal override IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage)
         {
@@ -71,7 +74,10 @@ namespace Kingo.Constraints
         }
 
         /// <inheritdoc />
-        public abstract IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage);             
+        public virtual IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
+        {
+            throw NewWithErrorMessageNotSupportedException();
+        }        
 
         #endregion        
 

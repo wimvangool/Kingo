@@ -33,25 +33,25 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>
+        public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage
         {
             return new MessageSequencePair(this, new MessageSequenceNode<TMessage>(message));
         }
 
         /// <inheritdoc />
-        public IMessageSequence Append<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        public IMessageSequence Append<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage
         {
             return Append(message, new MessageHandlerDelegate<TMessage>(handler));
         }
 
         /// <inheritdoc />
-        public IMessageSequence Append<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>
+        public IMessageSequence Append<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage
         {
             return Append(message, new MessageHandlerDelegate<TMessage>(handler));
         }
 
         /// <inheritdoc />
-        public virtual IMessageSequence Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>
+        public virtual IMessageSequence Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage
         {
             return new MessageSequencePair(this, new MessageSequenceNode<TMessage>(message, handler));
         }

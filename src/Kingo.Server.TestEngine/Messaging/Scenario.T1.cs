@@ -12,7 +12,7 @@ namespace Kingo.Messaging
     /// by the Given-When-Then pattern.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>    
-    public abstract class Scenario<TMessage> : Scenario where TMessage : class, IMessage<TMessage>
+    public abstract class Scenario<TMessage> : Scenario where TMessage : class, IMessage
     {        
         private readonly Lazy<TMessage> _message;                       
         private readonly List<object> _publishedEvents;        
@@ -95,7 +95,7 @@ namespace Kingo.Messaging
             
             try
             {
-                await HandleAsync(processor, Message.Copy());
+                await HandleAsync(processor, Message);
             }                   
             catch (FunctionalException exception)
             {                

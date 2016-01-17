@@ -9,16 +9,21 @@ namespace Kingo.Messaging.Domain
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IVersionedObject<TKey, TVersion>
     {
-        private readonly Dictionary<object, Aggregate<TKey, TVersion, TAggregate>> _aggregates;
+        private readonly Dictionary<TKey, Aggregate<TKey, TVersion, TAggregate>> _aggregates;
 
         internal AggregateSet()
         {
-            _aggregates = new Dictionary<object, Aggregate<TKey, TVersion, TAggregate>>();
+            _aggregates = new Dictionary<TKey, Aggregate<TKey, TVersion, TAggregate>>();
         }
 
         internal int Count
         {
             get { return _aggregates.Count; }
+        }
+
+        public override string ToString()
+        {
+            return _aggregates.ToString();
         }
 
         internal int CountUpdatedAggregates()
@@ -31,22 +36,23 @@ namespace Kingo.Messaging.Domain
             return _aggregates.Values.Any(aggregate => aggregate.HasBeenUpdated());
         }
 
-        internal bool Contains(TAggregate aggregate)
-        {            
-            return _aggregates.Values.Any(a => a.Matches(aggregate));
-        }
-
-        internal bool ContainsKey<T>(T key, Func<TAggregate, T> keySelector)             
+        internal bool ContainsValue(TAggregate aggregate)
         {
-            return _aggregates.ContainsKey(key) || _aggregates.Values.Any(aggregate => HasKey(key, keySelector, aggregate));
+            TAggregate other;
+
+            if (TryGetValue(aggregate.Key, out other))
+            {
+                return ReferenceEquals(aggregate, other);
+            }
+            return false;
         }
 
-        internal bool TryGetValue<T>(T key, Func<TAggregate, T> keySelector, out TAggregate aggregate)            
+        internal bool ContainsKey(TKey key)             
         {
-            return TryGetValueByKey(key, out aggregate) || TryGetValueFromValues(key, keySelector, out aggregate);
+            return _aggregates.ContainsKey(key);
         }
 
-        private bool TryGetValueByKey(object key, out TAggregate aggregate)
+        internal bool TryGetValue(TKey key, out TAggregate aggregate)            
         {
             Aggregate<TKey, TVersion, TAggregate> aggregateWrapper;
 
@@ -57,61 +63,17 @@ namespace Kingo.Messaging.Domain
             }
             aggregate = null;
             return false;
-        }
-
-        private bool TryGetValueFromValues<T>(T key, Func<TAggregate, T> keySelector, out TAggregate aggregate)            
-        {
-            var aggregateWrapper = _aggregates.Values.FirstOrDefault(a => HasKey(key, keySelector, a));
-            if (aggregateWrapper == null)
-            {
-                aggregate = null;
-                return false;
-            }
-            aggregate = aggregateWrapper.Value;
-            return true;
-        }
+        }        
         
-        internal void Add(object key, Aggregate<TKey, TVersion, TAggregate> aggregate)
+        internal void Add(TKey key, Aggregate<TKey, TVersion, TAggregate> aggregate)
         {
             _aggregates.Add(key, aggregate);
         }
 
-        internal void RemoveByKey<T>(T key, Func<TAggregate, T> keySelector)            
+        internal void RemoveByKey(TKey key)            
         {
-            object otherKey;
-
-            if (_aggregates.Remove(key))
-            {
-                return;
-            }            
-            if (TryGetKey(key, keySelector, out otherKey))
-            {
-                _aggregates.Remove(otherKey);
-            }
-        }
-
-        private bool TryGetKey<T>(T key, Func<TAggregate, T> keySelector, out object otherKey)            
-        {
-            foreach (var keyValuePair in _aggregates)
-            {
-                if (HasKey(key, keySelector, keyValuePair.Value))
-                {
-                    otherKey = keyValuePair.Key;
-                    return true;
-                }
-            }
-            otherKey = null;
-            return false;
-        }
-
-        private static bool HasKey<T>(T key, Func<TAggregate, T> keySelector, Aggregate<TKey, TVersion, TAggregate> aggregate)            
-        {
-            if (aggregate.Value == null)
-            {
-                return false;
-            }
-            return keySelector.Invoke(aggregate.Value).Equals(key);
-        }
+            _aggregates.Remove(key);            
+        }                
 
         internal Task CommitAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,33 +7,46 @@ namespace Kingo
     [TestClass]
     public sealed class CompositeValidatorTest
     {
-        #region [====== Append ======]
+        #region [====== Merge ======]
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Append_Throws_IfLeftIsNull()
+        [TestMethod]        
+        public void Merge_ReturnsRight_IfLeftIsNull()
         {
-            CompositeValidator<object>.Append(null, new NullValidator<object>());
-        }
+            IValidator left = null;
+            IValidator right = new NullValidator();
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Append_Throws_IfRightIsNull()
-        {
-            CompositeValidator<object>.Append(new NullValidator<object>(), null);
+            Assert.AreSame(right, CompositeValidator.Merge(left, right));
         }
 
         [TestMethod]        
-        public void Append_ReturnsCompositeValidator_IfBothLeftAndRightAreNotNull()
+        public void Merge_ReturnsLeft_IfRightIsNull()
         {
-            Assert.IsNotNull(CompositeValidator<object>.Append(new NullValidator<object>(), new NullValidator<object>()));
+            IValidator left = new NullValidator();
+            IValidator right = null;
+
+            Assert.AreSame(left, CompositeValidator.Merge(left, right));
+        }
+
+        [TestMethod]
+        public void Merge_ReturnsNullValidator_IfBothLeftAndRightAreNull()
+        {
+            var validator = CompositeValidator.Merge(null, null);
+
+            Assert.IsNotNull(validator);
+            Assert.AreEqual(typeof(NullValidator), validator.GetType());
+        }
+
+        [TestMethod]        
+        public void MergeWith_ReturnsCompositeValidator_IfBothLeftAndRightAreNotNull()
+        {
+            Assert.IsNotNull(CompositeValidator.Merge(new NullValidator(), new NullValidator()));
         }
 
         #endregion
 
         #region [====== Validate ======]
 
-        private sealed class ValidatorStub : IValidator<object>
+        private sealed class ValidatorStub : IValidator
         {
             private readonly ErrorInfo _errorInfo;
 
@@ -53,14 +65,14 @@ namespace Kingo
             {
                 if (instance == null)
                 {
-                    throw new ArgumentNullException("instance");
+                    return ErrorInfo.Empty;
                 }
                 return _errorInfo;
             }
 
-            public IValidator<object> Append(IValidator<object> validator, bool haltOnFirstError = false)
+            public IValidator MergeWith(IValidator validator, bool haltOnFirstError = false)
             {
-                return CompositeValidator<object>.Append(this, validator, haltOnFirstError);
+                return CompositeValidator.Merge(this, validator, haltOnFirstError);
             }
         }
 
@@ -69,7 +81,7 @@ namespace Kingo
         {
             var left = new ValidatorStub("left");
             var right = new ValidatorStub("right");
-            var composite = left.Append(right, true);
+            var composite = left.MergeWith(right, true);
 
             var errorInfo = composite.Validate(new object());
 
@@ -83,7 +95,7 @@ namespace Kingo
         {
             var left = new ValidatorStub(null);
             var right = new ValidatorStub("right");
-            var composite = left.Append(right, true);
+            var composite = left.MergeWith(right, true);
 
             var errorInfo = composite.Validate(new object());
 
@@ -97,7 +109,7 @@ namespace Kingo
         {
             var left = new ValidatorStub("left", "A");
             var right = new ValidatorStub("right", "B");
-            var composite = left.Append(right);
+            var composite = left.MergeWith(right);
 
             var errorInfo = composite.Validate(new object());
 

@@ -63,36 +63,36 @@ namespace Kingo.Transactions
 
         #region [====== Messages ======]
         
-        private sealed class DefaultMessage : Message<DefaultMessage>
+        private sealed class DefaultMessage : Message
         {
-            public override DefaultMessage Copy()
+            public override Message Copy()
             {
                 return new DefaultMessage();
             }
         }
 
         [TransactionScope(TransactionScopeOption.Required)]
-        private sealed class RequiredMessage : Message<RequiredMessage>
+        private sealed class RequiredMessage : Message
         {
-            public override RequiredMessage Copy()
+            public override Message Copy()
             {
                 return new RequiredMessage();
             }
         }
 
         [TransactionScope(TransactionScopeOption.RequiresNew)]
-        private sealed class RequiresNewMessage : Message<RequiresNewMessage>
+        private sealed class RequiresNewMessage : Message
         {
-            public override RequiresNewMessage Copy()
+            public override Message Copy()
             {
                 return new RequiresNewMessage();
             }
         }
 
         [TransactionScope(TransactionScopeOption.Suppress, "00:20")]
-        private sealed class SuppressMessage : Message<SuppressMessage>
+        private sealed class SuppressMessage : Message
         {
-            public override SuppressMessage Copy()
+            public override Message Copy()
             {
                 return new SuppressMessage();
             }

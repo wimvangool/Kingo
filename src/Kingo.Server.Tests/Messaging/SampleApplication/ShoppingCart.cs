@@ -31,7 +31,7 @@ namespace Kingo.Messaging.SampleApplication
         {
             get { return _version; }
             set { _version = value; }
-        }        
+        }             
 
         public void AddProduct(int productId, int quantity)
         {
@@ -58,6 +58,6 @@ namespace Kingo.Messaging.SampleApplication
         private bool TryGetItem(int productId, out ShoppingCartItem item)
         {
             return (item = _items.SingleOrDefault(i => i.ProductId == productId)) != null;            
-        }        
+        }               
     }
 }

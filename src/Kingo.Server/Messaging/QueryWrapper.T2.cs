@@ -10,9 +10,9 @@ namespace Kingo.Messaging
     /// </summary>
     /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
     /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
-    public sealed class QueryWrapper<TMessageIn, TMessageOut> : IMessageHandlerOrQuery, IQuery<TMessageOut>
-        where TMessageIn : class, IMessage<TMessageIn>
-        where TMessageOut : class, IMessage<TMessageOut>
+    public sealed class QueryWrapper<TMessageIn, TMessageOut> : IQuery<TMessageOut>
+        where TMessageIn : class, IMessage
+        where TMessageOut : class, IMessage
     {
         private readonly TMessageIn _message;
         private readonly IQuery<TMessageIn, TMessageOut> _query;

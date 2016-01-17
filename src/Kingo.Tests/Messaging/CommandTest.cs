@@ -9,7 +9,7 @@ namespace Kingo.Messaging
     {
         #region [====== CommandUnderTest ======]
 
-        private sealed class CommandUnderTest : Command<CommandUnderTest>
+        private sealed class CommandUnderTest : Command
         {
             private int _value;
 
@@ -24,7 +24,7 @@ namespace Kingo.Messaging
                 set { SetValue(ref _value, value, () => Value); }
             }
 
-            protected override IValidator<CommandUnderTest> CreateValidator()
+            protected override IValidator CreateValidator()
             {
                 var validator = new ConstraintValidator<CommandUnderTest>();
                 validator.VerifyThat(m => m.Value).IsGreaterThanOrEqualTo(0);

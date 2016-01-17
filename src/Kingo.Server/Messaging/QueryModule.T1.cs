@@ -73,6 +73,6 @@ namespace Kingo.Messaging
         /// <param name="query">The query to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
         /// <returns>A task executing the query.</returns>
-        protected abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage<TMessageOut>;
+        protected abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage;
     }
 }

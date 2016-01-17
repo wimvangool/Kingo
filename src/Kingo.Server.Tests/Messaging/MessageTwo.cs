@@ -1,8 +1,8 @@
 ﻿namespace Kingo.Messaging
 {
-    internal sealed class MessageTwo : Message<MessageTwo>
+    internal sealed class MessageTwo : Message
     {
-        public override MessageTwo Copy()
+        public override Message Copy()
         {
             return new MessageTwo();
         }

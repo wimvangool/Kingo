@@ -3,7 +3,7 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging
 {
-    internal sealed class MessageHandlerDispatcher<TMessage> : MessageHandlerDispatcher where TMessage : class, IMessage<TMessage>
+    internal sealed class MessageHandlerDispatcher<TMessage> : MessageHandlerDispatcher where TMessage : class, IMessage
     {       
         private readonly TMessage _message;
         private readonly IMessageHandler<TMessage> _handler;
@@ -73,16 +73,21 @@ namespace Kingo.Messaging
             catch (DomainException exception)
             {
                 // When a DomainException is thrown, a BusinessRule or some other
-                // Constraint-By-Design was broken. That means that if the message
-                // is a Command, the Exception is promoted to a FunctionalException,
-                // which will communicate an intentional (pre-condition) failure as
-                // opposed to a technical (post-condition) failure.
+                // Constraint-By-Design was broken. If the message happens to be a Command,
+                // then the exception was probably thrown by purposely (by design), and so
+                // it is 'promoted' to a CommandExecutionException.
+                //
+                // If, on the other hand, the message is an event, then no exceptions whatsoever are
+                // expected, and the exception is converted to a TechnicalException. This prevents
+                // the exception to be caught in the MessageHandler pipeline multiple times
+                // and eventually erroneously be converted to a CommandExecutionException once
+                // its caught by the CommandHandler pipeline, if present.
                 if (_processor.IsCommand(message))
                 {
                     throw exception.AsCommandExecutionException(message);
                 }
-                throw;
-            }
+                throw exception.AsTechnicalException(message);
+            }            
             ThrowIfCancellationRequested();
         }                       
     }

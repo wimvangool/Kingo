@@ -5,18 +5,18 @@ using Kingo.Threading;
 
 namespace Kingo.Messaging.Domain
 {
-    internal sealed class RepositoryStub : SnapshotRepository<Guid, int, AggregateStub>
+    internal sealed class RepositoryStub : AggregateRootRepository<Guid, int, AggregateStub>
     {
-        private readonly AggregateStub _aggregate;
+        private readonly ISnapshot<Guid, int> _snapshot;
 
         internal RepositoryStub()
         {
-            _aggregate = null;
+            _snapshot = null;
         }
 
         internal RepositoryStub(AggregateStub aggregate)
         {
-            _aggregate = aggregate;
+            _snapshot = aggregate;
         }
 
         internal bool WasEnlisted
@@ -68,38 +68,19 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _selectedSurrogateKeys);
         }
 
-        protected override Task<AggregateStub> SelectByKeyAsync(Guid key)
+        protected override Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key)
         {
             Add(key, _selectedPrimaryKeys);
 
             return AsyncMethod.RunSynchronously(() =>
             {                              
-                if (_aggregate != null && _aggregate.Id.Equals(key))
+                if (_snapshot != null && _snapshot.Key.Equals(key))
                 {
-                    return _aggregate;
+                    return _snapshot;
                 }
                 return null;
             });
-        }      
-  
-        public Task<AggregateStub> GetByAlternateKeyAsync(int key)
-        {
-            return GetOrSelectByKeyAsync(key, aggregate => aggregate.AlternateKey, SelectByAlternateKey);
-        }
-
-        private Task<AggregateStub> SelectByAlternateKey(int key)
-        {
-            Add(key, _selectedSurrogateKeys);
-
-            return AsyncMethod.RunSynchronously(() =>
-            {
-                if (_aggregate != null && _aggregate.AlternateKey.Equals(key))
-                {
-                    return _aggregate;
-                }
-                return null;
-            });
-        }
+        }              
 
         #endregion
 
@@ -112,11 +93,13 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _updatedKeys);
         }
 
-        protected override Task UpdateAsync(AggregateStub aggregate, int originalVersion)
+        protected override Task<bool> UpdateAsync(ISnapshot<Guid, int> snapshot, int originalVersion)
         {
-            Add(aggregate.Id, _updatedKeys);
-
-            return AsyncMethod.Void;
+            return AsyncMethod.RunSynchronously(() =>
+            {
+                Add(snapshot.Key, _updatedKeys);
+                return true;
+            });
         }
 
         #endregion
@@ -130,9 +113,9 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _insertedKeys);
         }
 
-        protected override Task InsertAsync(AggregateStub aggregate)
+        protected override Task InsertAsync(ISnapshot<Guid, int> snapshot)
         {
-            Add(aggregate.Id, _insertedKeys);
+            Add(snapshot.Key, _insertedKeys);
 
             return AsyncMethod.Void;
         }

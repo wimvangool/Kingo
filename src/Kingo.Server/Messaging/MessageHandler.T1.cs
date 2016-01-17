@@ -21,7 +21,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
-        protected virtual void Publish<TEvent>(TEvent message) where TEvent : class, IMessage<TEvent>
+        protected virtual void Publish<TEvent>(TEvent message) where TEvent : class, IMessage
         {
             var context = UnitOfWorkContext.Current;
             if (context != null)

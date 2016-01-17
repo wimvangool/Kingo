@@ -10,7 +10,7 @@ namespace Kingo.Messaging
     /// Represents a happy flow, in which a certain number of events is expected to be published.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>
-    public sealed class HappyFlow<TMessage> : ExecutionFlow<TMessage> where TMessage : class, IMessage<TMessage>
+    public sealed class HappyFlow<TMessage> : ExecutionFlow<TMessage> where TMessage : class, IMessage
     {
         #region [====== ExpectedEvents ======]
 

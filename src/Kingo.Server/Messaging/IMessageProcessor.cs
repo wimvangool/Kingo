@@ -37,7 +37,7 @@ namespace Kingo.Messaging
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>        
-        void Handle<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
+        void Handle<TMessage>(TMessage message) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler.
@@ -55,7 +55,7 @@ namespace Kingo.Messaging
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>        
-        void Handle<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>;
+        void Handle<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler.
@@ -73,7 +73,7 @@ namespace Kingo.Messaging
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>        
-        void Handle<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>; 
+        void Handle<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler.
@@ -91,7 +91,7 @@ namespace Kingo.Messaging
         /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
         /// the preconditions that are in effect for this message to process.
         /// </exception>        
-        void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>;
+        void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking all registered message handlers asynchronously.
@@ -102,7 +102,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage<TMessage>;
+        Task HandleAsync<TMessage>(TMessage message) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking all registered message handlers asynchronously.
@@ -114,7 +114,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task HandleAsync<TMessage>(TMessage message, CancellationToken token) where TMessage : class, IMessage<TMessage>;
+        Task HandleAsync<TMessage>(TMessage message, CancellationToken token) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler asynchronously.
@@ -129,7 +129,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage<TMessage>;
+        Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler asynchronously.
@@ -145,7 +145,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>;
+        Task HandleAsync<TMessage>(TMessage message, Action<TMessage> handler, CancellationToken token) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler asynchronously.
@@ -160,7 +160,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage<TMessage>;
+        Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler asynchronously.
@@ -176,7 +176,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>;
+        Task HandleAsync<TMessage>(TMessage message, Func<TMessage, Task> handler, CancellationToken token) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler asynchronously.
@@ -191,7 +191,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>  
-        Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage<TMessage>; 
+        Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage;
 
         /// <summary>
         /// Processes the specified message by invoking the specified handler asynchronously.
@@ -207,7 +207,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>  
-        Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage<TMessage>;        
+        Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, CancellationToken token) where TMessage : class, IMessage;
 
         #endregion
 
@@ -229,8 +229,8 @@ namespace Kingo.Messaging
         /// the preconditions that are in effect for this message to process.
         /// </exception>         
         TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -248,8 +248,8 @@ namespace Kingo.Messaging
         /// the preconditions that are in effect for this message to process.
         /// </exception>         
         TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
@@ -267,8 +267,8 @@ namespace Kingo.Messaging
         /// the preconditions that are in effect for this message to process.
         /// </exception>         
         TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -282,8 +282,8 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
         Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -300,8 +300,8 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
         Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken token)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -315,8 +315,8 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
         Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -333,8 +333,8 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
         Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query, CancellationToken token)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -348,8 +348,8 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
         Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;     
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -366,8 +366,8 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception> 
         Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
-            where TMessageIn : class, IMessage<TMessageIn>
-            where TMessageOut : class, IMessage<TMessageOut>;        
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage;
        
         #endregion        
     }

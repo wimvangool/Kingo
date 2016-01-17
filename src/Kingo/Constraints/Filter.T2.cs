@@ -68,14 +68,17 @@ namespace Kingo.Constraints
         }
 
         /// <summary>
-        /// Creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
+        /// When overridden, creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
         /// </summary>
         /// <param name="name">New name of the constraint.</param>
         /// <returns>A copy of this constraint with the specified <paramref name="name"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception>   
-        public abstract IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name);
+        public virtual IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
+        {
+            throw NewWithNameNotSupportedException();
+        }
 
         internal override IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage)
         {
@@ -104,14 +107,17 @@ namespace Kingo.Constraints
         }
 
         /// <summary>
-        /// Creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
+        /// When overridden, creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
         /// </summary>
         /// <param name="errorMessage">New error message of the constraint.</param>
         /// <returns>A copy of this constraint with the specified <paramref name="errorMessage"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public abstract IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage);
+        public virtual IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
+        {
+            throw NewWithErrorMessageNotSupportedException();
+        }
 
         #endregion        
 

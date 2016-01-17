@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Resources;
-using Kingo.Threading;
 
 namespace Kingo.Messaging.Domain
 {
@@ -18,9 +16,8 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
     public abstract class Repository<TKey, TVersion, TAggregate> : IUnitOfWork, IDisposable                
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TAggregate : class, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
-    {                
-        private readonly SemaphoreSlim _lock;
+        where TAggregate : class, IAggregateRoot<TKey, TVersion>
+    {                        
         private readonly AggregateSet<TKey, TVersion, TAggregate> _selectedAggregates;
         private readonly AggregateSet<TKey, TVersion, TAggregate> _insertedAggregates;        
         private readonly AggregateSet<TKey, TVersion, TAggregate> _deletedAggregates;
@@ -29,20 +26,11 @@ namespace Kingo.Messaging.Domain
         /// Initializes a new instance of the <see cref="Kingo.Messaging.Domain.Repository{TKey,TVersion,TAggregate}" /> class.
         /// </summary>                
         internal Repository()
-        {
-            _lock = new SemaphoreSlim(1);
+        {            
             _selectedAggregates = new AggregateSet<TKey, TVersion, TAggregate>();
             _insertedAggregates = new AggregateSet<TKey, TVersion, TAggregate>();
             _deletedAggregates = new AggregateSet<TKey, TVersion, TAggregate>();
-        }
-
-        /// <summary>
-        /// Returns the lock that is used to synchronize reads and writes.
-        /// </summary>
-        protected SemaphoreSlim Lock
-        {
-            get { return _lock; }
-        }
+        }        
 
         #region [====== Dispose ======]
 
@@ -77,15 +65,7 @@ namespace Kingo.Messaging.Domain
         /// Otherwise, only unmanaged resources will be released.
         /// </remarks>
         protected virtual void Dispose(bool disposing)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-            if (disposing)
-            {
-                Lock.Dispose();
-            }
+        {            
             IsDisposed = true;
         }
 
@@ -148,19 +128,8 @@ namespace Kingo.Messaging.Domain
         /// Flushes any pending changes to the underlying infrastructure.
         /// </summary>
         public async Task FlushAsync()
-        {            
-            var domainEventStream = new DomainEventStream<TKey, TVersion>(UnitOfWorkContext.Current);
-
-            await Lock.WaitAsync();
-
-            try
-            {
-                await FlushAsync(domainEventStream);
-            }
-            finally
-            {
-                Lock.Release();
-            }            
+        {
+            await FlushAsync(new DomainEventStream<TKey, TVersion>(UnitOfWorkContext.Current));          
         }        
 
         /// <summary>
@@ -231,13 +200,24 @@ namespace Kingo.Messaging.Domain
                 _originalVersion = _aggregate.Version;
             }
 
-            private Task CommitIfUpdatedAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+            private async Task CommitIfUpdatedAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
             {
                 if (HasBeenUpdated())
                 {
-                    return _repository.UpdateAsync(_aggregate, _originalVersion, domainEventStream);
-                }
-                return AsyncMethod.Void;
+                    var updateSucceeded = await _repository.UpdateAsync(_aggregate, _originalVersion, domainEventStream);
+                    if (updateSucceeded)
+                    {
+                        return;
+                    }
+                    throw NewConcurrencyException(_aggregate, _originalVersion);
+                }                
+            }
+
+            private static Exception NewConcurrencyException(object aggregate, object originalVersion)
+            {
+                var messageFormat = ExceptionMessages.Repository_ConcurrenyException;
+                var message = string.Format(messageFormat, aggregate.GetType(), originalVersion);
+                return new ConcurrencyException(aggregate, originalVersion, message);
             }
         }
 
@@ -246,79 +226,47 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         /// <param name="key">The key of the aggregate to return.</param>
         /// <returns>The aggregate with the specified <paramref name="key"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="key"/> is <c>null</c>.
+        /// </exception>
         /// <exception cref="AggregateNotFoundByKeyException{T}">
         /// No aggregate of type <typeparamref name="TAggregate"/> with the specified <paramref name="key"/> was found.
         /// </exception>
-        public Task<TAggregate> GetByKeyAsync(TKey key)
-        {
-            return GetOrSelectByKeyAsync(key, SelectPrimaryKey, SelectByKeyAsync);
-        } 
-        
-        /// <summary>
-        /// Gets an aggregate with the specified <paramref name="key"/> from the cache or selects it from the Data Store if it wasn't loaded yet.
-        /// </summary>
-        /// <typeparam name="T">Type of the key.</typeparam>
-        /// <param name="key">Key that is used to load the aggregate.</param>
-        /// <param name="keySelector">
-        /// Delegate that is used to obtain the key from an already loaded aggregate.
-        /// </param>
-        /// <param name="selectMethod">
-        /// Delegate that is used to load an aggregate from the Data Store using the specified <paramref name="key"/>.
-        /// </param>
-        /// <returns>A task representing the operation.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/>, <paramref name="keySelector"/> or <paramref name="selectMethod"/> is <c>null</c>.
-        /// </exception>
-        protected async Task<TAggregate> GetOrSelectByKeyAsync<T>(T key, Func<TAggregate, T> keySelector, Func<T, Task<TAggregate>> selectMethod)            
+        public async Task<TAggregate> GetByKeyAsync(TKey key)
         {
             if (ReferenceEquals(key, null))
             {
                 throw new ArgumentNullException("key");
             }
-            if (keySelector == null)
+            TAggregate aggregate;
+
+            // In order to return the desired aggregate, we first try to find it in the 'cache': the aggregates
+            // that have already been loaded or added in the current session. If so, we return that instance.
+            if (_selectedAggregates.TryGetValue(key, out aggregate) || _insertedAggregates.TryGetValue(key, out aggregate))
             {
-                throw new ArgumentNullException("keySelector");
-            }
-            if (selectMethod == null)
-            {
-                throw new ArgumentNullException("selectMethod");
-            }
-            await Lock.WaitAsync();
-
-            try
-            {
-                TAggregate aggregate;
-
-                // In order to return the desired aggregate, we first try to find it in the 'cache': the aggregates
-                // that have already been loaded or added in the current session. If so, we return that instance.
-                if (_selectedAggregates.TryGetValue(key, keySelector, out aggregate) || _insertedAggregates.TryGetValue(key, keySelector, out aggregate))
-                {
-                    OnAggregateSelected(aggregate);
-
-                    return aggregate;
-                }
-                // If the desired aggregate was not selected or inserted, and it was not deleted (in which case it
-                // cannot be returned by definition), an attempt is made to retrieve it from the data store. If found,
-                // we add it to the selected-aggregate set and enlist this UnitOfWork with the controller because it
-                // might need to be flushed later.
-                if (_deletedAggregates.ContainsKey(key, keySelector) || (aggregate = await selectMethod.Invoke(key)) == null || _deletedAggregates.Contains(aggregate))
-                {
-                    throw NewAggregateNotFoundByKeyException(key);
-                }
-                _selectedAggregates.Add(key, new SelectedAggregate(this, aggregate));
-
                 OnAggregateSelected(aggregate);
-                    
-                return aggregate;                
+
+                return aggregate;
             }
-            finally
+            // If the desired aggregate was not selected or inserted, and it was not deleted (in which case it
+            // cannot be returned by definition), an attempt is made to retrieve it from the data store. If found,
+            // we add it to the selected-aggregate set and enlist this UnitOfWork with the controller because it
+            // might need to be flushed later.
+            if (_deletedAggregates.ContainsKey(key) || (aggregate = await SelectByKeyAndRestoreAsync(key)) == null || _deletedAggregates.ContainsValue(aggregate))
             {
-                Lock.Release();
-            } 
-        }
+                throw NewAggregateNotFoundByKeyException(key);
+            }
+            _selectedAggregates.Add(key, new SelectedAggregate(this, aggregate));
+
+            OnAggregateSelected(aggregate);
+
+            return aggregate; 
+        }        
+
+        internal abstract Task<TAggregate> SelectByKeyAndRestoreAsync(TKey key);               
 
         /// <summary>
-        /// This method is called just before an aggregate is returned to clients, either from cache or from the Data Store.
+        /// This method is called just before an aggregate is returned to clients, either from cache or from the repository.
         /// If you override this method, make sure you call the base implementation.
         /// </summary>
         /// <param name="aggregate">The aggregate that was requested.</param>
@@ -328,25 +276,14 @@ namespace Kingo.Messaging.Domain
             {
                 Enlist();
             }
-        }
-
-        /// <summary>
-        /// Attempts to retrieve a specific Aggregate instance by its key. Returns <c>true</c>
-        /// if found; returns <c>false</c> otherwise.
-        /// </summary>
-        /// <param name="key">Key of the Aggregate instance to retrieve.</param>        
-        /// <returns>
-        /// <c>True</c> if this store contains an instance with the specified <paramref name="key"/>;
-        /// otherwise <c>false</c>.
-        /// </returns>
-        protected abstract Task<TAggregate> SelectByKeyAsync(TKey key);
+        }               
 
         private Task UpdateAggregatesAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
         {
             return _selectedAggregates.CommitAsync(domainEventStream);
         }
 
-        internal abstract Task UpdateAsync(TAggregate aggregate, TVersion originalVersion, IWritableEventStream<TKey, TVersion> domainEventStream);        
+        internal abstract Task<bool> UpdateAsync(TAggregate aggregate, TVersion originalVersion, IWritableEventStream<TKey, TVersion> domainEventStream);        
 
         /// <summary>
         /// Determines whether or not the specified <paramref name="aggregate"/> has been updated.
@@ -378,7 +315,7 @@ namespace Kingo.Messaging.Domain
             var messageFormat = ExceptionMessages.Repository_AggregateNotFoundByKey;
             var message = string.Format(messageFormat, typeof(TAggregate), key);
             return new AggregateNotFoundByKeyException<T>(typeof(TAggregate), key, message);
-        } 
+        }
 
         #endregion
 
@@ -415,7 +352,7 @@ namespace Kingo.Messaging.Domain
                 await _repository.InsertAsync(_aggregate, domainEventStream);
 
                 // When a newly inserted aggregate is committed, it is transferred to the selected set.
-                _repository._insertedAggregates.RemoveByKey(_aggregate.Key, SelectPrimaryKey);
+                _repository._insertedAggregates.RemoveByKey(_aggregate.Key);
                 _repository._selectedAggregates.Add(_aggregate.Key, new SelectedAggregate(_repository, _aggregate));
             }
         }
@@ -433,29 +370,20 @@ namespace Kingo.Messaging.Domain
             {
                 throw new ArgumentNullException("aggregate");
             }
-            Lock.Wait();
-
-            try
+            // When adding a new aggregate, we first check if it is not already present in cache. If so,
+            // we can ignore this operation. However, if a different aggregate is added with a key that
+            // is already assigned to another aggregate, an exception is thrown.
+            if (_selectedAggregates.ContainsValue(aggregate) || _insertedAggregates.ContainsValue(aggregate))
             {
-                // When adding a new aggregate, we first check if it is not already present in cache. If so,
-                // we can ignore this operation. However, if a different aggregate is added with a key that
-                // is already assigned to another aggregate, an exception is thrown.
-                if (_selectedAggregates.Contains(aggregate) || _insertedAggregates.Contains(aggregate))
-                {
-                    return;
-                }
-                else if (_selectedAggregates.ContainsKey(aggregate.Key, SelectPrimaryKey) || _insertedAggregates.ContainsKey(aggregate.Key, SelectPrimaryKey))
-                {
-                    throw NewDuplicateKeyException(aggregate.Key);
-                }
-                _insertedAggregates.Add(aggregate.Key, new AddedAggregate(this, aggregate));
-
-                OnAggregateAdded(aggregate);
+                return;
             }
-            finally
+            if (_selectedAggregates.ContainsKey(aggregate.Key) || _insertedAggregates.ContainsKey(aggregate.Key))
             {
-                Lock.Release();
-            }            
+                throw NewDuplicateKeyException(aggregate.Key);
+            }
+            _insertedAggregates.Add(aggregate.Key, new AddedAggregate(this, aggregate));
+
+            OnAggregateAdded(aggregate);         
         }
 
         /// <summary>
@@ -496,19 +424,15 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Removing and Deleting ======]
 
-        private sealed class RemovedAggregate<T> : Aggregate<TKey, TVersion, TAggregate>           
+        private sealed class RemovedAggregate : Aggregate<TKey, TVersion, TAggregate>           
         {
             private readonly Repository<TKey, TVersion, TAggregate> _repository;
-            private readonly T _key;
-            private readonly Func<TAggregate, T> _keySelector;
-            private readonly Func<T, IWritableEventStream<TKey, TVersion>, Task> _deleteMethod;
+            private readonly TKey _key;            
 
-            internal RemovedAggregate(Repository<TKey, TVersion, TAggregate> repository, T key, Func<TAggregate, T> keySelector, Func<T, IWritableEventStream<TKey, TVersion>, Task> deleteMethod)
+            internal RemovedAggregate(Repository<TKey, TVersion, TAggregate> repository, TKey key)
             {
                 _repository = repository;
-                _key = key;
-                _keySelector = keySelector;
-                _deleteMethod = deleteMethod;
+                _key = key;                
             }
 
             internal override TAggregate Value
@@ -518,7 +442,7 @@ namespace Kingo.Messaging.Domain
 
             internal override bool Matches(TAggregate aggregate)
             {
-                return _keySelector.Invoke(aggregate).Equals(_key);
+                return aggregate.Key.Equals(_key);
             }
 
             internal override bool HasBeenUpdated()
@@ -528,9 +452,9 @@ namespace Kingo.Messaging.Domain
 
             internal override async Task CommitAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
             {                
-                await _deleteMethod.Invoke(_key, domainEventStream);
+                await _repository.DeleteAsync(_key, domainEventStream);
 
-                _repository._deletedAggregates.RemoveByKey(_key, _keySelector);
+                _repository._deletedAggregates.RemoveByKey(_key);
             }
         }
 
@@ -538,72 +462,39 @@ namespace Kingo.Messaging.Domain
         /// Marks the aggregate with the specified <paramref name="key"/> as deleted.
         /// </summary>
         /// <param name="key">Key of the aggregate to remove.</param>
-        public void RemoveByKey(TKey key)
-        {
-             RemoveByKey(key, SelectPrimaryKey, DeleteAsync);
-        }
-
-        /// <summary>
-        /// Removes an aggregate with the specified <paramref name="key"/> from this repository.
-        /// </summary>
-        /// <typeparam name="T">Type of the key.</typeparam>
-        /// <param name="key">Key that is used to remove/delete the aggregate.</param>
-        /// <param name="keySelector">
-        /// Delegate that is used to obtain the key from an already loaded aggregate.
-        /// </param>
-        /// <param name="deleteMethod">
-        /// Delegate that is used to delete an aggregate from the Data Store using the specified <paramref name="key"/>.
-        /// </param>        
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="key"/>, <paramref name="keySelector"/> or <paramref name="deleteMethod"/> is <c>null</c>.
+        /// <paramref name="key"/> is <c>null</c>.
         /// </exception>
-        protected void RemoveByKey<T>(T key, Func<TAggregate, T> keySelector, Func<T, IWritableEventStream<TKey, TVersion>, Task> deleteMethod)            
+        public void RemoveByKey(TKey key)
         {
             if (ReferenceEquals(key, null))
             {
                 throw new ArgumentNullException("key");
             }
-            if (keySelector == null)
-            {
-                throw new ArgumentNullException("keySelector");
-            }
-            if (deleteMethod == null)
-            {
-                throw new ArgumentNullException("deleteMethod");
-            }
-            Lock.Wait();
+            // When removing an aggregate, we first check whether it has been loaded (selected) before, and if so,
+            // simply move it to the deleted-aggregates set. If it was inserted before (a very strange but possible
+            // situation), the previous insert is simply undone again. In any other case, the aggregate is first
+            // loaded into memory and then marked deleted.
+            TAggregate aggregate;
 
-            try
+            if (_selectedAggregates.TryGetValue(key, out aggregate))
             {
-                // When removing an aggregate, we first check whether it has been loaded (selected) before, and if so,
-                // simply move it to the deleted-aggregates set. If it was inserted before (a very strange but possible
-                // situation), the previous insert is simply undone again. In any other case, the aggregate is first
-                // loaded into memory and then marked deleted.
-                TAggregate aggregate;
-                
-                if (_selectedAggregates.TryGetValue(key, keySelector, out aggregate))
-                {                    
-                    _selectedAggregates.RemoveByKey(key, keySelector);
-                    _deletedAggregates.Add(key, new RemovedAggregate<T>(this, key, keySelector, deleteMethod));
+                _selectedAggregates.RemoveByKey(key);
+                _deletedAggregates.Add(key, new RemovedAggregate(this, key));
 
-                    OnAggregateRemoved(key);
-                }
-                else if (_insertedAggregates.ContainsKey(key, keySelector))
-                {
-                    _insertedAggregates.RemoveByKey(key, keySelector);
-                }
-                else
-                {                    
-                    _deletedAggregates.Add(key, new RemovedAggregate<T>(this, key, keySelector, deleteMethod));
-
-                    OnAggregateRemoved(key);
-                }
+                OnAggregateRemoved(key);
             }
-            finally
+            else if (_insertedAggregates.ContainsKey(key))
             {
-                Lock.Release();
-            } 
-        }
+                _insertedAggregates.RemoveByKey(key);
+            }
+            else
+            {
+                _deletedAggregates.Add(key, new RemovedAggregate(this, key));
+
+                OnAggregateRemoved(key);
+            }
+        }        
 
         /// <summary>
         /// This method is called just after a new aggregate was removed from this repository. If you override
@@ -642,11 +533,6 @@ namespace Kingo.Messaging.Domain
             return new NotSupportedException(message);
         }
 
-        #endregion        
-
-        private static TKey SelectPrimaryKey(TAggregate aggregate)
-        {
-            return aggregate.Key;
-        }
+        #endregion                
     }
 }

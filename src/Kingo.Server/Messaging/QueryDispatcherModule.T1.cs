@@ -3,8 +3,8 @@
 namespace Kingo.Messaging
 {
     internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : MessageHandlerDispatcher
-        where TMessageIn : class, IMessage<TMessageIn>
-        where TMessageOut : class, IMessage<TMessageOut>
+        where TMessageIn : class, IMessage
+        where TMessageOut : class, IMessage
     {
         private readonly IQuery<TMessageOut> _query;        
         private readonly MessageProcessor _processor;

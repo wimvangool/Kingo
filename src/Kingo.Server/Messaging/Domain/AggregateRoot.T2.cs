@@ -7,28 +7,26 @@ namespace Kingo.Messaging.Domain
     /// Represents an aggregate root as defined by the principles of Domain Driven Design.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
-    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>  
+    /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>      
     [Serializable]
-    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>        
-        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IAggregateRoot<TKey, TVersion>, ISnapshot<TKey, TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>       
     {
         private static readonly Func<TVersion, TVersion> _IncrementMethod = AggregateRootVersion.IncrementMethod<TVersion>();
 
         [NonSerialized]
-        private MemoryEventStream<TKey, TVersion> _eventsToPublish;
-
-        internal AggregateRoot() { }
+        private MemoryEventStream<TKey, TVersion> _eventsToPublish;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
-        /// <param name="event">An event stream containing all events that need to be published.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="event"/> is <c>null</c>.
-        /// </exception>
-        protected AggregateRoot(IVersionedObject<TKey, TVersion> @event)
-        {                        
-            EventsToPublish.Write(@event);
+        /// <param name="event">The event of that represents the creation of this aggregate.</param>        
+        protected AggregateRoot(IVersionedObject<TKey, TVersion> @event = null)
+        {
+            if (@event != null)
+            {
+                EventsToPublish.Write(@event);
+            }
         }
 
         private MemoryEventStream<TKey, TVersion> EventsToPublish
@@ -89,6 +87,29 @@ namespace Kingo.Messaging.Domain
 
         #endregion                        
 
+        #region [====== Snapshot ======]
+
+        ISnapshot<TKey, TVersion> IAggregateRoot<TKey, TVersion>.CreateSnapshot()
+        {
+            return CreateSnapshot();
+        }
+
+        /// <summary>
+        /// When overridden, creates and returns a <see cref="ISnapshot{T, S}" /> of this aggregate.        
+        /// </summary>
+        /// <returns>A new snapshot of this aggregate.</returns>
+        protected virtual ISnapshot<TKey, TVersion> CreateSnapshot()
+        {
+            return this;
+        }
+
+        TAggregate ISnapshot<TKey, TVersion>.RestoreAggregate<TAggregate>()
+        {
+            return (TAggregate) (object) this;
+        }
+
+        #endregion              
+
         #region [====== Publish & Apply ======]
 
         /// <summary>
@@ -99,7 +120,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>        
-        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage<TEvent>
+        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage
         {
             EventsToPublish.Write(@event);
             Apply(@event);            
@@ -133,6 +154,6 @@ namespace Kingo.Messaging.Domain
             return new ArgumentException(message, "event");
         }
 
-        #endregion
+        #endregion        
     }
 }

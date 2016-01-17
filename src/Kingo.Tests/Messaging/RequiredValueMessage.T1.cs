@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging
 {
-    public sealed class RequiredValueMessage<TValue> : Message<RequiredValueMessage<TValue>> where TValue : class
+    public sealed class RequiredValueMessage<TValue> : Message where TValue : class
     {
         public TValue Value;
 
@@ -11,7 +11,7 @@ namespace Kingo.Messaging
             Value = value;
         }
 
-        public override RequiredValueMessage<TValue> Copy()
+        public override Message Copy()
         {
             return new RequiredValueMessage<TValue>(Value);
         }
@@ -45,7 +45,7 @@ namespace Kingo.Messaging
 
         #region [====== Validation ======]
 
-        protected override IValidator<RequiredValueMessage<TValue>> CreateValidator()
+        protected override IValidator CreateValidator()
         {
             var validator = new ConstraintValidator<RequiredValueMessage<TValue>>();
 

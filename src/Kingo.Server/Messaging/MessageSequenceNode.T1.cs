@@ -8,7 +8,7 @@ namespace Kingo.Messaging
     /// Represents a sequence containing just a single message.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message.</typeparam>
-    public class MessageSequenceNode<TMessage> : MessageSequence where TMessage : class, IMessage<TMessage>
+    public class MessageSequenceNode<TMessage> : MessageSequence where TMessage : class, IMessage
     {
         private readonly TMessage _message;
         private readonly IMessageHandler<TMessage> _handler;

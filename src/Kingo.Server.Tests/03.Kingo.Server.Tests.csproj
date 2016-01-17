@@ -71,6 +71,8 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Messaging\Domain\AggregateEventStreamFactoryTest.cs" />
+    <Compile Include="Messaging\Domain\TypeToContractMapTest.cs" />
     <Compile Include="Messaging\MessageStub.cs" />
     <Compile Include="Messaging\MessageOne.cs" />
     <Compile Include="Messaging\MessageTwo.cs" />

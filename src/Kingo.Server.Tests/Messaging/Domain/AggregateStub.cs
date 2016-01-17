@@ -1,16 +1,27 @@
 ﻿using System;
 
 namespace Kingo.Messaging.Domain
-{    
+{
     internal sealed class AggregateStub : AggregateRoot<Guid, int>
     {
-        private readonly Guid _id;
-        private readonly int _alternateKey;        
-
-        internal AggregateStub(Guid id, int alternateKey = 0)
+        private sealed class CreatedEvent : DomainEvent<Guid, int>
         {
-            _id = id;
-            _alternateKey = alternateKey;
+            public readonly Guid Id;
+            public readonly int Version;
+
+            public CreatedEvent(Guid id, int version)
+            {
+                Id = id;
+                Version = version;
+            }
+        }
+
+        private readonly Guid _id;               
+
+        internal AggregateStub(Guid id)
+            : base(new CreatedEvent(id, 1))
+        {
+            _id = id;            
         }
 
         #region [====== Id & Version ======]
@@ -19,12 +30,7 @@ namespace Kingo.Messaging.Domain
         public override Guid Id
         {
             get { return _id; }
-        }
-
-        public int AlternateKey
-        {
-            get { return _alternateKey; }
-        }
+        }      
 
         /// <inheritdoc />
         protected override int Version
@@ -33,7 +39,7 @@ namespace Kingo.Messaging.Domain
             set;
         }                
 
-        #endregion
+        #endregion        
 
         internal void Update()
         {

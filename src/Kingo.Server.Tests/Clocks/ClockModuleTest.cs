@@ -29,9 +29,9 @@ namespace Kingo.Clocks
             }
         }
 
-        private sealed class DefaultMessage : Message<DefaultMessage>
+        private sealed class DefaultMessage : Message
         {
-            public override DefaultMessage Copy()
+            public override Message Copy()
             {
                 return new DefaultMessage();
             }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Kingo.Clocks;
 using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,7 +7,7 @@ namespace Kingo.Messaging.Domain
     [TestClass]
     public sealed class RepositoryTest
     {
-        #region [====== Retrieving and Updating (Primary Key) ======]
+        #region [====== Retrieving and Updating ======]
 
         [TestMethod]        
         public void GetByKeyAsync_Throws_IfAggregateIsNotFound()
@@ -226,169 +225,7 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        #endregion
-
-        #region [====== Retrieving and Updating (Surrogate Key) ======]
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_Throws_IfAggregateIsNotFound()
-        {
-            using (var repository = new RepositoryStub())
-            {
-                var key = 0;
-
-                repository.GetByAlternateKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<int>>();
-
-                Assert.AreEqual(1, repository.SelectCountOf(key));
-                Assert.IsFalse(repository.WasEnlisted);
-                Assert.IsFalse(repository.RequiresFlush());
-            }
-        }
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_Throws_IfAggregateWasFirstSelectedButThenDeleted()
-        {
-            var existingAggregate = CreateAggregateStub();
-
-            using (var repository = new RepositoryStub(existingAggregate))
-            {
-                var key = existingAggregate.AlternateKey;
-                var retrievedAggregate = repository.GetByAlternateKeyAsync(key).Result;
-
-                Assert.AreEqual(1, repository.SelectCountOf(key));
-                Assert.AreSame(existingAggregate, retrievedAggregate);
-                
-                repository.RemoveByKey(existingAggregate.Id);
-                repository.GetByAlternateKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<int>>();
-
-                Assert.IsTrue(repository.WasEnlisted);
-                Assert.IsTrue(repository.RequiresFlush());
-            }
-        }
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_Throws_IfAggregateWasFirstAddedButThenDeleted()
-        {
-            using (var repository = new RepositoryStub())
-            {
-                var aggregate = CreateAggregateStub();
-                var key = aggregate.AlternateKey;
-
-                repository.Add(aggregate);
-
-                var retrievedAggregate = repository.GetByAlternateKeyAsync(key).Result;
-
-                Assert.AreEqual(0, repository.SelectCountOf(key));
-                Assert.AreSame(aggregate, retrievedAggregate);
-                
-                repository.RemoveByKey(aggregate.Id);
-                repository.GetByAlternateKeyAsync(key).WaitAndHandle<AggregateNotFoundByKeyException<int>>();
-
-                Assert.IsTrue(repository.WasEnlisted);
-                Assert.IsFalse(repository.RequiresFlush());
-            }
-        }
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_ReturnsExpectedAggregate_IfAggregateIsFound()
-        {
-            var existingAggregate = CreateAggregateStub();
-
-            using (var repository = new RepositoryStub(existingAggregate))
-            {
-                var key = existingAggregate.AlternateKey;
-                var retrievedAggregate = repository.GetByAlternateKeyAsync(key).Result;
-
-                Assert.AreEqual(1, repository.SelectCountOf(key));
-                Assert.AreSame(existingAggregate, retrievedAggregate);
-                Assert.IsTrue(repository.WasEnlisted);
-                Assert.IsFalse(repository.RequiresFlush());
-            }
-        }
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_ReturnsExpectedAggregate_IfAggregateWasFirstDeletedAndThenAdded()
-        {
-            using (var repository = new RepositoryStub())
-            {
-                var aggregate = CreateAggregateStub();
-                var key = aggregate.AlternateKey;
-               
-                repository.RemoveByKey(aggregate.Id);
-                repository.Add(aggregate);
-
-                var retrievedAggregate = repository.GetByAlternateKeyAsync(key).Result;
-
-                Assert.AreEqual(0, repository.SelectCountOf(key));
-                Assert.AreSame(aggregate, retrievedAggregate);
-                Assert.IsTrue(repository.WasEnlisted);
-                Assert.IsTrue(repository.RequiresFlush());
-            }
-        }
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_ReturnsCachedAggregate_IfAggregateWasSelectedBefore()
-        {
-            var existingAggregate = CreateAggregateStub();
-
-            using (var repository = new RepositoryStub(existingAggregate))
-            {
-                var key = existingAggregate.AlternateKey;
-                var retrievedAggregateA = repository.GetByAlternateKeyAsync(key).Result;
-                var retrievedAggregateB = repository.GetByAlternateKeyAsync(key).Result;
-
-                Assert.AreEqual(1, repository.SelectCountOf(key));
-                Assert.AreSame(existingAggregate, retrievedAggregateA);
-                Assert.AreSame(retrievedAggregateA, retrievedAggregateB);
-                Assert.IsTrue(repository.WasEnlisted);
-                Assert.IsFalse(repository.RequiresFlush());
-            }
-        }
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_ReturnsCachedAggregate_IfAggregateWasAddedBefore()
-        {
-            using (var repository = new RepositoryStub())
-            {
-                var aggregate = CreateAggregateStub();
-
-                repository.Add(aggregate);
-
-                var key = aggregate.AlternateKey;
-                var retrievedAggregateA = repository.GetByAlternateKeyAsync(key).Result;
-                var retrievedAggregateB = repository.GetByAlternateKeyAsync(key).Result;
-
-                Assert.AreEqual(0, repository.SelectCountOf(key));
-                Assert.AreSame(aggregate, retrievedAggregateA);
-                Assert.AreSame(retrievedAggregateA, retrievedAggregateB);
-                Assert.IsTrue(repository.WasEnlisted);
-                Assert.IsTrue(repository.RequiresFlush());
-            }
-        }
-
-        [TestMethod]
-        public void GetByAlternateKeyAsync_ReturnsCachedAggregate_IfAggregateWasFirstDeletedButThenAdded()
-        {
-            using (var repository = new RepositoryStub())
-            {
-                var aggregate = CreateAggregateStub();
-                var key = aggregate.AlternateKey;
-
-                repository.RemoveByKey(aggregate.Id);
-                repository.Add(aggregate);
-
-                var retrievedAggregateA = repository.GetByAlternateKeyAsync(key).Result;
-                var retrievedAggregateB = repository.GetByAlternateKeyAsync(key).Result;
-
-                Assert.AreEqual(0, repository.SelectCountOf(key));
-                Assert.AreSame(aggregate, retrievedAggregateA);
-                Assert.AreSame(retrievedAggregateA, retrievedAggregateB);
-                Assert.IsTrue(repository.WasEnlisted);
-                Assert.IsTrue(repository.RequiresFlush());
-            }
-        }        
-
-        #endregion
+        #endregion        
 
         #region [====== Add & Insert ======]
 
@@ -572,16 +409,6 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        #endregion
-
-        private static AggregateStub CreateAggregateStub()
-        {
-            return new AggregateStub(Guid.NewGuid(), RandomAlternateKey());
-        }
-
-        private static int RandomAlternateKey()
-        {
-            return Clock.Current.UtcTime().Milliseconds + 1;
-        }
+        #endregion            
     }
 }

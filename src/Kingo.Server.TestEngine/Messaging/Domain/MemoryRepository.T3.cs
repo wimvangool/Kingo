@@ -8,71 +8,71 @@ namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// Represents an in-memory repository of aggregates that can be used in combination with
-    /// write-only scenarios to temporarily store data
-    /// when testing business logic.
+    /// write-only scenarios to temporarily store data when testing business logic.
     /// </summary>
     /// <typeparam name="TKey">Type of the key that identifies an aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
-    public class MemoryRepository<TKey, TVersion, TAggregate> : SnapshotRepository<TKey, TVersion, TAggregate>
+    public class MemoryRepository<TKey, TVersion, TAggregate> : AggregateRootRepository<TKey, TVersion, TAggregate>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TAggregate : class, IVersionedObject<TKey, TVersion>, IReadableEventStream<TKey, TVersion>
+        where TAggregate : class, IAggregateRoot<TKey, TVersion>
     {
-        private readonly ConcurrentDictionary<TKey, TAggregate> _aggregates;
+        private readonly ConcurrentDictionary<TKey, ISnapshot<TKey, TVersion>> _snapshots;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryRepository{T, S, R}" /> class.
         /// </summary>
         protected MemoryRepository()
         {
-            _aggregates = new ConcurrentDictionary<TKey, TAggregate>();
+            _snapshots = new ConcurrentDictionary<TKey, ISnapshot<TKey, TVersion>>();
         }        
 
         /// <summary>
         /// Returns a thread-safe dictionary of aggregates.
         /// </summary>
-        protected IDictionary<TKey, TAggregate> Aggregates
+        protected IDictionary<TKey, ISnapshot<TKey, TVersion>> Snapshots
         {
-            get { return _aggregates; }
+            get { return _snapshots; }
         }
 
         /// <inheritdoc />
-        protected override Task<TAggregate> SelectByKeyAsync(TKey key)
+        protected override Task<ISnapshot<TKey, TVersion>> SelectByKeyAsync(TKey key)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                TAggregate aggregate;
+                ISnapshot<TKey, TVersion> snapshot;
 
-                if (Aggregates.TryGetValue(key, out aggregate))
+                if (Snapshots.TryGetValue(key, out snapshot))
                 {
-                    return aggregate;
+                    return snapshot;
                 }
                 return null;              
             });           
         }
 
         /// <inheritdoc />
-        protected override Task UpdateAsync(TAggregate aggregate, TVersion originalVersion)
+        protected override Task<bool> UpdateAsync(ISnapshot<TKey, TVersion> snapshot, TVersion originalVersion)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                Aggregates[aggregate.Key] = aggregate;
+                Snapshots[snapshot.Key] = snapshot;
+                return true;
             });               
         }
 
         /// <inheritdoc />
-        protected override Task InsertAsync(TAggregate aggregate)
+        protected override Task InsertAsync(ISnapshot<TKey, TVersion> snapshot)
         {
             return AsyncMethod.RunSynchronously(() =>
             {                
                 try
                 {
-                    Aggregates.Add(aggregate.Key, aggregate);
+                    Snapshots.Add(snapshot.Key, snapshot);
                 }
                 catch (ArgumentException)
                 {
-                    throw NewDuplicateKeyException(aggregate.Key);
+                    throw NewDuplicateKeyException(snapshot.Key);
                 }                
             });
         }        
