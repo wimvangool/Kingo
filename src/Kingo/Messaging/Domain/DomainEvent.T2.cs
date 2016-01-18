@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Serves as a base class for events.
+    /// Serves as a base class for events that are published by aggregates.
     /// </summary>
     /// <typeparam name="TKey">Key-type of the associated aggregate.</typeparam>
     /// <typeparam name="TVersion">Version-type of the associated aggregate.</typeparam>    

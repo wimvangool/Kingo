@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Represents a <see cref="Repository{T, K, S}" /> that stores its aggregates as a stream of events.
+    /// Represents a repository that stores its aggregates as a stream of events.
     /// </summary>
     /// <typeparam name="TKey">Type of the key that identifies an aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>

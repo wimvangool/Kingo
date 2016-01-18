@@ -10,9 +10,9 @@ namespace Kingo.Messaging.Domain
 #pragma warning disable
         #region [====== DomainEvents ======]
 
-        private sealed class MissingMembersEvent : DomainEvent<Guid, int> { }                
+        private sealed class MissingMembersEvent : DomainEvent { }                
 
-        private sealed class MultipleImplicitMembersEvent : DomainEvent<Guid, int>
+        private sealed class MultipleImplicitMembersEvent : DomainEvent
         {
             internal readonly Guid Id;
             internal readonly Guid Key;
@@ -21,13 +21,13 @@ namespace Kingo.Messaging.Domain
             internal readonly int TwoVersion;
         }       
 
-        private sealed class IncompatibleImplicitMemberTypeEvent : DomainEvent<Guid, int>
+        private sealed class IncompatibleImplicitMemberTypeEvent : DomainEvent
         {            
             internal readonly string Id;            
             internal readonly string Version;
         }
 
-        private sealed class CorrectImplicitMembersEvent : DomainEvent<Guid, int>
+        private sealed class CorrectImplicitMembersEvent : DomainEvent
         {
             internal readonly Guid Id;            
             internal readonly int Version;   

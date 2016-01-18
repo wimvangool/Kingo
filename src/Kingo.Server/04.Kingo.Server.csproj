@@ -52,7 +52,11 @@
     </Compile>
     <Compile Include="Messaging\DependencyConfiguration.cs" />
     <Compile Include="Messaging\Domain\Aggregate.T1.cs" />
+    <Compile Include="Messaging\Domain\AggregateEventStream.cs" />
     <Compile Include="Messaging\Domain\AggregateEventStreamFactory.T2.cs" />
+    <Compile Include="Messaging\Domain\AggregateEventStreamRepository.T1.cs" />
+    <Compile Include="Messaging\Domain\AggregateRoot.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootRepository.T1.cs" />
     <Compile Include="Messaging\Domain\AggregateSet.T1.cs" />
     <Compile Include="Messaging\Domain\ConcurrencyException.cs" />
     <Compile Include="Messaging\Domain\DomainEventStream.T2.cs" />

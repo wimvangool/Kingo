@@ -5,7 +5,7 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging.SampleApplication
 {
-    public sealed class ShoppingCart : AggregateRoot<Guid, int>
+    public sealed class ShoppingCart : AggregateRoot
     {
         private readonly Guid _id;         
         private readonly List<ShoppingCartItem> _items;

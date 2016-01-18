@@ -2,11 +2,17 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
 {
-    internal static class DomainEvent
+    /// <summary>
+    /// Serves as a base class for events that are published by aggregates.
+    /// </summary>
+    [Serializable]
+    [DataContract]
+    public abstract class DomainEvent : DomainEvent<Guid, int>
     {
         #region [====== Member ======]
 

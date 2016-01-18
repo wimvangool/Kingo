@@ -66,7 +66,7 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        private sealed class XIncrementedEvent : DomainEvent<Guid, int>
+        private sealed class XIncrementedEvent : DomainEvent
         {
             public readonly Guid Id;
             public readonly int Version;
@@ -80,7 +80,7 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        private sealed class YIncrementedEvent : DomainEvent<Guid, int>
+        private sealed class YIncrementedEvent : DomainEvent
         {
             public readonly Guid Id;
             public readonly int Version;
