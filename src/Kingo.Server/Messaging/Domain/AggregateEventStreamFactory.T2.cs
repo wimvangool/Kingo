@@ -16,7 +16,7 @@ namespace Kingo.Messaging.Domain
     public sealed class AggregateEventStreamFactory<TKey, TVersion> : ISnapshot<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
-        private readonly IVersionedObject<TKey, TVersion>[] _orderedEvents;
+        private readonly IHasVersion<TKey, TVersion>[] _orderedEvents;
         private readonly ISnapshot<TKey, TVersion> _snapshot;
         private readonly bool _useDefaultConstructor;
 
@@ -32,7 +32,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public AggregateEventStreamFactory(IEnumerable<IVersionedObject<TKey, TVersion>> events, bool useDefaultConstructor = true)
+        public AggregateEventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, bool useDefaultConstructor = true)
             : this(events, null, useDefaultConstructor) { }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public AggregateEventStreamFactory(IEnumerable<IVersionedObject<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot)
+        public AggregateEventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot)
             : this(events, snapshot, true) { }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public AggregateEventStreamFactory(IEnumerable<IVersionedObject<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot, bool useDefaultConstructor)
+        public AggregateEventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot, bool useDefaultConstructor)
         {
             if (events == null)
             {
@@ -70,11 +70,11 @@ namespace Kingo.Messaging.Domain
             _useDefaultConstructor = useDefaultConstructor;
         }
 
-        TKey IKeyedObject<TKey>.Key
+        TKey IHasKey<TKey>.Key
         {
             get
             {
-                IVersionedObject<TKey, TVersion> lastEvent;
+                IHasVersion<TKey, TVersion> lastEvent;
 
                 if (TryGetLastEvent(out lastEvent))
                 {
@@ -84,11 +84,11 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        TVersion IVersionedObject<TKey, TVersion>.Version
+        TVersion IHasVersion<TKey, TVersion>.Version
         {
             get
             {
-                IVersionedObject<TKey, TVersion> lastEvent;
+                IHasVersion<TKey, TVersion> lastEvent;
 
                 if (TryGetLastEvent(out lastEvent))
                 {
@@ -98,7 +98,7 @@ namespace Kingo.Messaging.Domain
             }
         }
         
-        private bool TryGetLastEvent(out IVersionedObject<TKey, TVersion> lastEvent)
+        private bool TryGetLastEvent(out IHasVersion<TKey, TVersion> lastEvent)
         {
             if (_orderedEvents.Length == 0)
             {
@@ -168,7 +168,7 @@ namespace Kingo.Messaging.Domain
             return (TAggregate) FormatterServices.GetUninitializedObject(typeof(TAggregate));
         }
 
-        private static MemoryEventStream<TKey, TVersion> CreateMemoryEventStream(IEnumerable<IVersionedObject<TKey, TVersion>> orderedEvents)
+        private static MemoryEventStream<TKey, TVersion> CreateMemoryEventStream(IEnumerable<IHasVersion<TKey, TVersion>> orderedEvents)
         {            
             var memoryEventStream = new MemoryEventStream<TKey, TVersion>();            
 

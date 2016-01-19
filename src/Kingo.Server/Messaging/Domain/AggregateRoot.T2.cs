@@ -21,7 +21,7 @@ namespace Kingo.Messaging.Domain
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
         /// <param name="event">The event of that represents the creation of this aggregate.</param>        
-        protected AggregateRoot(IVersionedObject<TKey, TVersion> @event = null)
+        protected AggregateRoot(IHasVersion<TKey, TVersion> @event = null)
         {
             if (@event != null)
             {
@@ -62,7 +62,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Version ======]
 
-        TVersion IVersionedObject<TKey, TVersion>.Version
+        TVersion IHasVersion<TKey, TVersion>.Version
         {
             get { return Version; }
         }        
@@ -120,13 +120,13 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>        
-        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage
+        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IHasVersion<TKey, TVersion>, IMessage
         {
             EventsToPublish.Write(@event);
             Apply(@event);            
         }
 
-        internal virtual void Apply<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>
+        internal virtual void Apply<TEvent>(TEvent @event) where TEvent : class, IHasVersion<TKey, TVersion>
         {            
             if (@event.Key.Equals(Id))
             {
@@ -140,14 +140,14 @@ namespace Kingo.Messaging.Domain
             throw NewInvalidKeyException(@event, Id);                                  
         }
 
-        private static Exception NewInvalidKeyException<TEvent>(TEvent @event, TKey aggregateKey) where TEvent : class, IVersionedObject<TKey, TVersion>
+        private static Exception NewInvalidKeyException<TEvent>(TEvent @event, TKey aggregateKey) where TEvent : class, IHasVersion<TKey, TVersion>
         {
             var messageFormat = ExceptionMessages.AggregateRoot_InvalidKey;
             var message = string.Format(messageFormat, @event.Key, aggregateKey);
             return new ArgumentException(message, "event");
         }        
 
-        private static Exception NewInvalidVersionException<TEvent>(TEvent @event, TVersion aggregateVersion) where TEvent : class, IVersionedObject<TKey, TVersion>
+        private static Exception NewInvalidVersionException<TEvent>(TEvent @event, TVersion aggregateVersion) where TEvent : class, IHasVersion<TKey, TVersion>
         {
             var messageFormat = ExceptionMessages.AggregateRoot_InvalidVersion;
             var message = string.Format(messageFormat, @event.Version, aggregateVersion);

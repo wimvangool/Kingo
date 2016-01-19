@@ -10,7 +10,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TAggregate">Type of the aggregate,</typeparam>
     public interface IRepository<in TKey, TAggregate>
         where TKey : struct, IEquatable<TKey>
-        where TAggregate : class, IKeyedObject<TKey>
+        where TAggregate : class, IHasKey<TKey>
     {
         /// <summary>
         /// Retrieves the aggregate with the specified <paramref name="key"/> from the repository.

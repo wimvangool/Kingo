@@ -16,6 +16,29 @@ namespace Kingo.Constraints
         /// Verifies that the member is greater than <paramref name="other"/>.
         /// </summary>
         /// <param name="member">A member.</param> 
+        /// <param name="other">The instance to compare the member's value to.</param>        
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>    
+        /// <returns>A member that has been merged with the specified member.</returns>  
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>          
+        /// <exception cref="ArgumentException">
+        /// <paramref name="other"/> does not implement the
+        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces
+        /// - or -        
+        /// <paramref name="errorMessage"/> is not in a correct format.        
+        /// </exception>
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
+        {
+            return member.Apply(new IsGreaterThanConstraint<TValue>(other).WithErrorMessage(errorMessage));
+        }
+
+        /// <summary>
+        /// Verifies that the member is greater than <paramref name="other"/>.
+        /// </summary>
+        /// <param name="member">A member.</param> 
         /// <param name="other">The instance to compare the member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>
         /// <param name="errorMessage">
@@ -54,6 +77,35 @@ namespace Kingo.Constraints
         public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             return member.Apply(new IsGreaterThanConstraint<TValue>(other).WithErrorMessage(errorMessage));
+        }
+
+        /// <summary>
+        /// Verifies that the member is greater than <paramref name="otherFactory"/>.
+        /// </summary>
+        /// <param name="member">A member.</param> 
+        /// <param name="otherFactory">Delegate that returns the instance to compare the member's value to.</param>        
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>    
+        /// <returns>A member that has been merged with the specified member.</returns>  
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="otherFactory"/> is <c>null</c>.
+        /// </exception>          
+        /// <exception cref="ArgumentException">
+        /// <paramref name="otherFactory"/> does not implement the
+        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces
+        /// - or -        
+        /// <paramref name="errorMessage"/> is not in a correct format.        
+        /// </exception>
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, TValue> otherFactory, string errorMessage = null)
+        {
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsGreaterThanConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>
@@ -120,6 +172,29 @@ namespace Kingo.Constraints
         /// Verifies that the member is greater than or equal to <paramref name="other"/>.
         /// </summary>
         /// <param name="member">A member.</param> 
+        /// <param name="other">The instance to compare the member's value to.</param>        
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>        
+        /// <returns>This member.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> is <c>null</c>.
+        /// </exception>        
+        /// <exception cref="ArgumentException">
+        /// <paramref name="other"/> does not implement the
+        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces
+        /// - or -        
+        /// <paramref name="errorMessage"/> is not in a correct format.        
+        /// </exception>
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
+        {
+            return member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
+        }
+
+        /// <summary>
+        /// Verifies that the member is greater than or equal to <paramref name="other"/>.
+        /// </summary>
+        /// <param name="member">A member.</param> 
         /// <param name="other">The instance to compare the member's value to.</param>
         /// <param name="comparer">The comparer that is used to perform the comparison.</param>
         /// <param name="errorMessage">
@@ -158,6 +233,35 @@ namespace Kingo.Constraints
         public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
         {
             return member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
+        }
+
+        /// <summary>
+        /// Verifies that the member is greater than or equal to <paramref name="otherFactory"/>.
+        /// </summary>
+        /// <param name="member">A member.</param> 
+        /// <param name="otherFactory">Delegate that returns the instance to compare the member's value to.</param>        
+        /// <param name="errorMessage">
+        /// The error message that is added to a <see cref="IErrorMessageReader" /> when verification fails.
+        /// </param>        
+        /// <returns>This member.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="member"/> or <paramref name="otherFactory"/> is <c>null</c>.
+        /// </exception>        
+        /// <exception cref="ArgumentException">
+        /// <paramref name="otherFactory"/> does not implement the
+        /// <see cref="IComparable{TValue}" /> or <see cref="IComparable"/> interfaces
+        /// - or -        
+        /// <paramref name="errorMessage"/> is not in a correct format.        
+        /// </exception>
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Func<T, TValue> otherFactory, string errorMessage = null)
+        {
+            if (otherFactory == null)
+            {
+                throw new ArgumentNullException("otherFactory");
+            }
+            var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
+
+            return member.Apply(message => new IsGreaterThanOrEqualToConstraint<TValue>(otherFactory.Invoke(message)).WithErrorMessage(errorMessageTemplate));
         }
 
         /// <summary>

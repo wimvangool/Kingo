@@ -7,11 +7,11 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the key of this entity.</typeparam>
     [Serializable]
-    public abstract class Entity<TKey> : IKeyedObject<TKey>        
+    public abstract class Entity<TKey> : IHasKey<TKey>        
     {        
         #region [====== Key ======]
 
-        TKey IKeyedObject<TKey>.Key
+        TKey IHasKey<TKey>.Key
         {
             get { return Id; }
         }

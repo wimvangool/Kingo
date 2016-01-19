@@ -3,7 +3,7 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging.SampleApplication
 {
-    internal sealed class ProductAddedToCartEvent : Message, IVersionedObject<Guid, int>
+    internal sealed class ProductAddedToCartEvent : Message, IHasVersion<Guid, int>
     {
         public Guid ShoppingCartId;
         public int ShoppingCartVersion;
@@ -11,12 +11,12 @@ namespace Kingo.Messaging.SampleApplication
         public int OldQuantity;
         public int NewQuantity;
 
-        Guid IKeyedObject<Guid>.Key
+        Guid IHasKey<Guid>.Key
         {
             get { return ShoppingCartId; }
         }
 
-        int IVersionedObject<Guid, int>.Version
+        int IHasVersion<Guid, int>.Version
         {
             get { return ShoppingCartVersion; }
         }        

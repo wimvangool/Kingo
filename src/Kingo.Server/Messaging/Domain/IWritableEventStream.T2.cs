@@ -3,7 +3,7 @@
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Represents a stream of <see cref="IVersionedObject{T, S}" /> that can be written to.
+    /// Represents a stream of <see cref="IHasVersion{T, S}" /> that can be written to.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
@@ -18,6 +18,6 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        void Write<TEvent>(TEvent @event) where TEvent : class, IVersionedObject<TKey, TVersion>, IMessage;
+        void Write<TEvent>(TEvent @event) where TEvent : class, IHasVersion<TKey, TVersion>, IMessage;
     }
 }

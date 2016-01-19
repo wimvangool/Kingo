@@ -49,7 +49,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void Key_Throws_IfNoSuitedKeyMemberWasFound()
         {
-            IVersionedObject<Guid, int> domainEvent = new MissingMembersEvent();
+            IHasVersion<Guid, int> domainEvent = new MissingMembersEvent();
 
             try
             {
@@ -66,7 +66,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void Key_Throws_IfImplicitKeyMemberIsOfIncompatibleType()
         {
-            IVersionedObject<Guid, int> domainEvent = new IncompatibleImplicitMemberTypeEvent();
+            IHasVersion<Guid, int> domainEvent = new IncompatibleImplicitMemberTypeEvent();
 
             try
             {
@@ -83,7 +83,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void Key_Throws_IfMultipleImplicitlySuitedKeyMembersWereFound()
         {
-            IVersionedObject<Guid, int> domainEvent = new MultipleImplicitMembersEvent();
+            IHasVersion<Guid, int> domainEvent = new MultipleImplicitMembersEvent();
 
             try
             {
@@ -101,7 +101,7 @@ namespace Kingo.Messaging.Domain
         {
             var key = Guid.NewGuid();
             var version = Clock.Current.LocalDateAndTime().Millisecond;
-            IVersionedObject<Guid, int> domainEvent = new CorrectImplicitMembersEvent(key, version);
+            IHasVersion<Guid, int> domainEvent = new CorrectImplicitMembersEvent(key, version);
 
             Assert.AreEqual(key, domainEvent.Key);
         }        
@@ -114,7 +114,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void Version_Throws_IfNoSuitedVersionMemberWasFound()
         {
-            IVersionedObject<Guid, int> domainEvent = new MissingMembersEvent();
+            IHasVersion<Guid, int> domainEvent = new MissingMembersEvent();
 
             try
             {
@@ -131,7 +131,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void Version_Throws_IfImplicitVersionMemberIsOfIncompatibleType()
         {
-            IVersionedObject<Guid, int> domainEvent = new IncompatibleImplicitMemberTypeEvent();
+            IHasVersion<Guid, int> domainEvent = new IncompatibleImplicitMemberTypeEvent();
 
             try
             {
@@ -148,7 +148,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void Version_Throws_IfMultipleImplicitlySuitedVersionMembersWereFound()
         {
-            IVersionedObject<Guid, int> domainEvent = new MultipleImplicitMembersEvent();
+            IHasVersion<Guid, int> domainEvent = new MultipleImplicitMembersEvent();
 
             try
             {
@@ -166,7 +166,7 @@ namespace Kingo.Messaging.Domain
         {
             var key = Guid.NewGuid();
             var version = Clock.Current.LocalDateAndTime().Millisecond;
-            IVersionedObject<Guid, int> domainEvent = new CorrectImplicitMembersEvent(key, version);
+            IHasVersion<Guid, int> domainEvent = new CorrectImplicitMembersEvent(key, version);
 
             Assert.AreEqual(version, domainEvent.Version);
         }       

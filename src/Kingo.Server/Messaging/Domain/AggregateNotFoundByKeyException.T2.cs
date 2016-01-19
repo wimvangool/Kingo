@@ -6,7 +6,7 @@ namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// This type of exception is thrown when a <see cref="Repository{T, S, U}" /> was unable to retrieve,
-    /// an <see cref="IVersionedObject{T, S}" /> by its key.
+    /// an <see cref="IHasVersion{T, S}" /> by its key.
     /// </summary>    
     /// <typeparam name="TKey">Type of the key of the aggregate.</typeparam>
     [Serializable]

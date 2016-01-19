@@ -15,22 +15,22 @@ namespace Kingo.Messaging.Domain
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {                     
         [NonSerialized]
-        private Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> _eventHandlers;
+        private Dictionary<Type, Action<IHasVersion<TKey, TVersion>>> _eventHandlers;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateEventStream{T, S}" /> class.
         /// </summary>
         /// <param name="event">The event of that represents the creation of this aggregate.</param>        
-        protected AggregateEventStream(IVersionedObject<TKey, TVersion> @event = null)
+        protected AggregateEventStream(IHasVersion<TKey, TVersion> @event = null)
             : base(@event) { }
 
-        private Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>> EventHandlers
+        private Dictionary<Type, Action<IHasVersion<TKey, TVersion>>> EventHandlers
         {
             get
             {
                 if (_eventHandlers == null)
                 {
-                    _eventHandlers = new Dictionary<Type, Action<IVersionedObject<TKey, TVersion>>>();
+                    _eventHandlers = new Dictionary<Type, Action<IHasVersion<TKey, TVersion>>>();
                 }
                 return _eventHandlers;
             }

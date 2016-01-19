@@ -130,7 +130,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void RestoreAggregate_Throws_IfUseDefaultConstructorIsTrue_And_TypeDoesNotDeclareADefaultConstructor()
         {
-            var factory = new AggregateEventStreamFactory<Guid, int>(Enumerable.Empty<IVersionedObject<Guid, int>>());
+            var factory = new AggregateEventStreamFactory<Guid, int>(Enumerable.Empty<IHasVersion<Guid, int>>());
 
             factory.RestoreAggregate<AggregateStubA>();
         }        
@@ -138,7 +138,7 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public void RestoreAggregate_ReturnsAggregateInExpectedState_IfUseDefaultConstructorIsTrue_And_TypeHasDefaultConstructor()
         {
-            var factory = new AggregateEventStreamFactory<Guid, int>(Enumerable.Empty<IVersionedObject<Guid, int>>());
+            var factory = new AggregateEventStreamFactory<Guid, int>(Enumerable.Empty<IHasVersion<Guid, int>>());
             var aggregate = factory.RestoreAggregate<AggregateStubB>();
 
             Assert.IsNotNull(aggregate);
@@ -170,7 +170,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void RestoreAggregate_Throws_IfOneOrMoreEventsHaveNonMatchingKeys()
         {
-            var events = new IVersionedObject<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1)  };
+            var events = new IHasVersion<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1)  };
             var snapshot = new AggregateStubA(Guid.NewGuid());
             var factory = new AggregateEventStreamFactory<Guid, int>(events, snapshot);
 
@@ -182,7 +182,7 @@ namespace Kingo.Messaging.Domain
         public void RestoreAggregate_Throws_IfOneOrMoreEventsVersionIsEqualToSnapshotVersion()
         {
             var id = Guid.NewGuid();
-            var events = new IVersionedObject<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1) };
+            var events = new IHasVersion<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1) };
             var snapshot = new AggregateStubA(id, 1);
             var factory = new AggregateEventStreamFactory<Guid, int>(events, snapshot);
 
@@ -194,7 +194,7 @@ namespace Kingo.Messaging.Domain
         public void RestoreAggregate_Throws_IfTwoOrMoreEventsHaveEqualVersion()
         {
             var id = Guid.NewGuid();
-            var events = new IVersionedObject<Guid, int>[]
+            var events = new IHasVersion<Guid, int>[]
             {
                 new XIncrementedEvent(id, 1, 1),
                 new YIncrementedEvent(id, 1, 2)
@@ -209,7 +209,7 @@ namespace Kingo.Messaging.Domain
         public void RestoreAggregate_ReturnsAggregateInExpectedState_IfEventsAreAllAppliedSuccesfully()
         {
             var id = Guid.NewGuid();
-            var events = new IVersionedObject<Guid, int>[]
+            var events = new IHasVersion<Guid, int>[]
             {
                 new XIncrementedEvent(id, 1, 1),
                 new YIncrementedEvent(id, 2, 2),
@@ -228,6 +228,6 @@ namespace Kingo.Messaging.Domain
             aggregate.AssertYIsEqualTo(-1);
         }
 
-        private static readonly IEnumerable<IVersionedObject<Guid, int>> _NoEvents = Enumerable.Empty<IVersionedObject<Guid, int>>();        
+        private static readonly IEnumerable<IHasVersion<Guid, int>> _NoEvents = Enumerable.Empty<IHasVersion<Guid, int>>();        
     }
 }

@@ -6,7 +6,7 @@ namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// This type of exception is thrown when a <see cref="Repository{T, S, U}" /> was unable to retrieve,
-    /// insert, update or delete an <see cref="IVersionedObject{T, S}" />.
+    /// insert, update or delete an <see cref="IHasVersion{T, S}" />.
     /// </summary>
     [Serializable]
     public abstract class AggregateNotFoundException : DomainException

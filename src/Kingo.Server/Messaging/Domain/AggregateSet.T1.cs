@@ -7,7 +7,7 @@ namespace Kingo.Messaging.Domain
 {
     internal sealed class AggregateSet<TKey, TVersion, TAggregate>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TAggregate : class, IVersionedObject<TKey, TVersion>
+        where TAggregate : class, IHasVersion<TKey, TVersion>
     {
         private readonly Dictionary<TKey, Aggregate<TKey, TVersion, TAggregate>> _aggregates;
 

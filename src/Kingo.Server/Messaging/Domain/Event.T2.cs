@@ -11,9 +11,9 @@ namespace Kingo.Messaging.Domain
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         private readonly ITypeToContractMap _typeToContractMap;
-        private readonly IVersionedObject<TKey, TVersion> _event;
+        private readonly IHasVersion<TKey, TVersion> _event;
 
-        internal Event(ITypeToContractMap typeToContractMap, IVersionedObject<TKey, TVersion> @event)
+        internal Event(ITypeToContractMap typeToContractMap, IHasVersion<TKey, TVersion> @event)
         {
             if (typeToContractMap == null)
             {
@@ -32,7 +32,7 @@ namespace Kingo.Messaging.Domain
             get { return _typeToContractMap; }
         }
 
-        internal override IVersionedObject<TKey, TVersion> VersionedObject
+        internal override IHasVersion<TKey, TVersion> VersionedObject
         {
             get { return _event; }
         }
@@ -40,7 +40,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// Returns the event that was published by the aggregate.
         /// </summary>
-        public IVersionedObject<TKey, TVersion> Value
+        public IHasVersion<TKey, TVersion> Value
         {
             get { return _event; }
         }

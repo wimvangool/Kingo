@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kingo.Messaging.Domain
 {
@@ -15,7 +11,7 @@ namespace Kingo.Messaging.Domain
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
         /// <param name="event">The event of that represents the creation of this aggregate.</param>        
-        protected AggregateEventStream(IVersionedObject<Guid, int> @event = null)
+        protected AggregateEventStream(IHasVersion<Guid, int> @event = null)
             : base(@event) { }
 
         /// <inheritdoc />

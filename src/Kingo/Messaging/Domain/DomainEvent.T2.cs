@@ -10,7 +10,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TVersion">Version-type of the associated aggregate.</typeparam>    
     [Serializable]
     [DataContract]
-    public abstract class DomainEvent<TKey, TVersion> : Message, IVersionedObject<TKey, TVersion>        
+    public abstract class DomainEvent<TKey, TVersion> : Message, IHasVersion<TKey, TVersion>        
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {        
@@ -23,7 +23,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Key ======]
 
-        TKey IKeyedObject<TKey>.Key
+        TKey IHasKey<TKey>.Key
         {
             get { return Key; }
         }
@@ -41,7 +41,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Version ======]
 
-        TVersion IVersionedObject<TKey, TVersion>.Version
+        TVersion IHasVersion<TKey, TVersion>.Version
         {
             get { return Version; }
         }
