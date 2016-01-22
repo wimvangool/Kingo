@@ -194,5 +194,32 @@ namespace Kingo.Messaging.Domain
 
             map.GetType("Event");
         }
+
+        [TestMethod]
+        public void FullyQualifiedNameInstance_MapsEachTypeToItsFullyQualifiedName()
+        {
+            var map = TypeToContractMap.FullyQualifiedName;
+            var types = new[]
+            {
+                typeof(object),
+                typeof(int),
+                typeof(string),
+                typeof(Event),
+                typeof(EventA)
+            };
+
+            foreach (var type in types)
+            {
+                MapTypeBackAndForth(map, type);
+            }
+        }
+
+        private static void MapTypeBackAndForth(ITypeToContractMap map, Type type)
+        {
+            var contract = map.GetContract(type);
+            var otherType = map.GetType(contract);
+
+            Assert.AreSame(type, otherType);
+        }
     }
 }

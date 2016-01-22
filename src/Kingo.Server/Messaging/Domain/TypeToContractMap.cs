@@ -11,7 +11,7 @@ namespace Kingo.Messaging.Domain
     /// Provides a default implementation of the <see cref="ITypeToContractMap" /> interface.
     /// </summary>
     public class TypeToContractMap : ITypeToContractMap
-    {
+    {        
         private readonly Lazy<Tuple<IReadOnlyDictionary<Type, string>, IReadOnlyDictionary<string, Type>>> _mappings;
         private readonly string _contractDelimiter;
 
@@ -167,5 +167,29 @@ namespace Kingo.Messaging.Domain
             var message = string.Format(messageFormat, contract);
             return new ArgumentException(message, "contract");
         }
+
+        #region [====== Built-in Maps ======]        
+
+        /// <summary>
+        /// Represents an empty map.
+        /// </summary>
+        public static readonly ITypeToContractMap Empty = new TypeToContractMap(Enumerable.Empty<Type>());
+
+        /// <summary>
+        /// Represents a map that maps each type to its fully qualified name and back.
+        /// </summary>
+        public static readonly ITypeToContractMap FullyQualifiedName = new DelegateTypeToContractMap(ToFullyQualifiedName, FromFullyQualifiedName);
+
+        private static string ToFullyQualifiedName(Type type)
+        {
+            return type.AssemblyQualifiedName;
+        }
+
+        private static Type FromFullyQualifiedName(string contract)
+        {
+            return Type.GetType(contract);
+        }
+
+        #endregion
     }
 }

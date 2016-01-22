@@ -8,12 +8,12 @@ using Kingo.Resources;
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Represents a factory that restores an <see cref="AggregateEventStream{T, S}" /> from a history of events
+    /// Represents a factory that restores an <see cref="EventStream{T, S}" /> from a history of events
     /// and (optionally) one of its snapshots.
     /// </summary>
     /// <typeparam name="TKey">Key-type of the aggregate.</typeparam>
     /// <typeparam name="TVersion">Version-type of the aggregate.</typeparam>    
-    public sealed class AggregateEventStreamFactory<TKey, TVersion> : ISnapshot<TKey, TVersion>
+    public sealed class EventStreamFactory<TKey, TVersion> : ISnapshot<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
         private readonly IHasVersion<TKey, TVersion>[] _orderedEvents;
@@ -21,7 +21,7 @@ namespace Kingo.Messaging.Domain
         private readonly bool _useDefaultConstructor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateEventStreamFactory{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="EventStreamFactory{T, S}" /> class.
         /// </summary>
         /// <param name="events">A collection of historic events.</param>
         /// <param name="useDefaultConstructor">
@@ -32,22 +32,22 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public AggregateEventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, bool useDefaultConstructor = true)
+        public EventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, bool useDefaultConstructor = true)
             : this(events, null, useDefaultConstructor) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateEventStreamFactory{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="EventStreamFactory{T, S}" /> class.
         /// </summary>
         /// <param name="events">A collection of historic events.</param>
         /// <param name="snapshot">An (optional) snapshot of the aggregate.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public AggregateEventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot)
+        public EventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot)
             : this(events, snapshot, true) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateEventStreamFactory{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="EventStreamFactory{T, S}" /> class.
         /// </summary>
         /// <param name="events">A collection of historic events.</param>
         /// <param name="snapshot">An (optional) snapshot of the aggregate.</param>
@@ -59,7 +59,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public AggregateEventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot, bool useDefaultConstructor)
+        public EventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot, bool useDefaultConstructor)
         {
             if (events == null)
             {

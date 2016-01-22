@@ -6,12 +6,12 @@ namespace Kingo.Messaging.Domain
     {
         private sealed class CreatedEvent : DomainEvent
         {
-            public readonly Guid Id;
-            public readonly int Version;
+            public new readonly Guid Key;
+            public new readonly int Version;
 
             public CreatedEvent(Guid id, int version)
             {
-                Id = id;
+                Key = id;
                 Version = version;
             }
         }

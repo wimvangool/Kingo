@@ -30,7 +30,15 @@ namespace Kingo.Messaging.Domain
             _selectedAggregates = new AggregateSet<TKey, TVersion, TAggregate>();
             _insertedAggregates = new AggregateSet<TKey, TVersion, TAggregate>();
             _deletedAggregates = new AggregateSet<TKey, TVersion, TAggregate>();
-        }        
+        }
+
+        /// <summary>
+        /// Returns the map that maps each type to a specific contract, which is used to serialize and deserialize snapshots and events.
+        /// </summary>
+        protected abstract ITypeToContractMap TypeToContractMap
+        {
+            get;
+        }
 
         #region [====== Dispose ======]
 
@@ -261,9 +269,33 @@ namespace Kingo.Messaging.Domain
             OnAggregateSelected(aggregate);
 
             return aggregate; 
-        }        
+        }
 
-        internal abstract Task<TAggregate> SelectByKeyAndRestoreAsync(TKey key);               
+        #region [====== Select ======]
+
+        private async Task<TAggregate> SelectByKeyAndRestoreAsync(TKey key)
+        {
+            var factory = await SelectByKeyAsync(key, TypeToContractMap);
+            if (factory == null)
+            {
+                return null;
+            }
+            return factory.RestoreAggregate<TAggregate>();
+        }
+
+        /// <summary>
+        /// Loads a snapshot from the repository.
+        /// </summary>
+        /// <param name="key">Key of the aggregate.</param>
+        /// <param name="map">
+        /// The mapping from each contract to a specific type that can be used to deserialize the retrieved data to its correct type.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task{T}" /> representing the load operation. The task should return <c>null</c> if the aggregate was not found.
+        /// </returns>
+        protected abstract Task<ISnapshot<TKey, TVersion>> SelectByKeyAsync(TKey key, ITypeToContractMap map);
+
+        #endregion              
 
         /// <summary>
         /// This method is called just before an aggregate is returned to clients, either from cache or from the repository.

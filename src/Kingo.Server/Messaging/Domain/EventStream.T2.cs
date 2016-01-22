@@ -11,17 +11,17 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>        
     [Serializable]
-    public abstract class AggregateEventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>        
+    public abstract class EventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {                     
         [NonSerialized]
         private Dictionary<Type, Action<IHasVersion<TKey, TVersion>>> _eventHandlers;
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateEventStream{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="EventStream{T, S}" /> class.
         /// </summary>
         /// <param name="event">The event of that represents the creation of this aggregate.</param>        
-        protected AggregateEventStream(IHasVersion<TKey, TVersion> @event = null)
+        protected EventStream(IHasVersion<TKey, TVersion> @event = null)
             : base(@event) { }
 
         private Dictionary<Type, Action<IHasVersion<TKey, TVersion>>> EventHandlers

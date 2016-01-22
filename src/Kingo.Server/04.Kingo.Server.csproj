@@ -52,22 +52,21 @@
     </Compile>
     <Compile Include="Messaging\DependencyConfiguration.cs" />
     <Compile Include="Messaging\Domain\Aggregate.T1.cs" />
-    <Compile Include="Messaging\Domain\AggregateEventStream.cs" />
-    <Compile Include="Messaging\Domain\AggregateEventStreamFactory.T2.cs" />
-    <Compile Include="Messaging\Domain\AggregateEventStreamRepository.T1.cs" />
+    <Compile Include="Messaging\Domain\DelegateTypeToContractMap.cs" />
+    <Compile Include="Messaging\Domain\EventStream.cs" />
+    <Compile Include="Messaging\Domain\EventStreamFactory.T2.cs" />
     <Compile Include="Messaging\Domain\AggregateRoot.cs" />
-    <Compile Include="Messaging\Domain\AggregateRootRepository.T1.cs" />
     <Compile Include="Messaging\Domain\AggregateSet.T1.cs" />
     <Compile Include="Messaging\Domain\ConcurrencyException.cs" />
     <Compile Include="Messaging\Domain\DomainEventStream.T2.cs" />
     <Compile Include="Messaging\Domain\DuplicateKeyException.T2.cs" />
-    <Compile Include="Messaging\Domain\AggregateEventStreamRepository.T3.cs" />
+    <Compile Include="Messaging\Domain\EventStore.T3.cs" />
     <Compile Include="Messaging\Domain\Event.T2.cs" />
     <Compile Include="Messaging\Domain\IAggregateRoot.T2.cs" />
     <Compile Include="Messaging\Domain\IRepository.T2.cs" />
     <Compile Include="Messaging\Domain\ISnapshot.T2.cs" />
     <Compile Include="Messaging\Domain\ITypeToContractMap.cs" />
-    <Compile Include="Messaging\Domain\AggregateRootRepository.T3.cs" />
+    <Compile Include="Messaging\Domain\SnapshotRepository.T3.cs" />
     <Compile Include="Messaging\ClassAndMethodAttributeProvider.cs" />
     <Compile Include="Messaging\Domain\AggregateNotFoundByKeyException.T2.cs" />
     <Compile Include="Messaging\Domain\Entity.T1.cs" />
@@ -128,7 +127,7 @@
     <Compile Include="Messaging\MessageHandlerDecorator.T1.cs" />
     <Compile Include="Messaging\MessageValidationModule.cs" />
     <Compile Include="Messaging\Domain\Repository.T3.cs" />
-    <Compile Include="Messaging\Domain\AggregateEventStream.T2.cs" />
+    <Compile Include="Messaging\Domain\EventStream.T2.cs" />
     <Compile Include="Messaging\Domain\IEventBuffer.T2.cs" />
     <Compile Include="Messaging\Domain\IReadableEventStream.T2.cs" />
     <Compile Include="Messaging\Domain\IWritableEventStream.T2.cs" />

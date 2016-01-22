@@ -10,7 +10,7 @@ namespace Kingo.Messaging.Domain
     {
         #region [====== AggregateStubs ======]
 
-        private sealed class AggregateStubA : AggregateEventStream<Guid, int>
+        private sealed class AggregateStubA : EventStream<Guid, int>
         {
             private readonly Guid _id;
             private int _version;
@@ -68,13 +68,13 @@ namespace Kingo.Messaging.Domain
 
         private sealed class XIncrementedEvent : DomainEvent
         {
-            public readonly Guid Id;
-            public readonly int Version;
+            public new readonly Guid Key;
+            public new readonly int Version;
             public readonly int X;
 
             internal XIncrementedEvent(Guid id, int version, int x)
             {
-                Id = id;
+                Key = id;
                 Version = version;
                 X = x;
             }
@@ -82,19 +82,19 @@ namespace Kingo.Messaging.Domain
 
         private sealed class YIncrementedEvent : DomainEvent
         {
-            public readonly Guid Id;
-            public readonly int Version;
+            public new readonly Guid Key;
+            public new readonly int Version;
             public readonly int Y;
 
             internal YIncrementedEvent(Guid id, int version, int y)
             {
-                Id = id;
+                Key = id;
                 Version = version;
                 Y = y;
             }
         }
 
-        private sealed class AggregateStubB : AggregateEventStream<Guid, int>
+        private sealed class AggregateStubB : EventStream<Guid, int>
         {
             private readonly Guid _id;            
 
@@ -123,14 +123,14 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfEventsIsNull()
         {
-            new AggregateEventStreamFactory<Guid, int>(null);
+            new EventStreamFactory<Guid, int>(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void RestoreAggregate_Throws_IfUseDefaultConstructorIsTrue_And_TypeDoesNotDeclareADefaultConstructor()
         {
-            var factory = new AggregateEventStreamFactory<Guid, int>(Enumerable.Empty<IHasVersion<Guid, int>>());
+            var factory = new EventStreamFactory<Guid, int>(Enumerable.Empty<IHasVersion<Guid, int>>());
 
             factory.RestoreAggregate<AggregateStubA>();
         }        
@@ -138,7 +138,7 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public void RestoreAggregate_ReturnsAggregateInExpectedState_IfUseDefaultConstructorIsTrue_And_TypeHasDefaultConstructor()
         {
-            var factory = new AggregateEventStreamFactory<Guid, int>(Enumerable.Empty<IHasVersion<Guid, int>>());
+            var factory = new EventStreamFactory<Guid, int>(Enumerable.Empty<IHasVersion<Guid, int>>());
             var aggregate = factory.RestoreAggregate<AggregateStubB>();
 
             Assert.IsNotNull(aggregate);
@@ -148,7 +148,7 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public void RestoreAggregate_ReturnsAggregateInExpectedState_IfUseDefaultConstructorIsFalse()
         {
-            var factory = new AggregateEventStreamFactory<Guid, int>(_NoEvents, false);
+            var factory = new EventStreamFactory<Guid, int>(_NoEvents, false);
             var aggregate = factory.RestoreAggregate<AggregateStubA>();
 
             Assert.IsNotNull(aggregate);
@@ -159,7 +159,7 @@ namespace Kingo.Messaging.Domain
         public void RestoreAggregate_UsesSnapshotToRestoreAggregate_IfSnapshotIsSpecified()
         {
             var snapshot = new AggregateStubA(Guid.NewGuid());
-            var factory = new AggregateEventStreamFactory<Guid, int>(_NoEvents, snapshot);
+            var factory = new EventStreamFactory<Guid, int>(_NoEvents, snapshot);
             var aggregate = factory.RestoreAggregate<AggregateStubA>();
 
             Assert.IsNotNull(aggregate);
@@ -172,7 +172,7 @@ namespace Kingo.Messaging.Domain
         {
             var events = new IHasVersion<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1)  };
             var snapshot = new AggregateStubA(Guid.NewGuid());
-            var factory = new AggregateEventStreamFactory<Guid, int>(events, snapshot);
+            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
 
             factory.RestoreAggregate<AggregateStubA>();
         }
@@ -184,7 +184,7 @@ namespace Kingo.Messaging.Domain
             var id = Guid.NewGuid();
             var events = new IHasVersion<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1) };
             var snapshot = new AggregateStubA(id, 1);
-            var factory = new AggregateEventStreamFactory<Guid, int>(events, snapshot);
+            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
 
             factory.RestoreAggregate<AggregateStubA>();
         }
@@ -200,7 +200,7 @@ namespace Kingo.Messaging.Domain
                 new YIncrementedEvent(id, 1, 2)
             };
             var snapshot = new AggregateStubA(id);
-            var factory = new AggregateEventStreamFactory<Guid, int>(events, snapshot);
+            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
 
             factory.RestoreAggregate<AggregateStubA>();
         }
@@ -218,7 +218,7 @@ namespace Kingo.Messaging.Domain
                 new XIncrementedEvent(id, 5, 10)
             };
             var snapshot = new AggregateStubA(id);
-            var factory = new AggregateEventStreamFactory<Guid, int>(events, snapshot);
+            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
             var aggregate = factory.RestoreAggregate<AggregateStubA>();
 
             Assert.IsNotNull(aggregate);

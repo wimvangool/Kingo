@@ -8,7 +8,7 @@ using Kingo.Threading;
 namespace Kingo.Messaging.SampleApplication
 {
     [Dependency(InstanceLifetime.Singleton)]
-    public sealed class ShoppingCartRepository : AggregateRootRepository<Guid, int, ShoppingCart>, IShoppingCartRepository
+    public sealed class ShoppingCartRepository : SnapshotRepository<Guid, int, ShoppingCart>, IShoppingCartRepository
     {        
         private readonly Dictionary<Guid, ISnapshot<Guid, int>> _carts;
         private int _flushCount;
@@ -16,7 +16,12 @@ namespace Kingo.Messaging.SampleApplication
         public ShoppingCartRepository()
         {            
             _carts = new Dictionary<Guid, ISnapshot<Guid, int>>(4);
-        }        
+        }
+
+        protected override ITypeToContractMap TypeToContractMap
+        {
+            get { return Domain.TypeToContractMap.Empty; }
+        }
 
         void IShoppingCartRepository.Add(ShoppingCart cart)
         {
@@ -40,21 +45,21 @@ namespace Kingo.Messaging.SampleApplication
             return base.FlushAsync(domainEventStream);
         }
 
-        protected override Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key)
+        protected override Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key, ITypeToContractMap map)
         {
             return AsyncMethod.RunSynchronously(() => _carts[key]);
         }
 
-        protected override Task InsertAsync(ISnapshot<Guid, int> snapshot)
+        protected override Task InsertAsync(Snapshot<Guid, int> snapshot)
         {
-            return AsyncMethod.RunSynchronously(() => _carts.Add(snapshot.Key, snapshot));
+            return AsyncMethod.RunSynchronously(() => _carts.Add(snapshot.Value.Key, snapshot.Value));
         }
 
-        protected override Task<bool> UpdateAsync(ISnapshot<Guid, int> snapshot, int originalVersion)
+        protected override Task<bool> UpdateAsync(Snapshot<Guid, int> snapshot, int originalVersion)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                _carts[snapshot.Key] = snapshot;
+                _carts[snapshot.Value.Key] = snapshot.Value;
                 return true;
             });            
         }        
