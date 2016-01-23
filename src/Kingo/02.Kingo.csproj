@@ -229,7 +229,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)\BuildNuGetPackage.bat" "$(ProjectPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

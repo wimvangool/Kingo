@@ -192,7 +192,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>nuget pack "$(ProjectPath)" -Prop Configuration=Release -IncludeReferencedProjects -OutputDirectory "D:\Development\NuGet Packages"
+    <PostBuildEvent>"$(SolutionDir)\BuildNuGetPackage.bat" "$(ProjectPath)"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
