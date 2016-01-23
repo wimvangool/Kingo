@@ -43,7 +43,7 @@ namespace Kingo.Transactions
         }
 
         /// <inheritdoc />
-        protected override async Task InvokeAsync(IMessageHandler handler, ITransactionScopeFactory strategy)
+        protected override async Task InvokeAsync(IMessageHandlerWrapper handler, ITransactionScopeFactory strategy)
         {
             using (var transactionScope = strategy.CreateTransactionScope())
             {

@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 namespace Kingo.Messaging
 {
     /// <summary>
-    /// Represents a wrapper of a message and it's handler to serve as a <see cref="IMessageHandler" />
+    /// Represents a wrapper of a message and it's handler to serve as a <see cref="IMessageHandlerWrapper" />
     /// that can be used within a <see cref="IMessageProcessor" />'s pipeline.
     /// </summary>
     /// <typeparam name="TMessage">Type of message to handle.</typeparam>
-    public sealed class MessageHandlerWrapper<TMessage> : IMessageHandler where TMessage : class, IMessage
+    public sealed class MessageHandlerWrapper<TMessage> : IMessageHandlerWrapper where TMessage : class, IMessage
     {
         private readonly TMessage _message;
         private readonly MessageHandlerInstance<TMessage> _handler;

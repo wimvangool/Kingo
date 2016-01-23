@@ -2,16 +2,15 @@
 
 namespace Kingo.Messaging
 {
-    internal sealed class QueryDispatcherModule<TMessageIn, TMessageOut> : MessageHandlerDispatcher
-        where TMessageIn : class, IMessage
+    internal sealed class QueryDispatcherModule<TMessageOut> : MessageHandlerDispatcher        
         where TMessageOut : class, IMessage
     {
-        private readonly IQuery<TMessageOut> _query;        
+        private readonly IQueryWrapper<TMessageOut> _query;        
         private readonly MessageProcessor _processor;
 
-        internal QueryDispatcherModule(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, MessageProcessor processor)
+        internal QueryDispatcherModule(IQueryWrapper<TMessageOut> query, MessageProcessor processor)
         {
-            _query = new QueryWrapper<TMessageIn, TMessageOut>(message, query);
+            _query = query;
             _processor = processor;
         }
 
@@ -41,7 +40,7 @@ namespace Kingo.Messaging
 
         private async Task<TMessageOut> ExecuteQueryAsync()
         {            
-            return await _processor.BuildQueryExecutionPipeline().ConnectTo(_query).InvokeAsync();            
+            return await _processor.BuildQueryExecutionPipeline().ConnectTo(_query).ExecuteAsync();            
         }        
     }
 }

@@ -40,11 +40,11 @@ namespace Kingo.Messaging
 
         /// <summary>
         /// Attempts to retrieve the associated strategy for the message on the specified <paramref name="handler"/>
-        /// and then invokes <see cref="InvokeAsync(IMessageHandler, TStrategy)" />.
+        /// and then invokes <see cref="InvokeAsync(IMessageHandlerWrapper, TStrategy)" />.
         /// </summary>
         /// <param name="handler">The handler to invoke.</param>
         /// <returns>A task carrying out the invocation.</returns>
-        public override Task InvokeAsync(IMessageHandler handler)
+        public override Task InvokeAsync(IMessageHandlerWrapper handler)
         {
             if (handler == null)
             {
@@ -73,6 +73,6 @@ namespace Kingo.Messaging
         /// <param name="handler">The handler to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
         /// <returns>A task carrying out the invocation.</returns>
-        protected abstract Task InvokeAsync(IMessageHandler handler, TStrategy strategy);         
+        protected abstract Task InvokeAsync(IMessageHandlerWrapper handler, TStrategy strategy);         
     }
 }

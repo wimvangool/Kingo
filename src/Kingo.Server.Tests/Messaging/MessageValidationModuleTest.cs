@@ -9,7 +9,7 @@ namespace Kingo.Messaging
     {
         private Mock<IMessageHandler<RequiredValueMessage<object>>> _nextHandlerMock;
         private RequiredValueMessage<object> _message;
-        private IMessageHandler _handler;
+        private IMessageHandlerWrapper _handler;
 
         [TestInitialize]
         public void Setup()

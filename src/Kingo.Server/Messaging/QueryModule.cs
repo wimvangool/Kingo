@@ -17,6 +17,6 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        public abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage;
+        public abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQueryWrapper<TMessageOut> query) where TMessageOut : class, IMessage;
     }
 }

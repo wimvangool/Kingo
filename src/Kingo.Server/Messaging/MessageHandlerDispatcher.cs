@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
-    internal abstract class MessageHandlerDispatcher : IMessageHandler
+    internal abstract class MessageHandlerDispatcher : IMessageHandlerWrapper
     {
         public abstract IMessage Message
         {

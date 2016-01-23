@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
-    internal sealed class Query<TMessageOut> : IQuery<TMessageOut> where TMessageOut : class, IMessage
+    internal sealed class Query<TMessageOut> : IQueryWrapper<TMessageOut> where TMessageOut : class, IMessage
     {
-        private readonly IQuery<TMessageOut> _nextQuery;
+        private readonly IQueryWrapper<TMessageOut> _nextQuery;
         private readonly QueryModule _nextModule;
 
-        internal Query(IQuery<TMessageOut> nextQuery, QueryModule nextModule)
+        internal Query(IQueryWrapper<TMessageOut> nextQuery, QueryModule nextModule)
         {
             _nextQuery = nextQuery;
             _nextModule = nextModule;
@@ -39,7 +39,7 @@ namespace Kingo.Messaging
             return _nextQuery.GetMethodAttributesOfType<TAttribute>();
         }
 
-        public Task<TMessageOut> InvokeAsync()
+        public Task<TMessageOut> ExecuteAsync()
         {
             return _nextModule.InvokeAsync(_nextQuery);
         }        

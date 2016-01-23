@@ -7,7 +7,7 @@ using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
-    internal sealed class ClassAndMethodAttributeProvider : IEquatable<ClassAndMethodAttributeProvider>, IMessageHandlerOrQuery
+    internal sealed class ClassAndMethodAttributeProvider : IEquatable<ClassAndMethodAttributeProvider>, IMessageHandlerOrQueryWrapper
     {
         private readonly Type _classType;
         private readonly Type _interfaceType;
@@ -123,7 +123,7 @@ namespace Kingo.Messaging
 
         #endregion
 
-        internal static bool TryGetStrategyFromAttribute<TAttribute>(IMessageHandlerOrQuery handler, out TAttribute attribute) where TAttribute : class
+        internal static bool TryGetStrategyFromAttribute<TAttribute>(IMessageHandlerOrQueryWrapper handler, out TAttribute attribute) where TAttribute : class
         {
             return handler.TryGetMethodAttributeOfType(out attribute) || handler.TryGetClassAttributeOfType(out attribute);
         } 

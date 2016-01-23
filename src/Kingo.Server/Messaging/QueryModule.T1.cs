@@ -40,11 +40,11 @@ namespace Kingo.Messaging
 
         /// <summary>
         /// Attempts to retrieve the associated strategy for the message on the specified <paramref name="query"/>
-        /// and then invokes <see cref="InvokeAsync{TMessageOut}(IQuery{TMessageOut}, TStrategy)" />.
+        /// and then invokes <see cref="InvokeAsync{TMessageOut}(IQueryWrapper{TMessageOut}, TStrategy)" />.
         /// </summary>
         /// <param name="query">The query to invoke.</param>
         /// <returns>A task executing the query.</returns>
-        public override Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query)
+        public override Task<TMessageOut> InvokeAsync<TMessageOut>(IQueryWrapper<TMessageOut> query)
         {
             if (query == null)
             {
@@ -73,6 +73,6 @@ namespace Kingo.Messaging
         /// <param name="query">The query to invoke.</param>
         /// <param name="strategy">The strategy to use.</param>
         /// <returns>A task executing the query.</returns>
-        protected abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQuery<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage;
+        protected abstract Task<TMessageOut> InvokeAsync<TMessageOut>(IQueryWrapper<TMessageOut> query, TStrategy strategy) where TMessageOut : class, IMessage;
     }
 }

@@ -25,7 +25,7 @@ namespace Kingo.Clocks
         }
 
         /// <inheritdoc />
-        public override async Task InvokeAsync(IMessageHandler handler)
+        public override async Task InvokeAsync(IMessageHandlerWrapper handler)
         {
             using (Clock.OverrideAsyncLocal(_clock))
             {

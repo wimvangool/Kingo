@@ -7,7 +7,7 @@ namespace Kingo.Messaging
         internal MessageHandlerPipeline(IEnumerable<MessageHandlerModule> modules)
             : base(modules) { }
 
-        internal IMessageHandler ConnectTo(IMessageHandler handler)
+        internal IMessageHandlerWrapper ConnectTo(IMessageHandlerWrapper handler)
         {            
             foreach (var module in Modules)
             {

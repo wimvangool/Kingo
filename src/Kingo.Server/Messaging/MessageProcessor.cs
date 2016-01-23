@@ -185,83 +185,126 @@ namespace Kingo.Messaging
         #region [====== Queries ======]
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
-            where TMessageIn : class, IMessage
-            where TMessageOut : class, IMessage
+        public TMessageOut Execute<TMessageOut>(Func<TMessageOut> query) where TMessageOut : class, IMessage
         {
-            return Execute(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query));
+            return Execute(new QueryDelegate<TMessageOut>(query));
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
-            where TMessageIn : class, IMessage
-            where TMessageOut : class, IMessage
+        public TMessageOut Execute<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage
         {
-            return Execute(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query));
+            return ExecuteAsync(query).Await();
         }
 
         /// <inheritdoc />
-        public TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+        public TMessageOut Execute<TMessageIn, TMessageOut>(Func<TMessageIn, TMessageOut> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage
         {
-            return ExecuteAsync(message, query, CancellationToken.None).Await();
+            return Execute(new QueryDelegate<TMessageIn, TMessageOut>(query), message);
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+        public TMessageOut Execute<TMessageIn, TMessageOut>(Func<TMessageIn, Task<TMessageOut>> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage
         {
-            return ExecuteAsync(message, query, CancellationToken.None);
+            return Execute(new QueryDelegate<TMessageIn, TMessageOut>(query), message);
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken token)
+        public TMessageOut Execute<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage
         {
-            return ExecuteAsync(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query), token);
+            return ExecuteAsync(query, message, CancellationToken.None).Await();
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageOut>(Func<Task<TMessageOut>> query) where TMessageOut : class, IMessage
+        {
+            return ExecuteAsync(query, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageOut>(Func<Task<TMessageOut>> query, CancellationToken token) where TMessageOut : class, IMessage
+        {
+            return ExecuteAsync(new QueryDelegate<TMessageOut>(query), token);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage
+        {
+            return ExecuteAsync(query, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken token) where TMessageOut : class, IMessage
+        {            
+            return ExecuteAsync(new QueryWrapper<TMessageOut>(query, NullMessage.Instance), NullMessage.Instance, token);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, TMessageOut> query, TMessageIn message)
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
+        {
+            return ExecuteAsync(query, message, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, TMessageOut> query, TMessageIn message, CancellationToken token)
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
+        {
+            return ExecuteAsync(new QueryDelegate<TMessageIn, TMessageOut>(query), message, token);
         }  
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, Task<TMessageOut>> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage
         {
-            return ExecuteAsync(message, query, CancellationToken.None);
+            return ExecuteAsync(query, message, CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query, CancellationToken token)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, Task<TMessageOut>> query, TMessageIn message, CancellationToken token)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage
         {
-            return ExecuteAsync(message, new MessageHandlerDelegate<TMessageIn, TMessageOut>(query), token);
+            return ExecuteAsync(new QueryDelegate<TMessageIn, TMessageOut>(query), message, token);
         }        
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage
         {            
-            return ExecuteAsync(message, query, CancellationToken.None);
+            return ExecuteAsync(query, message, CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
+        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message, CancellationToken token)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage
-        {                        
+        {            
             if (message == null)
             {
                 throw new ArgumentNullException("message");
             }
+            return ExecuteAsync(new QueryWrapper<TMessageIn, TMessageOut>(query, message), message, token);
+        }      
+  
+        private async Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(IQueryWrapper<TMessageOut> query, TMessageIn message, CancellationToken token)
+            where TMessageIn : class, IMessage
+            where TMessageOut : class, IMessage
+        {
             PushMessage(ref message, token);
 
             try
-            {
-                var handler = new QueryDispatcherModule<TMessageIn, TMessageOut>(message, query, this);
+            {                
+                var handler = new QueryDispatcherModule<TMessageOut>(query, this);
 
                 await BuildMessageEntryPipeline().ConnectTo(handler).InvokeAsync();
 
@@ -270,8 +313,8 @@ namespace Kingo.Messaging
             finally
             {
                 PopMessage();
-            }        
-        }        
+            } 
+        }
 
         #endregion                      
 

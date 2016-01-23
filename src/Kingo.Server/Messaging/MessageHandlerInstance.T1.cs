@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
-    internal sealed class MessageHandlerInstance<TMessage> : IMessageHandlerOrQuery, IMessageHandler<TMessage> where TMessage : class
+    internal sealed class MessageHandlerInstance<TMessage> : IMessageHandlerOrQueryWrapper, IMessageHandler<TMessage> where TMessage : class
     {
         private readonly IMessageHandler<TMessage> _handler;
         private readonly ClassAndMethodAttributeProvider _attributeProvider;

@@ -3,23 +3,16 @@
 namespace Kingo.Messaging
 {
     /// <summary>
-    /// When implemented by a class, represents a <see cref="IQuery{TMessageIn, TMessageOut}" /> ready to be executed.
-    /// </summary>
-    /// <typeparam name="TMessageOut">Type of the result of the query.</typeparam>
-    public interface IQuery<TMessageOut> : IMessageHandlerOrQuery where TMessageOut : class, IMessage
+    /// When implemented by a class, represents a query that accepts a message
+    /// and returns a result in the form of a <typeparamref name="TMessageOut"/>.
+    /// </summary>    
+    /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
+    public interface IQuery<TMessageOut> where TMessageOut : class, IMessage
     {
         /// <summary>
-        /// Message containing the parameters of the query.
-        /// </summary>
-        IMessage MessageIn
-        {
-            get;
-        }        
-
-        /// <summary>
-        /// Invokes the query and returns its result.
-        /// </summary>
-        /// <returns>A task that is executing the query.</returns>
-        Task<TMessageOut> InvokeAsync();
+        /// Executes the query.
+        /// </summary>        
+        /// <returns>A <see cref="Task{T}" /> representing the operation.</returns>        
+        Task<TMessageOut> ExecuteAsync();
     }
 }

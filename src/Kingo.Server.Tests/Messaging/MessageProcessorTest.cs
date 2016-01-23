@@ -188,7 +188,7 @@ namespace Kingo.Messaging
         {
             var processor = new MessageProcessor();            
             var requestMessage = new RequiredValueMessage<object>(new object());
-            var responseMessage = processor.Execute(requestMessage, msg => new RequiredValueMessage<object>(msg.Value));
+            var responseMessage = processor.Execute(msg => new RequiredValueMessage<object>(msg.Value), requestMessage);
 
             Assert.IsNotNull(responseMessage);
             Assert.AreNotSame(requestMessage, responseMessage);

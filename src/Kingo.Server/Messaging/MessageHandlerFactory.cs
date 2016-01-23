@@ -52,7 +52,7 @@ namespace Kingo.Messaging
         /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
         /// </param>
         /// <param name="configurationFactory">
-        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandlerWrapper"/> based on its type.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="searchPattern"/> is <c>null</c>.
@@ -88,7 +88,7 @@ namespace Kingo.Messaging
         /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
         /// </param>
         /// <param name="configurationFactory">
-        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandlerWrapper"/> based on its type.
         /// </param>        
         /// <exception cref="ArgumentException">
         /// <paramref name="searchOption"/> is not a valid option.
@@ -116,7 +116,7 @@ namespace Kingo.Messaging
         /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
         /// </param>
         /// <param name="configurationFactory">
-        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandlerWrapper"/> based on its type.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="searchPatterns"/> is <c>null</c>.
@@ -144,7 +144,7 @@ namespace Kingo.Messaging
         /// Selector that is used to select specific <see cref="IMessageHandler{T}" /> classes.
         /// </param>
         /// <param name="configurationFactory">
-        /// Optional delegate that can be used to configure a <see cref="IMessageHandler"/> based on its type.
+        /// Optional delegate that can be used to configure a <see cref="IMessageHandlerWrapper"/> based on its type.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.

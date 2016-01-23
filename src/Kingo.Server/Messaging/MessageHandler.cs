@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
-    internal sealed class MessageHandler : IMessageHandler
+    internal sealed class MessageHandler : IMessageHandlerWrapper
     {
-        private readonly IMessageHandler _nextHandler;
+        private readonly IMessageHandlerWrapper _nextHandler;
         private readonly MessageHandlerModule _nextModule;
 
-        internal MessageHandler(IMessageHandler nextHandler, MessageHandlerModule nextModule)
+        internal MessageHandler(IMessageHandlerWrapper nextHandler, MessageHandlerModule nextModule)
         {
             _nextHandler = nextHandler;
             _nextModule = nextModule;

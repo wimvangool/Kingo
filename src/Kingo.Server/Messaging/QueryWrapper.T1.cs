@@ -4,27 +4,22 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {    
-    internal sealed class QueryWrapper<TMessageIn, TMessageOut> : IQueryWrapper<TMessageOut>
-        where TMessageIn : class, IMessage
+    internal sealed class QueryWrapper<TMessageOut> : IQueryWrapper<TMessageOut>        
         where TMessageOut : class, IMessage
     {
-        private readonly TMessageIn _message;
-        private readonly IQuery<TMessageIn, TMessageOut> _query;
+        private readonly NullMessage _message;
+        private readonly IQuery<TMessageOut> _query;
         private readonly ClassAndMethodAttributeProvider _attributeProvider;
         
-        internal QueryWrapper(IQuery<TMessageIn, TMessageOut> query, TMessageIn message)
-        {            
+        internal QueryWrapper(IQuery<TMessageOut> query, NullMessage message)
+        {
             if (query == null)
             {
                 throw new ArgumentNullException("query");
             }
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
             _message = message;
             _query = query;   
-            _attributeProvider = new ClassAndMethodAttributeProvider(query.GetType(), typeof(IQuery<TMessageIn, TMessageOut>));
+            _attributeProvider = new ClassAndMethodAttributeProvider(query.GetType(), typeof(IQuery<TMessageOut>));
         }
 
         /// <inheritdoc />
@@ -60,7 +55,7 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         public Task<TMessageOut> ExecuteAsync()
         {
-            return _query.ExecuteAsync(_message);
+            return _query.ExecuteAsync();
         }        
     }
 }

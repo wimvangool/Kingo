@@ -32,11 +32,7 @@ namespace Kingo.Messaging
         /// <param name="message">Message to handle.</param>                        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>        
+        /// </exception>              
         void Handle<TMessage>(TMessage message) where TMessage : class, IMessage;
 
         /// <summary>
@@ -50,11 +46,7 @@ namespace Kingo.Messaging
         /// </param>                        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>        
+        /// </exception>                
         void Handle<TMessage>(TMessage message, Action<TMessage> handler) where TMessage : class, IMessage;
 
         /// <summary>
@@ -68,11 +60,7 @@ namespace Kingo.Messaging
         /// </param>                        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>        
+        /// </exception>               
         void Handle<TMessage>(TMessage message, Func<TMessage, Task> handler) where TMessage : class, IMessage;
 
         /// <summary>
@@ -86,11 +74,7 @@ namespace Kingo.Messaging
         /// </param>                       
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>        
+        /// </exception>               
         void Handle<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage;
 
         /// <summary>
@@ -214,21 +198,39 @@ namespace Kingo.Messaging
         #region [====== Queries ======]
 
         /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
+        /// Executes the specified <paramref name="query"/> and returns its result.
         /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param>                        
         /// <returns>The result of the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>  
+        TMessageOut Execute<TMessageOut>(Func<TMessageOut> query) where TMessageOut : class, IMessage;
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result.
+        /// </summary>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param>                        
+        /// <returns>The result of the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>  
+        TMessageOut Execute<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage;
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
+        /// </summary>
+        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param>                        
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <returns>The result of the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>         
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+        /// </exception>                
+        TMessageOut Execute<TMessageIn, TMessageOut>(Func<TMessageIn, TMessageOut> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
@@ -236,18 +238,14 @@ namespace Kingo.Messaging
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param>                        
+        /// <param name="message">Message containing the parameters of this query.</param>
         /// <returns>The result of the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>         
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
+        /// </exception>               
+        TMessageOut Execute<TMessageIn, TMessageOut>(Func<TMessageIn, Task<TMessageOut>> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
@@ -255,33 +253,79 @@ namespace Kingo.Messaging
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param>                          
+        /// <param name="message">Message containing the parameters of this query.</param>
         /// <returns>The result of the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="FunctionalException">
-        /// The <paramref name="message"/> or the sender of the <paramref name="message"/> did not meet
-        /// the preconditions that are in effect for this message to process.
-        /// </exception>         
-        TMessageOut Execute<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+        /// </exception>               
+        TMessageOut Execute<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
         /// <summary>
-        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
-        /// <param name="query">The query to execute.</param>                         
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param>                        
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>  
+        Task<TMessageOut> ExecuteAsync<TMessageOut>(Func<Task<TMessageOut>> query) where TMessageOut : class, IMessage;
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param>               
+        /// <param name="token">
+        /// Optional token that can be used to cancel the operation.
+        /// </param>          
+        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>  
+        Task<TMessageOut> ExecuteAsync<TMessageOut>(Func<Task<TMessageOut>> query, CancellationToken token) where TMessageOut : class, IMessage;
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param>                        
+        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>  
+        Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query) where TMessageOut : class, IMessage;
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param> 
+        /// <param name="token">
+        /// Optional token that can be used to cancel the operation.
+        /// </param>                        
+        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> is <c>null</c>.
+        /// </exception>  
+        Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken token) where TMessageOut : class, IMessage;
+
+        /// <summary>
+        /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
+        /// </summary>
+        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <param name="query">The query to execute.</param>                         
+        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, TMessageOut> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
@@ -289,17 +333,17 @@ namespace Kingo.Messaging
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param>                
+        /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, TMessageOut> query, CancellationToken token)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, TMessageOut> query, TMessageIn message, CancellationToken token)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
@@ -307,14 +351,14 @@ namespace Kingo.Messaging
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param>                         
+        /// <param name="message">Message containing the parameters of this query.</param>
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, Task<TMessageOut>> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
@@ -322,17 +366,17 @@ namespace Kingo.Messaging
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param>                
+        /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, Func<TMessageIn, Task<TMessageOut>> query, CancellationToken token)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(Func<TMessageIn, Task<TMessageOut>> query, TMessageIn message, CancellationToken token)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
@@ -345,9 +389,9 @@ namespace Kingo.Messaging
         /// <param name="query">The query to execute.</param>                        
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
 
@@ -355,17 +399,17 @@ namespace Kingo.Messaging
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
         /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>
-        /// <param name="message">Message containing the parameters of this query.</param>
+        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param>                
+        /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="token">
         /// Optional token that can be used to cancel the operation.
         /// </param> 
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception> 
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken token)
+        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message, CancellationToken token)
             where TMessageIn : class, IMessage
             where TMessageOut : class, IMessage;
        

@@ -8,7 +8,7 @@ namespace Kingo.Messaging
     /// on a class or interface method implementation of a <see cref="IMessageHandler{T}" />
     /// or a <see cref="Query{T, S}" />.
     /// </summary>
-    public interface IMessageHandlerOrQuery
+    public interface IMessageHandlerOrQueryWrapper
     {
         /// <summary>
         /// Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/> defined on the class of this instance.

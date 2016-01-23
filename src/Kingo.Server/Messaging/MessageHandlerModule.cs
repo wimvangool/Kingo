@@ -11,6 +11,6 @@ namespace Kingo.Messaging
         /// Invokes the specified <paramref name="handler"/>.
         /// </summary>
         /// <returns>A task carrying out the invocation.</returns>        
-        public abstract Task InvokeAsync(IMessageHandler handler);      
+        public abstract Task InvokeAsync(IMessageHandlerWrapper handler);      
     }
 }
