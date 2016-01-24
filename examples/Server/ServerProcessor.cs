@@ -1,4 +1,6 @@
 ﻿using Kingo.Messaging;
+using Kingo.Samples.Chess.Players;
+using Microsoft.Practices.Unity;
 using NServiceBus;
 
 namespace Kingo.Samples.Chess
@@ -19,11 +21,12 @@ namespace Kingo.Samples.Chess
 
         #region [====== MessageHandlerFactory ======]
 
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+        protected override MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
             var factory = new UnityFactory();
-            factory.RegisterMessageHandlers("*.Application.dll", "*.DataAccess.dll");
-            factory.RegisterRepositories("*.Domain.dll", "*.DataAccess.dll");
+            factory.RegisterMessageHandlers(layers);
+            factory.RegisterRepositories(layers);
+            factory.Container.RegisterType<IPlayerAdministration, PlayersTable>();
             return factory;
         }
 

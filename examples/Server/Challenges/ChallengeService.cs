@@ -47,7 +47,7 @@ namespace Kingo.Samples.Chess.Challenges
 
         public Task<GetPendingChallengesResponse> GetPendingChallenges(GetPendingChallengesRequest request)
         {
-            return Processor.ExecuteAsync(request, new GetPendingChallengesQuery());
+            return Processor.ExecuteAsync(PendingChallengesTable.SelectByReceiverAsync, request);
         }
 
         #endregion                  

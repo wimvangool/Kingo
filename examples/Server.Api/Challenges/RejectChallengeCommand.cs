@@ -6,7 +6,7 @@ using Kingo.Messaging;
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class RejectChallengeCommand : Message<RejectChallengeCommand>
+    public sealed class RejectChallengeCommand : Message
     {
         [DataMember]
         public readonly Guid ChallengeId;
@@ -16,7 +16,7 @@ namespace Kingo.Samples.Chess.Challenges
             ChallengeId = challengeId;
         }
 
-        protected override IValidator<RejectChallengeCommand> CreateValidator()
+        protected override IValidator CreateValidator()
         {
             var validator = new ConstraintValidator<RejectChallengeCommand>();
 

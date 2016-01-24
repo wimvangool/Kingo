@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Games.ForfeitGame
 {
     [TestClass]
-    public sealed class GameNotFoundScenario : MemoryScenario<ForfeitGameCommand>
+    public sealed class GameNotFoundScenario : InMemoryScenario<ForfeitGameCommand>
     {
         protected override ForfeitGameCommand When()
         {

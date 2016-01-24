@@ -45,7 +45,7 @@ namespace Kingo.Samples.Chess.Players
         /// <inheritdoc />
         public Task<GetPlayersResponse> GetPlayersAsync(GetPlayersRequest request)
         {
-            return Processor.ExecuteAsync(request, new GetPlayersQuery());
+            return Processor.ExecuteAsync(PlayersTable.SelectAllAsync, request);
         }       
 
         #endregion

@@ -6,7 +6,7 @@ using Kingo.Samples.Chess.Resources;
 namespace Kingo.Samples.Chess.Players
 {
     [Serializable]    
-    public sealed class Player : AggregateRoot<Guid, int>
+    public sealed class Player : AggregateRoot
     {
         private readonly Guid _id;
         private readonly Identifier _name; 

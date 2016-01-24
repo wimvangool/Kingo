@@ -7,7 +7,7 @@ using Kingo.Samples.Chess.Resources;
 namespace Kingo.Samples.Chess.Challenges
 {
     [Serializable]
-    public sealed class Challenge : AggregateRoot<Guid, int>
+    public sealed class Challenge : AggregateRoot
     {
         private readonly Guid _id;
         private readonly Guid _senderId;

@@ -145,6 +145,12 @@ namespace Kingo.Samples.Chess
         }
 
         /// <inheritdoc />
+        protected override void RegisterSingleton(object concreteType, Type abstractType)
+        {
+            _container.RegisterInstance(abstractType, concreteType);
+        }
+
+        /// <inheritdoc />
         protected override object CreateMessageHandler(Type type)
         {
             return _container.Resolve(type);

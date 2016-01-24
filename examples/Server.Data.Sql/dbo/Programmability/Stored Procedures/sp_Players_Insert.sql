@@ -1,12 +1,18 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Players_Insert]
 (
 	@Key UNIQUEIDENTIFIER,
-	@Name NVARCHAR(20),
-	@Version INT,
-	@Value NVARCHAR(MAX)	
+	@Name NVARCHAR(20)
 )
 AS
 BEGIN
-	INSERT INTO [dbo].[Players] ([Key], [Name], [Version], [Value])
-	VALUES						(@Key,  @Name,  @Version,  @Value)	
+	INSERT INTO [dbo].[ReadModel_Players]
+	(
+		[Key],
+		[Name]
+	)
+	VALUES
+	(
+		@Key,
+		@Name
+	);
 END

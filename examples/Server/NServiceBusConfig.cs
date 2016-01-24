@@ -49,11 +49,6 @@ namespace Kingo.Samples.Chess
         private static IBus CreateEnterpriseServiceBus(Configure config)
         {
             return config.Builder.Build<IBus>();
-        }
-
-        private static AssemblySet GetAssembliesToScan(params string[] searchPatterns)
-        {
-            return AssemblySet.FromCurrentDirectory(searchPatterns);
-        }
+        }        
     }
 }

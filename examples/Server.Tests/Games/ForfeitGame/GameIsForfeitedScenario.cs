@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Games.ForfeitGame
 {
     [TestClass]
-    public sealed class GameIsForfeitedScenario : MemoryScenario<ForfeitGameCommand>
+    public sealed class GameIsForfeitedScenario : InMemoryScenario<ForfeitGameCommand>
     {
         public readonly GameIsStartedScenario GameIsStarted;
 

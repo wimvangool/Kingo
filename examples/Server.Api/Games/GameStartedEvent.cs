@@ -6,14 +6,12 @@ using NServiceBus;
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class GameStartedEvent : DomainEvent<GameStartedEvent, Guid, int>, IEvent
+    public sealed class GameStartedEvent : DomainEvent, IEvent
     {
-        [DataMember]
-        [AggregateMember(AggregateMemberType.Key)]
+        [DataMember]        
         public readonly Guid GameId;
 
-        [DataMember]
-        [AggregateMember(AggregateMemberType.Version)]
+        [DataMember]        
         public readonly int GameVersion;
 
         [DataMember]

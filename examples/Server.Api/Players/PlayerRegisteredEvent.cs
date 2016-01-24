@@ -11,7 +11,7 @@ namespace Kingo.Samples.Chess.Players
     /// This event is raised when a new player has been registered.
     /// </summary>
     [DataContract]
-    public sealed class PlayerRegisteredEvent : DomainEvent<PlayerRegisteredEvent, Guid, int>, IEvent
+    public sealed class PlayerRegisteredEvent : DomainEvent, IEvent
     {
         /// <summary>
         /// Identifier of the player.
@@ -29,7 +29,7 @@ namespace Kingo.Samples.Chess.Players
         /// Version of the player.
         /// </summary>
         [DataMember]
-        public readonly int Version;
+        public new readonly int Version;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerRegisteredEvent" /> class.
@@ -45,7 +45,7 @@ namespace Kingo.Samples.Chess.Players
         }        
 
         /// <inheritdoc />
-        protected override IValidator<PlayerRegisteredEvent> CreateValidator()
+        protected override IValidator CreateValidator()
         {
             var validator = new ConstraintValidator<PlayerRegisteredEvent>();
 

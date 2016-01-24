@@ -34,7 +34,7 @@ namespace Clients.ConsoleApp.Commandlets
             var response = _gameService.GetActiveGames(new GetActiveGamesRequest()).Result;
             if (response.Games.Length == 0)
             {
-                using (ChessApplication.UseColor(ConsoleColor.Magenta))
+                using (ChessApplication.UseColor(ConsoleColor.Yellow))
                 {
                     Console.WriteLine("There are no games you are currently participating in.");
                 }

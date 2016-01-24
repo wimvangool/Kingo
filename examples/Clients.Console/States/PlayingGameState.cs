@@ -9,12 +9,14 @@ namespace Clients.ConsoleApp.States
 {
     internal sealed class PlayingGameState : ChessApplicationState
     {
+        private readonly ForfeitGameCommandlet _forfeitGameCommandlet;
         private readonly ExitGameCommandlet _exitGameCommandlet;        
         private readonly ActiveGame _game;
 
         internal PlayingGameState(ChessApplication application, IDisposable session, ActiveGame game)
             : base(application)
         {
+            _forfeitGameCommandlet = new ForfeitGameCommandlet(game);
             _exitGameCommandlet = new ExitGameCommandlet(application, session);            
             _game = game;
         }
@@ -38,6 +40,7 @@ namespace Clients.ConsoleApp.States
             var baseCommands = base.SupportedCommandLets();
             var thisCommands = new Commandlet[]
             {
+                _forfeitGameCommandlet,
                 _exitGameCommandlet
             };
             return thisCommands.Concat(baseCommands);

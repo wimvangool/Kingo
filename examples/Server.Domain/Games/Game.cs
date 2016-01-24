@@ -5,7 +5,7 @@ using Kingo.Samples.Chess.Resources;
 namespace Kingo.Samples.Chess.Games
 {
     [Serializable]
-    public sealed class Game : AggregateEventStream<Guid, int>
+    public sealed class Game : EventStream
     {
         private Guid _id;
         private int _version;

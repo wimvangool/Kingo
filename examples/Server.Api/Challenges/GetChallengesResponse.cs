@@ -6,7 +6,7 @@ using Kingo.Messaging;
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class GetPendingChallengesResponse : Message<GetPendingChallengesResponse>
+    public sealed class GetPendingChallengesResponse : Message
     {
         [DataMember]
         public readonly PendingChallenge[] Challenges;

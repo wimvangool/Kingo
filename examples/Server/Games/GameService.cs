@@ -49,7 +49,7 @@ namespace Kingo.Samples.Chess.Games
 
         public Task<GetActiveGamesResponse> GetActiveGames(GetActiveGamesRequest request)
         {
-            return Processor.ExecuteAsync(request, new GetActiveGamesQuery());
+            return Processor.ExecuteAsync(ActiveGamesTable.SelectByPlayerAsync, request);
         }
 
         #endregion

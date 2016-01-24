@@ -4,5 +4,5 @@ using Kingo.Messaging;
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class GetActiveGamesRequest : Message<GetActiveGamesRequest> { }
+    public sealed class GetActiveGamesRequest : Message { }
 }

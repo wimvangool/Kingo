@@ -1,51 +1,35 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Messaging.Domain;
+using Kingo.Messaging;
 
 namespace Kingo.Samples.Chess.Challenges
 {
-    public sealed class SqlChallengeRepository : SnapshotRepository<Guid, int, Challenge>, IChallengeRepository
+    public sealed class SqlChallengeRepository : SnapshotRepository<Challenge>, IChallengeRepository
     {
-        #region [====== Getting & Updating ======]
+        private readonly ITypeToContractMap _map;
+
+        public SqlChallengeRepository(ITypeToContractMap map)
+        {
+            if (map == null)
+            {
+                throw new ArgumentNullException("map");
+            }
+            _map = map;
+        }
+
+        protected override ITypeToContractMap TypeToContractMap
+        {
+            get { return _map; }
+        }
 
         Task<Challenge> IChallengeRepository.GetByIdAsync(Guid challengeId)
         {
             return GetByKeyAsync(challengeId);
         }
 
-        protected override async Task<Challenge> SelectByKeyAsync(Guid key)
-        {
-            using (var command = DatabaseCommand.CreateSelectByKeyCommand("sp_Challenges_SelectByKey", key))
-            {
-                return await command.ExecuteSnapshotAsync<Challenge>();
-            }
-        }      
-
-        protected override async Task<bool> UpdateAsync(Challenge aggregate, int originalVersion)
-        {
-            using (var command = DatabaseCommand.CreateUpdateCommand<Guid, int, Challenge>("sp_Challenges_Update", aggregate, originalVersion))
-            {
-                return await command.ExecuteNonQueryAsync();
-            }
-        }
-
-        #endregion
-
-        #region [====== Adding & Inserting ======]
-
         void IChallengeRepository.Add(Challenge challenge)
         {
             Add(challenge);
-        }
-
-        protected override async Task InsertAsync(Challenge aggregate)
-        {
-            using (var command = DatabaseCommand.CreateInsertCommand<Guid, int, Challenge>("sp_Challenges_Insert", aggregate))
-            {
-                await command.ExecuteNonQueryAsync();
-            }
-        }
-
-        #endregion
+        }        
     }
 }

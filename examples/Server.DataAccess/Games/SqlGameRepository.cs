@@ -1,12 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kingo.Messaging.Domain;
+using Kingo.Messaging;
 
 namespace Kingo.Samples.Chess.Games
 {
-    public sealed class SqlGameRepository : EventStreamRepository<Guid, int, Game>, IGameRepository
+    public sealed class SqlGameRepository : EventStore<Game>, IGameRepository
     {
+        private readonly ITypeToContractMap _map;
+
+        public SqlGameRepository(ITypeToContractMap map)
+        {
+            if (map == null)
+            {
+                throw new ArgumentNullException("map");
+            }
+            _map = map;
+        }
+
+        protected override ITypeToContractMap TypeToContractMap
+        {
+            get { return _map; }
+        }
+
         Task<Game> IGameRepository.GetByKeyAsync(Guid gameId)
         {
             return GetByKeyAsync(gameId);
@@ -15,19 +30,6 @@ namespace Kingo.Samples.Chess.Games
         void IGameRepository.Add(Game game)
         {
             Add(game);
-        }
-
-        protected override Task<Game> SelectByKeyAsync(Guid key)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override async Task<bool> FlushEventsAsync(Game aggregate, int? originalVersion, IList<IVersionedObject<Guid, int>> events)
-        {
-            using (var command = DatabaseCommand.CreateInsertEventsCommand("sp_Games_InsertEvents", aggregate, events, originalVersion))
-            {
-                return await command.ExecuteNonQueryAsync();
-            }
-        }        
+        }              
     }
 }

@@ -6,7 +6,7 @@ using Kingo.Messaging;
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class ForfeitGameCommand : Message<ForfeitGameCommand>
+    public sealed class ForfeitGameCommand : Message
     {
         [DataMember]
         public readonly Guid GameId;
@@ -16,7 +16,7 @@ namespace Kingo.Samples.Chess.Games
             GameId = gameId;
         }
 
-        protected override IValidator<ForfeitGameCommand> CreateValidator()
+        protected override IValidator CreateValidator()
         {
             var validator = new ConstraintValidator<ForfeitGameCommand>();
 

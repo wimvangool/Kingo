@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Challenges.RejectChallenge
 {
     [TestClass]
-    public sealed class ChallengeAlreadyAcceptedScenario : MemoryScenario<RejectChallengeCommand>
+    public sealed class ChallengeAlreadyAcceptedScenario : InMemoryScenario<RejectChallengeCommand>
     {
         public readonly ChallengeIsAcceptedScenario ChallengeIsAccepted;
 

@@ -31,13 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.dll</HintPath>
+    <Reference Include="Kingo">
+      <HintPath>..\packages\Kingo.2.1.2-beta\lib\net45\Kingo.dll</HintPath>
     </Reference>
-    <Reference Include="Kingo.Server, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo.Server, Version=2.1.2.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.Server.dll</HintPath>
+      <HintPath>..\packages\Kingo.Server.2.1.2-beta\lib\net451\Kingo.Server.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Core">
       <HintPath>..\packages\NServiceBus.5.2.12\lib\net45\NServiceBus.Core.dll</HintPath>

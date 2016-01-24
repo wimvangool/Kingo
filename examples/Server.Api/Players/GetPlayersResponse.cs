@@ -6,7 +6,7 @@ using Kingo.Messaging;
 namespace Kingo.Samples.Chess.Players
 {
     [DataContract]
-    public sealed class GetPlayersResponse : Message<GetPlayersResponse>
+    public sealed class GetPlayersResponse : Message
     {
         [DataMember]
         public readonly RegisteredPlayer[] Players;

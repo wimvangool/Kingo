@@ -4,5 +4,5 @@ using Kingo.Messaging;
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class GetPendingChallengesRequest : Message<GetPendingChallengesRequest> { }
+    public sealed class GetPendingChallengesRequest : Message { }
 }

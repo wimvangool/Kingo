@@ -8,7 +8,7 @@ using NServiceBus;
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class ChallengeRejectedEvent : DomainEvent<ChallengeRejectedEvent, Guid, int>, IEvent
+    public sealed class ChallengeRejectedEvent : DomainEvent, IEvent
     {
         [DataMember]
         public readonly Guid ChallengeId;
@@ -22,7 +22,7 @@ namespace Kingo.Samples.Chess.Challenges
             ChallengeVersion = challengeVersion;
         }
 
-        protected override IValidator<ChallengeRejectedEvent> CreateValidator()
+        protected override IValidator CreateValidator()
         {
             var validator = new ConstraintValidator<ChallengeRejectedEvent>();
 

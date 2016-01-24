@@ -11,7 +11,7 @@ namespace Kingo.Samples.Chess.Players
     /// Represents a request to register a new player.
     /// </summary>
     [DataContract]
-    public sealed class RegisterPlayerCommand : Message<RegisterPlayerCommand>, ICommand
+    public sealed class RegisterPlayerCommand : Message, ICommand
     {
         /// <summary>
         /// Identifier of the player.
@@ -37,7 +37,7 @@ namespace Kingo.Samples.Chess.Players
         }
 
         /// <inheritdoc />
-        protected override IValidator<RegisterPlayerCommand> CreateValidator()
+        protected override IValidator CreateValidator()
         {
             var validator = new ConstraintValidator<RegisterPlayerCommand>();
 

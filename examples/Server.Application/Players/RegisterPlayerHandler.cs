@@ -9,14 +9,20 @@ namespace Kingo.Samples.Chess.Players
     public sealed class RegisterPlayerHandler : MessageHandler<RegisterPlayerCommand>
     {
         private readonly IPlayerRepository _players;
+        private readonly IPlayerAdministration _playerAdministration;
 
-        public RegisterPlayerHandler(IPlayerRepository players)
+        public RegisterPlayerHandler(IPlayerRepository players, IPlayerAdministration playerAdministration)
         {
             if (players == null)
             {
                 throw new ArgumentNullException("players");
             }
+            if (playerAdministration == null)
+            {
+                throw new ArgumentNullException("playerAdministration");
+            }
             _players = players;
+            _playerAdministration = playerAdministration;
         }
 
         public override async Task HandleAsync(RegisterPlayerCommand message)
@@ -27,7 +33,7 @@ namespace Kingo.Samples.Chess.Players
             }
             var playerName = Identifier.Parse(message.PlayerName);
 
-            var playerNameHasBeenRegistered = await _players.HasBeenRegisteredAsync(playerName);
+            var playerNameHasBeenRegistered = await _playerAdministration.HasBeenRegisteredAsync(playerName);
             if (playerNameHasBeenRegistered)
             {
                 throw NewPlayerNameAlreadyRegisteredException(playerName);

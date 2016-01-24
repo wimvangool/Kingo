@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Games.ChallengeAccepted
 {
     [TestClass]
-    public sealed class GameIsStartedScenario : MemoryScenario<ChallengeAcceptedEvent>
+    public sealed class GameIsStartedScenario : InMemoryScenario<ChallengeAcceptedEvent>
     {        
         public readonly ChallengeIsAcceptedScenario ChallengeIsAccepted;
 

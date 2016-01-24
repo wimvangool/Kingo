@@ -5,7 +5,7 @@ using Kingo.Messaging.Domain;
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class GameForfeitedEvent : DomainEvent<GameForfeitedEvent, Guid, int>
+    public sealed class GameForfeitedEvent : DomainEvent
     {
         [DataMember]
         public readonly Guid GameId;

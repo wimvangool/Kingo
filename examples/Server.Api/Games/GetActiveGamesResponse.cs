@@ -6,7 +6,7 @@ using Kingo.Messaging;
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class GetActiveGamesResponse : Message<GetActiveGamesResponse>
+    public sealed class GetActiveGamesResponse : Message
     {
         [DataMember]
         public readonly ActiveGame[] Games;

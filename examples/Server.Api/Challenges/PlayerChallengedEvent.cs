@@ -6,14 +6,12 @@ using NServiceBus;
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class PlayerChallengedEvent : DomainEvent<PlayerChallengedEvent, Guid, int>, IEvent
+    public sealed class PlayerChallengedEvent : DomainEvent, IEvent
     {
-        [DataMember]
-        [AggregateMember(AggregateMemberType.Key)]
+        [DataMember]        
         public readonly Guid ChallengeId;
 
-        [DataMember]
-        [AggregateMember(AggregateMemberType.Version)]
+        [DataMember]        
         public readonly int ChallengeVersion;
 
         [DataMember]
@@ -28,6 +26,16 @@ namespace Kingo.Samples.Chess.Challenges
             ChallengeVersion = version;
             SenderId = senderId;
             ReceiverId = receiverId;
+        }
+
+        protected override Guid Key
+        {
+            get { return ChallengeId; }
+        }
+
+        protected override int Version
+        {
+            get { return ChallengeVersion; }
         }
     }
 }

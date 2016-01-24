@@ -31,13 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.dll</HintPath>
+    <Reference Include="Kingo">
+      <HintPath>..\packages\Kingo.2.1.2-beta\lib\net45\Kingo.dll</HintPath>
     </Reference>
-    <Reference Include="Kingo.Server, Version=2.0.17.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+    <Reference Include="Kingo.Server, Version=2.1.2.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.2.0.17-beta\lib\net451\Kingo.Server.dll</HintPath>
+      <HintPath>..\packages\Kingo.Server.2.1.2-beta\lib\net451\Kingo.Server.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -60,14 +59,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Challenges\GetPendingChallengesQuery.cs" />
+    <Compile Include="Challenges\PendingChallengesTable.cs" />
     <Compile Include="Challenges\SqlChallengeRepository.cs" />
     <Compile Include="DatabaseCommand.cs" />
-    <Compile Include="Games\GetActiveGamesQuery.cs" />
+    <Compile Include="EventStore.T1.cs" />
+    <Compile Include="Games\ActiveGamesTable.cs" />
     <Compile Include="Games\SqlGameRepository.cs" />
-    <Compile Include="Players\GetPlayersQuery.cs" />
+    <Compile Include="Players\PlayersTable.cs" />
     <Compile Include="Players\SqlPlayerRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer.cs" />
+    <Compile Include="SnapshotRepository.T1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server.Api\02.Server.Api.csproj">

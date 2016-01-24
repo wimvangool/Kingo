@@ -13,17 +13,7 @@ namespace Kingo.Samples.Chess.Players
         /// </summary>
         /// <param name="playerId">Name of the player.</param>
         /// <returns>The player with the specified name.</returns>        
-        Task<Player> GetByIdAsync(Guid playerId);
-
-        /// <summary>
-        /// Indicates whether or not a player with a certain name has been registered.
-        /// </summary>
-        /// <param name="playerName">Name of the player to check.</param>
-        /// <returns><c>true</c> if the name was registered; otherwise <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="playerName"/> is <c>null</c>.
-        /// </exception>
-        Task<bool> HasBeenRegisteredAsync(Identifier playerName);
+        Task<Player> GetByIdAsync(Guid playerId);        
 
         /// <summary>
         /// Adds a player to the repository.
