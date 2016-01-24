@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using Kingo.Resources;
 
-namespace Kingo.Messaging.Domain
+namespace Kingo.Messaging
 {
 
     /// <summary>

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Kingo.Messaging.Domain;
 using Kingo.Resources;
 
-namespace Kingo.Messaging.Domain
+namespace Kingo.Messaging
 {
     /// <summary>
     /// Provides a default implementation of the <see cref="ITypeToContractMap" /> interface.

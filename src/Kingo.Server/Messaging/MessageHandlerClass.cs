@@ -90,15 +90,15 @@ namespace Kingo.Messaging
         private static readonly ConcurrentDictionary<Type, Type[]> _MessageHandlerInterfaceTypes = new ConcurrentDictionary<Type, Type[]>();
         private static readonly Type _MessageHandlerTypeDefinition = typeof(IMessageHandler<>); 
         
-        internal static IEnumerable<MessageHandlerClass> RegisterMessageHandlers(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> typeSelector, Func<Type, IMessageHandlerConfiguration> configurationFactory)
+        internal static IEnumerable<MessageHandlerClass> RegisterMessageHandlers(MessageHandlerFactory factory, IEnumerable<Type> types, Predicate<Type> typeSelector, Func<Type, IMessageHandlerConfiguration> configurationFactory)
         {
-            if (assemblies == null)
+            if (types == null)
             {
-                throw new ArgumentNullException("assemblies");
+                throw new ArgumentNullException("types");
             }
             var messageHandlers = new List<MessageHandlerClass>();
 
-            foreach (var type in assemblies.GetTypes())
+            foreach (var type in types)
             {
                 MessageHandlerClass handler;
 

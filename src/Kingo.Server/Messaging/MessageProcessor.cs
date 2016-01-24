@@ -37,18 +37,64 @@ namespace Kingo.Messaging
         /// </summary>
         protected internal MessageHandlerFactory MessageHandlerFactory
         {
-            get { return _MessageHandlerFactories.GetOrAdd(GetType(), type => CreateMessageHandlerFactory()); }
+            get
+            {
+                return _MessageHandlerFactories.GetOrAdd(GetType(), type =>
+                {
+                    var layers = CreateLayerConfiguration(type);
+
+                    var factory = CreateMessageHandlerFactory(layers);
+                    if (factory != null)
+                    {
+                        factory.RegisterSingleton(CreateTypeToContractMap(layers), typeof(ITypeToContractMap));
+                    }
+                    return factory;
+                });
+            }
+        }
+
+        private LayerConfiguration CreateLayerConfiguration(Type processorType)
+        {            
+            return Customize(LayerConfiguration.CreateDefaultConfiguration(processorType.Assembly));
+        }
+
+        /// <summary>
+        /// When overridden, customizes the specified <paramref name="layers"/> and returns the result.
+        /// </summary>
+        /// <param name="layers">The configuration to customize.</param>
+        /// <returns>The customized configuration.</returns>
+        protected virtual LayerConfiguration Customize(LayerConfiguration layers)
+        {
+            return layers;
         }
 
         /// <summary>
         /// Creates and returns a <see cref="MessageHandlerFactory" /> for this processor.
         /// </summary>
+        /// <param name="layers">
+        /// A configuration of all logical layers of the application, which can be used to
+        /// auto-register all messagehandlers, repositories and other dependencies.
+        /// </param>
         /// <returns>
         /// A new <see cref="MessageHandlerFactory" /> to be used by this processor,
         /// or <c>null</c> if this processor does not use any factory.</returns>
-        protected virtual MessageHandlerFactory CreateMessageHandlerFactory()
+        protected virtual MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
             return null;
+        }
+
+        /// <summary>
+        /// Creates and returns a mapping between types and their contracts.
+        /// This map will be registered with the <see cref="MessageHandlerFactory" /> of this processor.        
+        /// </summary>
+        /// <param name="layers">
+        /// A configuration of all logical layers of the application, which can be used to obtain all types
+        /// that must be mapped to a contract.
+        /// </param>
+        /// <returns>A mapping between types and their contracts.</returns>
+        protected virtual ITypeToContractMap CreateTypeToContractMap(LayerConfiguration layers)
+        {
+            return new TypeToContractMap(layers.ApiLayer + layers.DomainLayer + layers.DataAccessLayer);
         }
 
         /// <summary>

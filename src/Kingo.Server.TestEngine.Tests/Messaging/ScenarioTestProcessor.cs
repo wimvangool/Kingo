@@ -7,10 +7,10 @@ namespace Kingo.Messaging
     /// </summary>
     public sealed class ScenarioTestProcessor : MessageProcessor
     {
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+        protected override MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
             var messageHandlerFactory = new UnityFactory();
-            messageHandlerFactory.RegisterMessageHandlers(Assembly.GetExecutingAssembly());
+            messageHandlerFactory.RegisterMessageHandlers(Assembly.GetExecutingAssembly().GetTypes());
             return messageHandlerFactory;
         }        
     }

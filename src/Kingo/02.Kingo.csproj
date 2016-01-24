@@ -53,6 +53,7 @@
     <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\DelegateClock.cs" />
     <Compile Include="Clocks\ShiftedClock.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Messaging\Command.cs" />
     <Compile Include="Constraints\Decoders\HasValueCallAppender.T2.cs" />

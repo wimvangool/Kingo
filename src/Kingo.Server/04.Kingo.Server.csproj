@@ -50,6 +50,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Messaging\LayerConfiguration.cs" />
     <Compile Include="Messaging\DependencyConfiguration.cs" />
     <Compile Include="Messaging\Domain\Aggregate.T1.cs" />
     <Compile Include="Messaging\Domain\DelegateTypeToContractMap.cs" />
@@ -65,15 +66,15 @@
     <Compile Include="Messaging\Domain\IAggregateRoot.T2.cs" />
     <Compile Include="Messaging\Domain\IRepository.T2.cs" />
     <Compile Include="Messaging\Domain\ISnapshot.T2.cs" />
-    <Compile Include="Messaging\Domain\ITypeToContractMap.cs" />
+    <Compile Include="Messaging\ITypeToContractMap.cs" />
     <Compile Include="Messaging\Domain\SnapshotRepository.T3.cs" />
     <Compile Include="Messaging\ClassAndMethodAttributeProvider.cs" />
     <Compile Include="Messaging\Domain\AggregateNotFoundByKeyException.T2.cs" />
     <Compile Include="Messaging\Domain\Entity.T1.cs" />
     <Compile Include="Messaging\Domain\Snapshot.T2.cs" />
     <Compile Include="Messaging\Domain\SnapshotOrEvent.T2.cs" />
-    <Compile Include="Messaging\Domain\TypeToContractMap.cs" />
-    <Compile Include="Messaging\Domain\TypeToContractMapException.cs" />
+    <Compile Include="Messaging\TypeToContractMap.cs" />
+    <Compile Include="Messaging\TypeToContractMapException.cs" />
     <Compile Include="Messaging\EmptySequence.cs" />
     <Compile Include="Messaging\IDependencyConfiguration.cs" />
     <Compile Include="Messaging\IMessageHandlerOrQueryWrapper.cs" />
@@ -118,7 +119,7 @@
     <Compile Include="Transactions\TransactionScopeFactory.cs" />
     <Compile Include="Transactions\TransactionScopeModule.cs" />
     <Compile Include="Messaging\Query.T2.cs" />
-    <Compile Include="AssemblySet.cs" />
+    <Compile Include="Messaging\Layer.cs" />
     <Compile Include="Messaging\MessageHandlerDelegate.T1.cs" />
     <Compile Include="CompositeConnection.cs" />
     <Compile Include="Messaging\DependencyClass.cs" />

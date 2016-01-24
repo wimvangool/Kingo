@@ -8,12 +8,12 @@ namespace Kingo.Messaging.SampleApplication
     /// </summary>
     public sealed class SampleApplicationProcessor : MessageProcessor
     {                
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+        protected override MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
             var factory = new UnityFactory();
 
-            factory.RegisterMessageHandlers(Assembly.GetExecutingAssembly(), IsHandlerForMessageProcessorTests);
-            factory.RegisterDependencies(Assembly.GetExecutingAssembly(), null, IsRepositoryInterface, null);
+            factory.RegisterMessageHandlers(Assembly.GetExecutingAssembly().GetTypes(), IsHandlerForMessageProcessorTests);
+            factory.RegisterDependencies(Assembly.GetExecutingAssembly().GetTypes(), null, IsRepositoryInterface, null);
 
             return factory;
         }

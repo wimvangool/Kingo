@@ -20,7 +20,7 @@ namespace Kingo.Messaging.SampleApplication
 
         protected override ITypeToContractMap TypeToContractMap
         {
-            get { return Domain.TypeToContractMap.Empty; }
+            get { return Messaging.TypeToContractMap.Empty; }
         }
 
         void IShoppingCartRepository.Add(ShoppingCart cart)

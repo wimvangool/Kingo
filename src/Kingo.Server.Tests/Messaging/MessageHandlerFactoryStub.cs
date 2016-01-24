@@ -64,6 +64,11 @@ namespace Kingo.Messaging
             throw NewNotSupportedException();
         }
 
+        protected internal override void RegisterSingleton(object concreteType, Type abstractType)
+        {
+            throw NewNotSupportedException();
+        }
+
         protected internal override object CreateMessageHandler(Type type)
         {
             throw NewNotSupportedException();

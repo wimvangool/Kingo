@@ -141,6 +141,12 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
+        protected internal override void RegisterSingleton(object concreteType, Type abstractType)
+        {
+            _container.RegisterInstance(abstractType, concreteType);
+        }
+
+        /// <inheritdoc />
         protected internal override object CreateMessageHandler(Type type)
         {
             return _container.Resolve(type);

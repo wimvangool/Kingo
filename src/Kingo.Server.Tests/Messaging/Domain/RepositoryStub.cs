@@ -21,7 +21,7 @@ namespace Kingo.Messaging.Domain
 
         protected override ITypeToContractMap TypeToContractMap
         {
-            get { return Domain.TypeToContractMap.Empty; }
+            get { return Messaging.TypeToContractMap.Empty; }
         }
 
         internal bool WasEnlisted

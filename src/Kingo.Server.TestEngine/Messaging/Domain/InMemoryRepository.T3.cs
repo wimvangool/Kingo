@@ -31,7 +31,7 @@ namespace Kingo.Messaging.Domain
         /// <inheritdoc />
         protected override ITypeToContractMap TypeToContractMap
         {
-            get { return Domain.TypeToContractMap.FullyQualifiedName; }
+            get { return Messaging.TypeToContractMap.FullyQualifiedName; }
         }
 
         /// <summary>

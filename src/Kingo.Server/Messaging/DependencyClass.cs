@@ -82,49 +82,49 @@ namespace Kingo.Messaging
 
         #region [====== Static Members ======]
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, IEnumerable<Type> types, Predicate<Type> concreteTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {            
-            if (assemblies == null)
+            if (types == null)
             {
-                throw new ArgumentNullException("assemblies");
+                throw new ArgumentNullException("types");
             }
             if (concreteTypePredicate == null)
             {
                 throw new ArgumentNullException("concreteTypePredicate");
             }
-            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, configurationFactory))
+            foreach (var dependency in FindDependencies(types, concreteTypePredicate, configurationFactory))
             {
                 dependency.RegisterIn(factory);
             }
         }
 
-        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
+        private static IEnumerable<DependencyClass> FindDependencies(IEnumerable<Type> types, Predicate<Type> concreteTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {
-            return from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)   
+            return from concreteType in FindConcreteTypes(types, concreteTypePredicate)   
                    let configuration = DetermineConfigurationOf(concreteType, configurationFactory)    
                    select new DependencyClass(concreteType, null, configuration);
         }
 
-        internal static void RegisterDependencies(MessageHandlerFactory factory, AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
+        internal static void RegisterDependencies(MessageHandlerFactory factory, IEnumerable<Type> types, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {
-            if (assemblies == null)
+            if (types == null)
             {
-                throw new ArgumentNullException("assemblies");
+                throw new ArgumentNullException("types");
             }           
             if (abstractTypePredicate == null)
             {
                 throw new ArgumentNullException("abstractTypePredicate");
             }
-            foreach (var dependency in FindDependencies(assemblies, concreteTypePredicate, abstractTypePredicate, configurationFactory))
+            foreach (var dependency in FindDependencies(types, concreteTypePredicate, abstractTypePredicate, configurationFactory))
             {
                 dependency.RegisterIn(factory);
             }
         }
 
-        private static IEnumerable<DependencyClass> FindDependencies(AssemblySet assemblies, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
+        private static IEnumerable<DependencyClass> FindDependencies(IEnumerable<Type> types, Predicate<Type> concreteTypePredicate, Predicate<Type> abstractTypePredicate, Func<Type, IDependencyConfiguration> configurationFactory)
         {            
-            return from abstractType in FindAbstractTypes(assemblies, abstractTypePredicate)
-                   from concreteType in FindConcreteTypes(assemblies, concreteTypePredicate)                   
+            return from abstractType in FindAbstractTypes(types, abstractTypePredicate)
+                   from concreteType in FindConcreteTypes(types, concreteTypePredicate)                   
                    where abstractType.IsAssignableFrom(concreteType)
                    group concreteType by abstractType into typeMapping
                    where typeMapping.Any()
@@ -152,9 +152,9 @@ namespace Kingo.Messaging
             }
         }
 
-        private static IEnumerable<Type> FindAbstractTypes(AssemblySet assemblies, Predicate<Type> predicate)
+        private static IEnumerable<Type> FindAbstractTypes(IEnumerable<Type> types, Predicate<Type> predicate)
         {
-            return from type in assemblies.GetTypes()
+            return from type in types
                    where IsPublicAbstractType(type) && SatisfiesPredicate(type, predicate)
                    select type;            
         }
@@ -164,9 +164,9 @@ namespace Kingo.Messaging
             return type.IsPublic && ((type.IsClass && type.IsAbstract) || type.IsInterface);
         }
 
-        private static IEnumerable<Type> FindConcreteTypes(AssemblySet assemblies, Predicate<Type> predicate)
+        private static IEnumerable<Type> FindConcreteTypes(IEnumerable<Type> types, Predicate<Type> predicate)
         {
-            return from type in assemblies.GetTypes()
+            return from type in types
                    where IsPublicConcreteType(type) && SatisfiesPredicate(type, predicate)
                    select type;           
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.Messaging.Domain
+namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represents a mapping between the types of events and snapshots

@@ -2,7 +2,7 @@
 {
     internal sealed class MessageProcessorStub : MessageProcessor
     {
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+        protected override MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
             return new UnityFactory();
         }
