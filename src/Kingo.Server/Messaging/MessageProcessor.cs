@@ -94,7 +94,7 @@ namespace Kingo.Messaging
         /// <returns>A mapping between types and their contracts.</returns>
         protected virtual ITypeToContractMap CreateTypeToContractMap(LayerConfiguration layers)
         {
-            return new TypeToContractMap(layers.ApiLayer + layers.DomainLayer + layers.DataAccessLayer);
+            return TypeToContractMap.FromLayerConfiguration(layers);
         }
 
         /// <summary>

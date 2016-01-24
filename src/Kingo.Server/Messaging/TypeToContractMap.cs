@@ -169,7 +169,53 @@ namespace Kingo.Messaging
             return new ArgumentException(message, "contract");
         }
 
-        #region [====== Built-in Maps ======]        
+        #region [====== Factory Methods ======]
+
+        /// <summary>
+        /// Scans all types from the <see cref="LayerConfiguration.ApiLayer" />, <see cref="LayerConfiguration.DomainLayer" />
+        /// and <see cref="LayerConfiguration.DataAccessLayer" /> and auto-maps all messages and aggregates found in those
+        /// layers.
+        /// </summary>
+        /// <param name="layers">A collection of logical application layers.</param>
+        /// <param name="contractDelimiter">Delimiter used to separate the namespace and name of a type in the contract.</param>
+        /// <returns>A mapping between all relevant types of the specified layers and their contract.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="layers"/> is <c>null</c>.
+        /// </exception>
+        public static TypeToContractMap FromLayerConfiguration(LayerConfiguration layers, string contractDelimiter = null)
+        {
+            if (layers == null)
+            {
+                throw new ArgumentNullException("layers");
+            }
+            var layersToScan = layers.ApiLayer + layers.DomainLayer + layers.DataAccessLayer;
+            var typesToScan =
+                from type in layersToScan
+                where !type.IsAbstract && !type.ContainsGenericParameters
+                where IsMessage(type) || IsAggregateRoot(type)
+                select type;
+
+            return new TypeToContractMap(typesToScan, contractDelimiter);
+        }
+
+        private static bool IsMessage(Type type)
+        {
+            return typeof(IMessage).IsAssignableFrom(type);
+        }
+
+        private static bool IsAggregateRoot(Type type)
+        {
+            var aggregateRootInterfaces =
+                from interfaceType in type.GetInterfaces()
+                where interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IAggregateRoot<,>)
+                select interfaceType;
+
+            return aggregateRootInterfaces.Any();
+        }
+
+        #endregion
+
+        #region [====== Built-in Maps ======]
 
         /// <summary>
         /// Represents an empty map.
