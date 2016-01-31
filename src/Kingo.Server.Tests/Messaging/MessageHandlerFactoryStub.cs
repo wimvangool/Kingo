@@ -32,44 +32,29 @@ namespace Kingo.Messaging
                 default:
                     return false;
             }            
-        }
+        }       
 
-        protected internal override void RegisterWithPerResolveLifetime(Type concreteType)
+        public override void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType = null)
         {
             _perResolveLifetimeTypes.Add(concreteType);
-        }
-
-        protected internal override void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType)
-        {
-            throw NewNotSupportedException();
-        }
-
-        protected internal override void RegisterWithPerUnitOfWorkLifetime(Type type)
-        {
-            _perUnitOfWorkLifetimeTypes.Add(type);
-        }
-
-        protected internal override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType)
-        {
-            throw NewNotSupportedException();
         }        
 
-        protected internal override void RegisterSingleton(Type concreteType)
+        public override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType = null)
+        {
+            _perUnitOfWorkLifetimeTypes.Add(concreteType);            
+        }                
+
+        public override void RegisterSingleton(Type concreteType, Type abstractType = null)
         {
             _singleLifetimeTypes.Add(concreteType);
         }
 
-        protected internal override void RegisterSingleton(Type concreteType, Type abstractType)
+        public override void RegisterSingleton(object concreteType, Type abstractType = null)
         {
             throw NewNotSupportedException();
         }
 
-        protected internal override void RegisterSingleton(object concreteType, Type abstractType)
-        {
-            throw NewNotSupportedException();
-        }
-
-        protected internal override object CreateMessageHandler(Type type)
+        protected internal override object Resolve(Type type)
         {
             throw NewNotSupportedException();
         }

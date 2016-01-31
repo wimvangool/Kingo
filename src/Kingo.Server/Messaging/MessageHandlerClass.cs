@@ -68,7 +68,7 @@ namespace Kingo.Messaging
 
         private MessageHandlerInstance<TMessage> CreateMessageHandlerInstanceFor<TMessage>(Type interfaceType, Type messageTypeOfInterface) where TMessage : class
         {            
-            var messageHandler = _factory.CreateMessageHandler(_classType);
+            var messageHandler = _factory.Resolve(_classType);
             var decoratorTypeDefinition = typeof(MessageHandlerDecorator<>);
             var decoratorType = decoratorTypeDefinition.MakeGenericType(messageTypeOfInterface);
             var decoratorConstructor = decoratorType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new [] { interfaceType }, null);

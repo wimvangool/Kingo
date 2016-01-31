@@ -2,8 +2,8 @@
 using Microsoft.Practices.Unity;
 
 namespace Kingo.Messaging
-{
-    public sealed class UnityFactory : MessageHandlerFactory
+{    
+    internal sealed class UnityFactory : MessageHandlerFactory
     {
         #region [====== PerUnitOfWorkLifetimeManager ======]
 
@@ -77,77 +77,80 @@ namespace Kingo.Messaging
         #endregion
 
         private readonly IUnityContainer _container;
+        
+        public UnityFactory()
+        {            
+            _container = new UnityContainer();
+        }        
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnityFactory" /> class.
-        /// </summary>        
-        /// <param name="container">The container to use.</param>
-        public UnityFactory(IUnityContainer container = null)
+        #region [====== Type Registration ======]
+
+        /// <inheritdoc />
+        public override void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType = null)
         {
-            if (container == null)
+            if (concreteType == null)
             {
-                container = new UnityContainer();
+                throw new ArgumentNullException("concreteType");
             }
-            _container = container;
-        }
-
-        /// <summary>
-        /// Returns the container that is used to store all <see cref="IMessageHandler{T}">MessageHandlers</see>
-        /// and other dependencies.
-        /// </summary>
-        public IUnityContainer Container
-        {
-            get { return _container; }
-        }
-
-        #region [====== Members of MessageHandlerFactory ======]
+            if (abstractType == null)
+            {
+                _container.RegisterType(concreteType, new TransientLifetimeManager());
+            }
+            else
+            {
+                _container.RegisterType(abstractType, concreteType);    
+            }            
+        }       
 
         /// <inheritdoc />
-        protected internal override void RegisterWithPerResolveLifetime(Type type)
+        public override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType = null)
         {
-            _container.RegisterType(type, new TransientLifetimeManager());
-        }
-
-        /// <inheritdoc />
-        protected internal override void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType)
-        {
-            _container.RegisterType(abstractType, concreteType);
-        }
-
-        /// <inheritdoc />
-        protected internal override void RegisterWithPerUnitOfWorkLifetime(Type type)
-        {
-            _container.RegisterType(type, new PerUnitOfWorkLifetimeManager());
-        }
-
-        /// <inheritdoc />
-        protected internal override void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType)
-        {
+            if (concreteType == null)
+            {
+                throw new ArgumentNullException("concreteType");
+            }            
             _container.RegisterType(concreteType, new PerUnitOfWorkLifetimeManager());
-            _container.RegisterType(abstractType, concreteType);
-        }
+
+            if (abstractType != null)
+            {
+                _container.RegisterType(abstractType, concreteType);
+            }
+        }        
 
         /// <inheritdoc />
-        protected internal override void RegisterSingleton(Type type)
+        public override void RegisterSingleton(Type concreteType, Type abstractType = null)
         {
-            _container.RegisterType(type, new ContainerControlledLifetimeManager());
-        }
-
-        /// <inheritdoc />
-        protected internal override void RegisterSingleton(Type concreteType, Type abstractType)
-        {
+            if (concreteType == null)
+            {
+                throw new ArgumentNullException("concreteType");
+            }
             _container.RegisterType(concreteType, new ContainerControlledLifetimeManager());
-            _container.RegisterType(abstractType, concreteType);
+
+            if (abstractType != null)
+            {
+                _container.RegisterType(abstractType, concreteType);
+            }
         }
 
         /// <inheritdoc />
-        protected internal override void RegisterSingleton(object concreteType, Type abstractType)
+        public override void RegisterSingleton(object concreteType, Type abstractType = null)
         {
-            _container.RegisterInstance(abstractType, concreteType);
+            if (concreteType == null)
+            {
+                throw new ArgumentNullException("concreteType");
+            }
+            if (abstractType == null)
+            {
+                _container.RegisterInstance(concreteType.GetType(), concreteType);
+            }
+            else
+            {
+                _container.RegisterInstance(abstractType, concreteType);    
+            }            
         }
 
         /// <inheritdoc />
-        protected internal override object CreateMessageHandler(Type type)
+        protected internal override object Resolve(Type type)
         {
             return _container.Resolve(type);
         }

@@ -9,7 +9,7 @@ namespace Kingo.Messaging
     {
         protected override MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
-            var messageHandlerFactory = new UnityFactory();
+            var messageHandlerFactory = CreateDefaultMessageHandlerFactory();
             messageHandlerFactory.RegisterMessageHandlers(Assembly.GetExecutingAssembly().GetTypes());
             return messageHandlerFactory;
         }        

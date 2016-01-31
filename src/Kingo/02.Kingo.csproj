@@ -222,7 +222,7 @@
     <None Include="..\Kingo.snk">
       <Link>Properties\Kingo.snk</Link>
     </None>
-    <None Include="07.BuildingBlocks.nuspec">
+    <None Include="Properties\Kingo.nuspec">
       <SubType>Designer</SubType>
     </None>
     <Compile Include="Constraints\CollectionConstraints.Length.cs" />

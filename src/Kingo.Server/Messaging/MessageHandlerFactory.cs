@@ -36,7 +36,7 @@ namespace Kingo.Messaging
             return string.Format("{0} MessageHandler(s) Registered", _messageHandlers.Count);
         }
 
-        #region [====== MessageHandlers ======]  
+        #region [====== MessageHandlers ======]
         
         /// <summary>
         /// Registers all handlers found in the <see cref="LayerConfiguration.ApplicationLayer" /> and
@@ -101,7 +101,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>                
-        protected internal abstract object CreateMessageHandler(Type type);
+        protected internal abstract object Resolve(Type type);
 
         private static Layer JoinMessageHandlerLayers(LayerConfiguration layers)
         {
@@ -212,53 +212,49 @@ namespace Kingo.Messaging
         #region [====== Type Registration ======]
 
         /// <summary>
-        /// Registers a certain type of which a new instance is created each time it is resolved.
-        /// </summary>
-        /// <param name="concreteType">A concrete type.</param>        
-        protected internal abstract void RegisterWithPerResolveLifetime(Type concreteType);
-
-        /// <summary>
         /// Registers a certain type for a specified <paramref name="abstractType"/> of which a new instance is
         /// created each time it is resolved, for a certain abstract type.
         /// </summary>
-        /// <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
+        /// <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
         /// <param name="abstractType">An abstract type.</param>
-        protected internal abstract void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType);
-
-        /// <summary>
-        /// Registers a certain type to resolve with a lifetime that spans a single Unit of Work.
-        /// </summary>
-        /// <param name="concreteType">A concrete type.</param>        
-        protected internal abstract void RegisterWithPerUnitOfWorkLifetime(Type concreteType);        
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="concreteType"/> is <c>null</c>.
+        /// </exception>
+        public abstract void RegisterWithPerResolveLifetime(Type concreteType, Type abstractType = null);                
 
         /// <summary>
         /// Registers a certain type to resolve for a specified <paramref name="abstractType"/>
         /// with a lifetime that spans a single Unit of Work.
         /// </summary>
-        /// <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
-        /// <param name="abstractType">An abstract type.</param>       
-        protected internal abstract void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType);
-
-        /// <summary>
-        /// Registers a certain type with a lifetime that reflects that of a singleton.
-        /// </summary>
-        /// <param name="concreteType">A concrete type.</param>               
-        protected internal abstract void RegisterSingleton(Type concreteType);
-
-        /// <summary>
-        /// Registers a certain type with a lifetime that reflects that of a singleton for a certain <paramref name="abstractType"/>.
-        /// </summary>
-        /// <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
+        /// <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
         /// <param name="abstractType">An abstract type.</param>  
-        protected internal abstract void RegisterSingleton(Type concreteType, Type abstractType);
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="concreteType"/> is <c>null</c>.
+        /// </exception>     
+        public abstract void RegisterWithPerUnitOfWorkLifetime(Type concreteType, Type abstractType = null);        
 
         /// <summary>
         /// Registers a certain type with a lifetime that reflects that of a singleton for a certain <paramref name="abstractType"/>.
         /// </summary>
-        /// <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
+        /// <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
         /// <param name="abstractType">An abstract type.</param> 
-        protected internal abstract void RegisterSingleton(object concreteType, Type abstractType);
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="concreteType"/> is <c>null</c>.
+        /// </exception> 
+        public abstract void RegisterSingleton(Type concreteType, Type abstractType = null);
+
+        /// <summary>
+        /// Registers a certain type with a lifetime that reflects that of a singleton for a certain <paramref name="abstractType"/>.
+        /// </summary>
+        /// <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
+        /// <param name="abstractType">An abstract type.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="concreteType"/> is <c>null</c>.
+        /// </exception> 
+        public abstract void RegisterSingleton(object concreteType, Type abstractType = null);
 
         #endregion
+
+
     }
 }

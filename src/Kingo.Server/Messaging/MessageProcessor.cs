@@ -69,7 +69,8 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="MessageHandlerFactory" /> for this processor.
+        /// Creates and returns a <see cref="MessageHandlerFactory" /> for this processor. By default, this method
+        /// auto-registers all message handlers and repositories found in the appropriate <paramref name="layers"/>.
         /// </summary>
         /// <param name="layers">
         /// A configuration of all logical layers of the application, which can be used to
@@ -77,10 +78,23 @@ namespace Kingo.Messaging
         /// </param>
         /// <returns>
         /// A new <see cref="MessageHandlerFactory" /> to be used by this processor,
-        /// or <c>null</c> if this processor does not use any factory.</returns>
+        /// or <c>null</c> if this processor does not use any factory.
+        /// </returns>
         protected virtual MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
-            return null;
+            var factory = CreateDefaultMessageHandlerFactory();
+            factory.RegisterMessageHandlers(layers);
+            factory.RegisterRepositories(layers);
+            return factory;
+        }
+
+        /// <summary>
+        /// Creates and return a new instance of the built-in, default message handler factory.
+        /// </summary>
+        /// <returns>A new instance of the built-in, default message handler factory.</returns>
+        protected MessageHandlerFactory CreateDefaultMessageHandlerFactory()
+        {
+            return new UnityFactory();
         }
 
         /// <summary>
