@@ -1835,6 +1835,203 @@
         <member name="P:Kingo.Messaging.QueryWrapper`2.MessageIn">
             <inheritdoc />
         </member>
+        <member name="T:Kingo.Messaging.MessageHandlerFactory">
+            <summary>
+            When implemented, represents a factory of all message-handlers that are used to handle the messages
+            for the <see cref="T:Kingo.Messaging.MessageProcessor"/>.
+            </summary>
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kingo.Messaging.MessageHandlerFactory"/> class.
+            </summary>        
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterMessageHandlers(Kingo.Messaging.LayerConfiguration,System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IMessageHandlerConfiguration})">
+            <summary>
+            Registers all handlers found in the <see cref="P:Kingo.Messaging.LayerConfiguration.ApplicationLayer"/> and
+            <see cref="P:Kingo.Messaging.LayerConfiguration.DataAccessLayer"/> of the specified <paramref name="layers"/>
+            and satisfy the specified <paramref name="typeSelector"/> with this factory.
+            </summary>
+            <param name="layers">A collection of application layers to scan.</param>
+            <param name="typeSelector">
+            Selector that is used to select specific <see cref="T:Kingo.Messaging.IMessageHandler`1"/> classes.
+            </param>
+            <param name="configurationFactory">
+            Optional delegate that can be used to configure a <see cref="T:Kingo.Messaging.IMessageHandlerWrapper"/> based on its type.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="layers"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterMessageHandlers(System.Collections.Generic.IEnumerable{System.Type},System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IMessageHandlerConfiguration})">
+            <summary>
+            Registers all handlers found in the specified collection of <paramref name="types"/> and satisfy
+            the specified <paramref name="typeSelector"/> with this factory.
+            </summary>
+            <param name="types">A collection of types that will be scanned.</param>
+            <param name="typeSelector">
+            Selector that is used to select specific <see cref="T:Kingo.Messaging.IMessageHandler`1"/> classes.
+            </param>
+            <param name="configurationFactory">
+            Optional delegate that can be used to configure a <see cref="T:Kingo.Messaging.IMessageHandlerWrapper"/> based on its type.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="types"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.CreateMessageHandlersFor``1(``0,Kingo.Messaging.MessageSources)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.Resolve(System.Type)">
+            <summary>
+            Create an instance of the requested message handler type.
+            </summary>
+            <param name="type">Type to create.</param>
+            <returns>An instance of the requested message handler type.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="type"/> is <c>null</c>.
+            </exception>                
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterRepositories(Kingo.Messaging.LayerConfiguration,System.String,System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
+            <summary>
+            Registers all repository interface types that are found in the <see cref="P:Kingo.Messaging.LayerConfiguration.DomainLayer"/> and
+            <see cref="P:Kingo.Messaging.LayerConfiguration.DataAccessLayer"/> of the specified <paramref name="layers"/>,
+            along with with their implementations.
+            </summary>
+            <param name="layers">A collection of types to scan.</param>
+            <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
+            <param name="configurationFactory">
+            Optional delegate that can be used to configure a dependency based on its type.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="layers"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterRepositories(System.Collections.Generic.IEnumerable{System.Type},System.String,System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
+            <summary>
+            Registers all repository interface types that are found inside the specified collection of <paramref name="types"/>
+            along with their implementations.
+            </summary>
+            <param name="types">A collection of types to scan.</param>
+            <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
+            <param name="configurationFactory">
+            Optional delegate that can be used to configure a dependency based on its type.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="types"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterDependencies(System.Collections.Generic.IEnumerable{System.Type},System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
+            <summary>
+            Registers a set of types that are found in the specified assembies
+            and are selected by the specified <paramref name="concreteTypePredicate"/>.
+            </summary>
+            <param name="types">A collection of types to scan.</param>
+            <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>    
+            <param name="configurationFactory">
+            Optional delegate that can be used to configure a dependency based on its type.
+            </param>  
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="types"/> or <paramref name="concreteTypePredicate"/> is <c>null</c>.
+            </exception>        
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterDependencies(System.Collections.Generic.IEnumerable{System.Type},System.Predicate{System.Type},System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
+            <summary>
+            Registers a set of abstract types that are mapped to a set of concrete types. Both sets are found in the specified assembies
+            and are selected by the specified <paramref name="concreteTypePredicate"/> and <paramref name="abstractTypePredicate"/>.
+            </summary>
+            <param name="types">A collection of types to scan.</param>
+            <param name="concreteTypePredicate">A predicate that identifies which concrete types should be registered as dependencies (optional).</param>
+            <param name="abstractTypePredicate">A predicate that identifies which abstract types should be registered as dependencies.</param>
+            <param name="configurationFactory">
+            Optional delegate that can be used to configure a dependency based on its type.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="types"/> or <paramref name="abstractTypePredicate"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            One or more types specified by <paramref name="abstractTypePredicate"/> match with multiple concrete implementations.
+            </exception>                
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterWithPerResolveLifetime(System.Type,System.Type)">
+            <summary>
+            Registers a certain type for a specified <paramref name="abstractType"/> of which a new instance is
+            created each time it is resolved, for a certain abstract type.
+            </summary>
+            <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
+            <param name="abstractType">An abstract type.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="concreteType"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterWithPerUnitOfWorkLifetime(System.Type,System.Type)">
+            <summary>
+            Registers a certain type to resolve for a specified <paramref name="abstractType"/>
+            with a lifetime that spans a single Unit of Work.
+            </summary>
+            <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
+            <param name="abstractType">An abstract type.</param>  
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="concreteType"/> is <c>null</c>.
+            </exception>     
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterSingleton(System.Type,System.Type)">
+            <summary>
+            Registers a certain type with a lifetime that reflects that of a singleton for a certain <paramref name="abstractType"/>.
+            </summary>
+            <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
+            <param name="abstractType">An abstract type.</param> 
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="concreteType"/> is <c>null</c>.
+            </exception> 
+        </member>
+        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterSingleton(System.Object,System.Type)">
+            <summary>
+            Registers a certain type with a lifetime that reflects that of a singleton for a certain <paramref name="abstractType"/>.
+            </summary>
+            <param name="concreteType">A concrete type that implements or is a sub-class of <paramref name="abstractType"/>, if specified.</param>
+            <param name="abstractType">An abstract type.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="concreteType"/> is <c>null</c>.
+            </exception> 
+        </member>
+        <member name="P:Kingo.Messaging.MessageHandlerFactory.MessageHandlerCount">
+            <summary>
+            Returns the number of classes implementing the <see cref="T:Kingo.Messaging.IMessageHandler`1"/> interface have been registered in this factory.
+            </summary>
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.RegisterWithPerResolveLifetime(System.Type,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.RegisterWithPerUnitOfWorkLifetime(System.Type,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.RegisterSingleton(System.Type,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.RegisterSingleton(System.Object,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.Resolve(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="T:Kingo.Messaging.UnityFactory.PerUnitOfWorkLifetimeManager">
+            <summary>
+            A LifetimeManager for Unity that registers it's dependencies at the current <see cref="T:Kingo.Messaging.UnitOfWorkContext"/>.
+            </summary>
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.PerUnitOfWorkLifetimeManager.GetValue">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.PerUnitOfWorkLifetimeManager.RemoveValue">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.UnityFactory.PerUnitOfWorkLifetimeManager.SetValue(System.Object)">
+            <inheritdoc />
+        </member>
         <member name="T:Kingo.Transactions.ITransactionScopeFactory">
             <summary>
             When implemented by a class, represents a factory for <see cref="T:System.Transactions.TransactionScope">TransactionScopes</see>.
@@ -2800,180 +2997,6 @@
             Specifies which source(s) the message is accepted from.
             </summary>
         </member>
-        <member name="T:Kingo.Messaging.MessageHandlerFactory">
-            <summary>
-            When implemented, represents a factory of all message-handlers that are used to handle the messages
-            for the <see cref="T:Kingo.Messaging.MessageProcessor"/>.
-            </summary>
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.Messaging.MessageHandlerFactory"/> class.
-            </summary>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.ToString">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterMessageHandlers(Kingo.Messaging.LayerConfiguration,System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IMessageHandlerConfiguration})">
-            <summary>
-            Registers all handlers found in the <see cref="P:Kingo.Messaging.LayerConfiguration.ApplicationLayer"/> and
-            <see cref="P:Kingo.Messaging.LayerConfiguration.DataAccessLayer"/> of the specified <paramref name="layers"/>
-            and satisfy the specified <paramref name="typeSelector"/> with this factory.
-            </summary>
-            <param name="layers">A collection of application layers to scan.</param>
-            <param name="typeSelector">
-            Selector that is used to select specific <see cref="T:Kingo.Messaging.IMessageHandler`1"/> classes.
-            </param>
-            <param name="configurationFactory">
-            Optional delegate that can be used to configure a <see cref="T:Kingo.Messaging.IMessageHandlerWrapper"/> based on its type.
-            </param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="layers"/> is <c>null</c>.
-            </exception>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterMessageHandlers(System.Collections.Generic.IEnumerable{System.Type},System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IMessageHandlerConfiguration})">
-            <summary>
-            Registers all handlers found in the specified collection of <paramref name="types"/> and satisfy
-            the specified <paramref name="typeSelector"/> with this factory.
-            </summary>
-            <param name="types">A collection of types that will be scanned.</param>
-            <param name="typeSelector">
-            Selector that is used to select specific <see cref="T:Kingo.Messaging.IMessageHandler`1"/> classes.
-            </param>
-            <param name="configurationFactory">
-            Optional delegate that can be used to configure a <see cref="T:Kingo.Messaging.IMessageHandlerWrapper"/> based on its type.
-            </param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="types"/> is <c>null</c>.
-            </exception>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.CreateMessageHandlersFor``1(``0,Kingo.Messaging.MessageSources)">
-            <inheritdoc />
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.CreateMessageHandler(System.Type)">
-            <summary>
-            Create an instance of the requested message handler type.
-            </summary>
-            <param name="type">Type to create.</param>
-            <returns>An instance of the requested message handler type.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="type"/> is <c>null</c>.
-            </exception>                
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterRepositories(Kingo.Messaging.LayerConfiguration,System.String,System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
-            <summary>
-            Registers all repository interface types that are found in the <see cref="P:Kingo.Messaging.LayerConfiguration.DomainLayer"/> and
-            <see cref="P:Kingo.Messaging.LayerConfiguration.DataAccessLayer"/> of the specified <paramref name="layers"/>,
-            along with with their implementations.
-            </summary>
-            <param name="layers">A collection of types to scan.</param>
-            <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
-            <param name="configurationFactory">
-            Optional delegate that can be used to configure a dependency based on its type.
-            </param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="layers"/> is <c>null</c>.
-            </exception>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterRepositories(System.Collections.Generic.IEnumerable{System.Type},System.String,System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
-            <summary>
-            Registers all repository interface types that are found inside the specified collection of <paramref name="types"/>
-            along with their implementations.
-            </summary>
-            <param name="types">A collection of types to scan.</param>
-            <param name="postfix">The postfix that every repository interface ends with. Default is <c>Repository</c>.</param>
-            <param name="configurationFactory">
-            Optional delegate that can be used to configure a dependency based on its type.
-            </param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="types"/> is <c>null</c>.
-            </exception>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterDependencies(System.Collections.Generic.IEnumerable{System.Type},System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
-            <summary>
-            Registers a set of types that are found in the specified assembies
-            and are selected by the specified <paramref name="concreteTypePredicate"/>.
-            </summary>
-            <param name="types">A collection of types to scan.</param>
-            <param name="concreteTypePredicate">A predicate that identifies which types should be registered as dependencies.</param>    
-            <param name="configurationFactory">
-            Optional delegate that can be used to configure a dependency based on its type.
-            </param>  
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="types"/> or <paramref name="concreteTypePredicate"/> is <c>null</c>.
-            </exception>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterDependencies(System.Collections.Generic.IEnumerable{System.Type},System.Predicate{System.Type},System.Predicate{System.Type},System.Func{System.Type,Kingo.Messaging.IDependencyConfiguration})">
-            <summary>
-            Registers a set of abstract types that are mapped to a set of concrete types. Both sets are found in the specified assembies
-            and are selected by the specified <paramref name="concreteTypePredicate"/> and <paramref name="abstractTypePredicate"/>.
-            </summary>
-            <param name="types">A collection of types to scan.</param>
-            <param name="concreteTypePredicate">A predicate that identifies which concrete types should be registered as dependencies (optional).</param>
-            <param name="abstractTypePredicate">A predicate that identifies which abstract types should be registered as dependencies.</param>
-            <param name="configurationFactory">
-            Optional delegate that can be used to configure a dependency based on its type.
-            </param>
-            <exception cref="T:System.ArgumentNullException">
-            <paramref name="types"/> or <paramref name="abstractTypePredicate"/> is <c>null</c>.
-            </exception>
-            <exception cref="T:System.ArgumentException">
-            One or more types specified by <paramref name="abstractTypePredicate"/> match with multiple concrete implementations.
-            </exception>                
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterWithPerResolveLifetime(System.Type)">
-            <summary>
-            Registers a certain type of which a new instance is created each time it is resolved.
-            </summary>
-            <param name="concreteType">A concrete type.</param>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterWithPerResolveLifetime(System.Type,System.Type)">
-            <summary>
-            Registers a certain type for a specified <paramref name="abstractType"/> of which a new instance is
-            created each time it is resolved, for a certain abstract type.
-            </summary>
-            <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
-            <param name="abstractType">An abstract type.</param>
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterWithPerUnitOfWorkLifetime(System.Type)">
-            <summary>
-            Registers a certain type to resolve with a lifetime that spans a single Unit of Work.
-            </summary>
-            <param name="concreteType">A concrete type.</param>        
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterWithPerUnitOfWorkLifetime(System.Type,System.Type)">
-            <summary>
-            Registers a certain type to resolve for a specified <paramref name="abstractType"/>
-            with a lifetime that spans a single Unit of Work.
-            </summary>
-            <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
-            <param name="abstractType">An abstract type.</param>       
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterSingleton(System.Type)">
-            <summary>
-            Registers a certain type with a lifetime that reflects that of a singleton.
-            </summary>
-            <param name="concreteType">A concrete type.</param>               
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterSingleton(System.Type,System.Type)">
-            <summary>
-            Registers a certain type with a lifetime that reflects that of a singleton for a certain <paramref name="abstractType"/>.
-            </summary>
-            <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
-            <param name="abstractType">An abstract type.</param>  
-        </member>
-        <member name="M:Kingo.Messaging.MessageHandlerFactory.RegisterSingleton(System.Object,System.Type)">
-            <summary>
-            Registers a certain type with a lifetime that reflects that of a singleton for a certain <paramref name="abstractType"/>.
-            </summary>
-            <param name="concreteType">A concrete type that implements <paramref name="abstractType"/>.</param>
-            <param name="abstractType">An abstract type.</param> 
-        </member>
-        <member name="P:Kingo.Messaging.MessageHandlerFactory.MessageHandlerCount">
-            <summary>
-            Returns the number of classes implementing the <see cref="T:Kingo.Messaging.IMessageHandler`1"/> interface have been registered in this factory.
-            </summary>
-        </member>
         <member name="T:Kingo.Messaging.MessageProcessor">
             <summary>
             Represents a handler of arbitrary messages.
@@ -2993,7 +3016,8 @@
         </member>
         <member name="M:Kingo.Messaging.MessageProcessor.CreateMessageHandlerFactory(Kingo.Messaging.LayerConfiguration)">
             <summary>
-            Creates and returns a <see cref="P:Kingo.Messaging.MessageProcessor.MessageHandlerFactory"/> for this processor.
+            Creates and returns a <see cref="P:Kingo.Messaging.MessageProcessor.MessageHandlerFactory"/> for this processor. By default, this method
+            auto-registers all message handlers and repositories found in the appropriate <paramref name="layers"/>.
             </summary>
             <param name="layers">
             A configuration of all logical layers of the application, which can be used to
@@ -3001,7 +3025,14 @@
             </param>
             <returns>
             A new <see cref="P:Kingo.Messaging.MessageProcessor.MessageHandlerFactory"/> to be used by this processor,
-            or <c>null</c> if this processor does not use any factory.</returns>
+            or <c>null</c> if this processor does not use any factory.
+            </returns>
+        </member>
+        <member name="M:Kingo.Messaging.MessageProcessor.CreateDefaultMessageHandlerFactory">
+            <summary>
+            Creates and return a new instance of the built-in, default message handler factory.
+            </summary>
+            <returns>A new instance of the built-in, default message handler factory.</returns>
         </member>
         <member name="M:Kingo.Messaging.MessageProcessor.CreateTypeToContractMap(Kingo.Messaging.LayerConfiguration)">
             <summary>

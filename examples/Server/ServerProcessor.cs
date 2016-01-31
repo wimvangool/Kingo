@@ -1,6 +1,5 @@
 ﻿using Kingo.Messaging;
 using Kingo.Samples.Chess.Players;
-using Microsoft.Practices.Unity;
 using NServiceBus;
 
 namespace Kingo.Samples.Chess
@@ -23,10 +22,8 @@ namespace Kingo.Samples.Chess
 
         protected override MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
         {
-            var factory = new UnityFactory();
-            factory.RegisterMessageHandlers(layers);
-            factory.RegisterRepositories(layers);
-            factory.Container.RegisterType<IPlayerAdministration, PlayersTable>();
+            var factory = base.CreateMessageHandlerFactory(layers);
+            factory.RegisterWithPerResolveLifetime(typeof(PlayersTable), typeof(IPlayerAdministration));
             return factory;
         }
 

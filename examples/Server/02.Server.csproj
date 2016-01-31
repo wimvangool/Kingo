@@ -46,12 +46,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo">
-      <HintPath>..\packages\Kingo.2.1.2-beta\lib\net45\Kingo.dll</HintPath>
+    <Reference Include="Kingo, Version=2.1.3.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingo.Server.2.1.3-beta\lib\net451\Kingo.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Kingo.Server, Version=2.1.2.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Kingo.Server.2.1.2-beta\lib\net451\Kingo.Server.dll</HintPath>
+    <Reference Include="Kingo.Server, Version=2.1.3.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingo.Server.2.1.3-beta\lib\net451\Kingo.Server.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -107,7 +108,6 @@
     <Compile Include="ServerProcessor.cs" />
     <Compile Include="WcfService.cs" />
     <Compile Include="WcfServiceProcessor.cs" />
-    <Compile Include="UnityFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
