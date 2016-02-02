@@ -1,23 +1,13 @@
-﻿using Kingo.Messaging;
+﻿using System;
+using System.Collections.Generic;
+using Kingo.Messaging;
 using Kingo.Samples.Chess.Players;
-using NServiceBus;
+using Kingo.Transactions;
 
 namespace Kingo.Samples.Chess
 {
-    internal abstract class ServerProcessor : MessageProcessor
+    public class ServerProcessor : MessageProcessor
     {
-        protected abstract IBus EnterpriseServiceBus
-        {
-            get;
-        }
-
-        protected override void OnPublishing<TEvent>(TEvent @event)
-        {
-            base.OnPublishing(@event);
-
-            EnterpriseServiceBus.Publish(@event);
-        }
-
         #region [====== MessageHandlerFactory ======]
 
         protected override MessageHandlerFactory CreateMessageHandlerFactory(LayerConfiguration layers)
@@ -27,6 +17,39 @@ namespace Kingo.Samples.Chess
             return factory;
         }
 
-        #endregion   
+        #endregion
+
+        #region [====== Pipeline Configuration ======]
+
+        protected override IEnumerable<MessageHandlerModule> CreateMessageEntryPipeline()
+        {
+            yield return new FaultExceptionModule();
+            yield return new MessageValidationModule();
+            yield return new TransactionScopeModule();
+        }
+
+        #endregion
+
+        #region [====== Main ======]
+
+        private static void Main(string[] args)
+        {
+            using (var serviceHostManager = ServiceHostManager.CreateServiceHostManager())
+            {
+                Console.WriteLine("Starting all services...");
+
+                serviceHostManager.Open();
+
+                Console.WriteLine("All services have been started.");
+                Console.WriteLine("Press enter to exit...");
+                Console.ReadLine();
+
+                serviceHostManager.Close();
+
+                Console.WriteLine("All services have been shut down.");
+            }
+        }                
+
+        #endregion
     }
 }

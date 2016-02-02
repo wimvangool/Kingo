@@ -3,12 +3,11 @@ using System.Runtime.Serialization;
 using Kingo.Constraints;
 using Kingo.Messaging;
 using Kingo.Messaging.Domain;
-using NServiceBus;
 
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class ChallengeRejectedEvent : DomainEvent, IEvent
+    public sealed class ChallengeRejectedEvent : DomainEvent
     {
         [DataMember]
         public readonly Guid ChallengeId;

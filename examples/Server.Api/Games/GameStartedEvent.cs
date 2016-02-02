@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Kingo.Messaging.Domain;
-using NServiceBus;
 
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class GameStartedEvent : DomainEvent, IEvent
+    public sealed class GameStartedEvent : DomainEvent
     {
         [DataMember]        
         public readonly Guid GameId;

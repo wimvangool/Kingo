@@ -1,44 +1,24 @@
-﻿using System;
-using System.ServiceModel;
-using System.Threading.Tasks;
-using NServiceBus;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.Samples.Chess.Challenges
-{
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public sealed class ChallengeService : WcfService, IChallengeService
-    {
-        private readonly IBus _enterpriseServiceBus;        
-
-        public ChallengeService(IBus enterpriseServiceBus)
-        {
-            if (enterpriseServiceBus == null)
-            {
-                throw new ArgumentNullException("enterpriseServiceBus");
-            }
-            _enterpriseServiceBus = enterpriseServiceBus;            
-        }
-
-        protected override IBus EnterpriseServiceBus
-        {
-            get { return _enterpriseServiceBus; }
-        }        
-
+{    
+    public sealed class ChallengeService : ServerProcessor, IChallengeService
+    {                
         #region [====== Write Methods ======]
 
         public Task ChallengePlayerAsync(ChallengePlayerCommand command)
         {
-            return Processor.HandleAsync(command);
+            return HandleAsync(command);
         }
 
         public Task AcceptChallengeAsync(AcceptChallengeCommand command)
         {
-            return Processor.HandleAsync(command);
+            return HandleAsync(command);
         }
 
         public Task RejectChallengeAsync(RejectChallengeCommand command)
         {
-            return Processor.HandleAsync(command);
+            return HandleAsync(command);
         }
 
         #endregion
@@ -47,7 +27,7 @@ namespace Kingo.Samples.Chess.Challenges
 
         public Task<GetPendingChallengesResponse> GetPendingChallenges(GetPendingChallengesRequest request)
         {
-            return Processor.ExecuteAsync(PendingChallengesTable.SelectByReceiverAsync, request);
+            return ExecuteAsync(PendingChallengesTable.SelectByReceiverAsync, request);
         }
 
         #endregion                  

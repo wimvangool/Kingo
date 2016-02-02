@@ -1,46 +1,14 @@
-﻿using System;
-using System.ServiceModel;
-using System.Threading.Tasks;
-using Kingo.Samples.Chess.Challenges;
-using NServiceBus;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.Samples.Chess.Games
-{
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public sealed class GameService : WcfService, IGameService, IHandleMessages<ChallengeAcceptedEvent>
-    {
-        private readonly IBus _enterpriseServiceBus;
-        private readonly NServiceBusProcessor _eventProcessor;
- 
-        public GameService(IBus enterpriseServiceBus)
-        {
-            if (enterpriseServiceBus == null)
-            {
-                throw new ArgumentNullException("enterpriseServiceBus");
-            }
-            _enterpriseServiceBus = enterpriseServiceBus;
-            _eventProcessor = new NServiceBusProcessor(enterpriseServiceBus);
-        }
-
-        protected override IBus EnterpriseServiceBus
-        {
-            get { return _enterpriseServiceBus; }
-        }
-
-        #region [====== Events ======]
-
-        void IHandleMessages<ChallengeAcceptedEvent>.Handle(ChallengeAcceptedEvent message)
-        {
-            _eventProcessor.Handle(message);
-        }
-
-        #endregion
-
+{    
+    public sealed class GameService : ServerProcessor, IGameService
+    {                
         #region [====== Write Methods ======]
 
         public Task ForfeitGameAsync(ForfeitGameCommand command)
         {
-            return Processor.HandleAsync(command);
+            return HandleAsync(command);
         }
 
         #endregion
@@ -49,7 +17,7 @@ namespace Kingo.Samples.Chess.Games
 
         public Task<GetActiveGamesResponse> GetActiveGames(GetActiveGamesRequest request)
         {
-            return Processor.ExecuteAsync(ActiveGamesTable.SelectByPlayerAsync, request);
+            return ExecuteAsync(ActiveGamesTable.SelectByPlayerAsync, request);
         }
 
         #endregion

@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using Kingo.Constraints;
 using Kingo.Messaging;
 using Kingo.Messaging.Domain;
-using NServiceBus;
 
 namespace Kingo.Samples.Chess.Players
 {
@@ -11,7 +10,7 @@ namespace Kingo.Samples.Chess.Players
     /// This event is raised when a new player has been registered.
     /// </summary>
     [DataContract]
-    public sealed class PlayerRegisteredEvent : DomainEvent, IEvent
+    public sealed class PlayerRegisteredEvent : DomainEvent
     {
         /// <summary>
         /// Identifier of the player.

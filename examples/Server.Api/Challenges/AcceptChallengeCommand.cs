@@ -2,12 +2,11 @@
 using System.Runtime.Serialization;
 using Kingo.Constraints;
 using Kingo.Messaging;
-using NServiceBus;
 
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class AcceptChallengeCommand : Message, ICommand
+    public sealed class AcceptChallengeCommand : Message
     {
         [DataMember]
         public readonly Guid ChallengeId;
