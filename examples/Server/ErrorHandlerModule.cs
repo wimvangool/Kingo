@@ -6,7 +6,7 @@ using Kingo.Security;
 
 namespace Kingo.Samples.Chess
 {
-    internal sealed class FaultExceptionModule : MessageHandlerModule
+    internal sealed class ErrorHandlerModule : MessageHandlerModule
     {
         public override async Task InvokeAsync(IMessageHandlerWrapper handler)
         {

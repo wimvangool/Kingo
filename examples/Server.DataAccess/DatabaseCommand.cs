@@ -8,7 +8,7 @@ namespace Kingo.Samples.Chess
 {
     internal sealed class DatabaseCommand : IDisposable        
     {
-        private static readonly string _ConnectionString = ConfigurationManager.ConnectionStrings["Server.Data.Sql"].ConnectionString;
+        private static readonly string _ConnectionString = ConfigurationManager.ConnectionStrings["ChessDatabase"].ConnectionString;
         private readonly SqlConnection _connection;
         private readonly SqlCommand _command;        
 

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Kingo.Samples.Chess
 {
-    internal static class Serializer
+    public static class Serializer
     {
         private static readonly JsonSerializerSettings _SerializerSettings = new JsonSerializerSettings
         {
@@ -18,12 +18,12 @@ namespace Kingo.Samples.Chess
             TypeNameHandling = TypeNameHandling.None
         };
 
-        internal static string Serialize(object aggregate)
+        public static string Serialize(object value)
         {
-            return JsonConvert.SerializeObject(aggregate, _SerializerSettings);
+            return JsonConvert.SerializeObject(value, _SerializerSettings);
         }
 
-        internal static object Deserialize(string value, Type type)
+        public static object Deserialize(string value, Type type)
         {
             return JsonConvert.DeserializeObject(value, type, _SerializerSettings);
         }

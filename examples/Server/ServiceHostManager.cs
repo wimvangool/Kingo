@@ -9,17 +9,17 @@ using Kingo.Samples.Chess.Players;
 namespace Kingo.Samples.Chess
 {
     internal sealed class ServiceHostManager : IDisposable
-    {
-        private readonly ServiceHost[] _serviceHosts;
+    {        
+        private readonly ServiceHost[] _serviceHosts;        
         private bool _isDisposed;
 
         private ServiceHostManager(ServiceHost[] serviceHosts)
-        {
-            _serviceHosts = serviceHosts;
+        {            
+            _serviceHosts = serviceHosts;            
         }
 
         internal void Open()
-        {
+        {            
             foreach (var serviceHost in _serviceHosts)
             {
                 serviceHost.Open();
@@ -43,7 +43,7 @@ namespace Kingo.Samples.Chess
             foreach (var disposable in Disposables())
             {
                 disposable.Dispose();
-            }
+            }            
             _isDisposed = true;
         }
 
@@ -53,7 +53,7 @@ namespace Kingo.Samples.Chess
         }
 
         internal static ServiceHostManager CreateServiceHostManager()
-        {
+        {            
             var serviceHosts = CreateServiceHosts().ToArray();
 
             foreach (var serviceHost in serviceHosts)

@@ -3,7 +3,7 @@ using Kingo.Samples.Chess.Challenges;
 
 namespace Kingo.Samples.Chess.Players
 {    
-    public sealed class PlayerService : ServerProcessor, IPlayerService
+    public sealed class PlayerService : ServiceProcessor, IPlayerService
     {        
         #region [====== Write Methods ======]
 

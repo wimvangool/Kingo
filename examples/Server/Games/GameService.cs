@@ -2,7 +2,7 @@
 
 namespace Kingo.Samples.Chess.Games
 {    
-    public sealed class GameService : ServerProcessor, IGameService
+    public sealed class GameService : ServiceProcessor, IGameService
     {                
         #region [====== Write Methods ======]
 

@@ -2514,6 +2514,15 @@
             </summary>
             <returns>A new <see cref="T:Kingo.Messaging.UnitOfWorkScope"/>.</returns>
         </member>
+        <member name="M:Kingo.Messaging.IMessageProcessor.Handle(System.Object)">
+            <summary>
+            Processes the specified message by invoking all registered message handlers.
+            </summary>        
+            <param name="message">Message to handle.</param>                        
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="message"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="M:Kingo.Messaging.IMessageProcessor.Handle``1(``0)">
             <summary>
             Processes the specified message by invoking all registered message handlers.
@@ -3045,17 +3054,21 @@
             </param>
             <returns>A mapping between types and their contracts.</returns>
         </member>
-        <member name="M:Kingo.Messaging.MessageProcessor.OnPublishing``1(``0)">
+        <member name="M:Kingo.Messaging.MessageProcessor.PublishAsync``1(``0)">
             <summary>
             This method is invoked just before an event is published and subsequently handled by this processor.
             </summary>
             <typeparam name="TEvent">Type of the event that is about to be published.</typeparam>
-            <param name="event">The event that is about to be published.</param>        
+            <param name="event">The event that is about to be published.</param>   
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> carrying out the operation.</returns>     
         </member>
         <member name="M:Kingo.Messaging.MessageProcessor.CreateUnitOfWorkScope">
             <inheritdoc />
         </member>
         <member name="M:Kingo.Messaging.MessageProcessor.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Kingo.Messaging.MessageProcessor.Handle(System.Object)">
             <inheritdoc />
         </member>
         <member name="M:Kingo.Messaging.MessageProcessor.Handle``1(``0)">
