@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -115,8 +116,12 @@ namespace Kingo.Messaging
         /// This method is invoked just before an event is published and subsequently handled by this processor.
         /// </summary>
         /// <typeparam name="TEvent">Type of the event that is about to be published.</typeparam>
-        /// <param name="event">The event that is about to be published.</param>        
-        protected internal virtual void OnPublishing<TEvent>(TEvent @event) where TEvent : class, IMessage { }
+        /// <param name="event">The event that is about to be published.</param>   
+        /// <returns>A <see cref="Task" /> carrying out the operation.</returns>     
+        protected internal virtual Task PublishAsync<TEvent>(TEvent @event) where TEvent : class, IMessage
+        {
+            return HandleAsync(@event);
+        }
 
         /// <inheritdoc />
         public UnitOfWorkScope CreateUnitOfWorkScope()
@@ -135,6 +140,34 @@ namespace Kingo.Messaging
         #endregion
 
         #region [====== Commands & Events ======]
+
+        private static readonly ConcurrentDictionary<Type, MethodInfo> _HandleMethods = new ConcurrentDictionary<Type, MethodInfo>();
+
+        /// <inheritdoc />
+        public void Handle(object message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+            _HandleMethods.GetOrAdd(message.GetType(), GetHandleMethod).Invoke(this, new[] { message });
+        }        
+
+        private MethodInfo GetHandleMethod(Type messageType)
+        {
+            return GetHandleMethodDefinition().MakeGenericMethod(messageType);
+        }
+
+        private MethodInfo GetHandleMethodDefinition()
+        {                        
+            var methods =
+                from method in GetType().GetInterfaceMap(typeof(IMessageProcessor)).TargetMethods
+                where method.IsGenericMethod && method.IsGenericMethodDefinition
+                where method.Name == "Handle" && method.GetParameters().Length == 1                              
+                select method;
+
+            return methods.Single();
+        }
 
         /// <inheritdoc />
         public void Handle<TMessage>(TMessage message) where TMessage : class, IMessage

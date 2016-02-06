@@ -16,11 +16,11 @@ namespace Kingo.Messaging.Domain
     {        
         #region [====== Insert ======]
 
-        internal override Task InsertAsync(TAggregate aggregate, IWritableEventStream<TKey, TVersion> domainEventStream)
-        {            
-            aggregate.WriteTo(domainEventStream);
+        internal override async Task InsertAsync(TAggregate aggregate, IWritableEventStream<TKey, TVersion> domainEventStream)
+        {
+            await InsertAsync(new Snapshot<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot()));
 
-            return InsertAsync(new Snapshot<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot()));
+            aggregate.WriteTo(domainEventStream);            
         }
 
         /// <summary>

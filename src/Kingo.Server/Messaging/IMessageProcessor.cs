@@ -27,6 +27,15 @@ namespace Kingo.Messaging
 
         /// <summary>
         /// Processes the specified message by invoking all registered message handlers.
+        /// </summary>        
+        /// <param name="message">Message to handle.</param>                        
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>
+        void Handle(object message);
+
+        /// <summary>
+        /// Processes the specified message by invoking all registered message handlers.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message.</typeparam>
         /// <param name="message">Message to handle.</param>                        

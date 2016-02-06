@@ -56,16 +56,14 @@ namespace Kingo.Messaging
         #endregion        
 
         public async Task PublishAsync<TMessage>(TMessage message) where TMessage : class, IMessage
-        {
-            _processor.OnPublishing(message);
-
+        {            
             await InvokeRegisteredHandlers(message);
             await InvokeConnectedHandlers(message);                            
         }
 
         private async Task InvokeRegisteredHandlers<TMessage>(TMessage message) where TMessage : class, IMessage
         {            
-            await _processor.HandleAsync(message);
+            await _processor.PublishAsync(message);
         }              
 
         private async Task InvokeConnectedHandlers<TMessage>(TMessage message) where TMessage : class, IMessage

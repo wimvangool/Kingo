@@ -91,6 +91,26 @@ namespace Kingo.Messaging
             Assert.AreEqual(shoppingCartId, createdEvent.ShoppingCartId);            
         }
 
+        [TestMethod]
+        public void CreateShoppingCart_PublishesShoppingCartCreated_IfCartWasCreated_And_CommandIsOfObjectType()
+        {
+            var shoppingCartId = Guid.NewGuid();
+            ShoppingCartCreatedEvent createdEvent = null;
+
+            using (_processor.EventBus.Connect<ShoppingCartCreatedEvent>(e => createdEvent = e, true))
+            {
+                object command = new CreateShoppingCartCommand
+                {
+                    ShoppingCartId = shoppingCartId
+                };
+
+                _processor.Handle(command);
+            }
+
+            Assert.IsNotNull(createdEvent);
+            Assert.AreEqual(shoppingCartId, createdEvent.ShoppingCartId);
+        }
+
         [TestMethod]        
         public void CreateShoppingCart_Throws_IfSameCartWasAlreadyCreated()
         {
