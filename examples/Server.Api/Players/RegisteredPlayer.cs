@@ -5,17 +5,25 @@ namespace Kingo.Samples.Chess.Players
 {
     [DataContract]
     public sealed class RegisteredPlayer
-    {
-        [DataMember]
-        public readonly Guid Id;
-
-        [DataMember]
-        public readonly string Name;
-
+    {        
         public RegisteredPlayer(Guid id, string name)
         {
             Id = id;
             Name = name;
+        }
+
+        [DataMember]
+        public Guid Id
+        {
+            get;
+            private set;
+        }
+
+        [DataMember]
+        public string Name
+        {
+            get;
+            private set;
         }
     }
 }

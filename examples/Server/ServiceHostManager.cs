@@ -84,8 +84,9 @@ namespace Kingo.Samples.Chess
 
             foreach (var endpoint in host.Description.Endpoints)
             {
-                Console.WriteLine("\t{0}", endpoint.Address);
+                Console.WriteLine("\t[{0}]", endpoint.Address);
             }
+            Console.WriteLine();
         }
 
         private static void HandleServiceHostClosing(ServiceHost host)

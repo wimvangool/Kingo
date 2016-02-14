@@ -273,11 +273,17 @@
             </summary>
             <returns>A copy of this message.</returns>
         </member>
-        <member name="M:Kingo.Messaging.Message.#ctor(Kingo.Messaging.Message)">
+        <member name="M:Kingo.Messaging.Message.Equals(System.Object)">
             <summary>
-            Initializes a new instance of the <see cref="T:Kingo.Messaging.Message"/> class.
+            Determines whether this message is equal to the specified <paramref name="obj"/> based on all fields.
             </summary>
-            <param name="message">If specified, the constructor copies all extension data from this message.</param>
+            <param name="obj">Another object.</param>
+            <returns>
+            <c>true</c> if <paramref name="obj"/> is of the same type and has equal members; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Kingo.Messaging.Message.GetHashCode">
+            <inheritdoc />
         </member>
         <member name="M:Kingo.Messaging.Message.Copy">
             <summary>
@@ -336,12 +342,6 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="messageType"/> is <c>null</c>.
             </exception>
-        </member>
-        <member name="M:Kingo.Messaging.Command.#ctor(Kingo.Messaging.Command)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.Messaging.Command"/> class.
-            </summary>
-            <param name="message">The message to copy.</param>        
         </member>
         <member name="M:Kingo.Messaging.Command.AcceptChanges">
             <summary>
@@ -4432,7 +4432,7 @@
             <typeparam name="TKey">Key-type of the associated aggregate.</typeparam>
             <typeparam name="TVersion">Version-type of the associated aggregate.</typeparam>    
         </member>
-        <member name="T:Kingo.Messaging.Domain.IHasVersion`2">
+        <member name="T:Kingo.Messaging.Domain.IHasKeyAndVersion`2">
             <summary>
             Represents an Aggregate, following the definition of a Domain Driven Design.
             </summary>
@@ -4450,28 +4450,10 @@
             The key or identifier of the object.
             </summary>
         </member>
-        <member name="P:Kingo.Messaging.Domain.IHasVersion`2.Version">
+        <member name="P:Kingo.Messaging.Domain.IHasKeyAndVersion`2.Version">
             <summary>
             Version of the Aggregate.
             </summary>
-        </member>
-        <member name="M:Kingo.Messaging.Domain.DomainEvent`2.#ctor(Kingo.Messaging.Domain.DomainEvent{`0,`1})">
-            <summary>
-            Initializes a new instance of the <see cref="T:Kingo.Messaging.Domain.DomainEvent"/> class.
-            </summary>
-            <param name="message">The message to copy.</param>        
-        </member>
-        <member name="P:Kingo.Messaging.Domain.DomainEvent`2.Key">
-            <summary>
-            Returns the key of the aggregate this event was published by.
-            </summary>
-            <returns>Key of the aggregate.</returns>
-        </member>
-        <member name="P:Kingo.Messaging.Domain.DomainEvent`2.Version">
-            <summary>
-            Returns the version of the aggregate this event was published by.
-            </summary>
-            <returns>Version of the aggregate.</returns>
         </member>
         <member name="T:Kingo.Messaging.Domain.DomainException">
             <summary>
@@ -4652,6 +4634,16 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="failedMessage"/> is <c>null</c>.
             </exception>
+        </member>
+        <member name="T:Kingo.Messaging.Domain.KeyAttribute">
+            <summary>
+            Can be used to decorate mark a field or property as the <see cref="!:IHasKeyAndVersion&lt;T, K&gt;.Key">Key</see> of an aggregate.
+            </summary>
+        </member>
+        <member name="T:Kingo.Messaging.Domain.VersionAttribute">
+            <summary>
+            Can be used to decorate mark a field or property as the <see cref="P:Kingo.Messaging.Domain.IHasKeyAndVersion`2.Version">Version</see> of an aggregate.
+            </summary>
         </member>
         <member name="T:Kingo.Messaging.ErrorInheritanceLevel">
             <summary>
@@ -7965,19 +7957,34 @@
               Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
             </summary>
         </member>
-        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_IncompatibleMemberType">
+        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_IncompatibleKeyType">
             <summary>
-              Looks up a localized string similar to Value of member &apos;{0}.{1}&apos; of type &apos;{2}&apos; could not be converted to an instance of type &apos;{3}&apos;..
+              Looks up a localized string similar to Event &apos;{0}&apos; contains a member marked with the KeyAttribute which type is not compatible with the Key-type of the event..
             </summary>
         </member>
-        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_MemberNotFound">
+        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_IncompatibleVersionType">
             <summary>
-              Looks up a localized string similar to Could not resolve member of type &apos;{0}&apos; on event of type &apos;{1}&apos;. Consider overriding the Key and Version properties..
+              Looks up a localized string similar to Event &apos;{0}&apos; contains a member marked with the VersionAttribute which type is not compatible with the Version-type of the event..
             </summary>
         </member>
-        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_MultipleCandidateMembersFound">
+        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_KeyMemberNotFound">
             <summary>
-              Looks up a localized string similar to Could not decide on a member of type &apos;{0}&apos; on event of type &apos;{1}&apos; because multiple candidate members were found. Consider overriding the Key and Version properties..
+              Looks up a localized string similar to Could not resolve Key on event of type &apos;{0}&apos;. Please mark one field or property as the Key of this event..
+            </summary>
+        </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_MultipleKeyMembersFound">
+            <summary>
+              Looks up a localized string similar to Event &apos;{0}&apos; contains more than one member that is decorated with KeyAttribute, where only one is allowed..
+            </summary>
+        </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_MultipleVersionMembersFound">
+            <summary>
+              Looks up a localized string similar to Event &apos;{0}&apos; contains more than one member that is decorated with VersionAttribute, where only one is allowed..
+            </summary>
+        </member>
+        <member name="P:Kingo.Resources.ExceptionMessages.DomainEvent_VersionMemberNotFound">
+            <summary>
+              Looks up a localized string similar to Could not resolve Version on event of type &apos;{0}&apos;. Please mark one field or property as the Version of this event..
             </summary>
         </member>
         <member name="P:Kingo.Resources.ExceptionMessages.DomainModelException_CommandFailed">

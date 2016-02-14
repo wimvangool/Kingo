@@ -12,11 +12,7 @@ namespace Kingo.Samples.Chess
         {
             await base.PublishAsync(@event);
 
-            var serviceBus = ServiceBus.Instance;
-            if (serviceBus != null)
-            {
-                serviceBus.Publish(@event);
-            }
+            ServiceBus.Instance.Publish(@event);            
         }
 
         #region [====== MessageHandlerFactory ======]

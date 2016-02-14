@@ -7,13 +7,17 @@ namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
     public sealed class ForfeitGameCommand : Message
-    {
-        [DataMember]
-        public readonly Guid GameId;
-
+    {       
         public ForfeitGameCommand(Guid gameId)
         {
             GameId = gameId;
+        }
+
+        [DataMember]
+        public Guid GameId
+        {
+            get;
+            private set;
         }
 
         protected override IValidator CreateValidator()

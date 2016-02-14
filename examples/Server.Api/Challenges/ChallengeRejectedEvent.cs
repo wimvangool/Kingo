@@ -7,18 +7,26 @@ using Kingo.Messaging.Domain;
 namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
-    public sealed class ChallengeRejectedEvent : DomainEvent
-    {
-        [DataMember]
-        public readonly Guid ChallengeId;
-
-        [DataMember]
-        public readonly int ChallengeVersion;
-
+    public sealed class ChallengeRejectedEvent : DomainEvent<Guid, int>
+    {        
         public ChallengeRejectedEvent(Guid challengeId, int challengeVersion)
         {
             ChallengeId = challengeId;
             ChallengeVersion = challengeVersion;
+        }
+
+        [DataMember, Key]
+        public Guid ChallengeId
+        {
+            get;
+            private set;
+        }
+
+        [DataMember, Version]
+        public int ChallengeVersion
+        {
+            get;
+            private set;
         }
 
         protected override IValidator CreateValidator()

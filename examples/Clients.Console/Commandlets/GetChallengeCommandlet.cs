@@ -86,7 +86,7 @@ namespace Clients.ConsoleApp.Commandlets
 
             using (ChessApplication.UseColor(ConsoleColor.Green))
             {
-                Console.WriteLine("Challenge from '{0}' was rejected.", challenge.PlayerName);
+                Console.WriteLine("\tChallenge from '{0}' was rejected.", challenge.PlayerName);
             }
         }
         

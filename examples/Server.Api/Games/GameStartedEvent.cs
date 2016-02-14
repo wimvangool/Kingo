@@ -5,20 +5,8 @@ using Kingo.Messaging.Domain;
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class GameStartedEvent : DomainEvent
+    public sealed class GameStartedEvent : DomainEvent<Guid, int>
     {
-        [DataMember]        
-        public readonly Guid GameId;
-
-        [DataMember]        
-        public readonly int GameVersion;
-
-        [DataMember]
-        public readonly Guid WhitePlayerId;
-
-        [DataMember]
-        public readonly Guid BlackPlayerId;
-
         public GameStartedEvent(Guid gameId, int gameVersion, Guid whitePlayerId,  Guid blackPlayerId)
         {
             GameId = gameId;
@@ -26,6 +14,34 @@ namespace Kingo.Samples.Chess.Games
 
             WhitePlayerId = whitePlayerId;
             BlackPlayerId = blackPlayerId;
+        }
+
+        [DataMember, Key]
+        public Guid GameId
+        {
+            get;
+            private set;
+        }
+
+        [DataMember, Version]
+        public int GameVersion
+        {
+            get;
+            private set;
+        }
+
+        [DataMember]
+        public Guid WhitePlayerId
+        {
+            get;
+            private set;
+        }
+
+        [DataMember]
+        public Guid BlackPlayerId
+        {
+            get;
+            private set;
         }
     }
 }

@@ -32,7 +32,27 @@ namespace Kingo.Samples.Chess
 
         private static ISnapshot<Guid, int> DeserializeSnapshot(DbDataReader reader, ITypeToContractMap map)
         {
-            throw new NotImplementedException();
+            return new EventStreamFactory<Guid, int>(DeserializeEvents(reader, map), false);            
+        }
+
+        private static IEnumerable<IHasKeyAndVersion<Guid, int>> DeserializeEvents(DbDataReader reader, ITypeToContractMap map)
+        {
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    yield return DeserializeEvent(reader, map);
+                }
+            }
+        }
+
+        private static IHasKeyAndVersion<Guid, int> DeserializeEvent(IDataRecord record, ITypeToContractMap map)
+        {
+            var value = record.GetString(0);
+            var typeInfo = record.GetString(1);
+            var type = map.GetType(typeInfo);
+
+            return (IHasKeyAndVersion<Guid, int>) Serializer.Deserialize(value, type);
         }
 
         #endregion

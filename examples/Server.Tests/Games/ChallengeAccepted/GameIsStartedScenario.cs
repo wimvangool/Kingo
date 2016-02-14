@@ -51,8 +51,8 @@ namespace Kingo.Samples.Chess.Games.ChallengeAccepted
         }
 
         private void Validate(IMemberConstraintSet<GameStartedEvent> validator)
-        {            
-            validator.VerifyThat(m => m.GameId).IsEqualTo(Message.ChallengeId);
+        {
+            validator.VerifyThat(m => m.GameId).IsNotEmpty();
             validator.VerifyThat(m => m.GameVersion).IsEqualTo(1);                                   
         }       
     }

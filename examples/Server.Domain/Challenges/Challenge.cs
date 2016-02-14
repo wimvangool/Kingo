@@ -94,9 +94,9 @@ namespace Kingo.Samples.Chess.Challenges
             var milliseconds = Clock.Current.UtcDateAndTime().Millisecond;
             if (milliseconds < 500)
             {
-                return new GameStartedEvent(_id, 1, _senderId, _receiverId);
+                return new GameStartedEvent(Guid.NewGuid(), 1, _senderId, _receiverId);
             }
-            return new GameStartedEvent(_id, 1, _receiverId, _senderId);
+            return new GameStartedEvent(Guid.NewGuid(), 1, _receiverId, _senderId);
         }
 
         private static Exception NewChallengeAlreadyAcceptedException()

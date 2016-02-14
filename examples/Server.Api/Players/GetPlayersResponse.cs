@@ -7,13 +7,17 @@ namespace Kingo.Samples.Chess.Players
 {
     [DataContract]
     public sealed class GetPlayersResponse : Message
-    {
-        [DataMember]
-        public readonly RegisteredPlayer[] Players;
-
+    {        
         public GetPlayersResponse(IEnumerable<RegisteredPlayer> players)
         {
             Players = players.ToArray();
+        }
+
+        [DataMember]
+        public RegisteredPlayer[] Players
+        {
+            get;
+            private set;
         }
     }
 }

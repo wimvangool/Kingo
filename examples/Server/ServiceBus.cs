@@ -20,6 +20,7 @@ namespace Kingo.Samples.Chess
         private readonly ServiceHostManager _serviceHostManager;
         private readonly ConnectionFactory _connectionFactory;
         private readonly ServiceProcessor _processor;
+        private readonly TypeToContractMap _typeToContractMap;
 
         private RabbitMQ.Client.IConnection _connection;
         private IModel _receiverChannel;
@@ -29,18 +30,18 @@ namespace Kingo.Samples.Chess
         {
             _serviceHostManager = ServiceHostManager.CreateServiceHostManager();
             _connectionFactory = new ConnectionFactory
-            { Uri = _ConnectionString };
+            {
+                Uri = _ConnectionString
+            };
             _processor = new ServiceProcessor();
+            _typeToContractMap = TypeToContractMap.FromLayerConfiguration(_processor.CreateLayerConfiguration());
         }        
 
         private void Start()
         {            
-            _connection = _connectionFactory.CreateConnection();
-            _connection.ConnectionBlocked += (s, e) => WriteError("Connection was blocked.");
-            _connection.ConnectionShutdown += (s, e) => WriteError("Connection was closed.");
-
-            _receiverChannel = StartListeningForEvents(_connection);
-            _receiverChannel.ModelShutdown += (s, e) => WriteError("Channel was closed.");
+            _connection = _connectionFactory.CreateConnection();            
+            _receiverChannel = StartListeningForEvents(_connection);     
+       
             _serviceHostManager.Open();
         }
 
@@ -60,10 +61,9 @@ namespace Kingo.Samples.Chess
         }        
 
         private void HandleEvent(object sender, BasicDeliverEventArgs e)
-        {
-            var typeToContractMap = TypeToContractMap.FullyQualifiedName;
+        {            
             var typeInfo = Encoding.UTF8.GetString((byte[]) e.BasicProperties.Headers[_TypeInfoHeader]);
-            var type = typeToContractMap.GetType(typeInfo);
+            var type = _typeToContractMap.GetType(typeInfo);
 
             var body = Encoding.UTF8.GetString(e.Body);
             var @event = Serializer.Deserialize(body, type);            
@@ -79,7 +79,7 @@ namespace Kingo.Samples.Chess
 
                 try
                 {
-                    Console.WriteLine("Received Event: {0}.", @event.GetType().Name);                    
+                    Console.WriteLine("<-- [{0}].", @event.GetType().Name);                    
                 }
                 finally
                 {
@@ -92,6 +92,7 @@ namespace Kingo.Samples.Chess
         private void Stop()
         {            
             _serviceHostManager.Close();
+
             _receiverChannel.Close();
             _connection.Close();
         }
@@ -131,7 +132,7 @@ namespace Kingo.Samples.Chess
 
                     try
                     {                        
-                        Console.WriteLine("Published message: {0}.", @event.GetType().Name);
+                        Console.WriteLine("--> [{0}].", @event.GetType().Name);
                         return;
                     }
                     finally
@@ -144,9 +145,8 @@ namespace Kingo.Samples.Chess
         }
 
         private void PublishEvent(object @event)
-        {
-            var typeToContractMap = TypeToContractMap.FullyQualifiedName;
-            var typeInfo = typeToContractMap.GetContract(@event.GetType());
+        {            
+            var typeInfo = _typeToContractMap.GetContract(@event.GetType());
             var body = Encoding.UTF8.GetBytes(Serializer.Serialize(@event));            
             
             PublishEvent(body, typeInfo);
@@ -196,7 +196,7 @@ namespace Kingo.Samples.Chess
 
         private static void Run()
         {
-            using (_Instance = CreateNewInstance())
+            using (_Instance = new ServiceBus())
             {
                 Console.WriteLine("Starting all services...");
 
@@ -210,7 +210,7 @@ namespace Kingo.Samples.Chess
 
                 Console.WriteLine("All services have been shut down.");
             }
-        }
+        }        
 
         private static void WriteError(string message)
         {
@@ -234,29 +234,14 @@ namespace Kingo.Samples.Chess
 
         #endregion
 
-        private static ServiceBus CreateNewInstance()
-        {
-            return new ServiceBus();
-        }       
-
         private static Exception NewInstanceDisposedException()
         {
             return new ObjectDisposedException(typeof(ServiceBus).Name);
-        }
-
-        private static Exception NewConnectionAlreadyOpenException()
-        {
- 	        throw new NotImplementedException();
-        }
-
-        private static Exception NewConnectionAlreadyClosedException()
-        {
-            throw new NotImplementedException();
-        }
+        }        
 
         private static Exception NewConnectionClosedException()
         {
-            throw new NotImplementedException();
+            return new InvalidOperationException("Connection is closed.");
         }
     }
 }

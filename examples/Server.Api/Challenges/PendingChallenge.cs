@@ -5,17 +5,25 @@ namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
     public sealed class PendingChallenge
-    {
-        [DataMember]
-        public readonly Guid ChallengeId;        
-
-        [DataMember]
-        public readonly string PlayerName;
-
+    {        
         public PendingChallenge(Guid challengeId, string playerName)
         {
             ChallengeId = challengeId;
             PlayerName = playerName;
+        }
+
+        [DataMember]
+        public Guid ChallengeId
+        {
+            get;
+            private set;
+        }
+
+        [DataMember]
+        public string PlayerName
+        {
+            get;
+            private set;
         }
     }
 }

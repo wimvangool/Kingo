@@ -11,8 +11,7 @@ BEGIN
 	WHERE	[Key] = @Key;
 
 	-- Then, as a first result set, we select all events with a higher version than the latest snapshot's version.
-	SELECT	[Version],
-			[Value],
+	SELECT	[Value],
 			[Type]
 	FROM	[dbo].[WriteModel_Events]
 	WHERE	[Key] = @Key
@@ -22,8 +21,7 @@ BEGIN
 	);
 
 	-- Finally, as the second result set, we select the snapshot, if any.
-	SELECT	[Version],
-			[Value],
+	SELECT	[Value],
 			[Type]
 	FROM	[dbo].[WriteModel_Snapshots]
 	WHERE	[Key] = @Key

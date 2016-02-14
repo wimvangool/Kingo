@@ -31,12 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kingo, Version=2.1.3.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kingo.Server.2.1.3-beta\lib\net451\Kingo.dll</HintPath>
+    <Reference Include="Kingo, Version=2.1.4.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingo.2.1.4-beta\lib\net45\Kingo.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Kingo.Server, Version=2.1.3.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kingo.Server.2.1.3-beta\lib\net451\Kingo.Server.dll</HintPath>
+    <Reference Include="Kingo.Server, Version=2.1.4.0, Culture=neutral, PublicKeyToken=cbd9f157c5e464e2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kingo.Server.2.1.4-beta\lib\net451\Kingo.Server.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

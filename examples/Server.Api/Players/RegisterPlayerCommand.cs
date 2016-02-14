@@ -5,34 +5,28 @@ using Kingo.Messaging;
 using Kingo.Samples.Chess.Resources;
 
 namespace Kingo.Samples.Chess.Players
-{
-    /// <summary>
-    /// Represents a request to register a new player.
-    /// </summary>
+{    
     [DataContract]
     public sealed class RegisterPlayerCommand : Message
-    {
-        /// <summary>
-        /// Identifier of the player.
-        /// </summary>
-        [DataMember]
-        public readonly Guid PlayerId;
-
-        /// <summary>
-        /// Name of the player.
-        /// </summary>
-        [DataMember]
-        public readonly string PlayerName;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RegisterPlayerCommand" /> class.
-        /// </summary>
-        /// <param name="playerId">Identifier of the player.</param>
-        /// <param name="playerName">Name of the player.</param>
+    {                
         public RegisterPlayerCommand(Guid playerId, string playerName)
         {
             PlayerId = playerId;
             PlayerName = playerName;
+        }
+
+        [DataMember]
+        public Guid PlayerId
+        {
+            get;
+            private set;
+        }
+
+        [DataMember]
+        public string PlayerName
+        {
+            get;
+            private set;
         }
 
         /// <inheritdoc />

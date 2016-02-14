@@ -7,13 +7,17 @@ namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
     public sealed class GetPendingChallengesResponse : Message
-    {
-        [DataMember]
-        public readonly PendingChallenge[] Challenges;
-
+    {       
         public GetPendingChallengesResponse(IEnumerable<PendingChallenge> challenges)
         {
             Challenges = challenges.ToArray();
+        }
+
+        [DataMember]
+        public PendingChallenge[] Challenges
+        {
+            get;
+            private set;
         }
     }
 }

@@ -7,13 +7,17 @@ namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
     public sealed class GetActiveGamesResponse : Message
-    {
-        [DataMember]
-        public readonly ActiveGame[] Games;
-
+    {        
         public GetActiveGamesResponse(IEnumerable<ActiveGame> games)
         {
             Games = games.ToArray();
+        }
+
+        [DataMember]
+        public ActiveGame[] Games
+        {
+            get;
+            private set;
         }
     }
 }

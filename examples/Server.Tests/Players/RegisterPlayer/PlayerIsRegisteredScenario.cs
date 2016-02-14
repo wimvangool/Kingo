@@ -43,8 +43,8 @@ namespace Kingo.Samples.Chess.Players.RegisterPlayer
         private void Validate(IMemberConstraintSet<PlayerRegisteredEvent> validator)
         {
             validator.VerifyThat(m => m.PlayerId).IsEqualTo(Message.PlayerId);
-            validator.VerifyThat(m => m.PlayerName).IsEqualTo(Message.PlayerName);
-            validator.VerifyThat(m => m.Version).IsEqualTo(1);
+            validator.VerifyThat(m => m.PlayerVersion).IsEqualTo(1);
+            validator.VerifyThat(m => m.PlayerName).IsEqualTo(Message.PlayerName);            
         }
     }
 }

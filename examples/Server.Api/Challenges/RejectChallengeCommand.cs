@@ -7,13 +7,17 @@ namespace Kingo.Samples.Chess.Challenges
 {
     [DataContract]
     public sealed class RejectChallengeCommand : Message
-    {
-        [DataMember]
-        public readonly Guid ChallengeId;
-
+    {        
         public RejectChallengeCommand(Guid challengeId)
         {
             ChallengeId = challengeId;
+        }
+
+        [DataMember]
+        public Guid ChallengeId
+        {
+            get;
+            private set;
         }
 
         protected override IValidator CreateValidator()
