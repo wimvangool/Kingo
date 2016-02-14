@@ -16,7 +16,7 @@ namespace Kingo.Messaging.Domain
     public sealed class EventStreamFactory<TKey, TVersion> : ISnapshot<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
-        private readonly IHasVersion<TKey, TVersion>[] _orderedEvents;
+        private readonly IHasKeyAndVersion<TKey, TVersion>[] _orderedEvents;
         private readonly ISnapshot<TKey, TVersion> _snapshot;
         private readonly bool _useDefaultConstructor;
 
@@ -32,7 +32,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public EventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, bool useDefaultConstructor = true)
+        public EventStreamFactory(IEnumerable<IHasKeyAndVersion<TKey, TVersion>> events, bool useDefaultConstructor = true)
             : this(events, null, useDefaultConstructor) { }
 
         /// <summary>
@@ -43,23 +43,10 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
-        public EventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot)
+        public EventStreamFactory(IEnumerable<IHasKeyAndVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot)
             : this(events, snapshot, true) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventStreamFactory{T, S}" /> class.
-        /// </summary>
-        /// <param name="events">A collection of historic events.</param>
-        /// <param name="snapshot">An (optional) snapshot of the aggregate.</param>
-        /// <param name="useDefaultConstructor">
-        /// If <paramref name="snapshot"/> is <c>null</c>, indicates whether or not this factory should invoke the default constructor of
-        /// the aggregate to create the instance. Note that this constructor does not have to be public for the factory
-        /// to find it. If <c>false</c>, this factory will create an instance of the aggregate without calling any constructor.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="events"/> is <c>null</c>.
-        /// </exception>
-        public EventStreamFactory(IEnumerable<IHasVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot, bool useDefaultConstructor)
+        
+        private EventStreamFactory(IEnumerable<IHasKeyAndVersion<TKey, TVersion>> events, ISnapshot<TKey, TVersion> snapshot, bool useDefaultConstructor)
         {
             if (events == null)
             {
@@ -74,7 +61,7 @@ namespace Kingo.Messaging.Domain
         {
             get
             {
-                IHasVersion<TKey, TVersion> lastEvent;
+                IHasKeyAndVersion<TKey, TVersion> lastEvent;
 
                 if (TryGetLastEvent(out lastEvent))
                 {
@@ -84,11 +71,11 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        TVersion IHasVersion<TKey, TVersion>.Version
+        TVersion IHasKeyAndVersion<TKey, TVersion>.Version
         {
             get
             {
-                IHasVersion<TKey, TVersion> lastEvent;
+                IHasKeyAndVersion<TKey, TVersion> lastEvent;
 
                 if (TryGetLastEvent(out lastEvent))
                 {
@@ -98,7 +85,7 @@ namespace Kingo.Messaging.Domain
             }
         }
         
-        private bool TryGetLastEvent(out IHasVersion<TKey, TVersion> lastEvent)
+        private bool TryGetLastEvent(out IHasKeyAndVersion<TKey, TVersion> lastEvent)
         {
             if (_orderedEvents.Length == 0)
             {
@@ -168,7 +155,7 @@ namespace Kingo.Messaging.Domain
             return (TAggregate) FormatterServices.GetUninitializedObject(typeof(TAggregate));
         }
 
-        private static MemoryEventStream<TKey, TVersion> CreateMemoryEventStream(IEnumerable<IHasVersion<TKey, TVersion>> orderedEvents)
+        private static MemoryEventStream<TKey, TVersion> CreateMemoryEventStream(IEnumerable<IHasKeyAndVersion<TKey, TVersion>> orderedEvents)
         {            
             var memoryEventStream = new MemoryEventStream<TKey, TVersion>();            
 

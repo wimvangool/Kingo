@@ -97,29 +97,56 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value of member &apos;{0}.{1}&apos; of type &apos;{2}&apos; could not be converted to an instance of type &apos;{3}&apos;..
+        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains a member marked with the KeyAttribute which type is not compatible with the Key-type of the event..
         /// </summary>
-        internal static string DomainEvent_IncompatibleMemberType {
+        internal static string DomainEvent_IncompatibleKeyType {
             get {
-                return ResourceManager.GetString("DomainEvent_IncompatibleMemberType", resourceCulture);
+                return ResourceManager.GetString("DomainEvent_IncompatibleKeyType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not resolve member of type &apos;{0}&apos; on event of type &apos;{1}&apos;. Consider overriding the Key and Version properties..
+        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains a member marked with the VersionAttribute which type is not compatible with the Version-type of the event..
         /// </summary>
-        internal static string DomainEvent_MemberNotFound {
+        internal static string DomainEvent_IncompatibleVersionType {
             get {
-                return ResourceManager.GetString("DomainEvent_MemberNotFound", resourceCulture);
+                return ResourceManager.GetString("DomainEvent_IncompatibleVersionType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not decide on a member of type &apos;{0}&apos; on event of type &apos;{1}&apos; because multiple candidate members were found. Consider overriding the Key and Version properties..
+        ///   Looks up a localized string similar to Could not resolve Key on event of type &apos;{0}&apos;. Please mark one field or property as the Key of this event..
         /// </summary>
-        internal static string DomainEvent_MultipleCandidateMembersFound {
+        internal static string DomainEvent_KeyMemberNotFound {
             get {
-                return ResourceManager.GetString("DomainEvent_MultipleCandidateMembersFound", resourceCulture);
+                return ResourceManager.GetString("DomainEvent_KeyMemberNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains more than one member that is decorated with KeyAttribute, where only one is allowed..
+        /// </summary>
+        internal static string DomainEvent_MultipleKeyMembersFound {
+            get {
+                return ResourceManager.GetString("DomainEvent_MultipleKeyMembersFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains more than one member that is decorated with VersionAttribute, where only one is allowed..
+        /// </summary>
+        internal static string DomainEvent_MultipleVersionMembersFound {
+            get {
+                return ResourceManager.GetString("DomainEvent_MultipleVersionMembersFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not resolve Version on event of type &apos;{0}&apos;. Please mark one field or property as the Version of this event..
+        /// </summary>
+        internal static string DomainEvent_VersionMemberNotFound {
+            get {
+                return ResourceManager.GetString("DomainEvent_VersionMemberNotFound", resourceCulture);
             }
         }
         

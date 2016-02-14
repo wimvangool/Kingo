@@ -12,7 +12,7 @@ namespace Kingo.Messaging.Domain
             _context = context;
         }
 
-        public void Write<TEvent>(TEvent @event) where TEvent : class, IHasVersion<TKey, TVersion>, IMessage
+        public void Write<TEvent>(TEvent @event) where TEvent : class, IHasKeyAndVersion<TKey, TVersion>, IMessage
         {
             if (_context != null)
             {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
@@ -10,200 +10,237 @@ namespace Kingo.Messaging.Domain
     /// <summary>
     /// Serves as a base class for events that are published by aggregates.
     /// </summary>
-    [Serializable]
-    [DataContract]
-    public abstract class DomainEvent : DomainEvent<Guid, int>
+    [Serializable]   
+    public abstract class DomainEvent : Message
     {
-        #region [====== Member ======]
-
-        private abstract class Member<T>
-        {
-            protected abstract Type Type
-            {
-                get;
-            }
-
-            protected abstract string Name
-            {
-                get;
-            }
-
-            internal T Invoke(object domainEvent)
-            {
-                var value = InvokeMember(domainEvent);
-
-                try
-                {
-                    return (T) value;
-                }
-                catch (NullReferenceException)
-                {
-                    throw NewIncompatibleMemberTypeException(domainEvent.GetType(), Name, Type);
-                }
-                catch (InvalidCastException)
-                {
-                    throw NewIncompatibleMemberTypeException(domainEvent.GetType(), Name, Type);
-                }
-            }
-
-            protected abstract object InvokeMember(object domainEvent);
-
-            private static Exception NewIncompatibleMemberTypeException(Type domainEventType, string name, Type type)
-            {
-                var messageFormat = ExceptionMessages.DomainEvent_IncompatibleMemberType;
-                var message = string.Format(messageFormat, domainEventType.Name, name, type, typeof(T));
-                return new InvalidOperationException(message);
-            }
-        }
-
-        private sealed class FieldMember<T> : Member<T>
-        {
-            private readonly FieldInfo _field;
-
-            internal FieldMember(FieldInfo field)
-            {
-                _field = field;
-            }
-
-            protected override Type Type
-            {
-                get { return _field.FieldType; }
-            }
-
-            protected override string Name
-            {
-                get { return _field.Name; }
-            }
-
-            protected override object InvokeMember(object domainEvent)
-            {
-                return _field.GetValue(domainEvent);
-            }
-        }
-
-        private sealed class PropertyMember<T> : Member<T>
-        {
-            private readonly PropertyInfo _property;
-
-            internal PropertyMember(PropertyInfo property)
-            {                
-                _property = property;
-            }            
-
-            protected override Type Type
-            {
-                get { return _property.PropertyType; }
-            }
-
-            protected override string Name
-            {
-                get { return _property.Name; }
-            }
-
-            protected override object InvokeMember(object domainEvent)
-            {
-                return _property.GetValue(domainEvent);
-            }            
-        }
-
-        #endregion
-
         private const BindingFlags _MemberFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-        private static readonly ConcurrentDictionary<Type, object> _KeyMembers = new ConcurrentDictionary<Type, object>();
-        private static readonly ConcurrentDictionary<Type, object> _VersionMembers = new ConcurrentDictionary<Type, object>();
 
-        #region [====== Key ======]
+        #region [====== Keys ======]
 
-        internal static TKey GetKey<TKey>(object domainEvent)
+        private static readonly ConcurrentDictionary<Type, Delegate> _KeyDelegates = new ConcurrentDictionary<Type, Delegate>();
+
+        internal TKey GetKey<TKey>()
         {
-            return GetOrAddKeyMember<TKey>(domainEvent.GetType()).Invoke(domainEvent);
-        }
-
-        private static Member<TKey> GetOrAddKeyMember<TKey>(Type domainEventType)
-        {
-            return _KeyMembers.GetOrAdd(domainEventType, type => GetMember<TKey>(type, AggregateMemberType.Key)) as Member<TKey>;
-        }        
-
-        #endregion
-
-        #region [====== Version ======]
-
-        internal static TVersion GetVersion<TVersion>(object domainEvent)
-        {
-            return GetOrAddVersionMember<TVersion>(domainEvent.GetType()).Invoke(domainEvent);
-        }
-
-        private static Member<TVersion> GetOrAddVersionMember<TVersion>(Type domainEventType)
-        {
-            return _VersionMembers.GetOrAdd(domainEventType, type => GetMember<TVersion>(type, AggregateMemberType.Version)) as Member<TVersion>;
-        }        
-
-        #endregion
-
-        private static Member<TValue> GetMember<TValue>(Type domainEventType, AggregateMemberType memberType)
-        {
-            Member<TValue> member;
-            
-            if (TryGetMember(domainEventType, memberType, out member))
+            try
             {
-                return member;
+                return GetKeyDelegate<TKey>().Invoke(this);
             }
-            throw NewMemberNotFoundException(domainEventType, memberType);
-        }            
+            catch (NullReferenceException)
+            {
+                throw NewIncompatibleKeyTypeException(GetType());
+            }
+            catch (InvalidCastException)
+            {
+                throw NewIncompatibleKeyTypeException(GetType());
+            }            
+        }
 
-        private static bool TryGetMember<TValue>(Type domainEventType, AggregateMemberType memberType, out Member<TValue> member)
+        private Func<object, TKey> GetKeyDelegate<TKey>()
+        {
+            return _KeyDelegates.GetOrAdd(GetType(), CreateKeyDelegate<TKey>) as Func<object, TKey>;
+        }
+
+        private static Func<object, TKey> CreateKeyDelegate<TKey>(Type messageType)
+        {
+            var messageParameter = Expression.Parameter(typeof(object), "message");
+            var message = Expression.Convert(messageParameter, messageType);
+            var keyAccessExpression = CreateKeyAccessExpression(message, typeof(TKey));
+
+            return Expression.Lambda<Func<object, TKey>>(keyAccessExpression, messageParameter).Compile();
+        }
+
+        private static Expression CreateKeyAccessExpression(Expression message, Type keyType)
+        {
+            var fieldsMarkedAsKey = FindFieldsMarkedAsKey(message.Type);
+            var propertiesMarkedAsKey = FindPropertiesMarkedAsKey(message.Type);
+
+            var keyMemberCount = fieldsMarkedAsKey.Length + propertiesMarkedAsKey.Length;
+            if (keyMemberCount == 0)
+            {
+                throw NewKeyNotFoundException(message.Type);
+            }
+            if (keyMemberCount > 1)
+            {
+                throw NewMultipleKeyCandidatesException(message.Type);
+            }
+            if (fieldsMarkedAsKey.Length == 1)
+            {
+                return CreateFieldAccessExpression(message, fieldsMarkedAsKey[0], keyType);
+            }
+            return CreatePropertyAccessExpression(message, propertiesMarkedAsKey[0], keyType);
+        }       
+
+        private static FieldInfo[] FindFieldsMarkedAsKey(Type type)
         {
             var fields =
-                from field in domainEventType.GetFields(_MemberFlags)
-                where IsMemberCandidate(memberType, field.Name)
-                select new FieldMember<TValue>(field);
+                from field in type.GetFields(_MemberFlags)
+                where IsKeyMember(field)
+                select field;
 
+            return fields.ToArray();
+        }
+
+        private static PropertyInfo[] FindPropertiesMarkedAsKey(Type type)
+        {
             var properties =
-                from property in domainEventType.GetProperties(_MemberFlags)
-                where property.GetIndexParameters().Length == 0
-                where property.DeclaringType == domainEventType
-                where IsMemberCandidate(memberType, property.Name)                
-                select new PropertyMember<TValue>(property);
+                from property in type.GetProperties(_MemberFlags)
+                where IsKeyMember(property)
+                select property;
 
-            var members = fields.Cast<Member<TValue>>().Concat(properties).ToArray();
-            if (members.Length == 0)
-            {
-                member = null;
-                return false;
-            }
-            if (members.Length == 1)
-            {
-                member = members[0];
-                return true;
-            }
-            throw NewMultipleMemberCandidatesException(domainEventType, memberType);
-        }             
+            return properties.ToArray();
+        }
 
-        private static bool IsMemberCandidate(AggregateMemberType memberType, string name)
+        private static bool IsKeyMember(MemberInfo member)
         {
-            if (memberType == AggregateMemberType.Key)
-            {
-                return name.EndsWith("Id") || name.EndsWith("Key");
-            }
-            if (memberType == AggregateMemberType.Version)
-            {
-                return name.EndsWith("Version");
-            }
-            return false;
-        }          
+            return member.GetCustomAttributes(typeof(KeyAttribute)).Any();
+        }
 
-        private static Exception NewMemberNotFoundException(Type domainEventType, AggregateMemberType memberType)
+        private static Exception NewKeyNotFoundException(Type domainEventType)
         {
-            var messageFormat = ExceptionMessages.DomainEvent_MemberNotFound;
-            var message = string.Format(messageFormat, memberType, domainEventType.Name);
+            var messageFormat = ExceptionMessages.DomainEvent_KeyMemberNotFound;
+            var message = string.Format(messageFormat, domainEventType);
             return new InvalidOperationException(message);
         }        
 
-        private static Exception NewMultipleMemberCandidatesException(Type domainEventType, AggregateMemberType memberType)
+        private static Exception NewMultipleKeyCandidatesException(Type domainEventType)
         {
-            var messageFormat = ExceptionMessages.DomainEvent_MultipleCandidateMembersFound;
-            var message = string.Format(messageFormat, memberType, domainEventType.Name);
+            var messageFormat = ExceptionMessages.DomainEvent_MultipleKeyMembersFound;
+            var message = string.Format(messageFormat, domainEventType);
             return new InvalidOperationException(message);
+        }
+
+        private static Exception NewIncompatibleKeyTypeException(Type domainEventType)
+        {
+            var messageFormat = ExceptionMessages.DomainEvent_IncompatibleKeyType;
+            var message = string.Format(messageFormat, domainEventType);
+            return new InvalidOperationException(message);
+        }
+
+        #endregion
+
+        #region [====== Versions ======]
+
+        private static readonly ConcurrentDictionary<Type, Delegate> _VersionDelegates = new ConcurrentDictionary<Type, Delegate>();
+
+        internal TVersion GetVersion<TVersion>()
+        {
+            try
+            {
+                return GetVersionDelegate<TVersion>().Invoke(this);
+            }
+            catch (NullReferenceException)
+            {
+                throw NewIncompatibleVersionTypeException(GetType());
+            }
+            catch (InvalidCastException)
+            {
+                throw NewIncompatibleVersionTypeException(GetType());
+            }  
+        }
+
+        private Func<object, TVersion> GetVersionDelegate<TVersion>()
+        {
+            return _VersionDelegates.GetOrAdd(GetType(), CreateVersionDelegate<TVersion>) as Func<object, TVersion>;
+        }
+
+        private static Func<object, TVersion> CreateVersionDelegate<TVersion>(Type messageType)
+        {
+            var messageParameter = Expression.Parameter(typeof(object), "message");
+            var message = Expression.Convert(messageParameter, messageType);
+            var versionAccessExpression = CreateVersionAccessExpression(message, typeof(TVersion));
+
+            return Expression.Lambda<Func<object, TVersion>>(versionAccessExpression, messageParameter).Compile();
+        }
+
+        private static Expression CreateVersionAccessExpression(Expression message, Type versionType)
+        {
+            var fieldsMarkedAsVersion = FindFieldsMarkedAsVersion(message.Type);
+            var propertiesMarkedAsVersion = FindPropertiesMarkedAsVersion(message.Type);
+
+            var versionMemberCount = fieldsMarkedAsVersion.Length + propertiesMarkedAsVersion.Length;
+            if (versionMemberCount == 0)
+            {
+                throw NewVersionNotFoundException(message.Type);
+            }
+            if (versionMemberCount > 1)
+            {
+                throw NewMultipleVersionCandidatesException(message.Type);
+            }
+            if (fieldsMarkedAsVersion.Length == 1)
+            {
+                return CreateFieldAccessExpression(message, fieldsMarkedAsVersion[0], versionType);
+            }
+            return CreatePropertyAccessExpression(message, propertiesMarkedAsVersion[0], versionType);
+        }
+
+        private static FieldInfo[] FindFieldsMarkedAsVersion(Type type)
+        {
+            var fields =
+                from field in type.GetFields(_MemberFlags)
+                where IsVersionMember(field)
+                select field;
+
+            return fields.ToArray();
+        }
+
+        private static PropertyInfo[] FindPropertiesMarkedAsVersion(Type type)
+        {
+            var properties =
+                from property in type.GetProperties(_MemberFlags)
+                where IsVersionMember(property)
+                select property;
+
+            return properties.ToArray();
+        }
+
+        private static bool IsVersionMember(MemberInfo member)
+        {
+            return member.GetCustomAttributes(typeof(VersionAttribute)).Any();
+        }
+
+        private static Exception NewVersionNotFoundException(Type domainEventType)
+        {
+            var messageFormat = ExceptionMessages.DomainEvent_VersionMemberNotFound;
+            var message = string.Format(messageFormat, domainEventType);
+            return new InvalidOperationException(message);
+        }
+
+        private static Exception NewMultipleVersionCandidatesException(Type domainEventType)
+        {
+            var messageFormat = ExceptionMessages.DomainEvent_MultipleVersionMembersFound;
+            var message = string.Format(messageFormat, domainEventType);
+            return new InvalidOperationException(message);
+        }
+
+        private static Exception NewIncompatibleVersionTypeException(Type domainEventType)
+        {
+            var messageFormat = ExceptionMessages.DomainEvent_IncompatibleVersionType;
+            var message = string.Format(messageFormat, domainEventType);
+            return new InvalidOperationException(message);
+        }
+
+        #endregion
+
+        private static Expression CreateFieldAccessExpression(Expression message, FieldInfo field, Type memberType)
+        {
+            Expression fieldAccessExpression = Expression.Field(message, field);
+
+            if (field.FieldType != memberType)
+            {
+                fieldAccessExpression = Expression.Convert(fieldAccessExpression, memberType);
+            }
+            return fieldAccessExpression;
+        }
+
+        private static Expression CreatePropertyAccessExpression(Expression message, PropertyInfo property, Type memberType)
+        {
+            Expression propertyAccessExpression = Expression.Property(message, property);
+
+            if (property.PropertyType != memberType)
+            {
+                propertyAccessExpression = Expression.Convert(propertyAccessExpression, memberType);
+            }
+            return propertyAccessExpression;
         }
     }
 }

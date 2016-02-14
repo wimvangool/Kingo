@@ -54,6 +54,15 @@ namespace Kingo.Messaging
             }
         }
 
+        /// <summary>
+        /// Creates and returns a new <see cref="LayerConfiguration" /> that is used by this processor.
+        /// </summary>
+        /// <returns>A new <see cref="LayerConfiguration" />.</returns>
+        public LayerConfiguration CreateLayerConfiguration()
+        {
+            return CreateLayerConfiguration(GetType());
+        }
+
         private LayerConfiguration CreateLayerConfiguration(Type processorType)
         {            
             return Customize(LayerConfiguration.CreateDefaultConfiguration(processorType.Assembly));

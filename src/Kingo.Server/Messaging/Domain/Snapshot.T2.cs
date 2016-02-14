@@ -32,7 +32,7 @@ namespace Kingo.Messaging.Domain
             get { return _typeToContractMap; }
         }
 
-        internal override IHasVersion<TKey, TVersion> VersionedObject
+        internal override IHasKeyAndVersion<TKey, TVersion> VersionedObject
         {
             get { return _snapshot; }
         }

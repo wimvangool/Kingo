@@ -22,14 +22,7 @@ namespace Kingo.Messaging
         private ErrorInfo _errorInfo;
 
         [NonSerialized]
-        private bool _hasChanges;                
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Command" /> class.
-        /// </summary>
-        /// <param name="message">The message to copy.</param>        
-        protected Command(Command message = null)
-            : base(message) { }
+        private bool _hasChanges;                        
 
         #region [====== HasChanges ======]
 

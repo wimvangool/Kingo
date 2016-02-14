@@ -7,7 +7,7 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Key-type of an aggregate.</typeparam>
     /// <typeparam name="TVersion">Version-type of an aggregate.</typeparam>
-    public abstract class SnapshotOrEvent<TKey, TVersion> : IHasVersion<TKey, TVersion>
+    public abstract class SnapshotOrEvent<TKey, TVersion> : IHasKeyAndVersion<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         internal SnapshotOrEvent() { }
@@ -17,7 +17,7 @@ namespace Kingo.Messaging.Domain
             get { return VersionedObject.Key; }
         }                
 
-        TVersion IHasVersion<TKey, TVersion>.Version
+        TVersion IHasKeyAndVersion<TKey, TVersion>.Version
         {
             get { return VersionedObject.Version; }
         }
@@ -35,7 +35,7 @@ namespace Kingo.Messaging.Domain
             get;
         }
 
-        internal abstract IHasVersion<TKey, TVersion> VersionedObject
+        internal abstract IHasKeyAndVersion<TKey, TVersion> VersionedObject
         {
             get;
         }

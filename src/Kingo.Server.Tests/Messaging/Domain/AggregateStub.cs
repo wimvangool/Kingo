@@ -4,16 +4,19 @@ namespace Kingo.Messaging.Domain
 {
     internal sealed class AggregateStub : AggregateRoot
     {
-        private sealed class CreatedEvent : DomainEvent
+        private sealed class CreatedEvent : DomainEvent<Guid, int>
         {
-            public new readonly Guid Key;
-            public new readonly int Version;
+            [Key]
+            public readonly Guid Id;
+
+            [Version]
+            public readonly int Version;
 
             public CreatedEvent(Guid id, int version)
             {
-                Key = id;
+                Id = id;
                 Version = version;
-            }
+            }            
         }
 
         private readonly Guid _id;               

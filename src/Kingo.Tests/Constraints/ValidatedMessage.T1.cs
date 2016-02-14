@@ -29,8 +29,7 @@ namespace Kingo.Constraints
             Right = right;
         }
 
-        private ValidatedMessage(ValidatedMessage<TValue> message)
-            : base(message)
+        private ValidatedMessage(ValidatedMessage<TValue> message)         
         {
             Member = message.Member;
             Other = message.Other;

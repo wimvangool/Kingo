@@ -8,8 +8,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Messaging
 {
     [TestClass]
-    public sealed class MessageTest
+    public sealed partial class MessageTest
     {        
+        #region [====== MessageWithoutFields ======]
+
+        [DataContract]
+        private sealed class MessageWithoutFields : Message { }
+
+        #endregion
+
         #region [====== MessageWithoutAttributes ======]
 
         private sealed class MessageWithoutAttributes : Message
@@ -29,21 +36,24 @@ namespace Kingo.Messaging
         [DataContract]
         private sealed class MessageWithPrimitiveMembers : Message
         {
-            [DataMember] internal readonly int Value;
-            [DataMember] internal readonly List<int> Values;
+            [DataMember]
+            internal readonly int IntValue;
 
-            public MessageWithPrimitiveMembers(int value, IEnumerable<int> values)
+            [DataMember]
+            internal readonly List<int> IntValues;
+
+            public MessageWithPrimitiveMembers(int intValue, IEnumerable<int> values)
             {
-                Value = value;
-                Values = new List<int>(values);
-            }
+                IntValue = intValue;                
+                IntValues = new List<int>(values);
+            }           
 
             protected override IValidator CreateValidator()
             {
                 var validator = new ConstraintValidator<MessageWithPrimitiveMembers>();
 
-                validator.VerifyThat(m => m.Value).IsGreaterThan(0);
-                validator.VerifyThat(m => m.Values).IsNotNullOrEmpty();
+                validator.VerifyThat(m => m.IntValue).IsGreaterThan(0);
+                validator.VerifyThat(m => m.IntValues).IsNotNullOrEmpty();
 
                 return validator;
             }
@@ -96,12 +106,12 @@ namespace Kingo.Messaging
 
             Assert.IsNotNull(copy);
             Assert.AreNotSame(message, copy);
-            Assert.AreEqual(message.Value, copy.Value);
-            Assert.IsNotNull(copy.Values);
-            Assert.AreEqual(3, copy.Values.Count);
-            Assert.AreEqual(values[0], copy.Values[0]);
-            Assert.AreEqual(values[1], copy.Values[1]);
-            Assert.AreEqual(values[2], copy.Values[2]);
+            Assert.AreEqual(message.IntValue, copy.IntValue);
+            Assert.IsNotNull(copy.IntValues);
+            Assert.AreEqual(3, copy.IntValues.Count);
+            Assert.AreEqual(values[0], copy.IntValues[0]);
+            Assert.AreEqual(values[1], copy.IntValues[1]);
+            Assert.AreEqual(values[2], copy.IntValues[2]);
         }        
             
         [TestMethod]
@@ -142,11 +152,11 @@ namespace Kingo.Messaging
             Assert.IsNotNull(errorInfo);
             Assert.IsTrue(errorInfo.HasErrors);            
             Assert.AreEqual(2, errorInfo.MemberErrors.Count);
-            Assert.AreEqual("Value (0) must be greater than '0'.", errorInfo.MemberErrors["Value"]);
-            Assert.AreEqual("Values must not be null and contain at least one element.", errorInfo.MemberErrors["Values"]);
+            Assert.AreEqual("IntValue (0) must be greater than '0'.", errorInfo.MemberErrors["IntValue"]);
+            Assert.AreEqual("IntValues must not be null and contain at least one element.", errorInfo.MemberErrors["IntValues"]);
         }
 
-        #endregion
+        #endregion        
 
         private static int RandomValue()
         {

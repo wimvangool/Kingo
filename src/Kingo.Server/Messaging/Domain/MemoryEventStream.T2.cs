@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Represents an in-memory stream of <see cref="IHasVersion{T, S}">aggregate events</see>.
+    /// Represents an in-memory stream of <see cref="IHasKeyAndVersion{T, S}">aggregate events</see>.
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
@@ -18,14 +18,14 @@ namespace Kingo.Messaging.Domain
 
         private sealed class ListFactory : IWritableEventStream<TKey, TVersion>
         {
-            internal readonly List<IHasVersion<TKey, TVersion>> Events;
+            internal readonly List<IHasKeyAndVersion<TKey, TVersion>> Events;
 
             internal ListFactory()
             {
-                Events = new List<IHasVersion<TKey, TVersion>>();
+                Events = new List<IHasKeyAndVersion<TKey, TVersion>>();
             }
 
-            public void Write<TEvent>(TEvent @event) where TEvent : class, IHasVersion<TKey, TVersion>, IMessage
+            public void Write<TEvent>(TEvent @event) where TEvent : class, IHasKeyAndVersion<TKey, TVersion>, IMessage
             {
                 Events.Add(@event);
             }
@@ -58,7 +58,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        public void Write(IHasVersion<TKey, TVersion> @event)
+        public void Write(IHasKeyAndVersion<TKey, TVersion> @event)
         {
             if (@event == null)
             {
@@ -78,7 +78,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        public void Write<TEvent>(TEvent @event) where TEvent : class, IHasVersion<TKey, TVersion>, IMessage
+        public void Write<TEvent>(TEvent @event) where TEvent : class, IHasKeyAndVersion<TKey, TVersion>, IMessage
         {            
             _buffer.Enqueue(new EventBuffer<TKey, TVersion, TEvent>(@event));
         }
@@ -106,7 +106,7 @@ namespace Kingo.Messaging.Domain
         /// Converts this stream to a list of events.
         /// </summary>
         /// <returns>A list of events.</returns>
-        public IList<IHasVersion<TKey, TVersion>> ToList()
+        public IList<IHasKeyAndVersion<TKey, TVersion>> ToList()
         {
             var listFactory = new ListFactory();
 

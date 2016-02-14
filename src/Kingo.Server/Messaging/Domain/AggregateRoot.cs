@@ -11,7 +11,7 @@ namespace Kingo.Messaging.Domain
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
         /// <param name="event">The event of that represents the creation of this aggregate.</param>        
-        protected AggregateRoot(IHasVersion<Guid, int> @event = null)
+        protected AggregateRoot(IHasKeyAndVersion<Guid, int> @event = null)
             : base(@event) { }
 
         /// <inheritdoc />

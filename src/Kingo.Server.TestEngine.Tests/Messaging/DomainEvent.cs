@@ -9,7 +9,7 @@
             Value = value;
         }
 
-        private DomainEvent(DomainEvent message) : base(message)
+        private DomainEvent(DomainEvent message)
         {
             Value = message.Value;
         }

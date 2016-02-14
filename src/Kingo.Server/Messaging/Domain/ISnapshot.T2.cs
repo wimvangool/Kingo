@@ -7,7 +7,7 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>    
-    public interface ISnapshot<TKey, TVersion> : IHasVersion<TKey, TVersion>
+    public interface ISnapshot<TKey, TVersion> : IHasKeyAndVersion<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>

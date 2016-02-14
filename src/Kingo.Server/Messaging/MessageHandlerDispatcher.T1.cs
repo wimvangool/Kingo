@@ -72,10 +72,9 @@ namespace Kingo.Messaging
             }            
             catch (DomainException exception)
             {
-                // When a DomainException is thrown, a BusinessRule or some other
-                // Constraint-By-Design was broken. If the message happens to be a Command,
-                // then the exception was probably thrown by purposely (by design), and so
-                // it is 'promoted' to a CommandExecutionException.
+                // When a DomainException is thrown, a BusinessRule was broken.
+                // If the message happens to be a Command, then the exception was probably
+                // thrown by design, and so it is 'promoted' to a CommandExecutionException.
                 //
                 // If, on the other hand, the message is an event, then no exceptions whatsoever are
                 // expected, and the exception is converted to a TechnicalException. This prevents

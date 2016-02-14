@@ -4,7 +4,7 @@ namespace Kingo.Messaging.Domain
 {
     internal sealed class EventBuffer<TKey, TVersion, TEvent> : IEventBuffer<TKey, TVersion>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TEvent : class, IHasVersion<TKey, TVersion>, IMessage
+        where TEvent : class, IHasKeyAndVersion<TKey, TVersion>, IMessage
     {
         private readonly TEvent _event;
 

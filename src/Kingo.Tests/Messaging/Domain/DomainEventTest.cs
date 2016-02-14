@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,101 +11,204 @@ namespace Kingo.Messaging.Domain
 #pragma warning disable
         #region [====== DomainEvents ======]
 
-        private sealed class MissingMembersEvent : DomainEvent { }                
+        private sealed class MissingAttributesEvent : DomainEvent<Guid, int> { }
 
-        private sealed class MultipleImplicitMembersEvent : DomainEvent
+        private sealed class MultipleAttributesEvent : DomainEvent<Guid, int>
         {
-            internal readonly Guid Id;
-            internal readonly Guid Key;
+            [Key]
+            public Guid KeyX;
 
-            internal readonly int OneVersion;
-            internal readonly int TwoVersion;
-        }       
+            [Key, UsedImplicitly]
+            public Guid KeyY
+            {
+                get;
+                set;
+            }
 
-        private sealed class IncompatibleImplicitMemberTypeEvent : DomainEvent
-        {            
-            internal readonly string Id;            
-            internal readonly string Version;
+            [Version]
+            public int VersionX;
+
+            [Version, UsedImplicitly]
+            public int VersionY
+            {
+                get;
+                set;
+            }
         }
 
-        private sealed class CorrectImplicitMembersEvent : DomainEvent
+        private sealed class IncompatibleMemberTypeEvent : DomainEvent<Guid, int>
         {
-            internal readonly Guid Id;            
-            internal readonly int Version;   
-         
-            internal CorrectImplicitMembersEvent(Guid id, int version)
+            [Key]
+            public object Key;
+
+            [Version]
+            public VersionDummy Version;
+        }
+
+        private struct VersionDummy : IEquatable<VersionDummy>, IComparable<VersionDummy>
+        {
+            public bool Equals(VersionDummy other)
             {
-                Id = id;
+                return true;
+            }
+
+            public int CompareTo(VersionDummy other)
+            {
+                return 0;
+            }
+        }
+
+        private sealed class CompatibleFieldTypeEvent : DomainEvent<object, long>
+        {
+            [Key]
+            public readonly Guid Key;
+
+            [Version]
+            public readonly int Version;
+
+            public CompatibleFieldTypeEvent(Guid key, int version)
+            {
+                Key = key;
                 Version = version;
             }
-        }        
+        }
+
+        private sealed class CompatiblePropertyTypeEvent : DomainEvent<object, long>
+        {
+            [Key]
+            public Guid Key
+            {
+                get;
+                private set;
+            }
+
+            [Version]
+            public int Version
+            {
+                get;
+                private set;
+            }
+
+            public CompatiblePropertyTypeEvent(Guid key, int version)
+            {
+                Key = key;
+                Version = version;
+            }
+        }
+
+        private sealed class MatchingFieldTypeEvent : DomainEvent<Guid, int>
+        {
+            [Key]
+            public readonly Guid Key;
+
+            [Version]
+            public readonly int Version;
+
+            public MatchingFieldTypeEvent(Guid key, int version)
+            {
+                Key = key;
+                Version = version;
+            }
+        }
+
+        private sealed class MatchingPropertyTypeEvent : DomainEvent<Guid, int>
+        {
+            [Key]
+            public Guid Key
+            {
+                get;
+                private set;
+            }
+
+            [Version]
+            public int Version
+            {
+                get;
+                private set;
+            }
+
+            public MatchingPropertyTypeEvent(Guid key, int version)
+            {
+                Key = key;
+                Version = version;
+            }
+        }
 
         #endregion
-
 #pragma warning restore
 
         #region [====== Key ======]
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Key_Throws_IfNoSuitedKeyMemberWasFound()
+        public void Key_Throws_IfKeyAttributeIsMissing()
         {
-            IHasVersion<Guid, int> domainEvent = new MissingMembersEvent();
-
-            try
-            {
-                Assert.Fail("Key was found unexpectedly: {0}.", domainEvent.Key);
-            }
-            catch (Exception exception)
-            {
-                Assert.AreEqual("Could not resolve member of type 'Key' on event of type 'MissingMembersEvent'. Consider overriding the Key and Version properties.", exception.Message);
-                throw;
-            }            
-        }                       
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Key_Throws_IfImplicitKeyMemberIsOfIncompatibleType()
-        {
-            IHasVersion<Guid, int> domainEvent = new IncompatibleImplicitMemberTypeEvent();
-
-            try
-            {
-                Assert.Fail("Key was found unexpectedly: {0}.", domainEvent.Key);
-            }
-            catch (Exception exception)
-            {
-                Assert.AreEqual("Value of member 'IncompatibleImplicitMemberTypeEvent.Id' of type 'System.String' could not be converted to an instance of type 'System.Guid'.", exception.Message);
-                throw;
-            }
+            IHasKeyAndVersion<Guid, int> message = new MissingAttributesEvent();
+   
+            EnsureExceptionIsThrownWhenAccessing(message.Key);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Key_Throws_IfMultipleImplicitlySuitedKeyMembersWereFound()
+        public void Key_Throws_IfMultipleMembersAreMarkedAsKey()
         {
-            IHasVersion<Guid, int> domainEvent = new MultipleImplicitMembersEvent();
+            IHasKeyAndVersion<Guid, int> message = new MultipleAttributesEvent();
 
-            try
-            {
-                Assert.Fail("Key was found unexpectedly: {0}.", domainEvent.Key);
-            }
-            catch (Exception exception)
-            {
-                Assert.AreEqual("Could not decide on a member of type 'Key' on event of type 'MultipleImplicitMembersEvent' because multiple candidate members were found. Consider overriding the Key and Version properties.", exception.Message);
-                throw;
-            }            
-        }                
+            EnsureExceptionIsThrownWhenAccessing(message.Key);
+        }
 
         [TestMethod]
-        public void Key_ReturnsExpectedValue_IfImplicitKeyMemberWasFound()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Key_Throws_IfKeyIsOfIncompatibleType()
+        {
+            IHasKeyAndVersion<Guid, int> message = new IncompatibleMemberTypeEvent();
+
+            EnsureExceptionIsThrownWhenAccessing(message.Key);
+        }
+
+        [TestMethod]
+        public void Key_ReturnsKey_IfCompatibleTypedFieldIsMarkedAsKey()
         {
             var key = Guid.NewGuid();
-            var version = Clock.Current.LocalDateAndTime().Millisecond;
-            IHasVersion<Guid, int> domainEvent = new CorrectImplicitMembersEvent(key, version);
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
 
-            Assert.AreEqual(key, domainEvent.Key);
-        }        
+            IHasKeyAndVersion<object, long> message = new CompatibleFieldTypeEvent(key, version);
+
+            Assert.AreEqual(key, message.Key);
+        }
+
+        [TestMethod]
+        public void Key_ReturnsKey_IfCompatibleTypedPropertyIsMarkedAsKey()
+        {
+            var key = Guid.NewGuid();
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
+
+            IHasKeyAndVersion<object, long> message = new CompatiblePropertyTypeEvent(key, version);
+
+            Assert.AreEqual(key, message.Key);
+        }
+
+        [TestMethod]
+        public void Key_ReturnsKey_IfMatchingTypedFieldIsMarkedAsKey()
+        {
+            var key = Guid.NewGuid();
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
+
+            IHasKeyAndVersion<Guid, int> message = new MatchingFieldTypeEvent(key, version);
+
+            Assert.AreEqual(key, message.Key);
+        }
+
+        [TestMethod]
+        public void Key_ReturnsKey_IfMatchingTypedPropertyIsMarkedAsKey()
+        {
+            var key = Guid.NewGuid();
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
+
+            IHasKeyAndVersion<Guid, int> message = new MatchingPropertyTypeEvent(key, version);
+
+            Assert.AreEqual(key, message.Key);
+        }
 
         #endregion
 
@@ -112,65 +216,80 @@ namespace Kingo.Messaging.Domain
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Version_Throws_IfNoSuitedVersionMemberWasFound()
+        public void Version_Throws_IfVersionAttributeIsMissing()
         {
-            IHasVersion<Guid, int> domainEvent = new MissingMembersEvent();
+            IHasKeyAndVersion<Guid, int> message = new MissingAttributesEvent();
 
-            try
-            {
-                Assert.Fail("Version was found unexpectedly: {0}.", domainEvent.Version);
-            }
-            catch (Exception exception)
-            {
-                Assert.AreEqual("Could not resolve member of type 'Version' on event of type 'MissingMembersEvent'. Consider overriding the Key and Version properties.", exception.Message);
-                throw;
-            }
-        }      
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Version_Throws_IfImplicitVersionMemberIsOfIncompatibleType()
-        {
-            IHasVersion<Guid, int> domainEvent = new IncompatibleImplicitMemberTypeEvent();
-
-            try
-            {
-                Assert.Fail("Version was found unexpectedly: {0}.", domainEvent.Version);
-            }
-            catch (Exception exception)
-            {
-                Assert.AreEqual("Value of member 'IncompatibleImplicitMemberTypeEvent.Version' of type 'System.String' could not be converted to an instance of type 'System.Int32'.", exception.Message);
-                throw;
-            }
+            EnsureExceptionIsThrownWhenAccessing(message.Version);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void Version_Throws_IfMultipleImplicitlySuitedVersionMembersWereFound()
+        public void Version_Throws_IfMultipleMembersAreMarkedAsVersion()
         {
-            IHasVersion<Guid, int> domainEvent = new MultipleImplicitMembersEvent();
+            IHasKeyAndVersion<Guid, int> message = new MultipleAttributesEvent();
 
-            try
-            {
-                Assert.Fail("Version was found unexpectedly: {0}.", domainEvent.Version);
-            }
-            catch (Exception exception)
-            {
-                Assert.AreEqual("Could not decide on a member of type 'Version' on event of type 'MultipleImplicitMembersEvent' because multiple candidate members were found. Consider overriding the Key and Version properties.", exception.Message);
-                throw;
-            }
+            EnsureExceptionIsThrownWhenAccessing(message.Version);
         }
 
         [TestMethod]
-        public void Version_ReturnsExpectedValue_IfImplicitVersionMemberWasFound()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Version_Throws_IfVersionIsOfIncompatibleType()
+        {
+            IHasKeyAndVersion<Guid, int> message = new IncompatibleMemberTypeEvent();
+
+            EnsureExceptionIsThrownWhenAccessing(message.Version);
+        }
+
+        [TestMethod]
+        public void Version_ReturnsVersion_IfCompatibleTypedFieldIsMarkedAsVersion()
         {
             var key = Guid.NewGuid();
-            var version = Clock.Current.LocalDateAndTime().Millisecond;
-            IHasVersion<Guid, int> domainEvent = new CorrectImplicitMembersEvent(key, version);
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
 
-            Assert.AreEqual(version, domainEvent.Version);
-        }       
+            IHasKeyAndVersion<object, long> message = new CompatibleFieldTypeEvent(key, version);
+
+            Assert.AreEqual(version, message.Version);
+        }
+
+        [TestMethod]
+        public void Version_ReturnsVersion_IfCompatibleTypedPropertyIsMarkedAsVersion()
+        {
+            var key = Guid.NewGuid();
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
+
+            IHasKeyAndVersion<object, long> message = new CompatiblePropertyTypeEvent(key, version);
+
+            Assert.AreEqual(version, message.Version);
+        }
+
+        [TestMethod]
+        public void Version_ReturnsVersion_IfMatchingTypedFieldIsMarkedAsVersion()
+        {
+            var key = Guid.NewGuid();
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
+
+            IHasKeyAndVersion<Guid, int> message = new MatchingFieldTypeEvent(key, version);
+
+            Assert.AreEqual(version, message.Version);
+        }
+
+        [TestMethod]
+        public void Version_ReturnsVersion_IfMatchingTypedPropertyIsMarkedAsVersion()
+        {
+            var key = Guid.NewGuid();
+            var version = Clock.Current.UtcDateAndTime().Millisecond;
+
+            IHasKeyAndVersion<Guid, int> message = new MatchingPropertyTypeEvent(key, version);
+
+            Assert.AreEqual(version, message.Version);
+        }
 
         #endregion
+
+        private static void EnsureExceptionIsThrownWhenAccessing(object value)
+        {
+            Assert.Fail("Value should not have been retrieved: {0}.", value);
+        }
     }
 }

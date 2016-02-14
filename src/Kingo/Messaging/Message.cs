@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,36 +13,9 @@ namespace Kingo.Messaging
     /// <summary>
     /// Provides a base-implementation of the <see cref="IMessage" /> interface.
     /// </summary>
-    [Serializable]
-    [DataContract]
-    public abstract class Message : IMessage, IExtensibleDataObject
+    [Serializable]    
+    public abstract partial class Message : IMessage
     {        
-        private ExtensionDataObject _extensionData;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Message" /> class.
-        /// </summary>
-        /// <param name="message">If specified, the constructor copies all extension data from this message.</param>
-        protected Message(Message message = null)
-        {
-            if (message == null)
-            {
-                return;
-            }
-            _extensionData = message._extensionData;
-        }                       
-
-        #region [====== ExtensibleObject ======]
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        ExtensionDataObject IExtensibleDataObject.ExtensionData
-        {
-            get { return _extensionData; }
-            set { _extensionData = value; }
-        }
-
-        #endregion
-
         #region [====== Copy ======]
 
         object ICloneable.Clone()

@@ -230,7 +230,7 @@ namespace Kingo.Messaging.Domain
         }
 
         /// <summary>
-        /// Retrieves an <see cref="IHasVersion{T, S}" /> by its key.
+        /// Retrieves an <see cref="IHasKeyAndVersion{T, S}" /> by its key.
         /// </summary>
         /// <param name="key">The key of the aggregate to return.</param>
         /// <returns>The aggregate with the specified <paramref name="key"/>.</returns>

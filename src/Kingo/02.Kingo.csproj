@@ -38,6 +38,10 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -103,12 +107,13 @@
     <Compile Include="Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="EnumOperators.T1.cs" />
     <Compile Include="Messaging\CompositeValidator.cs" />
-    <Compile Include="Messaging\Domain\AggregateMemberType.cs" />
     <Compile Include="Messaging\Domain\DomainEvent.cs" />
     <Compile Include="Messaging\Domain\DomainEvent.T2.cs" />
     <Compile Include="Messaging\Domain\DomainException.cs" />
     <Compile Include="Messaging\Domain\IHasKey.T1.cs" />
-    <Compile Include="Messaging\Domain\IHasVersion.T2.cs" />
+    <Compile Include="Messaging\Domain\IHasKeyAndVersion.T2.cs" />
+    <Compile Include="Messaging\Domain\KeyAttribute.cs" />
+    <Compile Include="Messaging\Domain\VersionAttribute.cs" />
     <Compile Include="Messaging\ErrorInheritanceLevel.cs" />
     <Compile Include="Messaging\ErrorMessageReader.cs" />
     <Compile Include="Identifier.cs" />
@@ -129,6 +134,7 @@
     <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
     <Compile Include="Constraints\IFilterWithErrorMessage.T2.cs" />
     <Compile Include="Messaging\IValidator.cs" />
+    <Compile Include="Messaging\Message.Equals.cs" />
     <Compile Include="Messaging\TechnicalException.cs" />
     <Compile Include="Messaging\IErrorMessageBuilder.cs" />
     <Compile Include="Messaging\IErrorMessageReader.cs" />
@@ -222,6 +228,7 @@
     <None Include="..\Kingo.snk">
       <Link>Properties\Kingo.snk</Link>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Kingo.nuspec">
       <SubType>Designer</SubType>
     </None>
