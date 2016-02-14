@@ -15,6 +15,8 @@ namespace Kingo.Messaging.Domain
     {
         private const BindingFlags _MemberFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
+        internal DomainEvent() { }
+
         #region [====== Keys ======]
 
         private static readonly ConcurrentDictionary<Type, Delegate> _KeyDelegates = new ConcurrentDictionary<Type, Delegate>();
