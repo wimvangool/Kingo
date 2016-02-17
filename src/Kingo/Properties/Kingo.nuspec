@@ -21,7 +21,7 @@
       A core utility library that contains some nifty additions to the .NET Framework.
     </summary>
     <releaseNotes />
-    <copyright>Wim van Gool, 2015</copyright>
+    <copyright>Wim van Gool, 2016</copyright>
     <language>en-US</language>
     <tags>CQRS Messaging Validation Specification Pattern Clock Context</tags>
 

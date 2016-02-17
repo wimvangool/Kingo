@@ -216,7 +216,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)\BuildNuGetPackage.bat" "$(ProjectPath)"
+    <PostBuildEvent>IF $(ConfigurationName) == Release (
+    "$(SolutionDir)BuildNuGetPackage.bat" "$(ProjectPath)" "$(SolutionDir)..\output"
+)
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

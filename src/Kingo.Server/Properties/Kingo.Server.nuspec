@@ -20,7 +20,7 @@
       Contains a set of server-side components that will speed up the development of Message-Driven Applications.
     </summary>
     <releaseNotes />
-    <copyright>Wim van Gool, 2015</copyright>
+    <copyright>Wim van Gool, 2016</copyright>
     <language>en-US</language>
     <tags>CQRS DDD Domain Driven Design Event-Driven Architecture</tags>
 
