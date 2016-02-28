@@ -50,7 +50,7 @@ namespace Kingo.Messaging.Domain
         {
             if (events == null)
             {
-                throw new ArgumentNullException("events");
+                throw new ArgumentNullException(nameof(events));
             }
             _orderedEvents = events.OrderBy(@event => @event.Version).ToArray();
             _snapshot = snapshot;

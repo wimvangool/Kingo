@@ -48,7 +48,7 @@ namespace Kingo.Messaging
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException(nameof(handler));
             }
             TStrategy strategy;
 

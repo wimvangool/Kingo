@@ -14,7 +14,7 @@ namespace Kingo.Constraints.Decoders
         {
             if (fieldOrProperty == null)
             {
-                throw new ArgumentNullException("fieldOrProperty");
+                throw new ArgumentNullException(nameof(fieldOrProperty));
             }
             _builder = builder;
             _fieldOrProperty = fieldOrProperty;

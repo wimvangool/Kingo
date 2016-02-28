@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.DynamicMethods;
 
 namespace Kingo
 {
@@ -54,7 +55,7 @@ namespace Kingo
 
         public override int GetHashCode()
         {
-            return HashCode.Of(_literal, _nextComponent);
+            return GetHashCodeMethod.Invoke(_literal) ^ GetHashCodeMethod.Invoke(_nextComponent);
         }
 
         #endregion        
@@ -68,7 +69,7 @@ namespace Kingo
         {
             if (identifier == null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
             if (_nextComponent == null)
             {

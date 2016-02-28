@@ -177,7 +177,7 @@ namespace Kingo
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             if (value.Length == 0)
             {

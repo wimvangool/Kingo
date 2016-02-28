@@ -29,7 +29,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             _name = constraint._name;
             _errorMessage = new Lazy<StringTemplate>(() => errorMessage ?? ErrorMessageIfNotSpecified);
@@ -39,7 +39,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             _name = new Lazy<Identifier>(() => name ?? NameIfNotSpecified);
             _errorMessage = constraint._errorMessage;
@@ -132,7 +132,7 @@ namespace Kingo.Constraints
         {
             if (visitor == null)
             {
-                throw new ArgumentNullException("visitor");
+                throw new ArgumentNullException(nameof(visitor));
             }
             visitor.Visit(this);
         }
@@ -154,7 +154,7 @@ namespace Kingo.Constraints
         {
             if (constraints == null)
             {
-                throw new ArgumentNullException("constraints");
+                throw new ArgumentNullException(nameof(constraints));
             }
             if (constraints.Length == 0)
             {
@@ -186,7 +186,7 @@ namespace Kingo.Constraints
         {
             if (constraints == null)
             {
-                throw new ArgumentNullException("constraints");
+                throw new ArgumentNullException(nameof(constraints));
             }
             if (constraints.Length == 0)
             {

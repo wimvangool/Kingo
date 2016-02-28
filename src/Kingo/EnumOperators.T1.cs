@@ -49,7 +49,7 @@ namespace Kingo
         {
             if (values == null)
             {
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
             }
             var result = _BinaryOrOperator.Invoke(x, y);
 
@@ -72,7 +72,7 @@ namespace Kingo
         {
             if (values == null)
             {
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
             }
             var result = default(TEnum);
 
@@ -114,7 +114,7 @@ namespace Kingo
         {
             if (values == null)
             {
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
             }
             var result = _BinaryOrOperator.Invoke(x, y);
 
@@ -137,7 +137,7 @@ namespace Kingo
         {
             if (values == null)
             {
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
             }
             var result = default(TEnum);
 

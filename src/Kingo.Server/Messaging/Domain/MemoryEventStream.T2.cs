@@ -62,7 +62,7 @@ namespace Kingo.Messaging.Domain
         {
             if (@event == null)
             {
-                throw new ArgumentNullException("event");
+                throw new ArgumentNullException(nameof(@event));
             }
             var writeMethodDefinition = _WriteMethod.Value;
             var writeMethod = writeMethodDefinition.MakeGenericMethod(@event.GetType());
@@ -94,7 +94,7 @@ namespace Kingo.Messaging.Domain
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
             while (_buffer.Count > 0)
             {

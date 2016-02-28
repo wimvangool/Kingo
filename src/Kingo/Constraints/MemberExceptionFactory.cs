@@ -12,7 +12,7 @@ namespace Kingo.Constraints
         {
             if (errorMessage == null)
             {
-                throw new ArgumentNullException("errorMessage");    
+                throw new ArgumentNullException(nameof(errorMessage));    
             }
             if (inheritanceLevel < _inheritanceLevel)
             {

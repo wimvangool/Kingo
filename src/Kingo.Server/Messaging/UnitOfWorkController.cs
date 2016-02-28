@@ -30,7 +30,7 @@ namespace Kingo.Messaging
         {
             if (unitOfWork == null)
             {
-                throw new ArgumentNullException("unitOfWork");
+                throw new ArgumentNullException(nameof(unitOfWork));
             }
             lock (_enlistedUnits)
             {

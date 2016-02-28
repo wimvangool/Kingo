@@ -35,11 +35,11 @@ namespace Kingo
         {
             if (sender == null)
             {
-                throw new ArgumentNullException("sender");
+                throw new ArgumentNullException(nameof(sender));
             }
             if (e == null)
             {
-                throw new ArgumentNullException("e");
+                throw new ArgumentNullException(nameof(e));
             }
             if (handlers != null)
             {
@@ -60,11 +60,11 @@ namespace Kingo
         {
             if (sender == null)
             {
-                throw new ArgumentNullException("sender");
+                throw new ArgumentNullException(nameof(sender));
             }
             if (e == null)
             {
-                throw new ArgumentNullException("e");
+                throw new ArgumentNullException(nameof(e));
             }
             if (handlers != null)
             {
@@ -85,11 +85,11 @@ namespace Kingo
         {
             if (sender == null)
             {
-                throw new ArgumentNullException("sender");
+                throw new ArgumentNullException(nameof(sender));
             }
             if (e == null)
             {
-                throw new ArgumentNullException("e");
+                throw new ArgumentNullException(nameof(e));
             }
             if (handlers != null)
             {
@@ -122,7 +122,7 @@ namespace Kingo
         {
             if (e == null)
             {
-                throw new ArgumentNullException("e");
+                throw new ArgumentNullException(nameof(e));
             }
             if (handlers != null)
             {
@@ -142,7 +142,7 @@ namespace Kingo
         {
             if (e == null)
             {
-                throw new ArgumentNullException("e");
+                throw new ArgumentNullException(nameof(e));
             }
             if (handlers != null)
             {
@@ -162,7 +162,7 @@ namespace Kingo
         {
             if (e == null)
             {
-                throw new ArgumentNullException("e");
+                throw new ArgumentNullException(nameof(e));
             }
             if (handlers != null)
             {

@@ -16,11 +16,11 @@ namespace Kingo.Messaging
         {            
             if (query == null)
             {
-                throw new ArgumentNullException("query");
+                throw new ArgumentNullException(nameof(query));
             }
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             _message = message;
             _query = query;   

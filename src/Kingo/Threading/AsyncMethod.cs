@@ -24,7 +24,7 @@ namespace Kingo.Threading
         {
             if (action == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             }
             try
             {
@@ -52,7 +52,7 @@ namespace Kingo.Threading
         {
             if (func == null)
             {
-                throw new ArgumentNullException("func");
+                throw new ArgumentNullException(nameof(func));
             }
             try
             {
@@ -118,7 +118,7 @@ namespace Kingo.Threading
         {
             if (exception == null)
             {
-                throw new ArgumentNullException("exception");
+                throw new ArgumentNullException(nameof(exception));
             }
             var taskCompletionSource = new TaskCompletionSource<TResult>();
             taskCompletionSource.SetException(exception);

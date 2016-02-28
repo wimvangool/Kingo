@@ -29,7 +29,7 @@ namespace Kingo.Messaging.Domain
         {
             if (ReferenceEquals(aggregateKey, null))
             {
-                throw new ArgumentNullException("aggregateKey");
+                throw new ArgumentNullException(nameof(aggregateKey));
             }
             _aggregateKey = aggregateKey;
         }
@@ -49,7 +49,7 @@ namespace Kingo.Messaging.Domain
         {
             if (ReferenceEquals(aggregateKey, null))
             {
-                throw new ArgumentNullException("aggregateKey");
+                throw new ArgumentNullException(nameof(aggregateKey));
             }
             _aggregateKey = aggregateKey;
         }

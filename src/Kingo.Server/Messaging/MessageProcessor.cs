@@ -157,7 +157,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             _HandleMethods.GetOrAdd(message.GetType(), GetHandleMethod).Invoke(this, new[] { message });
         }        
@@ -201,7 +201,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             HandleAsync(message, handler, CancellationToken.None).Await();
         }
@@ -253,7 +253,7 @@ namespace Kingo.Messaging
         {            
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             PushMessage(ref message, token);
 
@@ -393,7 +393,7 @@ namespace Kingo.Messaging
         {            
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             return ExecuteAsync(new QueryWrapper<TMessageIn, TMessageOut>(query, message), message, token);
         }      
@@ -534,7 +534,7 @@ namespace Kingo.Messaging
         {
             if (action == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             }            
             if (transaction == null || HasCommitted(transaction))
             {

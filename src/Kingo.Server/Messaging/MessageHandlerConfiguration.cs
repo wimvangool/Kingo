@@ -84,7 +84,7 @@ namespace Kingo.Messaging
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            return HashCode.Of(_lifetime, _sources);
+            return _lifetime.GetHashCode() ^ _sources.GetHashCode();
         }
 
         #endregion

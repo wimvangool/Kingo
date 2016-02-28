@@ -68,6 +68,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Messaging\Domain\ValueObject.T1.cs" />
     <Compile Include="Messaging\LayerConfiguration.cs" />
     <Compile Include="Messaging\DependencyConfiguration.cs" />
     <Compile Include="Messaging\Domain\Aggregate.T1.cs" />

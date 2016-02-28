@@ -129,7 +129,7 @@ namespace Kingo.Constraints
         {
             if (postfix == null)
             {
-                throw new ArgumentNullException("postfix");
+                throw new ArgumentNullException(nameof(postfix));
             }
             Postfix = postfix;
             CompareType = compareType;
@@ -190,7 +190,7 @@ namespace Kingo.Constraints
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             return value.EndsWith(Postfix, CompareType);
         }

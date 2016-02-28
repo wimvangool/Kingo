@@ -12,7 +12,7 @@ namespace Kingo.Messaging
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
             return ErrorInfo.Empty;
         }

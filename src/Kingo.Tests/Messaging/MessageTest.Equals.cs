@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Kingo.Clocks;
+using Kingo.DynamicMethods;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -12,10 +15,21 @@ namespace Kingo.Messaging
     {        
         #region [====== Equals - General Logic ======]
 
-        [DataContract]
-        private sealed class NoDataMembersMessage : Message { }
+        private abstract class TestMessage : Message
+        {
+            public abstract int ExpectedHashCode();
+        }
 
-        private sealed class NoDataContractMessage : Message
+        [DataContract]
+        private sealed class NoDataMembersMessage : TestMessage
+        {
+            public override int ExpectedHashCode()
+            {
+                return GetType().GetHashCode();
+            }
+        }
+
+        private sealed class BasicMessage : TestMessage
         {
             [UsedImplicitly]
             private readonly int _intValue;
@@ -23,10 +37,70 @@ namespace Kingo.Messaging
             [UsedImplicitly]
             private readonly string _stringValue;
 
-            public NoDataContractMessage(int intValue, string stringValue)
+            public BasicMessage(int intValue, string stringValue)
             {
                 _intValue = intValue;
                 _stringValue = stringValue;
+            }
+
+            public override int ExpectedHashCode()
+            {
+                return GetType().GetHashCode() ^ _intValue.GetHashCode() ^ _stringValue.GetHashCode();
+            }
+        }
+
+        [Serializable]
+        private sealed class SerializableMessage : TestMessage
+        {
+            [UsedImplicitly]
+            private readonly int _intValue;
+
+            [UsedImplicitly, NonSerialized]
+            private readonly string _stringValue;
+
+            public SerializableMessage(int intValue, string stringValue)
+            {
+                _intValue = intValue;
+                _stringValue = stringValue;
+            }
+
+            public override int ExpectedHashCode()
+            {
+                return GetType().GetHashCode() ^ _intValue.GetHashCode();
+            }
+        }
+
+        [CustomFilter]
+        private sealed class CustomFilteredMessage : TestMessage
+        {
+            [UsedImplicitly]
+            private readonly int _a;
+
+            [UsedImplicitly]
+            private readonly int _b;
+
+            public CustomFilteredMessage(int a, int b)
+            {
+                _a = a;
+                _b = b;
+            }
+
+            public override int ExpectedHashCode()
+            {
+                return GetType().GetHashCode() ^ _a.GetHashCode();
+            }
+        }
+
+        private sealed class CustomFilterAttribute : MemberFilterAttribute
+        {
+            public override IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields)
+            {
+                return fields.Where(field => field.Name == "_a");
+            }
+
+            public override IEnumerable<PropertyInfo> Filter(IEnumerable<PropertyInfo> properties)
+            {
+                return properties;
             }
         }
 
@@ -69,40 +143,119 @@ namespace Kingo.Messaging
         [TestMethod]
         public void Equals_ReturnsTrue_IfMessageIsNoDataContract_And_OtherIsSameInstance()
         {
-            var message = new NoDataContractMessage(0, null);
+            var message = new BasicMessage(0, null);
 
             Assert.IsTrue(message.Equals(message));
         }
 
         [TestMethod]
-        public void Equals_ReturnsFalse_IfMessageIsNoDataContract_And_FieldsHaveSameValue()
+        public void Equals_ReturnsTrue_IfMessageIsSerializable_And_SerializableFieldsHaveSameValue()
         {
-            var intValue = Clock.Current.UtcDateAndTime().Millisecond;
-            var stringValue = GenerateValue();
+            var intValue = GenerateIntValue();            
 
-            var messageA = new NoDataContractMessage(intValue, stringValue);
-            var messageB = new NoDataContractMessage(intValue, stringValue);
+            var messageA = new SerializableMessage(intValue, GenerateStringValue());
+            var messageB = new SerializableMessage(intValue, GenerateStringValue());
+
+            Assert.IsTrue(messageA.Equals(messageB));
+            Assert.IsTrue(messageB.Equals(messageA));
+        }
+
+        [TestMethod]
+        public void Equals_ReturnsFalse_IfMessageIsSerializable_And_SerializableFieldsHaveDifferentValue()
+        {
+            var intValue = GenerateIntValue();
+            var stringValue = GenerateStringValue();
+
+            var messageA = new SerializableMessage(intValue, stringValue);
+            var messageB = new SerializableMessage(intValue + 1, stringValue);
 
             Assert.IsFalse(messageA.Equals(messageB));
             Assert.IsFalse(messageB.Equals(messageA));
         }
 
         [TestMethod]
-        public void Equals_ReturnsFalse_IfMessageIsNoDataContract_And_FieldsHaveDifferentValues()
-        {            
-            var messageA = new NoDataContractMessage(0, null);
-            var messageB = new NoDataContractMessage(1, GenerateValue());
+        public void Equals_ReturnsTrue_IfMessageIsNeitherDataContractNorSerializable_And_FieldsHaveSameValue()
+        {
+            var intValue = GenerateIntValue();
+            var stringValue = GenerateStringValue();
+
+            var messageA = new BasicMessage(intValue, stringValue);
+            var messageB = new BasicMessage(intValue, stringValue);
+
+            Assert.IsTrue(messageA.Equals(messageB));
+            Assert.IsTrue(messageB.Equals(messageA));
+        }
+
+        [TestMethod]
+        public void Equals_ReturnsFalse_IfMessageIsNeitherDataContractNorSerializable_And_FieldsHaveDifferentValues()
+        {
+            var intValue = GenerateIntValue();
+
+            var messageA = new BasicMessage(intValue, null);
+            var messageB = new BasicMessage(intValue + 1, GenerateStringValue());
+
+            Assert.IsFalse(messageA.Equals(messageB));
+            Assert.IsFalse(messageB.Equals(messageA));
+        } 
+        
+        [TestMethod]
+        public void Equals_ReturnsTrue_IfMessageIsCustomFiltered_And_FieldsHaveSameValue()
+        {
+            var intValue = GenerateIntValue();
+
+            var messageA = new CustomFilteredMessage(intValue, intValue);
+            var messageB = new CustomFilteredMessage(intValue, intValue + 1);
+
+            Assert.IsTrue(messageA.Equals(messageB));
+            Assert.IsTrue(messageB.Equals(messageA));
+        }
+
+        [TestMethod]
+        public void Equals_ReturnsFalse_IfMessageIsCustomFiltered_And_FieldsHaveDifferentValue()
+        {
+            var intValue = GenerateIntValue();
+
+            var messageA = new CustomFilteredMessage(intValue, intValue);
+            var messageB = new CustomFilteredMessage(intValue + 1, intValue);
 
             Assert.IsFalse(messageA.Equals(messageB));
             Assert.IsFalse(messageB.Equals(messageA));
         }
 
-        #endregion        
+        #endregion
+
+        #region [====== GetHashCode - General Logic ======]
+
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedValue_IfMessageContainsNoFields()
+        {
+            var message = new NoDataMembersMessage();
+
+            Assert.AreEqual(message.ExpectedHashCode(), message.GetHashCode());
+        }
+
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedValue_IfMessageIsNeitherDataContractNorSerializable()
+        {
+            var message = new BasicMessage(GenerateIntValue(), GenerateStringValue());
+
+            Assert.AreEqual(message.ExpectedHashCode(), message.GetHashCode());
+        }
+
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedValue_IfMessageIsSerializable()
+        {
+            var message = new SerializableMessage(GenerateIntValue(), GenerateStringValue());
+
+            Assert.AreEqual(message.ExpectedHashCode(), message.GetHashCode());
+        }
+
+        #endregion
 
         #region [====== Equals - IntFieldMessage ======]
 
         [DataContract]
-        private sealed class IntFieldMessage : Message
+        private sealed class IntFieldMessage : TestMessage
         {            
             [DataMember]
             private readonly int _value;
@@ -110,6 +263,11 @@ namespace Kingo.Messaging
             public IntFieldMessage(int value)
             {
                 _value = value;
+            }
+
+            public override int ExpectedHashCode()
+            {
+                return GetType().GetHashCode() ^ _value.GetHashCode();
             }
         }
 
@@ -131,6 +289,14 @@ namespace Kingo.Messaging
 
             Assert.IsFalse(messageA.Equals(messageB));
             Assert.IsFalse(messageB.Equals(messageA));
+        }
+
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedValue_IfMessageContainsValueTyeField()
+        {
+            var message = new IntFieldMessage(GenerateIntValue());
+
+            Assert.AreEqual(message.ExpectedHashCode(), message.GetHashCode());
         }
 
         #endregion
@@ -225,7 +391,7 @@ namespace Kingo.Messaging
         #region [====== Equals - StringFieldMessage ======]
 
         [DataContract]
-        private sealed class StringFieldMessage : Message
+        private sealed class StringFieldMessage : TestMessage
         {
             [DataMember]
             private readonly string _value;
@@ -233,6 +399,11 @@ namespace Kingo.Messaging
             public StringFieldMessage(string value)
             {
                 _value = value;
+            }
+
+            public override int ExpectedHashCode()
+            {
+                return GetType().GetHashCode() ^ (_value == null ? 0 : _value.GetHashCode());
             }
         }
 
@@ -249,7 +420,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void Equals_ReturnsTrue_IfMessageContainsReferenceTypeField_And_FieldsHaveSameValue()
         {
-            var value = GenerateValue();
+            var value = GenerateStringValue();
             var messageA = new StringFieldMessage(value);
             var messageB = new StringFieldMessage(value);
 
@@ -260,16 +431,27 @@ namespace Kingo.Messaging
         [TestMethod]
         public void Equals_ReturnsFalse_IfMessageContainsReferenceTypeField_And_FieldsDontHaveSameValue()
         {
-            var messageA = new StringFieldMessage(GenerateValue());
-            var messageB = new StringFieldMessage(GenerateValue());
+            var messageA = new StringFieldMessage(GenerateStringValue());
+            var messageB = new StringFieldMessage(GenerateStringValue());
 
             Assert.IsFalse(messageA.Equals(messageB));
             Assert.IsFalse(messageB.Equals(messageA));
+        }        
+
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedValue_IfMessageContainsStringTypeField_And_StringIsNull()
+        {
+            var message = new StringFieldMessage(null);
+
+            Assert.AreEqual(message.ExpectedHashCode(), message.GetHashCode());
         }
 
-        private static string GenerateValue()
+        [TestMethod]
+        public void GetHashCode_ReturnsExpectedValue_IfMessageContainsStringTypeField_And_StringIsNotNull()
         {
-            return Guid.NewGuid().ToString("N");
+            var message = new StringFieldMessage(GenerateStringValue());
+
+            Assert.AreEqual(message.ExpectedHashCode(), message.GetHashCode());
         }
 
         #endregion
@@ -720,5 +902,15 @@ namespace Kingo.Messaging
         }
 
         #endregion
+
+        private static int GenerateIntValue()
+        {
+            return Clock.Current.UtcDateAndTime().Millisecond;
+        }
+
+        private static string GenerateStringValue()
+        {
+            return Guid.NewGuid().ToString("N");
+        }
     }
 }

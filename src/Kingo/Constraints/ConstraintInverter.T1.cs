@@ -41,7 +41,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             _constraint = constraint;
             _errorMessage = errorMessage;
@@ -99,7 +99,7 @@ namespace Kingo.Constraints
         {
             if (visitor == null)
             {
-                throw new ArgumentNullException("visitor");
+                throw new ArgumentNullException(nameof(visitor));
             }
             visitor.VisitInverse(this, _constraint);
         }

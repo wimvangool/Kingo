@@ -12,7 +12,7 @@ namespace Kingo.Messaging.Domain
         {
             if (@event == null)
             {
-                throw new ArgumentNullException("event");
+                throw new ArgumentNullException(nameof(@event));
             }
             _event = @event;
         }

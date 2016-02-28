@@ -50,7 +50,7 @@ namespace Kingo.Constraints
         {
             if (typeFactory == null)
             {
-                throw new ArgumentNullException("typeFactory");
+                throw new ArgumentNullException(nameof(typeFactory));
             }
             return member.Apply(message => NewIsNotInstanceOfConstraint<TValue>(typeFactory.Invoke(message), errorMessage));
         }
@@ -113,7 +113,7 @@ namespace Kingo.Constraints
         {
             if (typeFactory == null)
             {
-                throw new ArgumentNullException("typeFactory");
+                throw new ArgumentNullException(nameof(typeFactory));
             }
             return member.Apply(message => NewIsInstanceOfConstraint<TValue>(typeFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }        
@@ -132,7 +132,7 @@ namespace Kingo.Constraints
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
             var constraintTypeDefinition = typeof(IsInstanceOfFilter<,>);
             var constraintType = constraintTypeDefinition.MakeGenericType(typeof(TValue), type);

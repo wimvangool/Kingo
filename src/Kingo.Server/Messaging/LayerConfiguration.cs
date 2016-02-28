@@ -92,7 +92,7 @@ namespace Kingo.Messaging
         {
             if (layer == null)
             {
-                throw new ArgumentNullException("layer");
+                throw new ArgumentNullException(nameof(layer));
             }
             return new LayerConfiguration(layer, _serviceLayer, _applicationLayer, _domainLayer, _dataAccessLayer);
         }
@@ -122,7 +122,7 @@ namespace Kingo.Messaging
         {
             if (layer == null)
             {
-                throw new ArgumentNullException("layer");
+                throw new ArgumentNullException(nameof(layer));
             }
             return new LayerConfiguration(_apiLayer, layer, _applicationLayer, _domainLayer, _dataAccessLayer);
         }
@@ -152,7 +152,7 @@ namespace Kingo.Messaging
         {
             if (layer == null)
             {
-                throw new ArgumentNullException("layer");
+                throw new ArgumentNullException(nameof(layer));
             }
             return new LayerConfiguration(_apiLayer, _serviceLayer, layer, _domainLayer, _dataAccessLayer);
         }
@@ -182,7 +182,7 @@ namespace Kingo.Messaging
         {
             if (layer == null)
             {
-                throw new ArgumentNullException("layer");
+                throw new ArgumentNullException(nameof(layer));
             }
             return new LayerConfiguration(_apiLayer, _serviceLayer, _applicationLayer, layer, _dataAccessLayer);
         }
@@ -212,7 +212,7 @@ namespace Kingo.Messaging
         {
             if (layer == null)
             {
-                throw new ArgumentNullException("layer");
+                throw new ArgumentNullException(nameof(layer));
             }
             return new LayerConfiguration(_apiLayer, _serviceLayer, _applicationLayer, _domainLayer, layer);
         }

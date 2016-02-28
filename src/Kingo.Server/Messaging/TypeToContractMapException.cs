@@ -37,15 +37,15 @@ namespace Kingo.Messaging
         {
             if (type1 == null)
             {
-                throw new ArgumentNullException("type1");
+                throw new ArgumentNullException(nameof(type1));
             }
             if (type2 == null)
             {
-                throw new ArgumentNullException("type2");
+                throw new ArgumentNullException(nameof(type2));
             }
             if (contract == null)
             {
-                throw new ArgumentNullException("contract");
+                throw new ArgumentNullException(nameof(contract));
             }
             _type1 = type1;
             _type2 = type2;

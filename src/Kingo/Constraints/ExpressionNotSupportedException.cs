@@ -25,7 +25,7 @@ namespace Kingo.Constraints
         {
             if (expression == null)
             {
-                throw new ArgumentNullException("expression");
+                throw new ArgumentNullException(nameof(expression));
             }
             _expression = expression.ToString();
         }
@@ -43,7 +43,7 @@ namespace Kingo.Constraints
         {
             if (expression == null)
             {
-                throw new ArgumentNullException("expression");
+                throw new ArgumentNullException(nameof(expression));
             }
             _expression = expression.ToString();
         }
@@ -62,7 +62,7 @@ namespace Kingo.Constraints
         {
             if (expression == null)
             {
-                throw new ArgumentNullException("expression");
+                throw new ArgumentNullException(nameof(expression));
             }
             _expression = expression.ToString();
         }

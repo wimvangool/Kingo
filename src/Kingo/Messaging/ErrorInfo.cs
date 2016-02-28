@@ -151,11 +151,11 @@ namespace Kingo.Messaging
         {
             if (left == null)
             {
-                throw new ArgumentNullException("left");
+                throw new ArgumentNullException(nameof(left));
             }
             if (right == null)
             {
-                throw new ArgumentNullException("right");
+                throw new ArgumentNullException(nameof(right));
             }
             if (builder == null)
             {

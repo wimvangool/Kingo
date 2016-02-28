@@ -167,11 +167,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsNotInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
@@ -199,11 +199,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsNotInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message), options).WithErrorMessage(errorMessage));           
         }
@@ -229,11 +229,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsNotInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));          
         }
@@ -262,11 +262,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsNotInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message), comparer, options).WithErrorMessage(errorMessage));         
         }
@@ -293,7 +293,7 @@ namespace Kingo.Constraints
         {
             if (rangeFactory == null)
             {
-                throw new ArgumentNullException("rangeFactory");
+                throw new ArgumentNullException(nameof(rangeFactory));
             }
             return member.Apply(message => new IsNotInRangeConstraint<TValue>(rangeFactory.Invoke(message)).WithErrorMessage(errorMessage));           
         }        
@@ -457,11 +457,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
@@ -489,11 +489,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message), options).WithErrorMessage(errorMessage));
         }
@@ -519,11 +519,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message), comparer).WithErrorMessage(errorMessage));
         }
@@ -552,11 +552,11 @@ namespace Kingo.Constraints
         {
             if (leftFactory == null)
             {
-                throw new ArgumentNullException("leftFactory");
+                throw new ArgumentNullException(nameof(leftFactory));
             }
             if (rightFactory == null)
             {
-                throw new ArgumentNullException("rightFactory");
+                throw new ArgumentNullException(nameof(rightFactory));
             }
             return member.Apply(message => new IsInRangeConstraint<TValue>(leftFactory.Invoke(message), rightFactory.Invoke(message), comparer, options).WithErrorMessage(errorMessage));
         }
@@ -583,7 +583,7 @@ namespace Kingo.Constraints
         {
             if (rangeFactory == null)
             {
-                throw new ArgumentNullException("rangeFactory");
+                throw new ArgumentNullException(nameof(rangeFactory));
             }
             return member.Apply(message => new IsInRangeConstraint<TValue>(rangeFactory.Invoke(message)).WithErrorMessage(errorMessage));
         }
@@ -651,7 +651,7 @@ namespace Kingo.Constraints
         {
             if (range == null)
             {
-                throw new ArgumentNullException("range");
+                throw new ArgumentNullException(nameof(range));
             }
             Range = range;
         }
@@ -773,7 +773,7 @@ namespace Kingo.Constraints
         {
             if (range == null)
             {
-                throw new ArgumentNullException("range");
+                throw new ArgumentNullException(nameof(range));
             }
             Range = range;
         }

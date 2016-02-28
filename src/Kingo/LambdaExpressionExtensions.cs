@@ -47,7 +47,7 @@ namespace Kingo
         {
             if (expression == null)
             {
-                throw new ArgumentNullException("expression");
+                throw new ArgumentNullException(nameof(expression));
             }            
             var bodyExpression = expression.Body;
             MemberExpression memberExpression;

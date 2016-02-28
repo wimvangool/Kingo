@@ -26,11 +26,11 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             if (handler == null)
             {
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException(nameof(handler));
             }
             _message = message;
             _handler = new MessageHandlerInstance<TMessage>(handler);

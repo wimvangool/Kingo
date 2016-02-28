@@ -129,7 +129,7 @@ namespace Kingo.Messaging
         {
             if (assemblies == null)
             {
-                throw new ArgumentNullException("assemblies");
+                throw new ArgumentNullException(nameof(assemblies));
             }
             return new Layer(assemblies.WhereNotNull());
         }

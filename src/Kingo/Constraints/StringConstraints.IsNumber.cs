@@ -683,7 +683,7 @@ namespace Kingo.Constraints
         {
             if (valueIn == null)
             {
-                throw new ArgumentNullException("valueIn");
+                throw new ArgumentNullException(nameof(valueIn));
             }
             if (valueIn.Length == 1)
             {

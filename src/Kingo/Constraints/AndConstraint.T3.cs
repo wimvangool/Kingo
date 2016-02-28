@@ -12,7 +12,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             _leftConstraint = left;
             _rightConstraint = constraint;
@@ -22,7 +22,7 @@ namespace Kingo.Constraints
         {
             if (visitor == null)
             {
-                throw new ArgumentNullException("visitor");
+                throw new ArgumentNullException(nameof(visitor));
             }
             visitor.VisitAnd(this, new IConstraint[] { _leftConstraint, _rightConstraint });
         }

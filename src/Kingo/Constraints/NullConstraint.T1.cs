@@ -42,7 +42,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             return constraint;
         }
@@ -52,7 +52,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             return this;
         }

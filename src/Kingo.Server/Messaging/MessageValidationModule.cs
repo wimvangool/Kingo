@@ -22,7 +22,7 @@ namespace Kingo.Messaging
         {                   
             if (handler == null)
             {
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException(nameof(handler));
             }
             var errorInfo = await Validate(handler.Message);
             if (errorInfo.HasErrors)

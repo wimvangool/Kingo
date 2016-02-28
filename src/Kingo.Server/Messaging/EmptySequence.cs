@@ -16,7 +16,7 @@ namespace Kingo.Messaging
         {
             if (sequence == null)
             {
-                throw new ArgumentNullException("sequence");
+                throw new ArgumentNullException(nameof(sequence));
             }
             return sequence;
         }

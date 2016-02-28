@@ -30,7 +30,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             var messageCopy = (TMessage) message.Copy();
 

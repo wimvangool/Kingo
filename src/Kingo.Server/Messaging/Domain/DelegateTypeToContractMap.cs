@@ -23,11 +23,11 @@ namespace Kingo.Messaging.Domain
         {
             if (getContract == null)
             {
-                throw new ArgumentNullException("getContract");
+                throw new ArgumentNullException(nameof(getContract));
             }
             if (getType == null)
             {
-                throw new ArgumentNullException("getType");
+                throw new ArgumentNullException(nameof(getType));
             }
             _getContract = getContract;
             _getType = getType;
@@ -38,7 +38,7 @@ namespace Kingo.Messaging.Domain
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
             return _getContract.Invoke(type);
         }
@@ -48,7 +48,7 @@ namespace Kingo.Messaging.Domain
         {
             if (contract == null)
             {
-                throw new ArgumentNullException("contract");
+                throw new ArgumentNullException(nameof(contract));
             }
             return _getType.Invoke(contract);
         }

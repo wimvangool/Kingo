@@ -1,65 +1,28 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
-namespace Kingo.Messaging
+namespace Kingo.DynamicMethods
 {
-    public abstract partial class Message
+    /// <summary>
+    /// Represents an implementation of the <see cref="object.Equals(object)" /> method where two instances are considered
+    /// equal based on their members.
+    /// </summary>
+    public abstract class EqualsMethod : DynamicMethod<EqualsMethod>
     {
-        #region [====== Implementation ======]
-
-        private abstract class Implementation
-        {            
-            public abstract bool Execute(object left, object right);            
-        }
-
-        private sealed class Constant : Implementation
-        {
-            private readonly bool _value;
-
-            public Constant(bool value)
-            {
-                _value = value;
-            }
-
-            public override bool Execute(object left, object right)
-            {
-                return _value;
-            }
-        }
-
-        private sealed class Implementation<TValue> : Implementation
-        {
-            private readonly Func<TValue, TValue, bool> _implementation;
-
-            public Implementation(Func<TValue, TValue, bool> implementation)
-            {
-                _implementation = implementation;
-            }
-
-            public override bool Execute(object left, object right)
-            {
-                return _implementation.Invoke((TValue)left, (TValue)right);
-            }
-        }
-
-        #endregion
-
         #region [====== MemberType ======]
 
         private enum MemberType
         {
             ReferenceType,
 
-            ValueType,            
+            ValueType,
 
-            EnumerableType,            
+            EnumerableType,
 
             DictionaryType,
 
@@ -70,130 +33,93 @@ namespace Kingo.Messaging
 
         #endregion
 
+        #region [====== Instance Members ======]
+
+        internal EqualsMethod() { }
+
+        internal abstract bool Execute(object left, object right);
+
+        #endregion
+
+        #region [====== Static Members ======]        
+
         /// <summary>
-        /// Determines whether this message is equal to the specified <paramref name="obj"/> based on all fields.
+        /// Compares two instances and determines whether they are equal or not based on their members.
         /// </summary>
-        /// <param name="obj">Another object.</param>
+        /// <param name="left">Left instance.</param>
+        /// <param name="right">Right instance.</param>
         /// <returns>
-        /// <c>true</c> if <paramref name="obj"/> is of the same type and has equal members; otherwise <c>false</c>.
+        /// <c>true</c> if both <paramref name="left"/> and <paramref name="right"/> are the same instance (or <c>null</c>),
+        /// or when <paramref name="left"/> and <paramref name="right"/> are of the same type and have equal members. Otherwise
+        /// <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public static bool Invoke(object left, object right)
         {
-            if (ReferenceEquals(obj, null))
-            {
-                return false;
-            }
-            if (ReferenceEquals(obj, this))
+            if (ReferenceEquals(left, right))
             {
                 return true;
             }
-            if (GetType() == obj.GetType())
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+		    {
+                return false;
+            }
+            if (left.GetType() == right.GetType())
             {
-                return HaveEqualFieldMembers(this, obj);
+                return HaveEqualMembers(left, right, right.GetType());
             }
             return false;
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return GetType().GetHashCode();
         }        
 
-        private static readonly ConcurrentDictionary<Type, Implementation> _Implementations = new ConcurrentDictionary<Type, Implementation>();
-        private const BindingFlags _MemberFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
-
-        private static bool HaveEqualFieldMembers(object left, object right)
+        private static bool HaveEqualMembers(object left, object right, Type type)
         {
-            return _Implementations.GetOrAdd(left.GetType(), CreateImplementation).Execute(left, right);
+            return GetOrAddMethod(type, Build).Execute(left, right);
+        }                      
+
+        private static EqualsMethod Build(Type type, MemberProvider memberProvider)
+        {
+            var left = Expression.Parameter(type, "left");
+            var right = Expression.Parameter(type, "right");
+            var expression = BuildExpression(left, right, memberProvider.Fields.ToArray(), memberProvider.Properties.ToArray());
+            
+            return FromExpressionMethod(type).Invoke(null, new object[] { expression, left, right }) as EqualsMethod;            
         }
 
-        private static Implementation CreateImplementation(Type type)
-        {            
-            if (IsDataContract(type))
+        private static Expression BuildExpression(Expression left, Expression right, IReadOnlyCollection<FieldInfo> fields, IReadOnlyCollection<PropertyInfo> properties)
+        {
+            if (fields.Count + properties.Count == 0)
             {
-                var fields = GetDataMemberFields(type);
-                var properties = GetDataMemberProperties(type);
-
-                if (fields.Length + properties.Length > 0)
-                {
-                    var method = MakeCreateImplementationMethod(type);
-                    var methodArguments = new object[] { fields, properties };
-
-                    return (Implementation) method.Invoke(null, methodArguments);
-                }
-                return new Constant(true);
+                return Expression.Constant(true);
             }
-            return new Constant(false);                       
-        }
-
-        private static FieldInfo[] GetDataMemberFields(IReflect type)
-        {            
-            var dataMembers =
-                from field in type.GetFields(_MemberFlags)
-                where IsDataMember(field)
-                select field;
-
-            return dataMembers.ToArray();
-        }
-
-        private static PropertyInfo[] GetDataMemberProperties(IReflect type)
-        {            
-            var dataMembers =
-                from property in type.GetProperties(_MemberFlags)
-                where IsDataMember(property)
-                select property;
-
-            return dataMembers.ToArray();
-        }
-
-        private static bool IsDataContract(MemberInfo type)
-        {
-            return type.GetCustomAttributes(typeof(DataContractAttribute)).Any();
-        }
-
-        private static bool IsDataMember(MemberInfo fieldOrProperty)
-        {
-            return fieldOrProperty.GetCustomAttributes(typeof(DataMemberAttribute)).Any();
-        }
-
-        private static MethodInfo MakeCreateImplementationMethod(Type type)
-        {
-            var methods =
-                from method in typeof(Message).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
-                where method.IsGenericMethod && method.IsGenericMethodDefinition
-                where method.Name == "CreateImplementation" && method.GetParameters().Length == 2
-                select method.MakeGenericMethod(type);
-
-            return methods.Single();
-        }
-
-        [UsedImplicitly]
-        private static Implementation<TValue> CreateImplementation<TValue>(FieldInfo[] fields, PropertyInfo[] properties)
-        {
-            var left = Expression.Parameter(typeof(TValue), "left");
-            var right = Expression.Parameter(typeof(TValue), "right");
-
-            Expression equalsExpression = null;
+            Expression expression = null;
 
             foreach (var field in fields)
             {
                 var leftField = Expression.Field(left, field);
                 var rightField = Expression.Field(right, field);
 
-                equalsExpression = AreEqual(leftField, rightField, field.FieldType, equalsExpression);
+                expression = AreEqual(leftField, rightField, field.FieldType,expression);
             }
             foreach (var property in properties)
             {
                 var leftProperty = Expression.Property(left, property);
                 var rightProperty = Expression.Property(right, property);
 
-                equalsExpression = AreEqual(leftProperty, rightProperty, property.PropertyType, equalsExpression);
+                expression = AreEqual(leftProperty, rightProperty, property.PropertyType, expression);
             }
-            var implementation = Expression.Lambda<Func<TValue, TValue, bool>>(equalsExpression, left, right);
-
-            return new Implementation<TValue>(implementation.Compile());
+            return expression;
         }
+
+        private static MethodInfo FromExpressionMethod(Type type)
+        {
+            var equalsMethodTypeDefinition = typeof(EqualsMethod<>);
+            var equalsMethodType = equalsMethodTypeDefinition.MakeGenericType(type);
+            var methods =
+                from method in equalsMethodType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                where method.Name == "FromExpression" && method.GetParameters().Length == 3
+                select method;
+
+            return methods.Single();
+        }       
 
         private static Expression AreEqual(Expression left, Expression right, Type type, Expression equalsExpression)
         {
@@ -348,7 +274,7 @@ namespace Kingo.Messaging
 
         #region [====== Reference Types ======]
 
-        private static readonly MethodInfo _EqualsMethod = typeof(object).GetMethod("Equals", BindingFlags.Public | BindingFlags.Static);                
+        private static readonly MethodInfo _EqualsMethod = typeof(object).GetMethod("Equals", BindingFlags.Public | BindingFlags.Static);
 
         private static Expression AreEqualReferenceTypes(Expression left, Expression right)
         {
@@ -360,12 +286,12 @@ namespace Kingo.Messaging
         #region [====== Collection Types (Enumerables) ======]
 
         private static readonly MethodInfo _AreEqualEnumerableTypesMethod = FindAreEqualEnumerableTypesMethod();
-        private static readonly MethodInfo _AreEqualGenericEnumerableTypesMethod = FindAreEqualGenericEnumerableTypesMethod();       
+        private static readonly MethodInfo _AreEqualGenericEnumerableTypesMethod = FindAreEqualGenericEnumerableTypesMethod();
 
         private static MethodInfo FindAreEqualEnumerableTypesMethod()
         {
             var methods =
-                from method in typeof(Message).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+                from method in typeof(EqualsMethod).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
                 where method.Name == "AreEqualEnumerableTypes"
                 let parameters = method.GetParameters()
                 where parameters.Length == 2 && IsOfEnumerableType(parameters[0]) && IsOfEnumerableType(parameters[1])
@@ -382,9 +308,9 @@ namespace Kingo.Messaging
         private static MethodInfo FindAreEqualGenericEnumerableTypesMethod()
         {
             var methods =
-                from method in typeof(Message).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+                from method in typeof(EqualsMethod).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
                 where method.IsGenericMethod && method.IsGenericMethodDefinition
-                where method.Name == "AreEqualGenericEnumerableTypes"                
+                where method.Name == "AreEqualGenericEnumerableTypes"
                 where method.GetParameters().Length == 2
                 select method;
 
@@ -416,7 +342,7 @@ namespace Kingo.Messaging
             var method = _AreEqualGenericEnumerableTypesMethod.MakeGenericMethod(valueType);
 
             return Expression.Call(null, method, left, right);
-        }        
+        }
 
         [UsedImplicitly]
         private static bool AreEqualGenericEnumerableTypes<TValue>(IEnumerable<TValue> left, IEnumerable<TValue> right)
@@ -430,19 +356,19 @@ namespace Kingo.Messaging
                 return false;
             }
             return left.SequenceEqual(right);
-        }        
+        }
 
         #endregion
 
         #region [====== Collection Types (Dictionaries) ======]
 
         private static readonly MethodInfo _AreEqualDictionaryTypesMethod = FindAreEqualDictionaryTypesMethod();
-        private static readonly MethodInfo _AreEqualGenericDictionaryTypesMethod = FindAreEqualGenericDictionaryTypesMethod();        
+        private static readonly MethodInfo _AreEqualGenericDictionaryTypesMethod = FindAreEqualGenericDictionaryTypesMethod();
 
         private static MethodInfo FindAreEqualDictionaryTypesMethod()
         {
             var methods =
-                from method in typeof(Message).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+                from method in typeof(EqualsMethod).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
                 where method.Name == "AreEqualDictionaryTypes"
                 let parameters = method.GetParameters()
                 where parameters.Length == 2 && IsOfDictionaryType(parameters[0]) && IsOfDictionaryType(parameters[1])
@@ -459,7 +385,7 @@ namespace Kingo.Messaging
         private static MethodInfo FindAreEqualGenericDictionaryTypesMethod()
         {
             var methods =
-                from method in typeof(Message).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+                from method in typeof(EqualsMethod).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
                 where method.IsGenericMethod && method.IsGenericMethodDefinition
                 where method.Name == "AreEqualGenericDictionaryTypes"
                 where method.GetParameters().Length == 2
@@ -500,7 +426,7 @@ namespace Kingo.Messaging
                     return false;
                 }
             }
-            return true;    
+            return true;
         }
 
         private static Expression AreEqualGenericDictionaryTypes(Expression left, Expression right, Type interfaceType)
@@ -544,6 +470,8 @@ namespace Kingo.Messaging
             }
             return true;
         }
+
+        #endregion          
 
         #endregion
     }

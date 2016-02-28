@@ -10,7 +10,7 @@ namespace Kingo.Constraints
         {
             if (fieldOrPropertyName == null)
             {
-                throw new ArgumentNullException("fieldOrPropertyName");
+                throw new ArgumentNullException(nameof(fieldOrPropertyName));
             }
             _fieldOrPropertyName = fieldOrPropertyName;
         }

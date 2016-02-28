@@ -69,7 +69,7 @@ namespace Kingo.Constraints
         {
             if (member == null)
             {
-                throw new ArgumentNullException("member");
+                throw new ArgumentNullException(nameof(member));
             }
             return member;
         }

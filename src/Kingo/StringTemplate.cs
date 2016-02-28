@@ -215,7 +215,7 @@ namespace Kingo
         {
             if (templateFormat == null)
             {
-                throw new ArgumentNullException("templateFormat");
+                throw new ArgumentNullException(nameof(templateFormat));
             }                        
             return new StringTemplate(ParseNextComponent(templateFormat));
         }

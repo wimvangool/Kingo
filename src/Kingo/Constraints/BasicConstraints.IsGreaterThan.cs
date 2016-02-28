@@ -101,7 +101,7 @@ namespace Kingo.Constraints
         {
             if (otherFactory == null)
             {
-                throw new ArgumentNullException("otherFactory");
+                throw new ArgumentNullException(nameof(otherFactory));
             }
             var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
 
@@ -131,7 +131,7 @@ namespace Kingo.Constraints
         {
             if (otherFactory == null)
             {
-                throw new ArgumentNullException("otherFactory");
+                throw new ArgumentNullException(nameof(otherFactory));
             }
             var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
 
@@ -157,7 +157,7 @@ namespace Kingo.Constraints
         {
             if (otherFactory == null)
             {
-                throw new ArgumentNullException("otherFactory");
+                throw new ArgumentNullException(nameof(otherFactory));
             }
             var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
 
@@ -257,7 +257,7 @@ namespace Kingo.Constraints
         {
             if (otherFactory == null)
             {
-                throw new ArgumentNullException("otherFactory");
+                throw new ArgumentNullException(nameof(otherFactory));
             }
             var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
 
@@ -287,7 +287,7 @@ namespace Kingo.Constraints
         {
             if (otherFactory == null)
             {
-                throw new ArgumentNullException("otherFactory");
+                throw new ArgumentNullException(nameof(otherFactory));
             }
             var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
 
@@ -313,7 +313,7 @@ namespace Kingo.Constraints
         {
             if (otherFactory == null)
             {
-                throw new ArgumentNullException("otherFactory");
+                throw new ArgumentNullException(nameof(otherFactory));
             }
             var errorMessageTemplate = StringTemplate.ParseOrNull(errorMessage);
 

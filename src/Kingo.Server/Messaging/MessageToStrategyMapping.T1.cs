@@ -16,7 +16,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             Add(message.GetType(), strategy);
         }
@@ -25,7 +25,7 @@ namespace Kingo.Messaging
         {
             if (messageType == null)
             {
-                throw new ArgumentNullException("messageType");
+                throw new ArgumentNullException(nameof(messageType));
             }
             _mapping.Add(messageType, strategy);
         }              
@@ -34,7 +34,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             return TryGetStrategy(message.GetType(), out strategy);
         }

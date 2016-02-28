@@ -119,7 +119,7 @@ namespace Kingo.Messaging
         {
             if (processor == null)
             {
-                throw new ArgumentNullException("processor");
+                throw new ArgumentNullException(nameof(processor));
             }            
             return processor.HandleAsync(message);
         }

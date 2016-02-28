@@ -29,11 +29,11 @@ namespace Kingo.Messaging.Domain
         {
             if (aggregate == null)
             {
-                throw new ArgumentNullException("aggregate");
+                throw new ArgumentNullException(nameof(aggregate));
             }
             if (originalVersion == null)
             {
-                throw new ArgumentNullException("originalVersion");
+                throw new ArgumentNullException(nameof(originalVersion));
             }
             _aggregate = aggregate;
             _originalVersion = originalVersion;
@@ -53,11 +53,11 @@ namespace Kingo.Messaging.Domain
         {
             if (aggregate == null)
             {
-                throw new ArgumentNullException("aggregate");
+                throw new ArgumentNullException(nameof(aggregate));
             }
             if (originalVersion == null)
             {
-                throw new ArgumentNullException("originalVersion");
+                throw new ArgumentNullException(nameof(originalVersion));
             }
             _aggregate = aggregate;
             _originalVersion = originalVersion;
@@ -78,11 +78,11 @@ namespace Kingo.Messaging.Domain
         {
             if (aggregate == null)
             {
-                throw new ArgumentNullException("aggregate");
+                throw new ArgumentNullException(nameof(aggregate));
             }
             if (originalVersion == null)
             {
-                throw new ArgumentNullException("originalVersion");
+                throw new ArgumentNullException(nameof(originalVersion));
             }
             _aggregate = aggregate;
             _originalVersion = originalVersion;

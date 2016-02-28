@@ -15,7 +15,7 @@ namespace Kingo.Messaging.SampleApplication
         {
             if (carts == null)
             {
-                throw new ArgumentNullException("carts");
+                throw new ArgumentNullException(nameof(carts));
             }
             _carts = carts;
         }

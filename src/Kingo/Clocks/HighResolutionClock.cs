@@ -23,7 +23,7 @@ namespace Kingo.Clocks
         {
             if (referenceClock == null)
             {
-                throw new ArgumentNullException("referenceClock");
+                throw new ArgumentNullException(nameof(referenceClock));
             }
             _referenceClock = referenceClock;
 

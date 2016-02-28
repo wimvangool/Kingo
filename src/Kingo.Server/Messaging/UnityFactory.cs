@@ -90,7 +90,7 @@ namespace Kingo.Messaging
         {
             if (concreteType == null)
             {
-                throw new ArgumentNullException("concreteType");
+                throw new ArgumentNullException(nameof(concreteType));
             }
             if (abstractType == null)
             {
@@ -107,7 +107,7 @@ namespace Kingo.Messaging
         {
             if (concreteType == null)
             {
-                throw new ArgumentNullException("concreteType");
+                throw new ArgumentNullException(nameof(concreteType));
             }            
             _container.RegisterType(concreteType, new PerUnitOfWorkLifetimeManager());
 
@@ -122,7 +122,7 @@ namespace Kingo.Messaging
         {
             if (concreteType == null)
             {
-                throw new ArgumentNullException("concreteType");
+                throw new ArgumentNullException(nameof(concreteType));
             }
             _container.RegisterType(concreteType, new ContainerControlledLifetimeManager());
 
@@ -137,7 +137,7 @@ namespace Kingo.Messaging
         {
             if (concreteType == null)
             {
-                throw new ArgumentNullException("concreteType");
+                throw new ArgumentNullException(nameof(concreteType));
             }
             if (abstractType == null)
             {

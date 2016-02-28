@@ -168,7 +168,7 @@ namespace Kingo.Messaging
         {
             if (values == null)
             {
-                throw new ArgumentNullException("values");
+                throw new ArgumentNullException(nameof(values));
             }
             if (values.Count == 0)
             {

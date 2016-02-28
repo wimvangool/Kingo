@@ -27,7 +27,7 @@ namespace Kingo.Messaging.Domain
         {
             if (aggregateType == null)
             {
-                throw new ArgumentNullException("aggregateType");
+                throw new ArgumentNullException(nameof(aggregateType));
             }
             _aggregateType = aggregateType;
         }
@@ -46,7 +46,7 @@ namespace Kingo.Messaging.Domain
         {
             if (aggregateType == null)
             {
-                throw new ArgumentNullException("aggregateType");
+                throw new ArgumentNullException(nameof(aggregateType));
             }
             _aggregateType = aggregateType;
         }

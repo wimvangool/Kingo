@@ -48,7 +48,7 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCode.Of(_classType, _interfaceType);
+            return _classType.GetHashCode() ^ _interfaceType.GetHashCode();
         }
 
         #endregion

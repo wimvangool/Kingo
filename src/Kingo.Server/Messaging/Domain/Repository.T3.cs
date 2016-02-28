@@ -244,7 +244,7 @@ namespace Kingo.Messaging.Domain
         {
             if (ReferenceEquals(key, null))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
             TAggregate aggregate;
 
@@ -400,7 +400,7 @@ namespace Kingo.Messaging.Domain
         {
             if (aggregate == null)
             {
-                throw new ArgumentNullException("aggregate");
+                throw new ArgumentNullException(nameof(aggregate));
             }
             // When adding a new aggregate, we first check if it is not already present in cache. If so,
             // we can ignore this operation. However, if a different aggregate is added with a key that
@@ -501,7 +501,7 @@ namespace Kingo.Messaging.Domain
         {
             if (ReferenceEquals(key, null))
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
             // When removing an aggregate, we first check whether it has been loaded (selected) before, and if so,
             // simply move it to the deleted-aggregates set. If it was inserted before (a very strange but possible

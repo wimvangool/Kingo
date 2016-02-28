@@ -99,7 +99,7 @@ namespace Kingo.Constraints
         {
             if (innerConstraintFactory == null)
             {
-                throw new ArgumentNullException("innerConstraintFactory");
+                throw new ArgumentNullException(nameof(innerConstraintFactory));
             }
             var childConstraintSet = new ChildConstraintSet<T, TResult>(this, memberFactory);
 
@@ -193,7 +193,7 @@ namespace Kingo.Constraints
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
             return _haltOnFirstError
                 ? WriteOnlyFirstError(instance, reader)

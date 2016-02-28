@@ -24,7 +24,7 @@ namespace Kingo.Messaging
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException(nameof(handler));
             }            
             _handler = message =>
             {                
@@ -43,7 +43,7 @@ namespace Kingo.Messaging
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException(nameof(handler));
             }
             _handler = handler;
         }

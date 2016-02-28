@@ -96,7 +96,7 @@ namespace Kingo.Messaging
         {
             if (obj == null)
             {
-                throw new ArgumentNullException("obj");
+                throw new ArgumentNullException(nameof(obj));
             }
             try
             {

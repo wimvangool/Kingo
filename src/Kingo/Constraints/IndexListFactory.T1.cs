@@ -44,7 +44,7 @@ namespace Kingo.Constraints
         {
             if (indexFactory == null)
             {
-                throw new ArgumentNullException("indexFactory");
+                throw new ArgumentNullException(nameof(indexFactory));
             }
             _indexFactoryList.Add(indexFactory);
         }

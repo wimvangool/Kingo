@@ -18,7 +18,7 @@ namespace Kingo.Messaging
             _validator = new MemberConstraintSet<Scenario<TMessage>>(true);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc /> 
         protected override IFormatProvider FormatProvider
         {
             get { return Scenario.FormatProvider; }
@@ -34,13 +34,13 @@ namespace Kingo.Messaging
             get { return _validator; }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc /> 
         public void Execute()
         {
             ExecuteAsync().Wait();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc /> 
         public abstract Task ExecuteAsync();
 
         internal void ValidateExpectations()
@@ -54,7 +54,7 @@ namespace Kingo.Messaging
         {
             if (errorMessage == null)
             {
-                throw new ArgumentNullException("errorMessage");
+                throw new ArgumentNullException(nameof(errorMessage));
             }
             Scenario.OnVerificationFailed(errorMessage);
         }         

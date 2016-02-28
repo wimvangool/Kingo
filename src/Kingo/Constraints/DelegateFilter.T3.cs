@@ -11,7 +11,7 @@ namespace Kingo.Constraints
         {
             if (fieldOrProperty == null)
             {
-                throw new ArgumentNullException("fieldOrProperty");
+                throw new ArgumentNullException(nameof(fieldOrProperty));
             }
             _instance = instance;
             _fieldOrProperty = fieldOrProperty;
@@ -66,7 +66,7 @@ namespace Kingo.Constraints
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             return true;
         }
@@ -76,7 +76,7 @@ namespace Kingo.Constraints
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             valueOut = _fieldOrProperty.Invoke(_instance, value);
             return true;

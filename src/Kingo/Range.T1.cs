@@ -150,7 +150,7 @@ namespace Kingo
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return HashCode.Of(_options, _left, _right);
+            return GetType().GetHashCode();
         }
 
         #endregion

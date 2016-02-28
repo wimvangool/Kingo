@@ -56,7 +56,7 @@ namespace Kingo.Messaging.Domain
         {
             if (eventHandler == null)
             {
-                throw new ArgumentNullException("eventHandler");
+                throw new ArgumentNullException(nameof(eventHandler));
             }
             try
             {

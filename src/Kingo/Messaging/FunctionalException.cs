@@ -24,7 +24,7 @@ namespace Kingo.Messaging
         {
             if (failedMessage == null)
             {
-                throw new ArgumentNullException("failedMessage");
+                throw new ArgumentNullException(nameof(failedMessage));
             }
             _failedMessage = failedMessage;
         }
@@ -42,7 +42,7 @@ namespace Kingo.Messaging
         {
             if (failedMessage == null)
             {
-                throw new ArgumentNullException("failedMessage");
+                throw new ArgumentNullException(nameof(failedMessage));
             }
             _failedMessage = failedMessage;
         }
@@ -61,7 +61,7 @@ namespace Kingo.Messaging
         {
             if (failedMessage == null)
             {
-                throw new ArgumentNullException("failedMessage");
+                throw new ArgumentNullException(nameof(failedMessage));
             }
             _failedMessage = failedMessage;
         }

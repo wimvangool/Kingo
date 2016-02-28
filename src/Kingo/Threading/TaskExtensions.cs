@@ -22,7 +22,7 @@ namespace Kingo.Threading
         {
             if (task == null)
             {
-                throw new ArgumentNullException("task");
+                throw new ArgumentNullException(nameof(task));
             }
             try
             {
@@ -75,7 +75,7 @@ namespace Kingo.Threading
         {
             if (task == null)
             {
-                throw new ArgumentNullException("task");
+                throw new ArgumentNullException(nameof(task));
             }
             try
             {
@@ -103,7 +103,7 @@ namespace Kingo.Threading
         {
             if (task == null)
             {
-                throw new ArgumentNullException("task");
+                throw new ArgumentNullException(nameof(task));
             }
             return task.GetAwaiter().GetResult();
         }
@@ -121,7 +121,7 @@ namespace Kingo.Threading
         {
             if (exception == null)
             {
-                throw new ArgumentNullException("exception");
+                throw new ArgumentNullException(nameof(exception));
             }
             if (exception.InnerExceptions.Count == 0)
             {

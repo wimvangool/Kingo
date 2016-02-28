@@ -86,11 +86,11 @@ namespace Kingo.Messaging
         {            
             if (types == null)
             {
-                throw new ArgumentNullException("types");
+                throw new ArgumentNullException(nameof(types));
             }
             if (concreteTypePredicate == null)
             {
-                throw new ArgumentNullException("concreteTypePredicate");
+                throw new ArgumentNullException(nameof(concreteTypePredicate));
             }
             foreach (var dependency in FindDependencies(types, concreteTypePredicate, configurationFactory))
             {
@@ -109,11 +109,11 @@ namespace Kingo.Messaging
         {
             if (types == null)
             {
-                throw new ArgumentNullException("types");
+                throw new ArgumentNullException(nameof(types));
             }           
             if (abstractTypePredicate == null)
             {
-                throw new ArgumentNullException("abstractTypePredicate");
+                throw new ArgumentNullException(nameof(abstractTypePredicate));
             }
             foreach (var dependency in FindDependencies(types, concreteTypePredicate, abstractTypePredicate, configurationFactory))
             {

@@ -25,7 +25,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             _constraint = constraint;
             _errorMessageArgument = errorMessageArgument;

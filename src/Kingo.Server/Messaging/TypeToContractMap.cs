@@ -28,7 +28,7 @@ namespace Kingo.Messaging
         {
             if (typesToScan == null)
             {
-                throw new ArgumentNullException("typesToScan");
+                throw new ArgumentNullException(nameof(typesToScan));
             }
             _mappings = new Lazy<Tuple<IReadOnlyDictionary<Type, string>, IReadOnlyDictionary<string, Type>>>(() => CreateMapping(typesToScan), true);
             _contractDelimiter = string.IsNullOrEmpty(contractDelimiter) ? @"/" : contractDelimiter;
@@ -45,7 +45,7 @@ namespace Kingo.Messaging
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
             string contract;
 
@@ -61,7 +61,7 @@ namespace Kingo.Messaging
         {
             if (contract == null)
             {
-                throw new ArgumentNullException("contract");
+                throw new ArgumentNullException(nameof(contract));
             }
             Type type;
 
@@ -186,7 +186,7 @@ namespace Kingo.Messaging
         {
             if (layers == null)
             {
-                throw new ArgumentNullException("layers");
+                throw new ArgumentNullException(nameof(layers));
             }
             var layersToScan = layers.ApiLayer + layers.DomainLayer + layers.DataAccessLayer;
             var typesToScan =

@@ -178,7 +178,7 @@ namespace Kingo.Constraints
         {
             if (pattern == null)
             {
-                throw new ArgumentNullException("pattern");
+                throw new ArgumentNullException(nameof(pattern));
             }
             Pattern = pattern;
         }

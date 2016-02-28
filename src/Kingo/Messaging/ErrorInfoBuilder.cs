@@ -57,7 +57,7 @@ namespace Kingo.Messaging
         {
             if (errorMessage == null)
             {
-                throw new ArgumentNullException("errorMessage");
+                throw new ArgumentNullException(nameof(errorMessage));
             }
             GetOrAddErrorList(memberName).Add(inheritanceLevel, errorMessage);
         }

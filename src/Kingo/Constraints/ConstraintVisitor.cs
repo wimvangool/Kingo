@@ -12,11 +12,11 @@ namespace Kingo.Constraints
         {
             if (andConstraint == null)
             {
-                throw new ArgumentNullException("andConstraint");
+                throw new ArgumentNullException(nameof(andConstraint));
             }
             if (childConstraints == null)
             {
-                throw new ArgumentNullException("childConstraints");
+                throw new ArgumentNullException(nameof(childConstraints));
             }
             VisitAnd(andConstraint);
 
@@ -36,11 +36,11 @@ namespace Kingo.Constraints
         {
             if (orConstraint == null)
             {
-                throw new ArgumentNullException("orConstraint");
+                throw new ArgumentNullException(nameof(orConstraint));
             }
             if (childConstraints == null)
             {
-                throw new ArgumentNullException("childConstraints");
+                throw new ArgumentNullException(nameof(childConstraints));
             }
             VisitOr(orConstraint);
 
@@ -60,11 +60,11 @@ namespace Kingo.Constraints
         {
             if (inverseConstraint == null)
             {
-                throw new ArgumentNullException("inverseConstraint");
+                throw new ArgumentNullException(nameof(inverseConstraint));
             }
             if (invertedConstraint == null)
             {
-                throw new ArgumentNullException("invertedConstraint");
+                throw new ArgumentNullException(nameof(invertedConstraint));
             }
             VisitInverse(inverseConstraint);
 
@@ -81,7 +81,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             Visit(constraint);
         }

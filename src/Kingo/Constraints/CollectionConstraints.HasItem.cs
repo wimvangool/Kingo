@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Kingo.DynamicMethods;
 using Kingo.Resources;
 
 namespace Kingo.Constraints
@@ -34,7 +35,7 @@ namespace Kingo.Constraints
 
             public int GetHashCode(Tuple<Type, Type[]> obj)
             {
-                return HashCode.Of(obj.Item1);
+                return GetHashCodeMethod.Invoke(obj.Item1);
             }
         }
 
@@ -145,7 +146,7 @@ namespace Kingo.Constraints
         {
             if (ReferenceEquals(value, null))
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             try
             {

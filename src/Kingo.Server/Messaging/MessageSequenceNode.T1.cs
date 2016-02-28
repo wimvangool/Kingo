@@ -35,7 +35,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             _message = message;
             _handler = new MessageHandlerDelegate<TMessage>(handler);  
@@ -53,7 +53,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             _message = message;
             _handler = new MessageHandlerDelegate<TMessage>(handler);
@@ -71,7 +71,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             _message = message;
             _handler = handler;            
@@ -90,7 +90,7 @@ namespace Kingo.Messaging
         {
             if (processor == null)
             {
-                throw new ArgumentNullException("processor");
+                throw new ArgumentNullException(nameof(processor));
             }
             return processor.HandleAsync(_message, _handler, token);
         }

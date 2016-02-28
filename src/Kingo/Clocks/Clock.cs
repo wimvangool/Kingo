@@ -99,7 +99,7 @@ namespace Kingo.Clocks
         {
             if (clock == null)
             {
-                throw new ArgumentNullException("clock");
+                throw new ArgumentNullException(nameof(clock));
             }
             return _Context.OverrideThreadLocal(clock);
         }
@@ -137,7 +137,7 @@ namespace Kingo.Clocks
         {
             if (clock == null)
             {
-                throw new ArgumentNullException("clock");
+                throw new ArgumentNullException(nameof(clock));
             }
             return _Context.OverrideAsyncLocal(clock);
         }
@@ -175,7 +175,7 @@ namespace Kingo.Clocks
         {
             if (clock == null)
             {
-                throw new ArgumentNullException("clock");
+                throw new ArgumentNullException(nameof(clock));
             }
             return _Context.Override(clock);
         }           

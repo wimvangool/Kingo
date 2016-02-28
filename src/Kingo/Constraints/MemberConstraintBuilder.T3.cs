@@ -48,7 +48,7 @@ namespace Kingo.Constraints
         {            
             if (fieldOrProperty == null)
             {
-                throw new ArgumentNullException("fieldOrProperty");
+                throw new ArgumentNullException(nameof(fieldOrProperty));
             }
             var transformer = fieldOrPropertyName == null
                 ? new MemberTransformer()
@@ -122,7 +122,7 @@ namespace Kingo.Constraints
         {
             if (indexList == null)
             {
-                throw new ArgumentNullException("indexList");
+                throw new ArgumentNullException(nameof(indexList));
             }
             var builder = Satisfies(instance =>
             {
@@ -148,7 +148,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             return Satisfies(message => constraint);
         }
@@ -157,7 +157,7 @@ namespace Kingo.Constraints
         {
             if (constraintFactory == null)
             {
-                throw new ArgumentNullException("constraintFactory");
+                throw new ArgumentNullException(nameof(constraintFactory));
             }
             return Satisfies(message => constraintFactory.Invoke(message).MapInputToOutput());
         }
@@ -166,7 +166,7 @@ namespace Kingo.Constraints
         {
             if (constraint == null)
             {
-                throw new ArgumentNullException("constraint");
+                throw new ArgumentNullException(nameof(constraint));
             }
             return Satisfies(message => constraint);
         }
@@ -175,7 +175,7 @@ namespace Kingo.Constraints
         {
             if (constraintFactory == null)
             {
-                throw new ArgumentNullException("constraintFactory");
+                throw new ArgumentNullException(nameof(constraintFactory));
             }
             return Satisfies(constraintFactory, new MemberTransformer());
         }

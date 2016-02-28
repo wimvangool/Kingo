@@ -10,7 +10,7 @@ namespace Kingo.Constraints
         {            
             if (fieldOrProperty == null)
             {
-                throw new ArgumentNullException("fieldOrProperty");
+                throw new ArgumentNullException(nameof(fieldOrProperty));
             }            
             _memberFactory = instance =>
             {

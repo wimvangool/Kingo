@@ -17,11 +17,11 @@ namespace Kingo.Messaging.Domain
         {
             if (typeToContractMap == null)
             {
-                throw new ArgumentNullException("typeToContractMap");
+                throw new ArgumentNullException(nameof(typeToContractMap));
             }
             if (snapshot == null)
             {
-                throw new ArgumentNullException("snapshot");
+                throw new ArgumentNullException(nameof(snapshot));
             }
             _typeToContractMap = typeToContractMap;
             _snapshot = snapshot;

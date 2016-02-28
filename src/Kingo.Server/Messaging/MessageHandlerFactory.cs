@@ -85,7 +85,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             return from handlerClass in _messageHandlers
                    let handlers = handlerClass.CreateInstancesInEveryRoleFor(message, source)
@@ -107,7 +107,7 @@ namespace Kingo.Messaging
         {
             if (layers == null)
             {
-                throw new ArgumentNullException("layers");
+                throw new ArgumentNullException(nameof(layers));
             }
             return layers.ApplicationLayer + layers.DataAccessLayer;
         }
@@ -160,7 +160,7 @@ namespace Kingo.Messaging
         {
             if (layers == null)
             {
-                throw new ArgumentNullException("layers");
+                throw new ArgumentNullException(nameof(layers));
             }
             return layers.DomainLayer + layers.DataAccessLayer;
         }

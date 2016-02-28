@@ -129,7 +129,7 @@ namespace Kingo.Constraints
         {
             if (prefix == null)
             {
-                throw new ArgumentNullException("prefix");
+                throw new ArgumentNullException(nameof(prefix));
             }
             Prefix = prefix;
             CompareType = compareType;
@@ -190,7 +190,7 @@ namespace Kingo.Constraints
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             return value.StartsWith(Prefix, CompareType);
         }

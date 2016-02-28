@@ -23,7 +23,7 @@ namespace Kingo.Messaging
         {            
             if (query == null)
             {
-                throw new ArgumentNullException("query");
+                throw new ArgumentNullException(nameof(query));
             }
             _query = message => Task<TMessageOut>.Factory.StartNew(() => query.Invoke(message));
         }
@@ -39,7 +39,7 @@ namespace Kingo.Messaging
         {
             if (query == null)
             {
-                throw new ArgumentNullException("query");
+                throw new ArgumentNullException(nameof(query));
             }
             _query = query;
         }
@@ -49,7 +49,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             return _query.Invoke(message);
         }        

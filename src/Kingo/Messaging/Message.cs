@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
+using Kingo.DynamicMethods;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
@@ -14,8 +15,24 @@ namespace Kingo.Messaging
     /// Provides a base-implementation of the <see cref="IMessage" /> interface.
     /// </summary>
     [Serializable]    
-    public abstract partial class Message : IMessage
-    {        
+    public abstract class Message : IMessage
+    {
+        #region [====== Equals & GetHashCode ======]
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return EqualsMethod.Invoke(this, obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return GetHashCodeMethod.Invoke(this);
+        }
+
+        #endregion
+
         #region [====== Copy ======]
 
         object ICloneable.Clone()
@@ -104,7 +121,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             var messageType = message.GetType();
             var attributes = SelectAttributesOfType<TStrategy>(messageType);
@@ -140,7 +157,7 @@ namespace Kingo.Messaging
         {
             if (message == null)
             {
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             }
             return SelectAttributesOfType<TAttribute>(message.GetType());
         }
@@ -159,7 +176,7 @@ namespace Kingo.Messaging
         {
             if (messageType == null)
             {
-                throw new ArgumentNullException("messageType");
+                throw new ArgumentNullException(nameof(messageType));
             }
             return from attribute in _MessageAttributeCache.GetOrAdd(messageType, GetDeclaredAttributesOn)
                    let targetAttribute = attribute as TAttribute

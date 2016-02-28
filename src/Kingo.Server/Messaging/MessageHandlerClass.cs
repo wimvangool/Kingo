@@ -94,7 +94,7 @@ namespace Kingo.Messaging
         {
             if (types == null)
             {
-                throw new ArgumentNullException("types");
+                throw new ArgumentNullException(nameof(types));
             }
             var messageHandlers = new List<MessageHandlerClass>();
 

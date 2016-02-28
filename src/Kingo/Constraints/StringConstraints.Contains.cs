@@ -121,7 +121,7 @@ namespace Kingo.Constraints
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             Value = value;
         }
@@ -179,7 +179,7 @@ namespace Kingo.Constraints
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             return value.Contains(Value);
         }

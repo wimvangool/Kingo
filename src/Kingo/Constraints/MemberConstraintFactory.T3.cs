@@ -43,11 +43,11 @@ namespace Kingo.Constraints
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }            
             var constraint = CreateMemberConstraint(instance);
             var member = _memberFactory.CreateMember(instance);

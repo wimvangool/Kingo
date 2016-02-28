@@ -12,11 +12,11 @@ namespace Kingo.Messaging
         {
             if (eventBus == null)
             {
-                throw new ArgumentNullException("eventBus");
+                throw new ArgumentNullException(nameof(eventBus));
             }
             if (domainEvent == null)
             {
-                throw new ArgumentNullException("domainEvent");
+                throw new ArgumentNullException(nameof(domainEvent));
             }
             _eventBus = eventBus;
             _domainEvent = domainEvent;

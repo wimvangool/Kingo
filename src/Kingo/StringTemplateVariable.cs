@@ -71,7 +71,7 @@ namespace Kingo
 
         public override int GetHashCode()
         {
-            return HashCode.Of(_identifier, _expression, _format, _nextComponent);
+            return _identifier.GetHashCode();
         }
 
         #endregion
@@ -89,7 +89,7 @@ namespace Kingo
         {
             if (identifier == null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
             var nextComponent = _nextComponent == null ? null : _nextComponent.Format(identifier, argument, formatProvider);
 

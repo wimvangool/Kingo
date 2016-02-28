@@ -20,7 +20,7 @@ namespace Kingo.Clocks
         {
             if (utcDateAndTimeFactory == null)
             {
-                throw new ArgumentNullException("utcDateAndTimeFactory");
+                throw new ArgumentNullException(nameof(utcDateAndTimeFactory));
             }
             _utcDateAndTimeFactory = utcDateAndTimeFactory;
         }
