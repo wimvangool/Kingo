@@ -6,5 +6,5 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
 
-[assembly: AssemblyTitle("Kingo.Server.TestEngine.Tests")]
+[assembly: AssemblyTitle("Kingo.TestEngine.Tests")]
 [assembly: AssemblyDescription("Contains all unit tests for the MessageProcessing.TestEngine library.")]

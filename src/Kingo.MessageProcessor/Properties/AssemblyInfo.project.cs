@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
 
-[assembly: AssemblyTitle("Kingo.Server")]
+[assembly: AssemblyTitle("Kingo.MessageProcessor")]
 [assembly: AssemblyDescription("Contains components to build applications based on messaging patterns.")]
-[assembly: AssemblyVersion("2.2.0")]
-[assembly: AssemblyFileVersion("2.2.0")]
-[assembly: AssemblyInformationalVersion("2.2.0-beta")]
+[assembly: AssemblyVersion("2.2.1")]
+[assembly: AssemblyFileVersion("2.2.1")]
+[assembly: AssemblyInformationalVersion("2.2.1-beta")]
 
-[assembly: InternalsVisibleTo("Kingo.Server.Tests," +
+[assembly: InternalsVisibleTo("Kingo.MessageProcessor.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +
 "1310004000001000100033d27f9556e2293e38230218e9ca34b5e9d" +
 "a10d86fce2b4568d7147eb147505d6b68d32ff0074f848907c661fa" +
