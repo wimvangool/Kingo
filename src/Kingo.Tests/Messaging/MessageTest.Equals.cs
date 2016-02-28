@@ -15,6 +15,7 @@ namespace Kingo.Messaging
     {        
         #region [====== Equals - General Logic ======]
 
+        [Serializable]
         private abstract class TestMessage : Message
         {
             public abstract int ExpectedHashCode();

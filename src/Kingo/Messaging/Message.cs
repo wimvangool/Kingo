@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using Kingo.DynamicMethods;
 using Kingo.Resources;
@@ -35,6 +36,8 @@ namespace Kingo.Messaging
 
         #region [====== Copy ======]
 
+        private static readonly ConcurrentDictionary<Type, Func<object, object>> _CopyMethods = new ConcurrentDictionary<Type, Func<object, object>>();
+
         object ICloneable.Clone()
         {
             return Copy();
@@ -52,17 +55,60 @@ namespace Kingo.Messaging
         /// <returns>A copy of this message.</returns>
         public virtual Message Copy()
         {
-            var memoryStream = new MemoryStream();
-            var writer = XmlDictionaryWriter.CreateBinaryWriter(memoryStream);
-            var reader = XmlDictionaryReader.CreateBinaryReader(memoryStream, XmlDictionaryReaderQuotas.Max);
-            var serializer = new DataContractSerializer(GetType());
+            return (Message) _CopyMethods.GetOrAdd(GetType(), DetermineCopyMethod).Invoke(this);
+        }           
 
-            serializer.WriteObject(writer, this);
-            writer.Flush();
-            memoryStream.Position = 0;
+        private static Func<object, object> DetermineCopyMethod(Type messageType)
+        {
+            if (HasAttribute(messageType, typeof(DataContractAttribute)))
+            {
+                return CopyWithDataContractSerializer;
+            }
+            if (HasAttribute(messageType, typeof(SerializableAttribute)))
+            {
+                return CopyWithBinaryFormatter;
+            }
+            return CopyNotSupported;
+        }
 
-            return (Message) serializer.ReadObject(reader);
-        }    
+        private static bool HasAttribute(Type messageType, Type attributeType)
+        {
+            return messageType.GetCustomAttributes(attributeType).Any();
+        }
+
+        private static object CopyWithDataContractSerializer(object instance)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                var writer = XmlDictionaryWriter.CreateBinaryWriter(memoryStream);
+                var reader = XmlDictionaryReader.CreateBinaryReader(memoryStream, XmlDictionaryReaderQuotas.Max);
+                var serializer = new DataContractSerializer(instance.GetType());
+
+                serializer.WriteObject(writer, instance);
+                writer.Flush();
+                memoryStream.Position = 0;
+
+                return serializer.ReadObject(reader);
+            }
+        }
+
+        private static object CopyWithBinaryFormatter(object instance)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(memoryStream, instance);
+                memoryStream.Position = 0;
+                return formatter.Deserialize(memoryStream);
+            }
+        }
+
+        private static object CopyNotSupported(object instance)
+        {
+            var messageFormat = ExceptionMessages.Message_CopyNotSupported;
+            var message = string.Format(messageFormat, instance.GetType());
+            throw new NotSupportedException(message);
+        }
 
         #endregion      
 

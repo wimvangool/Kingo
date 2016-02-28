@@ -180,6 +180,9 @@
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>
   </data>
+  <data name="Message_CopyNotSupported" xml:space="preserve">
+    <value>Message of type '{0}' could not be copied because it is neither a DataContract nor Serializable. Mark this message with the DataContractAttribute or the SerializableAttribute, or provide a custom implementation of the Copy()-method by overridding it.</value>
+  </data>
   <data name="Range_InvalidRange" xml:space="preserve">
     <value>The specified range is not valid: {0}.</value>
   </data>

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Kingo.Clocks;
 using Kingo.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,14 +9,7 @@ namespace Kingo.Messaging
 {
     [TestClass]
     public sealed partial class MessageTest
-    {        
-        #region [====== MessageWithoutFields ======]
-
-        [DataContract]
-        private sealed class MessageWithoutFields : Message { }
-
-        #endregion
-
+    {                
         #region [====== MessageWithoutAttributes ======]
 
         private sealed class MessageWithoutAttributes : Message
@@ -81,27 +74,38 @@ namespace Kingo.Messaging
         #region [====== Copy ======]
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidDataContractException))]
+        [ExpectedException(typeof(NotSupportedException))]
         public void Copy_Throws_IfMessageLacksRequiredAttributes()
         {            
-            new MessageWithoutAttributes(RandomValue()).Copy();            
+            new MessageWithoutAttributes(GenerateIntValue()).Copy();            
+        }
+
+        [TestMethod]
+        public void Copy_ReturnsExpectedCopy_IfMessageIsSerializable()
+        {
+            var message = new SerializableMessage(GenerateIntValue(), GenerateStringValue());
+            var copy = message.Copy() as SerializableMessage;
+
+            Assert.IsNotNull(copy);
+            Assert.AreNotSame(message, copy);
+            Assert.AreEqual(message, copy);
         }
 
         [TestMethod]
         public void Copy_ReturnsExpectedCopy_IfMessageHasNoMembersToCopy()
         {
             var message = new EmptyMessage();
-            var copy = message.Copy();
+            var copy = message.Copy() as EmptyMessage;
 
             Assert.IsNotNull(copy);
-            Assert.AreNotSame(message, copy);
+            Assert.AreNotSame(message, copy);            
         }
 
         [TestMethod]
         public void Copy_ReturnsExpectedCopy_IsMessageSpecifiesMemberAttributes()
         {
-            var values = new[] { RandomValue(), RandomValue() + 1, RandomValue() + 2 };
-            var message = new MessageWithPrimitiveMembers(RandomValue(), values);
+            var values = new[] { GenerateIntValue(), GenerateIntValue() + 1, GenerateIntValue() + 2 };
+            var message = new MessageWithPrimitiveMembers(GenerateIntValue(), values);
             var copy = (MessageWithPrimitiveMembers) message.Copy();
 
             Assert.IsNotNull(copy);
@@ -117,8 +121,8 @@ namespace Kingo.Messaging
         [TestMethod]
         public void Copy_ReturnsExpectedCopy_IfMessageContainsMemberOfOwnType()
         {
-            var child = new MessageWithMemberOfOwnType(RandomValue(), null);
-            var message = new MessageWithMemberOfOwnType(RandomValue() + 1, child);
+            var child = new MessageWithMemberOfOwnType(GenerateIntValue(), null);
+            var message = new MessageWithMemberOfOwnType(GenerateIntValue() + 1, child);
             var copy = (MessageWithMemberOfOwnType) message.Copy();
 
             Assert.IsNotNull(copy);
@@ -156,11 +160,6 @@ namespace Kingo.Messaging
             Assert.AreEqual("IntValues must not be null and contain at least one element.", errorInfo.MemberErrors["IntValues"]);
         }
 
-        #endregion        
-
-        private static int RandomValue()
-        {
-            return Clock.Current.LocalDateAndTime().Millisecond;
-        }
+        #endregion                
     }
 }
