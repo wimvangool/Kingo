@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kingo</RootNamespace>
-    <AssemblyName>Kingo.Server.TestEngine</AssemblyName>
+    <AssemblyName>Kingo.TestEngine</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -38,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Kingo.Server.TestEngine.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Kingo.TestEngine.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
@@ -93,7 +93,7 @@
     <None Include="..\Kingo.snk">
       <Link>Properties\Kingo.snk</Link>
     </None>
-    <None Include="Properties\Kingo.Server.TestEngine.nuspec" />
+    <None Include="Properties\Kingo.TestEngine.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
