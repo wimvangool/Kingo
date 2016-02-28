@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{002BBBBE-42B2-4618-B560-509798888BE6}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,15 +12,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A.Kingo.Client", "A.Kingo.Client", "{C3F19C5E-9EAD-4324-9B07-129C32CFA05B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.Kingo.Server", "B.Kingo.Server", "{72205C90-C23B-4086-8580-050201371032}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B.Kingo.MessageProcessor", "B.Kingo.MessageProcessor", "{72205C90-C23B-4086-8580-050201371032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Kingo.Server.TestEngine.Tests", "Kingo.Server.TestEngine.Tests\01.Kingo.Server.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Kingo.TestEngine.Tests", "Kingo.TestEngine.Tests\01.Kingo.TestEngine.Tests.csproj", "{4FE972F0-2046-4039-9461-45D0B7E6229F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Kingo.Server.TestEngine", "Kingo.Server.TestEngine\02.Kingo.Server.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Kingo.TestEngine", "Kingo.TestEngine\02.Kingo.TestEngine.csproj", "{FA31C09F-6319-484B-96EC-88BF3C3FDB81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Kingo.Server.Tests", "Kingo.Server.Tests\03.Kingo.Server.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Kingo.MessageProcessor.Tests", "Kingo.MessageProcessor.Tests\03.Kingo.MessageProcessor.Tests.csproj", "{303380DB-4167-4BB0-8B78-63C959B65C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Kingo.Server", "Kingo.Server\04.Kingo.Server.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Kingo.MessageProcessor", "Kingo.MessageProcessor\04.Kingo.MessageProcessor.csproj", "{757D77D3-7B32-4F21-9617-88274D50B517}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C.Kingo", "C.Kingo", "{9A9694D3-C449-4492-B7EF-9AD0E3E8034C}"
 EndProject

@@ -3,15 +3,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
+    <ProductVersion>
+    </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</ProjectGuid>
+    <ProjectGuid>{4FE972F0-2046-4039-9461-45D0B7E6229F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kingo</RootNamespace>
-    <AssemblyName>Kingo.Server.TestEngine</AssemblyName>
+    <AssemblyName>Kingo.Server.TestEngine.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -26,7 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -37,8 +39,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Kingo.Server.TestEngine.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
@@ -48,59 +48,55 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Messaging\AlternateFlow.T1.cs" />
-    <Compile Include="Messaging\Domain\InMemoryRepository.T3.cs" />
-    <Compile Include="Messaging\ExecutionFlow.T1.cs" />
-    <Compile Include="Messaging\HappyFlow.T1.cs" />
-    <Compile Include="Messaging\IExecutable.cs" />
-    <Compile Include="Messaging\ScenarioMode.cs" />
+    <Compile Include="Messaging\DomainEvent.cs" />
+    <Compile Include="Messaging\ScenarioTestProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Messaging\Scenario.cs" />
-    <Compile Include="Messaging\Scenario.T1.cs" />
-    <Compile Include="Resources\ExceptionMessages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ExceptionMessages.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Messaging\ScenarioTest.cs" />
+    <Compile Include="Messaging\TheCommand.cs" />
+    <Compile Include="Messaging\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.Server\04.Kingo.Server.csproj">
+    <ProjectReference Include="..\Kingo.MessageProcessor.Tests\03.Kingo.MessageProcessor.Tests.csproj">
+      <Project>{303380db-4167-4bb0-8b78-63c959b65c4b}</Project>
+      <Name>03.Kingo.MessageProcessor.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kingo.MessageProcessor\04.Kingo.MessageProcessor.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>04.Kingo.Server</Name>
-      <Private>False</Private>
+      <Name>04.Kingo.MessageProcessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj">
+      <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>
+      <Name>02.Kingo.TestEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>02.Kingo</Name>
-      <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Kingo.snk">
       <Link>Properties\Kingo.snk</Link>
     </None>
-    <None Include="Properties\Kingo.Server.TestEngine.nuspec" />
+    <None Include="Properties\packages.config" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF $(ConfigurationName) == Release (
-    "$(SolutionDir)BuildNuGetPackage.bat" "$(ProjectPath)" "$(SolutionDir)..\output"
-)</PostBuildEvent>
-  </PropertyGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

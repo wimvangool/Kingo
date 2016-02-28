@@ -110,9 +110,9 @@
     <Compile Include="Threading\TaskExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.Server\04.Kingo.Server.csproj">
+    <ProjectReference Include="..\Kingo.MessageProcessor\04.Kingo.MessageProcessor.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>04.Kingo.Server</Name>
+      <Name>04.Kingo.MessageProcessor</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kingo.Tests\01.Kingo.Tests.csproj">
       <Project>{9697eaca-8e8f-451b-ae46-cf081559e0ed}</Project>
