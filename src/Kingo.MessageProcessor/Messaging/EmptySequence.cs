@@ -23,7 +23,7 @@ namespace Kingo.Messaging
 
         public override IMessageSequence Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
         {
-            return new MessageSequenceNode<TMessage>(message, handler);
+            return new MessageToHandle<TMessage>(message, handler);
         }
     }
 }

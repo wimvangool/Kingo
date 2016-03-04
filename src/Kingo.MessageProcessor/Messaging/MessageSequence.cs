@@ -35,7 +35,7 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         public IMessageSequence Append<TMessage>(TMessage message) where TMessage : class, IMessage
         {
-            return new MessageSequencePair(this, new MessageSequenceNode<TMessage>(message));
+            return new MessageSequencePair(this, new MessageToHandle<TMessage>(message));
         }
 
         /// <inheritdoc />
@@ -53,7 +53,7 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         public virtual IMessageSequence Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) where TMessage : class, IMessage
         {
-            return new MessageSequencePair(this, new MessageSequenceNode<TMessage>(message, handler));
+            return new MessageSequencePair(this, new MessageToHandle<TMessage>(message, handler));
         }
 
         /// <summary>

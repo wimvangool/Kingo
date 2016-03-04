@@ -46,7 +46,7 @@ namespace Kingo.Messaging
                 throw _exceptionToThrow;
             }
 
-            protected override TheCommand When()
+            protected override MessageToHandle<TheCommand> When()
             {
                 return null;
             }           
@@ -61,7 +61,7 @@ namespace Kingo.Messaging
                 _exceptionToThrow = exceptionToThrow;
             }
 
-            protected override TheCommand When()
+            protected override MessageToHandle<TheCommand> When()
             {
                 return new TheCommand
                 {
@@ -86,7 +86,7 @@ namespace Kingo.Messaging
                 _testcase = testcase;
             }
 
-            protected override TheCommand When()
+            protected override MessageToHandle<TheCommand> When()
             {
                 return new TheCommand
                 {

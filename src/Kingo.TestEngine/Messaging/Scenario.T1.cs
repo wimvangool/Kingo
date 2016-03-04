@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace Kingo.Messaging
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>    
     public abstract class Scenario<TMessage> : Scenario where TMessage : class, IMessage
     {        
-        private readonly Lazy<TMessage> _message;                       
+        private readonly Lazy<MessageToHandle<TMessage>> _message;                       
         private readonly List<object> _publishedEvents;        
 
         /// <summary>
@@ -24,7 +23,7 @@ namespace Kingo.Messaging
         protected Scenario(ScenarioMode mode = ScenarioMode.WriteOnly)
             : base(mode)
         {           
-            _message = new Lazy<TMessage>(When);            
+            _message = new Lazy<MessageToHandle<TMessage>>(When);            
             _publishedEvents = new List<object>();
         }        
 
@@ -33,7 +32,7 @@ namespace Kingo.Messaging
         /// </summary>
         public TMessage Message
         {
-            get { return _message.Value; }
+            get { return _message.Value.Message; }
         }
 
         /// <summary>
@@ -84,8 +83,7 @@ namespace Kingo.Messaging
 
         /// <summary>
         /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
-        /// </summary>                
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        /// </summary>                        
         public sealed override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
         {                        
             await CreateSetupSequence().ProcessWithAsync(processor, token);
@@ -95,7 +93,7 @@ namespace Kingo.Messaging
             
             try
             {
-                await HandleAsync(processor, Message);
+                await _message.Value.ProcessWithAsync(processor, token);
             }                   
             catch (FunctionalException exception)
             {                
@@ -105,24 +103,7 @@ namespace Kingo.Messaging
             {
                 connection.Dispose();
             }            
-        }           
-    
-        /// <summary>
-        /// Handles the specified <paramref name="message" /> by passing it to the specified <paramref name="processor"/>.
-        /// </summary>
-        /// <param name="processor">A message processor.</param>
-        /// <param name="message">The message to handle.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="processor"/> or <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        protected virtual Task HandleAsync(IMessageProcessor processor, TMessage message)
-        {
-            if (processor == null)
-            {
-                throw new ArgumentNullException(nameof(processor));
-            }            
-            return processor.HandleAsync(message);
-        }
+        }                    
 
         private void OnEventPublished(object domainEvent)
         {
@@ -152,7 +133,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <returns>A single message of which the effects will be verified in the Then-phase.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1716", MessageId = "When", Justification = "'When' is part of the BDD-style naming convention.")]
-        protected abstract TMessage When();                
+        protected abstract MessageToHandle<TMessage> When();                
 
         #region [====== Verification ======]
 
