@@ -129,11 +129,8 @@
   <data name="Context_IllegalScopeStarted" xml:space="preserve">
     <value>Cannot start this scope because a more restrive scope is still active.</value>
   </data>
-  <data name="DomainEvent_IncompatibleKeyType" xml:space="preserve">
-    <value>Event '{0}' contains a member marked with the KeyAttribute which type is not compatible with the Key-type of the event.</value>
-  </data>
-  <data name="DomainEvent_IncompatibleVersionType" xml:space="preserve">
-    <value>Event '{0}' contains a member marked with the VersionAttribute which type is not compatible with the Version-type of the event.</value>
+  <data name="DomainEvent_IncompatibleMemberType" xml:space="preserve">
+    <value>Member '{0}' has incorrect type '{1}'. Expected type is '{2}'.</value>
   </data>
   <data name="DomainEvent_KeyMemberNotFound" xml:space="preserve">
     <value>Could not resolve Key on event of type '{0}'. Please mark one field or property as the Key of this event.</value>

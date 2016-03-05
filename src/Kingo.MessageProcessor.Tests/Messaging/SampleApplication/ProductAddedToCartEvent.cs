@@ -3,23 +3,17 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging.SampleApplication
 {
-    internal sealed class ProductAddedToCartEvent : Message, IHasKeyAndVersion<Guid, int>
+    internal sealed class ProductAddedToCartEvent : DomainEvent<Guid, int>
     {
+        [Key]
         public Guid ShoppingCartId;
+
+        [Version]
         public int ShoppingCartVersion;
+
         public int ProductId;
         public int OldQuantity;
-        public int NewQuantity;
-
-        Guid IHasKey<Guid>.Key
-        {
-            get { return ShoppingCartId; }
-        }
-
-        int IHasKeyAndVersion<Guid, int>.Version
-        {
-            get { return ShoppingCartVersion; }
-        }        
+        public int NewQuantity;               
 
         public override Message Copy()
         {

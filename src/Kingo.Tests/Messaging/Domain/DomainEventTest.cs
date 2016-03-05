@@ -58,44 +58,6 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        private sealed class CompatibleFieldTypeEvent : DomainEvent<object, long>
-        {
-            [Key]
-            public readonly Guid Key;
-
-            [Version]
-            public readonly int Version;
-
-            public CompatibleFieldTypeEvent(Guid key, int version)
-            {
-                Key = key;
-                Version = version;
-            }
-        }
-
-        private sealed class CompatiblePropertyTypeEvent : DomainEvent<object, long>
-        {
-            [Key]
-            public Guid Key
-            {
-                get;
-                private set;
-            }
-
-            [Version]
-            public int Version
-            {
-                get;
-                private set;
-            }
-
-            public CompatiblePropertyTypeEvent(Guid key, int version)
-            {
-                Key = key;
-                Version = version;
-            }
-        }
-
         private sealed class MatchingFieldTypeEvent : DomainEvent<Guid, int>
         {
             [Key]
@@ -164,29 +126,7 @@ namespace Kingo.Messaging.Domain
             IHasKeyAndVersion<Guid, int> message = new IncompatibleMemberTypeEvent();
 
             EnsureExceptionIsThrownWhenAccessing(message.Key);
-        }
-
-        [TestMethod]
-        public void Key_ReturnsKey_IfCompatibleTypedFieldIsMarkedAsKey()
-        {
-            var key = Guid.NewGuid();
-            var version = Clock.Current.UtcDateAndTime().Millisecond;
-
-            IHasKeyAndVersion<object, long> message = new CompatibleFieldTypeEvent(key, version);
-
-            Assert.AreEqual(key, message.Key);
-        }
-
-        [TestMethod]
-        public void Key_ReturnsKey_IfCompatibleTypedPropertyIsMarkedAsKey()
-        {
-            var key = Guid.NewGuid();
-            var version = Clock.Current.UtcDateAndTime().Millisecond;
-
-            IHasKeyAndVersion<object, long> message = new CompatiblePropertyTypeEvent(key, version);
-
-            Assert.AreEqual(key, message.Key);
-        }
+        }        
 
         [TestMethod]
         public void Key_ReturnsKey_IfMatchingTypedFieldIsMarkedAsKey()
@@ -239,29 +179,7 @@ namespace Kingo.Messaging.Domain
             IHasKeyAndVersion<Guid, int> message = new IncompatibleMemberTypeEvent();
 
             EnsureExceptionIsThrownWhenAccessing(message.Version);
-        }
-
-        [TestMethod]
-        public void Version_ReturnsVersion_IfCompatibleTypedFieldIsMarkedAsVersion()
-        {
-            var key = Guid.NewGuid();
-            var version = Clock.Current.UtcDateAndTime().Millisecond;
-
-            IHasKeyAndVersion<object, long> message = new CompatibleFieldTypeEvent(key, version);
-
-            Assert.AreEqual(version, message.Version);
-        }
-
-        [TestMethod]
-        public void Version_ReturnsVersion_IfCompatibleTypedPropertyIsMarkedAsVersion()
-        {
-            var key = Guid.NewGuid();
-            var version = Clock.Current.UtcDateAndTime().Millisecond;
-
-            IHasKeyAndVersion<object, long> message = new CompatiblePropertyTypeEvent(key, version);
-
-            Assert.AreEqual(version, message.Version);
-        }
+        }        
 
         [TestMethod]
         public void Version_ReturnsVersion_IfMatchingTypedFieldIsMarkedAsVersion()

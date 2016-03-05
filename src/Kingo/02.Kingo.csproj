@@ -119,10 +119,17 @@
     <Compile Include="Messaging\CompositeValidator.cs" />
     <Compile Include="Messaging\Domain\DomainEvent.cs" />
     <Compile Include="Messaging\Domain\DomainEvent.T2.cs" />
+    <Compile Include="Messaging\Domain\DomainEventKeyMember.cs" />
+    <Compile Include="Messaging\Domain\DomainEventMember.cs" />
+    <Compile Include="Messaging\Domain\DomainEventVersionMember.cs" />
     <Compile Include="Messaging\Domain\DomainException.cs" />
+    <Compile Include="Messaging\Domain\IDomainEvent.T2.cs" />
     <Compile Include="Messaging\Domain\IHasKey.T1.cs" />
     <Compile Include="Messaging\Domain\IHasKeyAndVersion.T2.cs" />
     <Compile Include="Messaging\Domain\KeyAttribute.cs" />
+    <Compile Include="Messaging\Domain\MemberAccessExpressionFactory.cs" />
+    <Compile Include="Messaging\Domain\MemberAssignmentExpressionFactory.cs" />
+    <Compile Include="Messaging\Domain\MemberExpressionFactory.cs" />
     <Compile Include="Messaging\Domain\VersionAttribute.cs" />
     <Compile Include="Messaging\ErrorInheritanceLevel.cs" />
     <Compile Include="Messaging\ErrorMessageReader.cs" />

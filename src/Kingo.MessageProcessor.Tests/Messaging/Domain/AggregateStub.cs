@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Kingo.Messaging.Domain
 {
@@ -6,10 +7,10 @@ namespace Kingo.Messaging.Domain
     {
         private sealed class CreatedEvent : DomainEvent<Guid, int>
         {
-            [Key]
+            [UsedImplicitly, Key]
             public readonly Guid Id;
 
-            [Version]
+            [UsedImplicitly, Version]
             public readonly int Version;
 
             public CreatedEvent(Guid id, int version)

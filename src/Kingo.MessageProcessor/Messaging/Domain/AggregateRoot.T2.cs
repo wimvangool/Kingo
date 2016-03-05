@@ -57,7 +57,7 @@ namespace Kingo.Messaging.Domain
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format("{0} ({1} event(s) to be published.)", GetType().Name, EventCount);
+            return $"{GetType().Name} ({EventCount} event(s) to be published.";
         }        
 
         #region [====== Version ======]
@@ -112,6 +112,11 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Publish & Apply ======]
 
+        void IAggregateRoot<TKey, TVersion>.Publish<TEvent>(TEvent @event)
+        {
+            Publish(@event);
+        }
+
         /// <summary>
         /// Publishes the specified <paramref name="event"/>.
         /// </summary>
@@ -120,10 +125,21 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>        
-        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IHasKeyAndVersion<TKey, TVersion>, IMessage
+        protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IDomainEvent<TKey, TVersion>
         {
+            AssignIdAndVersionTo(@event);
             EventsToPublish.Write(@event);
             Apply(@event);            
+        }
+
+        private void AssignIdAndVersionTo(IDomainEvent<TKey, TVersion> @event)
+        {
+            if (@event == null)
+            {
+                throw new ArgumentNullException(nameof(@event));
+            }
+            @event.Key = Id;
+            @event.Version = NextVersion();
         }
 
         internal virtual void Apply<TEvent>(TEvent @event) where TEvent : class, IHasKeyAndVersion<TKey, TVersion>
@@ -144,16 +160,16 @@ namespace Kingo.Messaging.Domain
         {
             var messageFormat = ExceptionMessages.AggregateRoot_InvalidKey;
             var message = string.Format(messageFormat, @event.Key, aggregateKey);
-            return new ArgumentException(message, "event");
+            return new ArgumentException(message, nameof(@event));
         }        
 
         private static Exception NewInvalidVersionException<TEvent>(TEvent @event, TVersion aggregateVersion) where TEvent : class, IHasKeyAndVersion<TKey, TVersion>
         {
             var messageFormat = ExceptionMessages.AggregateRoot_InvalidVersion;
             var message = string.Format(messageFormat, @event.Version, aggregateVersion);
-            return new ArgumentException(message, "event");
+            return new ArgumentException(message, nameof(@event));
         }
 
-        #endregion        
+        #endregion
     }
 }

@@ -84,7 +84,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
         /// </summary>                        
-        public sealed override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
+        public override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
         {                        
             await CreateSetupSequence().ProcessWithAsync(processor, token);
 

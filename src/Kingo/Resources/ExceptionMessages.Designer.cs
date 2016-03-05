@@ -97,20 +97,11 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains a member marked with the KeyAttribute which type is not compatible with the Key-type of the event..
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; has incorrect type &apos;{1}&apos;. Expected type is &apos;{2}&apos;..
         /// </summary>
-        internal static string DomainEvent_IncompatibleKeyType {
+        internal static string DomainEvent_IncompatibleMemberType {
             get {
-                return ResourceManager.GetString("DomainEvent_IncompatibleKeyType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains a member marked with the VersionAttribute which type is not compatible with the Version-type of the event..
-        /// </summary>
-        internal static string DomainEvent_IncompatibleVersionType {
-            get {
-                return ResourceManager.GetString("DomainEvent_IncompatibleVersionType", resourceCulture);
+                return ResourceManager.GetString("DomainEvent_IncompatibleMemberType", resourceCulture);
             }
         }
         

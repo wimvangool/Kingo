@@ -46,9 +46,7 @@ namespace Kingo.Messaging.SampleApplication
             item.AddQuantity(quantity);
 
             Publish(new ProductAddedToCartEvent
-            {
-                ShoppingCartId = _id,
-                ShoppingCartVersion = NextVersion(),
+            {                
                 ProductId = productId,
                 OldQuantity = oldQuantity,
                 NewQuantity = item.Quantity
