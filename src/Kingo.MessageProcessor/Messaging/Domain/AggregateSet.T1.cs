@@ -75,9 +75,9 @@ namespace Kingo.Messaging.Domain
             _aggregates.Remove(key);            
         }                
 
-        internal Task CommitAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+        internal Task CommitAsync(IDomainEventBus<TKey, TVersion> eventBus)
         {
-            return Task.WhenAll(_aggregates.Values.ToArray().Select(aggregate => aggregate.CommitAsync(domainEventStream)));
+            return Task.WhenAll(_aggregates.Values.ToArray().Select(aggregate => aggregate.CommitAsync(eventBus)));
         }        
     }
 }

@@ -7,16 +7,16 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>    
-    public interface ISnapshot<TKey, TVersion> : IHasKeyAndVersion<TKey, TVersion>
+    public interface IMemento<TKey, TVersion> : IHasKeyAndVersion<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>
-        /// Restores an aggregate from this snapshot.
+        /// Restores an aggregate from this memento.
         /// </summary>
         /// <returns>The restored aggregate.</returns>
         /// <exception cref="InvalidOperationException">
-        /// This snapshot could not restore the instance of the specified type.
+        /// This memento could not restore the instance of the specified type.
         /// </exception>
-        TAggregate RestoreAggregate<TAggregate>() where TAggregate : class, IAggregateRoot<TKey, TVersion>;
+        IAggregateRoot<TKey, TVersion> RestoreAggregate();
     }
 }

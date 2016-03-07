@@ -7,10 +7,10 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Key-type of an aggregate.</typeparam>
     /// <typeparam name="TVersion">Version-type of an aggregate.</typeparam>
-    public abstract class SnapshotOrEvent<TKey, TVersion> : IHasKeyAndVersion<TKey, TVersion>
+    public abstract class SnapshotOrEventToSave<TKey, TVersion> : IHasKeyAndVersion<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
-        internal SnapshotOrEvent() { }
+        internal SnapshotOrEventToSave() { }
 
         TKey IHasKey<TKey>.Key
         {

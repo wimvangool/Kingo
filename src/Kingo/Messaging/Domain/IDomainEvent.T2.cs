@@ -7,7 +7,7 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the aggregate's key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate's version.</typeparam>
-    public interface IDomainEvent<TKey, TVersion> : IHasKeyAndVersion<TKey, TVersion>, IMessage
+    public interface IDomainEvent<TKey, TVersion> : IDomainEvent, IHasKeyAndVersion<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>
@@ -27,5 +27,11 @@ namespace Kingo.Messaging.Domain
             get;
             set;
         }
+
+        /// <summary>
+        /// Upgrades this event to the latest version.
+        /// </summary>
+        /// <returns>The latest version of this event.</returns>
+        new IDomainEvent<TKey, TVersion> UpgradeToLatestVersion();
     }
 }

@@ -137,20 +137,20 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         public async Task FlushAsync()
         {
-            await FlushAsync(new DomainEventStream<TKey, TVersion>(UnitOfWorkContext.Current));          
+            await FlushAsync(new DomainEventBus<TKey, TVersion>(UnitOfWorkContext.Current));          
         }        
 
         /// <summary>
         /// Flushes all pending changes of the aggregates while at the same time writing all pending events to
-        /// the specified <paramref name="domainEventStream"/>.
+        /// the specified <paramref name="eventBus"/>.
         /// </summary>
-        /// <param name="domainEventStream">The event stream to write the aggregate's events to.</param>
+        /// <param name="eventBus">The event stream to write the aggregate's events to.</param>
         /// <returns>A task representing the flush action.</returns>
-        protected virtual async Task FlushAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+        protected virtual async Task FlushAsync(IDomainEventBus<TKey, TVersion> eventBus)
         {
-            await DeleteAggregatesAsync(domainEventStream);
-            await UpdateAggregatesAsync(domainEventStream);
-            await InsertAggregatesAsync(domainEventStream);
+            await DeleteAggregatesAsync(eventBus);
+            await UpdateAggregatesAsync(eventBus);
+            await InsertAggregatesAsync(eventBus);
         }
 
         /// <inheritdoc />
@@ -200,19 +200,19 @@ namespace Kingo.Messaging.Domain
                 return _repository.HasBeenUpdated(_aggregate, _originalVersion);
             }            
 
-            internal override async Task CommitAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+            internal override async Task CommitAsync(IDomainEventBus<TKey, TVersion> eventBus)
             {
-                await CommitIfUpdatedAsync(domainEventStream);
+                await CommitIfUpdatedAsync(eventBus);
 
                 // When an updated aggregate is committed, it's new version becomes the original version.
                 _originalVersion = _aggregate.Version;
             }
 
-            private async Task CommitIfUpdatedAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+            private async Task CommitIfUpdatedAsync(IDomainEventBus<TKey, TVersion> eventBus)
             {
                 if (HasBeenUpdated())
                 {
-                    var updateSucceeded = await _repository.UpdateAsync(_aggregate, _originalVersion, domainEventStream);
+                    var updateSucceeded = await _repository.UpdateAsync(_aggregate, _originalVersion, eventBus);
                     if (updateSucceeded)
                     {
                         return;
@@ -260,7 +260,7 @@ namespace Kingo.Messaging.Domain
             // cannot be returned by definition), an attempt is made to retrieve it from the data store. If found,
             // we add it to the selected-aggregate set and enlist this UnitOfWork with the controller because it
             // might need to be flushed later.
-            if (_deletedAggregates.ContainsKey(key) || (aggregate = await SelectByKeyAndRestoreAsync(key)) == null || _deletedAggregates.ContainsValue(aggregate))
+            if (_deletedAggregates.ContainsKey(key) || (aggregate = await SelectByKeyAsync(key)) == null || _deletedAggregates.ContainsValue(aggregate))
             {
                 throw NewAggregateNotFoundByKeyException(key);
             }
@@ -271,29 +271,9 @@ namespace Kingo.Messaging.Domain
             return aggregate; 
         }
 
-        #region [====== Select ======]
+        #region [====== Select ======]        
 
-        private async Task<TAggregate> SelectByKeyAndRestoreAsync(TKey key)
-        {
-            var factory = await SelectByKeyAsync(key, TypeToContractMap);
-            if (factory == null)
-            {
-                return null;
-            }
-            return factory.RestoreAggregate<TAggregate>();
-        }
-
-        /// <summary>
-        /// Loads a snapshot from the repository.
-        /// </summary>
-        /// <param name="key">Key of the aggregate.</param>
-        /// <param name="map">
-        /// The mapping from each contract to a specific type that can be used to deserialize the retrieved data to its correct type.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task{T}" /> representing the load operation. The task should return <c>null</c> if the aggregate was not found.
-        /// </returns>
-        protected abstract Task<ISnapshot<TKey, TVersion>> SelectByKeyAsync(TKey key, ITypeToContractMap map);
+        internal abstract Task<TAggregate> SelectByKeyAsync(TKey key);        
 
         #endregion              
 
@@ -310,12 +290,12 @@ namespace Kingo.Messaging.Domain
             }
         }               
 
-        private Task UpdateAggregatesAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+        private Task UpdateAggregatesAsync(IDomainEventBus<TKey, TVersion> eventBus)
         {
-            return _selectedAggregates.CommitAsync(domainEventStream);
+            return _selectedAggregates.CommitAsync(eventBus);
         }
 
-        internal abstract Task<bool> UpdateAsync(TAggregate aggregate, TVersion originalVersion, IWritableEventStream<TKey, TVersion> domainEventStream);        
+        internal abstract Task<bool> UpdateAsync(TAggregate aggregate, TVersion originalVersion, IDomainEventBus<TKey, TVersion> eventBus);        
 
         /// <summary>
         /// Determines whether or not the specified <paramref name="aggregate"/> has been updated.
@@ -379,9 +359,9 @@ namespace Kingo.Messaging.Domain
                 return false;
             }            
 
-            internal override async Task CommitAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+            internal override async Task CommitAsync(IDomainEventBus<TKey, TVersion> eventBus)
             {                
-                await _repository.InsertAsync(_aggregate, domainEventStream);
+                await _repository.InsertAsync(_aggregate, eventBus);
 
                 // When a newly inserted aggregate is committed, it is transferred to the selected set.
                 _repository._insertedAggregates.RemoveByKey(_aggregate.Key);
@@ -431,12 +411,12 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        private Task InsertAggregatesAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+        private Task InsertAggregatesAsync(IDomainEventBus<TKey, TVersion> eventBus)
         {
-            return _insertedAggregates.CommitAsync(domainEventStream);            
+            return _insertedAggregates.CommitAsync(eventBus);            
         }        
                         
-        internal abstract Task InsertAsync(TAggregate aggregate, IWritableEventStream<TKey, TVersion> domainEventStream);                
+        internal abstract Task InsertAsync(TAggregate aggregate, IDomainEventBus<TKey, TVersion> eventBus);                
 
         /// <summary>
         /// Creates and returns a new <see cref="DuplicateKeyException{T}" /> indicating that an aggregate could not
@@ -482,9 +462,9 @@ namespace Kingo.Messaging.Domain
                 return false;
             }            
 
-            internal override async Task CommitAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+            internal override async Task CommitAsync(IDomainEventBus<TKey, TVersion> eventBus)
             {                
-                await _repository.DeleteAsync(_key, domainEventStream);
+                await _repository.DeleteAsync(_key, eventBus);
 
                 _repository._deletedAggregates.RemoveByKey(_key);
             }
@@ -541,19 +521,19 @@ namespace Kingo.Messaging.Domain
             }
         }
 
-        private Task DeleteAggregatesAsync(IWritableEventStream<TKey, TVersion> domainEventStream)
+        private Task DeleteAggregatesAsync(IDomainEventBus<TKey, TVersion> eventBus)
         {
-            return _deletedAggregates.CommitAsync(domainEventStream);
+            return _deletedAggregates.CommitAsync(eventBus);
         }
 
         /// <summary>
         /// Deletes / removes a certain instance from the underlying Data Store.
         /// </summary>
         /// <param name="key">Key of the aggregate to remove.</param> 
-        /// <param name="domainEventStream">
-        /// Stream that can be used to publish any events that result from an aggregate being deleted.
+        /// <param name="eventBus">
+        /// Event Bus that can be used to publish any events that result from an aggregate being deleted.
         /// </param>       
-        protected virtual Task DeleteAsync(TKey key, IWritableEventStream<TKey, TVersion> domainEventStream)
+        protected virtual Task DeleteAsync(TKey key, IDomainEventBus<TKey, TVersion> eventBus)
         {
             throw NewDeleteNotSupportedException();
         }

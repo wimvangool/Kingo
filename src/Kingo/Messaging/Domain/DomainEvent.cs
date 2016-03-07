@@ -5,25 +5,41 @@ using System.Linq.Expressions;
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Serves as a base class for events that are published by aggregates.
+    /// Serves as a base class for events that are published by an application.
     /// </summary>
     [Serializable]   
-    public abstract class DomainEvent : Message
-    {        
-        internal DomainEvent() { }
+    public abstract class DomainEvent : Message, IDomainEvent
+    {
+        #region [====== Instance Members ======]
+
+        IDomainEvent IDomainEvent.UpgradeToLatestVersion()
+        {
+            return UpgradeToLatestVersion();
+        }
+
+        /// <summary>
+        /// Upgrades this event to the latest version.
+        /// </summary>
+        /// <returns>The latest version of this event.</returns>
+        protected virtual IDomainEvent UpgradeToLatestVersion()
+        {
+            return this;
+        }
+
+        #endregion
 
         #region [====== Keys (Get) ======]
 
         private static readonly ConcurrentDictionary<Type, Delegate> _GetKeyDelegates = new ConcurrentDictionary<Type, Delegate>();
 
-        internal TKey GetKey<TKey>()
+        internal static TKey GetKey<TKey>(object message)
         {
-            return GetKeyDelegate<TKey>().Invoke(this);
+            return GetKeyDelegate<TKey>(message.GetType()).Invoke(message);
         }
 
-        private Func<object, TKey> GetKeyDelegate<TKey>()
+        private static Func<object, TKey> GetKeyDelegate<TKey>(Type messageType)
         {
-            return _GetKeyDelegates.GetOrAdd(GetType(), CreateGetKeyDelegate<TKey>) as Func<object, TKey>;
+            return _GetKeyDelegates.GetOrAdd(messageType, CreateGetKeyDelegate<TKey>) as Func<object, TKey>;
         }
 
         private static Func<object, TKey> CreateGetKeyDelegate<TKey>(Type messageType)
@@ -42,14 +58,14 @@ namespace Kingo.Messaging.Domain
 
         private static readonly ConcurrentDictionary<Type, Delegate> _SetKeyDelegates = new ConcurrentDictionary<Type, Delegate>();
 
-        internal void SetKey<TKey>(TKey key)
+        internal static void SetKey<TKey>(object message, TKey key)
         {
-            SetKeyDelegate<TKey>().Invoke(this, key);
+            SetKeyDelegate<TKey>(message.GetType()).Invoke(message, key);
         }
 
-        private Action<object, TKey> SetKeyDelegate<TKey>()
+        private static Action<object, TKey> SetKeyDelegate<TKey>(Type messageType)
         {
-            return _SetKeyDelegates.GetOrAdd(GetType(), CreateSetKeyDelegate<TKey>) as Action<object, TKey>;
+            return _SetKeyDelegates.GetOrAdd(messageType, CreateSetKeyDelegate<TKey>) as Action<object, TKey>;
         }
 
         private static Action<object, TKey> CreateSetKeyDelegate<TKey>(Type messageType)
@@ -69,14 +85,14 @@ namespace Kingo.Messaging.Domain
 
         private static readonly ConcurrentDictionary<Type, Delegate> _GetVersionDelegates = new ConcurrentDictionary<Type, Delegate>();
 
-        internal TVersion GetVersion<TVersion>()
+        internal static TVersion GetVersion<TVersion>(object message)
         {
-            return GetVersionDelegate<TVersion>().Invoke(this);
+            return GetVersionDelegate<TVersion>(message.GetType()).Invoke(message);
         }
 
-        private Func<object, TVersion> GetVersionDelegate<TVersion>()
+        private static Func<object, TVersion> GetVersionDelegate<TVersion>(Type messageType)
         {
-            return _GetVersionDelegates.GetOrAdd(GetType(), CreateGetVersionDelegate<TVersion>) as Func<object, TVersion>;
+            return _GetVersionDelegates.GetOrAdd(messageType, CreateGetVersionDelegate<TVersion>) as Func<object, TVersion>;
         }
 
         private static Func<object, TVersion> CreateGetVersionDelegate<TVersion>(Type messageType)
@@ -95,14 +111,14 @@ namespace Kingo.Messaging.Domain
 
         private static readonly ConcurrentDictionary<Type, Delegate> _SetVersionDelegates = new ConcurrentDictionary<Type, Delegate>();
 
-        internal void SetVersion<TVersion>(TVersion version)
+        internal static void SetVersion<TVersion>(object message, TVersion version)
         {
-            SetVersionDelegate<TVersion>().Invoke(this, version);
+            SetVersionDelegate<TVersion>(message.GetType()).Invoke(message, version);
         }
 
-        private Action<object, TVersion> SetVersionDelegate<TVersion>()
+        private static Action<object, TVersion> SetVersionDelegate<TVersion>(Type messageType)
         {
-            return _SetVersionDelegates.GetOrAdd(GetType(), CreateSetVersionDelegate<TVersion>) as Action<object, TVersion>;
+            return _SetVersionDelegates.GetOrAdd(messageType, CreateSetVersionDelegate<TVersion>) as Action<object, TVersion>;
         }
 
         private static Action<object, TVersion> CreateSetVersionDelegate<TVersion>(Type messageType)
@@ -116,6 +132,6 @@ namespace Kingo.Messaging.Domain
             return Expression.Lambda<Action<object, TVersion>>(versionAssignmentExpression, messageParameter, versionParameter).Compile();
         }
 
-        #endregion       
+        #endregion
     }
 }

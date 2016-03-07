@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
@@ -9,33 +11,33 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>      
     [Serializable]
-    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IAggregateRoot<TKey, TVersion>, ISnapshot<TKey, TVersion>
+    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IAggregateRoot<TKey, TVersion>, IMemento<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>       
     {
         private static readonly Func<TVersion, TVersion> _IncrementMethod = AggregateRootVersion.IncrementMethod<TVersion>();
 
         [NonSerialized]
-        private MemoryEventStream<TKey, TVersion> _eventsToPublish;        
+        private List<IDomainEventToPublish<TKey, TVersion>> _eventsToPublish;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
-        /// <param name="event">The event of that represents the creation of this aggregate.</param>        
-        protected AggregateRoot(IHasKeyAndVersion<TKey, TVersion> @event = null)
+        /// <param name="firstEvent">The event of that represents the creation of this aggregate.</param>        
+        protected AggregateRoot(IDomainEvent<TKey, TVersion> firstEvent = null)
         {
-            if (@event != null)
+            if (firstEvent != null)
             {
-                EventsToPublish.Write(@event);
+                EventsToPublish.Add(DomainEventToPublish<TKey, TVersion>.FromMessage(firstEvent));
             }
         }
 
-        private MemoryEventStream<TKey, TVersion> EventsToPublish
+        private List<IDomainEventToPublish<TKey, TVersion>> EventsToPublish
         {
             get
             {
                 if (_eventsToPublish == null)
                 {
-                    _eventsToPublish = new MemoryEventStream<TKey, TVersion>();
+                    _eventsToPublish = new List<IDomainEventToPublish<TKey, TVersion>>();
                 }
                 return _eventsToPublish;
             }
@@ -49,9 +51,21 @@ namespace Kingo.Messaging.Domain
             get { return EventsToPublish.Count; }
         }
 
-        void IReadableEventStream<TKey, TVersion>.WriteTo(IWritableEventStream<TKey, TVersion> stream)
+        void IAggregateRoot<TKey, TVersion>.Commit(IDomainEventBus<TKey, TVersion> eventBus)
         {
-            EventsToPublish.WriteTo(stream);
+            Commit(eventBus, Interlocked.Exchange(ref _eventsToPublish, new List<IDomainEventToPublish<TKey, TVersion>>()));
+        }
+
+        private static void Commit(IDomainEventBus<TKey, TVersion> eventBus, IEnumerable<IDomainEventToPublish<TKey, TVersion>> events)
+        {
+            if (eventBus == null)
+            {
+                throw new ArgumentNullException(nameof(eventBus));
+            }
+            foreach (var @event in events)
+            {
+                @event.Publish(eventBus);
+            }
         }
 
         /// <inheritdoc />
@@ -89,23 +103,23 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Snapshot ======]
 
-        ISnapshot<TKey, TVersion> IAggregateRoot<TKey, TVersion>.CreateSnapshot()
+        IMemento<TKey, TVersion> IAggregateRoot<TKey, TVersion>.CreateSnapshot()
         {
             return CreateSnapshot();
         }
 
         /// <summary>
-        /// When overridden, creates and returns a <see cref="ISnapshot{T, S}" /> of this aggregate.        
+        /// When overridden, creates and returns a <see cref="IMemento{TKey,TVersion}" /> of this aggregate.        
         /// </summary>
         /// <returns>A new snapshot of this aggregate.</returns>
-        protected virtual ISnapshot<TKey, TVersion> CreateSnapshot()
+        protected virtual IMemento<TKey, TVersion> CreateSnapshot()
         {
             return this;
         }
 
-        TAggregate ISnapshot<TKey, TVersion>.RestoreAggregate<TAggregate>()
+        IAggregateRoot<TKey, TVersion> IMemento<TKey, TVersion>.RestoreAggregate()
         {
-            return (TAggregate) (object) this;
+            return this;
         }
 
         #endregion              
@@ -128,7 +142,7 @@ namespace Kingo.Messaging.Domain
         protected virtual void Publish<TEvent>(TEvent @event) where TEvent : class, IDomainEvent<TKey, TVersion>
         {
             AssignIdAndVersionTo(@event);
-            EventsToPublish.Write(@event);
+            EventsToPublish.Add(new DomainEventToPublish<TKey, TVersion, TEvent>(@event));
             Apply(@event);            
         }
 
@@ -142,7 +156,7 @@ namespace Kingo.Messaging.Domain
             @event.Version = NextVersion();
         }
 
-        internal virtual void Apply<TEvent>(TEvent @event) where TEvent : class, IHasKeyAndVersion<TKey, TVersion>
+        internal virtual void Apply(IHasKeyAndVersion<TKey, TVersion> @event)
         {            
             if (@event.Key.Equals(Id))
             {

@@ -13,61 +13,86 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TAggregate">Type of aggregates that are managed.</typeparam>
     public abstract class EventStore<TKey, TVersion, TAggregate> : Repository<TKey, TVersion, TAggregate>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TAggregate : class, IAggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>
-    {                
+        where TAggregate : class, IEventStream<TKey, TVersion>
+    {
+        #region [====== Select ======]
+
+        internal override async Task<TAggregate> SelectByKeyAsync(TKey key)
+        {
+            var history = await SelectHistoryByKeyAsync(key, TypeToContractMap);
+            if (history == null)
+            {
+                return null;
+            }
+            return history.RestoreAggregate();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="typeToContractMap"></param>
+        /// <returns></returns>
+        protected abstract Task<EventStreamHistory<TKey, TVersion, TAggregate>> SelectHistoryByKeyAsync(TKey key, ITypeToContractMap typeToContractMap);
+
+        #endregion
+
         #region [====== Insert ======]
 
-        private sealed class EventBuffer : IWritableEventStream<TKey, TVersion>
-        {            
-            private readonly IWritableEventStream<TKey, TVersion> _domainEventStream;
-            private readonly MemoryEventStream<TKey, TVersion> _memoryEventStream;
+        private sealed class EventBuffer : IDomainEventBus<TKey, TVersion>
+        {
+            private readonly IDomainEventBus<TKey, TVersion> _eventBus;
+            private readonly List<IDomainEventToPublish<TKey, TVersion>> _eventsToPublish;            
 
-            private EventBuffer(IWritableEventStream<TKey, TVersion> domainEventStream)
+            private EventBuffer(IDomainEventBus<TKey, TVersion> eventBus)
             {
-                _memoryEventStream = new MemoryEventStream<TKey, TVersion>();
-                _domainEventStream = domainEventStream;
+                _eventsToPublish = new List<IDomainEventToPublish<TKey, TVersion>>();
+                _eventBus = eventBus;
             }
 
-            void IWritableEventStream<TKey, TVersion>.Write<TEvent>(TEvent @event)
+            void IDomainEventBus<TKey, TVersion>.Publish<TEvent>(TEvent @event)
             {
-                _memoryEventStream.Write(@event);
-            }            
+                _eventsToPublish.Add(new DomainEventToPublish<TKey, TVersion, TEvent>(@event));
+            }
 
-            internal IEnumerable<Event<TKey, TVersion>> GetEvents(ITypeToContractMap typeToContractMap)
+            internal IEnumerable<EventToSave<TKey, TVersion>> GetEventsToSave(ITypeToContractMap typeToContractMap)
             {
-                return from @event in _memoryEventStream.ToList()
-                       select new Event<TKey, TVersion>(typeToContractMap, @event);
+                return from @event in _eventsToPublish
+                       select @event.CreateEventToSave(typeToContractMap);
             }
 
             internal void Flush()
             {
-                _memoryEventStream.WriteTo(_domainEventStream);
+                foreach (var eventToPublish in _eventsToPublish)
+                {
+                    eventToPublish.Publish(_eventBus);
+                }
             }
 
-            internal static EventBuffer FromAggregate(TAggregate aggregate, IWritableEventStream<TKey, TVersion> domainEventStream)
+            internal static EventBuffer FromAggregate(TAggregate aggregate, IDomainEventBus<TKey, TVersion> eventBus)
             {
-                var eventBuffer = new EventBuffer(domainEventStream);
-                aggregate.WriteTo(eventBuffer);
+                var eventBuffer = new EventBuffer(eventBus);
+                aggregate.Commit(eventBuffer);
                 return eventBuffer;
             }
-        }      
+        }
 
-        internal override async Task InsertAsync(TAggregate aggregate, IWritableEventStream<TKey, TVersion> domainEventStream)
+        internal override async Task InsertAsync(TAggregate aggregate, IDomainEventBus<TKey, TVersion> eventBus)
         {
-            var eventBuffer = EventBuffer.FromAggregate(aggregate, domainEventStream);
-            var snapshot = new Snapshot<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot());
-            var events = eventBuffer.GetEvents(TypeToContractMap);
+            var eventBuffer = EventBuffer.FromAggregate(aggregate, eventBus);
+            var snapshot = new SnapshotToSave<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot());
+            var events = eventBuffer.GetEventsToSave(TypeToContractMap);
 
             await InsertEventsAsync(snapshot, null, events);
 
             eventBuffer.Flush();
         }
 
-        internal override async Task<bool> UpdateAsync(TAggregate aggregate, TVersion originalVersion, IWritableEventStream<TKey, TVersion> domainEventStream)
+        internal override async Task<bool> UpdateAsync(TAggregate aggregate, TVersion originalVersion, IDomainEventBus<TKey, TVersion> eventBus)
         {
-            var eventBuffer = EventBuffer.FromAggregate(aggregate, domainEventStream);
-            var snapshot = new Snapshot<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot());
-            var events = eventBuffer.GetEvents(TypeToContractMap);
+            var eventBuffer = EventBuffer.FromAggregate(aggregate, eventBus);
+            var snapshot = new SnapshotToSave<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot());
+            var events = eventBuffer.GetEventsToSave(TypeToContractMap);
 
             var updateSucceeded = await InsertEventsAsync(snapshot, originalVersion, events);
             if (updateSucceeded)
@@ -80,17 +105,17 @@ namespace Kingo.Messaging.Domain
 
         /// <summary>
         /// When implemented, appends all specified <paramref name="events"/> to the event store. As an optimization technique,
-        /// this method can also be used to store a snapshot of the specified <paramref name="snapshot" />, so that the number of
+        /// this method can also be used to store a snapshot of the specified <paramref name="snapshotToSave" />, so that the number of
         /// events required to read from the event store can be maximized.
         /// </summary>
-        /// <param name="snapshot">The aggregate that was created or updated.</param>
+        /// <param name="snapshotToSave">The aggregate that was created or updated.</param>
         /// <param name="originalVersion">The original version of the aggregate. Will be <c>null</c> if the aggregate is new.</param>
         /// <param name="events">A collection of events that were published during this session and need to be stored in the event store.</param>
         /// <returns>
         /// A <see cref="Task{T}" /> representing the insert operation. This task should return
         /// <c>true</c> if the flush succeeded or <c>false</c> if a concurrency conflict was detected.
         /// </returns>
-        protected abstract Task<bool> InsertEventsAsync(Snapshot<TKey, TVersion> snapshot, TVersion? originalVersion, IEnumerable<Event<TKey, TVersion>> events);
+        protected abstract Task<bool> InsertEventsAsync(SnapshotToSave<TKey, TVersion> snapshotToSave, TVersion? originalVersion, IEnumerable<EventToSave<TKey, TVersion>> events);
 
         #endregion        
     }

@@ -10,7 +10,7 @@ namespace Kingo.Messaging
     public sealed class UnitOfWorkContext : IDisposable
     {
         private readonly MessageProcessor _processor;
-        private readonly DomainEventBus _eventBus;
+        private readonly UnitOfWorkBus _eventBus;
         private readonly UnitOfWorkController _flushController;
         private readonly DependencyCache _cache;   
         private bool _isDisposed;
@@ -18,7 +18,7 @@ namespace Kingo.Messaging
         internal UnitOfWorkContext(MessageProcessor processor)
         {
             _processor = processor;
-            _eventBus = new DomainEventBus(this);
+            _eventBus = new UnitOfWorkBus(this);
             _flushController = new UnitOfWorkController();
             _cache = new DependencyCache(); 
         }          
@@ -34,22 +34,22 @@ namespace Kingo.Messaging
         public IDependencyCache Cache
         {
             get { return _cache; }
-        }  
-        
+        }
+
         /// <summary>
-        /// Publishes the specified <paramref name="message"/> as soon as this unit of work is flushed.
+        /// Publishes the specified <paramref name="event"/> as soon as this unit of work is flushed.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the event to publish.</typeparam>
-        /// <param name="message">The event to publish.</param>
+        /// <typeparam name="TEvent">Type of the event to publish.</typeparam>
+        /// <param name="event">The event to publish.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
+        /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The specified <paramref name="message"/> is not valid.
+        /// The specified <paramref name="event"/> is not valid.
         /// </exception>
-        public void Publish<TMessage>(TMessage message) where TMessage : class, IMessage
+        public void Publish<TEvent>(TEvent @event) where TEvent : class, IMessage
         {
-            _eventBus.Publish(message);
+            _eventBus.Publish(@event);
         }
 
         /// <summary>

@@ -3,28 +3,28 @@
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Represents an event that is mapped to its contract.
+    /// Represents a snapshot that is mapped to its contract.
     /// </summary>
     /// <typeparam name="TKey">Key-type of an aggregate.</typeparam>
     /// <typeparam name="TVersion">Version-type of an aggregate.</typeparam>
-    public sealed class Event<TKey, TVersion> : SnapshotOrEvent<TKey, TVersion>
+    public sealed class SnapshotToSave<TKey, TVersion> : SnapshotOrEventToSave<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         private readonly ITypeToContractMap _typeToContractMap;
-        private readonly IHasKeyAndVersion<TKey, TVersion> _event;
+        private readonly IMemento<TKey, TVersion> _memento;
 
-        internal Event(ITypeToContractMap typeToContractMap, IHasKeyAndVersion<TKey, TVersion> @event)
+        internal SnapshotToSave(ITypeToContractMap typeToContractMap, IMemento<TKey, TVersion> memento)
         {
             if (typeToContractMap == null)
             {
                 throw new ArgumentNullException(nameof(typeToContractMap));
             }
-            if (@event == null)
+            if (memento == null)
             {
-                throw new ArgumentNullException(nameof(@event));
+                throw new ArgumentNullException(nameof(memento));
             }
             _typeToContractMap = typeToContractMap;
-            _event = @event;
+            _memento = memento;
         }
 
         internal override ITypeToContractMap TypeToContractMap
@@ -34,15 +34,15 @@ namespace Kingo.Messaging.Domain
 
         internal override IHasKeyAndVersion<TKey, TVersion> VersionedObject
         {
-            get { return _event; }
+            get { return _memento; }
         }
 
         /// <summary>
-        /// Returns the event that was published by the aggregate.
+        /// Returns the snapshot of the aggregate.
         /// </summary>
-        public IHasKeyAndVersion<TKey, TVersion> Value
+        public IMemento<TKey, TVersion> Value
         {
-            get { return _event; }
+            get { return _memento; }
         }
     }
 }

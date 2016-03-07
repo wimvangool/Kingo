@@ -126,7 +126,7 @@
   <data name="Connection_AlreadyOpen" xml:space="preserve">
     <value>The connection is already open.</value>
   </data>
-  <data name="AggregateEventStream_HandlerAlreadyRegistered" xml:space="preserve">
+  <data name="EventStream_HandlerAlreadyRegistered" xml:space="preserve">
     <value>A handler for event '{0}' has already been registered.</value>
   </data>
   <data name="IntXXVersion_NegativeValue" xml:space="preserve">
@@ -135,7 +135,7 @@
   <data name="MessageHandlerClass_InvalidInstanceLifetimeMode" xml:space="preserve">
     <value>Invalid InstanceLifetime was specified on class '{0}': {1}. </value>
   </data>
-  <data name="AggregateEventStream_MissingEventHandler" xml:space="preserve">
+  <data name="EventStream_MissingEventHandler" xml:space="preserve">
     <value>No event-handler was specified for domain-event of type '{0}'.</value>
   </data>
   <data name="DependencyClass_AmbigiousMatch" xml:space="preserve">
@@ -153,7 +153,7 @@
   <data name="MessageToStrategyMapping_IsReadOnly" xml:space="preserve">
     <value>Cannot add a new mapping because the mapping has been switched to read-only state.</value>
   </data>
-  <data name="BufferedEventBus_InvalidMessage" xml:space="preserve">
+  <data name="DomainEventBus_InvalidMessage" xml:space="preserve">
     <value>The message of type '{0}' could not be published because it is not valid. See ErrorTree for details.</value>
   </data>
   <data name="AggregateRoot_InvalidKey" xml:space="preserve">
@@ -192,10 +192,13 @@
   <data name="TypeToContractMap_TypeNotFound" xml:space="preserve">
     <value>No mapping exists for contract '{0}'.</value>
   </data>
-  <data name="AggregateEventStreamFactory_ConstructorNotFound" xml:space="preserve">
+  <data name="EventStreamHistory_ConstructorNotFound" xml:space="preserve">
     <value>Could not restore aggregate of type '{0}' because it has no default constructor. Either declare a default constructor, or configure the factory to create the instance without calling a constructor.</value>
   </data>
-  <data name="AggregateEventStreamFactory_InvalidEvents" xml:space="preserve">
+  <data name="EventStreamHistory_InvalidEvents" xml:space="preserve">
     <value>Could not restore aggregate of type '{0}' because one of the specified events could not be applied to it. See inner exception for details.</value>
+  </data>
+  <data name="EventStreamHistory_InvalidMemento" xml:space="preserve">
+    <value>Memento of type '{0}' did not return an instance of type '{1}'.</value>
   </data>
 </root>

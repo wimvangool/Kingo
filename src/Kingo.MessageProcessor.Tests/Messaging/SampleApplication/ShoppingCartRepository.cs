@@ -10,12 +10,12 @@ namespace Kingo.Messaging.SampleApplication
     [Dependency(InstanceLifetime.Singleton)]
     public sealed class ShoppingCartRepository : SnapshotRepository<Guid, int, ShoppingCart>, IShoppingCartRepository
     {        
-        private readonly Dictionary<Guid, ISnapshot<Guid, int>> _carts;
+        private readonly Dictionary<Guid, IMemento<Guid, int>> _carts;
         private int _flushCount;
 
         public ShoppingCartRepository()
         {            
-            _carts = new Dictionary<Guid, ISnapshot<Guid, int>>(4);
+            _carts = new Dictionary<Guid, IMemento<Guid, int>>(4);
         }
 
         protected override ITypeToContractMap TypeToContractMap
@@ -38,33 +38,33 @@ namespace Kingo.Messaging.SampleApplication
             get { return _flushCount; }
         }
 
-        protected override Task FlushAsync(IWritableEventStream<Guid, int> domainEventStream)
+        protected override Task FlushAsync(IDomainEventBus<Guid, int> eventBus)
         {
             Interlocked.Increment(ref _flushCount);
 
-            return base.FlushAsync(domainEventStream);
+            return base.FlushAsync(eventBus);
         }
 
-        protected override Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key, ITypeToContractMap map)
+        protected override Task<IMemento<Guid, int>> SelectSnapshotByKeyAsync(Guid key, ITypeToContractMap map)
         {
             return AsyncMethod.RunSynchronously(() => _carts[key]);
         }
 
-        protected override Task InsertAsync(Snapshot<Guid, int> snapshot)
+        protected override Task InsertAsync(SnapshotToSave<Guid, int> snapshotToSave)
         {
-            return AsyncMethod.RunSynchronously(() => _carts.Add(snapshot.Value.Key, snapshot.Value));
+            return AsyncMethod.RunSynchronously(() => _carts.Add(snapshotToSave.Value.Key, snapshotToSave.Value));
         }
 
-        protected override Task<bool> UpdateAsync(Snapshot<Guid, int> snapshot, int originalVersion)
+        protected override Task<bool> UpdateAsync(SnapshotToSave<Guid, int> snapshotToSave, int originalVersion)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                _carts[snapshot.Value.Key] = snapshot.Value;
+                _carts[snapshotToSave.Value.Key] = snapshotToSave.Value;
                 return true;
             });            
         }        
 
-        protected override Task DeleteAsync(Guid key, IWritableEventStream<Guid, int> domainEventStream)
+        protected override Task DeleteAsync(Guid key, IDomainEventBus<Guid, int> eventBus)
         {
             return AsyncMethod.RunSynchronously(() => _carts.Remove(key));
         }        

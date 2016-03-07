@@ -123,6 +123,7 @@
     <Compile Include="Messaging\Domain\DomainEventMember.cs" />
     <Compile Include="Messaging\Domain\DomainEventVersionMember.cs" />
     <Compile Include="Messaging\Domain\DomainException.cs" />
+    <Compile Include="Messaging\Domain\IDomainEvent.cs" />
     <Compile Include="Messaging\Domain\IDomainEvent.T2.cs" />
     <Compile Include="Messaging\Domain\IHasKey.T1.cs" />
     <Compile Include="Messaging\Domain\IHasKeyAndVersion.T2.cs" />

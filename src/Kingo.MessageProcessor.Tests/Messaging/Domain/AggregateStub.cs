@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace Kingo.Messaging.Domain
 {
-    internal sealed class AggregateStub : AggregateRoot
+    internal sealed class AggregateStub : AggregateRoot<Guid, int>
     {
         private sealed class CreatedEvent : DomainEvent<Guid, int>
         {

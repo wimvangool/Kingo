@@ -18,14 +18,14 @@ namespace Kingo.Messaging.Domain
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IAggregateRoot<TKey, TVersion>
     {
-        private readonly ConcurrentDictionary<TKey, ISnapshot<TKey, TVersion>> _snapshots;
+        private readonly ConcurrentDictionary<TKey, IMemento<TKey, TVersion>> _snapshots;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InMemoryRepository{T, S, R}" /> class.
         /// </summary>
         protected InMemoryRepository()
         {
-            _snapshots = new ConcurrentDictionary<TKey, ISnapshot<TKey, TVersion>>();
+            _snapshots = new ConcurrentDictionary<TKey, IMemento<TKey, TVersion>>();
         }
 
         /// <inheritdoc />
@@ -37,17 +37,17 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// Returns a thread-safe dictionary of aggregates.
         /// </summary>
-        protected IDictionary<TKey, ISnapshot<TKey, TVersion>> Snapshots
+        protected IDictionary<TKey, IMemento<TKey, TVersion>> Snapshots
         {
             get { return _snapshots; }
         }
 
         /// <inheritdoc />
-        protected override Task<ISnapshot<TKey, TVersion>> SelectByKeyAsync(TKey key, ITypeToContractMap map)
+        protected override Task<IMemento<TKey, TVersion>> SelectSnapshotByKeyAsync(TKey key, ITypeToContractMap map)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                ISnapshot<TKey, TVersion> snapshot;
+                IMemento<TKey, TVersion> snapshot;
 
                 if (Snapshots.TryGetValue(key, out snapshot))
                 {
@@ -58,27 +58,27 @@ namespace Kingo.Messaging.Domain
         }
 
         /// <inheritdoc />
-        protected override Task<bool> UpdateAsync(Snapshot<TKey, TVersion> snapshot, TVersion originalVersion)
+        protected override Task<bool> UpdateAsync(SnapshotToSave<TKey, TVersion> snapshotToSave, TVersion originalVersion)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                Snapshots[snapshot.Value.Key] = snapshot.Value;
+                Snapshots[snapshotToSave.Value.Key] = snapshotToSave.Value;
                 return true;
             });               
         }
 
         /// <inheritdoc />
-        protected override Task InsertAsync(Snapshot<TKey, TVersion> snapshot)
+        protected override Task InsertAsync(SnapshotToSave<TKey, TVersion> snapshotToSave)
         {
             return AsyncMethod.RunSynchronously(() =>
             {                
                 try
                 {
-                    Snapshots.Add(snapshot.Value.Key, snapshot.Value);
+                    Snapshots.Add(snapshotToSave.Value.Key, snapshotToSave.Value);
                 }
                 catch (ArgumentException)
                 {
-                    throw NewDuplicateKeyException(snapshot.Value.Key);
+                    throw NewDuplicateKeyException(snapshotToSave.Value.Key);
                 }                
             });
         }        

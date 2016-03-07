@@ -3,9 +3,12 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging.SampleApplication
 {
-    internal sealed class ShoppingCartCreatedEvent : Message, IHasKeyAndVersion<Guid, int>
+    internal sealed class ShoppingCartCreatedEvent : DomainEvent<Guid, int>
     {
+        [Key]
         public Guid ShoppingCartId;
+
+        [Version]
         public int ShoppingCartVersion;
 
         internal ShoppingCartCreatedEvent(Guid shoppingCartId)
@@ -18,17 +21,7 @@ namespace Kingo.Messaging.SampleApplication
         {
             ShoppingCartId = message.ShoppingCartId;
             ShoppingCartVersion = message.ShoppingCartVersion;
-        }
-
-        Guid IHasKey<Guid>.Key
-        {
-            get { return ShoppingCartId; }
-        }
-
-        int IHasKeyAndVersion<Guid, int>.Version
-        {
-            get { return ShoppingCartVersion; }
-        }
+        }        
 
         public override Message Copy()
         {

@@ -7,16 +7,16 @@ namespace Kingo.Messaging.Domain
 {
     internal sealed class RepositoryStub : SnapshotRepository<Guid, int, AggregateStub>
     {
-        private readonly ISnapshot<Guid, int> _snapshot;
+        private readonly IMemento<Guid, int> _memento;
 
         internal RepositoryStub()
         {
-            _snapshot = null;
+            _memento = null;
         }
 
         internal RepositoryStub(AggregateStub aggregate)
         {
-            _snapshot = aggregate;
+            _memento = aggregate;
         }
 
         protected override ITypeToContractMap TypeToContractMap
@@ -51,11 +51,11 @@ namespace Kingo.Messaging.Domain
             base.OnAggregateRemoved(key);
         }
 
-        protected override Task FlushAsync(IWritableEventStream<Guid, int> domainEventStream)
+        protected override Task FlushAsync(IDomainEventBus<Guid, int> eventBus)
         {
             WasEnlisted = false;
 
-            return base.FlushAsync(domainEventStream);
+            return base.FlushAsync(eventBus);
         }
 
         #region [====== SelectByKey ======]
@@ -73,15 +73,15 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _selectedSurrogateKeys);
         }
 
-        protected override Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key, ITypeToContractMap map)
+        protected override Task<IMemento<Guid, int>> SelectSnapshotByKeyAsync(Guid key, ITypeToContractMap map)
         {
             Add(key, _selectedPrimaryKeys);
 
             return AsyncMethod.RunSynchronously(() =>
             {                              
-                if (_snapshot != null && _snapshot.Key.Equals(key))
+                if (_memento != null && _memento.Key.Equals(key))
                 {
-                    return _snapshot;
+                    return _memento;
                 }
                 return null;
             });
@@ -98,11 +98,11 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _updatedKeys);
         }
 
-        protected override Task<bool> UpdateAsync(Snapshot<Guid, int> snapshot, int originalVersion)
+        protected override Task<bool> UpdateAsync(SnapshotToSave<Guid, int> snapshotToSave, int originalVersion)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                Add(snapshot.Value.Key, _updatedKeys);
+                Add(snapshotToSave.Value.Key, _updatedKeys);
                 return true;
             });
         }
@@ -118,9 +118,9 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _insertedKeys);
         }
 
-        protected override Task InsertAsync(Snapshot<Guid, int> snapshot)
+        protected override Task InsertAsync(SnapshotToSave<Guid, int> snapshotToSave)
         {
-            Add(snapshot.Value.Key, _insertedKeys);
+            Add(snapshotToSave.Value.Key, _insertedKeys);
 
             return AsyncMethod.Void;
         }
@@ -136,7 +136,7 @@ namespace Kingo.Messaging.Domain
             return CountOf(key, _deletedKeys);
         }
 
-        protected override Task DeleteAsync(Guid key, IWritableEventStream<Guid, int> domainEventStream)
+        protected override Task DeleteAsync(Guid key, IDomainEventBus<Guid, int> eventBus)
         {
             Add(key, _deletedKeys);
 

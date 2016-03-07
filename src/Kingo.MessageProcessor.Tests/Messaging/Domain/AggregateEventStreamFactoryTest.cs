@@ -155,23 +155,23 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfEventsIsNull()
         {
-            new EventStreamFactory<Guid, int>(null);
+            new EventStreamHistory<Guid, int, AggregateStubA>(null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void RestoreAggregate_Throws_IfUseDefaultConstructorIsTrue_And_TypeDoesNotDeclareADefaultConstructor()
         {
-            var factory = new EventStreamFactory<Guid, int>(Enumerable.Empty<IHasKeyAndVersion<Guid, int>>());
+            var factory = new EventStreamHistory<Guid, int, AggregateStubA>(_NoEvents);
 
-            factory.RestoreAggregate<AggregateStubA>();
+            factory.RestoreAggregate();
         }        
 
         [TestMethod]
         public void RestoreAggregate_ReturnsAggregateInExpectedState_IfUseDefaultConstructorIsTrue_And_TypeHasDefaultConstructor()
         {
-            var factory = new EventStreamFactory<Guid, int>(Enumerable.Empty<IHasKeyAndVersion<Guid, int>>());
-            var aggregate = factory.RestoreAggregate<AggregateStubB>();
+            var factory = new EventStreamHistory<Guid, int, AggregateStubB>(_NoEvents);
+            var aggregate = factory.RestoreAggregate();
 
             Assert.IsNotNull(aggregate);
             Assert.AreNotEqual(Guid.Empty, aggregate.Id);
@@ -180,8 +180,8 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public void RestoreAggregate_ReturnsAggregateInExpectedState_IfUseDefaultConstructorIsFalse()
         {
-            var factory = new EventStreamFactory<Guid, int>(_NoEvents, false);
-            var aggregate = factory.RestoreAggregate<AggregateStubA>();
+            var factory = new EventStreamHistory<Guid, int, AggregateStubA>(_NoEvents, false);
+            var aggregate = factory.RestoreAggregate();
 
             Assert.IsNotNull(aggregate);
             Assert.AreEqual(Guid.Empty, aggregate.Id);
@@ -191,8 +191,8 @@ namespace Kingo.Messaging.Domain
         public void RestoreAggregate_UsesSnapshotToRestoreAggregate_IfSnapshotIsSpecified()
         {
             var snapshot = new AggregateStubA(Guid.NewGuid());
-            var factory = new EventStreamFactory<Guid, int>(_NoEvents, snapshot);
-            var aggregate = factory.RestoreAggregate<AggregateStubA>();
+            var factory = new EventStreamHistory<Guid, int, AggregateStubA>(_NoEvents, snapshot);
+            var aggregate = factory.RestoreAggregate();
 
             Assert.IsNotNull(aggregate);
             Assert.AreEqual(snapshot.Id, aggregate.Id);
@@ -202,11 +202,11 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(InvalidOperationException))]
         public void RestoreAggregate_Throws_IfOneOrMoreEventsHaveNonMatchingKeys()
         {
-            var events = new IHasKeyAndVersion<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1)  };
+            var events = new IDomainEvent<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1)  };
             var snapshot = new AggregateStubA(Guid.NewGuid());
-            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
+            var factory = new EventStreamHistory<Guid, int, AggregateStubA>(events, snapshot);
 
-            factory.RestoreAggregate<AggregateStubA>();
+            factory.RestoreAggregate();
         }
 
         [TestMethod]
@@ -214,11 +214,11 @@ namespace Kingo.Messaging.Domain
         public void RestoreAggregate_Throws_IfOneOrMoreEventsVersionIsEqualToSnapshotVersion()
         {
             var id = Guid.NewGuid();
-            var events = new IHasKeyAndVersion<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1) };
+            var events = new IDomainEvent<Guid, int>[] { new XIncrementedEvent(Guid.NewGuid(), 1, 1) };
             var snapshot = new AggregateStubA(id, 1);
-            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
+            var factory = new EventStreamHistory<Guid, int, AggregateStubA>(events, snapshot);
 
-            factory.RestoreAggregate<AggregateStubA>();
+            factory.RestoreAggregate();
         }
 
         [TestMethod]
@@ -226,22 +226,22 @@ namespace Kingo.Messaging.Domain
         public void RestoreAggregate_Throws_IfTwoOrMoreEventsHaveEqualVersion()
         {
             var id = Guid.NewGuid();
-            var events = new IHasKeyAndVersion<Guid, int>[]
+            var events = new IDomainEvent<Guid, int>[]
             {
                 new XIncrementedEvent(id, 1, 1),
                 new YIncrementedEvent(id, 1, 2)
             };
             var snapshot = new AggregateStubA(id);
-            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
+            var factory = new EventStreamHistory<Guid, int, AggregateStubA>(events, snapshot);
 
-            factory.RestoreAggregate<AggregateStubA>();
+            factory.RestoreAggregate();
         }
 
         [TestMethod]
         public void RestoreAggregate_ReturnsAggregateInExpectedState_IfEventsAreAllAppliedSuccesfully()
         {
             var id = Guid.NewGuid();
-            var events = new IHasKeyAndVersion<Guid, int>[]
+            var events = new IDomainEvent<Guid, int>[]
             {
                 new XIncrementedEvent(id, 1, 1),
                 new YIncrementedEvent(id, 2, 2),
@@ -250,8 +250,8 @@ namespace Kingo.Messaging.Domain
                 new XIncrementedEvent(id, 5, 10)
             };
             var snapshot = new AggregateStubA(id);
-            var factory = new EventStreamFactory<Guid, int>(events, snapshot);
-            var aggregate = factory.RestoreAggregate<AggregateStubA>();
+            var factory = new EventStreamHistory<Guid, int, AggregateStubA>(events, snapshot);
+            var aggregate = factory.RestoreAggregate();
 
             Assert.IsNotNull(aggregate);
 
@@ -260,6 +260,6 @@ namespace Kingo.Messaging.Domain
             aggregate.AssertYIsEqualTo(-1);
         }
 
-        private static readonly IEnumerable<IHasKeyAndVersion<Guid, int>> _NoEvents = Enumerable.Empty<IHasKeyAndVersion<Guid, int>>();        
+        private static readonly IEnumerable<IDomainEvent<Guid, int>> _NoEvents = Enumerable.Empty<IDomainEvent<Guid, int>>();        
     }
 }

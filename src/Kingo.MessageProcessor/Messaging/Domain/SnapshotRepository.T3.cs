@@ -13,34 +13,60 @@ namespace Kingo.Messaging.Domain
     public abstract class SnapshotRepository<TKey, TVersion, TAggregate> : Repository<TKey, TVersion, TAggregate>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IAggregateRoot<TKey, TVersion>
-    {        
+    {
+        #region [====== Select ======]
+
+        internal override async Task<TAggregate> SelectByKeyAsync(TKey key)
+        {
+            var snapshot = await SelectSnapshotByKeyAsync(key, TypeToContractMap);
+            if (snapshot == null)
+            {
+                return null;
+            }
+            return (TAggregate) snapshot.RestoreAggregate();
+        }
+
+        /// <summary>
+        /// Loads a snapshot from the repository.
+        /// </summary>
+        /// <param name="key">Key of the aggregate.</param>
+        /// <param name="map">
+        /// The mapping from each contract to a specific type that can be used to deserialize the retrieved data to its correct type.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task{T}" /> representing the load operation. The task should return <c>null</c> if the aggregate was not found.
+        /// </returns>
+        protected abstract Task<IMemento<TKey, TVersion>> SelectSnapshotByKeyAsync(TKey key, ITypeToContractMap map);
+
+        #endregion
+
         #region [====== Insert ======]
 
-        internal override async Task InsertAsync(TAggregate aggregate, IWritableEventStream<TKey, TVersion> domainEventStream)
+        internal override async Task InsertAsync(TAggregate aggregate, IDomainEventBus<TKey, TVersion> eventBus)
         {
-            await InsertAsync(new Snapshot<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot()));
+            await InsertAsync(new SnapshotToSave<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot()));
 
-            aggregate.WriteTo(domainEventStream);            
+            aggregate.Commit(eventBus);         
         }
 
         /// <summary>
         /// Inserts a new snapshot into this repository.
         /// </summary>
-        /// <param name="snapshot">Snapshot of the aggregate to insert.</param>                         
-        protected abstract Task InsertAsync(Snapshot<TKey, TVersion> snapshot);
+        /// <param name="snapshotToSave">Snapshot of the aggregate to insert.</param>                         
+        protected abstract Task InsertAsync(SnapshotToSave<TKey, TVersion> snapshotToSave);
 
         #endregion        
 
         #region [====== Update ======]
 
-        internal override async Task<bool> UpdateAsync(TAggregate aggregate, TVersion originalVersion, IWritableEventStream<TKey, TVersion> domainEventStream)
+        internal override async Task<bool> UpdateAsync(TAggregate aggregate, TVersion originalVersion, IDomainEventBus<TKey, TVersion> eventBus)
         {
-            var snapshot = new Snapshot<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot());
+            var snapshot = new SnapshotToSave<TKey, TVersion>(TypeToContractMap, aggregate.CreateSnapshot());
 
             var updateSucceeded = await UpdateAsync(snapshot, originalVersion);
             if (updateSucceeded)
             {
-                aggregate.WriteTo(domainEventStream);
+                aggregate.Commit(eventBus);
                 return true;
             }
             return false;
@@ -49,7 +75,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// When overridden, updates / overwrites a previous version with a new version.
         /// </summary>
-        /// <param name="snapshot">Snapshot of the aggregate to update.</param>        
+        /// <param name="snapshotToSave">Snapshot of the aggregate to update.</param>        
         /// <param name="originalVersion">
         /// The version of the aggregate before it was updated.
         /// </param>        
@@ -57,7 +83,7 @@ namespace Kingo.Messaging.Domain
         /// A <see cref="Task{T}" /> representing the update operation. This task should return
         /// <c>true</c> if the update succeeded or <c>false</c> if a concurrency conflict was detected.
         /// </returns>
-        protected virtual Task<bool> UpdateAsync(Snapshot<TKey, TVersion> snapshot, TVersion originalVersion)
+        protected virtual Task<bool> UpdateAsync(SnapshotToSave<TKey, TVersion> snapshotToSave, TVersion originalVersion)
         {
             throw NewUpdateNotSupportedException();
         }

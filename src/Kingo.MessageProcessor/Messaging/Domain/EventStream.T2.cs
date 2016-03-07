@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
@@ -11,7 +12,7 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>        
     [Serializable]
-    public abstract class EventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IWritableEventStream<TKey, TVersion>        
+    public abstract class EventStream<TKey, TVersion> : AggregateRoot<TKey, TVersion>, IEventStream<TKey, TVersion>        
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {                     
         [NonSerialized]
@@ -21,7 +22,7 @@ namespace Kingo.Messaging.Domain
         /// Initializes a new instance of the <see cref="EventStream{T, S}" /> class.
         /// </summary>
         /// <param name="event">The event of that represents the creation of this aggregate.</param>        
-        protected EventStream(IHasKeyAndVersion<TKey, TVersion> @event = null)
+        protected EventStream(IDomainEvent<TKey, TVersion> @event = null)
             : base(@event) { }
 
         private Dictionary<Type, Action<IHasKeyAndVersion<TKey, TVersion>>> EventHandlers
@@ -68,12 +69,19 @@ namespace Kingo.Messaging.Domain
             }            
         }        
 
-        void IWritableEventStream<TKey, TVersion>.Write<TEvent>(TEvent @event)
+        void IEventStream<TKey, TVersion>.LoadFromHistory(IEnumerable<IDomainEvent<TKey, TVersion>> historicEvents)
         {
-            Apply(@event);
+            if (historicEvents == null)
+            {
+                throw new ArgumentNullException(nameof(historicEvents));
+            }
+            foreach (var historicEvent in historicEvents.OrderBy(e => e.Version))
+            {
+                Apply(historicEvent.UpgradeToLatestVersion());
+            }            
         }
 
-        internal override void Apply<TEvent>(TEvent @event)
+        internal override void Apply(IHasKeyAndVersion<TKey, TVersion> @event)
         {
             // The EventHandlers are registered just-in-time. Since we expect at least one handler
             // to be registered (to handle the created event), we can check this by looking at the
@@ -84,7 +92,7 @@ namespace Kingo.Messaging.Domain
             }
             base.Apply(@event);
 
-            var eventType = typeof(TEvent);
+            var eventType = @event.GetType();
 
             try
             {
@@ -98,14 +106,14 @@ namespace Kingo.Messaging.Domain
 
         private static Exception NewHandlerForTypeAlreadyRegisteredException(Type domainEventType)
         {
-            var messageFormat = ExceptionMessages.AggregateEventStream_HandlerAlreadyRegistered;
+            var messageFormat = ExceptionMessages.EventStream_HandlerAlreadyRegistered;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, domainEventType.Name);
             return new ArgumentException(message);
         }
 
         private static Exception NewMissingEventHandlerException(Type domainEventType)
         {
-            var messageFormat = ExceptionMessages.AggregateEventStream_MissingEventHandler;
+            var messageFormat = ExceptionMessages.EventStream_MissingEventHandler;
             var message = string.Format(CultureInfo.CurrentCulture, messageFormat, domainEventType);
             return new ArgumentException(message);
         }        

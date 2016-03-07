@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represents a <see cref="MessageProcessorBus" /> to which event-handlers can subscribe.
     /// </summary>
-    public interface IMessageProcessorBus : IDomainEventBus
+    public interface IMessageProcessorBus
     {
+        /// <summary>
+        /// Publishes the specified event on this bus.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of event to publish.</typeparam>
+        /// <param name="message">The event to publish.</param>                
+        Task PublishAsync<TMessage>(TMessage message) where TMessage : class, IMessage;
+
         #region [====== Connect ======]
 
         /// <summary>

@@ -16,6 +16,6 @@ namespace Kingo.Messaging.Domain
 
         internal abstract bool HasBeenUpdated();        
 
-        internal abstract Task CommitAsync(IWritableEventStream<TKey, TVersion> domainEventStream);
+        internal abstract Task CommitAsync(IDomainEventBus<TKey, TVersion> eventBus);
     }
 }
