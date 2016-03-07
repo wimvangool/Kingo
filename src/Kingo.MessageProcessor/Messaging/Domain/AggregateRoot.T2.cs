@@ -11,7 +11,10 @@ namespace Kingo.Messaging.Domain
     /// <typeparam name="TKey">Type of the aggregate-key.</typeparam>
     /// <typeparam name="TVersion">Type of the aggregate-version.</typeparam>      
     [Serializable]
-    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>, IAggregateRoot<TKey, TVersion>, IMemento<TKey, TVersion>
+    public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>,
+                                                          IAggregateRoot<TKey, TVersion>,
+                                                          IMemento<TKey, TVersion>,
+                                                          IDomainEventBus<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>       
     {
         private static readonly Func<TVersion, TVersion> _IncrementMethod = AggregateRootVersion.IncrementMethod<TVersion>();
@@ -124,9 +127,9 @@ namespace Kingo.Messaging.Domain
 
         #endregion              
 
-        #region [====== Publish & Apply ======]
+        #region [====== Publish & Apply ======]       
 
-        void IAggregateRoot<TKey, TVersion>.Publish<TEvent>(TEvent @event)
+        void IDomainEventBus<TKey, TVersion>.Publish<TEvent>(TEvent @event)
         {
             Publish(@event);
         }
