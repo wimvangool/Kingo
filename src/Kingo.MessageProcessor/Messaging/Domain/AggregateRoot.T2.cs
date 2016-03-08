@@ -13,8 +13,7 @@ namespace Kingo.Messaging.Domain
     [Serializable]
     public abstract class AggregateRoot<TKey, TVersion> : Entity<TKey>,
                                                           IAggregateRoot<TKey, TVersion>,
-                                                          IMemento<TKey, TVersion>,
-                                                          IDomainEventBus<TKey, TVersion>
+                                                          IMemento<TKey, TVersion>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>       
     {
         private static readonly Func<TVersion, TVersion> _IncrementMethod = AggregateRootVersion.IncrementMethod<TVersion>();
