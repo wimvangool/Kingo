@@ -112,7 +112,7 @@ namespace Kingo.Messaging
         
         private IMessageSequence CreateSetupSequence()
         {
-            return Concatenate(Given());
+            return Given().Concatenate();
         }
 
         /// <summary>

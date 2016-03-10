@@ -8,20 +8,20 @@ namespace Kingo.Messaging
 {
     internal sealed class MessageSequenceConcatenation : MessageSequence
     {
-        private readonly IEnumerable<IMessageSequence> _messages;
+        private readonly IEnumerable<IMessageSequence> _sequences;
 
-        internal MessageSequenceConcatenation(IEnumerable<IMessageSequence> messages)
+        internal MessageSequenceConcatenation(IEnumerable<IMessageSequence> sequences)
         {
-            if (messages == null)
+            if (sequences == null)
             {
-                throw new ArgumentNullException(nameof(messages));
+                throw new ArgumentNullException(nameof(sequences));
             }
-            _messages = messages;
+            _sequences = sequences;
         }
 
         public override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
         {
-            foreach (var sequence in _messages.Where(sequence => sequence != null))
+            foreach (var sequence in _sequences.Where(sequence => sequence != null))
             {
                 await sequence.ProcessWithAsync(processor, token);
             }

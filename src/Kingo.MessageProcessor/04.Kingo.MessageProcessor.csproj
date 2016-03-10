@@ -93,6 +93,7 @@
     <Compile Include="Messaging\Domain\Entity.T1.cs" />
     <Compile Include="Messaging\Domain\SnapshotToSave.T2.cs" />
     <Compile Include="Messaging\Domain\SnapshotOrEventToSave.T2.cs" />
+    <Compile Include="Messaging\MessageSequenceExtensions.cs" />
     <Compile Include="Messaging\TypeToContractMap.cs" />
     <Compile Include="Messaging\TypeToContractMapException.cs" />
     <Compile Include="Messaging\EmptySequence.cs" />
