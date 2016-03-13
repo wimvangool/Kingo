@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Kingo.Messaging.Domain;
 using Kingo.Samples.Chess.Resources;
 
@@ -54,7 +50,7 @@ namespace Kingo.Samples.Chess.Games
         protected virtual bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Square enPassantHit)
         {
             // A piece can never move to a square where another piece of the same color is already present.
-            return IsNotPieceOfSameColor(board.SelectPiece(to));            
+            return !to.Equals(from) && IsNotPieceOfSameColor(board.SelectPiece(to));            
         }
 
         private bool IsNotPieceOfSameColor(Piece piece)

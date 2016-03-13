@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Kingo.Messaging;
-using Kingo.Messaging.Domain;
-using Kingo.Samples.Chess.Games.ChallengeAccepted;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Samples.Chess.Games.MovePiece
@@ -21,7 +16,7 @@ namespace Kingo.Samples.Chess.Games.MovePiece
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await Exception().Expect<CommandExecutionException>().ExecuteAsync();
+            await ExpectedCommandExecutionException();
         }
     }
 }

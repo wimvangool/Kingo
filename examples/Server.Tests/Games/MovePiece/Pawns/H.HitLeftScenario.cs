@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kingo.Constraints;
 using Kingo.Messaging;
-using Kingo.Samples.Chess.Games.ChallengeAccepted;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Samples.Chess.Games.MovePiece.Pawns
 {
     [TestClass]
-    public sealed class OneStepFirstMoveOfPawnScenario : MovePieceScenario
-    {                     
+    public sealed class HitLeftScenario : MovePieceScenario
+    {
+        protected override IEnumerable<IMessageSequence> Given()
+        {
+            yield return base.Given().Concatenate();
+            yield return WhitePlayerMove("e2", "e4");
+            yield return BlackPlayerMove("d7", "d5");
+        }
+
         protected override MessageToHandle<MovePieceCommand> When()
         {
-            return WhitePlayerMove("e2", "e3");
+            return WhitePlayerMove("e4", "d5");
         }
 
         [TestMethod]

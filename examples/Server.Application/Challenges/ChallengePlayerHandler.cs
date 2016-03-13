@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Kingo.Messaging;
 using Kingo.Samples.Chess.Players;
 using PostSharp.Patterns.Contracts;

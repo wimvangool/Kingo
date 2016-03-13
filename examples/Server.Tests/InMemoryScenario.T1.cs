@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

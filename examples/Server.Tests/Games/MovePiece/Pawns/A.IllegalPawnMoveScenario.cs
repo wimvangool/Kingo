@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Samples.Chess.Games.MovePiece.Pawns
 {
+
     [TestClass]
-    public sealed class HitOfEmptySquareScenario : MovePieceScenario
+    public sealed class IllegalPawnMoveScenario : MovePieceScenario
     {
         protected override MessageToHandle<MovePieceCommand> When()
         {
-            return WhitePlayerMove("a2", "b3");
+            return WhitePlayerMove("e2", "c4");
         }
 
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await Exception().Expect<CommandExecutionException>().ExecuteAsync();
+            await ExpectedCommandExecutionException();
         }
     }
 }

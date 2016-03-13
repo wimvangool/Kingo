@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,24 +6,24 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Samples.Chess.Games.MovePiece.Pawns
 {
     [TestClass]
-    public sealed class HitRightScenario : MovePieceScenario
+    public sealed class OneStepBlockedByPieceOnTargetScenario : MovePieceScenario
     {
         protected override IEnumerable<IMessageSequence> Given()
         {
             yield return base.Given().Concatenate();
             yield return WhitePlayerMove("e2", "e4");
-            yield return BlackPlayerMove("f7", "f5");            
+            yield return BlackPlayerMove("e7", "e5");
         }
 
         protected override MessageToHandle<MovePieceCommand> When()
         {
-            return WhitePlayerMove("e4", "f5");
+            return WhitePlayerMove("e4", "e5");
         }
 
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await ExpectPieceMovedEvent();
+            await ExpectedCommandExecutionException();
         }
     }
 }

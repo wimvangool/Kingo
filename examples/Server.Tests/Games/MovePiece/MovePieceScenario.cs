@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Kingo.Constraints;
 using Kingo.Messaging;
@@ -13,18 +10,21 @@ namespace Kingo.Samples.Chess.Games.MovePiece
 {
     [TestClass]
     public abstract class MovePieceScenario : InMemoryScenario<MovePieceCommand>
-    {
-        public readonly GameIsStartedScenario GameIsStarted;
-
+    {        
         protected MovePieceScenario()
         {
             GameIsStarted = new GameIsStartedScenario();            
         }
 
+        public virtual GameIsStartedScenario GameIsStarted
+        {
+            get;
+        }
+
         protected Guid GameId
         {
             get { return GameIsStarted.GameStartedEvent.GameId; }
-        }       
+        }               
 
         protected override IEnumerable<IMessageSequence> Given()
         {

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kingo.Samples.Chess.Resources;
 
 namespace Kingo.Samples.Chess.Games
 {
@@ -18,6 +15,16 @@ namespace Kingo.Samples.Chess.Games
             To = to;
             FileSteps = fileSteps;
             RankSteps = rankSteps;
+        }
+
+        public bool IsStraightPath
+        {
+            get { return FileSteps == 0 || RankSteps == 0; }
+        }
+
+        public bool IsCrossPath
+        {
+            get { return Math.Abs(FileSteps) == Math.Abs(RankSteps); }
         }
 
         public override string ToString()
@@ -48,7 +55,7 @@ namespace Kingo.Samples.Chess.Games
                 path = To.CreateHorizontalPath(FileSteps);
                 return true;
             }
-            if (Math.Abs(FileSteps) == Math.Abs(RankSteps))
+            if (IsCrossPath)
             {
                 path = To.CreateCrossPath(FileSteps, RankSteps);
                 return true;
