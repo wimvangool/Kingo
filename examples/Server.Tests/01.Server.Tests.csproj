@@ -97,11 +97,11 @@
     <Compile Include="Challenges\RejectChallenge\ChallengeDoesNotExistScenario.cs" />
     <Compile Include="Challenges\RejectChallenge\ChallengeIsRejectedScenario.cs" />
     <Compile Include="Challenges\RejectChallenge\PlayerIsNotReceiverScenario.cs" />
-    <Compile Include="Games\ChallengeAccepted\GameIsStartedScenario.cs" />
-    <Compile Include="Games\ForfeitGame\GameAlreadyEndedScenario.cs" />
-    <Compile Include="Games\ForfeitGame\GameIsForfeitedScenario.cs" />
-    <Compile Include="Games\ForfeitGame\GameNotFoundScenario.cs" />
-    <Compile Include="Games\ForfeitGame\SenderIsNoPlayerScenario.cs" />
+    <Compile Include="Games\ChallengeAccepted\H.GameIsStartedScenario.cs" />
+    <Compile Include="Games\ForfeitGame\A.GameAlreadyEndedScenario.cs" />
+    <Compile Include="Games\ForfeitGame\H.GameIsForfeitedScenario.cs" />
+    <Compile Include="Games\ForfeitGame\A.GameNotFoundScenario.cs" />
+    <Compile Include="Games\ForfeitGame\A.SenderIsNoPlayerScenario.cs" />
     <Compile Include="Games\InMemoryGameRepository.cs" />
     <Compile Include="Games\MovePiece\A.EmptySquareScenario.cs" />
     <Compile Include="Games\MovePiece\A.GameNotFoundScenario.cs" />
@@ -131,8 +131,8 @@
     <Compile Include="Games\MovePiece\Rooks\H.TwoStepsFowardScenario.cs" />
     <Compile Include="Games\MovePiece\A.SenderIsNoPlayerScenario.cs" />
     <Compile Include="Games\MovePiece\A.WrongColorOfPieceScenario.cs" />
-    <Compile Include="Players\RegisterPlayer\PlayerIsRegisteredScenario.cs" />
-    <Compile Include="Players\RegisterPlayer\PlayerAlreadyRegisteredScenario.cs" />
+    <Compile Include="Players\RegisterPlayer\H.PlayerIsRegisteredScenario.cs" />
+    <Compile Include="Players\RegisterPlayer\A.PlayerAlreadyRegisteredScenario.cs" />
     <Compile Include="Players\InMemoryPlayerRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InMemoryProcessor.cs" />
