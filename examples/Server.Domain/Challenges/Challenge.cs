@@ -7,7 +7,7 @@ using Kingo.Samples.Chess.Resources;
 namespace Kingo.Samples.Chess.Challenges
 {
     [Serializable]
-    public sealed class Challenge : AggregateRoot
+    public sealed class Challenge : AggregateRoot<Guid, int>
     {
         private readonly Guid _id;
         private readonly Guid _senderId;
@@ -59,7 +59,7 @@ namespace Kingo.Samples.Chess.Challenges
 
         private static Exception NewPlayerCannotAcceptChallengeException(string playerName)
         {
-            var messageFormat = DomainExceptionMessages.Challenges_PlayerCannotAcceptChallenge;
+            var messageFormat = ExceptionMessages.Challenges_PlayerCannotAcceptChallenge;
             var message = string.Format(messageFormat, playerName);
             return new DomainException(message);
         }
@@ -101,12 +101,12 @@ namespace Kingo.Samples.Chess.Challenges
 
         private static Exception NewChallengeAlreadyAcceptedException()
         {
-            return new DomainException(DomainExceptionMessages.Challenges_AlreadyAccepted);
+            return new DomainException(ExceptionMessages.Challenges_AlreadyAccepted);
         }
 
         private static Exception NewChallengeAlreadyRejectedException()
         {
-            return new DomainException(DomainExceptionMessages.Challenges_AlreadyRejected);
+            return new DomainException(ExceptionMessages.Challenges_AlreadyRejected);
         }        
     }
 }

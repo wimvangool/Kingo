@@ -9,6 +9,9 @@ namespace Kingo.Samples.Chess.Games
         #region [====== Write Methods ======]
 
         [OperationContract]
+        Task MovePiece(MovePieceCommand command);
+
+        [OperationContract]
         Task ForfeitGameAsync(ForfeitGameCommand command);
 
         #endregion

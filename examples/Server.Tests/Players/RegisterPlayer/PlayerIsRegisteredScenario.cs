@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kingo.Constraints;
+using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Samples.Chess.Players.RegisterPlayer
@@ -17,7 +18,7 @@ namespace Kingo.Samples.Chess.Players.RegisterPlayer
         {
             if (playerName == null)
             {
-                throw new ArgumentNullException("playerName");
+                throw new ArgumentNullException(nameof(playerName));
             }
             _playerName = playerName;
         }
@@ -27,7 +28,7 @@ namespace Kingo.Samples.Chess.Players.RegisterPlayer
             get { return (PlayerRegisteredEvent) PublishedEvents[0]; }
         }
 
-        protected override RegisterPlayerCommand When()
+        protected override MessageToHandle<RegisterPlayerCommand> When()
         {
             return new RegisterPlayerCommand(Guid.NewGuid(), _playerName);
         }

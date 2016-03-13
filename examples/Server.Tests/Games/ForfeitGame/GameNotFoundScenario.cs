@@ -8,7 +8,7 @@ namespace Kingo.Samples.Chess.Games.ForfeitGame
     [TestClass]
     public sealed class GameNotFoundScenario : InMemoryScenario<ForfeitGameCommand>
     {
-        protected override ForfeitGameCommand When()
+        protected override MessageToHandle<ForfeitGameCommand> When()
         {
             return new ForfeitGameCommand(Guid.NewGuid());
         }

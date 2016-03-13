@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Kingo.Messaging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Kingo.Samples.Chess.Games.MovePiece.Pawns
+{
+    [TestClass]
+    public sealed class EnPassantHitOfPawnThatTookTwoSingleStepsScenarioScenario : MovePieceScenario
+    {
+        protected override IEnumerable<IMessageSequence> Given()
+        {
+            yield return base.Given().Concatenate();
+            yield return WhitePlayerMove("e2", "e4");
+            yield return BlackPlayerMove("f7", "f6");
+            yield return WhitePlayerMove("e4", "e5");
+            yield return BlackPlayerMove("f6", "f5");
+        }
+
+        protected override MessageToHandle<MovePieceCommand> When()
+        {
+            return WhitePlayerMove("e5", "f6");
+        }
+
+        [TestMethod]
+        public override async Task ThenAsync()
+        {
+            await Exception().Expect<CommandExecutionException>().ExecuteAsync();
+        }
+    }
+}

@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Server.DataAccess", "Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clients.ConsoleApp", "Clients.Console\Clients.ConsoleApp.csproj", "{7FF52584-349A-4F3D-98B9-9C6B12FDED28}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Chess.Sql", "Server.Data.Sql\Chess.Sql.sqlproj", "{63BA61FD-379B-402D-8331-13715C26B057}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Chess.Sql", "Server.Data\Chess.Sql.sqlproj", "{63BA61FD-379B-402D-8331-13715C26B057}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Server", "Server\02.Server.csproj", "{AFF442D0-7BAE-4067-A172-31D5C073DCFD}"
 EndProject

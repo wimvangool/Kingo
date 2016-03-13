@@ -7,11 +7,11 @@ namespace Kingo.Samples.Chess.Games
     [DataContract]
     public sealed class GameForfeitedEvent : DomainEvent<Guid, int>
     {        
-        public GameForfeitedEvent(Guid gameId, int gameVersion)
-        {
-            GameId = gameId;
-            GameVersion = gameVersion;
-        }
+        //public GameForfeitedEvent(Guid gameId, int gameVersion)
+        //{
+        //    //GameId = gameId;
+        //    //GameVersion = gameVersion;
+        //}
 
         [DataMember, Key]
         public Guid GameId

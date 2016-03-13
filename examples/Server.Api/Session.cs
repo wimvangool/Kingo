@@ -8,7 +8,7 @@ namespace Kingo.Samples.Chess
     public sealed class Session
     {
         public static readonly string HeaderName = typeof(Session).Name;
-        public const string HeaderNamespace = @"Kingo.Samples.Chess";
+        public static readonly string HeaderNamespace = typeof(Session).Namespace;
 
         [DataMember]
         private readonly Guid _playerId;
@@ -20,7 +20,7 @@ namespace Kingo.Samples.Chess
         {
             if (playerName == null)
             {
-                throw new ArgumentNullException("playerName");
+                throw new ArgumentNullException(nameof(playerName));
             }
             _playerId = playerId;
             _playerName = playerName;

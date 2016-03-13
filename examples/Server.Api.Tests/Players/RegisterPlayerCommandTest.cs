@@ -13,7 +13,7 @@ namespace Kingo.Samples.Chess.Players
         {
             var message = new RegisterPlayerCommand(Guid.Empty, NewPlayerName());
 
-            message.Validate().AssertMemberError("PlayerId is not specified.", "PlayerId");
+            message.Validate().AssertMemberError("'PlayerId' is not specified.", "PlayerId");
         }        
 
         private static Guid NewPlayerId()
@@ -30,7 +30,7 @@ namespace Kingo.Samples.Chess.Players
         {
             var message = new RegisterPlayerCommand(NewPlayerId(), null);
 
-            message.Validate().AssertMemberError("PlayerName is not specified.", "PlayerName");
+            message.Validate().AssertMemberError("'PlayerName' is not specified.", "PlayerName");
         }
 
         [TestMethod]
@@ -48,6 +48,8 @@ namespace Kingo.Samples.Chess.Players
 
         #endregion
 
+        #region [====== Valid Messages ======]
+
         [TestMethod]
         public void Validate_ReturnsNoError_IfMessageIsValid()
         {
@@ -55,5 +57,7 @@ namespace Kingo.Samples.Chess.Players
 
             message.Validate().AssertNoErrors();
         }
+
+        #endregion
     }
 }

@@ -22,9 +22,9 @@ namespace Kingo.Samples.Chess.Players
         {
             if (playerName == null)
             {
-                throw new ArgumentNullException("playerName");
+                throw new ArgumentNullException(nameof(playerName));
             }
-            return Snapshots.Values.Any(player => IsMatch(player.RestoreAggregate<Player>(), playerName));
+            return Snapshots.Values.Any(player => IsMatch((Player) player.RestoreAggregate(), playerName));
         }
 
         void IPlayerRepository.Add(Player player)

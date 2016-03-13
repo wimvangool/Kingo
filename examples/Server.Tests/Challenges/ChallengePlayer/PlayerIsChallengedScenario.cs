@@ -31,17 +31,12 @@ namespace Kingo.Samples.Chess.Challenges.ChallengePlayer
             yield return ReceiverIsRegistered;
         }
 
-        protected override ChallengePlayerCommand When()
+        protected override MessageToHandle<ChallengePlayerCommand> When()
         {
-            return new ChallengePlayerCommand(Guid.NewGuid(), ReceiverIsRegistered.PlayerRegisteredEvent.PlayerId);
-        }
-
-        protected override Session CreateSession()
-        {
+            var message = new ChallengePlayerCommand(Guid.NewGuid(), ReceiverIsRegistered.PlayerRegisteredEvent.PlayerId);
             var sender = SenderIsRegistered.PlayerRegisteredEvent;
-
-            return new Session(sender.PlayerId, sender.PlayerName);
-        }
+            return new SecureMessage<ChallengePlayerCommand>(message, sender.PlayerId, sender.PlayerName);
+        }        
 
         [TestMethod]
         public override async Task ThenAsync()

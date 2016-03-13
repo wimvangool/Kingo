@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Kingo.Messaging;
 using Kingo.Samples.Chess.Players;
+using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Challenges
 {
@@ -10,26 +11,14 @@ namespace Kingo.Samples.Chess.Challenges
         private readonly IPlayerRepository _players;
         private readonly IChallengeRepository _challenges;
 
-        public ChallengePlayerHandler(IPlayerRepository players, IChallengeRepository challenges)
-        {
-            if (players == null)
-            {
-                throw new ArgumentNullException("players");
-            }
-            if (challenges == null)
-            {
-                throw new ArgumentNullException("challenges");
-            }
+        public ChallengePlayerHandler([NotNull] IPlayerRepository players, [NotNull] IChallengeRepository challenges)
+        {            
             _players = players;
             _challenges = challenges;
         }
 
-        public override async Task HandleAsync(ChallengePlayerCommand message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
+        public override async Task HandleAsync([NotNull] ChallengePlayerCommand message)
+        {            
             var playerOne = await _players.GetByIdAsync(Session.Current.PlayerId);
             var playerTwo = await _players.GetByIdAsync(message.PlayerId);
 

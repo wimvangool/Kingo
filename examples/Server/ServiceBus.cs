@@ -79,7 +79,7 @@ namespace Kingo.Samples.Chess
 
                 try
                 {
-                    Console.WriteLine("<-- [{0}].", @event.GetType().Name);                    
+                    Console.WriteLine("[Service] <-- [{0}].", @event.GetType().Name);                    
                 }
                 finally
                 {
@@ -120,7 +120,7 @@ namespace Kingo.Samples.Chess
             }
             if (@event == null)
             {
-                throw new ArgumentNullException("event");
+                throw new ArgumentNullException(nameof(@event));
             }
             if (_connection.IsOpen)
             {
@@ -132,7 +132,7 @@ namespace Kingo.Samples.Chess
 
                     try
                     {                        
-                        Console.WriteLine("--> [{0}].", @event.GetType().Name);
+                        Console.WriteLine("[Service] --> [{0}].", @event.GetType().Name);
                         return;
                     }
                     finally

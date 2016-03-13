@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Kingo.Messaging;
 using Kingo.Messaging.Domain;
 using Kingo.Samples.Chess.Resources;
+using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Players
 {
@@ -11,26 +12,14 @@ namespace Kingo.Samples.Chess.Players
         private readonly IPlayerRepository _players;
         private readonly IPlayerAdministration _playerAdministration;
 
-        public RegisterPlayerHandler(IPlayerRepository players, IPlayerAdministration playerAdministration)
-        {
-            if (players == null)
-            {
-                throw new ArgumentNullException("players");
-            }
-            if (playerAdministration == null)
-            {
-                throw new ArgumentNullException("playerAdministration");
-            }
+        public RegisterPlayerHandler([NotNull] IPlayerRepository players, [NotNull] IPlayerAdministration playerAdministration)
+        {            
             _players = players;
             _playerAdministration = playerAdministration;
         }
 
-        public override async Task HandleAsync(RegisterPlayerCommand message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
+        public override async Task HandleAsync([NotNull] RegisterPlayerCommand message)
+        {            
             var playerName = Identifier.Parse(message.PlayerName);
 
             var playerNameHasBeenRegistered = await _playerAdministration.HasBeenRegisteredAsync(playerName);
@@ -43,7 +32,7 @@ namespace Kingo.Samples.Chess.Players
 
         private static Exception NewPlayerNameAlreadyRegisteredException(Identifier playerName)
         {            
-            return DomainException.CreateException(DomainExceptionMessages.Players_PlayerNameAlreadyRegistered, playerName);
+            return DomainException.CreateException(ExceptionMessages.Players_PlayerNameAlreadyRegistered, playerName);
         }
     }
 }

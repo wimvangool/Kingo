@@ -22,15 +22,12 @@ namespace Kingo.Samples.Chess.Challenges.RejectChallenge
             yield return PlayerIsChallenged;
         }
 
-        protected override RejectChallengeCommand When()
+        protected override MessageToHandle<RejectChallengeCommand> When()
         {
-            return new RejectChallengeCommand(PlayerIsChallenged.PlayerChallengedEvent.ChallengeId);
-        }
-
-        protected override Session CreateSession()
-        {
-            return new Session(Guid.NewGuid(), "SomePlayer");
-        }
+            var message = new RejectChallengeCommand(PlayerIsChallenged.PlayerChallengedEvent.ChallengeId);
+            var session = RandomSession();
+            return new SecureMessage<RejectChallengeCommand>(message, session);
+        }        
 
         [TestMethod]
         public override async Task ThenAsync()

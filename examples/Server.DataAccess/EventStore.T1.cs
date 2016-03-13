@@ -9,17 +9,17 @@ using Kingo.Messaging.Domain;
 namespace Kingo.Samples.Chess
 {
     public abstract class EventStore<TAggregate> : EventStore<Guid, int, TAggregate>
-        where TAggregate : class, IAggregateRoot<Guid, int> , IWritableEventStream<Guid, int>
+        where TAggregate : class, IEventStream<Guid, int>
     {
         private const string _EventsTableType = "dbo.Events";
 
         #region [====== Select ======]
 
-        protected override async Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key, ITypeToContractMap map)
+        protected override async Task<EventStreamHistory<Guid, int, TAggregate>> SelectHistoryByKeyAsync(Guid key, ITypeToContractMap map)
         {
             using (var command = CreateSelectCommand(key))
             {
-                return DeserializeSnapshot(await command.ExecuteDataReaderAsync(), map);
+                return new EventStreamHistory<Guid, int, TAggregate>(DeserializeEvents(await command.ExecuteDataReaderAsync(), map), false);                
             }            
         }
 
@@ -30,12 +30,7 @@ namespace Kingo.Samples.Chess
             return command;
         }
 
-        private static ISnapshot<Guid, int> DeserializeSnapshot(DbDataReader reader, ITypeToContractMap map)
-        {
-            return new EventStreamFactory<Guid, int>(DeserializeEvents(reader, map), false);            
-        }
-
-        private static IEnumerable<IHasKeyAndVersion<Guid, int>> DeserializeEvents(DbDataReader reader, ITypeToContractMap map)
+        private static IEnumerable<IDomainEvent<Guid, int>> DeserializeEvents(DbDataReader reader, ITypeToContractMap map)
         {
             if (reader.HasRows)
             {
@@ -46,20 +41,20 @@ namespace Kingo.Samples.Chess
             }
         }
 
-        private static IHasKeyAndVersion<Guid, int> DeserializeEvent(IDataRecord record, ITypeToContractMap map)
+        private static IDomainEvent<Guid, int> DeserializeEvent(IDataRecord record, ITypeToContractMap map)
         {
             var value = record.GetString(0);
             var typeInfo = record.GetString(1);
             var type = map.GetType(typeInfo);
 
-            return (IHasKeyAndVersion<Guid, int>) Serializer.Deserialize(value, type);
+            return (IDomainEvent<Guid, int>) Serializer.Deserialize(value, type);
         }
 
         #endregion
 
         #region [====== Insert ======]
 
-        protected override async Task<bool> InsertEventsAsync(Snapshot<Guid, int> snapshot, int? originalVersion, IEnumerable<Event<Guid, int>> events)
+        protected override async Task<bool> InsertEventsAsync(SnapshotToSave<Guid, int> snapshot, int? originalVersion, IEnumerable<EventToSave<Guid, int>> events)
         {
             using (var command = CreateInsertCommand(snapshot, originalVersion, events))
             {
@@ -67,7 +62,7 @@ namespace Kingo.Samples.Chess
             }            
         }
 
-        private static DatabaseCommand CreateInsertCommand(Snapshot<Guid, int> snapshot, int? originalVersion, IEnumerable<Event<Guid, int>> events)
+        private static DatabaseCommand CreateInsertCommand(SnapshotToSave<Guid, int> snapshot, int? originalVersion, IEnumerable<EventToSave<Guid, int>> events)
         {
             // TODO: Insert snapshot every X events.
             var command = new DatabaseCommand("sp_Events_Insert");
@@ -83,7 +78,7 @@ namespace Kingo.Samples.Chess
             return command;            
         }
 
-        private static DataTable ConvertToTable(IEnumerable<Event<Guid, int>> events)
+        private static DataTable ConvertToTable(IEnumerable<EventToSave<Guid, int>> events)
         {
             var table = CreateEventsTable();
 

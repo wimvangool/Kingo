@@ -21,18 +21,13 @@ namespace Kingo.Samples.Chess.Challenges.AcceptChallenge
             yield return ChallengeIsRejected;
         }
 
-        protected override AcceptChallengeCommand When()
+        protected override MessageToHandle<AcceptChallengeCommand> When()
         {
-            return new AcceptChallengeCommand(ChallengeIsRejected.ChallengeRejectedEvent.ChallengeId);
-        }
-
-        protected override Session CreateSession()
-        {
+            var message = new AcceptChallengeCommand(ChallengeIsRejected.ChallengeRejectedEvent.ChallengeId);
             var receiverId = ChallengeIsRejected.PlayerIsChallenged.PlayerChallengedEvent.ReceiverId;
             var receiverName = ChallengeIsRejected.PlayerIsChallenged.ReceiverIsRegistered.PlayerRegisteredEvent.PlayerName;
-
-            return new Session(receiverId, receiverName);
-        }
+            return new SecureMessage<AcceptChallengeCommand>(message, receiverId, receiverName);
+        }        
 
         [TestMethod]
         public override async Task ThenAsync()

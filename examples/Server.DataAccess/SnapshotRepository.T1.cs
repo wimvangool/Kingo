@@ -11,7 +11,7 @@ namespace Kingo.Samples.Chess
     {
         #region [====== Select ======]
 
-        protected override async Task<ISnapshot<Guid, int>> SelectByKeyAsync(Guid key, ITypeToContractMap map)
+        protected override async Task<IMemento<Guid, int>> SelectSnapshotByKeyAsync(Guid key, ITypeToContractMap map)
         {
             using (var command = CreateSelectCommand(key))
             {
@@ -26,14 +26,14 @@ namespace Kingo.Samples.Chess
             return command;
         }
 
-        private static ISnapshot<Guid, int> DeserializeSnapshot(DbDataReader reader, ITypeToContractMap map)
+        private static IMemento<Guid, int> DeserializeSnapshot(DbDataReader reader, ITypeToContractMap map)
         {
             if (reader.HasRows && reader.Read())
             {
                 var value = reader.GetString(0);
                 var contract = reader.GetString(1);
 
-                return (ISnapshot<Guid, int>) Serializer.Deserialize(value, map.GetType(contract));
+                return (IMemento<Guid, int>) Serializer.Deserialize(value, map.GetType(contract));
             }
             return null;
         }
@@ -42,7 +42,7 @@ namespace Kingo.Samples.Chess
 
         #region [====== Insert ======]
 
-        protected override async Task InsertAsync(Snapshot<Guid, int> snapshot)
+        protected override async Task InsertAsync(SnapshotToSave<Guid, int> snapshot)
         {
             using (var command = CreateInsertCommand(snapshot))
             {
@@ -50,7 +50,7 @@ namespace Kingo.Samples.Chess
             }
         }
 
-        private static DatabaseCommand CreateInsertCommand(Snapshot<Guid, int> snapshot)
+        private static DatabaseCommand CreateInsertCommand(SnapshotToSave<Guid, int> snapshot)
         {
             var command = new DatabaseCommand("sp_Snapshots_Insert");
             command.Parameters.AddWithValue(DatabaseCommand.KeyParameter, snapshot.Value.Key);
@@ -64,7 +64,7 @@ namespace Kingo.Samples.Chess
 
         #region [====== Update ======]
 
-        protected override async Task<bool> UpdateAsync(Snapshot<Guid, int> snapshot, int originalVersion)
+        protected override async Task<bool> UpdateAsync(SnapshotToSave<Guid, int> snapshot, int originalVersion)
         {
             using (var command = CreateUpdateCommand(snapshot, originalVersion))
             {
@@ -72,7 +72,7 @@ namespace Kingo.Samples.Chess
             }
         }
 
-        private static DatabaseCommand CreateUpdateCommand(Snapshot<Guid, int> snapshot, int originalVersion)
+        private static DatabaseCommand CreateUpdateCommand(SnapshotToSave<Guid, int> snapshot, int originalVersion)
         {
             var command = new DatabaseCommand("sp_Snapshots_Update");
             command.Parameters.AddWithValue(DatabaseCommand.KeyParameter, snapshot.Value.Key);

@@ -18,32 +18,16 @@ namespace Kingo.Samples.Chess
         protected override IMessageProcessor MessageProcessor
         {
             get { return _processor; }
+        }                
+
+        protected override Exception NewScenarioFailedException(string errorMessage, Exception innerException = null)
+        {
+            return new AssertFailedException(errorMessage, innerException);
         }
 
-        protected override async Task HandleAsync(IMessageProcessor processor, TMessage message)
+        protected static Session RandomSession()
         {
-            var session = CreateSession();
-            if (session == null)
-            {
-                await base.HandleAsync(processor, message);
-            }
-            else
-            {
-                using (Session.CreateSessionScope(session))
-                {
-                    await base.HandleAsync(processor, message);
-                }
-            }
-        }
-
-        protected virtual Session CreateSession()
-        {
-            return null;
-        }
-
-        protected override Exception NewScenarioFailedException(string errorMessage)
-        {
-            return new AssertFailedException(errorMessage);
+            return new Session(Guid.NewGuid(), "SomePlayer");
         }
     }
 }

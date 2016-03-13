@@ -21,7 +21,7 @@ namespace Kingo.Samples.Chess.Players.RegisterPlayer
             yield return PlayerIsRegistered;
         }
 
-        protected override RegisterPlayerCommand When()
+        protected override MessageToHandle<RegisterPlayerCommand> When()
         {
             return new RegisterPlayerCommand(Guid.NewGuid(), PlayerIsRegistered.Message.PlayerName);
         }

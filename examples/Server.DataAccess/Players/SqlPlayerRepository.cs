@@ -12,7 +12,7 @@ namespace Kingo.Samples.Chess.Players
         {
             if (map == null)
             {
-                throw new ArgumentNullException("map");
+                throw new ArgumentNullException(nameof(map));
             }
             _map = map;
         }

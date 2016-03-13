@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Kingo.Messaging;
 using Kingo.Samples.Chess.Challenges;
+using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Games
 {
@@ -10,21 +11,13 @@ namespace Kingo.Samples.Chess.Games
         private readonly IChallengeRepository _challenges;
         private readonly IGameRepository _games;
 
-        public ChallengeAcceptedHandler(IChallengeRepository challenges, IGameRepository games)
-        {
-            if (challenges == null)
-            {
-                throw new ArgumentNullException("challenges");
-            }
-            if (games == null)
-            {
-                throw new ArgumentNullException("games");
-            }
+        public ChallengeAcceptedHandler([NotNull] IChallengeRepository challenges, [NotNull] IGameRepository games)
+        {            
             _challenges = challenges;
             _games = games;
         }
 
-        public async Task HandleAsync(ChallengeAcceptedEvent message)
+        public async Task HandleAsync([NotNull] ChallengeAcceptedEvent message)
         {
             var challenge = await _challenges.GetByIdAsync(message.ChallengeId);
             var game = challenge.StartGame();

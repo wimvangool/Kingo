@@ -29,6 +29,16 @@ namespace Kingo.Samples.Chess.Games.ChallengeAccepted
             get { return ChallengeIsAccepted.PlayerIsChallenged.SenderIsRegistered.PlayerRegisteredEvent.PlayerName; }
         }        
 
+        public Guid BlackPlayerId
+        {
+            get { return GameStartedEvent.BlackPlayerId; }
+        }
+
+        public string BlackPlayerName
+        {
+            get { return ChallengeIsAccepted.PlayerIsChallenged.ReceiverIsRegistered.PlayerRegisteredEvent.PlayerName; }
+        }
+
         public GameStartedEvent GameStartedEvent
         {
             get { return (GameStartedEvent) PublishedEvents[0]; }
@@ -39,7 +49,7 @@ namespace Kingo.Samples.Chess.Games.ChallengeAccepted
             yield return ChallengeIsAccepted;
         }
 
-        protected override ChallengeAcceptedEvent When()
+        protected override MessageToHandle<ChallengeAcceptedEvent> When()
         {
             return ChallengeIsAccepted.ChallengeAcceptedEvent;
         }

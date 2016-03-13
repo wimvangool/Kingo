@@ -8,7 +8,7 @@ namespace Kingo.Samples.Chess.Challenges.RejectChallenge
     [TestClass]
     public sealed class ChallengeDoesNotExistScenario : InMemoryScenario<RejectChallengeCommand>
     {        
-        protected override RejectChallengeCommand When()
+        protected override MessageToHandle<RejectChallengeCommand> When()
         {
             return new RejectChallengeCommand(Guid.NewGuid());
         }

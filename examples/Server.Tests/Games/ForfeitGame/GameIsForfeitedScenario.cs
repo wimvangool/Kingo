@@ -27,18 +27,13 @@ namespace Kingo.Samples.Chess.Games.ForfeitGame
             yield return GameIsStarted;
         }
 
-        protected override ForfeitGameCommand When()
+        protected override MessageToHandle<ForfeitGameCommand> When()
         {
-            return new ForfeitGameCommand(GameIsStarted.GameStartedEvent.GameId);
-        }
-
-        protected override Session CreateSession()
-        {
+            var message = new ForfeitGameCommand(GameIsStarted.GameStartedEvent.GameId);
             var playerId = GameIsStarted.WhitePlayerId;
             var playerName = GameIsStarted.WhitePlayerName;
-
-            return new Session(playerId, playerName);
-        }
+            return new SecureMessage<ForfeitGameCommand>(message, playerId, playerName);
+        }        
 
         [TestMethod]
         public override async Task ThenAsync()

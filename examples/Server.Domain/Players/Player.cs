@@ -6,7 +6,7 @@ using Kingo.Samples.Chess.Resources;
 namespace Kingo.Samples.Chess.Players
 {
     [Serializable]    
-    public sealed class Player : AggregateRoot
+    public sealed class Player : AggregateRoot<Guid, int>
     {
         private readonly Guid _id;
         private readonly Identifier _name; 
@@ -40,7 +40,7 @@ namespace Kingo.Samples.Chess.Players
         {
             if (other == null)
             {
-                throw new ArgumentNullException("other");
+                throw new ArgumentNullException(nameof(other));
             }
             if (Id == other.Id)
             {
@@ -56,7 +56,7 @@ namespace Kingo.Samples.Chess.Players
 
         private static Exception NewCannotChallengeYourselfException(Identifier playerName)
         {
-            var messageFormat = DomainExceptionMessages.Players_PlayerCannotChallengeHimself;
+            var messageFormat = ExceptionMessages.Players_PlayerCannotChallengeHimself;
             var message = string.Format(messageFormat, playerName);
             return new DomainException(message);
         }

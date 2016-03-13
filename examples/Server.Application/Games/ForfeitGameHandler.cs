@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kingo.Messaging;
+using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Games
 {
@@ -8,24 +9,16 @@ namespace Kingo.Samples.Chess.Games
     {
         private readonly IGameRepository _games;
 
-        public ForfeitGameHandler(IGameRepository games)
-        {
-            if (games == null)
-            {
-                throw new ArgumentNullException("games");
-            }
+        public ForfeitGameHandler([NotNull] IGameRepository games)
+        {            
             _games = games;
         }
 
-        public async Task HandleAsync(ForfeitGameCommand message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
+        public async Task HandleAsync([NotNull] ForfeitGameCommand message)
+        {            
             var game = await _games.GetByKeyAsync(message.GameId);
 
-            game.Forfeit();
+            game.Forfeit(Session.Current.PlayerId);
         }
     }
 }
