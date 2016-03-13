@@ -33,9 +33,9 @@ namespace Kingo.Samples.Chess.Games
             get;
         }
 
-        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Square enPassantHit)
+        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
         {
-            if (base.IsSupportedMove(board, from, to, ref enPassantHit))
+            if (base.IsSupportedMove(board, from, to, ref eventFactory))
             {
                 var move = Square.CalculateMove(from, to);
 
@@ -57,7 +57,11 @@ namespace Kingo.Samples.Chess.Games
 
                     if (IsEnPassantHit(board, to, out removedPawn))
                     {
-                        enPassantHit = removedPawn;
+                        eventFactory = () => new EnPassantHitEvent(from.ToString(), to.ToString())
+                        {
+                            EnPassantHit = removedPawn.ToString(),
+                            NewState = board.SimulateEnPassantMove(from, to, removedPawn, Color)
+                        };
                         return true;
                     }
                 }

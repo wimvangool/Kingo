@@ -56,11 +56,16 @@ namespace Kingo.Samples.Chess.Games
 
         #endregion
 
-        #region [====== IsEmpty ======]
+        #region [====== IsEmpty & SelectPiece ======]
 
         public bool IsEmpty(Square square)
         {
             return SelectPiece(square) == null;
+        }
+
+        public Piece SelectPiece(Square square)
+        {
+            return square.SelectPiece(_pieces);          
         }
 
         #endregion
@@ -82,10 +87,18 @@ namespace Kingo.Samples.Chess.Games
             throw NewWrongColorException(from, color, color.Invert());
         }
 
-        public GameState DetermineNewState(Square from, Square to, Square enPassantHit, ColorOfPiece colorOfOwnKing)
+        public GameState SimulateMove(Square from, Square to, ColorOfPiece colorOfOwnKing)
         {
-            var piecesAfterMove = Square.ApplyMove(from, to, enPassantHit, _pieces);
+            return DetermineNewState(from, to, Square.ApplyMove(from, to, _pieces), colorOfOwnKing);
+        }
 
+        public GameState SimulateEnPassantMove(Square from, Square to, Square enPassantHit, ColorOfPiece colorOfOwnKing)
+        {
+            return DetermineNewState(from, to, Square.ApplyEnPassantMove(from, to, enPassantHit, _pieces), colorOfOwnKing);
+        }
+
+        private static GameState DetermineNewState(Square from, Square to, Piece[,] piecesAfterMove, ColorOfPiece colorOfOwnKing)
+        {
             if (IsInCheck(colorOfOwnKing, piecesAfterMove))
             {
                 throw NewOwnKingLeftInCheckException(from, to);
@@ -105,12 +118,7 @@ namespace Kingo.Samples.Chess.Games
                 return GameState.StaleMate;
             }
             return GameState.Normal;
-        }
-
-        public ChessBoard ApplyMove(Square from, Square to, Square enPassantHit)
-        {
-            return new ChessBoard(Square.ApplyMove(from, to, enPassantHit, _pieces));
-        }        
+        }           
 
         private static bool IsInCheck(ColorOfPiece colorOfKing, Piece[,] pieces)
         {
@@ -125,11 +133,6 @@ namespace Kingo.Samples.Chess.Games
         private static bool IsStaleMate(ColorOfPiece colorOfKing, Piece[,] pieces)
         {
             return false;
-        }
-
-        public Piece SelectPiece(Square square)
-        {
-            return square.SelectPiece(_pieces);          
         }
 
         private static Exception NewEmptySquareException(Square square)
@@ -151,6 +154,20 @@ namespace Kingo.Samples.Chess.Games
             var messageFormat = ExceptionMessages.Game_OwnKingLeftInCheck;
             var message = string.Format(messageFormat, from, to);
             return new DomainException(message);
+        }
+
+        #endregion
+
+        #region [====== ApplyMove ======]
+
+        public ChessBoard ApplyMove(Square from, Square to)
+        {
+            return new ChessBoard(Square.ApplyMove(from, to, _pieces));
+        }
+
+        public ChessBoard ApplyEnPassantMove(Square from, Square to, Square enPassantHit)
+        {
+            return new ChessBoard(Square.ApplyEnPassantMove(from, to, enPassantHit, _pieces));
         }
 
         #endregion

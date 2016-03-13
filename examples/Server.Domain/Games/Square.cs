@@ -34,6 +34,23 @@ namespace Kingo.Samples.Chess.Games
             return $"{File}{Rank}";
         }
 
+        public Square Add(int fileSteps, int rankSteps)
+        {
+            return new Square(_fileIndex + fileSteps, _rankIndex + rankSteps);
+        }
+
+        internal Piece SelectPiece(Piece[,] pieces)
+        {
+            return pieces[_fileIndex, _rankIndex];            
+        }
+
+        internal static Move CalculateMove(Square from, Square to)
+        {
+            return new Move(to, to._fileIndex - @from._fileIndex, to._rankIndex - @from._rankIndex);
+        }
+
+        #region [====== Paths ======]
+
         internal IEnumerable<Square> CreateVerticalPath(int rankSteps)
         {
             foreach (var step in StepsInPath(rankSteps))
@@ -88,22 +105,43 @@ namespace Kingo.Samples.Chess.Games
             }            
         }
 
-        public Square Add(int fileSteps, int rankSteps)
+        #endregion
+
+        #region [====== ApplyMove ======]                
+
+        internal static Piece[,] ApplyMove(Square from, Square to, Piece[,] pieces)
         {
-            return new Square(_fileIndex + fileSteps, _rankIndex + rankSteps);
+            return ApplyMoveToPieces(current =>
+            {
+                if (current.Equals(from))
+                {
+                    return null;
+                }
+                if (current.Equals(to))
+                {
+                    return from.SelectPiece(pieces).ApplyMove(from, to);
+                }
+                return current.SelectPiece(pieces)?.RemainInPlace();
+            });
         }
 
-        internal Piece SelectPiece(Piece[,] pieces)
+        internal static Piece[,] ApplyEnPassantMove(Square from, Square to, Square enPassantHit, Piece[,] pieces)
         {
-            return pieces[_fileIndex, _rankIndex];            
+            return ApplyMoveToPieces(current =>
+            {
+                if (current.Equals(from) || current.Equals(enPassantHit))
+                {
+                    return null;
+                }
+                if (current.Equals(to))
+                {
+                    return from.SelectPiece(pieces).ApplyMove(from, to);
+                }
+                return current.SelectPiece(pieces)?.RemainInPlace();
+            });
         }
 
-        internal static Move CalculateMove(Square from, Square to)
-        {
-            return new Move(to, to._fileIndex - from._fileIndex, to._rankIndex - from._rankIndex);
-        }
-
-        internal static Piece[,] ApplyMove(Square from, Square to, Square enPassantHit, Piece[,] pieces)
+        private static Piece[,] ApplyMoveToPieces(Func<Square, Piece> pieceFactory)
         {
             var piecesAfterMove = new Piece[ChessBoard.Size, ChessBoard.Size];
 
@@ -111,24 +149,15 @@ namespace Kingo.Samples.Chess.Games
             {
                 for (int rankIndex = 0; rankIndex < ChessBoard.Size; rankIndex++)
                 {
-                    piecesAfterMove[fileIndex, rankIndex] = ApplyMove(from, to, enPassantHit, pieces, new Square(fileIndex, rankIndex));
+                    piecesAfterMove[fileIndex, rankIndex] = pieceFactory.Invoke(new Square(fileIndex, rankIndex));
                 }
             }
-            return piecesAfterMove;            
+            return piecesAfterMove;
         }
 
-        private static Piece ApplyMove(Square from, Square to, Square enPassantHit, Piece[,] pieces, Square current)
-        {
-            if (current.Equals(from) || current.Equals(enPassantHit))
-            {
-                return null;
-            }
-            if (current.Equals(to))
-            {
-                return from.SelectPiece(pieces).ApplyMove(from, to);
-            }
-            return current.SelectPiece(pieces)?.RemainInPlace();
-        }
+        #endregion
+
+        #region [====== Parse ======]
 
         public static Square Parse([NotNull] [StringLength(2, 2)] string square)
         {
@@ -172,5 +201,7 @@ namespace Kingo.Samples.Chess.Games
             var message = string.Format(messageFormat, rank);
             return new ArgumentOutOfRangeException(nameof(rank), message);
         }
+
+        #endregion
     }
 }

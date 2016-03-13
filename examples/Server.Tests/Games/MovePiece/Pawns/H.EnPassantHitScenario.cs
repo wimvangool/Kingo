@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Kingo.Constraints;
 using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,7 +26,17 @@ namespace Kingo.Samples.Chess.Games.MovePiece.Pawns
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await ExpectPieceMovedEvent(GameState.Normal, "f5");
+            await ExpectedEvent<EnPassantHitEvent>(Validate);
+        }
+
+        private void Validate(IMemberConstraintSet<EnPassantHitEvent> validator)
+        {
+            validator.VerifyThat(m => m.GameId).IsEqualTo(GameId);
+            validator.VerifyThat(m => m.GameVersion).IsGreaterThan(0);
+            validator.VerifyThat(m => m.From).IsEqualTo(Message.From);
+            validator.VerifyThat(m => m.To).IsEqualTo(Message.To);
+            validator.VerifyThat(m => m.EnPassantHit).IsEqualTo("f5");
+            validator.VerifyThat(m => m.NewState).IsEqualTo(GameState.Normal);
         }
     }
 }

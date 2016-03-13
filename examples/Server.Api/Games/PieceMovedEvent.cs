@@ -5,7 +5,7 @@ using Kingo.Messaging.Domain;
 namespace Kingo.Samples.Chess.Games
 {
     [DataContract]
-    public sealed class PieceMovedEvent : DomainEvent<Guid, int>
+    public class PieceMovedEvent : DomainEvent<Guid, int>
     {
         public PieceMovedEvent(string from, string to)
         {
@@ -39,14 +39,7 @@ namespace Kingo.Samples.Chess.Games
         {
             get;
             private set;
-        }      
-        
-        [DataMember]
-        public string EnPassantHit
-        {
-            get;
-            set;
-        }  
+        }                      
 
         [DataMember]
         public GameState NewState

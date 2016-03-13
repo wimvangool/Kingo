@@ -48,18 +48,17 @@ namespace Kingo.Samples.Chess.Games.MovePiece
             return new SecureMessage<MovePieceCommand>(message, session);
         }
 
-        protected async Task ExpectPieceMovedEvent(GameState expectedState = GameState.Normal, string enPassantHit = null)
+        protected async Task ExpectPieceMovedEvent(GameState expectedState = GameState.Normal)
         {
-            await Events().Expect<PieceMovedEvent>(v => Validate(v, expectedState, enPassantHit)).ExecuteAsync();
+            await Events().Expect<PieceMovedEvent>(v => Validate(v, expectedState)).ExecuteAsync();
         }
 
-        private void Validate(IMemberConstraintSet<PieceMovedEvent> validator, GameState expectedState, string enPassantHit)
+        private void Validate(IMemberConstraintSet<PieceMovedEvent> validator, GameState expectedState)
         {
             validator.VerifyThat(m => m.GameId).IsEqualTo(GameId);
             validator.VerifyThat(m => m.GameVersion).IsGreaterThan(0);
             validator.VerifyThat(m => m.From).IsEqualTo(Message.From);
             validator.VerifyThat(m => m.To).IsEqualTo(Message.To);
-            validator.VerifyThat(m => m.EnPassantHit).IsEqualTo(enPassantHit);
             validator.VerifyThat(m => m.NewState).IsEqualTo(expectedState);
         }
     }

@@ -92,6 +92,7 @@ namespace Kingo.Samples.Chess.Games
         {
             RegisterEventHandler<GameStartedEvent>(Handle);
             RegisterEventHandler<PieceMovedEvent>(Handle);
+            RegisterEventHandler<EnPassantHitEvent>(Handle);
             RegisterEventHandler<GameForfeitedEvent>(Handle);
         }
 
@@ -108,10 +109,18 @@ namespace Kingo.Samples.Chess.Games
         {            
             _white = _white.SwitchTurn();
             _black = _black.SwitchTurn();
-            _board = _board.ApplyMove(Square.Parse(@event.From), Square.Parse(@event.To), @event.EnPassantHit == null ? null : Square.Parse(@event.EnPassantHit));
+            _board = _board.ApplyMove(Square.Parse(@event.From), Square.Parse(@event.To));
             _state = @event.NewState;
         }
-  
+
+        private void Handle(EnPassantHitEvent @event)
+        {
+            _white = _white.SwitchTurn();
+            _black = _black.SwitchTurn();
+            _board = _board.ApplyEnPassantMove(Square.Parse(@event.From), Square.Parse(@event.To), Square.Parse(@event.EnPassantHit));
+            _state = @event.NewState;
+        }
+
         private void Handle(GameForfeitedEvent @event)
         {
             _state = GameState.Forfeited;
