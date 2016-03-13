@@ -126,10 +126,19 @@
   <data name="Scenario_ExpectedExceptionNotThrown" xml:space="preserve">
     <value>Expected exception was not thrown.</value>
   </data>
+  <data name="Scenario_GivenFailed" xml:space="preserve">
+    <value>An exception of type '{0}' was thrown during the Given()-phase of scenario '{1}': {2}.</value>
+  </data>
   <data name="Scenario_InvalidMode" xml:space="preserve">
     <value>Invalid mode has been set for scenario '{0}': {1}.</value>
   </data>
+  <data name="Scenario_NoEventAtIndex" xml:space="preserve">
+    <value>Scenario '{0}' did not publish an event at index '{1}'. Did you forget to put this scenario in the Given()-method of the current scenario?</value>
+  </data>
   <data name="Scenario_UnexpectedEventCount" xml:space="preserve">
     <value>The amount of expected events ({0}) does not match the actual amount of published events ({1}).</value>
+  </data>
+  <data name="Scenario_UnexpectedEventsPublished" xml:space="preserve">
+    <value>Instead, the following events were published: {0}.</value>
   </data>
 </root>

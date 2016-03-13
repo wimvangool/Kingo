@@ -26,9 +26,9 @@ namespace Kingo.Messaging
                 get { return _processor; }
             }
 
-            protected override Exception NewScenarioFailedException(string message)
+            protected override Exception NewScenarioFailedException(string message, Exception innerException = null)
             {
-                return new AssertFailedException(message);
+                return new AssertFailedException(message, innerException);
             }            
         }
 
@@ -219,9 +219,9 @@ namespace Kingo.Messaging
 
                 Assert.Fail("Expected exception of type '{0}' was not thrown.", exceptionToThrow.GetType().Name);
             }
-            catch (InvalidOperationException exception)
+            catch (AssertFailedException exception)
             {                               
-                Assert.AreSame(exceptionToThrow, exception);
+                Assert.AreSame(exceptionToThrow, exception.InnerException);
             }            
         }
 

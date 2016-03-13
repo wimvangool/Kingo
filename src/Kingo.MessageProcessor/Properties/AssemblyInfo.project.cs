@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Kingo.MessageProcessor")]
 [assembly: AssemblyDescription("Contains components to build applications based on messaging patterns.")]
-[assembly: AssemblyVersion("2.3.4")]
-[assembly: AssemblyFileVersion("2.3.4")]
-[assembly: AssemblyInformationalVersion("2.3.4-beta")]
+[assembly: AssemblyVersion("2.3.5")]
+[assembly: AssemblyFileVersion("2.3.5")]
+[assembly: AssemblyInformationalVersion("2.3.5-beta")]
 
 [assembly: InternalsVisibleTo("Kingo.MessageProcessor.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

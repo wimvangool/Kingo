@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Kingo.Constraints;
 using Kingo.Resources;
@@ -31,7 +33,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <typeparam name="TException">Type of the expected exception.</typeparam>        
         /// <param name="validateMethod">
-        /// Optional delegate that is used to add certain constraints to the expected event.
+        /// Optional delegate that is used to add certain constraints to the expected exception.
         /// </param>
         /// <returns>This flow.</returns>
         public AlternateFlow<TMessage> Expect<TException>(Action<IMemberConstraintSet<TException>> validateMethod = null) where TException : FunctionalException
@@ -67,7 +69,18 @@ namespace Kingo.Messaging
 
         private void OnExpectedExceptionNotThrown()
         {
-            Scenario.OnVerificationFailed(ExceptionMessages.Scenario_ExpectedExceptionNotThrown);
+            if (_scenario.PublishedEvents.Count == 0)
+            {
+                Scenario.OnVerificationFailed(ExceptionMessages.Scenario_ExpectedExceptionNotThrown);
+            }
+            else
+            {
+                var events = string.Join(", ", _scenario.PublishedEvents.Select(@event => @event.GetType().Name));
+                var eventPostFixFormat = ExceptionMessages.Scenario_UnexpectedEventsPublished;
+                var eventsPostFix = string.Format(eventPostFixFormat, events);
+
+                Scenario.OnVerificationFailed(ExceptionMessages.Scenario_ExpectedExceptionNotThrown + " " + eventsPostFix);
+            }
         }
 
         private static Exception NewExpectationAlreadySetException(Type exceptionType)

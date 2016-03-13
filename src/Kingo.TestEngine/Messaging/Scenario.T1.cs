@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Constraints;
+using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
@@ -12,9 +15,71 @@ namespace Kingo.Messaging
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>    
     public abstract class Scenario<TMessage> : Scenario where TMessage : class, IMessage
-    {        
+    {
+        #region [====== PublishedEventList ======]
+
+        private sealed class PublishedEventList : IReadOnlyList<object>
+        {
+            private readonly List<object> _publishedEvents;
+            private readonly Type _scenarioType;
+
+            public PublishedEventList(Type scenarioType)
+            {
+                _publishedEvents = new List<object>();
+                _scenarioType = scenarioType;
+            }
+
+            public int Count
+            {
+                get { return _publishedEvents.Count; }
+            }
+
+            public object this[int index]
+            {
+                get
+                {
+                    try
+                    {
+                        return _publishedEvents[index];
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        if (index < 0)
+                        {
+                            throw;
+                        }
+                        throw NewEventNotFoundException(_scenarioType, index);
+                    }
+                }
+            }
+
+            public void Add(object @event)
+            {
+                _publishedEvents.Add(@event);
+            }
+
+            public IEnumerator<object> GetEnumerator()
+            {
+                return _publishedEvents.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            private static Exception NewEventNotFoundException(Type scenarioType, int index)
+            {
+                var messageFormat = ExceptionMessages.Scenario_NoEventAtIndex;
+                var message = string.Format(messageFormat, scenarioType.Name, index);
+                return new ArgumentOutOfRangeException(nameof(index), message);
+            }
+        }
+
+        #endregion
+
         private readonly Lazy<MessageToHandle<TMessage>> _message;                       
-        private readonly List<object> _publishedEvents;        
+        private readonly PublishedEventList _publishedEvents;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scenario{TMessage}" /> class.
@@ -24,7 +89,7 @@ namespace Kingo.Messaging
             : base(mode)
         {           
             _message = new Lazy<MessageToHandle<TMessage>>(When);            
-            _publishedEvents = new List<object>();
+            _publishedEvents = new PublishedEventList(GetType());
         }        
 
         /// <summary>
@@ -59,6 +124,17 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
+        /// Executes this scenario while expecting exactly one event of the specified type to be published.
+        /// </summary>
+        /// <typeparam name="TEvent">Type of the expected event.</typeparam>
+        /// <param name="validator">Optional delegate to define constraints on the expected event.</param>
+        /// <returns>A <see cref="Task" /> representing the operation.</returns>
+        protected async Task ExpectedEvent<TEvent>(Action<IMemberConstraintSet<TEvent>> validator = null)
+        {
+            await Events().Expect(validator).ExecuteAsync();
+        }
+
+        /// <summary>
         /// Creates and returns a new <see cref="HappyFlow{T}" /> which can be used to define
         /// which events are expected to be published.
         /// </summary>        
@@ -69,11 +145,39 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
+        /// Executes this scenario while expecting a <see cref="CommandExecutionException" /> to be thrown.
+        /// </summary>        
+        /// <param name="validator">Optional delegate to define constraints on the expected exception.</param>
+        /// <param name="rethrowException">
+        /// Indicates whether or not the exception should be rethron after it has been caught and verified.
+        /// </param>
+        /// <returns>A <see cref="Task" /> representing the operation.</returns>
+        protected Task ExpectedCommandExecutionException(Action<IMemberConstraintSet<CommandExecutionException>> validator = null, bool rethrowException = false)
+        {
+            return ExpectedException(validator, rethrowException);
+        }
+
+        /// <summary>
+        /// Executes this scenario while expecting the specified type of exception to be thrown.
+        /// </summary>
+        /// <typeparam name="TException">The expected type of exception.</typeparam>
+        /// <param name="validator">Optional delegate to define constraints on the expected exception.</param>
+        /// <param name="rethrowException">
+        /// Indicates whether or not the exception should be rethron after it has been caught and verified.
+        /// </param>
+        /// <returns>A <see cref="Task" /> representing the operation.</returns>
+        protected async Task ExpectedException<TException>(Action<IMemberConstraintSet<TException>> validator = null, bool rethrowException = false)
+            where TException : FunctionalException
+        {
+            await Exception(rethrowException).Expect(validator).ExecuteAsync();
+        }
+
+        /// <summary>
         /// Creates and returns a new <see cref="AlternateFlow{T}" /> which can be used to set some
         /// expectations on the <see cref="FunctionalException" /> that is expected to be thrown.
         /// </summary>
         /// <param name="rethrowException">
-        /// Indicates whether or not the exception should be rethron after it has been caught.
+        /// Indicates whether or not the exception should be rethron after it has been caught and verified.
         /// </param>
         /// <returns>An alternate flow.</returns>
         protected AlternateFlow<TMessage> Exception(bool rethrowException = false)
@@ -85,8 +189,8 @@ namespace Kingo.Messaging
         /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
         /// </summary>                        
         public override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
-        {                        
-            await CreateSetupSequence().ProcessWithAsync(processor, token);
+        {
+            await ExecuteGiven(processor, token);
 
             // This scenario must collect all events that are published during the When()-phase.              
             var connection = processor.EventBus.Connect<object>(OnEventPublished, true);
@@ -103,13 +207,24 @@ namespace Kingo.Messaging
             {
                 connection.Dispose();
             }            
-        }                    
-
-        private void OnEventPublished(object domainEvent)
-        {
-            _publishedEvents.Add(domainEvent);
-        } 
+        }   
         
+        private async Task ExecuteGiven(IMessageProcessor processor, CancellationToken token)
+        {
+            try
+            {
+                await CreateSetupSequence().ProcessWithAsync(processor, token);
+            }
+            catch (Exception exception)
+            {
+                var exceptionDetails = $"{exception.Message}{Environment.NewLine}{Environment.NewLine}{exception.StackTrace}";
+                var messageFormat = ExceptionMessages.Scenario_GivenFailed;
+                var message = string.Format(messageFormat, exception.GetType().Name, GetType().Name, exceptionDetails);
+
+                throw NewScenarioFailedException(message, exception);
+            }
+        }
+
         private IMessageSequence CreateSetupSequence()
         {
             return Given().Concatenate();
@@ -133,7 +248,16 @@ namespace Kingo.Messaging
         /// </summary>
         /// <returns>A single message of which the effects will be verified in the Then-phase.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1716", MessageId = "When", Justification = "'When' is part of the BDD-style naming convention.")]
-        protected abstract MessageToHandle<TMessage> When();                
+        protected abstract MessageToHandle<TMessage> When();
+
+        /// <summary>
+        /// This method is called every time an event is published during execution of When().
+        /// </summary>
+        /// <param name="domainEvent">The event that was published.</param>
+        protected virtual void OnEventPublished(object domainEvent)
+        {
+            _publishedEvents.Add(domainEvent);
+        }
 
         #region [====== Verification ======]
 
@@ -159,8 +283,9 @@ namespace Kingo.Messaging
         /// Creates and returns a new <see cref="ThrownException" /> that will be thrown to mark the failure of this scenario.
         /// </summary>
         /// <param name="errorMessage">The reason why the scenario failed.</param>
+        /// <param name="innerException">Optional Exception that was the root-cause of the failure.</param>
         /// <returns>A new <see cref="ThrownException" />-instance with the specfied <paramref name="errorMessage"/>.</returns>
-        protected abstract Exception NewScenarioFailedException(string errorMessage);
+        protected abstract Exception NewScenarioFailedException(string errorMessage, Exception innerException = null);
 
         #endregion
     }
