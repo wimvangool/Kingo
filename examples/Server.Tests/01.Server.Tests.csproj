@@ -130,6 +130,13 @@
     <Compile Include="Games\MovePiece\Pawns\A.TwoStepSecondMoveOfPawnScenario.cs" />
     <Compile Include="Games\MovePiece\Pawns\H.TwoStepFirstMoveOfPawnScenario.cs" />
     <Compile Include="Games\MovePiece\Pawns\H.OneStepFirstMoveOfPawnScenario.cs" />
+    <Compile Include="Games\MovePiece\Queens\A.OneStepUpBlockedByOwnPieceScenario.cs" />
+    <Compile Include="Games\MovePiece\Queens\A.FourStepsUpLeftBlockedByOwnPieceScenario.cs" />
+    <Compile Include="Games\MovePiece\Queens\H.FourStepsUpLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Queens\H.SevenStepsRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Queens\H.OneStepDownLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Queens\H.HitScenario.cs" />
+    <Compile Include="Games\MovePiece\Queens\A.IllegalQueenMoveScenario.cs" />
     <Compile Include="Games\MovePiece\Rooks\H.HitScenario.cs" />
     <Compile Include="Games\MovePiece\Rooks\A.IllegalRookMoveScenario.cs" />
     <Compile Include="Games\MovePiece\Rooks\A.OneStepBlockedByOwnPieceScenario.cs" />
@@ -172,7 +179,6 @@
   <ItemGroup>
     <Folder Include="Games\MovePiece\Kings\" />
     <Folder Include="Games\MovePiece\Knights\" />
-    <Folder Include="Games\MovePiece\Queens\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
