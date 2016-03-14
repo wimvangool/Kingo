@@ -3,21 +3,21 @@ using System.Threading.Tasks;
 using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Samples.Chess.Games.MovePiece.Rooks
+namespace Kingo.Samples.Chess.Games.MovePiece.Bishops
 {
     [TestClass]
-    public sealed class TwoStepsFowardScenario : MovePieceScenario
+    public sealed class ThreeStepsUpLeftScenario : MovePieceScenario
     {
         protected override IEnumerable<IMessageSequence> Given()
         {
             yield return base.Given().Concatenate();
-            yield return WhitePlayerMove("a2", "a4");
-            yield return BlackPlayerMove("h7", "h5");
+            yield return WhitePlayerMove("b2", "b3");
+            yield return BlackPlayerMove("g7", "g6");
         }
 
         protected override MessageToHandle<MovePieceCommand> When()
         {
-            return WhitePlayerMove("a1", "a3");
+            return WhitePlayerMove("c1", "a3");
         }
 
         [TestMethod]

@@ -11,22 +11,22 @@ namespace Kingo.Samples.Chess.Games.MovePiece.Rooks
     {
         public IllegalRookMoveScenario()
         {
-            TwoStepsFoward = new TwoStepsFowardScenario();
+            TwoStepsUp = new TwoStepsUpScenario();
         }
 
-        public TwoStepsFowardScenario TwoStepsFoward
+        public TwoStepsUpScenario TwoStepsUp
         {
             get;
         }
 
         public override GameIsStartedScenario GameIsStarted
         {
-            get { return TwoStepsFoward.GameIsStarted; }
+            get { return TwoStepsUp.GameIsStarted; }
         }
 
         protected override IEnumerable<IMessageSequence> Given()
         {
-            yield return TwoStepsFoward;
+            yield return TwoStepsUp;
             yield return BlackPlayerMove("a7", "a6");
         }
 

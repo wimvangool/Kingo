@@ -105,6 +105,14 @@
     <Compile Include="Games\InMemoryGameRepository.cs" />
     <Compile Include="Games\MovePiece\A.EmptySquareScenario.cs" />
     <Compile Include="Games\MovePiece\A.GameNotFoundScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\A.OneStepsBlockedByOwnPawnScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\A.ThreeStepsBlockedByOwnPawnScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\H.FourStepsUpRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\H.ThreeStepsUpLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\H.TwoStepsDownRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\H.OneStepDownLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\H.HitScenario.cs" />
+    <Compile Include="Games\MovePiece\Bishops\IllegalBishopMoveScenario.cs" />
     <Compile Include="Games\MovePiece\MovePieceScenario.cs" />
     <Compile Include="Games\MovePiece\A.NotPlayersTurnScenario.cs" />
     <Compile Include="Games\MovePiece\Pawns\A.EnPassantHitOfPawnThatTookTwoSingleStepsScenario.cs" />
@@ -128,7 +136,7 @@
     <Compile Include="Games\MovePiece\Rooks\H.SixStepsLeftScenario.cs" />
     <Compile Include="Games\MovePiece\Rooks\H.SevenStepsRightScenario.cs" />
     <Compile Include="Games\MovePiece\Rooks\A.TwoStepsBlockedByOwnPieceScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\H.TwoStepsFowardScenario.cs" />
+    <Compile Include="Games\MovePiece\Rooks\H.TwoStepsUpScenario.cs" />
     <Compile Include="Games\MovePiece\A.SenderIsNoPlayerScenario.cs" />
     <Compile Include="Games\MovePiece\A.WrongColorOfPieceScenario.cs" />
     <Compile Include="Players\RegisterPlayer\H.PlayerIsRegisteredScenario.cs" />
@@ -162,7 +170,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Games\MovePiece\Bishops\" />
     <Folder Include="Games\MovePiece\Kings\" />
     <Folder Include="Games\MovePiece\Knights\" />
     <Folder Include="Games\MovePiece\Queens\" />

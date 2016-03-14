@@ -4,31 +4,30 @@ using Kingo.Messaging;
 using Kingo.Samples.Chess.Games.ChallengeAccepted;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Samples.Chess.Games.MovePiece.Rooks
+namespace Kingo.Samples.Chess.Games.MovePiece.Bishops
 {
-
     [TestClass]
-    public sealed class SevenStepsRightScenario : MovePieceScenario
-    {        
-        public SevenStepsRightScenario()
+    public sealed class IllegalBishopMoveScenario : MovePieceScenario
+    {
+        public IllegalBishopMoveScenario()
         {
-            TwoStepsForward = new TwoStepsUpScenario();
+            ThreeStepsUpLeft = new ThreeStepsUpLeftScenario();
         }
 
-        public TwoStepsUpScenario TwoStepsForward
+        public ThreeStepsUpLeftScenario ThreeStepsUpLeft
         {
             get;
         }
 
         public override GameIsStartedScenario GameIsStarted
         {
-            get { return TwoStepsForward.GameIsStarted; }
+            get { return ThreeStepsUpLeft.GameIsStarted; }
         }
 
         protected override IEnumerable<IMessageSequence> Given()
         {
-            yield return TwoStepsForward;
-            yield return BlackPlayerMove("h8", "h6");
+            yield return ThreeStepsUpLeft;
+            yield return BlackPlayerMove("e7", "e6");
         }
 
         protected override MessageToHandle<MovePieceCommand> When()
@@ -39,7 +38,7 @@ namespace Kingo.Samples.Chess.Games.MovePiece.Rooks
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await ExpectPieceMovedEvent();
+            await ExpectedCommandExecutionException();
         }
     }
 }
