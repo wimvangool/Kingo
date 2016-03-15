@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Server.Api", "Server.Api\02.Server.Api.csproj", "{2B987966-7FDE-4A2C-8ADB-4BEDAAB05F70}"
 EndProject
@@ -15,19 +15,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Data", "Server.Data"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Server.Api.Tests", "Server.Api.Tests\01.Server.Api.Tests.csproj", "{9E70AF73-3524-427E-B118-30A067281553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Server.Tests", "Server.Tests\01.Server.Tests.csproj", "{17B17957-DA03-4306-951B-AA94DD6CCD65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Server.Application.Tests", "Server.Application.Tests\01.Server.Application.Tests.csproj", "{17B17957-DA03-4306-951B-AA94DD6CCD65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Server.Application", "Server.Application\03.Server.Application.csproj", "{63FEA2B3-4A6C-4673-A6F6-B0BE60E9CB46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Server.Application", "Server.Application\02.Server.Application.csproj", "{63FEA2B3-4A6C-4673-A6F6-B0BE60E9CB46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04.Server.Domain", "Server.Domain\04.Server.Domain.csproj", "{1F58A741-2891-4CBF-95FD-ABB601FB1D56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Server.Domain", "Server.Domain\03.Server.Domain.csproj", "{1F58A741-2891-4CBF-95FD-ABB601FB1D56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05.Server.DataAccess", "Server.DataAccess\05.Server.DataAccess.csproj", "{997B545F-0C34-4EEF-A919-CA033BF5E192}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Server.DataAccess", "Server.DataAccess\01.Server.DataAccess.csproj", "{997B545F-0C34-4EEF-A919-CA033BF5E192}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clients.ConsoleApp", "Clients.Console\Clients.ConsoleApp.csproj", "{7FF52584-349A-4F3D-98B9-9C6B12FDED28}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Chess.Sql", "Server.Data\Chess.Sql.sqlproj", "{63BA61FD-379B-402D-8331-13715C26B057}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "02.Server.Data", "Server.Data\02.Server.Data.sqlproj", "{63BA61FD-379B-402D-8331-13715C26B057}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Server", "Server\02.Server.csproj", "{AFF442D0-7BAE-4067-A172-31D5C073DCFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Api.Services", "Server.Api.Services", "{2DA4CDD5-28E4-4431-8E7B-8AC5260FAEB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Server.Tests", "Server.Tests\01.Server.Tests.csproj", "{D0F66723-95A9-4EFE-996D-A4F1717DAF77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +77,10 @@ Global
 		{AFF442D0-7BAE-4067-A172-31D5C073DCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFF442D0-7BAE-4067-A172-31D5C073DCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFF442D0-7BAE-4067-A172-31D5C073DCFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0F66723-95A9-4EFE-996D-A4F1717DAF77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0F66723-95A9-4EFE-996D-A4F1717DAF77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0F66723-95A9-4EFE-996D-A4F1717DAF77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0F66723-95A9-4EFE-996D-A4F1717DAF77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,9 +91,10 @@ Global
 		{17B17957-DA03-4306-951B-AA94DD6CCD65} = {1DDB8F7B-6B11-4663-8A1F-E6A60D9ECB67}
 		{63FEA2B3-4A6C-4673-A6F6-B0BE60E9CB46} = {1DDB8F7B-6B11-4663-8A1F-E6A60D9ECB67}
 		{1F58A741-2891-4CBF-95FD-ABB601FB1D56} = {1DDB8F7B-6B11-4663-8A1F-E6A60D9ECB67}
-		{997B545F-0C34-4EEF-A919-CA033BF5E192} = {1DDB8F7B-6B11-4663-8A1F-E6A60D9ECB67}
+		{997B545F-0C34-4EEF-A919-CA033BF5E192} = {59C1A494-F094-4208-B5A6-018E0FCB0070}
 		{7FF52584-349A-4F3D-98B9-9C6B12FDED28} = {DD5B5A42-5FE2-4395-AB29-12E16FDC6F3C}
 		{63BA61FD-379B-402D-8331-13715C26B057} = {59C1A494-F094-4208-B5A6-018E0FCB0070}
-		{AFF442D0-7BAE-4067-A172-31D5C073DCFD} = {1DDB8F7B-6B11-4663-8A1F-E6A60D9ECB67}
+		{AFF442D0-7BAE-4067-A172-31D5C073DCFD} = {2DA4CDD5-28E4-4431-8E7B-8AC5260FAEB1}
+		{D0F66723-95A9-4EFE-996D-A4F1717DAF77} = {2DA4CDD5-28E4-4431-8E7B-8AC5260FAEB1}
 	EndGlobalSection
 EndGlobal

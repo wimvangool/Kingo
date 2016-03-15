@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{17B17957-DA03-4306-951B-AA94DD6CCD65}</ProjectGuid>
+    <ProjectGuid>{D0F66723-95A9-4EFE-996D-A4F1717DAF77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kingo.Samples.Chess</RootNamespace>
     <AssemblyName>Kingo.Samples.Chess.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,8 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <TargetFrameworkProfile />
-    <DontImportPostSharp>True</DontImportPostSharp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,7 +25,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <SkipPostSharp>True</SkipPostSharp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,24 +47,40 @@
       <HintPath>..\packages\Kingo.TestEngine.2.3.5-beta\lib\net451\Kingo.TestEngine.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PostSharp, Version=4.2.21.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
-      <HintPath>..\packages\PostSharp.4.2.21\lib\net35-client\PostSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PostSharp.Patterns.Common, Version=4.2.21.0, Culture=neutral, PublicKeyToken=e7f631e6ce13f078, processorArchitecture=MSIL">
-      <HintPath>..\packages\PostSharp.Patterns.Common.4.2.21\lib\net45\PostSharp.Patterns.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PostSharp.Patterns.Model, Version=4.2.21.0, Culture=neutral, PublicKeyToken=e7f631e6ce13f078, processorArchitecture=MSIL">
-      <HintPath>..\packages\PostSharp.Patterns.Model.4.2.21\lib\net40\PostSharp.Patterns.Model.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Server.Api\02.Server.Api.csproj">
+      <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
+      <Name>02.Server.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Server.Application\02.Server.Application.csproj">
+      <Project>{63fea2b3-4a6c-4673-a6f6-b0be60e9cb46}</Project>
+      <Name>02.Server.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Server.DataAccess\01.Server.DataAccess.csproj">
+      <Project>{997b545f-0c34-4eef-a919-ca033bf5e192}</Project>
+      <Name>01.Server.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Server.Domain\03.Server.Domain.csproj">
+      <Project>{1f58a741-2891-4cbf-95fd-abb601fb1d56}</Project>
+      <Name>03.Server.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Server\02.Server.csproj">
+      <Project>{aff442d0-7bae-4067-a172-31d5c073dcfd}</Project>
+      <Name>02.Server</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -81,118 +94,6 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-  <ItemGroup>
-    <Compile Include="Challenges\AcceptChallenge\ChallengeAlreadyRejectedScenario.cs" />
-    <Compile Include="Challenges\AcceptChallenge\ChallengeAlreadyAcceptedScenario.cs" />
-    <Compile Include="Challenges\AcceptChallenge\ChallengeDoesNotExistScenario.cs" />
-    <Compile Include="Challenges\AcceptChallenge\ChallengeIsAcceptedScenario.cs" />
-    <Compile Include="Challenges\AcceptChallenge\PlayerIsNotReceiverScenario.cs" />
-    <Compile Include="Challenges\ChallengePlayer\PlayerIsChallengedScenario.cs" />
-    <Compile Include="Challenges\ChallengePlayer\ReceiverNotRegisteredScenario.cs" />
-    <Compile Include="Challenges\ChallengePlayer\SenderEqualToReceiverScenario.cs" />
-    <Compile Include="Challenges\ChallengePlayer\SenderNotRegisteredScenario.cs" />
-    <Compile Include="Challenges\InMemoryChallengeRepository.cs" />
-    <Compile Include="Challenges\RejectChallenge\ChallengeAlreadyRejectedScenario.cs" />
-    <Compile Include="Challenges\RejectChallenge\ChallengeAlreadyAcceptedScenario.cs" />
-    <Compile Include="Challenges\RejectChallenge\ChallengeDoesNotExistScenario.cs" />
-    <Compile Include="Challenges\RejectChallenge\ChallengeIsRejectedScenario.cs" />
-    <Compile Include="Challenges\RejectChallenge\PlayerIsNotReceiverScenario.cs" />
-    <Compile Include="Games\ChallengeAccepted\H.GameIsStartedScenario.cs" />
-    <Compile Include="Games\ForfeitGame\A.GameAlreadyEndedScenario.cs" />
-    <Compile Include="Games\ForfeitGame\H.GameIsForfeitedScenario.cs" />
-    <Compile Include="Games\ForfeitGame\A.GameNotFoundScenario.cs" />
-    <Compile Include="Games\ForfeitGame\A.SenderIsNoPlayerScenario.cs" />
-    <Compile Include="Games\InMemoryGameRepository.cs" />
-    <Compile Include="Games\MovePiece\A.EmptySquareScenario.cs" />
-    <Compile Include="Games\MovePiece\A.GameNotFoundScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\A.OneStepsBlockedByOwnPawnScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\A.ThreeStepsBlockedByOwnPawnScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\H.FourStepsUpRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\H.ThreeStepsUpLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\H.TwoStepsDownRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\H.OneStepDownLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\H.HitScenario.cs" />
-    <Compile Include="Games\MovePiece\Bishops\IllegalBishopMoveScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\A.OneStepBlockedByOwnPieceScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\H.OneStepDownRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\H.OneStepDownScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\H.OneStepUpRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\H.OneStepUpLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\H.OneStepRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\H.OneStepUpScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\H.OneStepLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\IllegalKingMoveScenario.cs" />
-    <Compile Include="Games\MovePiece\Knights\H.OneUpTwoLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Knights\H.TwoUpOneRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Knights\H.OneUpTwoRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Knights\H.TwoDownOneLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Knights\H.TwoUpOneLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Knights\A.IllegalKnightMoveScenario.cs" />
-    <Compile Include="Games\MovePiece\Knights\A.OneUpTwoRightBlockedByOwnPieceScenario.cs" />
-    <Compile Include="Games\MovePiece\MovePieceScenario.cs" />
-    <Compile Include="Games\MovePiece\A.NotPlayersTurnScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.EnPassantHitOfPawnThatTookTwoSingleStepsScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.EnPassantHitTooLateScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\H.EnPassantHitScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\H.HitRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\H.HitLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.HitOfEmptySquareScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.IllegalPawnMoveScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.OneStepOfPawnThatWasHitEnPassantScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.TwoStepBlockedByPieceInPathScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.TwoStepBlockedByPieceOnTargetScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.OneStepBlockedByPieceOnTargetScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\H.OneStepSecondMoveOfPawnScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\A.TwoStepSecondMoveOfPawnScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\H.TwoStepFirstMoveOfPawnScenario.cs" />
-    <Compile Include="Games\MovePiece\Pawns\H.OneStepFirstMoveOfPawnScenario.cs" />
-    <Compile Include="Games\MovePiece\Queens\A.OneStepUpBlockedByOwnPieceScenario.cs" />
-    <Compile Include="Games\MovePiece\Queens\A.FourStepsUpLeftBlockedByOwnPieceScenario.cs" />
-    <Compile Include="Games\MovePiece\Queens\H.FourStepsUpLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Queens\H.SevenStepsRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Queens\H.OneStepDownLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Queens\H.HitScenario.cs" />
-    <Compile Include="Games\MovePiece\Queens\A.IllegalQueenMoveScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\H.HitScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\A.IllegalRookMoveScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\A.OneStepBlockedByOwnPieceScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\H.SixStepsLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\H.SevenStepsRightScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\A.TwoStepsBlockedByOwnPieceScenario.cs" />
-    <Compile Include="Games\MovePiece\Rooks\H.TwoStepsUpScenario.cs" />
-    <Compile Include="Games\MovePiece\A.SenderIsNoPlayerScenario.cs" />
-    <Compile Include="Games\MovePiece\A.WrongColorOfPieceScenario.cs" />
-    <Compile Include="Players\RegisterPlayer\H.PlayerIsRegisteredScenario.cs" />
-    <Compile Include="Players\RegisterPlayer\A.PlayerAlreadyRegisteredScenario.cs" />
-    <Compile Include="Players\InMemoryPlayerRepository.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="InMemoryProcessor.cs" />
-    <Compile Include="InMemoryScenario.T1.cs" />
-    <Compile Include="SecureMessage.T1.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Server.Api\02.Server.Api.csproj">
-      <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
-      <Name>02.Server.Api</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Server.Application\03.Server.Application.csproj">
-      <Project>{63fea2b3-4a6c-4673-a6f6-b0be60e9cb46}</Project>
-      <Name>03.Server.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Server.DataAccess\05.Server.DataAccess.csproj">
-      <Project>{997b545f-0c34-4eef-a919-ca033bf5e192}</Project>
-      <Name>05.Server.DataAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Server.Domain\04.Server.Domain.csproj">
-      <Project>{1f58a741-2891-4cbf-95fd-abb601fb1d56}</Project>
-      <Name>04.Server.Domain</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
@@ -213,11 +114,6 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\PostSharp.4.2.21\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.4.2.21\tools\PostSharp.targets')" />
-  <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">
-    <Error Condition="!Exists('..\packages\PostSharp.4.2.21\tools\PostSharp.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://www.postsharp.net/links/nuget-restore." />
-    <Error Condition="Exists('..\packages\PostSharp.4.2.21\tools\PostSharp.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://www.postsharp.net/links/nuget-restore." />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

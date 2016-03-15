@@ -94,17 +94,17 @@
       <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
       <Name>02.Server.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Server.Application\03.Server.Application.csproj">
+    <ProjectReference Include="..\Server.Application\02.Server.Application.csproj">
       <Project>{63fea2b3-4a6c-4673-a6f6-b0be60e9cb46}</Project>
-      <Name>03.Server.Application</Name>
+      <Name>02.Server.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Server.DataAccess\05.Server.DataAccess.csproj">
+    <ProjectReference Include="..\Server.DataAccess\01.Server.DataAccess.csproj">
       <Project>{997b545f-0c34-4eef-a919-ca033bf5e192}</Project>
-      <Name>05.Server.DataAccess</Name>
+      <Name>01.Server.DataAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Server.Domain\04.Server.Domain.csproj">
+    <ProjectReference Include="..\Server.Domain\03.Server.Domain.csproj">
       <Project>{1f58a741-2891-4cbf-95fd-abb601fb1d56}</Project>
-      <Name>04.Server.Domain</Name>
+      <Name>03.Server.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
