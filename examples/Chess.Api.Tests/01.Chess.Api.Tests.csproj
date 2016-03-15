@@ -78,9 +78,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Server.Api\02.Server.Api.csproj">
+    <ProjectReference Include="..\Chess.Api\02.Chess.Api.csproj">
       <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
-      <Name>02.Server.Api</Name>
+      <Name>02.Chess.Api</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

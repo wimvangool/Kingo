@@ -171,21 +171,21 @@
     <Compile Include="SecureMessage.T1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Server.Api\02.Server.Api.csproj">
+    <ProjectReference Include="..\Chess.Api\02.Chess.Api.csproj">
       <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
-      <Name>02.Server.Api</Name>
+      <Name>02.Chess.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Server.Application\02.Server.Application.csproj">
+    <ProjectReference Include="..\Chess.Application\02.Chess.Application.csproj">
       <Project>{63fea2b3-4a6c-4673-a6f6-b0be60e9cb46}</Project>
-      <Name>02.Server.Application</Name>
+      <Name>02.Chess.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Server.DataAccess\01.Server.DataAccess.csproj">
+    <ProjectReference Include="..\Chess.DataAccess\01.Chess.DataAccess.csproj">
       <Project>{997b545f-0c34-4eef-a919-ca033bf5e192}</Project>
-      <Name>01.Server.DataAccess</Name>
+      <Name>01.Chess.DataAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Server.Domain\03.Server.Domain.csproj">
+    <ProjectReference Include="..\Chess.Domain\03.Chess.Domain.csproj">
       <Project>{1f58a741-2891-4cbf-95fd-abb601fb1d56}</Project>
-      <Name>03.Server.Domain</Name>
+      <Name>03.Chess.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
