@@ -113,6 +113,15 @@
     <Compile Include="Games\MovePiece\Bishops\H.OneStepDownLeftScenario.cs" />
     <Compile Include="Games\MovePiece\Bishops\H.HitScenario.cs" />
     <Compile Include="Games\MovePiece\Bishops\IllegalBishopMoveScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.OneStepBlockedByOwnPieceScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\H.OneStepDownRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\H.OneStepDownScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\H.OneStepUpRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\H.OneStepUpLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\H.OneStepRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\H.OneStepUpScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\H.OneStepLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\IllegalKingMoveScenario.cs" />
     <Compile Include="Games\MovePiece\MovePieceScenario.cs" />
     <Compile Include="Games\MovePiece\A.NotPlayersTurnScenario.cs" />
     <Compile Include="Games\MovePiece\Pawns\A.EnPassantHitOfPawnThatTookTwoSingleStepsScenario.cs" />
@@ -177,7 +186,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Games\MovePiece\Kings\" />
     <Folder Include="Games\MovePiece\Knights\" />
   </ItemGroup>
   <Choose>
