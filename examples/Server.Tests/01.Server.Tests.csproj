@@ -122,6 +122,13 @@
     <Compile Include="Games\MovePiece\Kings\H.OneStepUpScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepLeftScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\IllegalKingMoveScenario.cs" />
+    <Compile Include="Games\MovePiece\Knights\H.OneUpTwoLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Knights\H.TwoUpOneRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Knights\H.OneUpTwoRightScenario.cs" />
+    <Compile Include="Games\MovePiece\Knights\H.TwoDownOneLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Knights\H.TwoUpOneLeftScenario.cs" />
+    <Compile Include="Games\MovePiece\Knights\A.IllegalKnightMoveScenario.cs" />
+    <Compile Include="Games\MovePiece\Knights\A.OneUpTwoRightBlockedByOwnPieceScenario.cs" />
     <Compile Include="Games\MovePiece\MovePieceScenario.cs" />
     <Compile Include="Games\MovePiece\A.NotPlayersTurnScenario.cs" />
     <Compile Include="Games\MovePiece\Pawns\A.EnPassantHitOfPawnThatTookTwoSingleStepsScenario.cs" />
@@ -185,9 +192,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Games\MovePiece\Knights\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
