@@ -116,6 +116,9 @@
     <Compile Include="Games\MovePiece\Check\H.CheckByKnightScenario.cs" />
     <Compile Include="Games\MovePiece\Check\H.CheckByBishopScenario.cs" />
     <Compile Include="Games\MovePiece\Check\H.CheckByQueenScenario.cs" />
+    <Compile Include="Games\MovePiece\Check\A.SelfCheckByQueenScenario.cs" />
+    <Compile Include="Games\MovePiece\Check\A.SelfCheckByBishopScenario.cs" />
+    <Compile Include="Games\MovePiece\Check\A.SelfCheckByKnightScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\A.OneStepBlockedByOwnPieceScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownRightScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownScenario.cs" />
@@ -195,7 +198,10 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Games\MovePiece\CheckMate\" />
+    <Folder Include="Games\MovePiece\StaleMate\" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
