@@ -28,12 +28,17 @@ namespace Kingo.Samples.Chess.Games
             get;
         }
 
+        protected override TypeOfPiece Type
+        {
+            get { return TypeOfPiece.Pawn; }
+        }
+
         public override bool CanBeHitByEnPassantMove
         {
             get;
         }
 
-        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        public override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
         {
             if (base.IsSupportedMove(board, from, to, ref eventFactory))
             {

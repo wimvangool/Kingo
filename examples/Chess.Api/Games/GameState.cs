@@ -1,15 +1,25 @@
-﻿namespace Kingo.Samples.Chess.Games
+﻿using System.Runtime.Serialization;
+
+namespace Kingo.Samples.Chess.Games
 {
+    [DataContract]
     public enum GameState
     {
+        [EnumMember]
         Normal,
 
+        [EnumMember]
         Check,
 
+        [EnumMember]
         CheckMate,
 
+        [EnumMember]
         StaleMate,
 
-        Forfeited
+        [EnumMember]
+        Forfeited,
+
+        Error
     }
 }

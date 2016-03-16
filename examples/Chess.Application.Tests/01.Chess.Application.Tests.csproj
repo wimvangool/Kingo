@@ -113,6 +113,9 @@
     <Compile Include="Games\MovePiece\Bishops\H.OneStepDownLeftScenario.cs" />
     <Compile Include="Games\MovePiece\Bishops\H.HitScenario.cs" />
     <Compile Include="Games\MovePiece\Bishops\IllegalBishopMoveScenario.cs" />
+    <Compile Include="Games\MovePiece\Check\H.CheckByKnightScenario.cs" />
+    <Compile Include="Games\MovePiece\Check\H.CheckByBishopScenario.cs" />
+    <Compile Include="Games\MovePiece\Check\H.CheckByQueenScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\A.OneStepBlockedByOwnPieceScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownRightScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownScenario.cs" />

@@ -21,34 +21,29 @@ namespace Kingo.Samples.Chess.Games
 
         public override string ToString()
         {
-            return $"W: {CountWhitePieces()} piece(s), B: {CountBlackPieces()} piece(s)";
-        }
-
-        private int CountWhitePieces()
-        {
-            return CountPieces(ColorOfPiece.White);
-        }
-
-        private int CountBlackPieces()
-        {
-            return CountPieces(ColorOfPiece.Black);
-        }
+            return $"W: {CountPieces(ColorOfPiece.White)} piece(s), B: {CountPieces(ColorOfPiece.Black)} piece(s)";
+        }        
 
         private int CountPieces(ColorOfPiece color)
         {
-            return EnumeratePieces().Count(piece => piece.HasColor(color));
+            return EnumeratePieces(_pieces, color).Count();
         }
 
-        private IEnumerable<Piece> EnumeratePieces()
+        private static IEnumerable<Tuple<Square, Piece>> EnumeratePieces(Piece[,] pieces, ColorOfPiece color)
+        {
+            return EnumeratePieces(pieces).Where(piece => piece.Item2.HasColor(color));
+        }
+
+        private static IEnumerable<Tuple<Square, Piece>> EnumeratePieces(Piece[,] pieces)
         {
             for (int fileIndex = 0; fileIndex < Size; fileIndex++)
             {
                 for (int rankIndex = 0; rankIndex < Size; rankIndex++)
                 {
-                    var piece = _pieces[fileIndex, rankIndex];
+                    var piece = pieces[fileIndex, rankIndex];
                     if (piece != null)
                     {
-                        yield return piece;
+                        yield return new Tuple<Square, Piece>(new Square(fileIndex, rankIndex), piece);
                     }
                 }
             }
@@ -89,19 +84,19 @@ namespace Kingo.Samples.Chess.Games
 
         public GameState SimulateMove(Square from, Square to, ColorOfPiece colorOfOwnKing)
         {
-            return DetermineNewState(from, to, Square.ApplyMove(from, to, _pieces), colorOfOwnKing);
+            return DetermineNewState(Square.ApplyMove(from, to, _pieces), colorOfOwnKing);
         }
 
         public GameState SimulateEnPassantMove(Square from, Square to, Square enPassantHit, ColorOfPiece colorOfOwnKing)
         {
-            return DetermineNewState(from, to, Square.ApplyEnPassantMove(from, to, enPassantHit, _pieces), colorOfOwnKing);
+            return DetermineNewState(Square.ApplyEnPassantMove(from, to, enPassantHit, _pieces), colorOfOwnKing);
         }
 
-        private static GameState DetermineNewState(Square from, Square to, Piece[,] piecesAfterMove, ColorOfPiece colorOfOwnKing)
+        private static GameState DetermineNewState(Piece[,] piecesAfterMove, ColorOfPiece colorOfOwnKing)
         {
             if (IsInCheck(colorOfOwnKing, piecesAfterMove))
             {
-                throw NewOwnKingLeftInCheckException(from, to);
+                return GameState.Error;
             }
             var colorOfOtherKing = colorOfOwnKing.Invert();
 
@@ -122,6 +117,33 @@ namespace Kingo.Samples.Chess.Games
 
         private static bool IsInCheck(ColorOfPiece colorOfKing, Piece[,] pieces)
         {
+            return CanAnyPieceMoveTo(FindSquareOfKing(colorOfKing, pieces), pieces, colorOfKing.Invert());
+        }
+
+        private static Square FindSquareOfKing(ColorOfPiece colorOfKing, Piece[,] pieces)
+        {
+            var piecesOnBoard =
+                from pieceOnBoard in EnumeratePieces(pieces, colorOfKing)
+                where pieceOnBoard.Item2.IsOfType(TypeOfPiece.King)
+                select pieceOnBoard.Item1;
+
+            return piecesOnBoard.Single();            
+        }
+
+        private static bool CanAnyPieceMoveTo(Square to, Piece[,] pieces, ColorOfPiece colorOfPiece)
+        {
+            Func<PieceMovedEvent> eventFactory = null;
+            var board = new ChessBoard(pieces);
+
+            foreach (var pieceOnBoard in EnumeratePieces(pieces, colorOfPiece))
+            {                
+                var from = pieceOnBoard.Item1;
+                var piece = pieceOnBoard.Item2;
+                if (piece.IsSupportedMove(board, from, to, ref eventFactory))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -147,14 +169,7 @@ namespace Kingo.Samples.Chess.Games
             var messageFormat = ExceptionMessages.Game_WrongColor;
             var message = string.Format(messageFormat, square, expectedColor, actualColor);
             return new DomainException(message);
-        }
-
-        private static Exception NewOwnKingLeftInCheckException(Square from, Square to)
-        {
-            var messageFormat = ExceptionMessages.Game_OwnKingLeftInCheck;
-            var message = string.Format(messageFormat, from, to);
-            return new DomainException(message);
-        }
+        }        
 
         #endregion
 

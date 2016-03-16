@@ -21,7 +21,12 @@ namespace Kingo.Samples.Chess.Games
             get;
         }
 
-        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override TypeOfPiece Type
+        {
+            get { return TypeOfPiece.Rook; }
+        }
+
+        public override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
         {
             if (base.IsSupportedMove(board, from, to, ref eventFactory))
             {                

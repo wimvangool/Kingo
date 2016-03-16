@@ -13,7 +13,7 @@ namespace Kingo.Samples.Chess.Games
         private readonly int _fileIndex;
         private readonly int _rankIndex;
 
-        private Square([Range(0, ChessBoard.Size - 1)] int fileIndex, [Range(0, ChessBoard.Size - 1)] int rankIndex)
+        internal Square([Range(0, ChessBoard.Size - 1)] int fileIndex, [Range(0, ChessBoard.Size - 1)] int rankIndex)
         {
             _fileIndex = fileIndex;
             _rankIndex = rankIndex;
