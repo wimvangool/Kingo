@@ -113,12 +113,15 @@
     <Compile Include="Games\MovePiece\Bishops\H.OneStepDownLeftScenario.cs" />
     <Compile Include="Games\MovePiece\Bishops\H.HitScenario.cs" />
     <Compile Include="Games\MovePiece\Bishops\IllegalBishopMoveScenario.cs" />
+    <Compile Include="Games\MovePiece\CheckMate\H.CheckMateByQueen.cs" />
+    <Compile Include="Games\MovePiece\CheckMate\H.CheckMateByQueenAndBishopScenario.cs" />
     <Compile Include="Games\MovePiece\Check\H.CheckByKnightScenario.cs" />
     <Compile Include="Games\MovePiece\Check\H.CheckByBishopScenario.cs" />
     <Compile Include="Games\MovePiece\Check\H.CheckByQueenScenario.cs" />
     <Compile Include="Games\MovePiece\Check\A.SelfCheckByQueenScenario.cs" />
     <Compile Include="Games\MovePiece\Check\A.SelfCheckByBishopScenario.cs" />
     <Compile Include="Games\MovePiece\Check\A.SelfCheckByKnightScenario.cs" />
+    <Compile Include="Games\MovePiece\Check\H.AlmostCheckMateByQueenAndBishopScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\A.OneStepBlockedByOwnPieceScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownRightScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownScenario.cs" />
@@ -199,7 +202,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Games\MovePiece\CheckMate\" />
     <Folder Include="Games\MovePiece\StaleMate\" />
   </ItemGroup>
   <Choose>

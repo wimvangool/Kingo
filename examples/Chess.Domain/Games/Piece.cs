@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Kingo.Messaging.Domain;
 using Kingo.Samples.Chess.Resources;
 
@@ -41,7 +43,34 @@ namespace Kingo.Samples.Chess.Games
             return $"{GetType().Name} ({Color})";
         }
 
+        public bool CanMove(ChessBoard board, Square @from)
+        {
+            var possibleMoves =
+                from to in GetPossibleSquaresToMoveTo(@from)
+                let @event = SimulateMove(board, @from, to)
+                where @event != null && @event.NewState != GameState.Error
+                select to;
+
+            return possibleMoves.Any();
+        }
+
+        protected abstract IEnumerable<Square> GetPossibleSquaresToMoveTo(Square from);
+
         public void Move(ChessBoard board, Square from, Square to)
+        {
+            var @event = SimulateMove(board, from, to);
+            if (@event == null)
+            {
+                throw NewUnsupportedMoveException(from, to);
+            }
+            if (@event.NewState == GameState.Error)
+            {
+                throw NewOwnKingLeftInCheckException(from, to);
+            }
+            EventBus.Publish(SimulateMove(board, from, to));            
+        }          
+
+        private PieceMovedEvent SimulateMove(ChessBoard board, Square from, Square to)
         {
             Func<PieceMovedEvent> eventFactory = () => new PieceMovedEvent(from.ToString(), to.ToString())
             {
@@ -49,18 +78,19 @@ namespace Kingo.Samples.Chess.Games
             };
             if (IsSupportedMove(board, from, to, ref eventFactory))
             {
-                var @event = eventFactory.Invoke();
-                if (@event.NewState == GameState.Error)
-                {
-                    throw NewOwnKingLeftInCheckException(from, to);
-                }
-                EventBus.Publish(eventFactory.Invoke());
-                return;
+                return eventFactory.Invoke();
             }
-            throw NewUnsupportedMoveException(from, to);
-        }          
+            return null;
+        }
 
-        public virtual bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        public bool IsSupportedMove(ChessBoard board, Square from, Square to)
+        {
+            Func<PieceMovedEvent> eventFactory = null;
+
+            return IsSupportedMove(board, from, to, ref eventFactory);
+        }
+
+        protected virtual bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
         {
             // A piece can never move to a square where another piece of the same color is already present.
             return !to.Equals(from) && IsNotPieceOfSameColor(board.SelectPiece(to));            

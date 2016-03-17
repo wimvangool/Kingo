@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kingo.Messaging.Domain;
 
 namespace Kingo.Samples.Chess.Games
@@ -26,7 +27,45 @@ namespace Kingo.Samples.Chess.Games
             get { return TypeOfPiece.Knight; }
         }
 
-        public override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override IEnumerable<Square> GetPossibleSquaresToMoveTo(Square from)
+        {
+            Square to;
+
+            if (TryAdd(from, _A_TwoUpOneRight, out to))
+            {
+                yield return to;
+            }
+            if (TryAdd(from, _B_OneUpTwoRight, out to))
+            {
+                yield return to;
+            }
+            if (TryAdd(from, _C_OneDownTwoRight, out to))
+            {
+                yield return to;
+            }
+            if (TryAdd(from, _D_TwoDownOneRight, out to))
+            {
+                yield return to;
+            }
+            if (TryAdd(from, _E_TwoDownOneLeft, out to))
+            {
+                yield return to;
+            }
+            if (TryAdd(from, _F_OneDownTwoLeft, out to))
+            {
+                yield return to;
+            }
+            if (TryAdd(from, _G_OneUpTwoLeft, out to))
+            {
+                yield return to;
+            }
+            if (TryAdd(from, _H_TwoUpOneLeft, out to))
+            {
+                yield return to;
+            }
+        }        
+
+        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
         {
             if (base.IsSupportedMove(board, from, to, ref eventFactory))
             {
@@ -35,65 +74,41 @@ namespace Kingo.Samples.Chess.Games
             return false;
         }
 
+        private static readonly Tuple<int, int> _A_TwoUpOneRight = new Tuple<int, int>(1, 2);
+        private static readonly Tuple<int, int> _B_OneUpTwoRight = new Tuple<int, int>(2, 1);
+        private static readonly Tuple<int, int> _C_OneDownTwoRight = new Tuple<int, int>(2, -1);
+        private static readonly Tuple<int, int> _D_TwoDownOneRight = new Tuple<int, int>(1, -2);
+        private static readonly Tuple<int, int> _E_TwoDownOneLeft = new Tuple<int, int>(-1, -2);
+        private static readonly Tuple<int, int> _F_OneDownTwoLeft = new Tuple<int, int>(-2, -1);
+        private static readonly Tuple<int, int> _G_OneUpTwoLeft = new Tuple<int, int>(-2, 1);
+        private static readonly Tuple<int, int> _H_TwoUpOneLeft = new Tuple<int, int>(-1, 2);
+
+        private static bool TryAdd(Square from, Tuple<int, int> move, out Square to)
+        {
+            return from.TryAdd(move.Item1, move.Item2, out to);
+        }
+
         private static bool IsSupportedMove(Move move)
         {
             return
-                IsTwoUpOneRight(move) ||
-                IsOneUpTwoRight(move) ||
-                IsOneDownTwoRight(move) ||
-                IsTwoDownOneRight(move) ||
-                IsTwoDownOneLeft(move) ||
-                IsOneDownTwoLeft(move) ||
-                IsOneUpTwoLeft(move) ||
-                IsTwoUpOneLeft(move);
+                IsMove(move, _A_TwoUpOneRight) ||
+                IsMove(move, _B_OneUpTwoRight) ||
+                IsMove(move, _C_OneDownTwoRight) ||
+                IsMove(move, _D_TwoDownOneRight) ||
+                IsMove(move, _E_TwoDownOneLeft) ||
+                IsMove(move, _F_OneDownTwoLeft) ||
+                IsMove(move, _G_OneUpTwoLeft) ||
+                IsMove(move, _H_TwoUpOneLeft);
         }
 
-        private const int _Two = 2;
-        private const int _One = 1;
-
-        private static bool IsTwoUpOneRight(Move move)
+        private static bool IsMove(Move move, Tuple<int, int> steps)
         {
-            return IsMove(move, _Two, _One);
+            return IsMove(move, steps.Item1, steps.Item2);
         }
 
-        private static bool IsOneUpTwoRight(Move move)
+        private static bool IsMove(Move move, int fileSteps, int rankSteps)
         {
-            return IsMove(move, _One, _Two);
-        }
-
-        private static bool IsOneDownTwoRight(Move move)
-        {
-            return IsMove(move, -_One, _Two);
-        }
-
-        private static bool IsTwoDownOneRight(Move move)
-        {
-            return IsMove(move, -_Two, _One);
-        }
-
-        private static bool IsTwoDownOneLeft(Move move)
-        {
-            return IsMove(move, -_Two, -_One);
-        }
-
-        private static bool IsOneDownTwoLeft(Move move)
-        {
-            return IsMove(move, -_One, -_Two);
-        }
-
-        private static bool IsOneUpTwoLeft(Move move)
-        {
-            return IsMove(move, _One, -_Two);    
-        }
-
-        private static bool IsTwoUpOneLeft(Move move)
-        {
-            return IsMove(move, _Two, -_One);
-        }
-
-        private static bool IsMove(Move move, int rankSteps, int fileSteps)
-        {
-            return move.RankSteps == rankSteps && move.FileSteps == fileSteps;
+            return move.FileSteps == fileSteps && move.RankSteps == rankSteps;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Kingo.Messaging.Domain;
 
 namespace Kingo.Samples.Chess.Games
@@ -26,9 +28,82 @@ namespace Kingo.Samples.Chess.Games
             get { return TypeOfPiece.Bishop; }
         }
 
-        public override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override IEnumerable<Square> GetPossibleSquaresToMoveTo(Square from)
         {
-            if (base.IsSupportedMove(board, @from, to, ref eventFactory))
+            return PossibleSquaresToMoveTo(from);
+        }
+
+        internal static IEnumerable<Square> PossibleSquaresToMoveTo(Square from)
+        {
+            return PossibleMovesUpLeft(from)
+                .Concat(PossibleMovesUpRight(from))
+                .Concat(PossibleMovesDownRight(from))
+                .Concat(PossibleMovesDownLeft(from));
+        }
+
+        private static IEnumerable<Square> PossibleMovesUpLeft(Square from)
+        {
+            int fileSteps = -1;
+            int rankSteps = 1;
+            Square to;
+
+            while (from.TryAdd(fileSteps, rankSteps, out to))
+            {
+                fileSteps--;
+                rankSteps++;
+
+                yield return to;
+            }
+        }
+
+        private static IEnumerable<Square> PossibleMovesUpRight(Square from)
+        {
+            int fileSteps = 1;
+            int rankSteps = 1;
+            Square to;
+
+            while (from.TryAdd(fileSteps, rankSteps, out to))
+            {
+                fileSteps++;
+                rankSteps++;
+
+                yield return to;
+            }
+        }
+
+        private static IEnumerable<Square> PossibleMovesDownRight(Square from)
+        {
+            int fileSteps = 1;
+            int rankSteps = -1;
+            Square to;
+
+            while (from.TryAdd(fileSteps, rankSteps, out to))
+            {
+                fileSteps++;
+                rankSteps--;
+
+                yield return to;
+            }
+        }
+
+        private static IEnumerable<Square> PossibleMovesDownLeft(Square from)
+        {
+            int fileSteps = -1;
+            int rankSteps = -1;
+            Square to;
+
+            while (from.TryAdd(fileSteps, rankSteps, out to))
+            {
+                fileSteps--;
+                rankSteps--;
+
+                yield return to;
+            }
+        }
+
+        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        {
+            if (base.IsSupportedMove(board, from, to, ref eventFactory))
             {
                 return IsSupportedMove(board, Square.CalculateMove(from, to));
             }

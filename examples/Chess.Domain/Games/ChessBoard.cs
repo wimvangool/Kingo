@@ -11,17 +11,25 @@ namespace Kingo.Samples.Chess.Games
         internal const int Size = 8;
         
         private readonly Piece[,] _pieces;
+        private readonly bool _isSimulated;
 
-        private ChessBoard(Piece[,] pieces)
+        private ChessBoard(Piece[,] pieces, bool isSimulated = false)
         {            
             _pieces = pieces;
+            _isSimulated = isSimulated;
         }
 
         #region [====== ToString ======]
 
         public override string ToString()
         {
-            return $"W: {CountPieces(ColorOfPiece.White)} piece(s), B: {CountPieces(ColorOfPiece.Black)} piece(s)";
+            var board = $"W: {CountPieces(ColorOfPiece.White)} piece(s), B: {CountPieces(ColorOfPiece.Black)} piece(s)";
+
+            if (_isSimulated)
+            {
+                return board + " [Simulated]";
+            }
+            return board;
         }        
 
         private int CountPieces(ColorOfPiece color)
@@ -92,23 +100,30 @@ namespace Kingo.Samples.Chess.Games
             return DetermineNewState(Square.ApplyEnPassantMove(from, to, enPassantHit, _pieces), colorOfOwnKing);
         }
 
-        private static GameState DetermineNewState(Piece[,] piecesAfterMove, ColorOfPiece colorOfOwnKing)
+        private GameState DetermineNewState(Piece[,] piecesAfterMove, ColorOfPiece colorOfOwnKing)
         {
             if (IsInCheck(colorOfOwnKing, piecesAfterMove))
             {
                 return GameState.Error;
             }
+
+            // When this board is simulated, we only check whether or not the board is in a valid state.
+            // This is mainly to prevent an endless recursive simulation of moves.
+            if (_isSimulated)
+            {
+                return GameState.Normal;
+            }
             var colorOfOtherKing = colorOfOwnKing.Invert();
 
             if (IsInCheck(colorOfOtherKing, piecesAfterMove))
             {
-                if (IsCheckMate(colorOfOtherKing, piecesAfterMove))
+                if (AnyMoveResultsInCheckOfOwnKing(colorOfOtherKing, piecesAfterMove))
                 {
                     return GameState.CheckMate;
                 }
                 return GameState.Check;
             }
-            if (IsStaleMate(colorOfOwnKing, piecesAfterMove))
+            if (AnyMoveResultsInCheckOfOwnKing(colorOfOwnKing, piecesAfterMove))
             {
                 return GameState.StaleMate;
             }
@@ -130,16 +145,16 @@ namespace Kingo.Samples.Chess.Games
             return piecesOnBoard.Single();            
         }
 
-        private static bool CanAnyPieceMoveTo(Square to, Piece[,] pieces, ColorOfPiece colorOfPiece)
-        {
-            Func<PieceMovedEvent> eventFactory = null;
-            var board = new ChessBoard(pieces);
+        private static bool CanAnyPieceMoveTo(Square squareOfKing, Piece[,] pieces, ColorOfPiece colorOfPiece)
+        {           
+            var board = new ChessBoard(pieces, true);
 
             foreach (var pieceOnBoard in EnumeratePieces(pieces, colorOfPiece))
             {                
                 var from = pieceOnBoard.Item1;
                 var piece = pieceOnBoard.Item2;
-                if (piece.IsSupportedMove(board, from, to, ref eventFactory))
+
+                if (piece.IsSupportedMove(board, from, squareOfKing))
                 {
                     return true;
                 }
@@ -147,15 +162,22 @@ namespace Kingo.Samples.Chess.Games
             return false;
         }
 
-        private static bool IsCheckMate(ColorOfPiece colorOfKing, Piece[,] pieces)
+        private static bool AnyMoveResultsInCheckOfOwnKing(ColorOfPiece colorOfKing, Piece[,] pieces)
         {
-            return false;
-        }
+            var board = new ChessBoard(pieces, true);
 
-        private static bool IsStaleMate(ColorOfPiece colorOfKing, Piece[,] pieces)
-        {
-            return false;
-        }
+            foreach (var pieceOnBoard in EnumeratePieces(pieces, colorOfKing))
+            {
+                var from = pieceOnBoard.Item1;
+                var piece = pieceOnBoard.Item2;
+
+                if (piece.CanMove(board, from))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }        
 
         private static Exception NewEmptySquareException(Square square)
         {

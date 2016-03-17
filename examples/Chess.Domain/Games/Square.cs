@@ -34,9 +34,32 @@ namespace Kingo.Samples.Chess.Games
             return $"{File}{Rank}";
         }
 
-        public Square Add(int fileSteps, int rankSteps)
+        internal Square Add(int fileSteps, int rankSteps)
         {
             return new Square(_fileIndex + fileSteps, _rankIndex + rankSteps);
+        }
+
+        internal bool TryAdd(int fileSteps, int rankSteps, out Square result)
+        {
+            int newFileIndex = _fileIndex + fileSteps;
+
+            if (IsValidIndex(newFileIndex))
+            {
+                int newRankIndex = _rankIndex + rankSteps;
+
+                if (IsValidIndex(newRankIndex))
+                {
+                    result = new Square(newFileIndex, newRankIndex);
+                    return true;
+                }
+            }
+            result = null;
+            return false;
+        }
+
+        private static bool IsValidIndex(int index)
+        {
+            return 0 <= index && index < ChessBoard.Size;
         }
 
         internal Piece SelectPiece(Piece[,] pieces)

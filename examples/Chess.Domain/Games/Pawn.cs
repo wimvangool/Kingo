@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kingo.Messaging.Domain;
 
 namespace Kingo.Samples.Chess.Games
@@ -38,7 +39,29 @@ namespace Kingo.Samples.Chess.Games
             get;
         }
 
-        public override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override IEnumerable<Square> GetPossibleSquaresToMoveTo(Square from)
+        {
+            Square to;
+
+            if (from.TryAdd(-1, 1, out to))
+            {
+                yield return to;
+            }
+            if (from.TryAdd(0, 1, out to))
+            {
+                yield return to;
+            }
+            if (from.TryAdd(0, 2, out to))
+            {
+                yield return to;
+            }
+            if (from.TryAdd(1, 1, out to))
+            {
+                yield return to;
+            }
+        }
+
+        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
         {
             if (base.IsSupportedMove(board, from, to, ref eventFactory))
             {
