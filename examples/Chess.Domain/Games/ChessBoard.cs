@@ -68,41 +68,46 @@ namespace Kingo.Samples.Chess.Games
 
         public Piece SelectPiece(Square square)
         {
-            return square.SelectPiece(_pieces);          
+            return _pieces[square.FileIndex, square.RankIndex];          
         }
 
         #endregion
 
         #region [====== MovePiece ======]
 
-        public void MovePiece(Square from, Square to, ColorOfPiece color)
+        public void MovePiece(Move move, ColorOfPiece color)
         {
-            var piece = SelectPiece(from);
+            var piece = SelectPiece(move.From);
             if (piece == null)
             {
-                throw NewEmptySquareException(from);
+                throw NewEmptySquareException(move.From);
             }
             if (piece.HasColor(color))
             {
-                piece.Move(this, from, to);
+                piece.Move(this, move);
                 return;
             }
-            throw NewWrongColorException(from, color, color.Invert());
+            throw NewWrongColorException(move.From, color, color.Invert());
         }
 
-        public GameState SimulateMove(Square from, Square to, ColorOfPiece colorOfOwnKing)
+        public GameState SimulateMove(Move move, ColorOfPiece colorOfOwnKing)
         {
-            return DetermineNewState(Square.ApplyMove(from, to, _pieces), colorOfOwnKing);
+            return ApplyMove(move).DetermineNewState(colorOfOwnKing);
         }
 
-        public GameState SimulateEnPassantMove(Square from, Square to, Square enPassantHit, ColorOfPiece colorOfOwnKing)
+        public GameState SimulateEnPassantMove(Move move, Square enPassantHit, ColorOfPiece colorOfOwnKing)
         {
-            return DetermineNewState(Square.ApplyEnPassantMove(from, to, enPassantHit, _pieces), colorOfOwnKing);
+            return ApplyEnPassantMove(move, enPassantHit).DetermineNewState(colorOfOwnKing);
         }
 
-        private GameState DetermineNewState(Piece[,] piecesAfterMove, ColorOfPiece colorOfOwnKing)
+        public GameState SimulateCastlingMove(Move moveOfKing, Move moveOfRook, ColorOfPiece colorOfOwnKing)
         {
-            if (IsInCheck(colorOfOwnKing, piecesAfterMove))
+            return ApplyCastlingMove(moveOfKing, moveOfRook).DetermineNewState(colorOfOwnKing);
+        }
+
+        private GameState DetermineNewState(ColorOfPiece colorOfOwnKing)
+        {
+            if (IsInCheck(colorOfOwnKing))
             {
                 return GameState.Error;
             }
@@ -111,50 +116,50 @@ namespace Kingo.Samples.Chess.Games
             // This is mainly to prevent an endless recursive simulation of moves.
             if (_isSimulated)
             {
-                return GameState.Normal;
+                return GameState.NoError;
             }
             var colorOfOtherKing = colorOfOwnKing.Invert();
 
-            if (IsInCheck(colorOfOtherKing, piecesAfterMove))
+            if (IsInCheck(colorOfOtherKing))
             {
-                if (AnyMoveResultsInCheckOfOwnKing(colorOfOtherKing, piecesAfterMove))
+                if (AnyMoveResultsInCheckOfOwnKing(colorOfOtherKing))
                 {
                     return GameState.CheckMate;
                 }
                 return GameState.Check;
             }
-            if (AnyMoveResultsInCheckOfOwnKing(colorOfOwnKing, piecesAfterMove))
+            if (AnyMoveResultsInCheckOfOwnKing(colorOfOwnKing))
             {
                 return GameState.StaleMate;
             }
             return GameState.Normal;
-        }           
-
-        private static bool IsInCheck(ColorOfPiece colorOfKing, Piece[,] pieces)
-        {
-            return CanAnyPieceMoveTo(FindSquareOfKing(colorOfKing, pieces), pieces, colorOfKing.Invert());
         }
 
-        private static Square FindSquareOfKing(ColorOfPiece colorOfKing, Piece[,] pieces)
+        private bool IsInCheck(ColorOfPiece colorOfKing)
+        {
+            return CanAnyPieceMoveTo(FindSquareOfKing(colorOfKing), colorOfKing.Invert());
+        }
+
+        private Square FindSquareOfKing(ColorOfPiece colorOfKing)
         {
             var piecesOnBoard =
-                from pieceOnBoard in EnumeratePieces(pieces, colorOfKing)
+                from pieceOnBoard in EnumeratePieces(_pieces, colorOfKing)
                 where pieceOnBoard.Item2.IsOfType(TypeOfPiece.King)
                 select pieceOnBoard.Item1;
 
             return piecesOnBoard.Single();            
         }
 
-        private static bool CanAnyPieceMoveTo(Square squareOfKing, Piece[,] pieces, ColorOfPiece colorOfPiece)
+        internal bool CanAnyPieceMoveTo(Square squareOfKing, ColorOfPiece colorOfPiece)
         {           
-            var board = new ChessBoard(pieces, true);
+            var board = new ChessBoard(_pieces, true);
 
-            foreach (var pieceOnBoard in EnumeratePieces(pieces, colorOfPiece))
+            foreach (var pieceOnBoard in EnumeratePieces(_pieces, colorOfPiece))
             {                
                 var from = pieceOnBoard.Item1;
                 var piece = pieceOnBoard.Item2;
 
-                if (piece.IsSupportedMove(board, from, squareOfKing))
+                if (piece.IsSupportedMove(board, Move.Calculate(from, squareOfKing)))
                 {
                     return true;
                 }
@@ -162,11 +167,11 @@ namespace Kingo.Samples.Chess.Games
             return false;
         }
 
-        private static bool AnyMoveResultsInCheckOfOwnKing(ColorOfPiece colorOfKing, Piece[,] pieces)
+        private bool AnyMoveResultsInCheckOfOwnKing(ColorOfPiece colorOfKing)
         {
-            var board = new ChessBoard(pieces, true);
+            var board = new ChessBoard(_pieces, true);
 
-            foreach (var pieceOnBoard in EnumeratePieces(pieces, colorOfKing))
+            foreach (var pieceOnBoard in EnumeratePieces(_pieces, colorOfKing))
             {
                 var from = pieceOnBoard.Item1;
                 var piece = pieceOnBoard.Item2;
@@ -199,12 +204,83 @@ namespace Kingo.Samples.Chess.Games
 
         public ChessBoard ApplyMove(Square from, Square to)
         {
-            return new ChessBoard(Square.ApplyMove(from, to, _pieces));
+            return ApplyMove(Move.Calculate(from, to));
+        }
+
+        private ChessBoard ApplyMove(Move move)
+        {
+            return ApplyMove(current =>
+            {
+                if (current.Equals(move.From))
+                {
+                    return null;
+                }
+                if (current.Equals(move.To))
+                {
+                    return SelectPiece(move.From).ApplyMove(move);
+                }
+                return SelectPiece(current)?.RemainInPlace();
+            });
         }
 
         public ChessBoard ApplyEnPassantMove(Square from, Square to, Square enPassantHit)
         {
-            return new ChessBoard(Square.ApplyEnPassantMove(from, to, enPassantHit, _pieces));
+            return ApplyEnPassantMove(Move.Calculate(from, to), enPassantHit);
+        }
+
+        internal ChessBoard ApplyEnPassantMove(Move move, Square enPassantHit)
+        {
+            return ApplyMove(current =>
+            {
+                if (current.Equals(move.From) || current.Equals(enPassantHit))
+                {
+                    return null;
+                }
+                if (current.Equals(move.To))
+                {
+                    return SelectPiece(move.From).ApplyMove(move);
+                }
+                return SelectPiece(current)?.RemainInPlace();
+            });
+        }
+
+        public ChessBoard ApplyCastlingMove(Square kingFrom, Square kingTo, Square rookFrom, Square rookTo)
+        {
+            return ApplyCastlingMove(Move.Calculate(kingFrom, kingTo), Move.Calculate(rookFrom, rookTo));
+        }
+
+        private ChessBoard ApplyCastlingMove(Move moveOfKing, Move moveOfRook)
+        {
+            return ApplyMove(current =>
+            {
+                if (current.Equals(moveOfKing.From) || current.Equals(moveOfKing.From))
+                {
+                    return null;
+                }
+                if (current.Equals(moveOfKing.To))
+                {
+                    return SelectPiece(moveOfKing.From).ApplyMove(moveOfKing);
+                }
+                if (current.Equals(moveOfRook.To))
+                {
+                    return SelectPiece(moveOfRook.From).ApplyMove(moveOfRook);
+                }
+                return SelectPiece(current)?.RemainInPlace();
+            });
+        }
+
+        private ChessBoard ApplyMove(Func<Square, Piece> pieceFactory)
+        {
+            var piecesAfterMove = new Piece[Size, Size];
+
+            for (int fileIndex = 0; fileIndex < Size; fileIndex++)
+            {
+                for (int rankIndex = 0; rankIndex < Size; rankIndex++)
+                {
+                    piecesAfterMove[fileIndex, rankIndex] = pieceFactory.Invoke(new Square(fileIndex, rankIndex));
+                }
+            }
+            return new ChessBoard(piecesAfterMove, _isSimulated);
         }
 
         #endregion

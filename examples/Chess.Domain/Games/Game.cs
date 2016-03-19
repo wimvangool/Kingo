@@ -55,7 +55,7 @@ namespace Kingo.Samples.Chess.Games
 
         private Player SelectPlayer(Guid playerId)
         {
-            if (_state != GameState.Normal)
+            if (IsEndState(_state))
             {
                 throw NewGameEndedException(_id);
             }
@@ -68,6 +68,14 @@ namespace Kingo.Samples.Chess.Games
                 return _black;
             }
             throw NewUnknownPlayerException(_id, playerId);
+        }
+
+        private static bool IsEndState(GameState state)
+        {
+            return
+                state == GameState.CheckMate ||
+                state == GameState.StaleMate ||
+                state == GameState.Forfeited;
         }
 
         private static Exception NewGameEndedException(Guid gameId)
@@ -93,6 +101,7 @@ namespace Kingo.Samples.Chess.Games
             RegisterEventHandler<GameStartedEvent>(Handle);
             RegisterEventHandler<PieceMovedEvent>(Handle);
             RegisterEventHandler<EnPassantHitEvent>(Handle);
+            RegisterEventHandler<CastlingPerformedEvent>(Handle);
             RegisterEventHandler<GameForfeitedEvent>(Handle);
         }
 
@@ -118,6 +127,14 @@ namespace Kingo.Samples.Chess.Games
             _white = _white.SwitchTurn();
             _black = _black.SwitchTurn();
             _board = _board.ApplyEnPassantMove(Square.Parse(@event.From), Square.Parse(@event.To), Square.Parse(@event.EnPassantHit));
+            _state = @event.NewState;
+        }
+
+        private void Handle(CastlingPerformedEvent @event)
+        {
+            _white = _white.SwitchTurn();
+            _black = _black.SwitchTurn();
+            _board = _board.ApplyCastlingMove(Square.Parse(@event.From), Square.Parse(@event.To), Square.Parse(@event.RookFrom), Square.Parse(@event.RookTo));
             _state = @event.NewState;
         }
 

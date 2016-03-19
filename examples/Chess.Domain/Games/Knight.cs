@@ -6,6 +6,15 @@ namespace Kingo.Samples.Chess.Games
 {
     internal sealed class Knight : Piece
     {
+        private static readonly Tuple<int, int> _A_TwoUpOneRight = new Tuple<int, int>(1, 2);
+        private static readonly Tuple<int, int> _B_OneUpTwoRight = new Tuple<int, int>(2, 1);
+        private static readonly Tuple<int, int> _C_OneDownTwoRight = new Tuple<int, int>(2, -1);
+        private static readonly Tuple<int, int> _D_TwoDownOneRight = new Tuple<int, int>(1, -2);
+        private static readonly Tuple<int, int> _E_TwoDownOneLeft = new Tuple<int, int>(-1, -2);
+        private static readonly Tuple<int, int> _F_OneDownTwoLeft = new Tuple<int, int>(-2, -1);
+        private static readonly Tuple<int, int> _G_OneUpTwoLeft = new Tuple<int, int>(-2, 1);
+        private static readonly Tuple<int, int> _H_TwoUpOneLeft = new Tuple<int, int>(-1, 2);
+
         public Knight(Game game, ColorOfPiece color)
         {
             EventBus = game;
@@ -65,40 +74,26 @@ namespace Kingo.Samples.Chess.Games
             }
         }        
 
-        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override bool IsSupportedMove(ChessBoard board, Move move, ref Func<PieceMovedEvent> eventFactory)
         {
-            if (base.IsSupportedMove(board, from, to, ref eventFactory))
+            if (base.IsSupportedMove(board, move, ref eventFactory))
             {
-                return IsSupportedMove(Square.CalculateMove(from, to));
+                return
+                    IsMove(move, _A_TwoUpOneRight) ||
+                    IsMove(move, _B_OneUpTwoRight) ||
+                    IsMove(move, _C_OneDownTwoRight) ||
+                    IsMove(move, _D_TwoDownOneRight) ||
+                    IsMove(move, _E_TwoDownOneLeft) ||
+                    IsMove(move, _F_OneDownTwoLeft) ||
+                    IsMove(move, _G_OneUpTwoLeft) ||
+                    IsMove(move, _H_TwoUpOneLeft);
             }
             return false;
-        }
-
-        private static readonly Tuple<int, int> _A_TwoUpOneRight = new Tuple<int, int>(1, 2);
-        private static readonly Tuple<int, int> _B_OneUpTwoRight = new Tuple<int, int>(2, 1);
-        private static readonly Tuple<int, int> _C_OneDownTwoRight = new Tuple<int, int>(2, -1);
-        private static readonly Tuple<int, int> _D_TwoDownOneRight = new Tuple<int, int>(1, -2);
-        private static readonly Tuple<int, int> _E_TwoDownOneLeft = new Tuple<int, int>(-1, -2);
-        private static readonly Tuple<int, int> _F_OneDownTwoLeft = new Tuple<int, int>(-2, -1);
-        private static readonly Tuple<int, int> _G_OneUpTwoLeft = new Tuple<int, int>(-2, 1);
-        private static readonly Tuple<int, int> _H_TwoUpOneLeft = new Tuple<int, int>(-1, 2);
+        }        
 
         private static bool TryAdd(Square from, Tuple<int, int> move, out Square to)
         {
             return from.TryAdd(move.Item1, move.Item2, out to);
-        }
-
-        private static bool IsSupportedMove(Move move)
-        {
-            return
-                IsMove(move, _A_TwoUpOneRight) ||
-                IsMove(move, _B_OneUpTwoRight) ||
-                IsMove(move, _C_OneDownTwoRight) ||
-                IsMove(move, _D_TwoDownOneRight) ||
-                IsMove(move, _E_TwoDownOneLeft) ||
-                IsMove(move, _F_OneDownTwoLeft) ||
-                IsMove(move, _G_OneUpTwoLeft) ||
-                IsMove(move, _H_TwoUpOneLeft);
         }
 
         private static bool IsMove(Move move, Tuple<int, int> steps)

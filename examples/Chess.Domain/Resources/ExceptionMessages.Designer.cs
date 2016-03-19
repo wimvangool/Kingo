@@ -115,6 +115,15 @@ namespace Kingo.Samples.Chess.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Square to ({0}) is equal to Square from..
+        /// </summary>
+        public static string Game_InvalidMoveSpecified {
+            get {
+                return ResourceManager.GetString("Game_InvalidMoveSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot perform the operation because it&apos;s currently not this player&apos;s turn ({0})..
         /// </summary>
         public static string Game_NotPlayersTurn {

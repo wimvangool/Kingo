@@ -44,6 +44,7 @@ namespace Kingo.Samples.Chess.Games
             validator.VerifyThat(m => m.GameId).IsNotEmpty();
             validator.VerifyThat(m => m.From).IsNotNull(ErrorMessages.Message_ValueNotSpecified).IsValidSquare();
             validator.VerifyThat(m => m.To).IsNotNull(ErrorMessages.Message_ValueNotSpecified).IsValidSquare();
+            validator.VerifyThat(m => m.To).IsNotEqualTo(m => m.From);
 
             return validator;
         }

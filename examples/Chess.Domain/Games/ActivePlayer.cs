@@ -33,7 +33,7 @@ namespace Kingo.Samples.Chess.Games
 
         public override void MovePiece(Square from, Square to)
         {
-            _game.Board.MovePiece(from, to, _color);
+            _game.Board.MovePiece(Move.Calculate(from, to), _color);
         }
 
         public override void Forfeit()

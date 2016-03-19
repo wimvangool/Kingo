@@ -23,6 +23,11 @@ namespace Kingo.Samples.Chess.Games
             get;
         }
 
+        public virtual bool CanTakePartInCastlingMove
+        {
+            get { return false; }
+        }
+
         public virtual bool CanBeHitByEnPassantMove
         {
             get { return false; }
@@ -47,7 +52,7 @@ namespace Kingo.Samples.Chess.Games
         {
             var possibleMoves =
                 from to in GetPossibleSquaresToMoveTo(@from)
-                let @event = SimulateMove(board, @from, to)
+                let @event = SimulateMove(board, Games.Move.Calculate(@from, to))
                 where @event != null && @event.NewState != GameState.Error
                 select to;
 
@@ -56,44 +61,44 @@ namespace Kingo.Samples.Chess.Games
 
         protected abstract IEnumerable<Square> GetPossibleSquaresToMoveTo(Square from);
 
-        public void Move(ChessBoard board, Square from, Square to)
+        public void Move(ChessBoard board, Move move)
         {
-            var @event = SimulateMove(board, from, to);
+            var @event = SimulateMove(board, move);
             if (@event == null)
             {
-                throw NewUnsupportedMoveException(from, to);
+                throw NewUnsupportedMoveException(move);
             }
             if (@event.NewState == GameState.Error)
             {
-                throw NewOwnKingLeftInCheckException(from, to);
+                throw NewOwnKingLeftInCheckException(move);
             }
-            EventBus.Publish(SimulateMove(board, from, to));            
+            EventBus.Publish(SimulateMove(board, move));            
         }          
 
-        private PieceMovedEvent SimulateMove(ChessBoard board, Square from, Square to)
+        private PieceMovedEvent SimulateMove(ChessBoard board, Move move)
         {
-            Func<PieceMovedEvent> eventFactory = () => new PieceMovedEvent(from.ToString(), to.ToString())
+            Func<PieceMovedEvent> eventFactory = () => new PieceMovedEvent(move.From.ToString(), move.To.ToString())
             {
-                NewState = board.SimulateMove(from, to, Color)
+                NewState = board.SimulateMove(move, Color)
             };
-            if (IsSupportedMove(board, from, to, ref eventFactory))
+            if (IsSupportedMove(board, move, ref eventFactory))
             {
                 return eventFactory.Invoke();
             }
             return null;
         }
 
-        public bool IsSupportedMove(ChessBoard board, Square from, Square to)
+        public bool IsSupportedMove(ChessBoard board, Move move)
         {
             Func<PieceMovedEvent> eventFactory = null;
 
-            return IsSupportedMove(board, from, to, ref eventFactory);
+            return IsSupportedMove(board, move, ref eventFactory);
         }
 
-        protected virtual bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected virtual bool IsSupportedMove(ChessBoard board, Move move, ref Func<PieceMovedEvent> eventFactory)
         {
             // A piece can never move to a square where another piece of the same color is already present.
-            return !to.Equals(from) && IsNotPieceOfSameColor(board.SelectPiece(to));            
+            return IsNotPieceOfSameColor(board.SelectPiece(move.To));            
         }
 
         private bool IsNotPieceOfSameColor(Piece piece)
@@ -106,22 +111,22 @@ namespace Kingo.Samples.Chess.Games
             return this;
         }
 
-        public virtual Piece ApplyMove(Square from, Square to)
+        public virtual Piece ApplyMove(Move move)
         {
             return this;
         }
 
-        private Exception NewUnsupportedMoveException(Square from, Square to)
+        private Exception NewUnsupportedMoveException(Move move)
         {
             var messageFormat = ExceptionMessages.Game_UnsupportedMove;
-            var message = string.Format(messageFormat, @from, to, GetType().Name);
+            var message = string.Format(messageFormat, move.From, move.To, GetType().Name);
             return new DomainException(message);
         }
 
-        private static Exception NewOwnKingLeftInCheckException(Square from, Square to)
+        private static Exception NewOwnKingLeftInCheckException(Move move)
         {
             var messageFormat = ExceptionMessages.Game_OwnKingLeftInCheck;
-            var message = string.Format(messageFormat, from, to);
+            var message = string.Format(messageFormat, move.From, move.To);
             return new DomainException(message);
         }
     }

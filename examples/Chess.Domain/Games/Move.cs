@@ -1,20 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kingo.Messaging.Domain;
+using Kingo.Samples.Chess.Resources;
 
 namespace Kingo.Samples.Chess.Games
 {
-    internal sealed class Move
-    {
-        public readonly Square To;
-        public readonly int FileSteps;
-        public readonly int RankSteps;
-
-        public Move(Square to, int fileSteps, int rankSteps)
+    internal sealed class Move : ValueObject<Move>
+    {        
+        private Move(Square from, int fileSteps, int rankSteps)
         {
-            To = to;
+            From = from;
             FileSteps = fileSteps;
             RankSteps = rankSteps;
+        }
+
+        public Square From
+        {
+            get;
+        }
+
+        public Square To
+        {
+            get { return From.Add(FileSteps, RankSteps); }
+        }
+
+        public int FileSteps
+        {
+            get;
+        }
+
+        public int RankSteps
+        {
+            get;
+        }
+
+        public override string ToString()
+        {
+            return $"[{From}, {To}] ({FileSteps}, {RankSteps})";
         }
 
         public bool IsStraightPath
@@ -25,11 +48,6 @@ namespace Kingo.Samples.Chess.Games
         public bool IsCrossPath
         {
             get { return Math.Abs(FileSteps) == Math.Abs(RankSteps); }
-        }
-
-        public override string ToString()
-        {
-            return $"[{FileSteps}, {RankSteps}]";
         }
 
         public bool IsEmptyPath(ChessBoard board)
@@ -43,7 +61,7 @@ namespace Kingo.Samples.Chess.Games
             return true;
         }
 
-        private bool TryGetSquaresInStraightLine(out IEnumerable<Square> path)
+        public bool TryGetSquaresInStraightLine(out IEnumerable<Square> path)
         {            
             if (FileSteps == 0)
             {
@@ -62,6 +80,22 @@ namespace Kingo.Samples.Chess.Games
             }
             path = null;
             return false;
-        }        
+        }      
+        
+        public static Move Calculate(Square from, Square to)
+        {
+            if (to.Equals(from))
+            {
+                throw NewInvalidMoveException(to);
+            }
+            return new Move(from, to.FileIndex - from.FileIndex, to.RankIndex - from.RankIndex);
+        }
+
+        private static Exception NewInvalidMoveException(Square to)
+        {
+            var messageFormat = ExceptionMessages.Game_InvalidMoveSpecified;
+            var message = string.Format(messageFormat, to);
+            return new ArgumentException(message, nameof(to));
+        }
     }
 }

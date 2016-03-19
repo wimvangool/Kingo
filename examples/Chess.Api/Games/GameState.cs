@@ -20,6 +20,8 @@ namespace Kingo.Samples.Chess.Games
         [EnumMember]
         Forfeited,
 
+        NoError,
+
         Error
     }
 }

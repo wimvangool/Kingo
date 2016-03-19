@@ -101,18 +101,13 @@ namespace Kingo.Samples.Chess.Games
             }
         }
 
-        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override bool IsSupportedMove(ChessBoard board, Move move, ref Func<PieceMovedEvent> eventFactory)
         {
-            if (base.IsSupportedMove(board, from, to, ref eventFactory))
+            if (base.IsSupportedMove(board, move, ref eventFactory))
             {
-                return IsSupportedMove(board, Square.CalculateMove(from, to));
+                return move.IsCrossPath && move.IsEmptyPath(board);
             }
             return false;
-        }
-
-        private static bool IsSupportedMove(ChessBoard board, Move move)
-        {
-            return move.IsCrossPath && move.IsEmptyPath(board);
-        }
+        }        
     }
 }

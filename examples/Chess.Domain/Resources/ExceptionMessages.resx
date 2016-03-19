@@ -135,6 +135,9 @@
   <data name="Game_GameEnded" xml:space="preserve">
     <value>Cannot perform the operation because the specified game ({0}) already ended.</value>
   </data>
+  <data name="Game_InvalidMoveSpecified" xml:space="preserve">
+    <value>Square to ({0}) is equal to Square from.</value>
+  </data>
   <data name="Game_NotPlayersTurn" xml:space="preserve">
     <value>Cannot perform the operation because it's currently not this player's turn ({0}).</value>
   </data>

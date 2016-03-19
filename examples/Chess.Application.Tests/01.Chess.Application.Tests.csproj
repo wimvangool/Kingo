@@ -122,7 +122,14 @@
     <Compile Include="Games\MovePiece\Check\A.SelfCheckByBishopScenario.cs" />
     <Compile Include="Games\MovePiece\Check\A.SelfCheckByKnightScenario.cs" />
     <Compile Include="Games\MovePiece\Check\H.AlmostCheckMateByQueenAndBishopScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.CastlingOfWhiteFailedBecauseRookInWrongPositionScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\A.OneStepBlockedByOwnPieceScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.CastlingShortOfWhiteBlockedByOwnPieceScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.CastlingShortOfWhiteFailedBecauseOfCheckScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.CastlingShortOfWhiteScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.CastlingOfWhiteFailedBecauseKingMovedScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.CastlingOfWhiteFailedBecauseRookMovedScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\CastlingOfWhiteFailedBecauseOfCheckInPathScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownRightScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepUpRightScenario.cs" />
@@ -130,7 +137,7 @@
     <Compile Include="Games\MovePiece\Kings\H.OneStepRightScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepUpScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepLeftScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\IllegalKingMoveScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.IllegalKingMoveScenario.cs" />
     <Compile Include="Games\MovePiece\Knights\H.OneUpTwoLeftScenario.cs" />
     <Compile Include="Games\MovePiece\Knights\H.TwoUpOneRightScenario.cs" />
     <Compile Include="Games\MovePiece\Knights\H.OneUpTwoRightScenario.cs" />

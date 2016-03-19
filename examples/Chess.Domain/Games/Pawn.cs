@@ -61,34 +61,32 @@ namespace Kingo.Samples.Chess.Games
             }
         }
 
-        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override bool IsSupportedMove(ChessBoard board, Move move, ref Func<PieceMovedEvent> eventFactory)
         {
-            if (base.IsSupportedMove(board, from, to, ref eventFactory))
-            {
-                var move = Square.CalculateMove(from, to);
-
+            if (base.IsSupportedMove(board, move, ref eventFactory))
+            {                
                 if (IsOneStepForward(move))
                 {
                     return board.IsEmpty(move.To);
                 }
-                if (IsTwoStepForward(move) && IsFirstPawnMove(from))
+                if (IsTwoStepForward(move) && IsFirstPawnMove(move.From))
                 {
                     return board.IsEmpty(move.To) && move.IsEmptyPath(board);
                 }
                 if (IsHitMove(move))
                 {
-                    if (ContainsOpponentPiece(board, to))
+                    if (ContainsOpponentPiece(board, move.To))
                     {
                         return true;
                     }
                     Square removedPawn;
 
-                    if (IsEnPassantHit(board, to, out removedPawn))
+                    if (IsEnPassantHit(board, move.To, out removedPawn))
                     {
-                        eventFactory = () => new EnPassantHitEvent(from.ToString(), to.ToString())
+                        eventFactory = () => new EnPassantHitEvent(move.From.ToString(), move.To.ToString())
                         {
                             EnPassantHit = removedPawn.ToString(),
-                            NewState = board.SimulateEnPassantMove(from, to, removedPawn, Color)
+                            NewState = board.SimulateEnPassantMove(move, removedPawn, Color)
                         };
                         return true;
                     }
@@ -102,9 +100,9 @@ namespace Kingo.Samples.Chess.Games
             return new Pawn(EventBus, Color, false);
         }
 
-        public override Piece ApplyMove(Square from, Square to)
+        public override Piece ApplyMove(Move move)
         {
-            if (IsTwoStepForward(Square.CalculateMove(from, to)))
+            if (IsTwoStepForward(move))
             {
                 return new Pawn(EventBus, Color, true);
             }

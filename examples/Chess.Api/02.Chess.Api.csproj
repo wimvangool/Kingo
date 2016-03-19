@@ -72,6 +72,7 @@
     <Compile Include="Challenges\PlayerChallengedEvent.cs" />
     <Compile Include="Challenges\RejectChallengeCommand.cs" />
     <Compile Include="Games\ActiveGame.cs" />
+    <Compile Include="Games\CastlingPerformedEvent.cs" />
     <Compile Include="Games\EnPassantHitEvent.cs" />
     <Compile Include="Games\ForfeitGameCommand.cs" />
     <Compile Include="Games\GameForfeitedEvent.cs" />

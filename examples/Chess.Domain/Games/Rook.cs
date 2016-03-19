@@ -7,10 +7,20 @@ namespace Kingo.Samples.Chess.Games
 {
     internal sealed class Rook : Piece
     {
+        private readonly bool _hasMoved;
+
         public Rook(Game game, ColorOfPiece color)
         {
             EventBus = game;
             Color = color;
+        }
+
+        private Rook(IDomainEventBus<Guid, int>  eventBus, ColorOfPiece color, bool hasMoved)
+        {
+            EventBus = eventBus;
+            Color = color;
+
+            _hasMoved = hasMoved;
         }
 
         protected override IDomainEventBus<Guid, int> EventBus
@@ -26,6 +36,16 @@ namespace Kingo.Samples.Chess.Games
         protected override TypeOfPiece Type
         {
             get { return TypeOfPiece.Rook; }
+        }
+
+        public override bool CanTakePartInCastlingMove
+        {
+            get { return !_hasMoved; }
+        }
+
+        public override Piece ApplyMove(Move move)
+        {
+            return new Rook(EventBus, Color, true);
         }
 
         protected override IEnumerable<Square> GetPossibleSquaresToMoveTo(Square from)
@@ -93,18 +113,13 @@ namespace Kingo.Samples.Chess.Games
             }
         }
 
-        protected override bool IsSupportedMove(ChessBoard board, Square from, Square to, ref Func<PieceMovedEvent> eventFactory)
+        protected override bool IsSupportedMove(ChessBoard board, Move move, ref Func<PieceMovedEvent> eventFactory)
         {
-            if (base.IsSupportedMove(board, from, to, ref eventFactory))
-            {                
-                return IsSupportedMove(board, Square.CalculateMove(from, to));
+            if (base.IsSupportedMove(board, move, ref eventFactory))
+            {
+                return move.IsStraightPath && move.IsEmptyPath(board);
             }
             return false;
-        }
-
-        private static bool IsSupportedMove(ChessBoard board, Move move)
-        {
-            return move.IsStraightPath && move.IsEmptyPath(board);
-        }
+        }        
     }
 }

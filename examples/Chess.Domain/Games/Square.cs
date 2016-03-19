@@ -9,24 +9,32 @@ namespace Kingo.Samples.Chess.Games
     [Serializable]
     public sealed class Square : ValueObject<Square>
     {
-        private static readonly char[] _Files = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
-        private readonly int _fileIndex;
-        private readonly int _rankIndex;
+        private static readonly char[] _Files = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };        
 
         internal Square([Range(0, ChessBoard.Size - 1)] int fileIndex, [Range(0, ChessBoard.Size - 1)] int rankIndex)
         {
-            _fileIndex = fileIndex;
-            _rankIndex = rankIndex;
+            FileIndex = fileIndex;
+            RankIndex = rankIndex;
         }
 
         public char File
         {
-            get { return _Files[_fileIndex]; }
+            get { return _Files[FileIndex]; }
+        }
+
+        internal int FileIndex
+        {
+            get;
         }
 
         public int Rank
         {
-            get { return _rankIndex + 1; }
+            get { return RankIndex + 1; }
+        }
+
+        internal int RankIndex
+        {
+            get;
         }
 
         public override string ToString()
@@ -36,16 +44,16 @@ namespace Kingo.Samples.Chess.Games
 
         internal Square Add(int fileSteps, int rankSteps)
         {
-            return new Square(_fileIndex + fileSteps, _rankIndex + rankSteps);
+            return new Square(FileIndex + fileSteps, RankIndex + rankSteps);
         }
 
         internal bool TryAdd(int fileSteps, int rankSteps, out Square result)
         {
-            int newFileIndex = _fileIndex + fileSteps;
+            int newFileIndex = FileIndex + fileSteps;
 
             if (IsValidIndex(newFileIndex))
             {
-                int newRankIndex = _rankIndex + rankSteps;
+                int newRankIndex = RankIndex + rankSteps;
 
                 if (IsValidIndex(newRankIndex))
                 {
@@ -60,17 +68,7 @@ namespace Kingo.Samples.Chess.Games
         private static bool IsValidIndex(int index)
         {
             return 0 <= index && index < ChessBoard.Size;
-        }
-
-        internal Piece SelectPiece(Piece[,] pieces)
-        {
-            return pieces[_fileIndex, _rankIndex];            
-        }
-
-        internal static Move CalculateMove(Square from, Square to)
-        {
-            return new Move(to, to._fileIndex - @from._fileIndex, to._rankIndex - @from._rankIndex);
-        }
+        }            
 
         #region [====== Paths ======]
 
@@ -78,7 +76,7 @@ namespace Kingo.Samples.Chess.Games
         {
             foreach (var step in StepsInPath(rankSteps))
             {
-                yield return new Square(_fileIndex, _rankIndex - step);
+                yield return new Square(FileIndex, RankIndex - step);
             }
         }
 
@@ -86,7 +84,7 @@ namespace Kingo.Samples.Chess.Games
         {
             foreach (var step in StepsInPath(fileSteps))
             {
-                yield return new Square(_fileIndex - step, _rankIndex);
+                yield return new Square(FileIndex - step, RankIndex);
             }
         }
 
@@ -94,7 +92,7 @@ namespace Kingo.Samples.Chess.Games
         {
             foreach (var step in StepsInPath(fileSteps, rankSteps))
             {
-                yield return new Square(_fileIndex - step.Item1, _rankIndex - step.Item2);
+                yield return new Square(FileIndex - step.Item1, RankIndex - step.Item2);
             }
         }
 
@@ -128,57 +126,7 @@ namespace Kingo.Samples.Chess.Games
             }            
         }
 
-        #endregion
-
-        #region [====== ApplyMove ======]                
-
-        internal static Piece[,] ApplyMove(Square from, Square to, Piece[,] pieces)
-        {
-            return ApplyMoveToPieces(current =>
-            {
-                if (current.Equals(from))
-                {
-                    return null;
-                }
-                if (current.Equals(to))
-                {
-                    return from.SelectPiece(pieces).ApplyMove(from, to);
-                }
-                return current.SelectPiece(pieces)?.RemainInPlace();
-            });
-        }
-
-        internal static Piece[,] ApplyEnPassantMove(Square from, Square to, Square enPassantHit, Piece[,] pieces)
-        {
-            return ApplyMoveToPieces(current =>
-            {
-                if (current.Equals(from) || current.Equals(enPassantHit))
-                {
-                    return null;
-                }
-                if (current.Equals(to))
-                {
-                    return from.SelectPiece(pieces).ApplyMove(from, to);
-                }
-                return current.SelectPiece(pieces)?.RemainInPlace();
-            });
-        }
-
-        private static Piece[,] ApplyMoveToPieces(Func<Square, Piece> pieceFactory)
-        {
-            var piecesAfterMove = new Piece[ChessBoard.Size, ChessBoard.Size];
-
-            for (int fileIndex = 0; fileIndex < ChessBoard.Size; fileIndex++)
-            {
-                for (int rankIndex = 0; rankIndex < ChessBoard.Size; rankIndex++)
-                {
-                    piecesAfterMove[fileIndex, rankIndex] = pieceFactory.Invoke(new Square(fileIndex, rankIndex));
-                }
-            }
-            return piecesAfterMove;
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== Parse ======]
 
