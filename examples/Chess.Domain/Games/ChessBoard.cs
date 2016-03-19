@@ -128,7 +128,7 @@ namespace Kingo.Samples.Chess.Games
                 }
                 return GameState.Check;
             }
-            if (AnyMoveResultsInCheckOfOwnKing(colorOfOwnKing))
+            if (AnyMoveResultsInCheckOfOwnKing(colorOfOtherKing))
             {
                 return GameState.StaleMate;
             }

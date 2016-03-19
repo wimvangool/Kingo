@@ -129,7 +129,7 @@
     <Compile Include="Games\MovePiece\Kings\A.CastlingShortOfWhiteScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\A.CastlingOfWhiteFailedBecauseKingMovedScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\A.CastlingOfWhiteFailedBecauseRookMovedScenario.cs" />
-    <Compile Include="Games\MovePiece\Kings\CastlingOfWhiteFailedBecauseOfCheckInPathScenario.cs" />
+    <Compile Include="Games\MovePiece\Kings\A.CastlingOfWhiteFailedBecauseOfCheckInPathScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownRightScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepDownScenario.cs" />
     <Compile Include="Games\MovePiece\Kings\H.OneStepUpRightScenario.cs" />
@@ -178,6 +178,7 @@
     <Compile Include="Games\MovePiece\Rooks\H.TwoStepsUpScenario.cs" />
     <Compile Include="Games\MovePiece\A.SenderIsNoPlayerScenario.cs" />
     <Compile Include="Games\MovePiece\A.WrongColorOfPieceScenario.cs" />
+    <Compile Include="Games\MovePiece\StaleMate\StaleMateByKingAndRookScenario.cs" />
     <Compile Include="Players\RegisterPlayer\H.PlayerIsRegisteredScenario.cs" />
     <Compile Include="Players\RegisterPlayer\A.PlayerAlreadyRegisteredScenario.cs" />
     <Compile Include="Players\InMemoryPlayerRepository.cs" />
@@ -208,9 +209,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Games\MovePiece\StaleMate\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
