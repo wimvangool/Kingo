@@ -48,6 +48,8 @@ namespace Kingo.Samples.Chess.Games
             return $"{GetType().Name} ({Color})";
         }
 
+        #region [====== Move ======]
+
         public bool CanMove(ChessBoard board, Square @from)
         {
             var possibleMoves =
@@ -129,5 +131,26 @@ namespace Kingo.Samples.Chess.Games
             var message = string.Format(messageFormat, move.From, move.To);
             return new DomainException(message);
         }
+
+        #endregion
+
+        #region [====== Pawn Promotion ======]
+
+        public virtual void PromoteTo(ChessBoard board, Square position, TypeOfPiece promoteTo)
+        {
+            throw NewUnsupportedPromotionException();
+        }
+
+        public virtual Piece ApplyPromotion(TypeOfPiece promoteTo)
+        {
+            throw NewUnsupportedPromotionException();
+        }
+
+        private Exception NewUnsupportedPromotionException()
+        {
+            return new NotSupportedException($"A {Type} cannot be promoted to another piece.");
+        }
+
+        #endregion
     }
 }

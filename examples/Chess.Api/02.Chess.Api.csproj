@@ -83,7 +83,10 @@
     <Compile Include="Games\IGameService.cs" />
     <Compile Include="Games\MovePieceCommand.cs" />
     <Compile Include="Games\IsValidSquareConstraint.cs" />
+    <Compile Include="Games\PawnMovedToEightRankEvent.cs" />
+    <Compile Include="Games\PawnPromotedEvent.cs" />
     <Compile Include="Games\PieceMovedEvent.cs" />
+    <Compile Include="Games\PromotePawnCommand.cs" />
     <Compile Include="Games\TypeOfPiece.cs" />
     <Compile Include="SessionBehavior.cs" />
     <Compile Include="Players\GetPlayersRequest.cs" />

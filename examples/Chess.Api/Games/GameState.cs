@@ -20,6 +20,9 @@ namespace Kingo.Samples.Chess.Games
         [EnumMember]
         Forfeited,
 
+        [EnumMember]
+        AwaitingPawnPromotion,
+
         NoError,
 
         Error

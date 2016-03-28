@@ -7,9 +7,9 @@ namespace Kingo.Samples.Chess.Games
 {
     internal sealed class Bishop : Piece
     {
-        public Bishop(Game game, ColorOfPiece color)
+        public Bishop(IDomainEventBus<Guid, int> eventBus, ColorOfPiece color)
         {
-            EventBus = game;
+            EventBus = eventBus;
             Color = color;
         }
 

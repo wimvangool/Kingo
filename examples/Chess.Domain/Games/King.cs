@@ -9,9 +9,9 @@ namespace Kingo.Samples.Chess.Games
     {        
         private readonly bool _hasMoved;
 
-        public King(Game game, ColorOfPiece color)
+        public King(IDomainEventBus<Guid, int> eventBus, ColorOfPiece color)
         {
-            EventBus = game;  
+            EventBus = eventBus;  
             Color = color;
         }
 

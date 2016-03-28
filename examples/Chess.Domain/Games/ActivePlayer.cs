@@ -36,6 +36,11 @@ namespace Kingo.Samples.Chess.Games
             _game.Board.MovePiece(Move.Calculate(from, to), _color);
         }
 
+        public override void PromotePawn(TypeOfPiece promoteTo)
+        {
+            _game.Board.PromotePawn(promoteTo, _color);
+        }
+
         public override void Forfeit()
         {
             EventBus.Publish(new GameForfeitedEvent());

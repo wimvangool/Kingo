@@ -45,20 +45,37 @@ namespace Kingo.Samples.Chess.Games
 
         public void MovePiece(Guid playerId, [NotNull] Square from, [NotNull] Square to)
         {
+            if (IsEndState(_state))
+            {
+                throw NewGameEndedException(_id);
+            }
+            if (_state == GameState.AwaitingPawnPromotion)
+            {
+                throw NewAwaitingPawnPromotionException(_id);
+            }
             SelectPlayer(playerId).MovePiece(from, to);
         }
 
-        public void Forfeit(Guid playerId)
-        {
-            SelectPlayer(playerId).Forfeit();
-        }
+        public void PromotePawn(Guid playerId, TypeOfPiece promoteTo)
+        {            
+            if (_state != GameState.AwaitingPawnPromotion)
+            {
+                throw NewCannotPromotePawnException(_id);
+            }
+            SelectPlayer(playerId).PromotePawn(promoteTo);
+        }        
 
-        private Player SelectPlayer(Guid playerId)
+        public void Forfeit(Guid playerId)
         {
             if (IsEndState(_state))
             {
                 throw NewGameEndedException(_id);
             }
+            SelectPlayer(playerId).Forfeit();
+        }
+
+        private Player SelectPlayer(Guid playerId)
+        {            
             if (_white.IsPlayer(playerId))
             {
                 return _white;
@@ -85,6 +102,20 @@ namespace Kingo.Samples.Chess.Games
             return new DomainException(message);
         }
 
+        private static Exception NewAwaitingPawnPromotionException(Guid gameId)
+        {
+            var messageFormat = ExceptionMessages.Game_AwaitingPawnPromotion;
+            var message = string.Format(messageFormat, gameId);
+            return new DomainException(message);
+        }
+
+        private static Exception NewCannotPromotePawnException(Guid gameId)
+        {
+            var messageFormat = ExceptionMessages.Game_CannotPromotePawn;
+            var message = string.Format(messageFormat, gameId);
+            return new DomainException(message);
+        }
+
         private static Exception NewUnknownPlayerException(Guid gameId, Guid playerId)
         {
             var messageFormat = ExceptionMessages.Game_UnknownPlayer;
@@ -102,6 +133,8 @@ namespace Kingo.Samples.Chess.Games
             RegisterEventHandler<PieceMovedEvent>(Handle);
             RegisterEventHandler<EnPassantHitEvent>(Handle);
             RegisterEventHandler<CastlingPerformedEvent>(Handle);
+            RegisterEventHandler<PawnMovedToEightRankEvent>(Handle);
+            RegisterEventHandler<PawnPromotedEvent>(Handle);
             RegisterEventHandler<GameForfeitedEvent>(Handle);
         }
 
@@ -135,6 +168,20 @@ namespace Kingo.Samples.Chess.Games
             _white = _white.SwitchTurn();
             _black = _black.SwitchTurn();
             _board = _board.ApplyCastlingMove(Square.Parse(@event.From), Square.Parse(@event.To), Square.Parse(@event.RookFrom), Square.Parse(@event.RookTo));
+            _state = @event.NewState;
+        }
+
+        private void Handle(PawnMovedToEightRankEvent @event)
+        {
+            _board = _board.ApplyMove(Square.Parse(@event.From), Square.Parse(@event.To));
+            _state = @event.NewState;
+        }
+
+        private void Handle(PawnPromotedEvent @event)
+        {
+            _white = _white.SwitchTurn();
+            _black = _black.SwitchTurn();
+            _board = _board.ApplyPawnPromotion(Square.Parse(@event.PawnPosition), @event.PromotedTo);
             _state = @event.NewState;
         }
 

@@ -88,6 +88,24 @@ namespace Kingo.Samples.Chess.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot perform the operation because in the specified game ({0}) a Pawn must be promoted first..
+        /// </summary>
+        public static string Game_AwaitingPawnPromotion {
+            get {
+                return ResourceManager.GetString("Game_AwaitingPawnPromotion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot perform the operation because the the specified game ({0}) is not waiting for a Pawn promotion..
+        /// </summary>
+        public static string Game_CannotPromotePawn {
+            get {
+                return ResourceManager.GetString("Game_CannotPromotePawn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot perform the operation because the specified square ({0}) is empty..
         /// </summary>
         public static string Game_EmptySquare {

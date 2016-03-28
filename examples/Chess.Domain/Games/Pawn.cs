@@ -6,9 +6,9 @@ namespace Kingo.Samples.Chess.Games
 {
     internal sealed class Pawn : Piece
     {        
-        public Pawn(Game game, ColorOfPiece color)
+        public Pawn(IDomainEventBus<Guid, int> eventBus, ColorOfPiece color)
         {
-            EventBus = game;
+            EventBus = eventBus;
             Color = color;
         }
 
@@ -33,6 +33,8 @@ namespace Kingo.Samples.Chess.Games
         {
             get { return TypeOfPiece.Pawn; }
         }
+
+        #region [====== Move ======]
 
         public override bool CanBeHitByEnPassantMove
         {
@@ -63,33 +65,46 @@ namespace Kingo.Samples.Chess.Games
 
         protected override bool IsSupportedMove(ChessBoard board, Move move, ref Func<PieceMovedEvent> eventFactory)
         {
-            if (base.IsSupportedMove(board, move, ref eventFactory))
+            if (base.IsSupportedMove(board, move, ref eventFactory) && IsSupportedMoveOfPawn(board, move, ref eventFactory))
             {                
-                if (IsOneStepForward(move))
+                if (move.To.IsEightRank(Color))
                 {
-                    return board.IsEmpty(move.To);
-                }
-                if (IsTwoStepForward(move) && IsFirstPawnMove(move.From))
-                {
-                    return board.IsEmpty(move.To) && move.IsEmptyPath(board);
-                }
-                if (IsHitMove(move))
-                {
-                    if (ContainsOpponentPiece(board, move.To))
+                    eventFactory = () => new PawnMovedToEightRankEvent(move.From.ToString(), move.To.ToString())
                     {
-                        return true;
-                    }
-                    Square removedPawn;
+                        NewState = GameState.AwaitingPawnPromotion
+                    };
+                }
+                return true;
+            }
+            return false;
+        }
 
-                    if (IsEnPassantHit(board, move.To, out removedPawn))
+        private bool IsSupportedMoveOfPawn(ChessBoard board, Move move, ref Func<PieceMovedEvent> eventFactory)
+        {
+            if (IsOneStepForward(move))
+            {
+                return board.IsEmpty(move.To);
+            }
+            if (IsTwoStepForward(move) && IsFirstPawnMove(move.From))
+            {
+                return board.IsEmpty(move.To) && move.IsEmptyPath(board);
+            }
+            if (IsHitMove(move))
+            {
+                if (ContainsOpponentPiece(board, move.To))
+                {
+                    return true;
+                }
+                Square removedPawn;
+
+                if (IsEnPassantHit(board, move.To, out removedPawn))
+                {
+                    eventFactory = () => new EnPassantHitEvent(move.From.ToString(), move.To.ToString())
                     {
-                        eventFactory = () => new EnPassantHitEvent(move.From.ToString(), move.To.ToString())
-                        {
-                            EnPassantHit = removedPawn.ToString(),
-                            NewState = board.SimulateEnPassantMove(move, removedPawn, Color)
-                        };
-                        return true;
-                    }
+                        EnPassantHit = removedPawn.ToString(),
+                        NewState = board.SimulateEnPassantMove(move, removedPawn, Color)
+                    };
+                    return true;
                 }
             }
             return false;
@@ -175,5 +190,49 @@ namespace Kingo.Samples.Chess.Games
             removedPawn = opponentSquare;
             return true;
         }
+
+        #endregion
+
+        #region [====== Pawn Promotion ======]
+
+        public override void PromoteTo(ChessBoard board, Square position, TypeOfPiece promoteTo)
+        {
+            if (promoteTo == TypeOfPiece.Pawn || promoteTo == TypeOfPiece.King)
+            {
+                throw NewInvalidPromotionException(promoteTo);
+            }
+            EventBus.Publish(new PawnPromotedEvent(position.ToString(), promoteTo)
+            {
+                NewState = board.SimulatePawnPromotion(position, promoteTo, Color)
+            });
+        }
+
+        public override Piece ApplyPromotion(TypeOfPiece promoteTo)
+        {
+            switch (promoteTo)
+            {
+                case TypeOfPiece.Bishop:
+                    return new Bishop(EventBus, Color);
+
+                case TypeOfPiece.Knight:
+                    return new Knight(EventBus, Color);
+
+                case TypeOfPiece.Queen:
+                    return new Queen(EventBus, Color);
+
+                case TypeOfPiece.Rook:
+                    return new Rook(EventBus, Color, true);
+
+                default:
+                    return base.ApplyPromotion(promoteTo);
+            }            
+        }
+
+        private static Exception NewInvalidPromotionException(TypeOfPiece promoteTo)
+        {
+            return new ArgumentOutOfRangeException(nameof(promoteTo), $"Pawn cannot be promoted to a '{promoteTo}'.");
+        }
+
+        #endregion
     }
 }

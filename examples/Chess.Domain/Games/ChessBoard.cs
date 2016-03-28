@@ -75,39 +75,173 @@ namespace Kingo.Samples.Chess.Games
 
         #region [====== MovePiece ======]
 
-        public void MovePiece(Move move, ColorOfPiece color)
+        public void MovePiece(Move move, ColorOfPiece colorOfKing)
         {
             var piece = SelectPiece(move.From);
             if (piece == null)
             {
                 throw NewEmptySquareException(move.From);
             }
-            if (piece.HasColor(color))
+            if (piece.HasColor(colorOfKing))
             {
                 piece.Move(this, move);
                 return;
             }
-            throw NewWrongColorException(move.From, color, color.Invert());
+            throw NewWrongColorException(move.From, colorOfKing, colorOfKing.Invert());
         }
 
-        public GameState SimulateMove(Move move, ColorOfPiece colorOfOwnKing)
+        public GameState SimulateMove(Move move, ColorOfPiece colorOfKing)
         {
-            return ApplyMove(move).DetermineNewState(colorOfOwnKing);
+            return ApplyMove(move).DetermineNewState(colorOfKing);
         }
 
-        public GameState SimulateEnPassantMove(Move move, Square enPassantHit, ColorOfPiece colorOfOwnKing)
+        public GameState SimulateEnPassantMove(Move move, Square enPassantHit, ColorOfPiece colorOfKing)
         {
-            return ApplyEnPassantMove(move, enPassantHit).DetermineNewState(colorOfOwnKing);
+            return ApplyEnPassantMove(move, enPassantHit).DetermineNewState(colorOfKing);
         }
 
-        public GameState SimulateCastlingMove(Move moveOfKing, Move moveOfRook, ColorOfPiece colorOfOwnKing)
+        public GameState SimulateCastlingMove(Move moveOfKing, Move moveOfRook, ColorOfPiece colorOfKing)
         {
-            return ApplyCastlingMove(moveOfKing, moveOfRook).DetermineNewState(colorOfOwnKing);
+            return ApplyCastlingMove(moveOfKing, moveOfRook).DetermineNewState(colorOfKing);
         }
 
-        private GameState DetermineNewState(ColorOfPiece colorOfOwnKing)
+        private static Exception NewEmptySquareException(Square square)
         {
-            if (IsInCheck(colorOfOwnKing))
+            var messageFormat = ExceptionMessages.Game_EmptySquare;
+            var message = string.Format(messageFormat, square);
+            return new DomainException(message);
+        }
+
+        private static Exception NewWrongColorException(Square square, ColorOfPiece expectedColor, ColorOfPiece actualColor)
+        {
+            var messageFormat = ExceptionMessages.Game_WrongColor;
+            var message = string.Format(messageFormat, square, expectedColor, actualColor);
+            return new DomainException(message);
+        }
+
+        #endregion        
+
+        #region [====== ApplyMove ======]
+
+        public ChessBoard ApplyMove(Square from, Square to)
+        {
+            return ApplyMove(Move.Calculate(from, to));
+        }
+
+        private ChessBoard ApplyMove(Move move)
+        {
+            return ApplyPieces(current =>
+            {
+                if (current.Equals(move.From))
+                {
+                    return null;
+                }
+                if (current.Equals(move.To))
+                {
+                    return SelectPiece(move.From).ApplyMove(move);
+                }
+                return SelectPiece(current)?.RemainInPlace();
+            });
+        }
+
+        public ChessBoard ApplyEnPassantMove(Square from, Square to, Square enPassantHit)
+        {
+            return ApplyEnPassantMove(Move.Calculate(from, to), enPassantHit);
+        }
+
+        internal ChessBoard ApplyEnPassantMove(Move move, Square enPassantHit)
+        {
+            return ApplyPieces(current =>
+            {
+                if (current.Equals(move.From) || current.Equals(enPassantHit))
+                {
+                    return null;
+                }
+                if (current.Equals(move.To))
+                {
+                    return SelectPiece(move.From).ApplyMove(move);
+                }
+                return SelectPiece(current)?.RemainInPlace();
+            });
+        }
+
+        public ChessBoard ApplyCastlingMove(Square kingFrom, Square kingTo, Square rookFrom, Square rookTo)
+        {
+            return ApplyCastlingMove(Move.Calculate(kingFrom, kingTo), Move.Calculate(rookFrom, rookTo));
+        }
+
+        private ChessBoard ApplyCastlingMove(Move moveOfKing, Move moveOfRook)
+        {
+            return ApplyPieces(current =>
+            {
+                if (current.Equals(moveOfKing.From) || current.Equals(moveOfKing.From))
+                {
+                    return null;
+                }
+                if (current.Equals(moveOfKing.To))
+                {
+                    return SelectPiece(moveOfKing.From).ApplyMove(moveOfKing);
+                }
+                if (current.Equals(moveOfRook.To))
+                {
+                    return SelectPiece(moveOfRook.From).ApplyMove(moveOfRook);
+                }
+                return SelectPiece(current)?.RemainInPlace();
+            });
+        }
+
+        #endregion
+
+        #region [====== PromotePawn ======]
+
+        public void PromotePawn(TypeOfPiece promoteTo, ColorOfPiece colorOfKing)
+        {
+            var pawnAtPosition = FindPawnToPromote(colorOfKing);
+            var pawn = pawnAtPosition.Item2;
+            var position = pawnAtPosition.Item1;
+
+            pawn.PromoteTo(this, position, promoteTo);
+        }
+
+        private Tuple<Square, Piece> FindPawnToPromote(ColorOfPiece colorOfPawn)
+        {
+            var pawns =
+                from pieceAtPosition in EnumeratePieces(_pieces, colorOfPawn)
+                where pieceAtPosition.Item1.IsEightRank(colorOfPawn)
+                where pieceAtPosition.Item2.IsOfType(TypeOfPiece.Pawn)
+                select pieceAtPosition;
+
+            return pawns.Single();
+        }
+
+        public GameState SimulatePawnPromotion(Square pawnPosition, TypeOfPiece promoteTo, ColorOfPiece colorOfPawn)
+        {
+            return ApplyPawnPromotion(pawnPosition, promoteTo).DetermineNewState(colorOfPawn);
+        }
+
+        #endregion
+
+        #region [====== ApplyPawnPromotion ======]
+
+        public ChessBoard ApplyPawnPromotion(Square pawnPosition, TypeOfPiece promoteTo)
+        {
+            return ApplyPieces(current =>
+            {
+                if (current.Equals(pawnPosition))
+                {
+                    return SelectPiece(pawnPosition).ApplyPromotion(promoteTo);
+                }
+                return SelectPiece(current)?.RemainInPlace();
+            });
+        }
+
+        #endregion
+
+        #region [====== State ======]
+
+        private GameState DetermineNewState(ColorOfPiece colorOfKing)
+        {
+            if (IsInCheck(colorOfKing))
             {
                 return GameState.Error;
             }
@@ -118,7 +252,7 @@ namespace Kingo.Samples.Chess.Games
             {
                 return GameState.NoError;
             }
-            var colorOfOtherKing = colorOfOwnKing.Invert();
+            var colorOfOtherKing = colorOfKing.Invert();
 
             if (IsInCheck(colorOfOtherKing))
             {
@@ -159,7 +293,7 @@ namespace Kingo.Samples.Chess.Games
                 var from = pieceOnBoard.Item1;
                 var piece = pieceOnBoard.Item2;
 
-                if (piece.IsSupportedMove(board, Move.Calculate(from, squareOfKing)))
+                if (piece.IsSupportedMove(board, Move.Calculate(@from, squareOfKing)))
                 {
                     return true;
                 }
@@ -176,100 +310,15 @@ namespace Kingo.Samples.Chess.Games
                 var from = pieceOnBoard.Item1;
                 var piece = pieceOnBoard.Item2;
 
-                if (piece.CanMove(board, from))
+                if (piece.CanMove(board, @from))
                 {
                     return false;
                 }
             }
             return true;
-        }        
-
-        private static Exception NewEmptySquareException(Square square)
-        {
-            var messageFormat = ExceptionMessages.Game_EmptySquare;
-            var message = string.Format(messageFormat, square);
-            return new DomainException(message);
         }
 
-        private static Exception NewWrongColorException(Square square, ColorOfPiece expectedColor, ColorOfPiece actualColor)
-        {
-            var messageFormat = ExceptionMessages.Game_WrongColor;
-            var message = string.Format(messageFormat, square, expectedColor, actualColor);
-            return new DomainException(message);
-        }        
-
-        #endregion
-
-        #region [====== ApplyMove ======]
-
-        public ChessBoard ApplyMove(Square from, Square to)
-        {
-            return ApplyMove(Move.Calculate(from, to));
-        }
-
-        private ChessBoard ApplyMove(Move move)
-        {
-            return ApplyMove(current =>
-            {
-                if (current.Equals(move.From))
-                {
-                    return null;
-                }
-                if (current.Equals(move.To))
-                {
-                    return SelectPiece(move.From).ApplyMove(move);
-                }
-                return SelectPiece(current)?.RemainInPlace();
-            });
-        }
-
-        public ChessBoard ApplyEnPassantMove(Square from, Square to, Square enPassantHit)
-        {
-            return ApplyEnPassantMove(Move.Calculate(from, to), enPassantHit);
-        }
-
-        internal ChessBoard ApplyEnPassantMove(Move move, Square enPassantHit)
-        {
-            return ApplyMove(current =>
-            {
-                if (current.Equals(move.From) || current.Equals(enPassantHit))
-                {
-                    return null;
-                }
-                if (current.Equals(move.To))
-                {
-                    return SelectPiece(move.From).ApplyMove(move);
-                }
-                return SelectPiece(current)?.RemainInPlace();
-            });
-        }
-
-        public ChessBoard ApplyCastlingMove(Square kingFrom, Square kingTo, Square rookFrom, Square rookTo)
-        {
-            return ApplyCastlingMove(Move.Calculate(kingFrom, kingTo), Move.Calculate(rookFrom, rookTo));
-        }
-
-        private ChessBoard ApplyCastlingMove(Move moveOfKing, Move moveOfRook)
-        {
-            return ApplyMove(current =>
-            {
-                if (current.Equals(moveOfKing.From) || current.Equals(moveOfKing.From))
-                {
-                    return null;
-                }
-                if (current.Equals(moveOfKing.To))
-                {
-                    return SelectPiece(moveOfKing.From).ApplyMove(moveOfKing);
-                }
-                if (current.Equals(moveOfRook.To))
-                {
-                    return SelectPiece(moveOfRook.From).ApplyMove(moveOfRook);
-                }
-                return SelectPiece(current)?.RemainInPlace();
-            });
-        }
-
-        private ChessBoard ApplyMove(Func<Square, Piece> pieceFactory)
+        private ChessBoard ApplyPieces(Func<Square, Piece> pieceFactory)
         {
             var piecesAfterMove = new Piece[Size, Size];
 

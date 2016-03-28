@@ -37,6 +37,13 @@ namespace Kingo.Samples.Chess.Games
             get;
         }
 
+        internal bool IsEightRank(ColorOfPiece color)
+        {
+            return color == ColorOfPiece.White
+                ? RankIndex == 7
+                : RankIndex == 0;
+        }
+
         public override string ToString()
         {
             return $"{File}{Rank}";

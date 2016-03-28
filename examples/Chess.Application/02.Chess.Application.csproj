@@ -71,6 +71,7 @@
     <Compile Include="Games\ChallengeAcceptedHandler.cs" />
     <Compile Include="Games\ForfeitGameHandler.cs" />
     <Compile Include="Games\MovePieceHandler.cs" />
+    <Compile Include="Games\PromotePawnHandler.cs" />
     <Compile Include="Players\RegisterPlayerHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

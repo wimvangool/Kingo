@@ -9,13 +9,13 @@ namespace Kingo.Samples.Chess.Games
     {
         private readonly bool _hasMoved;
 
-        public Rook(Game game, ColorOfPiece color)
+        public Rook(IDomainEventBus<Guid, int> eventBus, ColorOfPiece color)
         {
-            EventBus = game;
+            EventBus = eventBus;
             Color = color;
         }
 
-        private Rook(IDomainEventBus<Guid, int>  eventBus, ColorOfPiece color, bool hasMoved)
+        internal Rook(IDomainEventBus<Guid, int>  eventBus, ColorOfPiece color, bool hasMoved)
         {
             EventBus = eventBus;
             Color = color;

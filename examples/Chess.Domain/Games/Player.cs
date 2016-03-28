@@ -18,6 +18,8 @@ namespace Kingo.Samples.Chess.Games
 
         public abstract void MovePiece(Square from, Square to);
 
+        public abstract void PromotePawn(TypeOfPiece promoteTo);
+
         public abstract void Forfeit();
     }
 }

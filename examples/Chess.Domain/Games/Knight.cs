@@ -15,9 +15,9 @@ namespace Kingo.Samples.Chess.Games
         private static readonly Tuple<int, int> _G_OneUpTwoLeft = new Tuple<int, int>(-2, 1);
         private static readonly Tuple<int, int> _H_TwoUpOneLeft = new Tuple<int, int>(-1, 2);
 
-        public Knight(Game game, ColorOfPiece color)
+        public Knight(IDomainEventBus<Guid, int> eventBus, ColorOfPiece color)
         {
-            EventBus = game;
+            EventBus = eventBus;
             Color = color;
         }
 

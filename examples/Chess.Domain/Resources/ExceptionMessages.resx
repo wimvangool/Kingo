@@ -126,6 +126,12 @@
   <data name="Challenges_PlayerCannotAcceptChallenge" xml:space="preserve">
     <value>Player '{0}' cannot accept the specified challenge because he is not the receiver of that challenge.</value>
   </data>
+  <data name="Game_AwaitingPawnPromotion" xml:space="preserve">
+    <value>Cannot perform the operation because in the specified game ({0}) a Pawn must be promoted first.</value>
+  </data>
+  <data name="Game_CannotPromotePawn" xml:space="preserve">
+    <value>Cannot perform the operation because the the specified game ({0}) is not waiting for a Pawn promotion.</value>
+  </data>
   <data name="Game_EmptySquare" xml:space="preserve">
     <value>Cannot perform the operation because the specified square ({0}) is empty.</value>
   </data>

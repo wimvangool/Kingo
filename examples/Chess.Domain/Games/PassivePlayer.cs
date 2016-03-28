@@ -32,6 +32,11 @@ namespace Kingo.Samples.Chess.Games
             throw NewNotPlayersTurnException(_playerId);
         }
 
+        public override void PromotePawn(TypeOfPiece promoteTo)
+        {
+            throw NewNotPlayersTurnException(_playerId);
+        }
+
         public override void Forfeit()
         {
             throw NewNotPlayersTurnException(_playerId);
