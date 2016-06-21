@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Kingo.Messaging;
 
 namespace Kingo.Constraints
 {

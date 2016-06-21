@@ -9,12 +9,13 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Kingo")]
 [assembly: AssemblyDescription("A core utility assembly primarily useful for Business Application Development.")]
-[assembly: AssemblyVersion("2.3.5")]
-[assembly: AssemblyFileVersion("2.3.5")]
-[assembly: AssemblyInformationalVersion("2.3.5-beta")]
+
+[assembly: AssemblyVersion("2.4.0")]
+[assembly: AssemblyFileVersion("2.4.0")]
+[assembly: AssemblyInformationalVersion("2.4.0-beta")]
 
 [assembly: InternalsVisibleTo("Kingo.Tests," +
-"PublicKey=002400000480000094000000060200000024000052534" + 
+"PublicKey=002400000480000094000000060200000024000052534" +
 "1310004000001000100033d27f9556e2293e38230218e9ca34b5e9d" +
 "a10d86fce2b4568d7147eb147505d6b68d32ff0074f848907c661fa" +
 "24a139821d7ab99933e3060b1ec29afbbc9293f58e77746000512b0" +

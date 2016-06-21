@@ -65,7 +65,9 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="ComparableTest.cs" />
     <Compile Include="CompositeValidatorTest.cs" />
+    <Compile Include="EquatableTest.cs" />
     <Compile Include="ErrorInfoTest.cs" />
     <Compile Include="Messaging\CommandTest.cs" />
     <Compile Include="Messaging\Domain\DomainEventTest.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Clocks\HighResolutionClockTest.cs" />
     <Compile Include="Clocks\StopwatchClockTest.cs" />
     <Compile Include="Clocks\DefaultClockTest.cs" />
+    <Compile Include="TypeExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">

@@ -14,22 +14,21 @@ namespace Kingo.Messaging
 
         private abstract class ScenarioUnderTest : Scenario<TheCommand>
         {
-            private readonly ScenarioTestProcessor _processor;
-
             protected ScenarioUnderTest()
             {
-                _processor = new ScenarioTestProcessor();
+                TestEngine = new MSTestEngine();
+                MessageProcessor = new ScenarioTestProcessor();
+            }
+
+            protected override ITestEngine TestEngine
+            {
+                get;
             }
 
             protected override IMessageProcessor MessageProcessor
             {
-                get { return _processor; }
-            }
-
-            protected override Exception NewScenarioFailedException(string message, Exception innerException = null)
-            {
-                return new AssertFailedException(message, innerException);
-            }            
+                get;
+            }                        
         }
 
         private sealed class ErroneousScenario : ScenarioUnderTest

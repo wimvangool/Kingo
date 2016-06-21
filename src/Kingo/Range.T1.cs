@@ -12,8 +12,8 @@ namespace Kingo
     /// <typeparam name="TValue">Type of values in this range.</typeparam>
     public sealed class Range<TValue> : IRange<TValue>, IEquatable<Range<TValue>>
     {
-        private readonly Comparable<TValue> _left;
-        private readonly Comparable<TValue> _right;
+        private readonly ComparableValue<TValue> _left;
+        private readonly ComparableValue<TValue> _right;
         private readonly RangeOptions _options;
 
         /// <summary>
@@ -52,8 +52,8 @@ namespace Kingo
         /// </exception>
         public Range(TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options = RangeOptions.AllInclusive)
         {
-            var leftValue = new Comparable<TValue>(left, comparer);
-            var rightValue = new Comparable<TValue>(right, comparer);
+            var leftValue = new ComparableValue<TValue>(left, comparer);
+            var rightValue = new ComparableValue<TValue>(right, comparer);
 
             if (IsValidRange(leftValue, rightValue, options = options & RangeOptions.AllExclusive))
             {
@@ -67,7 +67,7 @@ namespace Kingo
             }
         }        
 
-        private static bool IsValidRange(Comparable<TValue> left, IComparable<TValue> right, RangeOptions options)
+        private static bool IsValidRange(ComparableValue<TValue> left, IComparable<TValue> right, RangeOptions options)
         {
             if (Comparer.IsSmallerThan(left.Value, right))
             {

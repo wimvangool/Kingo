@@ -55,7 +55,18 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="ComparableReferenceTypeTestSuite.T1.cs" />
+    <Compile Include="ComparableTestParameters.T1.cs" />
+    <Compile Include="ComparableTestSuite.T1.cs" />
+    <Compile Include="ComparableValueTypeTestSuite.T1.cs" />
+    <Compile Include="EquatableReferenceTypeTestSuite.T1.cs" />
+    <Compile Include="EquatableTestSuite.cs" />
+    <Compile Include="EquatableTestSuite.T1.cs" />
+    <Compile Include="EquatableTestParameters.cs" />
+    <Compile Include="EquatableTestParameters.T1.cs" />
+    <Compile Include="EquatableValueTypeTestSuite.T1.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ITestEngine.cs" />
     <Compile Include="Messaging\AlternateFlow.T1.cs" />
     <Compile Include="Messaging\Domain\InMemoryRepository.T3.cs" />
     <Compile Include="Messaging\ExecutionFlow.T1.cs" />
@@ -70,11 +81,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Test.cs" />
+    <Compile Include="TestArguments.cs" />
+    <Compile Include="TestSuite.T1.cs" />
+    <Compile Include="TestEngine.cs" />
+    <Compile Include="TestSuiteCoverage.T1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.MessageProcessor\04.Kingo.MessageProcessor.csproj">
+    <ProjectReference Include="..\Kingo.MessageProcessor\02.Kingo.MessageProcessor.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>04.Kingo.MessageProcessor</Name>
+      <Name>02.Kingo.MessageProcessor</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">

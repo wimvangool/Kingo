@@ -172,7 +172,7 @@ namespace Kingo.Messaging
             }
             if (values.Count == 0)
             {
-                throw NewEmptyCollectionException(typeof(TValue));
+                throw NewEmptyCollectionException(nameof(values), typeof(TValue));
             }
             if (values.Count == 1)
             {
@@ -182,11 +182,11 @@ namespace Kingo.Messaging
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
-        private static Exception NewEmptyCollectionException(Type valueType)
+        private static Exception NewEmptyCollectionException(string paramName, Type valueType)
         {
             var messageFormat = ExceptionMessages.Scenario_EmptyCollectionSpecified;
             var message = string.Format(messageFormat, valueType.Name);
-            return new ArgumentException(message, "values");
+            return new ArgumentException(message, paramName);
         }
 
         #endregion        

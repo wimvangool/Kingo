@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo

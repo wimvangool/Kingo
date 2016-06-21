@@ -141,4 +141,13 @@
   <data name="Scenario_UnexpectedEventsPublished" xml:space="preserve">
     <value>Instead, the following events were published: {0}.</value>
   </data>
+  <data name="TestEngine_TestFailed" xml:space="preserve">
+    <value>Test '{0}' failed.</value>
+  </data>
+  <data name="TestSuiteCoverage_MissingPaths" xml:space="preserve">
+    <value>The following values are missing: </value>
+  </data>
+  <data name="Test_InvalidCommand" xml:space="preserve">
+    <value>Command '{0}' was invalid for test '{1}': {2}.</value>
+  </data>
 </root>

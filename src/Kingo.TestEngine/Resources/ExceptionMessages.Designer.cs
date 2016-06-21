@@ -131,5 +131,32 @@ namespace Kingo.Resources {
                 return ResourceManager.GetString("Scenario_UnexpectedEventsPublished", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command &apos;{0}&apos; was invalid for test &apos;{1}&apos;: {2}..
+        /// </summary>
+        internal static string Test_InvalidCommand {
+            get {
+                return ResourceManager.GetString("Test_InvalidCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test &apos;{0}&apos; failed..
+        /// </summary>
+        internal static string TestEngine_TestFailed {
+            get {
+                return ResourceManager.GetString("TestEngine_TestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following values are missing: .
+        /// </summary>
+        internal static string TestSuiteCoverage_MissingPaths {
+            get {
+                return ResourceManager.GetString("TestSuiteCoverage_MissingPaths", resourceCulture);
+            }
+        }
     }
 }

@@ -64,21 +64,27 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="ComparableReferenceTypeTestSuiteTest.cs" />
+    <Compile Include="ComparableValueTypeTestSuiteTest.cs" />
+    <Compile Include="EquatableTestSuiteTest.cs" />
+    <Compile Include="EquatableReferenceTypeTestSuiteTest.cs" />
+    <Compile Include="EquatableValueTypeTestSuiteTest.cs" />
     <Compile Include="Messaging\DomainEvent.cs" />
     <Compile Include="Messaging\ScenarioTestProcessor.cs" />
+    <Compile Include="MSTestEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Messaging\ScenarioTest.cs" />
     <Compile Include="Messaging\TheCommand.cs" />
     <Compile Include="Messaging\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.MessageProcessor.Tests\03.Kingo.MessageProcessor.Tests.csproj">
+    <ProjectReference Include="..\Kingo.MessageProcessor.Tests\01.Kingo.MessageProcessor.Tests.csproj">
       <Project>{303380db-4167-4bb0-8b78-63c959b65c4b}</Project>
-      <Name>03.Kingo.MessageProcessor.Tests</Name>
+      <Name>01.Kingo.MessageProcessor.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kingo.MessageProcessor\04.Kingo.MessageProcessor.csproj">
+    <ProjectReference Include="..\Kingo.MessageProcessor\02.Kingo.MessageProcessor.csproj">
       <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>04.Kingo.MessageProcessor</Name>
+      <Name>02.Kingo.MessageProcessor</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj">
       <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>

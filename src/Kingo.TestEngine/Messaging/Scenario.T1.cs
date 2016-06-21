@@ -92,6 +92,8 @@ namespace Kingo.Messaging
             _publishedEvents = new PublishedEventList(GetType());
         }        
 
+
+
         /// <summary>
         /// Returns the last message that was handled in the When-phase.
         /// </summary>
@@ -221,7 +223,7 @@ namespace Kingo.Messaging
                 var messageFormat = ExceptionMessages.Scenario_GivenFailed;
                 var message = string.Format(messageFormat, exception.GetType().Name, GetType().Name, exceptionDetails);
 
-                throw NewScenarioFailedException(message, exception);
+                throw TestEngine.NewTestFailedException(message, exception);
             }
         }
 
@@ -262,6 +264,14 @@ namespace Kingo.Messaging
         #region [====== Verification ======]
 
         /// <summary>
+        /// Returns the associated <see cref="ITestEngine" /> of this scenario.
+        /// </summary>
+        protected abstract ITestEngine TestEngine
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets or sets the <see cref="IFormatProvider" /> that is used to format all the error messages.
         /// </summary>
         protected internal IFormatProvider FormatProvider
@@ -276,16 +286,8 @@ namespace Kingo.Messaging
         /// <param name="errorMessage">The error message.</param>
         protected internal virtual void OnVerificationFailed(string errorMessage)
         {
-            throw NewScenarioFailedException(errorMessage);
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="ThrownException" /> that will be thrown to mark the failure of this scenario.
-        /// </summary>
-        /// <param name="errorMessage">The reason why the scenario failed.</param>
-        /// <param name="innerException">Optional Exception that was the root-cause of the failure.</param>
-        /// <returns>A new <see cref="ThrownException" />-instance with the specfied <paramref name="errorMessage"/>.</returns>
-        protected abstract Exception NewScenarioFailedException(string errorMessage, Exception innerException = null);
+            throw TestEngine.NewTestFailedException(errorMessage);
+        }       
 
         #endregion
     }

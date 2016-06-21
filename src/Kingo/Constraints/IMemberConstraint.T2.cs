@@ -1,6 +1,4 @@
-﻿using Kingo.Messaging;
-
-namespace Kingo.Constraints
+﻿namespace Kingo.Constraints
 {
     internal interface IMemberConstraint<TValueIn, TValueOut>
     {

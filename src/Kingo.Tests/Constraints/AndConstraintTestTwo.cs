@@ -1,5 +1,4 @@
 ﻿using System;
-using Kingo.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Constraints

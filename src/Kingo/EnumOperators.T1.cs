@@ -8,22 +8,44 @@ namespace Kingo
     /// <summary>
     /// Contains several generic operators that can be used for Enum types.
     /// </summary>
-    /// <typeparam name="TEnum">Type of the Enum</typeparam>
+    /// <typeparam name="TEnum">Type of the Enum.</typeparam>
     public static class EnumOperators<TEnum>
     {
-        #region [====== Or ======]
-
-        private static readonly Func<TEnum, TEnum, TEnum> _BinaryOrOperator = MakeBinaryOperator(Expression.Or);        
-
         /// <summary>
         /// Returns an Enum value where are values of the Enum are bitwise OR-ed into a single value.
         /// </summary>
         /// <returns>A bitwise OR-ed value of all defined values.</returns>
         public static TEnum AllValuesCombined()
         {
-            return Or(Enum.GetValues(typeof(TEnum)).Cast<TEnum>());
+            return Or(AllValues());
         }
 
+        /// <summary>
+        /// Returns all declared values of an enum.
+        /// </summary>
+        /// <returns>A collection of enum values.</returns>
+        public static IEnumerable<TEnum> AllValues()
+        {
+            return Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
+        }
+
+        /// <summary>
+        /// Determines whether or not all bits of <paramref name="value"/> are set in <paramref name="compositeValue"/>.
+        /// </summary>
+        /// <param name="value">The bits to check.</param>
+        /// <param name="compositeValue">The collection of bits that is checked.</param>
+        /// <returns>
+        /// <c>true</c> if all bits of <paramref name="value"/> are set in <paramref name="compositeValue"/>; otherwise <c>false</c>.
+        /// </returns>
+        public static bool IsDefined(TEnum value, TEnum compositeValue)
+        {
+            return And(value, compositeValue).Equals(value);
+        }
+
+        #region [====== Or ======]
+
+        private static readonly Func<TEnum, TEnum, TEnum> _BinaryOrOperator = MakeBinaryOperator(Expression.Or);        
+        
         /// <summary>
         /// Performs a binary OR-operation on the specified Enum types.
         /// </summary>

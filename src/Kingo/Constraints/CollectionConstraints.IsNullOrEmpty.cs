@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using Kingo.Messaging;
 using Kingo.Resources;
 
 namespace Kingo.Constraints

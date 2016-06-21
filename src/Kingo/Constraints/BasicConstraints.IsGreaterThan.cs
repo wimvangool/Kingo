@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kingo.Messaging;
 using Kingo.Resources;
 
 namespace Kingo.Constraints
@@ -341,7 +340,7 @@ namespace Kingo.Constraints
         /// <param name="other">Instance to compare the value to.</param>
         /// <param name="comparer">Optional comparer to use when comparing the two instances.</param>
         public IsGreaterThanConstraint(TValue other, IComparer<TValue> comparer = null)
-            : this(new Comparable<TValue>(other, comparer)) { }
+            : this(new ComparableValue<TValue>(other, comparer)) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsGreaterThanConstraint{T}" /> class.
@@ -427,7 +426,7 @@ namespace Kingo.Constraints
         /// <param name="other">Instance to compare the value to.</param>
         /// <param name="comparer">Optional comparer to use when comparing the two instances.</param>
         public IsGreaterThanOrEqualToConstraint(TValue other, IComparer<TValue> comparer = null)
-            : this(new Comparable<TValue>(other, comparer)) { }
+            : this(new ComparableValue<TValue>(other, comparer)) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsGreaterThanOrEqualToConstraint{T}" /> class.
