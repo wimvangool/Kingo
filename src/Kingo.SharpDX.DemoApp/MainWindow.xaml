@@ -2,9 +2,33 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Kingo.SharpDX.DemoApp"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                
+        xmlns:SharpDx="clr-namespace:Kingo.SharpDX;assembly=Kingo.SharpDX"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid />
+        Title="DirectX Playground"  
+        Width="1280"
+        Height="800"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="GhostWhite">
+    <Grid x:Name="_theGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Button Content="Start Rendering"
+                    Click="HandleStartRenderingClicked"
+                    Margin="5"
+                    Padding="3"/>
+
+            <Button Content="Stop Rendering"
+                    Click="HandleStopRenderingClicked"
+                    Margin="5"
+                    Padding="3"/>
+        </StackPanel>
+
+        <SharpDx:DirectXElement Grid.Row="1" x:Name="_surface" />
+    </Grid>
 </Window>

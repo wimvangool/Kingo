@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Kingo.Resources;
@@ -121,12 +121,12 @@ namespace Kingo.SharpDX
         }
 
         /// <summary>
-        /// Creates and returns a new 
+        /// Creates and returns a new <see cref="IDirectXRenderingPipeline" /> for this image.
         /// </summary>
-        /// <param name="dispatcher"></param>
-        /// <param name="handle"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="dispatcher">The dispatcher of the render thread.</param>
+        /// <param name="handle">Handle of the form to render to.</param>
+        /// <param name="size">Current size of the form to render to.</param>
+        /// <returns>A new <see cref="IDirectXRenderingPipeline" />.</returns>
         protected internal abstract IDirectXRenderingPipeline CreateRenderingPipeline(Dispatcher dispatcher, IntPtr handle, Size size);
 
         #endregion
