@@ -3,16 +3,16 @@
 namespace Kingo.SharpDX.Direct3D
 {
     /// <summary>
-    /// When implemented by a class, represents an object in 3D-space that can be rotated with three degrees of freedom.
+    /// When implemented by a class, represents an object that can be rotated in three dimensions.
     /// </summary>
     public interface IRotatableObject
     {
         #region [====== Rotation ======]
 
         /// <summary>
-        /// The current rotation of the object.
+        /// The current rotation-transformation of the object.
         /// </summary>
-        Rotation3D Rotation
+        RotationTransformation3D Rotation
         {
             get;
         }
@@ -20,29 +20,11 @@ namespace Kingo.SharpDX.Direct3D
         /// <summary>
         /// Event that is raised when <see cref="Rotation"/> has changed.
         /// </summary>
-        event EventHandler<Rotation3DChangedEventArgs> RotationChanged;
+        event EventHandler<PropertyChangedEventArgs<RotationTransformation3D>> RotationChanged;
 
         #endregion
 
-        #region [====== Rotate (Relative) ======]
-
-        /// <summary>
-        /// Rotates the object using the X-axis as the rotation-axis.
-        /// </summary>
-        /// <param name="angle">The angle of the rotation.</param>
-        void RotateX(Angle angle);
-
-        /// <summary>
-        /// Rotates the object using the Y-axis as the rotation-axis.
-        /// </summary>
-        /// <param name="angle">The angle of the rotation.</param>
-        void RotateY(Angle angle);
-
-        /// <summary>
-        /// Rotates the object using the Z-axis as the rotation-axis.
-        /// </summary>
-        /// <param name="angle">The angle of the rotation.</param>
-        void RotateZ(Angle angle);
+        #region [====== Rotate ======]       
 
         /// <summary>
         /// Rotates the object using the X-, Y and Z-axis as the rotation-axes.
@@ -50,29 +32,7 @@ namespace Kingo.SharpDX.Direct3D
         /// <param name="x">The angle of rotation along the X-axis.</param>
         /// <param name="y">The angle of rotation along the Y-axis.</param>
         /// <param name="z">The angle of rotation along the Z-axis.</param>
-        void Rotate(Angle x, Angle y, Angle z);
-
-        #endregion
-
-        #region [====== RotateTo (Absolute) ======]
-
-        /// <summary>
-        /// Rotates the object such that is has exactly the specified rotation-angle with respect to the X-axis.
-        /// </summary>
-        /// <param name="angle">The angle of the rotation.</param>
-        void RotateToX(Angle angle);
-
-        /// <summary>
-        /// Rotates the object such that is has exactly the specified rotation-angle with respect to the Y-axis.
-        /// </summary>
-        /// <param name="angle">The angle of the rotation.</param>
-        void RotateToY(Angle angle);
-
-        /// <summary>
-        /// Rotates the object such that is has exactly the specified rotation-angle with respect to the Z-axis.
-        /// </summary>
-        /// <param name="angle">The angle of the rotation.</param>
-        void RotateToZ(Angle angle);
+        void Rotate(Angle x, Angle y, Angle z);     
 
         /// <summary>
         /// Rotates the object such that is has exactly the specified rotation-angles with respect to the X, Y- and Z-axes.
@@ -80,13 +40,7 @@ namespace Kingo.SharpDX.Direct3D
         /// <param name="x">The angle of rotation along the X-axis.</param>
         /// <param name="y">The angle of rotation along the Y-axis.</param>
         /// <param name="z">The angle of rotation along the Z-axis.</param>
-        void RotateTo(Angle x, Angle y, Angle z);
-
-        /// <summary>
-        /// Sets the rotation of the object exactly to the specified <paramref name="rotation"/>.
-        /// </summary>
-        /// <param name="rotation">The desired rotation of the object.</param>
-        void RotateTo(Rotation3D rotation);
+        void RotateTo(Angle x, Angle y, Angle z);        
 
         #endregion
 
@@ -109,6 +63,14 @@ namespace Kingo.SharpDX.Direct3D
         /// </summary>
         /// <param name="angle">The angle of the rotation.</param>
         void Roll(Angle angle);
+
+        /// <summary>
+        /// Rotates the object using its local X-, Y- and Z-axes.
+        /// </summary>
+        /// <param name="pitch">The pitch-angle.</param>
+        /// <param name="yaw">The yaw-angle.</param>
+        /// <param name="roll">The roll-angle.</param>
+        void PitchYawRoll(Angle pitch, Angle yaw, Angle roll);
 
         #endregion     
     }

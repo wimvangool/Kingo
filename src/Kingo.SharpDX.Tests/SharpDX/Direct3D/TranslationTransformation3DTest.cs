@@ -4,20 +4,20 @@ using SharpDX;
 namespace Kingo.SharpDX.Direct3D
 {
     [TestClass]
-    public sealed class Position3DTest
+    public sealed class TranslationTransformation3DTest
     {
         #region [====== EquatableTestSuite ======]
 
-        private static readonly EquatableValueTypeTestSuite<Position3D> _EquatableTestSuite = new EquatableValueTypeTestSuite<Position3D>(new MSTestEngine());
+        private static readonly EquatableValueTypeTestSuite<TranslationTransformation3D> _EquatableTestSuite = new EquatableValueTypeTestSuite<TranslationTransformation3D>(new MSTestEngine());
 
         [TestMethod]
         public void EquatableTestSuite_ExecutesSuccesfully()
         {
-            _EquatableTestSuite.Execute(new EquatableTestParameters<Position3D>()
+            _EquatableTestSuite.Execute(new EquatableTestParameters<TranslationTransformation3D>()
             {
-                Instance = new Position3D(1, 2, 3),
-                EqualInstance = new Position3D(1, 2, 3),
-                UnequalInstance = new Position3D(2, 3, 4)
+                Instance = new TranslationTransformation3D(1, 2, 3),
+                EqualInstance = new TranslationTransformation3D(1, 2, 3),
+                UnequalInstance = new TranslationTransformation3D(2, 3, 4)
             });
         }
 
@@ -28,7 +28,7 @@ namespace Kingo.SharpDX.Direct3D
         [TestMethod]
         public void Constructor_ByFloats_InitializesPositionCorrectly()
         {
-            var position = new Position3D(3, 4, 5);
+            var position = new TranslationTransformation3D(3, 4, 5);
 
             Assert.AreEqual(3, position.X);
             Assert.AreEqual(4, position.Y);
@@ -38,7 +38,7 @@ namespace Kingo.SharpDX.Direct3D
         [TestMethod]
         public void Constructor_ByVector_InitializesPositionCorrectly()
         {
-            var position = new Position3D(new Vector3(3, 4, 5));
+            var position = new TranslationTransformation3D(new Vector3(3, 4, 5));
 
             Assert.AreEqual(3, position.X);
             Assert.AreEqual(4, position.Y);
@@ -52,7 +52,7 @@ namespace Kingo.SharpDX.Direct3D
         [TestMethod]
         public void ToString_ReturnsExpectedStringRepresentation()
         {
-            var position = new Position3D(6, 7, 8); 
+            var position = new TranslationTransformation3D(6, 7, 8); 
             
             Assert.AreEqual("[6 | 7 | 8]", position.ToString());  
         }
@@ -64,8 +64,8 @@ namespace Kingo.SharpDX.Direct3D
         [TestMethod]
         public void TranslationMatrix_ReturnsIdentityMatrix_IfPositionIsOrigin()
         {
-            var position = Position3D.Origin;
-            var matrix = position.TranslationMatrix;
+            var position = TranslationTransformation3D.NoTranslation;
+            var matrix = position.TransformationMatrix;
             
             Assert.AreEqual(Matrix.Identity, matrix);
         }
@@ -73,8 +73,8 @@ namespace Kingo.SharpDX.Direct3D
         [TestMethod]
         public void TranslationMatrix_ReturnsExpectedMatrix_IfPositionIsNotTheOrigin()
         {
-            var position = new Position3D(6, 7, 8);
-            var matrix = position.TranslationMatrix;
+            var position = new TranslationTransformation3D(6, 7, 8);
+            var matrix = position.TransformationMatrix;
 
             Assert.AreEqual(1, matrix.M11);
             Assert.AreEqual(0, matrix.M12);

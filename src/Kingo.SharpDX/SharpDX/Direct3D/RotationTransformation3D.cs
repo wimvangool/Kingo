@@ -5,47 +5,45 @@ using SharpDX;
 namespace Kingo.SharpDX.Direct3D
 {
     /// <summary>
-    /// Represents a set of rotations in a 3D coordinate system.
+    /// Represents a rotation-transformation of a 3D-object.
     /// </summary>
     [Serializable]
-    public struct Rotation3D : IEquatable<Rotation3D>, IFormattable
+    public struct RotationTransformation3D : IEquatable<RotationTransformation3D>, IFormattable, ITransformation3D
     {        
         /// <summary>
         /// Represents no rotation.
         /// </summary>
-        public static readonly Rotation3D NoRotation = FromAngles(Angle.Zero, Angle.Zero, Angle.Zero);
+        public static readonly RotationTransformation3D NoRotation = FromAngles(Angle.Zero, Angle.Zero, Angle.Zero);
 
         private readonly Quaternion _quaternion;
         private Matrix? _rotationMatrix;
         
-        private Rotation3D(Quaternion quaternion)
+        private RotationTransformation3D(Quaternion quaternion)
         {
             _quaternion = quaternion;
             _quaternion.Normalize();
             _rotationMatrix = null;
         }
 
-        #region [====== RotationMatrix ======]
+        #region [====== TransformationMatrix ======]
 
         /// <summary>
         /// Represents the (normalized) Right-vector with respect to this rotation, equivalent to the local X-axis.
         /// </summary>
-        public Vector3 Right => Normalize(RotationMatrix.Right);
+        public Vector3 Right => Normalize(TransformationMatrix.Right);
 
         /// <summary>
         /// Represents the (normalized) Up-vector with respect to this rotation, equivalent to the local Y-axis.
         /// </summary>
-        public Vector3 Up => Normalize(RotationMatrix.Up);
+        public Vector3 Up => Normalize(TransformationMatrix.Up);
 
         /// <summary>
         /// Represents the (normalized) Forward-vector with respect to this rotation, equivalent to the local Z-axis.
         /// </summary>
-        public Vector3 Forward => Normalize(RotationMatrix.Backward);
+        public Vector3 Forward => Normalize(TransformationMatrix.Backward);
 
-        /// <summary>
-        /// Returns the rotation-matrix representing the current rotation.
-        /// </summary>
-        public Matrix RotationMatrix
+        /// <inheritdoc />
+        public Matrix TransformationMatrix
         {
             get
             {
@@ -129,57 +127,57 @@ namespace Kingo.SharpDX.Direct3D
         }        
         
         /// <summary>
-        /// Creates and returns a new <see cref="Rotation3D" /> instance from the angles specified in radians.
+        /// Creates and returns a new <see cref="RotationTransformation3D" /> instance from the angles specified in radians.
         /// </summary>
         /// <param name="angles">The angles specified in radians.</param>
-        /// <returns>A new <see cref="Rotation3D" /> instance.</returns>
-        public static Rotation3D FromRadians(Vector3 angles)
+        /// <returns>A new <see cref="RotationTransformation3D" /> instance.</returns>
+        public static RotationTransformation3D FromRadians(Vector3 angles)
         {
             return FromRadians(angles.X, angles.Y, angles.Z);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="Rotation3D" /> instance from the angles specified in radians.
+        /// Creates and returns a new <see cref="RotationTransformation3D" /> instance from the angles specified in radians.
         /// </summary>
         /// <param name="x">Rotation around the x-axis, specified in radians.</param>
         /// <param name="y">Rotation around the y-axis, specified in radians.</param>
         /// <param name="z">Rotation around the z-axis, specified in radians.</param>
-        /// <returns>A new <see cref="Rotation3D" /> instance.</returns>
-        public static Rotation3D FromRadians(float x, float y, float z)
+        /// <returns>A new <see cref="RotationTransformation3D" /> instance.</returns>
+        public static RotationTransformation3D FromRadians(float x, float y, float z)
         {
             return FromAngles(Angle.FromRadians(x), Angle.FromRadians(y), Angle.FromRadians(z));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="Rotation3D" /> instance from the angles specified in degrees.
+        /// Creates and returns a new <see cref="RotationTransformation3D" /> instance from the angles specified in degrees.
         /// </summary>
         /// <param name="angles">The angles specified in degrees.</param>
-        /// <returns>A new <see cref="Rotation3D" /> instance.</returns>
-        public static Rotation3D FromDegrees(Vector3 angles)
+        /// <returns>A new <see cref="RotationTransformation3D" /> instance.</returns>
+        public static RotationTransformation3D FromDegrees(Vector3 angles)
         {
             return FromDegrees(angles.X, angles.Y, angles.Z);
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="Rotation3D" /> instance from the angles specified in degrees.
+        /// Creates and returns a new <see cref="RotationTransformation3D" /> instance from the angles specified in degrees.
         /// </summary>
         /// <param name="x">Rotation around the x-axis, specified in degrees.</param>
         /// <param name="y">Rotation around the y-axis, specified in degrees.</param>
         /// <param name="z">Rotation around the z-axis, specified in degrees.</param>
-        /// <returns>A new <see cref="Rotation3D" /> instance.</returns>
-        public static Rotation3D FromDegrees(float x, float y, float z)
+        /// <returns>A new <see cref="RotationTransformation3D" /> instance.</returns>
+        public static RotationTransformation3D FromDegrees(float x, float y, float z)
         {
             return FromAngles(Angle.FromDegrees(x), Angle.FromDegrees(y), Angle.FromDegrees(z));
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="Rotation3D"/> instance based on the specified angles around the x-, y- and z-azis.
+        /// Creates and returns a new <see cref="RotationTransformation3D"/> instance based on the specified angles around the x-, y- and z-azis.
         /// </summary>
         /// <param name="x">Rotation-angle around the x-axis.</param>
         /// <param name="y">Rotation-angle around the y-axis.</param>
         /// <param name="z">Rotation-angle around the z-axis.</param>
-        /// <returns>A new <see cref="Rotation3D"/> instance.</returns>
-        public static Rotation3D FromAngles(Angle x, Angle y, Angle z)
+        /// <returns>A new <see cref="RotationTransformation3D"/> instance.</returns>
+        public static RotationTransformation3D FromAngles(Angle x, Angle y, Angle z)
         {
             var rotationX = FromAngleAroundAxis(Vector3.UnitX, x);
             var rotationY = FromAngleAroundAxis(Vector3.UnitY, y);
@@ -189,14 +187,14 @@ namespace Kingo.SharpDX.Direct3D
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="Rotation3D"/> instance based on a rotation around a specific axis.
+        /// Creates and returns a new <see cref="RotationTransformation3D"/> instance based on a rotation around a specific axis.
         /// </summary>
         /// <param name="axis">The axis around which the rotation is performed.</param>
         /// <param name="angle">The angle of the rotation.</param>
-        /// <returns>A new <see cref="Rotation3D"/> instance.</returns>
-        public static Rotation3D FromAngleAroundAxis(Vector3 axis, Angle angle)
+        /// <returns>A new <see cref="RotationTransformation3D"/> instance.</returns>
+        public static RotationTransformation3D FromAngleAroundAxis(Vector3 axis, Angle angle)
         {
-            return new Rotation3D(Quaternion.RotationAxis(axis, angle.Normalize().ToRadians()));
+            return new RotationTransformation3D(Quaternion.RotationAxis(axis, angle.Normalize().ToRadians()));
         }
 
         #endregion        
@@ -210,15 +208,15 @@ namespace Kingo.SharpDX.Direct3D
             {
                 return false;
             }
-            if (obj is Rotation3D)
+            if (obj is RotationTransformation3D)
             {
-                return Equals((Rotation3D) obj);
+                return Equals((RotationTransformation3D) obj);
             }
             return false;
         }
 
         /// <inheritdoc />
-        public bool Equals(Rotation3D other)
+        public bool Equals(RotationTransformation3D other)
         {
             return _quaternion.Equals(other._quaternion);
         }
@@ -235,7 +233,7 @@ namespace Kingo.SharpDX.Direct3D
         /// <returns>
         /// <c>true</c> if <paramref name="left" /> is equal to <paramref name="right" />; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator ==(Rotation3D left, Rotation3D right)
+        public static bool operator ==(RotationTransformation3D left, RotationTransformation3D right)
         {
             return left.Equals(right);
         }
@@ -246,7 +244,7 @@ namespace Kingo.SharpDX.Direct3D
         /// <returns>
         /// <c>true</c> if <paramref name="left" /> is not equal to <paramref name="right" />; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator !=(Rotation3D left, Rotation3D right)
+        public static bool operator !=(RotationTransformation3D left, RotationTransformation3D right)
         {
             return !left.Equals(right);
         }
@@ -260,9 +258,9 @@ namespace Kingo.SharpDX.Direct3D
         /// </summary>
         /// <param name="right">A second rotation.</param>
         /// <returns>The combined rotation of the current and the specified one.</returns>
-        public Rotation3D Multiply(Rotation3D right)
+        public RotationTransformation3D Multiply(RotationTransformation3D right)
         {
-            return new Rotation3D(_quaternion * right._quaternion);
+            return new RotationTransformation3D(_quaternion * right._quaternion);
         }
 
         /// <summary>
@@ -271,7 +269,7 @@ namespace Kingo.SharpDX.Direct3D
         /// <param name="left">Left rotation.</param>
         /// <param name="right">Right rotation.</param>
         /// <returns>The combined rotation.</returns>
-        public static Rotation3D operator *(Rotation3D left, Rotation3D right)
+        public static RotationTransformation3D operator *(RotationTransformation3D left, RotationTransformation3D right)
         {
             return left.Multiply(right);
         }

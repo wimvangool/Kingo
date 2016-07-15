@@ -147,4 +147,7 @@
   <data name="ProjectionPlanes_NearPlaneZero" xml:space="preserve">
     <value>Near Plane distance must be greater than 0.</value>
   </data>
+  <data name="ScaleFactor_InvalidValue" xml:space="preserve">
+    <value>Invalid ScaleFactor specified ({0}). Value must be greater than 0.</value>
+  </data>
 </root>

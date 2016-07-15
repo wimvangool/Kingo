@@ -4,46 +4,28 @@ using SharpDX;
 namespace Kingo.SharpDX.Direct3D
 {
     /// <summary>
-    /// When implemented by a class, represents an object in 3D-space that can be moved from one position to another.
+    /// When implemented by a class, represents an object that can be moved in three dimensions.
     /// </summary>
     public interface IMoveableObject
     {
-        #region [====== Position ======]
+        #region [====== Translation ======]
 
         /// <summary>
-        /// The current position of the object.
+        /// The current translation-transformation of the object.
         /// </summary>
-        Position3D Position
+        TranslationTransformation3D Translation
         {
             get;
         }
 
         /// <summary>
-        /// Event that is raised when <see cref="Position"/> has changed.
+        /// Event that is raised when <see cref="Translation"/> has changed.
         /// </summary>
-        event EventHandler<Position3DChangedEventArgs> PositionChanged;
+        event EventHandler<PropertyChangedEventArgs<TranslationTransformation3D>> TranslationChanged;
 
         #endregion
 
-        #region [====== Move (Relative) ======]
-
-        /// <summary>
-        /// Moves the object <paramref name="x"/> places along the X-axis, relative to its current position.
-        /// </summary>
-        /// <param name="x">The amount of places to move.</param>
-        void MoveX(float x);
-
-        /// <summary>
-        /// Moves the object <paramref name="y"/> places along the Y-axis, relative to its current position.
-        /// </summary>
-        /// <param name="y">The amount of places to move.</param>
-        void MoveY(float y);
-
-        /// <summary>
-        /// Moves the object <paramref name="z"/> places along the Z-axis, relative to its current position.
-        /// </summary>
-        /// <param name="z">The amount of places to move.</param>
-        void MoveZ(float z);
+        #region [====== Move ======]        
 
         /// <summary>
         /// Moves the object to another location relative to its current position.
@@ -59,29 +41,7 @@ namespace Kingo.SharpDX.Direct3D
         /// <param name="direction">
         /// A vector representing the direction to move in.
         /// </param>
-        void Move(Vector3 direction);
-
-        #endregion
-
-        #region [====== MoveTo (Absolute) ======]
-
-        /// <summary>
-        /// Moves the object to point <paramref name="x"/> of the X-axis.
-        /// </summary>
-        /// <param name="x">The X-coordinate to move to.</param>
-        void MoveToX(float x);
-
-        /// <summary>
-        /// Moves the object to point <paramref name="y"/> of the Y-axis.
-        /// </summary>
-        /// <param name="y">The Y-coordinate to move to.</param>
-        void MoveToY(float y);
-
-        /// <summary>
-        /// Moves the object to point <paramref name="z"/> of the Z-axis.
-        /// </summary>
-        /// <param name="z">The Z-coordinate to move to.</param>
-        void MoveToZ(float z);
+        void Move(Vector3 direction); 
 
         /// <summary>
         /// Moves the object to the specified position.
@@ -96,12 +56,6 @@ namespace Kingo.SharpDX.Direct3D
         /// </summary>
         /// <param name="position">The position to move to.</param>
         void MoveTo(Vector3 position);
-
-        /// <summary>
-        /// Moves the object to the specified position.
-        /// </summary>
-        /// <param name="position">The position to move to.</param>
-        void MoveTo(Position3D position);
 
         #endregion
     }

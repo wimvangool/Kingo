@@ -80,11 +80,13 @@
     <Compile Include="SharpDX\AspectRatioTest.cs" />
     <Compile Include="SharpDX\Direct3D\ProjectionPlanesTest.cs" />
     <Compile Include="SharpDX\Direct3D\RotatableObjectTest.cs" />
+    <Compile Include="SharpDX\Direct3D\ScaleTransformation3DTest.cs" />
     <Compile Include="SharpDX\FieldOfVisionTest.cs" />
     <Compile Include="SharpDX\LengthTest.cs" />
     <Compile Include="SharpDX\Direct3D\MoveableObjectTest.cs" />
-    <Compile Include="SharpDX\Direct3D\Position3DTest.cs" />
-    <Compile Include="SharpDX\Direct3D\Rotation3DTest.cs" />
+    <Compile Include="SharpDX\Direct3D\TranslationTransformation3DTest.cs" />
+    <Compile Include="SharpDX\Direct3D\RotationTransformation3DTest.cs" />
+    <Compile Include="SharpDX\ScaleFactorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo.SharpDX\03.Kingo.SharpDX.csproj">

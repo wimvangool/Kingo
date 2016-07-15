@@ -149,5 +149,14 @@ namespace Kingo.Resources {
                 return ResourceManager.GetString("ProjectionPlanes_NearPlaneZero", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid ScaleFactor specified ({0}). Value must be greater than 0..
+        /// </summary>
+        internal static string ScaleFactor_InvalidValue {
+            get {
+                return ResourceManager.GetString("ScaleFactor_InvalidValue", resourceCulture);
+            }
+        }
     }
 }

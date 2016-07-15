@@ -8,194 +8,96 @@ namespace Kingo.SharpDX.Direct3D
     {
         private MoveableObject _moveableObject;
         private bool _eventWasRaised;
-        private Position3D _oldPosition;
-        private Position3D _newPosition;
+        private TranslationTransformation3D _oldPosition;
+        private TranslationTransformation3D _newPosition;
 
         [TestInitialize]
         public void Setup()
         {
             _moveableObject = new MoveableObject(this);
-            _moveableObject.PositionChanged += (s, e) =>
+            _moveableObject.TranslationChanged += (s, e) =>
             {
                 _eventWasRaised = true;
-                _oldPosition = e.OldPosition;
-                _newPosition = e.NewPosition;
+                _oldPosition = e.OldValue;
+                _newPosition = e.NewValue;
             };
         }
 
         #region [====== Move ======]
 
         [TestMethod]
-        public void MoveX_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
+        public void Move_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
         {
             var x = RandomDistance();
-
-            _moveableObject.MoveX(x);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Position3D.Origin, _oldPosition);
-            Assert.AreEqual(new Position3D(x, 0, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveX_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
-        {
-            var x0 = RandomDistance();
-            var x1 = RandomDistance();
-
-            _moveableObject.MoveX(x0);
-            _moveableObject.MoveX(x1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(new Position3D(x0, 0, 0), _oldPosition);
-            Assert.AreEqual(new Position3D(x0 + x1, 0, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveY_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
-        {
             var y = RandomDistance();
-
-            _moveableObject.MoveY(y);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Position3D.Origin, _oldPosition);
-            Assert.AreEqual(new Position3D(0, y, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveY_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
-        {
-            var y0 = RandomDistance();
-            var y1 = RandomDistance();
-
-            _moveableObject.MoveY(y0);
-            _moveableObject.MoveY(y1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(new Position3D(0, y0, 0), _oldPosition);
-            Assert.AreEqual(new Position3D(0, y0 + y1, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveZ_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
-        {
             var z = RandomDistance();
 
-            _moveableObject.MoveZ(z);
+            _moveableObject.Move(x, y, z);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Position3D.Origin, _oldPosition);
-            Assert.AreEqual(new Position3D(0, 0, z), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
+            Assert.AreEqual(TranslationTransformation3D.NoTranslation, _oldPosition);
+            Assert.AreEqual(new TranslationTransformation3D(x, y, z), _newPosition);
+            Assert.AreEqual(_moveableObject.Translation, _newPosition);
         }
 
         [TestMethod]
-        public void MoveZ_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
+        public void Move_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
         {
+            var x0 = RandomDistance();
+            var y0 = RandomDistance();
             var z0 = RandomDistance();
+
+            var x1 = RandomDistance();
+            var y1 = RandomDistance();
             var z1 = RandomDistance();
 
-            _moveableObject.MoveZ(z0);
-            _moveableObject.MoveZ(z1);
+            _moveableObject.Move(x0, y0, z0);
+            _moveableObject.Move(x1, y1, z1);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(new Position3D(0, 0, z0), _oldPosition);
-            Assert.AreEqual(new Position3D(0, 0, z0 + z1), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
+            Assert.AreEqual(new TranslationTransformation3D(x0, y0, z0), _oldPosition);
+            Assert.AreEqual(new TranslationTransformation3D(x0 + x1, y0 + y1, z0 + z1), _newPosition);
+            Assert.AreEqual(_moveableObject.Translation, _newPosition);
         }
-
+                
         #endregion
 
         #region [====== MoveTo ======]
 
         [TestMethod]
-        public void MoveToX_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
+        public void MoveTo_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
         {
             var x = RandomDistance();
-
-            _moveableObject.MoveToX(x);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Position3D.Origin, _oldPosition);
-            Assert.AreEqual(new Position3D(x, 0, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveToX_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
-        {
-            var x0 = RandomDistance();
-            var x1 = RandomDistance();
-
-            _moveableObject.MoveToX(x0);
-            _moveableObject.MoveToX(x1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(new Position3D(x0, 0, 0), _oldPosition);
-            Assert.AreEqual(new Position3D(x1, 0, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveToY_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
-        {
             var y = RandomDistance();
-
-            _moveableObject.MoveToY(y);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Position3D.Origin, _oldPosition);
-            Assert.AreEqual(new Position3D(0, y, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveToY_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
-        {
-            var y0 = RandomDistance();
-            var y1 = RandomDistance();
-
-            _moveableObject.MoveToY(y0);
-            _moveableObject.MoveToY(y1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(new Position3D(0, y0, 0), _oldPosition);
-            Assert.AreEqual(new Position3D(0, y1, 0), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
-
-        [TestMethod]
-        public void MoveToZ_MovesObjectToExpectedPosition_IfCurrentIsOrigin()
-        {
             var z = RandomDistance();
 
-            _moveableObject.MoveToZ(z);
+            _moveableObject.MoveTo(x, y, z);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Position3D.Origin, _oldPosition);
-            Assert.AreEqual(new Position3D(0, 0, z), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
+            Assert.AreEqual(TranslationTransformation3D.NoTranslation, _oldPosition);
+            Assert.AreEqual(new TranslationTransformation3D(x, y, z), _newPosition);
+            Assert.AreEqual(_moveableObject.Translation, _newPosition);
         }
 
         [TestMethod]
-        public void MoveToZ_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
+        public void MoveTo_MovesObjectToExpectedPosition_IfCurrentIsNotOrigin()
         {
+            var x0 = RandomDistance();
+            var y0 = RandomDistance();
             var z0 = RandomDistance();
+
+            var x1 = RandomDistance();
+            var y1 = RandomDistance();
             var z1 = RandomDistance();
 
-            _moveableObject.MoveToZ(z0);
-            _moveableObject.MoveToZ(z1);
+            _moveableObject.MoveTo(x0, y0, z0);
+            _moveableObject.MoveTo(x1, y1, z1);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(new Position3D(0, 0, z0), _oldPosition);
-            Assert.AreEqual(new Position3D(0, 0, z1), _newPosition);
-            Assert.AreEqual(_moveableObject.Position, _newPosition);
-        }
+            Assert.AreEqual(new TranslationTransformation3D(x0, y0, z0), _oldPosition);
+            Assert.AreEqual(new TranslationTransformation3D(x1, y1, z1), _newPosition);
+            Assert.AreEqual(_moveableObject.Translation, _newPosition);
+        }      
 
         #endregion
 

@@ -6,57 +6,42 @@ namespace Kingo.SharpDX.Direct3D
     internal sealed class MoveableObject : IMoveableObject
     {
         private readonly object _parent;
-        private Position3D _position;
+        private TranslationTransformation3D _translation;
 
         public MoveableObject(object parent)
         {
             _parent = parent;
         }
 
-        #region [====== Position ======]
+        #region [====== Translation ======]
 
-        public Position3D Position
+        public TranslationTransformation3D Translation
         {
-            get { return _position; }
+            get { return _translation; }
             private set
             {
-                var oldPosition = _position;
+                var oldPosition = _translation;
                 var newPosition = value;
 
                 if (newPosition != oldPosition)
                 {
-                    _position = newPosition;
+                    _translation = newPosition;
 
-                    OnPositionChanged(new Position3DChangedEventArgs(oldPosition, newPosition));
+                    OnPositionChanged(new PropertyChangedEventArgs<TranslationTransformation3D>(oldPosition, newPosition));
                 }
             }
         }
 
-        public event EventHandler<Position3DChangedEventArgs> PositionChanged;
+        public event EventHandler<PropertyChangedEventArgs<TranslationTransformation3D>> TranslationChanged;
 
-        private void OnPositionChanged(Position3DChangedEventArgs e)
+        private void OnPositionChanged(PropertyChangedEventArgs<TranslationTransformation3D> e)
         {
-            PositionChanged.Raise(_parent, e);
+            TranslationChanged.Raise(_parent, e);
         }
 
         #endregion
 
-        #region [====== Move (Relative) ======]
-
-        public void MoveX(float x)
-        {
-            Move(x, 0, 0);
-        }
-
-        public void MoveY(float y)
-        {
-            Move(0, y, 0);
-        }
-
-        public void MoveZ(float z)
-        {
-            Move(0, 0, z);
-        }        
+        #region [====== Move (Relative) ======]       
 
         public void Move(Vector3 direction)
         {
@@ -65,41 +50,26 @@ namespace Kingo.SharpDX.Direct3D
 
         public void Move(float x, float y, float z)
         {
-            Position = new Position3D(Position.X + x, Position.Y + y, Position.Z + z);
+            Translation = new TranslationTransformation3D(Translation.X + x, Translation.Y + y, Translation.Z + z);
         }
 
         #endregion
 
-        #region [====== MoveTo (Absolute) ======]
-
-        public void MoveToX(float x)
-        {
-            MoveTo(x, Position.Y, Position.Z);
-        }
-
-        public void MoveToY(float y)
-        {
-            MoveTo(Position.X, y, Position.Z);
-        }
-
-        public void MoveToZ(float z)
-        {
-            MoveTo(Position.X, Position.Y, z);
-        }
+        #region [====== MoveTo (Absolute) ======]      
 
         public void MoveTo(Vector3 position)
         {
-            MoveTo(new Position3D(position));
+            MoveTo(new TranslationTransformation3D(position));
         }
 
         public void MoveTo(float x, float y, float z)
         {
-            MoveTo(new Position3D(x, y, z));
+            MoveTo(new TranslationTransformation3D(x, y, z));
         }        
 
-        public void MoveTo(Position3D position)
+        public void MoveTo(TranslationTransformation3D position)
         {
-            Position = position;
+            Translation = position;
         }
 
         #endregion

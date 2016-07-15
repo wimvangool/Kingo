@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SharpDX;
 
 namespace Kingo.SharpDX.Direct3D
 {
@@ -8,8 +9,8 @@ namespace Kingo.SharpDX.Direct3D
     {
         private RotatableObject _rotatableObject;
         private bool _eventWasRaised;
-        private Rotation3D _oldRotation;
-        private Rotation3D _newRotation;
+        private RotationTransformation3D _oldRotation;
+        private RotationTransformation3D _newRotation;
 
         [TestInitialize]
         public void Setup()
@@ -18,184 +19,72 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.RotationChanged += (s, e) =>
             {
                 _eventWasRaised = true;
-                _oldRotation = e.OldRotation;
-                _newRotation = e.NewRotation;
+                _oldRotation = e.OldValue;
+                _newRotation = e.NewValue;
             };
         }
 
         #region [====== Rotate ======]
 
         [TestMethod]
-        public void RotateX_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
+        public void Rotate_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
         {
-            var x = RandomAngle();
+            var x = RandomAngle();           
 
-            _rotatableObject.RotateX(x);
+            _rotatableObject.Rotate(x, Angle.Zero, Angle.Zero);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(x, Angle.Zero, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.NoRotation, _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x, Angle.Zero, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
         [TestMethod]
-        public void RotateX_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundX()
+        public void Rotate_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundX()
         {
             var x0 = RandomAngle();
             var x1 = RandomAngle();
 
-            _rotatableObject.RotateX(x0);
-            _rotatableObject.RotateX(x1);
+            _rotatableObject.Rotate(x0, Angle.Zero, Angle.Zero);
+            _rotatableObject.Rotate(x1, Angle.Zero, Angle.Zero);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(x0, Angle.Zero, Angle.Zero), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(x0 + x1, Angle.Zero, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x0, Angle.Zero, Angle.Zero), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x0 + x1, Angle.Zero, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateY_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
-        {
-            var y = RandomAngle();
-
-            _rotatableObject.RotateY(y);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y, Angle.Zero), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateY_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundY()
-        {
-            var y0 = RandomAngle();
-            var y1 = RandomAngle();
-
-            _rotatableObject.RotateY(y0);
-            _rotatableObject.RotateY(y1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y0, Angle.Zero), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y0 + y1, Angle.Zero), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateZ_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
-        {
-            var z = RandomAngle();
-
-            _rotatableObject.RotateZ(z);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateZ_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundZ()
-        {
-            var z0 = RandomAngle();
-            var z1 = RandomAngle();
-
-            _rotatableObject.RotateZ(z0);
-            _rotatableObject.RotateZ(z1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z0), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z0 + z1), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
+        }        
 
         #endregion
 
         #region [====== RotateTo ======]
 
         [TestMethod]
-        public void RotateToX_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
+        public void RotateTo_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
         {
             var x = RandomAngle();
 
-            _rotatableObject.RotateToX(x);
+            _rotatableObject.RotateTo(x, Angle.Zero, Angle.Zero);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(x, Angle.Zero, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.NoRotation, _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x, Angle.Zero, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
         [TestMethod]
-        public void RotateToX_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundX()
+        public void RotateTo_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundX()
         {
             var x0 = RandomAngle();
             var x1 = RandomAngle();
 
-            _rotatableObject.RotateToX(x0);
-            _rotatableObject.RotateToX(x1);
+            _rotatableObject.RotateTo(x0, Angle.Zero, Angle.Zero);
+            _rotatableObject.RotateTo(x1, Angle.Zero, Angle.Zero);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(x0, Angle.Zero, Angle.Zero), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(x1, Angle.Zero, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x0, Angle.Zero, Angle.Zero), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x1, Angle.Zero, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateToY_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
-        {
-            var y = RandomAngle();
-
-            _rotatableObject.RotateToY(y);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y, Angle.Zero), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateToY_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundY()
-        {
-            var y0 = RandomAngle();
-            var y1 = RandomAngle();
-
-            _rotatableObject.RotateToY(y0);
-            _rotatableObject.RotateToY(y1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y0, Angle.Zero), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y1, Angle.Zero), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateToZ_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
-        {
-            var z = RandomAngle();
-
-            _rotatableObject.RotateToZ(z);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
-
-        [TestMethod]
-        public void RotateToZ_RotatesObjectToExpectedRotation_IfCurrentIsNonZeroRotationAroundZ()
-        {
-            var z0 = RandomAngle();
-            var z1 = RandomAngle();
-
-            _rotatableObject.RotateToZ(z0);
-            _rotatableObject.RotateToZ(z1);
-
-            Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z0), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z1), _newRotation);
-            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
-        }
+        }       
 
         #endregion
 
@@ -209,8 +98,8 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.Pitch(x);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(x, Angle.Zero, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.NoRotation, _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x, Angle.Zero, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
@@ -224,8 +113,8 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.Pitch(x1);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(x0, Angle.Zero, Angle.Zero), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(x0 + x1, Angle.Zero, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x0, Angle.Zero, Angle.Zero), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x0 + x1, Angle.Zero, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
@@ -239,8 +128,8 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.Pitch(pitch);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y, Angle.Zero), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.FromDegrees(270), pitch), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, y, Angle.Zero), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, Angle.FromDegrees(270), pitch), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);                 
         }
 
@@ -252,14 +141,14 @@ namespace Kingo.SharpDX.Direct3D
             var z = Angle.FromDegrees(90);
 
             // To check the outcome, we perform different but equivalent rotations on two objects.
-            _rotatableObject.RotateToZ(z);
+            _rotatableObject.RotateTo(Angle.Zero, Angle.Zero, z);
             _rotatableObject.Pitch(pitch);
 
-            otherObject.RotateToZ(z);
-            otherObject.RotateY(pitch);
+            otherObject.RotateTo(Angle.Zero, Angle.Zero, z);
+            otherObject.Rotate(Angle.Zero, pitch, Angle.Zero);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, Angle.Zero, z), _oldRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
             Assert.AreEqual(otherObject.Rotation, _newRotation);            
         }
@@ -272,8 +161,8 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.Yaw(y);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.NoRotation, _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, y, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
@@ -287,8 +176,8 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.Yaw(y1);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y0, Angle.Zero), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y0 + y1, Angle.Zero), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, y0, Angle.Zero), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, y0 + y1, Angle.Zero), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
@@ -300,14 +189,14 @@ namespace Kingo.SharpDX.Direct3D
             var x = Angle.FromDegrees(90);
 
             // To check the outcome, we perform different but equivalent rotations on two objects.
-            _rotatableObject.RotateToX(x);
+            _rotatableObject.RotateTo(x, Angle.Zero, Angle.Zero);
             _rotatableObject.Yaw(yaw);
 
-            otherObject.RotateToX(x);
-            otherObject.RotateZ(yaw);
+            otherObject.RotateTo(x, Angle.Zero, Angle.Zero);
+            otherObject.Rotate(Angle.Zero, Angle.Zero, yaw);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(x, Angle.Zero, Angle.Zero), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(x, Angle.Zero, Angle.Zero), _oldRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
             Assert.AreEqual(otherObject.Rotation, _newRotation);
         }
@@ -320,8 +209,8 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.Roll(z);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.NoRotation, _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.NoRotation, _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, Angle.Zero, z), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
@@ -335,8 +224,8 @@ namespace Kingo.SharpDX.Direct3D
             _rotatableObject.Roll(z1);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z0), _oldRotation);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, Angle.Zero, z0 + z1), _newRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, Angle.Zero, z0), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, Angle.Zero, z0 + z1), _newRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
         }
 
@@ -348,16 +237,50 @@ namespace Kingo.SharpDX.Direct3D
             var y = Angle.FromDegrees(90);
 
             // To check the outcome, we perform different but equivalent rotations on two objects.
-            _rotatableObject.RotateToY(y);
+            _rotatableObject.RotateTo(Angle.Zero, y, Angle.Zero);
             _rotatableObject.Roll(roll);
 
-            otherObject.RotateToY(y);
-            otherObject.RotateX(roll);
+            otherObject.RotateTo(Angle.Zero, y, Angle.Zero);
+            otherObject.Rotate(roll, Angle.Zero, Angle.Zero);
 
             Assert.IsTrue(_eventWasRaised);
-            Assert.AreEqual(Rotation3D.FromAngles(Angle.Zero, y, Angle.Zero), _oldRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(Angle.Zero, y, Angle.Zero), _oldRotation);
             Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
             Assert.AreEqual(otherObject.Rotation, _newRotation);
+        }
+
+        [TestMethod]
+        public void PitchYawRoll_RotatesObjectToExpectedRotation_IfCurrentIsNoRotation()
+        {
+            var pitch = Angle.FromDegrees(20);
+            var yaw = Angle.FromDegrees(30);
+            var roll = Angle.FromDegrees(40);
+
+            _rotatableObject.PitchYawRoll(pitch, yaw, roll);
+
+            Assert.IsTrue(_eventWasRaised);            
+            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
+            Assert.AreEqual(RotationTransformation3D.FromAngles(pitch, yaw, roll), _newRotation);
+        }
+
+        [TestMethod]
+        public void PitchYawRoll_RotatesObjectToExpectedRotation_IfCurrentIsComplexRotation()
+        {
+            var length = (float) (Math.Sqrt(2) / 2);
+
+            var pitch = Angle.FromDegrees(90);
+            var yaw = Angle.FromDegrees(45);
+            var roll = Angle.Zero;
+
+            _rotatableObject.Pitch(Angle.FromDegrees(180));
+            _rotatableObject.PitchYawRoll(pitch, yaw, roll);
+
+            Assert.IsTrue(_eventWasRaised);
+            Assert.AreEqual(_rotatableObject.Rotation, _newRotation);
+            
+            AssertAreEqual(length, length, 0, _newRotation.Forward);
+            AssertAreEqual(length, -length, 0, _newRotation.Right);
+            AssertAreEqual(0, 0, -1, _newRotation.Up);
         }
 
         #endregion
@@ -370,6 +293,13 @@ namespace Kingo.SharpDX.Direct3D
             {
                 return Angle.FromDegrees(_RandomValueGenerator.Next(1, 180));
             }
+        }
+
+        private static void AssertAreEqual(float x, float y, float z, Vector3 vector)
+        {
+            AngleTest.AssertAreEqual(x, vector.X);
+            AngleTest.AssertAreEqual(y, vector.Y);
+            AngleTest.AssertAreEqual(z, vector.Z);
         }
     }
 }

@@ -37,39 +37,20 @@ namespace Kingo.SharpDX.Direct3D
             }
         }        
 
-        #region [====== Position ======]
+        #region [====== Translation ======]
 
         /// <inheritdoc />
-        public Position3D Position
+        public TranslationTransformation3D Translation
         {
-            get { return _moveableObject.Position; }
-        }
-
-
-        /// <inheritdoc />
-        public event EventHandler<Position3DChangedEventArgs> PositionChanged
-        {
-            add { _moveableObject.PositionChanged += value; }
-            remove { _moveableObject.PositionChanged -= value; }
+            get { return _moveableObject.Translation; }
         }
 
         /// <inheritdoc />
-        public void MoveX(float x)
+        public event EventHandler<PropertyChangedEventArgs<TranslationTransformation3D>> TranslationChanged
         {
-            _moveableObject.MoveX(x);
-        }
-
-        /// <inheritdoc />
-        public void MoveY(float y)
-        {
-            _moveableObject.MoveY(y);
-        }
-
-        /// <inheritdoc />
-        public void MoveZ(float z)
-        {
-            _moveableObject.MoveZ(z);
-        }
+            add { _moveableObject.TranslationChanged += value; }
+            remove { _moveableObject.TranslationChanged -= value; }
+        }        
 
         /// <inheritdoc />
         public void Move(float x, float y, float z)
@@ -84,24 +65,6 @@ namespace Kingo.SharpDX.Direct3D
         }
 
         /// <inheritdoc />
-        public void MoveToX(float x)
-        {
-            _moveableObject.MoveToX(x);
-        }
-
-        /// <inheritdoc />
-        public void MoveToY(float y)
-        {
-            _moveableObject.MoveToY(y);
-        }
-
-        /// <inheritdoc />
-        public void MoveToZ(float z)
-        {
-            _moveableObject.MoveToZ(z);
-        }
-
-        /// <inheritdoc />
         public void MoveTo(float x, float y, float z)
         {
             _moveableObject.MoveTo(x, y, z);
@@ -111,84 +74,36 @@ namespace Kingo.SharpDX.Direct3D
         public void MoveTo(Vector3 position)
         {
             _moveableObject.MoveTo(position);
-        }
-
-        /// <inheritdoc />
-        public void MoveTo(Position3D position)
-        {
-            _moveableObject.MoveTo(position);
-        }
+        }        
 
         #endregion
 
         #region [====== Rotation ======]
 
         /// <inheritdoc />
-        public Rotation3D Rotation
+        public RotationTransformation3D Rotation
         {
             get { return _rotatableObject.Rotation; }
         }
 
         /// <inheritdoc />
-        public event EventHandler<Rotation3DChangedEventArgs> RotationChanged
+        public event EventHandler<PropertyChangedEventArgs<RotationTransformation3D>> RotationChanged
         {
             add { _rotatableObject.RotationChanged += value; }
             remove { _rotatableObject.RotationChanged -= value; }
-        }
-
-        /// <inheritdoc />
-        public void RotateX(Angle angle)
-        {
-            _rotatableObject.RotateX(angle);
-        }
-
-        /// <inheritdoc />
-        public void RotateY(Angle angle)
-        {
-            _rotatableObject.RotateY(angle);
-        }
-
-        /// <inheritdoc />
-        public void RotateZ(Angle angle)
-        {
-            _rotatableObject.RotateZ(angle);
-        }
+        }        
 
         /// <inheritdoc />
         public void Rotate(Angle x, Angle y, Angle z)
         {
             _rotatableObject.Rotate(x, y, z);
-        }
-
-        /// <inheritdoc />
-        public void RotateToX(Angle angle)
-        {
-            _rotatableObject.RotateToX(angle);
-        }
-
-        /// <inheritdoc />
-        public void RotateToY(Angle angle)
-        {
-            _rotatableObject.RotateToY(angle);
-        }
-
-        /// <inheritdoc />
-        public void RotateToZ(Angle angle)
-        {
-            _rotatableObject.RotateToZ(angle);
-        }
+        }     
 
         /// <inheritdoc />
         public void RotateTo(Angle x, Angle y, Angle z)
         {
             _rotatableObject.RotateTo(x, y, z);
-        }
-
-        /// <inheritdoc />
-        public void RotateTo(Rotation3D rotation)
-        {
-            _rotatableObject.RotateTo(rotation);
-        }
+        }       
 
         /// <inheritdoc />
         public void Pitch(Angle angle)
@@ -206,6 +121,12 @@ namespace Kingo.SharpDX.Direct3D
         public void Roll(Angle angle)
         {
             _rotatableObject.Roll(angle);
+        }
+
+        /// <inheritdoc />
+        public void PitchYawRoll(Angle pitch, Angle yaw, Angle roll)
+        {
+            _rotatableObject.PitchYawRoll(pitch, yaw, roll);
         }
 
         #endregion
@@ -253,12 +174,12 @@ namespace Kingo.SharpDX.Direct3D
 
         private Matrix RotationMatrix
         {
-            get { return _rotatableObject.Rotation.RotationMatrix; }
+            get { return _rotatableObject.Rotation.TransformationMatrix; }
         }
 
         private Matrix TranslationMatrix
         {
-            get { return _moveableObject.Position.TranslationMatrix; }
+            get { return _moveableObject.Translation.TransformationMatrix; }
         }
 
         /// <summary>

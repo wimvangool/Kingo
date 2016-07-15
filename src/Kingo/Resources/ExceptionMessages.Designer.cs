@@ -250,6 +250,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Epsilon ({0}) cannot be negative..
+        /// </summary>
+        internal static string NumberExtensions_NegativeEpsilon {
+            get {
+                return ResourceManager.GetString("NumberExtensions_NegativeEpsilon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified range is not valid: {0}..
         /// </summary>
         internal static string Range_InvalidRange {

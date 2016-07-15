@@ -357,6 +357,43 @@ namespace Kingo.SharpDX
             Assert.AreEqual(Angle.FromDegrees(-135), x - y);
         }
 
-        #endregion        
+        #endregion
+
+        #region [====== Framework Functions ======]
+
+        public static void AssertAreEqual(Angle left, Angle right)
+        {
+            AssertAreEqual(left.ToDegrees(), right.ToDegrees());
+        }
+
+        public static void AssertAreEqual(float left, float right)
+        {
+            Assert.AreEqual(Round(left), Round(right));
+        }
+
+        private static double Round(float value)
+        {
+            return Math.Round(value, 1);
+        }
+
+        private static readonly Random _Random = new Random();
+
+        public static int RandomDegrees()
+        {
+            lock (_Random)
+            {
+                return _Random.Next(0, 180);
+            }
+        }
+
+        public static float RandomRadians()
+        {
+            lock (_Random)
+            {
+                return (float) (_Random.NextDouble() * Math.PI);
+            }
+        }
+
+        #endregion
     }
 }

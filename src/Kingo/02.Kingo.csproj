@@ -185,6 +185,7 @@
     <Compile Include="Messaging\InvalidMessageException.cs" />
     <Compile Include="Messaging\AuthorizationException.cs" />
     <Compile Include="NullValidator.cs" />
+    <Compile Include="PropertyChangedEventArgs.T1.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>

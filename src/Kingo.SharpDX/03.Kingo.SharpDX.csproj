@@ -69,9 +69,11 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="SharpDX\Direct3D\IScalableObject.cs" />
+    <Compile Include="SharpDX\Direct3D\ITransformation3D.cs" />
     <Compile Include="SharpDX\Direct3D\MoveableObject.cs" />
     <Compile Include="SharpDX\Direct3D\RotatableObject.cs" />
-    <Compile Include="SharpDX\Direct3D\Rotation3D.cs" />
+    <Compile Include="SharpDX\Direct3D\RotationTransformation3D.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -81,7 +83,7 @@
     <Compile Include="SharpDX\Angle.cs" />
     <Compile Include="SharpDX\AspectRatio.cs" />
     <Compile Include="SharpDX\Direct3D\Camera.cs" />
-    <Compile Include="SharpDX\Direct3D\Rotation3DChangedEventArgs.cs" />
+    <Compile Include="SharpDX\Direct3D\ScaleTransformation3D.cs" />
     <Compile Include="SharpDX\DirectXElement.cs" />
     <Compile Include="SharpDX\DirectXImage.cs" />
     <Compile Include="SharpDX\DirectXRenderingComponent.T1.cs" />
@@ -100,10 +102,10 @@
     <Compile Include="SharpDX\Length.cs" />
     <Compile Include="SharpDX\Direct3D\OrthogonalProjectionCamera.cs" />
     <Compile Include="SharpDX\Direct3D\PerspectiveProjectionCamera.cs" />
-    <Compile Include="SharpDX\Direct3D\Position3D.cs" />
-    <Compile Include="SharpDX\Direct3D\Position3DChangedEventArgs.cs" />
+    <Compile Include="SharpDX\Direct3D\TranslationTransformation3D.cs" />
     <Compile Include="SharpDX\Direct3D\ProjectionPlanes.cs" />
     <Compile Include="SharpDX\RenderingStartedEventArgs.cs" />
+    <Compile Include="SharpDX\ScaleFactor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Kingo.snk">
