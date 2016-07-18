@@ -3,15 +3,15 @@ using SharpDX.Direct3D11;
 
 namespace Kingo.SharpDX.DemoApp
 {
-    internal sealed class PixelShaderStage : DirectXRenderingComponent<DeviceContext1>
+    internal sealed class PixelShaderStage : DirectXRenderingComponent<CubeImageRenderingPipeline>
     {
         private readonly Disposable<ShaderBytecode> _bytecode;
         private readonly Disposable<PixelShader> _shader;
 
-        internal PixelShaderStage(Device1 device, ShaderFlags shaderFlags)
+        internal PixelShaderStage(CubeImageRenderingPipeline pipeline, ShaderFlags shaderFlags)
         {
             _bytecode = new Disposable<ShaderBytecode>(() => CompileShaderBytecode(shaderFlags));
-            _shader = new Disposable<PixelShader>(() => NewPixelShader(device, _bytecode.Value));
+            _shader = new Disposable<PixelShader>(() => NewPixelShader(pipeline.Device, _bytecode.Value));
         }        
 
         #region [====== Factory Methods ======]
@@ -26,7 +26,23 @@ namespace Kingo.SharpDX.DemoApp
             return new PixelShader(device, bytecode);
         }
 
-        #endregion
+        #endregion        
+
+        #region [====== RenderNextFrame ======]
+
+        protected override void Initialize(CubeImageRenderingPipeline pipeline)
+        {
+            base.Initialize(pipeline);
+
+            Initialize(pipeline.Device.ImmediateContext1);
+        }   
+
+        private void Initialize(DeviceContext context)
+        {
+            context.PixelShader.Set(_shader.Value);
+        }
+
+        #endregion        
 
         #region [====== Dispose ======]
 
@@ -36,19 +52,8 @@ namespace Kingo.SharpDX.DemoApp
             _bytecode.Dispose();
 
             base.DisposeManagedResources();
-        }        
+        }
 
         #endregion
-
-        #region [====== Initialize & RenderNextFrame ======]
-
-        protected override void Initialize(DeviceContext1 context)
-        {
-            base.Initialize(context);
-
-            context.PixelShader.Set(_shader.Value);
-        }       
-
-        #endregion        
     }
 }

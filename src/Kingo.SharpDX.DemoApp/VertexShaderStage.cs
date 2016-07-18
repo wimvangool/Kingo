@@ -6,19 +6,19 @@ using Device1 = SharpDX.Direct3D11.Device1;
 
 namespace Kingo.SharpDX.DemoApp
 {
-    internal sealed class VertexShaderStage : DirectXRenderingComponent<DeviceContext1>
+    internal sealed class VertexShaderStage : DirectXRenderingComponent<CubeImageRenderingPipeline>
     {
         private readonly Disposable<ShaderBytecode> _bytecode;
         private readonly Disposable<VertexShader> _shader;
         private readonly Disposable<InputLayout> _inputLayout;
         private readonly Buffer _worldViewProjectionBuffer;
 
-        internal VertexShaderStage(Device1 device, ShaderFlags shaderFlags)
+        internal VertexShaderStage(CubeImageRenderingPipeline pipeline, ShaderFlags shaderFlags)
         {
             _bytecode = new Disposable<ShaderBytecode>(() => CompileShaderBytecode(shaderFlags));
-            _shader = new Disposable<VertexShader>(() => NewVertexShader(device, _bytecode.Value));
-            _inputLayout = new Disposable<InputLayout>(() => NewInputLayout(device, _bytecode.Value));
-            _worldViewProjectionBuffer = NewWorldViewProjectionBuffer(device);
+            _shader = new Disposable<VertexShader>(() => NewVertexShader(pipeline.Device, _bytecode.Value));
+            _inputLayout = new Disposable<InputLayout>(() => NewInputLayout(pipeline.Device, _bytecode.Value));
+            _worldViewProjectionBuffer = NewWorldViewProjectionBuffer(pipeline.Device);
         }              
 
         #region [====== Factory Methods ======]
@@ -51,6 +51,31 @@ namespace Kingo.SharpDX.DemoApp
             return new Buffer(device, Utilities.SizeOf<Matrix>(), ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
         }
 
+        #endregion        
+
+        #region [====== RenderNextFrame ======]
+
+        protected override void Initialize(CubeImageRenderingPipeline pipeline)
+        {
+            base.Initialize(pipeline);
+
+            Initialize(pipeline.Device.ImmediateContext1);
+        } 
+        
+        private void Initialize(DeviceContext context)
+        {
+            context.InputAssembler.InputLayout = _inputLayout.Value;
+            context.VertexShader.SetConstantBuffer(0, _worldViewProjectionBuffer);
+            context.VertexShader.Set(_shader.Value);
+        }
+
+        protected override void RenderFrame(CubeImageRenderingPipeline pipeline)
+        {
+            base.RenderFrame(pipeline);
+
+            // TODO: Update world-view projection buffer.
+        }
+
         #endregion
 
         #region [====== Dispose ======]
@@ -63,20 +88,7 @@ namespace Kingo.SharpDX.DemoApp
             _bytecode.Dispose();
 
             base.DisposeManagedResources();
-        }              
-
-        #endregion
-
-        #region [====== Initialize & RenderNextFrame ======]
-
-        protected override void Initialize(DeviceContext1 context)
-        {
-            base.Initialize(context);
-
-            context.InputAssembler.InputLayout = _inputLayout.Value;
-            context.VertexShader.SetConstantBuffer(0, _worldViewProjectionBuffer);
-            context.VertexShader.Set(_shader.Value);
-        }        
+        }
 
         #endregion
     }

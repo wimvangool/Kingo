@@ -88,24 +88,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has already been initialized..
-        /// </summary>
-        internal static string DirectXRenderingComponent_AlreadyInitialized {
-            get {
-                return ResourceManager.GetString("DirectXRenderingComponent_AlreadyInitialized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has not been initialized..
-        /// </summary>
-        internal static string DirectXRenderingComponent_NotInitialized {
-            get {
-                return ResourceManager.GetString("DirectXRenderingComponent_NotInitialized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Angle ({0}) must be within the range of &lt;{1}, {2}&gt;..
         /// </summary>
         internal static string FieldOfVision_InvalidAngle {

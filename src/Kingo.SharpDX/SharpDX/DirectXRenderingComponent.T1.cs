@@ -1,77 +1,53 @@
 ﻿using System;
-using Kingo.Resources;
 
 namespace Kingo.SharpDX
 {
     /// <summary>
     /// Serves as a base class for all classes that implement the <see cref="IDirectXRenderingComponent{T}"/> interface.
     /// </summary>
-    /// <typeparam name="TContext">Type of the context to render to.</typeparam>
-    public abstract class DirectXRenderingComponent<TContext> : Disposable, IDirectXRenderingComponent<TContext> where TContext : class
+    /// <typeparam name="TPipeline">Type of the pipeline this component belongs to.</typeparam>
+    public abstract class DirectXRenderingComponent<TPipeline> : Disposable, IDirectXRenderingComponent<TPipeline> where TPipeline : class
     {
         private bool _isInitialized;
 
-        #region [====== Initialize & RenderNextFrame ======]
-
-        void IDirectXRenderingComponent<TContext>.Initialize(TContext context)
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
-            if (_isInitialized)
-            {
-                throw NewAlreadyInitializedException(this);
-            }
-            Initialize(context);
-        }
+        #region [====== RenderNextFrame ======]       
 
         /// <summary>
         /// Initializes the component.
         /// </summary>
-        /// <param name="context">The DirectX Context.</param>
-        protected virtual void Initialize(TContext context)
+        /// <param name="pipeline">The rendering pipeline.</param>
+        protected virtual void Initialize(TPipeline pipeline)
         {
             _isInitialized = true;
         }
 
-        void IDirectXRenderingComponent<TContext>.RenderNextFrame(TContext context)
+        /// <inheritdoc />
+        public void RenderNextFrame(TPipeline pipeline)
         {
             if (IsDisposed)
             {
                 throw NewObjectDisposedException();
             }
+            if (pipeline == null)
+            {
+                throw new ArgumentNullException(nameof(pipeline));
+            }
             if (_isInitialized)
             {
-                if (context == null)
-                {
-                    throw new ArgumentNullException(nameof(context));
-                }
-                RenderNextFrame(context);
-                return;
+                RenderFrame(pipeline);                               
+            }
+            else
+            {
+                Initialize(pipeline);
+                RenderFrame(pipeline);
             }            
-            throw NewNotInitializedException(this);
         }
 
         /// <summary>
-        /// Performs rendering operations for the next frame.
+        /// Renders the next frame.
         /// </summary>
-        /// <param name="context">The DirectX Context.</param>
-        protected virtual void RenderNextFrame(TContext context) { }
-
-        private static Exception NewAlreadyInitializedException(object component)
-        {
-            var messageFormat = ExceptionMessages.DirectXRenderingComponent_AlreadyInitialized;
-            var message = string.Format(messageFormat, component.GetType().Name);
-            return new InvalidOperationException(message);
-        }
-
-        private static Exception NewNotInitializedException(object component)
-        {
-            var messageFormat = ExceptionMessages.DirectXRenderingComponent_NotInitialized;
-            var message = string.Format(messageFormat, component.GetType().Name);
-            return new InvalidOperationException(message);
-        }
+        /// <param name="pipeline">The current rendering pipeline.</param>
+        protected virtual void RenderFrame(TPipeline pipeline) { }               
 
         #endregion
     }

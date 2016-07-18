@@ -88,6 +88,7 @@
     <Compile Include="SharpDX\DirectXImage.cs" />
     <Compile Include="SharpDX\DirectXRenderingComponent.T1.cs" />
     <Compile Include="SharpDX\DirectXRenderingPipeline.cs" />
+    <Compile Include="SharpDX\DirectXRenderingPipelineBase.cs" />
     <Compile Include="SharpDX\DirectXRenderingPipelineDecorator.cs" />
     <Compile Include="SharpDX\DirectXRenderLoop.cs" />
     <Compile Include="SharpDX\Direct3D\FieldOfVision.cs" />

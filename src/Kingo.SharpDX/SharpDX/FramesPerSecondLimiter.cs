@@ -40,9 +40,38 @@ namespace Kingo.SharpDX
         protected override IDirectXRenderingPipeline Pipeline
         {
             get;
+        }        
+
+        #region [====== Initialize & RenderNextFrame ======]
+
+        /// <inheritdoc />
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _limiter.Start();
         }
 
-        #region [====== OnDisposing ======]
+        /// <inheritdoc />
+        protected override void RenderFrame()
+        {
+            // The current thread should only wait a fixed amount of time before
+            // continuing, so that the image can still respond to user input
+            // in a timely fashion.
+            if (_limiterHandle.WaitOne(_MaximumWaitTimeInMilliseconds))
+            {
+                base.RenderFrame();
+            }
+        }
+
+        private void HandleLimiterElapsed(object sender, ElapsedEventArgs e)
+        {
+            _limiterHandle.Set();
+        }
+
+        #endregion
+
+        #region [====== Dispose ======]
 
         /// <inheritdoc />
         protected override void DisposeManagedResources()
@@ -51,35 +80,6 @@ namespace Kingo.SharpDX
             _limiter.Dispose();
 
             base.DisposeManagedResources();
-        }        
-
-        #endregion
-
-        #region [====== Initialize & RenderNextFrame ======]
-
-        /// <inheritdoc />
-        public override void Initialize()
-        {
-            base.Initialize();
-
-            _limiter.Start();
-        }
-
-        /// <inheritdoc />
-        public override void RenderNextFrame()
-        {
-            // The current thread should only wait a fixed amount of time before
-            // continueing, so that the image can still respond to user input
-            // in a timely fashion.
-            if (_limiterHandle.WaitOne(_MaximumWaitTimeInMilliseconds))
-            {
-                base.RenderNextFrame();
-            }
-        }
-
-        private void HandleLimiterElapsed(object sender, ElapsedEventArgs e)
-        {
-            _limiterHandle.Set();
         }
 
         #endregion

@@ -59,8 +59,7 @@ namespace Kingo.SharpDX
             _imageDispatcher = Dispatcher.CurrentDispatcher;
             _imageDispatcherRunning.Set();
 
-            _renderingPipeline = _image.CreateRenderingPipeline(_imageDispatcher, arguments.Handle, arguments.Size);
-            _renderingPipeline.Initialize();
+            _renderingPipeline = _image.CreateRenderingPipeline(_imageDispatcher, arguments.Handle, arguments.Size);            
 
             try
             {

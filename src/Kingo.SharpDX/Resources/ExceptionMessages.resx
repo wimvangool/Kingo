@@ -126,12 +126,6 @@
   <data name="DirectXImage_AlreadyRendering" xml:space="preserve">
     <value>Already in Rendering State.</value>
   </data>
-  <data name="DirectXRenderingComponent_AlreadyInitialized" xml:space="preserve">
-    <value>'{0}' has already been initialized.</value>
-  </data>
-  <data name="DirectXRenderingComponent_NotInitialized" xml:space="preserve">
-    <value>'{0}' has not been initialized.</value>
-  </data>
   <data name="FieldOfVision_InvalidAngle" xml:space="preserve">
     <value>Angle ({0}) must be within the range of &lt;{1}, {2}&gt;.</value>
   </data>

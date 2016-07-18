@@ -5,37 +5,19 @@ namespace Kingo.SharpDX
     /// <summary>
     /// When implemented by a concrete class, represents a component that is part of the rendering process of an image.
     /// </summary>
-    /// <typeparam name="TContext">Type of the context to render to.</typeparam>
-    public interface IDirectXRenderingComponent<in TContext> : IDisposable where TContext : class
-    {
-        /// <summary>
-        /// Initializes the component.
-        /// </summary>
-        /// <param name="context">The DirectX Context.</param>
-        /// <exception cref="ObjectDisposedException">
-        /// This component has already been disposed.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// This component has aready been initialized.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="context"/> is <c>null</c>.
-        /// </exception>
-        void Initialize(TContext context);
-
+    /// <typeparam name="TPipeline">Type of the pipeline this component belongs to.</typeparam>
+    public interface IDirectXRenderingComponent<in TPipeline> : IDisposable where TPipeline : class
+    {        
         /// <summary>
         /// Renders the next frame.
         /// </summary>
-        /// <param name="context">The DirectX Context.</param>
+        /// <param name="pipeline">The current rendering pipeline.</param>
         /// <exception cref="ObjectDisposedException">
         /// This component has already been disposed.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// This component has not yet been initialized.
-        /// </exception>
+        /// </exception>        
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="context"/> is <c>null</c>.
+        /// <paramref name="pipeline"/> is <c>null</c>.
         /// </exception>
-        void RenderNextFrame(TContext context);
+        void RenderNextFrame(TPipeline pipeline);
     }
 }

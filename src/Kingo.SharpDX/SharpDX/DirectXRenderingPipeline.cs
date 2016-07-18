@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Timers;
-using System.Windows.Threading;
-using Kingo.Resources;
 using Timer = System.Timers.Timer;
 
 namespace Kingo.SharpDX
@@ -10,14 +8,14 @@ namespace Kingo.SharpDX
     /// <summary>
     /// Serves as a base class for any <see cref="IDirectXRenderingPipeline"  /> implementation.
     /// </summary>
-    public abstract class DirectXRenderingPipeline : Disposable, IDirectXRenderingPipeline
+    public abstract class DirectXRenderingPipeline : DirectXRenderingPipelineBase, IDirectXRenderingPipeline
     {
         private const int _SamplesPerSecond = 5;
         private const double _TimerIntervalInMilliseconds = 1000.0 / _SamplesPerSecond;        
 
-        private readonly Timer _framesPerSecondTimer;        
-        private int _frameCount;
-        private bool _isInitialized;
+        private readonly Timer _framesPerSecondTimer;
+        private int _framesPerSecond;      
+        private int _frameCount;       
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectXRenderingPipeline" /> class.
@@ -29,48 +27,33 @@ namespace Kingo.SharpDX
             _framesPerSecondTimer.Elapsed += HandleTimerElapsed;            
         }
 
-        /// <inheritdoc />
-        public abstract Dispatcher Dispatcher
-        {
-            get;
-        }
+        #region [====== Dispatcher & Name ======]
 
         /// <inheritdoc />
-        public virtual string Name
+        public override string Name
         {
             get { return GetType().Name; }
         }
 
-        #region [====== Dispose ======]
-
-        /// <inheritdoc />
-        protected override void DisposeManagedResources()
-        {
-            _framesPerSecondTimer.Dispose();
-
-            base.DisposeManagedResources();
-        }        
-
         #endregion
 
-        #region [====== FramesPerSecond ======]
+        #region [====== FramesPerSecond & TimePerFrame ======]
 
         /// <inheritdoc />
-        public int FramesPerSecond
+        public override int FramesPerSecond
         {
-            get;
-            private set;
+            get { return _framesPerSecond; }
         }
 
         /// <inheritdoc />
-        public TimeSpan TimePerFrame
+        public override TimeSpan TimePerFrame
         {
             get { return FramesPerSecond == 0 ? TimeSpan.MaxValue : ToTimePerFrame(FramesPerSecond); }
         }
 
         private void HandleTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            FramesPerSecond = Interlocked.Exchange(ref _frameCount, 0) * _SamplesPerSecond;
+            _framesPerSecond = Interlocked.Exchange(ref _frameCount, 0) * _SamplesPerSecond;
         }
 
         private static TimeSpan ToTimePerFrame(int framesPerSecond)
@@ -83,64 +66,32 @@ namespace Kingo.SharpDX
 
         #endregion
 
-        #region [====== Initialize & RenderNextFrame ======]
+        #region [====== RenderNextFrame ======]        
 
-        void IDirectXRenderingPipeline.Initialize()
+        /// <inheritdoc />
+        protected override void Initialize()
         {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
-            if (_isInitialized)
-            {
-                throw NewAlreadyInitializedException(this);
-            }
-            Initialize();            
+            base.Initialize();
+
+            _framesPerSecondTimer.Start();            
         }
 
-        /// <summary>
-        /// Initializes the pipeline.
-        /// </summary>
-        protected virtual void Initialize()
-        {
-            _framesPerSecondTimer.Start();
-            _isInitialized = true;
-        }
-
-        void IDirectXRenderingPipeline.RenderNextFrame()
-        {
-            if (IsDisposed)
-            {
-                throw NewObjectDisposedException();
-            }
-            if (_isInitialized)
-            {                
-                RenderNextFrame();
-                return;
-            }
-            throw NewNotInitializedException(this);
-        }
-
-        /// <summary>
-        /// Renders the next frame.
-        /// </summary>
-        protected virtual void RenderNextFrame()
+        /// <inheritdoc />
+        protected override void RenderFrame()
         {
             Interlocked.Increment(ref _frameCount);
         }
 
-        private static Exception NewAlreadyInitializedException(IDirectXRenderingPipeline pipeline)
-        {
-            var messageFormat = ExceptionMessages.DirectXRenderingComponent_AlreadyInitialized;
-            var message = string.Format(messageFormat, pipeline.Name);
-            return new InvalidOperationException(message);
-        }
+        #endregion
 
-        private static Exception NewNotInitializedException(IDirectXRenderingPipeline pipeline)
+        #region [====== Dispose ======]
+
+        /// <inheritdoc />
+        protected override void DisposeManagedResources()
         {
-            var messageFormat = ExceptionMessages.DirectXRenderingComponent_NotInitialized;
-            var message = string.Format(messageFormat, pipeline.Name);
-            return new InvalidOperationException(message);
+            _framesPerSecondTimer.Dispose();
+
+            base.DisposeManagedResources();
         }
 
         #endregion

@@ -2,13 +2,13 @@
 
 namespace Kingo.SharpDX.DemoApp
 {
-    internal sealed class OutputMergerStage : DirectXRenderingComponent<DeviceContext1>
+    internal sealed class OutputMergerStage : DirectXRenderingComponent<CubeImageRenderingPipeline>
     {
         private readonly DepthStencilState _depthStencilState;
 
-        internal OutputMergerStage(Device1 device)
+        internal OutputMergerStage(CubeImageRenderingPipeline pipeline)
         {
-            _depthStencilState = NewDepthStencilState(device);
+            _depthStencilState = NewDepthStencilState(pipeline.Device);
         }        
 
         #region [====== Factory Methods ======]
@@ -45,6 +45,22 @@ namespace Kingo.SharpDX.DemoApp
             };
         }
 
+        #endregion        
+
+        #region [====== RenderNextFrame ======]
+
+        protected override void Initialize(CubeImageRenderingPipeline pipeline)
+        {
+            base.Initialize(pipeline);
+
+            Initialize(pipeline.Device.ImmediateContext1);
+        }
+
+        private void Initialize(DeviceContext context)
+        {
+            context.OutputMerger.DepthStencilState = _depthStencilState;
+        }
+
         #endregion
 
         #region [====== Dispose ======]
@@ -54,19 +70,8 @@ namespace Kingo.SharpDX.DemoApp
             _depthStencilState.Dispose();
 
             base.DisposeManagedResources();
-        }              
+        }
 
         #endregion
-
-        #region [====== Initialize & RenderNextFrame ======]
-
-        protected override void Initialize(DeviceContext1 context)
-        {
-            base.Initialize(context);
-
-            context.OutputMerger.DepthStencilState = _depthStencilState;
-        }        
-
-        #endregion          
     }
 }

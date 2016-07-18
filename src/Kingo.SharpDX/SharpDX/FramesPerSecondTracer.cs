@@ -38,15 +38,15 @@ namespace Kingo.SharpDX
             get;
         }
 
+        #region [====== RenderNextFrame ======]
+
         /// <inheritdoc />
-        protected override void DisposeManagedResources()
+        protected override void Initialize()
         {
-            _framesPerSecondTimer.Dispose();
+            base.Initialize();
 
-            Pipeline.Dispose();
-
-            base.DisposeManagedResources();
-        }        
+            _framesPerSecondTimer.Start();
+        }
 
         private void HandleSecondElapsed(object sender, ElapsedEventArgs e)
         {
@@ -58,12 +58,19 @@ namespace Kingo.SharpDX
             Trace.WriteLine($"[{Name}] {message}.");
         }
 
-        /// <inheritdoc />
-        public override void Initialize()
-        {
-            base.Initialize();
+        #endregion
 
-            _framesPerSecondTimer.Start();
-        }                
+        #region [====== Dispose ======]
+
+        protected override void DisposeManagedResources()
+        {
+            _framesPerSecondTimer.Dispose();
+
+            Pipeline.Dispose();
+
+            base.DisposeManagedResources();
+        }
+
+        #endregion
     }
 }

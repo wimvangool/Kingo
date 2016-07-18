@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Threading;
 using Kingo.SharpDX.Direct3D;
@@ -17,45 +16,74 @@ namespace Kingo.SharpDX.DemoApp
         const ShaderFlags _ShaderFlags = ShaderFlags.Debug;
 #else
         const ShaderFlags _ShaderFlags = ShaderFlags.None;
-#endif        
-        private readonly Device1 _device;
-        private readonly SwapChain1 _swapChain;
-        private readonly RenderTargetView _renderTargetView;
-        private readonly Texture2D _backbuffer;
-
-        private readonly VertexShaderStage _vertexShader;
-        private readonly PixelShaderStage _pixelShader;
-        private readonly OutputMergerStage _outputMerger;
-
-        private readonly PerspectiveProjectionCamera _camera;
-
+#endif                                
         internal CubeImageRenderingPipeline(Dispatcher dispatcher, IntPtr handle, Size size)
         {
             Dispatcher = dispatcher;
 
-            _device = CreateDevice();            
-            _swapChain = CreateSwapChain(_device, handle, size);            
-            _backbuffer = CreateBackbuffer(_swapChain);            
-            _renderTargetView = CreateRenderTargetView(_device, _backbuffer);            
-
-#if DEBUG
-            _device.DebugName = "The Device";
-            _swapChain.DebugName = "The SwapChain";
-            _backbuffer.DebugName = "The Backbuffer";
-            _renderTargetView.DebugName = "The RenderTargetView";
-#endif
-
-            _vertexShader = new VertexShaderStage(_device, _ShaderFlags);
-            _pixelShader = new PixelShaderStage(_device, _ShaderFlags);
-            _outputMerger = new OutputMergerStage(_device);
-
-            _camera = new PerspectiveProjectionCamera();
+            Device = CreateDevice();            
+            SwapChain = CreateSwapChain(Device, handle, size);            
+            BackBuffer = CreateBackbuffer(SwapChain);            
+            RenderTargetView = CreateRenderTargetView(Device, BackBuffer);
+            Camera = new PerspectiveProjectionCamera();  
+            
+            VertexShaderStage = new VertexShaderStage(this, _ShaderFlags);    
+            PixelShaderStage = new PixelShaderStage(this, _ShaderFlags);
+            OutputMergerStage = new OutputMergerStage(this);                  
         }
 
         public override Dispatcher Dispatcher
         {
             get;
         }
+
+        #region [====== Pipeline Components ======]
+
+        internal Device1 Device
+        {
+            get;
+        }       
+        
+        internal SwapChain1 SwapChain
+        {
+            get;
+        }
+
+        internal Texture2D BackBuffer
+        {
+            get;
+        }
+
+        internal RenderTargetView RenderTargetView
+        {
+            get;
+        }
+
+        internal PerspectiveProjectionCamera Camera
+        {
+            get;
+        }
+
+        #endregion
+
+        #region [====== Shaders ======]
+
+        private VertexShaderStage VertexShaderStage
+        {
+            get;
+        }
+
+        private PixelShaderStage PixelShaderStage
+        {
+            get;
+        }
+
+        private OutputMergerStage OutputMergerStage
+        {
+            get;
+        }
+
+        #endregion
 
         #region [====== Factory Methods ======]
 
@@ -112,59 +140,60 @@ namespace Kingo.SharpDX.DemoApp
             return new RenderTargetView(device, backbuffer);
         }
 
+        #endregion        
+
+        #region [====== RenderNextFrame ======] 
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+#if DEBUG
+            Device.DebugName = "The Device";
+            SwapChain.DebugName = "The SwapChain";
+            BackBuffer.DebugName = "The Backbuffer";
+            RenderTargetView.DebugName = "The RenderTargetView";
+#endif            
+        }
+
+        protected override void RenderFrame()
+        {            
+            ClearFrame();
+                        
+            // TODO: RenderFrame (core)
+
+            PresentFrame();
+        }
+
+        private void ClearFrame()
+        {
+            Device.ImmediateContext1.ClearRenderTargetView(RenderTargetView, new RawColor4(0.1f, 0.8f, 0.1f, 1.0f));
+        }
+
+        private void PresentFrame()
+        {
+            VertexShaderStage.RenderNextFrame(this);
+            PixelShaderStage.RenderNextFrame(this);
+            OutputMergerStage.RenderNextFrame(this);
+
+            SwapChain.Present(0, PresentFlags.None);
+        }
+
         #endregion
 
         #region [====== Dispose ======]
 
         protected override void DisposeManagedResources()
         {
-            _outputMerger.Dispose();
-            _pixelShader.Dispose();
-            _vertexShader.Dispose();
+            OutputMergerStage.Dispose();
+            PixelShaderStage.Dispose();
+            VertexShaderStage.Dispose();
 
-            _backbuffer.Dispose();
-            _renderTargetView.Dispose();
-            _swapChain.Dispose();
-            _device.Dispose();
+            RenderTargetView.Dispose();
+            BackBuffer.Dispose();            
+            SwapChain.Dispose();
+            Device.Dispose();
 
             base.DisposeManagedResources();
-        }              
-
-        #endregion
-
-        #region [====== Initialize & RenderNextFrame ======]
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            foreach (var component in Components)
-            {
-                component.Initialize(_device.ImmediateContext1);
-            }
-        }
-
-        protected override void RenderNextFrame()
-        {
-            base.RenderNextFrame();
-
-            _device.ImmediateContext1.ClearRenderTargetView(_renderTargetView, new RawColor4(0.1f, 0.8f, 0.1f, 1.0f));
-
-            foreach (var component in Components)
-            {
-                component.RenderNextFrame(_device.ImmediateContext1);
-            }
-            _swapChain.Present(0, PresentFlags.None);
-        }
-
-        private IEnumerable<IDirectXRenderingComponent<DeviceContext1>> Components
-        {
-            get
-            {
-                yield return _vertexShader;
-                yield return _pixelShader;
-                yield return _outputMerger;
-            }
         }
 
         #endregion

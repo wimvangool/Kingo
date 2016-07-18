@@ -48,18 +48,7 @@ namespace Kingo.SharpDX
 
         #endregion
 
-        #region [====== Initialize & RenderNextFrame ======]
-
-        /// <summary>
-        /// Initializes the pipeline.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">
-        /// The pipeline has already been disposed.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The pipeline has already been initialized.
-        /// </exception>
-        void Initialize();
+        #region [====== RenderNextFrame ======]        
 
         /// <summary>
         /// Renders the next frame.
