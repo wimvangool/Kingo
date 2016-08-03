@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.Wpf
+namespace Kingo.Windows
 {
     [TestClass]
     public sealed class AngleTest

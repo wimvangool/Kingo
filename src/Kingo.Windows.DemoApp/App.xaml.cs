@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Kingo.Wpf.DemoApp
+namespace Kingo.Windows.DemoApp
 {
     /// <summary>
     /// Interaction logic for App.xaml

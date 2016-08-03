@@ -30,13 +30,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6739EF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.TestEngine", "Kingo.TestEngine", "{AE117D11-835D-4EF4-8A81-CFCF5B13F9BB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.Wpf", "Kingo.Wpf", "{3A20FF13-C62E-4D0F-B2D0-8E672E66CE90}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.Windows", "Kingo.Windows", "{3A20FF13-C62E-4D0F-B2D0-8E672E66CE90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Kingo.Wpf", "Kingo.Wpf\03.Kingo.Wpf.csproj", "{7AB49A38-4B7E-487E-BDA3-E01DC21F31AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Kingo.Windows", "Kingo.Windows\03.Kingo.Windows.csproj", "{7AB49A38-4B7E-487E-BDA3-E01DC21F31AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Kingo.Wpf.Tests", "Kingo.Wpf.Tests\02.Kingo.Wpf.Tests.csproj", "{11A5C30B-59F8-4A07-83F1-E0F2377CEE60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Kingo.Windows.Tests", "Kingo.Windows.Tests\02.Kingo.Windows.Tests.csproj", "{11A5C30B-59F8-4A07-83F1-E0F2377CEE60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Kingo.Wpf.DemoApp", "Kingo.Wpf.DemoApp\01.Kingo.Wpf.DemoApp.csproj", "{6D7ED4E7-2C1F-496C-BEE8-7BA56F724D35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Kingo.Windows.DemoApp", "Kingo.Windows.DemoApp\01.Kingo.Windows.DemoApp.csproj", "{6D7ED4E7-2C1F-496C-BEE8-7BA56F724D35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

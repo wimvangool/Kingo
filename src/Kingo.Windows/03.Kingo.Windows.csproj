@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kingo</RootNamespace>
-    <AssemblyName>Kingo.Wpf</AssemblyName>
+    <AssemblyName>Kingo.Windows</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,10 +36,19 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,20 +62,40 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Wpf\Angle.cs" />
-    <Compile Include="Wpf\IProjectionCameraController.cs" />
-    <Compile Include="Wpf\ProjectionCameraController.cs" />
+    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Angle.cs" />
+    <Compile Include="Windows\Media3D\AlphaBetaGammaRotationSet.cs" />
+    <Compile Include="Windows\Media3D\AlphaBetaRotationSet.cs" />
+    <Compile Include="Windows\Media3D\AlphaRotationSet.cs" />
+    <Compile Include="Windows\Media3D\ControlMode.cs" />
+    <Compile Include="Windows\Media3D\ControlModeInputBinding.cs" />
+    <Compile Include="Windows\Media3D\EulerAngleRotationSet.cs" />
+    <Compile Include="Windows\Media3D\IProjectionCameraController.cs" />
+    <Compile Include="Windows\Media3D\KeyDownBinding.cs" />
+    <Compile Include="Windows\Media3D\ProjectionCameraController.cs" />
+    <Compile Include="Windows\Media3D\ProjectionCameraControllerBehavior.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Kingo.snk">
       <Link>Properties\Kingo.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>02.Kingo</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

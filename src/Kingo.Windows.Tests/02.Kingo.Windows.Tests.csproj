@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kingo</RootNamespace>
-    <AssemblyName>Kingo.Wpf.Tests</AssemblyName>
+    <AssemblyName>Kingo.Windows.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -41,9 +41,18 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -63,16 +72,18 @@
     </Compile>
     <Compile Include="MSTestEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Wpf\AngleTest.cs" />
+    <Compile Include="Windows\AngleTest.cs" />
+    <Compile Include="Windows\Media3D\ProjectionCameraControllerBehaviorTest.cs" />
+    <Compile Include="Windows\Media3D\ProjectionCameraControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj">
       <Project>{fa31c09f-6319-484b-96ec-88bf3c3fdb81}</Project>
       <Name>02.Kingo.TestEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kingo.Wpf\03.Kingo.Wpf.csproj">
+    <ProjectReference Include="..\Kingo.Windows\03.Kingo.Windows.csproj">
       <Project>{7ab49a38-4b7e-487e-bda3-e01dc21f31aa}</Project>
-      <Name>03.Kingo.Wpf</Name>
+      <Name>03.Kingo.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
@@ -83,6 +94,7 @@
     <None Include="..\Kingo.snk">
       <Link>Properties\Kingo.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

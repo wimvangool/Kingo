@@ -1,45 +1,51 @@
-﻿using System.Windows.Media.Media3D;
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Media.Media3D;
 
-namespace Kingo.Wpf
+namespace Kingo.Windows.Media3D
 {
     /// <summary>
     /// When implemented by a class, represents a controller for <see cref="ProjectionCamera">Projection Cameras</see> that is used
     /// to translate and rotate a camera.
     /// </summary>
-    public interface IProjectionCameraController
-    {        
-        #region [====== Translation ======]
-
-        /// <summary>
-        /// The current position of the camera.
-        /// </summary>
-        Point3D Position
-        {
-            get;
-        }
+    public interface IProjectionCameraController : INotifyPropertyChanged
+    {
+        #region [====== Translation ======]        
 
         /// <summary>
         /// Moves the camera along its horizontal axis (represented by <see cref="Left"/> and <see cref="Right"/>).
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        void MoveHorizontal(double distance);
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller.
+        /// </exception>
+        void MoveLeftRight(double distance);
 
         /// <summary>
         /// Moves the camera along its vertical axis (represented by <see cref="Up"/> and <see cref="Down"/>).
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        void MoveVertical(double distance);
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller.
+        /// </exception>
+        void MoveUpDown(double distance);
 
         /// <summary>
         /// Moves the camera forwards or backwards (represented by <see cref="Forward"/> and <see cref="Backward"/>).
         /// </summary>
         /// <param name="distance">The distance to move.</param>
-        void Move(double distance);
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller.
+        /// </exception>
+        void MoveForwardBackward(double distance);
 
         /// <summary>
         /// Moves the camera in the specified <paramref name="direction"/>.
         /// </summary>
         /// <param name="direction">The direction to move in.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller.
+        /// </exception>
         void Move(Vector3D direction);
 
         #endregion
@@ -98,18 +104,27 @@ namespace Kingo.Wpf
         /// Rotates the camera around its <see cref="Left"/> (or <see cref="Right"/>) vector in clockwise direction.
         /// </summary>
         /// <param name="angle">The rotation angle.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
         void Pitch(Angle angle);
 
         /// <summary>
         /// Rotates the camera around its <see cref="Up"/> (or <see cref="Down"/>) vector in clockwise direction.
         /// </summary>
         /// <param name="angle">The rotation angle.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
         void Yaw(Angle angle);
 
         /// <summary>
         /// Rotates the camera around its <see cref="Forward"/> (or <see cref="Backward"/>) vector in clockwise direction.
         /// </summary>
         /// <param name="angle">The rotation angle.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
         void Roll(Angle angle);
 
         /// <summary>
@@ -118,6 +133,9 @@ namespace Kingo.Wpf
         /// <param name="pitch">The pitch-angle.</param>
         /// <param name="yaw">The yaw-angle.</param>
         /// <param name="roll">The roll-angle.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
         void PitchYawRoll(Angle pitch, Angle yaw, Angle roll);
 
         /// <summary>
@@ -125,6 +143,9 @@ namespace Kingo.Wpf
         /// </summary>
         /// <param name="angle">The rotation-angle.</param>
         /// <param name="axis">The axis around which to rotate.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
         void Rotate(Angle angle, Vector3D axis);
 
         #endregion
