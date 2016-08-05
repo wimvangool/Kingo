@@ -19,6 +19,12 @@ namespace Kingo.Windows.Media3D
         #region [====== Initial State ======]
 
         [TestMethod]
+        public void Key_IsNull_IfControlModeIsJustCreated()
+        {
+            Assert.IsNull(_controlMode.Key);
+        }
+
+        [TestMethod]
         public void InputSource_IsNull_IfControlModeIsJustCreated()
         {
             Assert.IsNull(_controlMode.InputSource);
@@ -33,7 +39,47 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void IsActivated_IsFalse_IfControlModeIsJustCreated()
         {
-            
+            Assert.IsFalse(_controlMode.IsActivated);
+        }
+
+        [TestMethod]
+        public void InputBindings_IsEmpty_IfControlModeIsJustCreated()
+        {
+            Assert.IsNotNull(_controlMode.InputBindings);
+            Assert.AreEqual(0, _controlMode.InputBindings.Count);
+        }
+
+        #endregion
+
+        #region [====== Key ======]
+
+        [TestMethod]
+        public void KeyChanged_IsNotRaised_WhenKeyIsNotChanged()
+        {
+            var wasRaised = false;
+
+            _controlMode.KeyChanged += (s, e) => wasRaised = true;
+            _controlMode.Key = null;
+
+            Assert.IsFalse(wasRaised);
+        }
+
+        [TestMethod]
+        public void KeyChanged_IsRaised_WhenKeyIsChanged()
+        {
+            var wasRaised = false;
+            var newValue = new object();
+
+            _controlMode.KeyChanged += (s, e) =>
+            {
+                Assert.IsNull(e.OldValue);
+                Assert.AreSame(newValue, e.NewValue);
+
+                wasRaised = true;
+            };
+            _controlMode.Key = newValue;
+
+            Assert.IsTrue(wasRaised);
         }
 
         #endregion

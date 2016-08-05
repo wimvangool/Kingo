@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -21,9 +22,47 @@ namespace Kingo.Windows.Media3D
         {
             InputBindings = new ObservableCollection<ControlModeInputBinding>();
             InputBindings.CollectionChanged += HandleInputBindingsChanged;
-        }        
+        }
 
-        #region [====== Settings ======]
+        #region [====== Key ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="Key"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty KeyProperty =
+            DependencyProperty.Register(nameof(Key), typeof(object), typeof(ControlMode), new FrameworkPropertyMetadata(HandleKeyChanged));
+
+        /// <summary>
+        /// Gets or sets the key of this control-mode.
+        /// </summary>
+        public object Key
+        {
+            get { return GetValue(KeyProperty); }
+            set { SetValue(KeyProperty, value); }
+        }
+
+        /// <summary>
+        /// Occurs when the <see cref="Key"/>-property has changed.
+        /// </summary>
+        public event EventHandler<PropertyChangedEventArgs<object>> KeyChanged;
+
+        private static void HandleKeyChanged(DependencyObject instance, DependencyPropertyChangedEventArgs e)
+        {
+            var controlMode = instance as ControlMode;
+            if (controlMode != null)
+            {
+                controlMode.OnKeyChanged(e.OldValue, e.NewValue);
+            }
+        }
+
+        private void OnKeyChanged(object oldValue, object newValue)
+        {
+            KeyChanged.Raise(this, new PropertyChangedEventArgs<object>(oldValue, newValue));
+        }
+
+        #endregion
+
+        #region [====== InputBindings ======]
 
         /// <summary>
         /// Gets the collection of <see cref="ControlModeInputBinding">Settings</see> that have been defined for this mode.

@@ -30,6 +30,6 @@ namespace Kingo.Windows.Media3D
         public void AssertDeactivateBindingCallCountIs(int callCount)
         {
             Assert.AreEqual(callCount, _deactivateBindingCallCount);
-        }
+        }        
     }
 }

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ProjectionCameraControllerBehavior_InvalidOperation" xml:space="preserve">
+    <value>Operation '{0}' not allowed in state '{1}'.</value>
+  </data>
   <data name="ProjectionCameraController_NoCameraSet" xml:space="preserve">
     <value>Cannot perform the operation because no camera was set on the controller.</value>
   </data>

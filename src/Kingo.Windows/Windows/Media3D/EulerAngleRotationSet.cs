@@ -5,13 +5,13 @@ namespace Kingo.Windows.Media3D
 {
     /// <summary>
     /// An instance of this class represents a set of rotations that can be performed to transform one reference system into another.
-    /// <seealso cref="https://en.wikipedia.org/wiki/Euler_angles"/>.
+    /// <a href="https://en.wikipedia.org/wiki/Euler_angles">See this article about Calculating Euler Angles</a>.
     /// </summary>
     internal abstract class EulerAngleRotationSet
     {
         public abstract Quaternion ToQuaternion();        
 
-        public static EulerAngleRotationSet FromCameraReferenceSystem(Vector3D x0, Vector3D z0, Vector3D x1, Vector3D z1)
+        public static EulerAngleRotationSet FromReferenceSystems(Vector3D x0, Vector3D z0, Vector3D x1, Vector3D z1)
         {           
             var rotationAngle = Vector3D.AngleBetween(z0, z1);
 

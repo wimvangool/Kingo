@@ -68,5 +68,14 @@ namespace Kingo.Resources {
                 return ResourceManager.GetString("ProjectionCameraController_NoCameraSet", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &apos;{0}&apos; not allowed in state &apos;{1}&apos;..
+        /// </summary>
+        internal static string ProjectionCameraControllerBehavior_InvalidOperation {
+            get {
+                return ResourceManager.GetString("ProjectionCameraControllerBehavior_InvalidOperation", resourceCulture);
+            }
+        }
     }
 }

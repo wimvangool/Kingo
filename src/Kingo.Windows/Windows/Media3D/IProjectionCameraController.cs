@@ -10,6 +10,15 @@ namespace Kingo.Windows.Media3D
     /// </summary>
     public interface IProjectionCameraController : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets or sets the camera that is controlled by this controller.
+        /// </summary>
+        ProjectionCamera Camera
+        {
+            get;
+            set;
+        }
+
         #region [====== Translation ======]        
 
         /// <summary>

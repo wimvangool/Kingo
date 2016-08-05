@@ -205,7 +205,7 @@ namespace Kingo.Windows.Media3D
             {
                 return _currentRotation.Value;
             }
-            return FromCameraReferenceSystem(_DefaultRightDirection, _DefaultUpDirection, Right, Up).ToQuaternion();        
+            return FromReferenceSystems(_DefaultRightDirection, _DefaultUpDirection, Right, Up).ToQuaternion();        
         }                  
 
         private static RotateTransform3D CreateRotationTransformation(Quaternion rotation)
