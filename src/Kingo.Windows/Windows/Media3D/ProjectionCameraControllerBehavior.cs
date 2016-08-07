@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -61,7 +60,7 @@ namespace Kingo.Windows.Media3D
 
             private InvalidOperationException NewInvalidOperationException([CallerMemberName] string operationName = null)
             {
-                var messageFormat = ExceptionMessages.ProjectionCameraControllerBehavior_InvalidOperation;
+                var messageFormat = ExceptionMessages.State_InvalidOperation;
                 var message = string.Format(messageFormat, operationName, GetType().Name);
                 return new InvalidOperationException(message);
             }

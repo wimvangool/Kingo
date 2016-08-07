@@ -387,7 +387,7 @@ namespace Kingo.Windows.Media3D
         [ExpectedException(typeof(InvalidOperationException))]
         public void Rotate_Throws_IfCameraIsNotSet()
         {
-            _controller.Rotate(RandomAngle(), RandomDirection());
+            _controller.Rotate(RandomDirection(), RandomAngle());
         }
 
         [TestMethod]
@@ -402,7 +402,7 @@ namespace Kingo.Windows.Media3D
 
                 wasRaised = true;                
             };
-            _controller.Rotate(RandomAngle(), RandomDirection());
+            _controller.Rotate(RandomDirection(), RandomAngle());
 
             Assert.IsTrue(wasRaised);
         }
@@ -413,7 +413,7 @@ namespace Kingo.Windows.Media3D
             var camera = new PerspectiveCamera();
 
             _controller.Camera = camera;
-            _controller.Rotate(Angle.FromDegrees(90), _controller.Left);
+            _controller.Rotate(_controller.Left, 90);
 
             AssertAreEqual(0, -1, 0, _controller.Camera.LookDirection);
             AssertAreEqual(0, 0, -1, _controller.Camera.UpDirection);
@@ -425,8 +425,8 @@ namespace Kingo.Windows.Media3D
             var camera = new PerspectiveCamera();
 
             _controller.Camera = camera;
-            _controller.Rotate(Angle.FromDegrees(45), _controller.Left);
-            _controller.Rotate(Angle.FromDegrees(45), _controller.Left);
+            _controller.Rotate(_controller.Left, 45);
+            _controller.Rotate(_controller.Left, 45);
 
             AssertAreEqual(0, -1, 0, _controller.Camera.LookDirection);
             AssertAreEqual(0, 0, -1, _controller.Camera.UpDirection);
@@ -443,7 +443,7 @@ namespace Kingo.Windows.Media3D
 
             // Camera is now rotated back to its default rotation.
             _controller.Camera = camera;
-            _controller.Rotate(Angle.FromDegrees(-90), _controller.Up);
+            _controller.Rotate(_controller.Up, -90);
 
             AssertAreEqual(0, 0, -1, camera.LookDirection);
             AssertAreEqual(0, 1, 0, camera.UpDirection);
@@ -460,7 +460,7 @@ namespace Kingo.Windows.Media3D
 
             // Camera is now rotated back to its default rotation.
             _controller.Camera = camera;
-            _controller.Rotate(Angle.FromDegrees(180), _controller.Up);
+            _controller.Rotate(_controller.Up, 180);
 
             AssertAreEqual(0, 0, -1, camera.LookDirection);
             AssertAreEqual(0, 1, 0, camera.UpDirection);
@@ -477,7 +477,7 @@ namespace Kingo.Windows.Media3D
 
             // Camera is now rotated back to its default rotation.
             _controller.Camera = camera;
-            _controller.Rotate(Angle.FromDegrees(90), _controller.Forward);
+            _controller.Rotate(_controller.Forward, 90);
 
             AssertAreEqual(0, 0, -1, camera.LookDirection);
             AssertAreEqual(0, 1, 0, camera.UpDirection);
@@ -494,7 +494,7 @@ namespace Kingo.Windows.Media3D
 
             // Camera is now rotated back to its default rotation.
             _controller.Camera = camera;
-            _controller.Rotate(Angle.FromDegrees(-90), _controller.Forward);
+            _controller.Rotate(_controller.Forward, -90);
 
             AssertAreEqual(0, 0, -1, camera.LookDirection);
             AssertAreEqual(0, 1, 0, camera.UpDirection);
@@ -511,7 +511,7 @@ namespace Kingo.Windows.Media3D
 
             // Camera is now rotated back to its default rotation.
             _controller.Camera = camera;
-            _controller.Rotate(Angle.FromDegrees(180), _controller.Forward);
+            _controller.Rotate(_controller.Forward, 180);
 
             AssertAreEqual(0, 0, -1, camera.LookDirection);
             AssertAreEqual(0, 1, 0, camera.UpDirection);

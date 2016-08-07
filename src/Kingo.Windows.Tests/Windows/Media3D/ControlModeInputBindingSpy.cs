@@ -7,6 +7,11 @@ namespace Kingo.Windows.Media3D
         private int _activateBindingCallCount;
         private int _deactivateBindingCallCount;
 
+        public ControlModeInputBindingSpy()
+        {
+            Command = new ProjectionCameraControllerCommandSpy();
+        }
+
         protected override void ActivateBinding()
         {
             _activateBindingCallCount++;
@@ -15,6 +20,21 @@ namespace Kingo.Windows.Media3D
         protected override void DeactivateBinding()
         {
             _deactivateBindingCallCount++;
+        }
+
+        public void RaiseCommandTrigger()
+        {
+            OnCommandTriggerRaised();
+        }
+
+        public void AssertCommandIs(IProjectionCameraControllerCommand command)
+        {
+            Assert.AreSame(command, Command);
+        }
+
+        public void AssertCommandParameterIs(object parameter)
+        {
+            Assert.AreEqual(parameter, CommandParameter);
         }
 
         public void AssertControlModeIs(ControlMode controlMode)

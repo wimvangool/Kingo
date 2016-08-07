@@ -59,7 +59,7 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== Rotation ======]     
+        #region [====== Rotation - Orientation ======]     
 
         /// <summary>
         /// Returns the normalized Up-vector of the camera.
@@ -109,14 +109,9 @@ namespace Kingo.Windows.Media3D
             get;
         }
 
-        /// <summary>
-        /// Rotates the camera around its <see cref="Left"/> (or <see cref="Right"/>) vector in clockwise direction.
-        /// </summary>
-        /// <param name="angle">The rotation angle.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
-        void Pitch(Angle angle);
+        #endregion
+
+        #region [====== Rotation - Yaw ======]
 
         /// <summary>
         /// Rotates the camera around its <see cref="Up"/> (or <see cref="Down"/>) vector in clockwise direction.
@@ -128,6 +123,41 @@ namespace Kingo.Windows.Media3D
         void Yaw(Angle angle);
 
         /// <summary>
+        /// Rotates the camera around its <see cref="Up"/> (or <see cref="Down"/>) vector in clockwise direction.
+        /// </summary>
+        /// <param name="angleInDegrees">The rotation angle in degrees.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
+        void Yaw(double angleInDegrees);
+
+        #endregion
+
+        #region [====== Rotation - Pitch ======]
+
+        /// <summary>
+        /// Rotates the camera around its <see cref="Left"/> (or <see cref="Right"/>) vector in clockwise direction.
+        /// </summary>
+        /// <param name="angle">The rotation angle.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
+        void Pitch(Angle angle);
+
+        /// <summary>
+        /// Rotates the camera around its <see cref="Left"/> (or <see cref="Right"/>) vector in clockwise direction.
+        /// </summary>
+        /// <param name="angleInDegrees">The rotation angle.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
+        void Pitch(double angleInDegrees);
+
+        #endregion
+
+        #region [====== Rotation - Roll ======]
+
+        /// <summary>
         /// Rotates the camera around its <see cref="Forward"/> (or <see cref="Backward"/>) vector in clockwise direction.
         /// </summary>
         /// <param name="angle">The rotation angle.</param>
@@ -137,25 +167,78 @@ namespace Kingo.Windows.Media3D
         void Roll(Angle angle);
 
         /// <summary>
+        /// Rotates the camera around its <see cref="Forward"/> (or <see cref="Backward"/>) vector in clockwise direction.
+        /// </summary>
+        /// <param name="angleInDegrees">The rotation angle.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
+        void Roll(double angleInDegrees);
+
+        #endregion
+
+        #region [====== Rotation - YawPitchRoll ======]
+
+        /// <summary>
         /// Peforms the specified rotations in one single operation.
         /// </summary>
-        /// <param name="pitch">The pitch-angle.</param>
         /// <param name="yaw">The yaw-angle.</param>
+        /// <param name="pitch">The pitch-angle.</param>        
         /// <param name="roll">The roll-angle.</param>
         /// <exception cref="InvalidOperationException">
         /// No camera has been attached to the controller, or the associated camera could not be rotated.
         /// </exception>
-        void PitchYawRoll(Angle pitch, Angle yaw, Angle roll);
+        void YawPitchRoll(Angle yaw, Angle pitch, Angle roll);
+
+        /// <summary>
+        /// Peforms the specified rotations in one single operation.
+        /// </summary>
+        /// <param name="yawInDegrees">The yaw-angle in degrees.</param>
+        /// <param name="pitchInDegrees">The pitch-angle in degrees.</param>
+        /// <param name="rollInDegrees">The roll-angle in degrees.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
+        void YawPitchRoll(double yawInDegrees, double pitchInDegrees, double rollInDegrees);
+
+        #endregion
+
+        #region [====== Rotate ======]        
 
         /// <summary>
         /// Rotates the camera in clockwise direction around the specified axis.
         /// </summary>
-        /// <param name="angle">The rotation-angle.</param>
         /// <param name="axis">The axis around which to rotate.</param>
+        /// <param name="angle">The rotation-angle.</param> 
+        /// <exception cref="ArgumentException">
+        /// <paramref name="axis"/> represents the 0-vector.
+        /// </exception>       
         /// <exception cref="InvalidOperationException">
         /// No camera has been attached to the controller, or the associated camera could not be rotated.
         /// </exception>
-        void Rotate(Angle angle, Vector3D axis);
+        void Rotate(Vector3D axis, Angle angle);
+
+        /// <summary>
+        /// Rotates the camera in clockwise direction around the specified axis.
+        /// </summary>
+        /// <param name="axis">The axis around which to rotate.</param>
+        /// <param name="angleInDegrees">The rotation-angle in degrees.</param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="axis"/> represents the 0-vector.
+        /// </exception>          
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
+        void Rotate(Vector3D axis, double angleInDegrees);
+
+        /// <summary>
+        /// Applies the specified <paramref name="rotation"/> to the camera.
+        /// </summary>
+        /// <param name="rotation">The rotation to perform.</param>
+        /// <exception cref="InvalidOperationException">
+        /// No camera has been attached to the controller, or the associated camera could not be rotated.
+        /// </exception>
+        void Rotate(AxisAngleRotation3D rotation);
 
         #endregion
     }

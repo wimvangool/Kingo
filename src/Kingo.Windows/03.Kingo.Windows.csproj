@@ -68,7 +68,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Angle.cs" />
+    <Compile Include="Angle.cs" />
+    <Compile Include="Windows\Command.T1.cs" />
     <Compile Include="Windows\Media3D\AlphaBetaGammaRotationSet.cs" />
     <Compile Include="Windows\Media3D\AlphaBetaRotationSet.cs" />
     <Compile Include="Windows\Media3D\AlphaRotationSet.cs" />
@@ -76,9 +77,10 @@
     <Compile Include="Windows\Media3D\ControlModeInputBinding.cs" />
     <Compile Include="Windows\Media3D\EulerAngleRotationSet.cs" />
     <Compile Include="Windows\Media3D\IProjectionCameraController.cs" />
-    <Compile Include="Windows\Media3D\KeyDownBinding.cs" />
+    <Compile Include="Windows\Media3D\IProjectionCameraControllerCommand.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraController.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerBehavior.cs" />
+    <Compile Include="Windows\Media3D\ProjectionCameraControllerCommand.T1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Kingo.snk">

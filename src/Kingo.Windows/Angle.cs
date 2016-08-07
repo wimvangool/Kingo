@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Kingo.Windows
+namespace Kingo
 {
     /// <summary>
     /// Represents an angle that can be expressed in radians or degrees.

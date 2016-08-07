@@ -82,6 +82,7 @@
     <Compile Include="Windows\Media3D\ControlModeInputBindingTest.cs" />
     <Compile Include="Windows\Media3D\ControlModeTest.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerBehaviorTest.cs" />
+    <Compile Include="Windows\Media3D\ProjectionCameraControllerCommandSpy.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>

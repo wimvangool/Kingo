@@ -96,13 +96,12 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== Rotation ======]
+        #region [====== Rotation - Orientation ======]
 
         private static readonly Vector3D _DefaultLookDirection = new Vector3D(0, 0, -1);
         private static readonly Vector3D _DefaultUpDirection = new Vector3D(0, 1, 0);
         private static readonly Vector3D _DefaultLeftDirection = new Vector3D(-1, 0, 0);
-        private static readonly Vector3D _DefaultRightDirection = new Vector3D(1, 0, 0);
-        private Quaternion? _currentRotation;
+        private static readonly Vector3D _DefaultRightDirection = new Vector3D(1, 0, 0);        
 
         /// <inheritdoc />
         public Vector3D Up => Normalize(Vector3D.CrossProduct(Forward, Left));
@@ -148,56 +147,136 @@ namespace Kingo.Windows.Media3D
         }
 
         /// <inheritdoc />
-        public Vector3D Backward => Negate(Forward);                
+        public Vector3D Backward => Negate(Forward);
 
-        /// <inheritdoc />
-        public void Pitch(Angle angle)
+        private static Vector3D Normalize(Vector3D vector)
         {
-            Rotate(angle, Right);
+            vector.Normalize();
+            return vector;
         }
+
+        private static Vector3D Negate(Vector3D vector)
+        {
+            vector.Negate();
+            return vector;
+        }
+
+        #endregion
+
+        #region [====== Rotation - Yaw ======]
+
+        private Vector3D YawAxis => Up;
 
         /// <inheritdoc />
         public void Yaw(Angle angle)
         {
-            Rotate(angle, Up);
+            Yaw(angle.ToDegrees());
         }
+
+        /// <inheritdoc />
+        public void Yaw(double angleInDegrees)
+        {
+            Rotate(YawAxis, angleInDegrees);
+        }
+
+        #endregion
+
+        #region [====== Rotation - Pitch ======]
+
+        private Vector3D PitchAxis => Right;
+
+        /// <inheritdoc />
+        public void Pitch(Angle angle)
+        {
+            Pitch(angle.ToDegrees());
+        }
+
+        /// <inheritdoc />
+        public void Pitch(double angleInDegrees)
+        {
+            Rotate(PitchAxis, angleInDegrees);
+        }
+
+        #endregion
+
+        #region [====== Rotation - Roll ======]
+
+        private Vector3D RollAxis => Forward;
 
         /// <inheritdoc />
         public void Roll(Angle angle)
         {
-            Rotate(angle, Backward);
+            Roll(angle.ToDegrees());
         }
 
         /// <inheritdoc />
-        public void PitchYawRoll(Angle pitch, Angle yaw, Angle roll)
+        public void Roll(double angleInDegrees)
         {
-            var right = Right;
-            var up = Up;
-            var backward = Backward;
+            Rotate(RollAxis, angleInDegrees);
+        }
 
-            Rotate(pitch, right);
-            Rotate(yaw, up);
-            Rotate(roll, backward);
+        #endregion
+
+        #region [====== Rotation - YawPitchRoll ======]
+
+        /// <inheritdoc />
+        public void YawPitchRoll(Angle yaw, Angle pitch, Angle roll)
+        {
+            YawPitchRoll(yaw.ToDegrees(), pitch.ToDegrees(), roll.ToDegrees());
         }
 
         /// <inheritdoc />
-        public void Rotate(Angle angle, Vector3D axis)
+        public void YawPitchRoll(double yawInDegrees, double pitchInDegrees, double rollInDegrees)
+        {
+            YawPitchRoll(
+                new AxisAngleRotation3D(YawAxis, yawInDegrees),
+                new AxisAngleRotation3D(PitchAxis, pitchInDegrees),
+                new AxisAngleRotation3D(RollAxis, rollInDegrees));
+        }
+
+        private void YawPitchRoll(AxisAngleRotation3D yaw, AxisAngleRotation3D pitch, AxisAngleRotation3D roll)
+        {
+            Rotate(yaw);
+            Rotate(pitch);
+            Rotate(roll);
+        }
+
+        #endregion
+
+        #region [====== Rotate ======]
+
+        private Quaternion? _currentRotation;
+
+        /// <inheritdoc />
+        public void Rotate(Vector3D axis, Angle angle)
+        {
+            Rotate(axis, angle.ToDegrees());
+        }
+
+        /// <inheritdoc />
+        public void Rotate(Vector3D axis, double angleInDegrees)
+        {
+            Rotate(new AxisAngleRotation3D(axis, angleInDegrees));
+        }
+
+        /// <inheritdoc />
+        public void Rotate(AxisAngleRotation3D rotation)
         {
             var camera = Camera;
             if (camera != null)
             {
                 var oldRotation = CurrentRotation();
-                var newRotation = new Quaternion(axis, angle.ToDegrees()) * oldRotation;
+                var newRotation = new Quaternion(rotation.Axis, rotation.Angle) * oldRotation;
                 var rotationTransformation = CreateRotationTransformation(newRotation);
 
                 camera.LookDirection = rotationTransformation.Transform(_DefaultLookDirection);
                 camera.UpDirection = rotationTransformation.Transform(_DefaultUpDirection);
 
                 _currentRotation = newRotation;
-                return;                
+                return;
             }
             throw NewNoCameraSetException();
-        }
+        }        
 
         private Quaternion CurrentRotation()
         {
@@ -212,18 +291,6 @@ namespace Kingo.Windows.Media3D
         {                        
             return new RotateTransform3D(new QuaternionRotation3D(rotation));
         }
-
-        private static Vector3D Normalize(Vector3D vector)
-        {
-            vector.Normalize();
-            return vector;
-        }
-
-        private static Vector3D Negate(Vector3D vector)
-        {
-            vector.Negate();
-            return vector;
-        }                        
 
         #endregion
     }

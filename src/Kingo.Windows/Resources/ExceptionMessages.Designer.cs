@@ -61,6 +61,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command could not be executed with parameter &apos;{0}&apos;..
+        /// </summary>
+        internal static string Command_CannotExecuteCommand {
+            get {
+                return ResourceManager.GetString("Command_CannotExecuteCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot perform the operation because no camera was set on the controller..
         /// </summary>
         internal static string ProjectionCameraController_NoCameraSet {
@@ -72,9 +81,9 @@ namespace Kingo.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Operation &apos;{0}&apos; not allowed in state &apos;{1}&apos;..
         /// </summary>
-        internal static string ProjectionCameraControllerBehavior_InvalidOperation {
+        internal static string State_InvalidOperation {
             get {
-                return ResourceManager.GetString("ProjectionCameraControllerBehavior_InvalidOperation", resourceCulture);
+                return ResourceManager.GetString("State_InvalidOperation", resourceCulture);
             }
         }
     }
