@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.Math;
@@ -15,26 +16,21 @@ namespace Kingo.Windows.Media3D
         public void Setup()
         {
             _controller = new ProjectionCameraController();            
-        }
+        }        
 
         #region [====== PropertyChanged ======]
 
         [TestMethod]
         public void PropertyChanged_IsRaised_WhenCameraIsChanged()
         {
-            var wasRaised = false;
-            string propertyName = null;
+            var properties = new List<string>();
 
-            _controller.PropertyChanged += (s, e) =>
-            {
-                wasRaised = true;
-                propertyName = e.PropertyName;
-            };
+            _controller.PropertyChanged += (s, e) => properties.Add(e.PropertyName);
 
             _controller.Camera = new PerspectiveCamera();
 
-            Assert.IsTrue(wasRaised);
-            Assert.IsNull(propertyName);
+            Assert.AreEqual(1, properties.Count);
+            Assert.IsNull(properties[0]);            
         }
 
         #endregion
@@ -393,18 +389,23 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Rotate_RaisesPropertyChangedEventForEveryDirection()
         {
-            var wasRaised = false;
+            var properties = new List<string>();
             
             _controller.Camera = new PerspectiveCamera();
-            _controller.PropertyChanged += (s, e) =>
-            {
-                Assert.IsNull(e.PropertyName);
-
-                wasRaised = true;                
-            };
+            _controller.PropertyChanged += (s, e) => properties.Add(e.PropertyName);
             _controller.Rotate(RandomDirection(), RandomAngle());
 
-            Assert.IsTrue(wasRaised);
+            Assert.AreEqual(7, properties.Count);
+            Assert.IsTrue(properties.Contains(nameof(_controller.Rotation)));
+
+            Assert.IsTrue(properties.Contains(nameof(_controller.Left)));
+            Assert.IsTrue(properties.Contains(nameof(_controller.Right)));
+
+            Assert.IsTrue(properties.Contains(nameof(_controller.Up)));
+            Assert.IsTrue(properties.Contains(nameof(_controller.Down)));
+
+            Assert.IsTrue(properties.Contains(nameof(_controller.Forward)));
+            Assert.IsTrue(properties.Contains(nameof(_controller.Backward)));
         }
 
         [TestMethod]

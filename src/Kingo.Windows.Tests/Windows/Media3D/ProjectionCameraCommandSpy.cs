@@ -3,21 +3,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Windows.Media3D
 {
-    internal sealed class ProjectionCameraControllerCommandSpy : Command<object>, IProjectionCameraControllerCommand
+    internal sealed class ProjectionCameraCommandSpy : CameraCommand<object>
     {
         private readonly List<object> _executions;
         private bool _canExecute;
-        private int _attachCount;
-        private int _detachCount;
+        
+        private int _addCount;
+        private int _removeCount;
 
-        public ProjectionCameraControllerCommandSpy()
+        public ProjectionCameraCommandSpy()
         {
             _executions = new List<object>();
         }
 
         protected override bool CanExecuteCommand(object parameter)
         {
-            return _canExecute;
+            return _canExecute && base.CanExecuteCommand(parameter);
         }
 
         public new bool CanExecute
@@ -37,41 +38,42 @@ namespace Kingo.Windows.Media3D
             }
         }
 
-        #region [====== Attach & Detach ======]
+        #region [====== Add & Remove ======]      
 
-        public IProjectionCameraController Controller
+        public override void Add(IProjectionCameraController controller)
         {
-            get;
-            private set;
+            base.Add(controller);
+
+            _addCount++;
         }
 
-        public void Attach(IProjectionCameraController controller)
+        public override void Remove(IProjectionCameraController controller)
         {
-            Controller = controller;
+            base.Remove(controller);
 
-            _attachCount++;
+            _removeCount++;
         }
 
-        public void Detach()
+        public void AssertAddCountIs(int count)
         {
-            _detachCount++;
+            Assert.AreEqual(count, _addCount);
         }
 
-        public void AssertAttachCountIs(int count)
+        public void AssertRemoveCountIs(int count)
         {
-            Assert.AreEqual(count, _attachCount);
-        }
-
-        public void AssertDetachCountIs(int count)
-        {
-            Assert.AreEqual(count, _detachCount);
+            Assert.AreEqual(count, _removeCount);
         }
 
         #endregion
 
         #region [====== Execution ======]
 
-        protected override void ExecuteCommand(object parameter)
+        protected override bool CanExecuteCommand(object parameter, IProjectionCameraController controller)
+        {
+            return true;
+        }
+
+        protected override void ExecuteCommand(object parameter, IProjectionCameraController controller)
         {
             _executions.Add(parameter);
         }

@@ -19,7 +19,15 @@ namespace Kingo.Windows.Media3D
             set;
         }
 
-        #region [====== Translation ======]        
+        #region [====== Translation ======]   
+        
+        /// <summary>
+        /// Indicates whether or not this controller is able to move the camera.
+        /// </summary>
+        bool CanMove
+        {
+            get;
+        }     
 
         /// <summary>
         /// Moves the camera along its horizontal axis (represented by <see cref="Left"/> and <see cref="Right"/>).
@@ -203,7 +211,15 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== Rotate ======]        
+        #region [====== Rotate ======]     
+        
+        /// <summary>
+        /// Indicates whether or not this controller is able to rotate the camera.
+        /// </summary>
+        bool CanRotate
+        {
+            get;
+        }   
 
         /// <summary>
         /// Rotates the camera in clockwise direction around the specified axis.

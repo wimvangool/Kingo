@@ -8,6 +8,6 @@
         public MainWindow()
         {
             InitializeComponent();
-        }             
+        }                
     }
 }

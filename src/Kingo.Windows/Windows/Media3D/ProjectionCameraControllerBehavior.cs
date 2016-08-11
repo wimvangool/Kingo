@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Markup;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 using Kingo.Resources;
 
 namespace Kingo.Windows.Media3D
@@ -16,27 +21,30 @@ namespace Kingo.Windows.Media3D
     /// as moving, panning, zooming and orbiting the camera.
     /// </summary>
     [ContentProperty(nameof(ControlModes))]
-    public sealed class ProjectionCameraControllerBehavior : Behavior<ProjectionCamera>
+    public sealed class ProjectionCameraControllerBehavior : Behavior<Viewport3D>
     {
         #region [====== State ======]
 
         private abstract class State
         {
+            protected Viewport3D Viewport => Behavior.AssociatedObject;
+
             protected abstract ProjectionCameraControllerBehavior Behavior
             {
                 get;
             }
 
             protected void MoveTo(State newState)
-            {
-                Behavior._currentState.Exit();
-                Behavior._currentState = newState;
-                Behavior._currentState.Enter();
+            {                
+                Behavior.CurrentState = newState;                                                            
             }
 
-            protected virtual void Enter() { }
+            internal virtual void Enter()
+            {
+                Debug.WriteLine("Entered State: {0}.", GetType().Name as object);
+            }
 
-            protected virtual void Exit() { }
+            internal virtual void Exit() { }
 
             public virtual void OnAttached()
             {
@@ -46,11 +54,9 @@ namespace Kingo.Windows.Media3D
             public virtual void OnDetaching()
             {
                 throw NewInvalidOperationException();
-            }
+            }           
 
-            public virtual void OnInputSourceChanged() { }
-
-            public virtual void OnControllerChanged(IProjectionCameraController oldController, IProjectionCameraController newController) { }
+            public virtual void OnControllerChanged(IProjectionCameraController newController) { }
 
             public virtual void OnActiveModeKeyChanged(object newActiveKeyMode) { }
 
@@ -63,7 +69,7 @@ namespace Kingo.Windows.Media3D
                 var messageFormat = ExceptionMessages.State_InvalidOperation;
                 var message = string.Format(messageFormat, operationName, GetType().Name);
                 return new InvalidOperationException(message);
-            }
+            }            
         }
 
         #endregion
@@ -84,8 +90,61 @@ namespace Kingo.Windows.Media3D
 
             public override void OnAttached()
             {
-                MoveTo(new PassiveState(Behavior));
+                MoveTo(new LoadingState(Behavior));
+            }            
+        }
+
+        #endregion
+
+        #region [====== LoadingState ======]
+
+        private sealed class LoadingState : State
+        {
+            private bool _moveToAttachedState = true;
+
+            public LoadingState(ProjectionCameraControllerBehavior behavior)
+            {
+                Behavior = behavior;
             }
+
+            protected override ProjectionCameraControllerBehavior Behavior
+            {
+                get;
+            }
+
+            internal override void Enter()
+            {
+                base.Enter();
+
+                Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Loaded, (Action) OnLoaded);
+            }
+
+            internal override void Exit()
+            {
+                _moveToAttachedState = false;
+
+                base.Exit();
+            }
+
+            private void OnLoaded()
+            {
+                if (_moveToAttachedState)
+                {
+                    if (Behavior._focusManager.HasFocus(Viewport))
+                    {
+                        MoveTo(new PassiveState(Behavior));
+                    }
+                    else
+                    {
+                        MoveTo(new UnfocusedState(Behavior, true));
+                    }
+                }
+            }            
+
+            public override void OnDetaching()
+            {
+                MoveTo(new DetachedState(Behavior));
+            }           
         }
 
         #endregion
@@ -94,24 +153,117 @@ namespace Kingo.Windows.Media3D
 
         private abstract class AttachedState : State
         {
+            private FocusWatcher _focusWatcher;
+
+            internal override void Enter()
+            {
+                base.Enter();
+
+                _focusWatcher = Behavior._focusManager.CreateFocusWatcher(Viewport);
+                _focusWatcher.GotFocus += HandleGotFocus;
+                _focusWatcher.LostFocus += HandleLostFocus;
+            }            
+
+            internal override void Exit()
+            {
+                _focusWatcher.LostFocus -= HandleLostFocus;
+                _focusWatcher.GotFocus -= HandleGotFocus;
+                _focusWatcher = null;               
+
+                base.Exit();
+            }                       
+
+            protected virtual void HandleGotFocus(object sender, EventArgs e) { }
+            
+            protected virtual void HandleLostFocus(object sender, EventArgs e) { }
+
             public override void OnDetaching()
             {
                 MoveTo(new DetachedState(Behavior));
+            }                        
+        }
+
+        #endregion
+
+        #region [====== UnfocusedState ======]
+
+        private sealed class UnfocusedState : AttachedState
+        {            
+            public UnfocusedState(ProjectionCameraControllerBehavior behavior, bool isFirstTime = false)
+            {
+                Behavior = behavior;
+                IsFirstTime = isFirstTime;
             }            
+
+            protected override ProjectionCameraControllerBehavior Behavior
+            {
+                get;
+            }
+
+            private bool IsFirstTime
+            {
+                get;
+            }
+
+            internal override void Enter()
+            {         
+                base.Enter();
+
+                Viewport.MouseDown += HandleViewportMouseDown;  
+                
+                if (IsFirstTime)
+                {
+                    Focus(Viewport);
+                }
+            }            
+
+            internal override void Exit()
+            {
+                Viewport.MouseDown -= HandleViewportMouseDown;
+
+                base.Exit();
+            }
+
+            private void HandleViewportMouseDown(object sender, MouseButtonEventArgs e)
+            {
+                Focus(Viewport);
+            }
+
+            private void Focus(UIElement viewport)
+            {
+                Behavior._focusManager.Focus(viewport);
+            }
+
+            protected override void HandleGotFocus(object sender, EventArgs e)
+            {
+                MoveTo(new PassiveState(Behavior));
+            }                       
+        }
+
+        #endregion
+
+        #region [====== FocusedState ======]
+
+        private abstract class FocusedState : AttachedState
+        {                     
+            protected override void HandleLostFocus(object sender, EventArgs e)
+            {
+                MoveTo(new UnfocusedState(Behavior));
+            }                        
         }
 
         #endregion
 
         #region [====== PassiveState ======]
 
-        private sealed class PassiveState : AttachedState
+        private sealed class PassiveState : FocusedState
         {
             public PassiveState(ProjectionCameraControllerBehavior behavior)
             {
                 Behavior = behavior;
             }
 
-            private bool CanMoveToActiveState
+            private bool HasController
             {
                 get { return Behavior.Controller != null; }
             }
@@ -121,8 +273,10 @@ namespace Kingo.Windows.Media3D
                 get;
             }
 
-            protected override void Enter()
-            {
+            internal override void Enter()
+            {                                
+                base.Enter();
+
                 foreach (var controlMode in Behavior.ControlModes)
                 {
                     controlMode.KeyChanged += HandleControlModeKeyChanged;
@@ -130,22 +284,23 @@ namespace Kingo.Windows.Media3D
                 TryMoveToActiveState();
             }
 
-            protected override void Exit()
+            internal override void Exit()
             {
                 foreach (var controlMode in Behavior.ControlModes)
                 {
                     controlMode.KeyChanged -= HandleControlModeKeyChanged;
                 }
+                base.Exit();
             }
 
             private void HandleControlModeKeyChanged(object sender, PropertyChangedEventArgs<object> e)
             {
-                if (CanMoveToActiveState)
+                if (HasController)
                 {
                     var controlMode = sender as ControlMode;
                     if (controlMode != null && Equals(controlMode.Key, Behavior.ActiveModeKey))
                     {
-                        MoveTo(new ActiveState(Behavior, controlMode));
+                        MoveTo(new ActiveState(Behavior, controlMode, Behavior.Controller));
                     }
                 }
             }
@@ -159,9 +314,9 @@ namespace Kingo.Windows.Media3D
             {
                 controlMode.KeyChanged += HandleControlModeKeyChanged;
 
-                if (CanMoveToActiveState && Equals(controlMode.Key, Behavior.ActiveModeKey))
+                if (HasController && Equals(controlMode.Key, Behavior.ActiveModeKey))
                 {
-                    MoveTo(new ActiveState(Behavior, controlMode));
+                    MoveTo(new ActiveState(Behavior, controlMode, Behavior.Controller));
                 }
             }
 
@@ -181,7 +336,7 @@ namespace Kingo.Windows.Media3D
 
                 if (TrySelectNewActiveControlMode(activeModeKey, out newActiveMode))
                 {
-                    MoveTo(new ActiveState(Behavior, newActiveMode));
+                    MoveTo(new ActiveState(Behavior, newActiveMode, Behavior.Controller));
                 }
             }
 
@@ -196,22 +351,19 @@ namespace Kingo.Windows.Media3D
                 newActiveMode = null;
                 return false;
             }
-
         }
 
         #endregion
 
         #region [====== ActiveState ======]
 
-        private sealed class ActiveState : AttachedState
-        {
-            private readonly ControlMode _activeMode;
-
-            public ActiveState(ProjectionCameraControllerBehavior behavior, ControlMode activeMode)
+        private sealed class ActiveState : FocusedState
+        {            
+            public ActiveState(ProjectionCameraControllerBehavior behavior, ControlMode activeMode, IProjectionCameraController controller)
             {
                 Behavior = behavior;
-
-                _activeMode = activeMode;
+                ActiveMode = activeMode;
+                Controller = controller;
             }
 
             protected override ProjectionCameraControllerBehavior Behavior
@@ -219,55 +371,63 @@ namespace Kingo.Windows.Media3D
                 get;
             }
 
-            protected override void Enter()
-            {                
-                Enter(Behavior.Controller);
-            }
-
-            private void Enter(IProjectionCameraController controller)
+            private ControlMode ActiveMode
             {
-                AttachCamera(controller, Behavior.AssociatedObject);
-
-                _activeMode.KeyChanged += HandleControlModeKeyChanged;
-                _activeMode.Activate(Behavior.InputSource, Behavior.Controller);
+                get;
             }
 
-            protected override void Exit()
+            private IProjectionCameraController Controller
             {
-                Exit(Behavior.Controller);
+                get;
             }
 
-            private void Exit(IProjectionCameraController controller)
+            internal override void Enter()
             {
-                _activeMode.KeyChanged -= HandleControlModeKeyChanged;
-                _activeMode.Deactivate();
+                base.Enter();
 
-                DetachCamera(controller);
+                CameraPropertyDescriptor.AddValueChanged(Behavior, HandleCameraChanged);
+                Controller.Camera = Viewport.Camera as ProjectionCamera;
+
+                ActiveMode.KeyChanged += HandleControlModeKeyChanged;
+                ActiveMode.Activate(Viewport, Controller);
             }
+
+            internal override void Exit()
+            {
+                ActiveMode.KeyChanged -= HandleControlModeKeyChanged;
+                ActiveMode.Deactivate();
+
+                CameraPropertyDescriptor.RemoveValueChanged(Behavior, HandleCameraChanged);
+
+                base.Exit();
+            }            
 
             public override void OnDetaching()
             {
                 MoveTo(new DetachedState(Behavior));
             }
 
-            public override void OnInputSourceChanged()
+            private void HandleCameraChanged(object sender, EventArgs e)
             {
-                Exit();
-                Enter();
+                var controller = Behavior.Controller;
+                if (controller != null)
+                {
+                    controller.Camera = Viewport.Camera as ProjectionCamera;
+                }
             }
 
-            public override void OnControllerChanged(IProjectionCameraController oldController, IProjectionCameraController newController)
+            private static DependencyPropertyDescriptor CameraPropertyDescriptor =>
+                DependencyPropertyDescriptor.FromProperty(Viewport3D.CameraProperty, typeof(Viewport3D));
+
+            public override void OnControllerChanged(IProjectionCameraController newController)
             {
                 if (newController == null)
-                {
-                    DetachCamera(oldController);
-
+                {                    
                     MoveTo(new PassiveState(Behavior));
                 }
                 else
                 {
-                    Exit(oldController);
-                    Enter(newController);
+                    MoveTo(new ActiveState(Behavior, ActiveMode, newController));
                 }
             }
 
@@ -283,30 +443,87 @@ namespace Kingo.Windows.Media3D
 
             public override void OnControlModeRemoved(ControlMode controlMode)
             {
-                if (ReferenceEquals(_activeMode, controlMode))
+                if (ReferenceEquals(ActiveMode, controlMode))
                 {
                     MoveTo(new PassiveState(Behavior));
                 }
+            }                                       
+        }
+
+        #endregion
+
+        #region [====== FocusManager & Watcher ======]
+
+        private sealed class FocusManager : IFocusManager
+        {
+            public bool HasFocus(UIElement element)
+            {
+                return ReferenceEquals(Keyboard.FocusedElement, element);
             }
 
-            private static void AttachCamera(IProjectionCameraController controller, ProjectionCamera camera)
+            public void Focus(UIElement element)
             {
-                controller.Camera = camera;
+                element.Focusable = true;
+
+                Keyboard.Focus(element);
             }
 
-            private static void DetachCamera(IProjectionCameraController controller)
+            public FocusWatcher CreateFocusWatcher(UIElement element)
             {
-                if (controller != null)
-                {
-                    controller.Camera = null;
-                }
+                return KeyboardFocusWatcher.StartWatching(element);
             }
+        }
+
+        private sealed class KeyboardFocusWatcher : FocusWatcher
+        {
+            private readonly UIElement _element;
+
+            private KeyboardFocusWatcher(UIElement element)
+            {
+                _element = element;
+            }
+
+            private void StartWatching()
+            {
+                Keyboard.AddGotKeyboardFocusHandler(_element, HandleGotFocus);
+                Keyboard.AddLostKeyboardFocusHandler(_element, HandleLostFocus);
+            }
+
+            private void StopWatching()
+            {
+                Keyboard.RemoveLostKeyboardFocusHandler(_element, HandleLostFocus);
+                Keyboard.RemoveGotKeyboardFocusHandler(_element, HandleGotFocus);                
+            }
+
+            private void HandleGotFocus(object sender, KeyboardFocusChangedEventArgs e)
+            {
+                OnGotFocus();
+            }
+
+            private void HandleLostFocus(object sender, KeyboardFocusChangedEventArgs e)
+            {
+                OnLostFocus();
+            }
+
+            protected override void DisposeManagedResources()
+            {
+                base.DisposeManagedResources();
+
+                StopWatching();
+            }
+
+            public static KeyboardFocusWatcher StartWatching(UIElement element)
+            {
+                var watcher = new KeyboardFocusWatcher(element);                
+                watcher.StartWatching();
+                return watcher;
+            }                        
         }
 
         #endregion
 
         private readonly ObservableCollection<ControlMode> _controlModes;
-        private State _currentState;
+        private readonly IFocusManager _focusManager;      
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectionCameraControllerBehavior" /> class.
@@ -319,40 +536,48 @@ namespace Kingo.Windows.Media3D
         /// </summary>
         /// <param name="controller">The controller that is used to control the associated <see cref="ProjectionCamera" />.</param>
         public ProjectionCameraControllerBehavior(IProjectionCameraController controller)
+            : this(controller, new FocusManager()) { }
+
+        internal ProjectionCameraControllerBehavior(IProjectionCameraController controller, IFocusManager focusManager)
         {
             _currentState = new DetachedState(this);
+            _focusManager = focusManager;
+
             _controlModes = new ObservableCollection<ControlMode>();
-            _controlModes.CollectionChanged += HandleControlModesChanged;
+            _controlModes.CollectionChanged += HandleControlModesChanged;            
 
-            Controller = controller;            
-        }        
-
-        #region [====== InputSource ======]
-
-        /// <summary>
-        /// Backing-field of the <see cref="InputSource"/>-property.
-        /// </summary>
-        public static readonly DependencyProperty InputSourceProperty =
-            DependencyProperty.Register(nameof(InputSource), typeof(UIElement), typeof(ProjectionCameraControllerBehavior), new FrameworkPropertyMetadata(HandleInputSourceChanged));
-
-        /// <summary>
-        /// Gets or sets the <see cref="UIElement" /> that is used to attach all eventhandlers that control the navigation to..
-        /// </summary>
-        public UIElement InputSource
-        {
-            get { return (UIElement)GetValue(InputSourceProperty); }
-            set { SetValue(InputSourceProperty, value); }
+            Controller = controller;
         }
 
-        private static void HandleInputSourceChanged(DependencyObject instance, DependencyPropertyChangedEventArgs e)
+        #region [====== Current State ======]        
+
+        /// <summary>
+        /// Occurs when the internal state of the behavior changes.
+        /// </summary>
+        public event EventHandler StateChanged;
+
+        private void OnStateChanged()
         {
-            var behavior = instance as ProjectionCameraControllerBehavior;
-            if (behavior != null)
+            StateChanged.Raise(this);
+        }
+
+        private State _currentState;
+
+        private State CurrentState
+        {
+            get { return _currentState; }
+            set
             {
-                behavior._currentState.OnInputSourceChanged();
+                if (_currentState != value)
+                {
+                    _currentState.Exit();
+                    _currentState = value;
+                    _currentState.Enter();
+
+                    OnStateChanged();
+                }
             }
         }
-
 
         #endregion
 
@@ -378,7 +603,7 @@ namespace Kingo.Windows.Media3D
             var behavior = instance as ProjectionCameraControllerBehavior;
             if (behavior != null)
             {
-                behavior._currentState.OnControllerChanged(e.OldValue as IProjectionCameraController, e.NewValue as IProjectionCameraController);
+                behavior._currentState.OnControllerChanged(e.NewValue as IProjectionCameraController);
             }
         }
 
@@ -446,11 +671,11 @@ namespace Kingo.Windows.Media3D
 
         /// <inheritdoc />
         protected override void OnAttached()
-        {
+        {            
             base.OnAttached();
 
-            _currentState.OnAttached();
-        }
+            _currentState.OnAttached();                                 
+        }        
 
         /// <inheritdoc />
         protected override void OnDetaching()

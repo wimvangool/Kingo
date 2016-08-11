@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Media3D;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -9,22 +7,23 @@ namespace Kingo.Windows.Media3D
 {
     [TestClass]
     public sealed class ProjectionCameraControllerBehaviorTest
-    {
-        private ProjectionCameraControllerBehavior _behavior;
+    {        
+        private ProjectionCameraControllerBehavior _behavior;        
+        private FocusManagerSpy _focusManager;
+        private Viewport3D _viewport;
 
         [TestInitialize]
         public void Setup()
-        {
-            _behavior = new ProjectionCameraControllerBehavior();            
-        }
-
-        #region [====== Initial State =====]
-
-        [TestMethod]
-        public void InputSource_IsNull_IfBehaviorIsJustCreated()
         {            
-            Assert.IsNull(_behavior.InputSource);
+            _behavior = new ProjectionCameraControllerBehavior(new ProjectionCameraController(), _focusManager = new FocusManagerSpy());
+            _behavior.StateChanged += (s, e) =>
+            {
+                DispatcherOperations.ProcessMessageQueue();
+            };
+            _viewport = new Viewport3D();
         }
+
+        #region [====== Initial State =====]        
 
         [TestMethod]
         public void Controller_IsNotNull_IfBehaviorIsJustCreated()
@@ -41,7 +40,7 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== Attach ======]  
+        #region [====== Attach ======]          
 
         [TestMethod]
         public void Attach_DoesNotActivateControlMode_IfControllerIsNull()
@@ -53,7 +52,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.Controller = null;
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             inputBinding.AssertActivateBindingCallCountIs(0);
         }
@@ -68,7 +67,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             inputBinding.AssertActivateBindingCallCountIs(0);
         }
@@ -82,7 +81,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             inputBinding.AssertActivateBindingCallCountIs(1);            
         }
@@ -99,7 +98,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.ActiveModeKey = key;
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             inputBinding.AssertActivateBindingCallCountIs(1);
         }
@@ -119,7 +118,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.Detach();
 
             inputBinding.AssertDeactivateBindingCallCountIs(0);
@@ -134,7 +133,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);            
             _behavior.Detach();
 
             inputBinding.AssertDeactivateBindingCallCountIs(1);
@@ -142,52 +141,44 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== InputSource Changes ======]
+        #region [====== Focus Changes ======]
 
         [TestMethod]
-        public void InputSourceChange_HasNoEffect_IfBehaviorIsInDetachedState()
+        public void LostFocus_MovesBehaviorIntoUnfocusedState_IfBehaviorIsInActivateState()
         {
             var inputBinding = new ControlModeInputBindingSpy();
             var controlMode = new ControlMode();
+            var key = Guid.NewGuid();
 
-            controlMode.Key = new object();
+            controlMode.Key = key;
             controlMode.InputBindings.Add(inputBinding);
 
+            _behavior.ActiveModeKey = key;
             _behavior.ControlModes.Add(controlMode);
-            _behavior.InputSource = CreateInputSource();
+            _behavior.Attach(_viewport);
 
-            inputBinding.AssertActivateBindingCallCountIs(0);
-            inputBinding.AssertDeactivateBindingCallCountIs(0);
+            _focusManager.Focus(null);
+
+            inputBinding.AssertActivateBindingCallCountIs(1);
+            inputBinding.AssertDeactivateBindingCallCountIs(1);
         }
 
         [TestMethod]
-        public void InputSourceChange_HasNoEffect_IfBehaviorIsInPassiveState()
+        public void GotFocus_MovesBehaviorIntoActiveState_IfBehaviorIsInUnfocusedState()
         {
             var inputBinding = new ControlModeInputBindingSpy();
             var controlMode = new ControlMode();
+            var key = Guid.NewGuid();
 
-            controlMode.Key = new object();
+            controlMode.Key = key;
             controlMode.InputBindings.Add(inputBinding);
 
+            _behavior.ActiveModeKey = key;
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
-            _behavior.InputSource = CreateInputSource();
+            _behavior.Attach(_viewport);
 
-            inputBinding.AssertActivateBindingCallCountIs(0);
-            inputBinding.AssertDeactivateBindingCallCountIs(0);
-        }
-
-        [TestMethod]
-        public void InputSourceChange_ReactivatesActiveControlMode_IfBehaviorIsInActiveState()
-        {
-            var inputBinding = new ControlModeInputBindingSpy();
-            var controlMode = new ControlMode();
-            
-            controlMode.InputBindings.Add(inputBinding);
-
-            _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
-            _behavior.InputSource = CreateInputSource();
+            _focusManager.Focus(null);
+            _focusManager.Focus(_viewport);
 
             inputBinding.AssertActivateBindingCallCountIs(2);
             inputBinding.AssertDeactivateBindingCallCountIs(1);
@@ -223,7 +214,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.Controller = CreateController();
 
             inputBinding.AssertActivateBindingCallCountIs(0);
@@ -239,7 +230,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.Controller = null;
 
             inputBinding.AssertActivateBindingCallCountIs(1);
@@ -255,7 +246,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.Controller = CreateController();
 
             inputBinding.AssertActivateBindingCallCountIs(2);
@@ -291,7 +282,7 @@ namespace Kingo.Windows.Media3D
             controlMode.Key = new object();
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ActiveModeKey = new object();
 
             inputBinding.AssertActivateBindingCallCountIs(0);
@@ -309,7 +300,7 @@ namespace Kingo.Windows.Media3D
             controlMode.Key = controlModeKey;
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ActiveModeKey = controlModeKey;
 
             inputBinding.AssertActivateBindingCallCountIs(1);
@@ -325,7 +316,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);            
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ActiveModeKey = new object();
 
             inputBinding.AssertActivateBindingCallCountIs(1);
@@ -348,7 +339,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             inputBindingA.AssertActivateBindingCallCountIs(1);
             inputBindingA.AssertDeactivateBindingCallCountIs(0);
@@ -395,7 +386,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.ActiveModeKey = new object();
-            _behavior.Attach(new PerspectiveCamera());            
+            _behavior.Attach(_viewport);            
 
             controlMode.Key = new object();
 
@@ -413,7 +404,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.ActiveModeKey = new object();
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             controlMode.Key = _behavior.ActiveModeKey;
 
@@ -437,7 +428,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             controlModeB.Key = new object();
 
@@ -457,7 +448,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);            
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
 
             controlMode.Key = new object();
 
@@ -493,7 +484,7 @@ namespace Kingo.Windows.Media3D
             controlMode.Key = new object();
             controlMode.InputBindings.Add(inputBinding);
 
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ControlModes.Add(controlMode);            
 
             inputBinding.AssertActivateBindingCallCountIs(0);
@@ -508,7 +499,7 @@ namespace Kingo.Windows.Media3D
             
             controlMode.InputBindings.Add(inputBinding);
 
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ControlModes.Add(controlMode);
 
             inputBinding.AssertActivateBindingCallCountIs(1);
@@ -524,7 +515,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ControlModes.Add(new ControlMode());
 
             inputBinding.AssertActivateBindingCallCountIs(1);
@@ -560,7 +551,7 @@ namespace Kingo.Windows.Media3D
             controlMode.InputBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ControlModes.Remove(controlMode);
 
             inputBinding.AssertActivateBindingCallCountIs(0);
@@ -583,7 +574,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ControlModes.Remove(controlModeB);
 
             inputBindingA.AssertActivateBindingCallCountIs(1);
@@ -609,7 +600,7 @@ namespace Kingo.Windows.Media3D
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);
-            _behavior.Attach(new PerspectiveCamera());
+            _behavior.Attach(_viewport);
             _behavior.ControlModes.Remove(controlModeA);
 
             inputBindingA.AssertActivateBindingCallCountIs(1);
@@ -619,12 +610,7 @@ namespace Kingo.Windows.Media3D
             inputBindingB.AssertDeactivateBindingCallCountIs(0);
         }
 
-        #endregion
-
-        private static UIElement CreateInputSource()
-        {
-            return new Label();
-        }
+        #endregion        
 
         private static IProjectionCameraController CreateController()
         {

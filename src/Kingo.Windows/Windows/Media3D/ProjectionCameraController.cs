@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Media.Media3D;
 using Kingo.Resources;
 using static Kingo.Windows.Media3D.EulerAngleRotationSet;
@@ -10,7 +9,7 @@ namespace Kingo.Windows.Media3D
     /// <summary>
     /// Represents a controller for <see cref="ProjectionCamera">ProjectionCameras</see> to translate and rotate it.
     /// </summary>
-    public class ProjectionCameraController : DependencyObject, IProjectionCameraController
+    public class ProjectionCameraController : IProjectionCameraController
     {                        
         #region [====== NotifyPropertyChanged ======]
 
@@ -21,39 +20,37 @@ namespace Kingo.Windows.Media3D
         /// Raised the <see cref="PropertyChanged"/> event for the specified <paramref name="propertyName"/>.
         /// </summary>
         /// <param name="propertyName">Name of the property that changed.</param>
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
 
-        #region [====== Camera ======]
+        #region [====== Camera ======]  
 
-        /// <summary>
-        /// Backing-field of the <see cref="Camera"/>-property.
-        /// </summary>
-        public static readonly DependencyProperty CameraProperty =
-            DependencyProperty.Register(nameof(Camera), typeof(ProjectionCamera), typeof(ProjectionCameraController), new FrameworkPropertyMetadata(HandleCameraChanged));
+        private ProjectionCamera _camera;      
 
         /// <summary>
         /// Gets or sets the camera that is controlled by this controller.
         /// </summary>
         public ProjectionCamera Camera
         {
-            get { return (ProjectionCamera) GetValue(CameraProperty); }
-            set { SetValue(CameraProperty, value); }
-        }
-
-        private static void HandleCameraChanged(DependencyObject instance, DependencyPropertyChangedEventArgs e)
-        {
-            var controller = instance as ProjectionCameraController;
-            if (controller != null)
+            get { return _camera; }
+            set
             {
-                controller._currentRotation = null;
-                controller.OnPropertyChanged(null);
+                var oldValue = _camera;
+                var newValue = value;
+
+                if (newValue != oldValue)
+                {
+                    _camera = newValue;
+                    _currentRotationCache = null;
+
+                    OnPropertyChanged();                   
+                }
             }
-        }
+        }        
 
         private static Exception NewNoCameraSetException()
         {
@@ -63,6 +60,9 @@ namespace Kingo.Windows.Media3D
         #endregion     
 
         #region [====== Translation ======]
+
+        /// <inheritdoc />
+        public virtual bool CanMove => Camera != null;
 
         /// <inheritdoc />
         public void MoveLeftRight(double distance)
@@ -85,14 +85,12 @@ namespace Kingo.Windows.Media3D
         /// <inheritdoc />
         public void Move(Vector3D direction)
         {
-            var camera = Camera;
-            if (camera != null)
+            if (Camera == null)
             {
-                camera.Position += direction;
-                return;                
+                throw NewNoCameraSetException();
             }
-            throw NewNoCameraSetException();
-        }
+            Camera.Position += direction;
+        }       
 
         #endregion
 
@@ -113,17 +111,16 @@ namespace Kingo.Windows.Media3D
         public Vector3D Left
         {
             get
-            {
-                var camera = Camera;
-                if (camera == null)
+            {                
+                if (Camera == null)
                 {
                     return _DefaultLeftDirection;
                 }
-                var left = Vector3D.CrossProduct(camera.UpDirection, camera.LookDirection);
+                var left = Vector3D.CrossProduct(Camera.UpDirection, Camera.LookDirection);
 
                 if (IsAlmost(0, left.Length))
                 {
-                    left = Vector3D.CrossProduct(_DefaultUpDirection, camera.LookDirection);
+                    left = Vector3D.CrossProduct(_DefaultUpDirection, Camera.LookDirection);
                 }
                 return Normalize(left);
             }
@@ -136,13 +133,12 @@ namespace Kingo.Windows.Media3D
         public Vector3D Forward
         {
             get
-            {
-                var camera = Camera;
-                if (camera == null)
+            {                
+                if (Camera == null)
                 {
                     return _DefaultLookDirection;
                 }
-                return Normalize(camera.LookDirection);
+                return Normalize(Camera.LookDirection);
             } 
         }
 
@@ -245,7 +241,25 @@ namespace Kingo.Windows.Media3D
 
         #region [====== Rotate ======]
 
-        private Quaternion? _currentRotation;
+        private Quaternion? _currentRotationCache;
+
+        /// <summary>
+        /// Gets the current rotation of the camera.
+        /// </summary>
+        public Quaternion Rotation
+        {
+            get
+            {
+                if (!_currentRotationCache.HasValue)
+                {
+                    _currentRotationCache = FromReferenceSystems(_DefaultRightDirection, _DefaultUpDirection, Right, Up).ToQuaternion();
+                }
+                return _currentRotationCache.Value;
+            }            
+        }
+
+        /// <inheritdoc />
+        public virtual bool CanRotate => Camera != null;
 
         /// <inheritdoc />
         public void Rotate(Vector3D axis, Angle angle)
@@ -262,30 +276,29 @@ namespace Kingo.Windows.Media3D
         /// <inheritdoc />
         public void Rotate(AxisAngleRotation3D rotation)
         {
-            var camera = Camera;
-            if (camera != null)
+            if (Camera == null)
             {
-                var oldRotation = CurrentRotation();
-                var newRotation = new Quaternion(rotation.Axis, rotation.Angle) * oldRotation;
-                var rotationTransformation = CreateRotationTransformation(newRotation);
+                throw NewNoCameraSetException();
+            }            
+            var newRotation = new Quaternion(rotation.Axis, rotation.Angle) * Rotation;
+            var rotationTransformation = CreateRotationTransformation(newRotation);
 
-                camera.LookDirection = rotationTransformation.Transform(_DefaultLookDirection);
-                camera.UpDirection = rotationTransformation.Transform(_DefaultUpDirection);
+            Camera.LookDirection = rotationTransformation.Transform(_DefaultLookDirection);
+            Camera.UpDirection = rotationTransformation.Transform(_DefaultUpDirection);
 
-                _currentRotation = newRotation;
-                return;
-            }
-            throw NewNoCameraSetException();
-        }        
+            _currentRotationCache = newRotation;
 
-        private Quaternion CurrentRotation()
-        {
-            if (_currentRotation.HasValue)
-            {
-                return _currentRotation.Value;
-            }
-            return FromReferenceSystems(_DefaultRightDirection, _DefaultUpDirection, Right, Up).ToQuaternion();        
-        }                  
+            OnPropertyChanged(nameof(Rotation));
+
+            OnPropertyChanged(nameof(Left));
+            OnPropertyChanged(nameof(Right));
+
+            OnPropertyChanged(nameof(Up));
+            OnPropertyChanged(nameof(Down));
+
+            OnPropertyChanged(nameof(Forward));
+            OnPropertyChanged(nameof(Backward));
+        }                                        
 
         private static RotateTransform3D CreateRotationTransformation(Quaternion rotation)
         {                        

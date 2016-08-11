@@ -119,7 +119,7 @@ namespace Kingo.Windows.Media3D
         {
             get { return (UIElement) GetValue(InputSourceProperty); }
             private set { SetValue(InputSourceProperty, value); }
-        }
+        }        
 
         #endregion
 

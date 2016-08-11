@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Windows;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Windows.Media3D
 {
@@ -9,15 +10,15 @@ namespace Kingo.Windows.Media3D
 
         public ControlModeInputBindingSpy()
         {
-            Command = new ProjectionCameraControllerCommandSpy();
+            Command = new ProjectionCameraCommandSpy();
         }
 
-        protected override void ActivateBinding()
+        protected override void ActivateBinding(UIElement inputSource)
         {
             _activateBindingCallCount++;
         }
 
-        protected override void DeactivateBinding()
+        protected override void DeactivateBinding(UIElement inputSource)
         {
             _deactivateBindingCallCount++;
         }
@@ -27,7 +28,7 @@ namespace Kingo.Windows.Media3D
             OnCommandTriggerRaised();
         }
 
-        public void AssertCommandIs(IProjectionCameraControllerCommand command)
+        public void AssertCommandIs(IProjectionCameraCommand command)
         {
             Assert.AreSame(command, Command);
         }
@@ -35,12 +36,7 @@ namespace Kingo.Windows.Media3D
         public void AssertCommandParameterIs(object parameter)
         {
             Assert.AreEqual(parameter, CommandParameter);
-        }
-
-        public void AssertControlModeIs(ControlMode controlMode)
-        {
-            Assert.AreSame(controlMode, ControlMode);
-        }
+        }        
 
         public void AssertActivateBindingCallCountIs(int callCount)
         {

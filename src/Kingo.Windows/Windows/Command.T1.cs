@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using Kingo.Resources;
 
 namespace Kingo.Windows
 {
@@ -72,10 +71,8 @@ namespace Kingo.Windows
 
             if (TryConvertParameter(parameter, out convertedParameter))
             {
-                Execute(convertedParameter);
-                return;
-            }
-            throw NewCannotExecuteCommandException(parameter);
+                Execute(convertedParameter);              
+            }            
         }
 
         /// <summary>
@@ -89,30 +86,15 @@ namespace Kingo.Windows
         {
             if (CanExecuteCommand(parameter))
             {
-                ExecuteCommand(parameter);
-                return;
-            }
-            throw NewCannotExecuteCommandException(parameter);
+                ExecuteCommand(parameter);                
+            }            
         }
 
         /// <summary>
         /// Executes this command with the specified <paramref name="parameter"/>.
         /// </summary>
         /// <param name="parameter">The parameter of this command.</param>
-        protected abstract void ExecuteCommand(TParameter parameter);
-
-        /// <summary>
-        /// Creates and returns a new <see cref="InvalidOperationException" /> indicating that 
-        /// the command could not be executed with the specified parameter.
-        /// </summary>
-        /// <param name="parameter">The parameter of the command.</param>
-        /// <returns>A new <see cref="InvalidOperationException" />.</returns>
-        protected virtual InvalidOperationException NewCannotExecuteCommandException(object parameter)
-        {
-            var messageFormat = ExceptionMessages.Command_CannotExecuteCommand;
-            var message = string.Format(messageFormat, parameter);
-            return new InvalidOperationException(message);
-        }
+        protected abstract void ExecuteCommand(TParameter parameter);        
 
         #endregion
 

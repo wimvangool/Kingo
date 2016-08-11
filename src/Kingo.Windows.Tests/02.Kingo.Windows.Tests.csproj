@@ -78,11 +78,13 @@
     <Compile Include="MSTestEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Windows\AngleTest.cs" />
+    <Compile Include="Windows\DispatcherOperations.cs" />
+    <Compile Include="Windows\FocusManagerSpy.cs" />
     <Compile Include="Windows\Media3D\ControlModeInputBindingSpy.cs" />
     <Compile Include="Windows\Media3D\ControlModeInputBindingTest.cs" />
     <Compile Include="Windows\Media3D\ControlModeTest.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerBehaviorTest.cs" />
-    <Compile Include="Windows\Media3D\ProjectionCameraControllerCommandSpy.cs" />
+    <Compile Include="Windows\Media3D\ProjectionCameraCommandSpy.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>

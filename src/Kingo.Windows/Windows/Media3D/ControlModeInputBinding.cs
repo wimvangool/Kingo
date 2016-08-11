@@ -40,7 +40,7 @@ namespace Kingo.Windows.Media3D
                 throw NewInvalidOperationException();
             }
 
-            public virtual void OnCommandChanged(IProjectionCameraControllerCommand newCommand) { }
+            public virtual void OnCommandChanged(IProjectionCameraCommand newCommand) { }
 
             public virtual void OnCommandParameterChanged() { }
 
@@ -104,20 +104,14 @@ namespace Kingo.Windows.Media3D
                 get;
             }
 
-            private ControlMode ControlMode
+            protected ControlMode ControlMode
             {
                 get;
-            }
+            }            
 
-            public override void Enter()
-            {
-                InputBinding.ControlMode = ControlMode;
-            }
+            public override void Enter() { }
 
-            public override void Exit()
-            {
-                InputBinding.ControlMode = null;
-            }
+            public override void Exit() { }
 
             public override void Deactivate()
             {
@@ -134,11 +128,11 @@ namespace Kingo.Windows.Media3D
             public UnboundState(ControlModeInputBinding inputBinding, ControlMode controlMode)
                 : base(inputBinding, controlMode) { }
 
-            public override void OnCommandChanged(IProjectionCameraControllerCommand newCommand)
+            public override void OnCommandChanged(IProjectionCameraCommand newCommand)
             {
                 if (newCommand != null)
                 {
-                    MoveTo(new BoundState(InputBinding, InputBinding.ControlMode, newCommand));
+                    MoveTo(new BoundState(InputBinding, ControlMode, newCommand));
                 }
             }
         }
@@ -149,48 +143,45 @@ namespace Kingo.Windows.Media3D
 
         private sealed class BoundState : ActiveState
         {
+            private readonly IProjectionCameraCommand _command;
+            private IProjectionCameraController _controller;
             private bool _skipCanExecuteCheck;
 
-            public BoundState(ControlModeInputBinding inputBinding, ControlMode controlMode, IProjectionCameraControllerCommand command)
+            public BoundState(ControlModeInputBinding inputBinding, ControlMode controlMode, IProjectionCameraCommand command)
                 : base(inputBinding, controlMode)
             {
-                Command = command;
-            }            
-
-            private IProjectionCameraControllerCommand Command
-            {
-                get;
-            }
+                _command = command;                
+            }                        
 
             public override void Enter()
             {
                 base.Enter();
 
-                Command.CanExecuteChanged += HandleCommandCanExecuteChanged;
-                Command.Attach(InputBinding.ControlMode.Controller);
+                _command.CanExecuteChanged += HandleCommandCanExecuteChanged;
+                _command.Add(_controller = ControlMode.Controller);
 
-                InputBinding.ActivateBinding();
+                InputBinding.ActivateBinding(ControlMode.InputSource);
             }
 
             public override void Exit()
             {
-                InputBinding.DeactivateBinding();
+                InputBinding.DeactivateBinding(ControlMode.InputSource);
 
-                Command.Detach();
-                Command.CanExecuteChanged -= HandleCommandCanExecuteChanged;
+                _command.Remove(_controller);
+                _command.CanExecuteChanged -= HandleCommandCanExecuteChanged;
 
                 base.Exit();
             }
 
-            public override void OnCommandChanged(IProjectionCameraControllerCommand newCommand)
+            public override void OnCommandChanged(IProjectionCameraCommand newCommand)
             {
                 if (newCommand == null)
                 {
-                    MoveTo(new UnboundState(InputBinding, InputBinding.ControlMode));
+                    MoveTo(new UnboundState(InputBinding, ControlMode));
                 }
                 else
                 {
-                    MoveTo(new BoundState(InputBinding, InputBinding.ControlMode, newCommand));
+                    MoveTo(new BoundState(InputBinding, ControlMode, newCommand));
                 }
             }
 
@@ -202,7 +193,7 @@ namespace Kingo.Windows.Media3D
 
                 if (CanExecuteCommandWithCurrentParameter(out parameter))
                 {
-                    Command.Execute(parameter);
+                    _command.Execute(parameter);
                 }
             }
 
@@ -220,7 +211,7 @@ namespace Kingo.Windows.Media3D
             {
                 parameter = InputBinding.CommandParameter;
 
-                if (_skipCanExecuteCheck || Command.CanExecute(parameter))
+                if (_skipCanExecuteCheck || _command.CanExecute(parameter))
                 {                                        
                     return _skipCanExecuteCheck = true;
                 }                
@@ -247,14 +238,14 @@ namespace Kingo.Windows.Media3D
         /// Backing-field of the <see cref="Command"/>-property.
         /// </summary>
         public static readonly DependencyProperty CommandProperty =
-            DependencyProperty.Register(nameof(Command), typeof(IProjectionCameraControllerCommand), typeof(ControlModeInputBinding), new FrameworkPropertyMetadata(HandleCommandPropertyChanged));
+            DependencyProperty.Register(nameof(Command), typeof(IProjectionCameraCommand), typeof(ControlModeInputBinding), new FrameworkPropertyMetadata(HandleCommandPropertyChanged));
 
         /// <summary>
         /// Gets or sets the command that is used to control the camera.
         /// </summary>
-        public IProjectionCameraControllerCommand Command
+        public IProjectionCameraCommand Command
         {
-            get { return (IProjectionCameraControllerCommand) GetValue(CommandProperty); }
+            get { return (IProjectionCameraCommand) GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
         }
 
@@ -263,7 +254,7 @@ namespace Kingo.Windows.Media3D
             var controlModeInputBinding = instance as ControlModeInputBinding;
             if (controlModeInputBinding != null)
             {
-                controlModeInputBinding._currentState.OnCommandChanged(e.NewValue as IProjectionCameraControllerCommand);
+                controlModeInputBinding._currentState.OnCommandChanged(e.NewValue as IProjectionCameraCommand);
             }
         }        
 
@@ -315,16 +306,7 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== Activate & Deactivate ======]
-
-        /// <summary>
-        /// Gets the <see cref="ControlMode" /> this input-binding is part of.
-        /// </summary>
-        protected ControlMode ControlMode
-        {
-            get;
-            private set;
-        }
+        #region [====== Activate & Deactivate ======]        
 
         internal void Activate(ControlMode controlMode)
         {
@@ -334,7 +316,7 @@ namespace Kingo.Windows.Media3D
         /// <summary>
         /// Activates the input binding.
         /// </summary>
-        protected abstract void ActivateBinding();
+        protected abstract void ActivateBinding(UIElement inputSource);
 
         internal void Deactivate()
         {
@@ -344,7 +326,7 @@ namespace Kingo.Windows.Media3D
         /// <summary>
         /// Deactivates the input binding.
         /// </summary>
-        protected abstract void DeactivateBinding();
+        protected abstract void DeactivateBinding(UIElement inputSource);
 
         #endregion        
     }

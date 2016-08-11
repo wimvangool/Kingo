@@ -237,12 +237,12 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        private static UIElement CreateInputSource()
+        internal static UIElement CreateInputSource()
         {
             return new Label();
         }
 
-        private static IProjectionCameraController CreateController()
+        internal static IProjectionCameraController CreateController()
         {
             return new Mock<IProjectionCameraController>().Object;
         }
