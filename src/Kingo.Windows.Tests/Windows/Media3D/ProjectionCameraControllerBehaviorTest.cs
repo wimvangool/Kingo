@@ -45,10 +45,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Attach_DoesNotActivateControlMode_IfControllerIsNull()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.Controller = null;
             _behavior.ControlModes.Add(controlMode);
@@ -60,11 +60,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Attach_DoesNotActivateControlMode_IfKeysDontMatch()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
             controlMode.Key = new object();
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -75,10 +75,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Attach_ActivatesControlMode_IfControllerIsNotNull_And_NullKeysMatch()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -89,12 +89,12 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Attach_ActivatesControlMode_IfControllerIsNotNull_And_NonNullKeysMatch()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             var key = Guid.NewGuid();
 
             controlMode.Key = key;
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ActiveModeKey = key;
             _behavior.ControlModes.Add(controlMode);
@@ -111,11 +111,11 @@ namespace Kingo.Windows.Media3D
         public void Detach_DoesNotDeactivateControlMode_IfControlModeWasNotActive()
         {
             // ControlMode is not activated because keys don't match.
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
             controlMode.Key = new object();
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -127,10 +127,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Detach_DeactivatesControlMode_IfControlModeWasActive()
         {            
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
            
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);            
@@ -146,12 +146,12 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void LostFocus_MovesBehaviorIntoUnfocusedState_IfBehaviorIsInActivateState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             var key = Guid.NewGuid();
 
             controlMode.Key = key;
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ActiveModeKey = key;
             _behavior.ControlModes.Add(controlMode);
@@ -166,12 +166,12 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void GotFocus_MovesBehaviorIntoActiveState_IfBehaviorIsInUnfocusedState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             var key = Guid.NewGuid();
 
             controlMode.Key = key;
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ActiveModeKey = key;
             _behavior.ControlModes.Add(controlMode);
@@ -191,11 +191,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControllerChange_HasNoEffect_IfBehaviorIsInDetachedState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
             controlMode.Key = new object();
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Controller = CreateController();
@@ -207,11 +207,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControllerChange_HasNoEffect_IfBehaviorIsInPassiveState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
             controlMode.Key = new object();
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -224,10 +224,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControllerChange_DeactivatesActiveControlMode_IfBehaviorIsInActiveState_And_NewControllerIsNull()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -240,10 +240,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControllerChange_ReactivatesActiveControlMode_IfBehaviorIsInActiveState_And_NewControllerIsNotNull()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -260,10 +260,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ActiveModeKeyChange_HasNoEffect_IfBehaviorIsInDetachedState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.ActiveModeKey = new object();
@@ -275,10 +275,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ActiveModeKeyChange_HasNoEffect_IfBehaviorIsInPassiveState_And_NewKeyDoesNotMatchAnyControlModeKey()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
             controlMode.Key = new object();
 
             _behavior.ControlModes.Add(controlMode);
@@ -292,11 +292,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ActiveModeKeyChange_MovesBehaviorIntoActiveState_IfBehaviorIsInPassiveState_And_NewKeyMatchesAnyControlModeKey()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             var controlModeKey = new object();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
             controlMode.Key = controlModeKey;
 
             _behavior.ControlModes.Add(controlMode);
@@ -310,10 +310,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ActiveModeKeyChange_MovesBehaviorIntoPassiveState_IfBehaviorIsInActiveState_And_NewKeyDoesNotMatchAnyControlModeKey()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();            
 
-            controlMode.InputBindings.Add(inputBinding);            
+            controlMode.CommandBindings.Add(inputBinding);            
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -326,16 +326,16 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ActiveModeKeyChange_MovesBehaviorIntoPassiveAndThenBackIntoActiveState_IfBehaviorIsInActiveState_And_NewKeyMatchesOtherControlModeKey()
         {
-            var inputBindingA = new ControlModeInputBindingSpy();
+            var inputBindingA = new ControlModeCommandBindingSpy();
             var controlModeA = new ControlMode();
 
-            controlModeA.InputBindings.Add(inputBindingA);
+            controlModeA.CommandBindings.Add(inputBindingA);
 
-            var inputBindingB = new ControlModeInputBindingSpy();
+            var inputBindingB = new ControlModeCommandBindingSpy();
             var controlModeB = new ControlMode();
 
             controlModeB.Key = new object();
-            controlModeB.InputBindings.Add(inputBindingB);
+            controlModeB.CommandBindings.Add(inputBindingB);
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);
@@ -363,10 +363,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModeKeyChange_HasNoEffect_IfBehaviorIsInDetachedState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             
@@ -379,10 +379,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModeKeyChange_HasNoEffect_IfBehaviorIsInPassiveState_And_NewKeyDoesNotMatchActiveModeKey()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.ActiveModeKey = new object();
@@ -397,10 +397,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModeKeyChange_MovesBehaviorIntoActiveState_IfBehaviorIsInPassiveState_And_NewKeyMatchesActiveModeKey()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.ActiveModeKey = new object();
@@ -415,16 +415,16 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModeKeyChange_HasNoEffect_IfBehaviorIsInActiveState_And_KeyOfNonActiveModeChanged()
         {
-            var inputBindingA = new ControlModeInputBindingSpy();
+            var inputBindingA = new ControlModeCommandBindingSpy();
             var controlModeA = new ControlMode();
 
-            controlModeA.InputBindings.Add(inputBindingA);
+            controlModeA.CommandBindings.Add(inputBindingA);
 
-            var inputBindingB = new ControlModeInputBindingSpy();
+            var inputBindingB = new ControlModeCommandBindingSpy();
             var controlModeB = new ControlMode();
 
             controlModeB.Key = new object();
-            controlModeB.InputBindings.Add(inputBindingB);
+            controlModeB.CommandBindings.Add(inputBindingB);
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);
@@ -442,10 +442,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModeKeyChange_MovesBehaviorIntoPassiveState_IfBehaviorIsInActiveState_And_KeyOfActiveModeChanged()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);            
             _behavior.Attach(_viewport);
@@ -463,10 +463,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesAdd_HasNoEffect_IfBehaviorIsInDetachedState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.ControlModes.Add(new ControlMode());            
@@ -478,11 +478,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesAdd_HasNoEffect_IfBehaviorIsInPassiveState_And_KeyOfAddedModeDoesNotMatchActiveModeKey()
         {            
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
             controlMode.Key = new object();
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.Attach(_viewport);
             _behavior.ControlModes.Add(controlMode);            
@@ -494,10 +494,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesAdd_MovesBehaviorIntoActiveMode_IfBehaviorIsInPassiveState_And_KeyOfAddedModeMatchesActiveModeKey()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
             
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.Attach(_viewport);
             _behavior.ControlModes.Add(controlMode);
@@ -509,10 +509,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesAdd_HasNoEffect_IfBehaviorIsInActiveState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -529,10 +529,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesRemove_HasNoEffect_IfBehaviorIsInDetachedState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.ControlModes.Remove(controlMode);
@@ -544,11 +544,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesRemove_HasNoEffect_IfBehaviorIsInPassiveState()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
             var controlMode = new ControlMode();
 
             controlMode.Key = new object();
-            controlMode.InputBindings.Add(inputBinding);
+            controlMode.CommandBindings.Add(inputBinding);
 
             _behavior.ControlModes.Add(controlMode);
             _behavior.Attach(_viewport);
@@ -561,16 +561,16 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesRemove_HasNoEffect_IfBehaviorIsInActiveState_And_RemovedControlModeWasNotActive()
         {
-            var inputBindingA = new ControlModeInputBindingSpy();
+            var inputBindingA = new ControlModeCommandBindingSpy();
             var controlModeA = new ControlMode();
             
-            controlModeA.InputBindings.Add(inputBindingA);
+            controlModeA.CommandBindings.Add(inputBindingA);
 
-            var inputBindingB = new ControlModeInputBindingSpy();
+            var inputBindingB = new ControlModeCommandBindingSpy();
             var controlModeB = new ControlMode();
 
             controlModeB.Key = new object();
-            controlModeB.InputBindings.Add(inputBindingB);            
+            controlModeB.CommandBindings.Add(inputBindingB);            
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);
@@ -587,16 +587,16 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void ControlModesRemove_MovesBehaviorIntoPassiveState_IfBehaviorIsInActiveState_And_RemovedControlModeWasActive()
         {
-            var inputBindingA = new ControlModeInputBindingSpy();
+            var inputBindingA = new ControlModeCommandBindingSpy();
             var controlModeA = new ControlMode();
 
-            controlModeA.InputBindings.Add(inputBindingA);
+            controlModeA.CommandBindings.Add(inputBindingA);
 
-            var inputBindingB = new ControlModeInputBindingSpy();
+            var inputBindingB = new ControlModeCommandBindingSpy();
             var controlModeB = new ControlMode();
 
             controlModeB.Key = new object();
-            controlModeB.InputBindings.Add(inputBindingB);
+            controlModeB.CommandBindings.Add(inputBindingB);
 
             _behavior.ControlModes.Add(controlModeA);
             _behavior.ControlModes.Add(controlModeB);

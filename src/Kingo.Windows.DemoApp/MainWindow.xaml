@@ -5,46 +5,27 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:Media3D="clr-namespace:Kingo.Windows.Media3D;assembly=Kingo.Windows"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:Media3D="clr-namespace:Kingo.Windows.Media3D;assembly=Kingo.Windows"        
         mc:Ignorable="d"
         Title="Kingo WPF Demo Application"
         Width="1024"
         Height="768">
-    <Grid>      
-      <Grid.RowDefinitions>
-        <RowDefinition Height="50" />
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-      
-      <Viewport3D Grid.Row="1"> 
-        <Viewport3D.Resources>
-          <System:Double x:Key="MoveLeftSpeed">-0.5</System:Double>
-          <System:Double x:Key="MoveRightSpeed">0.5</System:Double>
-        </Viewport3D.Resources>
-
+    <Grid>                  
+      <Viewport3D>         
         <i:Interaction.Behaviors>
           <Media3D:ProjectionCameraControllerBehavior>
             <Media3D:ControlMode>
-              <Media3D:KeyDownBinding CommandParameter="{StaticResource MoveLeftSpeed}"
-                                      KeyGesture="NumPad4">
-                <Media3D:KeyDownBinding.Command>
-                  <Media3D:MoveLeftRightCommand />
-                </Media3D:KeyDownBinding.Command>
-              </Media3D:KeyDownBinding>
-
-              <Media3D:KeyDownBinding CommandParameter="{StaticResource MoveRightSpeed}"
-                                      KeyGesture="NumPad6">
-                <Media3D:KeyDownBinding.Command>
-                  <Media3D:MoveLeftRightCommand />
-                </Media3D:KeyDownBinding.Command>
-              </Media3D:KeyDownBinding>
+              <Media3D:MoveBinding Left="A"
+                                   Right="D"
+                                   Forward="W"
+                                   Backward="S"
+                                   Speed="0.5" />
             </Media3D:ControlMode>
           </Media3D:ProjectionCameraControllerBehavior>
         </i:Interaction.Behaviors>
 
         <Viewport3D.Camera>
-          <PerspectiveCamera Position="0.5, 0.5, 10" />                                   
+          <PerspectiveCamera Position="0.5, 0.5, 30" />                                   
         </Viewport3D.Camera>
 
         <ModelVisual3D>

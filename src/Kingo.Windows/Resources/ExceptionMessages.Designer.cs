@@ -61,6 +61,24 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot activate binding &apos;{0}&apos; because it is already activated..
+        /// </summary>
+        internal static string ControlModeCommandBinding_AlreadyActivated {
+            get {
+                return ResourceManager.GetString("ControlModeCommandBinding_AlreadyActivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot deactivate binding &apos;{0}&apos; because it is already deactivated..
+        /// </summary>
+        internal static string ControlModeCommandBinding_AlreadyDeactivated {
+            get {
+                return ResourceManager.GetString("ControlModeCommandBinding_AlreadyDeactivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot perform the operation because no camera was set on the controller..
         /// </summary>
         internal static string ProjectionCameraController_NoCameraSet {

@@ -76,13 +76,12 @@
     <Compile Include="Windows\Media3D\AlphaBetaRotationSet.cs" />
     <Compile Include="Windows\Media3D\AlphaRotationSet.cs" />
     <Compile Include="Windows\Media3D\ControlMode.cs" />
-    <Compile Include="Windows\Media3D\ControlModeInputBinding.cs" />
+    <Compile Include="Windows\Media3D\ControlModeCommandBinding.cs" />
     <Compile Include="Windows\Media3D\EulerAngleRotationSet.cs" />
+    <Compile Include="Windows\Media3D\IControlModeCommandBinding.cs" />
     <Compile Include="Windows\Media3D\IProjectionCameraController.cs" />
     <Compile Include="Windows\Media3D\IProjectionCameraCommand.cs" />
-    <Compile Include="Windows\Media3D\KeyDownBinding.cs" />
-    <Compile Include="Windows\Media3D\MoveCommand.cs" />
-    <Compile Include="Windows\Media3D\MoveLeftRightCommand.cs" />
+    <Compile Include="Windows\Media3D\MoveBinding.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraController.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerBehavior.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraCommand.T1.cs" />

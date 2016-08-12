@@ -10,9 +10,9 @@ using System.Windows.Markup;
 namespace Kingo.Windows.Media3D
 {
     /// <summary>
-    /// Represents a set of <see cref="ControlModeInputBinding">InputBindings</see> that define which inputs are bound to specific camera actions.
+    /// Represents a set of <see cref="IControlModeCommandBinding">CommandBindings</see> that define which inputs are bound to specific camera actions.
     /// </summary>
-    [ContentProperty(nameof(InputBindings))]
+    [ContentProperty(nameof(CommandBindings))]
     public sealed class ControlMode : DependencyObject
     {
         /// <summary>
@@ -20,8 +20,8 @@ namespace Kingo.Windows.Media3D
         /// </summary>
         public ControlMode()
         {
-            InputBindings = new ObservableCollection<ControlModeInputBinding>();
-            InputBindings.CollectionChanged += HandleInputBindingsChanged;
+            CommandBindings = new ObservableCollection<IControlModeCommandBinding>();
+            CommandBindings.CollectionChanged += HandleInputBindingsChanged;
         }
 
         #region [====== Key ======]
@@ -62,12 +62,12 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== InputBindings ======]
+        #region [====== CommandBindings ======]
 
         /// <summary>
-        /// Gets the collection of <see cref="ControlModeInputBinding">Settings</see> that have been defined for this mode.
+        /// Gets the collection of <see cref="IControlModeCommandBinding">CommandBindings</see> that have been defined for this mode.
         /// </summary>
-        public ObservableCollection<ControlModeInputBinding> InputBindings
+        public ObservableCollection<IControlModeCommandBinding> CommandBindings
         {
             get;
         }
@@ -97,9 +97,9 @@ namespace Kingo.Windows.Media3D
             }
         }
 
-        private static IEnumerable<ControlModeInputBinding> Cast(IEnumerable items)
+        private static IEnumerable<IControlModeCommandBinding> Cast(IEnumerable items)
         {
-            return items == null ? Enumerable.Empty<ControlModeInputBinding>() : items.Cast<ControlModeInputBinding>();
+            return items == null ? Enumerable.Empty<IControlModeCommandBinding>() : items.Cast<IControlModeCommandBinding>();
         }
 
         #endregion
@@ -168,7 +168,7 @@ namespace Kingo.Windows.Media3D
             InputSource = inputSource;
             Controller = controller;
 
-            foreach (var inputBinding in InputBindings)
+            foreach (var inputBinding in CommandBindings)
             {
                 inputBinding.Activate(this);
             }
@@ -180,7 +180,7 @@ namespace Kingo.Windows.Media3D
         {
             ClearValue(IsActivatedProperty);
 
-            foreach (var inputBinding in InputBindings)
+            foreach (var inputBinding in CommandBindings)
             {
                 inputBinding.Deactivate();
             }

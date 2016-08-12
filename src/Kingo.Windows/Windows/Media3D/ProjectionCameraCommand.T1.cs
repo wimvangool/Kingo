@@ -9,15 +9,15 @@ namespace Kingo.Windows.Media3D
     /// When implemented by a derived class, represents a command that executes against a <see cref="IProjectionCameraController"/>.
     /// </summary>
     /// <typeparam name="TParameter">Parameter-type of this command.</typeparam>
-    public abstract class CameraCommand<TParameter> : Command<TParameter>, IProjectionCameraCommand
+    public abstract class ProjectionCameraCommand<TParameter> : Command<TParameter>, IProjectionCameraCommand
     {
         private readonly List<IProjectionCameraController> _controllers;
         private List<IProjectionCameraController> _controllersThatCanExecute;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CameraCommand{TParameter}" /> class.
+        /// Initializes a new instance of the <see cref="ProjectionCameraCommand{TParameter}" /> class.
         /// </summary>
-        protected CameraCommand()
+        protected ProjectionCameraCommand()
         {
             _controllers = new List<IProjectionCameraController>();
         }        

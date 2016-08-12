@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Windows.Media3D
 {
-    internal sealed class ProjectionCameraCommandSpy : CameraCommand<object>
+    internal sealed class ProjectionProjectionCameraCommandSpy : ProjectionCameraCommand<object>
     {
         private readonly List<object> _executions;
         private bool _canExecute;
@@ -11,7 +11,7 @@ namespace Kingo.Windows.Media3D
         private int _addCount;
         private int _removeCount;
 
-        public ProjectionCameraCommandSpy()
+        public ProjectionProjectionCameraCommandSpy()
         {
             _executions = new List<object>();
         }

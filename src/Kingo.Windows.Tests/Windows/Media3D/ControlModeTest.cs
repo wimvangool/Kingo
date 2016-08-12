@@ -45,8 +45,8 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void InputBindings_IsEmpty_IfControlModeIsJustCreated()
         {
-            Assert.IsNotNull(_controlMode.InputBindings);
-            Assert.AreEqual(0, _controlMode.InputBindings.Count);
+            Assert.IsNotNull(_controlMode.CommandBindings);
+            Assert.AreEqual(0, _controlMode.CommandBindings.Count);
         }
 
         #endregion
@@ -122,11 +122,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Activate_ActivatesAllInputBindings()
         {
-            var inputBindingA = new ControlModeInputBindingSpy();
-            var inputBindingB = new ControlModeInputBindingSpy();
+            var inputBindingA = new ControlModeCommandBindingSpy();
+            var inputBindingB = new ControlModeCommandBindingSpy();
 
-            _controlMode.InputBindings.Add(inputBindingA);
-            _controlMode.InputBindings.Add(inputBindingB);
+            _controlMode.CommandBindings.Add(inputBindingA);
+            _controlMode.CommandBindings.Add(inputBindingB);
             _controlMode.Activate(CreateInputSource(), CreateController());
 
             inputBindingA.AssertActivateBindingCallCountIs(1);
@@ -176,11 +176,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Deactivate_DeactivatesAllInputBindings()
         {
-            var inputBindingA = new ControlModeInputBindingSpy();
-            var inputBindingB = new ControlModeInputBindingSpy();
+            var inputBindingA = new ControlModeCommandBindingSpy();
+            var inputBindingB = new ControlModeCommandBindingSpy();
 
-            _controlMode.InputBindings.Add(inputBindingA);
-            _controlMode.InputBindings.Add(inputBindingB);
+            _controlMode.CommandBindings.Add(inputBindingA);
+            _controlMode.CommandBindings.Add(inputBindingB);
             _controlMode.Activate(CreateInputSource(), CreateController());
             _controlMode.Deactivate();
 
@@ -195,9 +195,9 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Add_DoesNotActivateInputBinding_IfControlModeIsNotActivated()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
 
-            _controlMode.InputBindings.Add(inputBinding);
+            _controlMode.CommandBindings.Add(inputBinding);
 
             inputBinding.AssertActivateBindingCallCountIs(0);
         }
@@ -205,10 +205,10 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Add_ActivatesInputBinding_IfControlModeIsActivated()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
 
             _controlMode.Activate(CreateInputSource(), CreateController());
-            _controlMode.InputBindings.Add(inputBinding);
+            _controlMode.CommandBindings.Add(inputBinding);
 
             inputBinding.AssertActivateBindingCallCountIs(1);
         }
@@ -216,9 +216,9 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Remove_DoesNotDeactivateInputBinding_IfControlModeIsNotActivated()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
 
-            _controlMode.InputBindings.Add(inputBinding);            
+            _controlMode.CommandBindings.Add(inputBinding);            
 
             inputBinding.AssertDeactivateBindingCallCountIs(0);
         }
@@ -226,11 +226,11 @@ namespace Kingo.Windows.Media3D
         [TestMethod]
         public void Remove_DeactivatesInputBinding_IfControlModeIsActivated()
         {
-            var inputBinding = new ControlModeInputBindingSpy();
+            var inputBinding = new ControlModeCommandBindingSpy();
 
-            _controlMode.InputBindings.Add(inputBinding);
+            _controlMode.CommandBindings.Add(inputBinding);
             _controlMode.Activate(CreateInputSource(), CreateController());
-            _controlMode.InputBindings.Remove(inputBinding);
+            _controlMode.CommandBindings.Remove(inputBinding);
 
             inputBinding.AssertDeactivateBindingCallCountIs(1);
         }
