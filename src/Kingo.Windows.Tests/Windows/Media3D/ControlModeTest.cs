@@ -105,7 +105,7 @@ namespace Kingo.Windows.Media3D
 
             _controlMode.Activate(inputSource, controller);
 
-            Assert.AreSame(controller, _controlMode.Controller);
+            Assert.IsNotNull(_controlMode.Controller);
         }
 
         [TestMethod]
@@ -237,7 +237,7 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        internal static UIElement CreateInputSource()
+        internal static FrameworkElement CreateInputSource()
         {
             return new Label();
         }

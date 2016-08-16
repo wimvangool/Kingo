@@ -17,21 +17,26 @@
             <Media3D:ControlMode>
               <Media3D:KeyCommandBinding Left="A"
                                          Right="D"
-                                         Forward="W"
-                                         Backward="S"                                      
-                                         MoveSpeed="0.5" />
+                                         Up="W"
+                                         Down="S"
+                                         ZoomIn="Add"
+                                         ZoomOut="Subtract"
+                                         MoveSpeed="0.2" />
               
-              <Media3D:MouseWheelCommandBinding Up="ScrollDown"
-                                                Down="ScrollUp"
-                                                MoveSpeed="2" />
+              <Media3D:MouseWheelCommandBinding Forward="ScrollUp"
+                                                Backward="ScrollDown" />
+              
+              <Media3D:MouseOrbitBinding InvertYaw="True"
+                                         InvertPitch="True" />
             </Media3D:ControlMode>                        
           </Media3D:ProjectionCameraControllerBehavior>
         </i:Interaction.Behaviors>
 
         <Viewport3D.Camera>
-          <PerspectiveCamera Position="10, 20, 30"
-                             LookDirection="-10, -20, -30"
-                             FieldOfView="90" />                                   
+          <PerspectiveCamera Position="0.5, 0.5, 10"                             
+                             FieldOfView="70" />   
+          <!--<OrthographicCamera Position="0.5, 0.5, 5"                             
+                              Width="10" />-->
         </Viewport3D.Camera>
 
         <ModelVisual3D>

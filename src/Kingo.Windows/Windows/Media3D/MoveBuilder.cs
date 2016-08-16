@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
 namespace Kingo.Windows.Media3D
@@ -18,7 +15,7 @@ namespace Kingo.Windows.Media3D
             _moves = new List<Vector3D>();
         }
 
-        public int MoveCount => _moves.Count;
+        public bool HasMoves => _moves.Count > 0;
 
         public void AddMove(Vector3D move)
         {

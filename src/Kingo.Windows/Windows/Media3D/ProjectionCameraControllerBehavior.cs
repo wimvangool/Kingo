@@ -28,7 +28,7 @@ namespace Kingo.Windows.Media3D
 
         private abstract class State
         {
-            protected UIElement InputSource => Behavior._inputSourceProvider.InputSource;            
+            protected FrameworkElement InputSource => Behavior._inputSourceProvider.InputSource;            
 
             protected abstract ProjectionCameraControllerBehavior Behavior
             {
@@ -529,7 +529,7 @@ namespace Kingo.Windows.Media3D
 
         private abstract class InputSourceProvider
         {
-            public abstract UIElement InputSource
+            public abstract FrameworkElement InputSource
             {
                 get;
             }
@@ -599,7 +599,7 @@ namespace Kingo.Windows.Media3D
 
         private sealed class NullProvider : InputSourceProvider
         {
-            public override UIElement InputSource => null;
+            public override FrameworkElement InputSource => null;
 
             public override InputSourceProvider AttachTo(Viewport3D viewport)
             {
@@ -630,7 +630,7 @@ namespace Kingo.Windows.Media3D
                 _viewport = viewport;
             }
 
-            public override UIElement InputSource => _viewport;
+            public override FrameworkElement InputSource => _viewport;
 
             public override InputSourceProvider AttachTo(Viewport3D viewport)
             {
@@ -654,7 +654,7 @@ namespace Kingo.Windows.Media3D
                 _border = border;
             }
 
-            public override UIElement InputSource => _border;
+            public override FrameworkElement InputSource => _border;
 
             public override InputSourceProvider AttachTo(Viewport3D viewport)
             {

@@ -19,50 +19,30 @@ namespace Kingo.Windows.Media3D
             set;
         }
 
-        #region [====== Translation ======]   
-        
-        /// <summary>
-        /// Indicates whether or not this controller is able to move the camera.
-        /// </summary>
-        bool CanMove
-        {
-            get;
-        }     
+        #region [====== Translation ======]                    
 
         /// <summary>
         /// Moves the camera along its horizontal axis (represented by <see cref="Left"/> and <see cref="Right"/>).
         /// </summary>
-        /// <param name="distance">The distance to move.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller.
-        /// </exception>
+        /// <param name="distance">The distance to move.</param>        
         void MoveLeftRight(double distance);
 
         /// <summary>
         /// Moves the camera along its vertical axis (represented by <see cref="Up"/> and <see cref="Down"/>).
         /// </summary>
-        /// <param name="distance">The distance to move.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller.
-        /// </exception>
+        /// <param name="distance">The distance to move.</param>        
         void MoveUpDown(double distance);
 
         /// <summary>
         /// Moves the camera forwards or backwards (represented by <see cref="Forward"/> and <see cref="Backward"/>).
         /// </summary>
-        /// <param name="distance">The distance to move.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller.
-        /// </exception>
+        /// <param name="distance">The distance to move.</param>        
         void MoveForwardBackward(double distance);
 
         /// <summary>
         /// Moves the camera in the specified <paramref name="direction"/>.
         /// </summary>
-        /// <param name="direction">The direction to move in.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller.
-        /// </exception>
+        /// <param name="direction">The direction to move in.</param>        
         void Move(Vector3D direction);
 
         #endregion
@@ -124,19 +104,13 @@ namespace Kingo.Windows.Media3D
         /// <summary>
         /// Rotates the camera around its <see cref="Up"/> (or <see cref="Down"/>) vector in clockwise direction.
         /// </summary>
-        /// <param name="angle">The rotation angle.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="angle">The rotation angle.</param>        
         void Yaw(Angle angle);
 
         /// <summary>
         /// Rotates the camera around its <see cref="Up"/> (or <see cref="Down"/>) vector in clockwise direction.
         /// </summary>
-        /// <param name="angleInDegrees">The rotation angle in degrees.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="angleInDegrees">The rotation angle in degrees.</param>        
         void Yaw(double angleInDegrees);
 
         #endregion
@@ -146,19 +120,13 @@ namespace Kingo.Windows.Media3D
         /// <summary>
         /// Rotates the camera around its <see cref="Left"/> (or <see cref="Right"/>) vector in clockwise direction.
         /// </summary>
-        /// <param name="angle">The rotation angle.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="angle">The rotation angle.</param>        
         void Pitch(Angle angle);
 
         /// <summary>
         /// Rotates the camera around its <see cref="Left"/> (or <see cref="Right"/>) vector in clockwise direction.
         /// </summary>
-        /// <param name="angleInDegrees">The rotation angle.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="angleInDegrees">The rotation angle.</param>        
         void Pitch(double angleInDegrees);
 
         #endregion
@@ -168,19 +136,13 @@ namespace Kingo.Windows.Media3D
         /// <summary>
         /// Rotates the camera around its <see cref="Forward"/> (or <see cref="Backward"/>) vector in clockwise direction.
         /// </summary>
-        /// <param name="angle">The rotation angle.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="angle">The rotation angle.</param>        
         void Roll(Angle angle);
 
         /// <summary>
         /// Rotates the camera around its <see cref="Forward"/> (or <see cref="Backward"/>) vector in clockwise direction.
         /// </summary>
-        /// <param name="angleInDegrees">The rotation angle.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="angleInDegrees">The rotation angle.</param>        
         void Roll(double angleInDegrees);
 
         #endregion
@@ -192,10 +154,7 @@ namespace Kingo.Windows.Media3D
         /// </summary>
         /// <param name="yaw">The yaw-angle.</param>
         /// <param name="pitch">The pitch-angle.</param>        
-        /// <param name="roll">The roll-angle.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="roll">The roll-angle.</param>        
         void YawPitchRoll(Angle yaw, Angle pitch, Angle roll);
 
         /// <summary>
@@ -203,23 +162,20 @@ namespace Kingo.Windows.Media3D
         /// </summary>
         /// <param name="yawInDegrees">The yaw-angle in degrees.</param>
         /// <param name="pitchInDegrees">The pitch-angle in degrees.</param>
-        /// <param name="rollInDegrees">The roll-angle in degrees.</param>
-        /// <exception cref="InvalidOperationException">
-        /// No camera has been attached to the controller, or the associated camera could not be rotated.
-        /// </exception>
+        /// <param name="rollInDegrees">The roll-angle in degrees.</param>        
         void YawPitchRoll(double yawInDegrees, double pitchInDegrees, double rollInDegrees);
 
         #endregion
 
-        #region [====== Rotate ======]     
-        
+        #region [====== Rotation ======]     
+
         /// <summary>
-        /// Indicates whether or not this controller is able to rotate the camera.
+        /// Gets the current rotation of the camera with respect to its default orientation.
         /// </summary>
-        bool CanRotate
+        Quaternion Rotation
         {
             get;
-        }   
+        }                 
 
         /// <summary>
         /// Rotates the camera in clockwise direction around the specified axis.
@@ -255,6 +211,16 @@ namespace Kingo.Windows.Media3D
         /// No camera has been attached to the controller, or the associated camera could not be rotated.
         /// </exception>
         void Rotate(AxisAngleRotation3D rotation);
+
+        #endregion
+
+        #region [====== Zooming ======]
+
+        /// <summary>
+        /// Zooms the camera in or out.
+        /// </summary>
+        /// <param name="zoomFactor">The zoomfactor. A positive value means zooming in; a negative one means zooming out.</param>
+        void Zoom(double zoomFactor);
 
         #endregion
     }

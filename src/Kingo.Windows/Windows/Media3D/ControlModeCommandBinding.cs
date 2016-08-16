@@ -71,5 +71,10 @@ namespace Kingo.Windows.Media3D
         }
 
         #endregion
+       
+        internal static object CoerceSpeed(DependencyObject instance, object value)
+        {
+            return Math.Abs((double)value);
+        }
     }
 }

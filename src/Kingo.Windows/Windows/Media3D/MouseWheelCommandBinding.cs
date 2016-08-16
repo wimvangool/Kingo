@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Media.Media3D;
 
 namespace Kingo.Windows.Media3D
@@ -39,10 +31,16 @@ namespace Kingo.Windows.Media3D
         {
             Vector3D moveDirection;
 
-            if (ControlMode.Controller.CanMove && TryGetNextMove(mouseWheelEvent, out moveDirection))
+            if (TryGetNextMove(mouseWheelEvent, out moveDirection))
             {
                 ControlMode.Controller.Move(moveDirection);
-            }            
+            }
+            double zoomFactor;
+            
+            if (TryGetZoomFactor(mouseWheelEvent, out zoomFactor))
+            {
+                ControlMode.Controller.Zoom(zoomFactor);
+            }
         }
 
         private bool TryGetNextMove(MouseWheelEvents mouseWheelEvent, out Vector3D moveDirection)
@@ -77,12 +75,28 @@ namespace Kingo.Windows.Media3D
                 moveBuilder.AddMove(controller.Backward);
             }
 
-            if (moveBuilder.MoveCount > 0)
+            if (moveBuilder.HasMoves)
             {
                 moveDirection = moveBuilder.BuildMove();
                 return true;
             }
             moveDirection = MoveBuilder.NoMove;
+            return false;
+        }
+
+        private bool TryGetZoomFactor(MouseWheelEvents mouseWheelEvent, out double zoomFactor)
+        {
+            if (IsMatch(ZoomIn, mouseWheelEvent))
+            {
+                zoomFactor = ZoomSpeed;
+                return true;
+            }
+            if (IsMatch(ZoomOut, mouseWheelEvent))
+            {
+                zoomFactor = -ZoomSpeed;
+                return true;
+            }
+            zoomFactor = 0;
             return false;
         }
 

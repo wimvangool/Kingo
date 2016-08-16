@@ -9,12 +9,235 @@ namespace Kingo.Windows.Media3D
     /// <summary>
     /// Represents a controller for <see cref="ProjectionCamera">ProjectionCameras</see> to translate and rotate it.
     /// </summary>
-    public class ProjectionCameraController : IProjectionCameraController
-    {                        
+    public class ProjectionCameraController : ProjectionCameraControllerBase
+    {
+        #region [====== State ======]        
+
+        private abstract class State
+        {
+            public abstract ProjectionCamera Camera
+            {
+                get;
+            }
+
+            public abstract Vector3D Up
+            {
+                get;
+            }
+
+            public abstract Vector3D Left
+            {
+                get;
+            }
+
+            public abstract Vector3D Forward
+            {
+                get;
+            }
+
+            public abstract Quaternion Rotation
+            {
+                get;
+            }
+
+            public abstract void Move(Vector3D direction);
+
+            public abstract void Rotate(AxisAngleRotation3D rotation);
+
+            public abstract void Zoom(double zoomFactor);
+        }
+
+        #endregion
+
+        #region [====== NullCameraState ======]
+
+        private sealed class NullCameraState : State
+        {
+            public override ProjectionCamera Camera => null;
+
+            public override Vector3D Up => _DefaultUpDirection;
+
+            public override Vector3D Left => _DefaultLeftDirection;
+
+            public override Vector3D Forward => _DefaultLookDirection;
+
+            public override Quaternion Rotation => Quaternion.Identity;
+
+            public override void Move(Vector3D direction)
+            {
+                throw NewCameraNotSetException();
+            }
+
+            public override void Rotate(AxisAngleRotation3D rotation)
+            {
+                throw NewCameraNotSetException();
+            }
+
+            public override void Zoom(double zoomFactor)
+            {
+                throw NewCameraNotSetException();
+            }
+
+            private static InvalidOperationException NewCameraNotSetException()
+            {
+                return new InvalidOperationException(ExceptionMessages.ProjectionCameraController_NoCameraSet);
+            }
+        }
+
+        #endregion
+
+        #region [====== ProjectionCameraState ======]
+
+        private abstract class ProjectionCameraState : State
+        {
+            private Quaternion? _currentRotationCache;
+
+            protected abstract ProjectionCameraController Controller
+            {
+                get;
+            }
+
+            public override Vector3D Up => Normalize(Vector3D.CrossProduct(Forward, Left));
+
+            public override Vector3D Left
+            {
+                get
+                {
+                    var left = Vector3D.CrossProduct(Camera.UpDirection, Camera.LookDirection);
+
+                    if (IsAlmost(0, left.Length))
+                    {
+                        left = Vector3D.CrossProduct(_DefaultUpDirection, Camera.LookDirection);
+                    }
+                    return Normalize(left);
+                }
+            }
+
+            public override Vector3D Forward => Normalize(Camera.LookDirection);
+
+            public override Quaternion Rotation
+            {
+                get
+                {
+                    if (!_currentRotationCache.HasValue)
+                    {
+                        _currentRotationCache = FromReferenceSystems(_DefaultRightDirection, _DefaultUpDirection, Controller.Right, Controller.Up).ToQuaternion();
+                    }
+                    return _currentRotationCache.Value;
+                }
+            }
+
+            public override void Move(Vector3D direction)
+            {
+                Camera.Position += direction;
+            }
+
+            public override void Rotate(AxisAngleRotation3D rotation)
+            {
+                var newRotation = new Quaternion(rotation.Axis, rotation.Angle) * Rotation;
+                var rotationTransformation = CreateRotationTransformation(newRotation);
+
+                Camera.LookDirection = rotationTransformation.Transform(_DefaultLookDirection);
+                Camera.UpDirection = rotationTransformation.Transform(_DefaultUpDirection);
+
+                _currentRotationCache = newRotation;
+
+                Controller.OnPropertyChanged(nameof(Rotation));
+                
+                Controller.OnPropertyChanged(nameof(Left));
+                Controller.OnPropertyChanged(nameof(Right));
+                
+                Controller.OnPropertyChanged(nameof(Up));
+                Controller.OnPropertyChanged(nameof(Down));
+                
+                Controller.OnPropertyChanged(nameof(Forward));
+                Controller.OnPropertyChanged(nameof(Backward));
+            }
+
+            private static Vector3D Normalize(Vector3D vector)
+            {
+                vector.Normalize();
+                return vector;
+            }
+
+            private static RotateTransform3D CreateRotationTransformation(Quaternion rotation)
+            {
+                return new RotateTransform3D(new QuaternionRotation3D(rotation));
+            }
+        }
+
+        #endregion
+
+        #region [====== OrthographicCameraState ======]
+
+        private sealed class OrthographicCameraState : ProjectionCameraState
+        {
+            private readonly OrthographicCamera _camera;
+
+            public OrthographicCameraState(ProjectionCameraController controller, OrthographicCamera camera)
+            {
+                Controller = controller;
+
+                _camera = camera;
+            }
+
+            public override ProjectionCamera Camera => _camera;
+
+            protected override ProjectionCameraController Controller
+            {
+                get;
+            }
+
+            public override void Zoom(double zoomFactor)
+            {
+                _camera.Width -= zoomFactor;
+            }
+        }
+
+        #endregion
+
+        #region [====== PerspectiveCameraState ======]
+
+        private sealed class PerspectiveCameraState : ProjectionCameraState
+        {
+            private readonly PerspectiveCamera _camera;
+
+            public PerspectiveCameraState(ProjectionCameraController controller, PerspectiveCamera camera)
+            {
+                Controller = controller;
+
+                _camera = camera;
+            }
+
+            public override ProjectionCamera Camera => _camera;
+
+            protected override ProjectionCameraController Controller
+            {
+                get;
+            }
+
+            public override void Zoom(double zoomFactor)
+            {
+                _camera.FieldOfView -= zoomFactor;
+            }
+        }
+
+        #endregion
+
+        private State _currentState;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProjectionCameraController" /> class.
+        /// </summary>
+        public ProjectionCameraController()
+        {
+            _currentState = new NullCameraState();
+        }
+
         #region [====== NotifyPropertyChanged ======]
 
         /// <inheritdoc />
-        public event PropertyChangedEventHandler PropertyChanged;
+        public override event PropertyChangedEventHandler PropertyChanged;
         
         /// <summary>
         /// Raised the <see cref="PropertyChanged"/> event for the specified <paramref name="propertyName"/>.
@@ -27,69 +250,49 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
-        #region [====== Camera ======]  
+        #region [====== Camera ======]       
 
-        private ProjectionCamera _camera;      
-
-        /// <summary>
-        /// Gets or sets the camera that is controlled by this controller.
-        /// </summary>
-        public ProjectionCamera Camera
+        /// <inheritdoc />
+        public override ProjectionCamera Camera
         {
-            get { return _camera; }
+            get { return _currentState.Camera; }
             set
             {
-                var oldValue = _camera;
+                var oldValue = _currentState.Camera;
                 var newValue = value;
 
                 if (newValue != oldValue)
                 {
-                    _camera = newValue;
-                    _currentRotationCache = null;
+                    _currentState = MoveToNewState(newValue);
 
-                    OnPropertyChanged();                   
+                    OnPropertyChanged();
                 }
             }
-        }        
-
-        private static Exception NewNoCameraSetException()
+        }    
+        
+        private State MoveToNewState(object camera)
         {
-            return new InvalidOperationException(ExceptionMessages.ProjectionCameraController_NoCameraSet);
+            var orthographicCamera = camera as OrthographicCamera;
+            if (orthographicCamera != null)
+            {
+                return new OrthographicCameraState(this, orthographicCamera);
+            }
+            var perspectiveCamera = camera as PerspectiveCamera;
+            if (perspectiveCamera != null)
+            {
+                return new PerspectiveCameraState(this, perspectiveCamera);
+            }
+            return new NullCameraState();
         }
 
         #endregion     
 
-        #region [====== Translation ======]
+        #region [====== Translation ======]                
 
         /// <inheritdoc />
-        public virtual bool CanMove => Camera != null;
-
-        /// <inheritdoc />
-        public void MoveLeftRight(double distance)
+        public override void Move(Vector3D direction)
         {
-            Move(distance * Right);
-        }
-
-        /// <inheritdoc />
-        public void MoveUpDown(double distance)
-        {
-            Move(distance * Up);
-        }
-
-        /// <inheritdoc />
-        public void MoveForwardBackward(double distance)
-        {
-            Move(distance * Forward);
-        }
-
-        /// <inheritdoc />
-        public void Move(Vector3D direction)
-        {
-            if (Camera == null)
-            {
-                throw NewNoCameraSetException();
-            }
-            Camera.Position += direction;
+            _currentState.Move(direction);
         }       
 
         #endregion
@@ -102,127 +305,44 @@ namespace Kingo.Windows.Media3D
         private static readonly Vector3D _DefaultRightDirection = new Vector3D(1, 0, 0);        
 
         /// <inheritdoc />
-        public Vector3D Up => Normalize(Vector3D.CrossProduct(Forward, Left));
+        public override Vector3D Up => _currentState.Up;
 
         /// <inheritdoc />
-        public Vector3D Down => Negate(Up);
+        public override Vector3D Left => _currentState.Left;
 
         /// <inheritdoc />
-        public Vector3D Left
-        {
-            get
-            {                
-                if (Camera == null)
-                {
-                    return _DefaultLeftDirection;
-                }
-                var left = Vector3D.CrossProduct(Camera.UpDirection, Camera.LookDirection);
-
-                if (IsAlmost(0, left.Length))
-                {
-                    left = Vector3D.CrossProduct(_DefaultUpDirection, Camera.LookDirection);
-                }
-                return Normalize(left);
-            }
-        }
-
-        /// <inheritdoc />
-        public Vector3D Right => Negate(Left);
-
-        /// <inheritdoc />
-        public Vector3D Forward
-        {
-            get
-            {                
-                if (Camera == null)
-                {
-                    return _DefaultLookDirection;
-                }
-                return Normalize(Camera.LookDirection);
-            } 
-        }
-
-        /// <inheritdoc />
-        public Vector3D Backward => Negate(Forward);
-
-        private static Vector3D Normalize(Vector3D vector)
-        {
-            vector.Normalize();
-            return vector;
-        }
-
-        private static Vector3D Negate(Vector3D vector)
-        {
-            vector.Negate();
-            return vector;
-        }
+        public override Vector3D Forward => _currentState.Forward;                     
 
         #endregion
 
-        #region [====== Rotation - Yaw ======]
+        #region [====== Rotation - Yaw, Pitch & Roll ======]
 
         private Vector3D YawAxis => Up;
 
-        /// <inheritdoc />
-        public void Yaw(Angle angle)
-        {
-            Yaw(angle.ToDegrees());
-        }
-
-        /// <inheritdoc />
-        public void Yaw(double angleInDegrees)
-        {
-            Rotate(YawAxis, angleInDegrees);
-        }
-
-        #endregion
-
-        #region [====== Rotation - Pitch ======]
-
         private Vector3D PitchAxis => Right;
 
-        /// <inheritdoc />
-        public void Pitch(Angle angle)
-        {
-            Pitch(angle.ToDegrees());
-        }
+        private Vector3D RollAxis => Forward;        
 
         /// <inheritdoc />
-        public void Pitch(double angleInDegrees)
+        public override void Yaw(double angleInDegrees)
+        {
+            Rotate(YawAxis, angleInDegrees);
+        }        
+
+        /// <inheritdoc />
+        public override void Pitch(double angleInDegrees)
         {
             Rotate(PitchAxis, angleInDegrees);
-        }
-
-        #endregion
-
-        #region [====== Rotation - Roll ======]
-
-        private Vector3D RollAxis => Forward;
+        }        
 
         /// <inheritdoc />
-        public void Roll(Angle angle)
-        {
-            Roll(angle.ToDegrees());
-        }
-
-        /// <inheritdoc />
-        public void Roll(double angleInDegrees)
+        public override void Roll(double angleInDegrees)
         {
             Rotate(RollAxis, angleInDegrees);
-        }
-
-        #endregion
-
-        #region [====== Rotation - YawPitchRoll ======]
+        }        
 
         /// <inheritdoc />
-        public void YawPitchRoll(Angle yaw, Angle pitch, Angle roll)
-        {
-            YawPitchRoll(yaw.ToDegrees(), pitch.ToDegrees(), roll.ToDegrees());
-        }
-
-        /// <inheritdoc />
-        public void YawPitchRoll(double yawInDegrees, double pitchInDegrees, double rollInDegrees)
+        public override void YawPitchRoll(double yawInDegrees, double pitchInDegrees, double rollInDegrees)
         {
             YawPitchRoll(
                 new AxisAngleRotation3D(YawAxis, yawInDegrees),
@@ -241,69 +361,26 @@ namespace Kingo.Windows.Media3D
 
         #region [====== Rotate ======]
 
-        private Quaternion? _currentRotationCache;
-
         /// <summary>
         /// Gets the current rotation of the camera.
         /// </summary>
-        public Quaternion Rotation
-        {
-            get
-            {
-                if (!_currentRotationCache.HasValue)
-                {
-                    _currentRotationCache = FromReferenceSystems(_DefaultRightDirection, _DefaultUpDirection, Right, Up).ToQuaternion();
-                }
-                return _currentRotationCache.Value;
-            }            
-        }
+        public override Quaternion Rotation => _currentState.Rotation;           
 
         /// <inheritdoc />
-        public virtual bool CanRotate => Camera != null;
+        public override void Rotate(AxisAngleRotation3D rotation)
+        {                      
+            _currentState.Rotate(rotation);
+        }                                                
+
+        #endregion
+
+        #region [====== Zooming ======]
 
         /// <inheritdoc />
-        public void Rotate(Vector3D axis, Angle angle)
+        public override void Zoom(double zoomFactor)
         {
-            Rotate(axis, angle.ToDegrees());
-        }
-
-        /// <inheritdoc />
-        public void Rotate(Vector3D axis, double angleInDegrees)
-        {
-            Rotate(new AxisAngleRotation3D(axis, angleInDegrees));
-        }
-
-        /// <inheritdoc />
-        public void Rotate(AxisAngleRotation3D rotation)
-        {
-            if (Camera == null)
-            {
-                throw NewNoCameraSetException();
-            }            
-            var newRotation = new Quaternion(rotation.Axis, rotation.Angle) * Rotation;
-            var rotationTransformation = CreateRotationTransformation(newRotation);
-
-            Camera.LookDirection = rotationTransformation.Transform(_DefaultLookDirection);
-            Camera.UpDirection = rotationTransformation.Transform(_DefaultUpDirection);
-
-            _currentRotationCache = newRotation;
-
-            OnPropertyChanged(nameof(Rotation));
-
-            OnPropertyChanged(nameof(Left));
-            OnPropertyChanged(nameof(Right));
-
-            OnPropertyChanged(nameof(Up));
-            OnPropertyChanged(nameof(Down));
-
-            OnPropertyChanged(nameof(Forward));
-            OnPropertyChanged(nameof(Backward));
-        }                                        
-
-        private static RotateTransform3D CreateRotationTransformation(Quaternion rotation)
-        {                        
-            return new RotateTransform3D(new QuaternionRotation3D(rotation));
-        }
+            _currentState.Zoom(zoomFactor);
+        }        
 
         #endregion
     }

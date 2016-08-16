@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows;
 
 namespace Kingo.Windows.Media3D
 {
@@ -20,7 +14,7 @@ namespace Kingo.Windows.Media3D
         /// Backing-field of the <see cref="MoveSpeed"/>-property.
         /// </summary>
         public static readonly DependencyProperty MoveSpeedProperty =
-            DependencyProperty.Register(nameof(MoveSpeed), typeof(double), typeof(ControlModeCommandBinding<TInput>), new PropertyMetadata(1.0, null, CoerceMoveSpeed));
+            DependencyProperty.Register(nameof(MoveSpeed), typeof(double), typeof(ControlModeCommandBinding<TInput>), new PropertyMetadata(1.0, null, CoerceSpeed));
 
         /// <summary>
         /// Gets or sets the speed at which the camera moves.
@@ -29,12 +23,7 @@ namespace Kingo.Windows.Media3D
         {
             get { return (double) GetValue(MoveSpeedProperty); }
             set { SetValue(MoveSpeedProperty, value); }
-        }
-
-        private static object CoerceMoveSpeed(DependencyObject instance, object value)
-        {
-            return Math.Abs((double) value);
-        }
+        }        
 
         #endregion
 
@@ -148,6 +137,63 @@ namespace Kingo.Windows.Media3D
         {
             get { return (TInput)GetValue(BackwardProperty); }
             set { SetValue(BackwardProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== ZoomSpeed ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="ZoomSpeed"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty ZoomSpeedProperty =
+            DependencyProperty.Register(nameof(ZoomSpeed), typeof(double), typeof(ControlModeCommandBinding<TInput>), new PropertyMetadata(1.0, null, CoerceSpeed));
+
+        /// <summary>
+        /// Gets or sets the speed at which the camera is zoomed in or out.
+        /// </summary>
+        public double ZoomSpeed
+        {
+            get { return (double) GetValue(ZoomSpeedProperty); }
+            set { SetValue(ZoomSpeedProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== ZoomIn ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="ZoomIn"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty ZoomInProperty =
+            DependencyProperty.Register(nameof(ZoomIn), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that zooms in.
+        /// </summary>
+        public TInput ZoomIn
+        {
+            get { return (TInput) GetValue(ZoomInProperty); }
+            set { SetValue(ZoomInProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== ZoomOut ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="ZoomOut"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty ZoomOutProperty =
+            DependencyProperty.Register(nameof(ZoomOut), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that zooms out.
+        /// </summary>
+        public TInput ZoomOut
+        {
+            get { return (TInput) GetValue(ZoomOutProperty); }
+            set { SetValue(ZoomOutProperty, value); }
         }
 
         #endregion

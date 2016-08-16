@@ -110,14 +110,14 @@ namespace Kingo.Windows.Media3D
         /// Backing-field of the <see cref="InputSource"/>-property.
         /// </summary>
         public static readonly DependencyProperty InputSourceProperty =
-            DependencyProperty.Register(nameof(InputSource), typeof(UIElement), typeof(ControlMode));
+            DependencyProperty.Register(nameof(InputSource), typeof(FrameworkElement), typeof(ControlMode));
 
         /// <summary>
         /// Gets the <see cref="UIElement" /> that serves as the input-source for the controller.
         /// </summary>
-        public UIElement InputSource
+        public FrameworkElement InputSource
         {
-            get { return (UIElement) GetValue(InputSourceProperty); }
+            get { return (FrameworkElement) GetValue(InputSourceProperty); }
             private set { SetValue(InputSourceProperty, value); }
         }        
 
@@ -163,11 +163,14 @@ namespace Kingo.Windows.Media3D
 
         #region [====== Activate & Deactivate ======]
 
-        internal void Activate(UIElement inputSource, IProjectionCameraController controller)
+        internal void Activate(FrameworkElement inputSource, IProjectionCameraController controller)
         {
             InputSource = inputSource;
+#if DEBUG
+            Controller = new DebugCameraController(controller);
+#else
             Controller = controller;
-
+#endif
             foreach (var inputBinding in CommandBindings)
             {
                 inputBinding.Activate(this);
@@ -189,6 +192,6 @@ namespace Kingo.Windows.Media3D
             ClearValue(InputSourceProperty);
         }
 
-        #endregion
+#endregion
     }
 }
