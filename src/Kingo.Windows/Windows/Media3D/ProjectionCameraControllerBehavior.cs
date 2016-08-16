@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Kingo.Resources;
@@ -27,7 +28,7 @@ namespace Kingo.Windows.Media3D
 
         private abstract class State
         {
-            protected Viewport3D Viewport => Behavior.AssociatedObject;
+            protected UIElement InputSource => Behavior._inputSourceProvider.InputSource;            
 
             protected abstract ProjectionCameraControllerBehavior Behavior
             {
@@ -130,7 +131,7 @@ namespace Kingo.Windows.Media3D
             {
                 if (_moveToAttachedState)
                 {
-                    if (Behavior._focusManager.HasFocus(Viewport))
+                    if (Behavior._focusManager.HasFocus(InputSource))
                     {
                         MoveTo(new PassiveState(Behavior));
                     }
@@ -153,13 +154,13 @@ namespace Kingo.Windows.Media3D
 
         private abstract class AttachedState : State
         {
-            private FocusWatcher _focusWatcher;
+            private FocusWatcher _focusWatcher;                        
 
             internal override void Enter()
             {
-                base.Enter();
+                base.Enter();               
 
-                _focusWatcher = Behavior._focusManager.CreateFocusWatcher(Viewport);
+                _focusWatcher = Behavior._focusManager.CreateFocusWatcher(InputSource);
                 _focusWatcher.GotFocus += HandleGotFocus;
                 _focusWatcher.LostFocus += HandleLostFocus;
             }            
@@ -168,11 +169,11 @@ namespace Kingo.Windows.Media3D
             {
                 _focusWatcher.LostFocus -= HandleLostFocus;
                 _focusWatcher.GotFocus -= HandleGotFocus;
-                _focusWatcher = null;               
+                _focusWatcher = null;                
 
                 base.Exit();
-            }                       
-
+            }
+                        
             protected virtual void HandleGotFocus(object sender, EventArgs e) { }
             
             protected virtual void HandleLostFocus(object sender, EventArgs e) { }
@@ -180,7 +181,7 @@ namespace Kingo.Windows.Media3D
             public override void OnDetaching()
             {
                 MoveTo(new DetachedState(Behavior));
-            }                        
+            }          
         }
 
         #endregion
@@ -209,24 +210,24 @@ namespace Kingo.Windows.Media3D
             {         
                 base.Enter();
 
-                Viewport.MouseDown += HandleViewportMouseDown;  
+                InputSource.MouseDown += HandleViewportMouseDown;  
                 
                 if (IsFirstTime)
                 {
-                    Focus(Viewport);
+                    Focus(InputSource);
                 }
             }            
 
             internal override void Exit()
             {
-                Viewport.MouseDown -= HandleViewportMouseDown;
+                InputSource.MouseDown -= HandleViewportMouseDown;
 
                 base.Exit();
             }
 
             private void HandleViewportMouseDown(object sender, MouseButtonEventArgs e)
             {
-                Focus(Viewport);
+                Focus(InputSource);
             }
 
             private void Focus(UIElement viewport)
@@ -381,15 +382,17 @@ namespace Kingo.Windows.Media3D
                 get;
             }
 
+            private ProjectionCamera ProjectionCamera => Behavior.AssociatedObject.Camera as ProjectionCamera;
+
             internal override void Enter()
             {
                 base.Enter();
 
                 CameraPropertyDescriptor.AddValueChanged(Behavior, HandleCameraChanged);
-                Controller.Camera = Viewport.Camera as ProjectionCamera;
+                Controller.Camera = ProjectionCamera;
 
                 ActiveMode.KeyChanged += HandleControlModeKeyChanged;
-                ActiveMode.Activate(Viewport, Controller);
+                ActiveMode.Activate(InputSource, Controller);
             }
 
             internal override void Exit()
@@ -412,7 +415,7 @@ namespace Kingo.Windows.Media3D
                 var controller = Behavior.Controller;
                 if (controller != null)
                 {
-                    controller.Camera = Viewport.Camera as ProjectionCamera;
+                    controller.Camera = ProjectionCamera;
                 }
             }
 
@@ -522,8 +525,157 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
+        #region [====== InputSourceProviders ======]
+
+        private abstract class InputSourceProvider
+        {
+            public abstract UIElement InputSource
+            {
+                get;
+            }
+
+            public abstract InputSourceProvider AttachTo(Viewport3D viewport);
+
+            public abstract InputSourceProvider Detach();
+
+            protected static bool ReplaceElement(UIElement oldElement, UIElement newElement)
+            {
+                var parent = LogicalTreeHelper.GetParent(oldElement);
+                if (parent == null)
+                {
+                    return false;
+                }
+                return
+                    ReplaceElement(newElement, parent as Panel, oldElement) ||
+                    ReplaceElement(newElement, parent as Decorator) ||
+                    ReplaceElement(newElement, parent as ContentPresenter) ||
+                    ReplaceElement(newElement, parent as ContentControl);
+            }
+
+            private static bool ReplaceElement(UIElement newElement, Panel parent, UIElement oldElement)
+            {
+                if (parent == null)
+                {
+                    return false;
+                }
+                var childIndex = parent.Children.IndexOf(oldElement);
+
+                parent.Children.RemoveAt(childIndex);
+                parent.Children.Insert(childIndex, newElement);
+
+                return true;
+            }
+
+            private static bool ReplaceElement(UIElement newElement, Decorator parent)
+            {
+                if (parent == null)
+                {
+                    return false;
+                }
+                parent.Child = newElement;
+                return true;
+            }
+
+            private static bool ReplaceElement(UIElement newElement, ContentPresenter parent)
+            {
+                if (parent == null)
+                {
+                    return false;
+                }
+                parent.Content = newElement;
+                return true;
+            }
+
+            private static bool ReplaceElement(UIElement newElement, ContentControl parent)
+            {
+                if (parent == null)
+                {
+                    return false;
+                }
+                parent.Content = newElement;
+                return true;
+            }
+        }
+
+        private sealed class NullProvider : InputSourceProvider
+        {
+            public override UIElement InputSource => null;
+
+            public override InputSourceProvider AttachTo(Viewport3D viewport)
+            {
+                var border = new Border()
+                {                    
+                    Background = Brushes.Transparent
+                };
+                if (ReplaceElement(viewport, border))
+                {
+                    border.Child = viewport;
+                    return new BorderProvider(viewport, border);
+                }
+                return new Viewport3DProvider(viewport);
+            }
+
+            public override InputSourceProvider Detach()
+            {
+                return this;
+            }
+        }
+
+        private sealed class Viewport3DProvider : InputSourceProvider
+        {
+            private readonly Viewport3D _viewport;
+
+            internal Viewport3DProvider(Viewport3D viewport)
+            {
+                _viewport = viewport;
+            }
+
+            public override UIElement InputSource => _viewport;
+
+            public override InputSourceProvider AttachTo(Viewport3D viewport)
+            {
+                return Detach().AttachTo(viewport);
+            }
+
+            public override InputSourceProvider Detach()
+            {
+                return new NullProvider();
+            }
+        }
+
+        private sealed class BorderProvider : InputSourceProvider
+        {
+            private readonly Viewport3D _viewport;
+            private readonly Border _border;
+
+            public BorderProvider(Viewport3D viewport, Border border)
+            {
+                _viewport = viewport;
+                _border = border;
+            }
+
+            public override UIElement InputSource => _border;
+
+            public override InputSourceProvider AttachTo(Viewport3D viewport)
+            {
+                return Detach().AttachTo(viewport);
+            }
+
+            public override InputSourceProvider Detach()
+            {
+                _border.Child = null;
+
+                ReplaceElement(_border, _viewport);
+
+                return new NullProvider();
+            }
+        }
+
+        #endregion
+
         private readonly ObservableCollection<ControlMode> _controlModes;
-        private readonly IFocusManager _focusManager;      
+        private readonly IFocusManager _focusManager;
+        private InputSourceProvider _inputSourceProvider;      
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectionCameraControllerBehavior" /> class.
@@ -542,6 +694,7 @@ namespace Kingo.Windows.Media3D
         {
             _currentState = new DetachedState(this);
             _focusManager = focusManager;
+            _inputSourceProvider = new NullProvider();
 
             _controlModes = new ObservableCollection<ControlMode>();
             _controlModes.CollectionChanged += HandleControlModesChanged;            
@@ -663,17 +816,18 @@ namespace Kingo.Windows.Media3D
                     _currentState.OnControlModeAdded(controlMode);
                 }
             }
-        }        
+        }
 
         #endregion
 
-        #region [====== Attaching and Detaching ======]
+        #region [====== Attaching and Detaching ======]     
 
         /// <inheritdoc />
         protected override void OnAttached()
         {            
             base.OnAttached();
 
+            _inputSourceProvider = _inputSourceProvider.AttachTo(AssociatedObject);
             _currentState.OnAttached();                                 
         }        
 
@@ -681,9 +835,10 @@ namespace Kingo.Windows.Media3D
         protected override void OnDetaching()
         {           
             _currentState.OnDetaching();
+            _inputSourceProvider = _inputSourceProvider.Detach();
 
             base.OnDetaching();
-        }
+        }        
 
         #endregion
     }
