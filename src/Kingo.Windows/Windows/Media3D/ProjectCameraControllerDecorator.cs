@@ -27,7 +27,7 @@ namespace Kingo.Windows.Media3D
 
 
         /// <inheritdoc />
-        public override ProjectionCamera Camera
+        public override Camera Camera
         {
             get { return Controller.Camera; }
             set { Controller.Camera = value; }

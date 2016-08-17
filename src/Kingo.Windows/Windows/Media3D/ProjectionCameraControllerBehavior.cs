@@ -382,14 +382,14 @@ namespace Kingo.Windows.Media3D
                 get;
             }
 
-            private ProjectionCamera ProjectionCamera => Behavior.AssociatedObject.Camera as ProjectionCamera;
+            private Camera Camera => Behavior.AssociatedObject.Camera;
 
             internal override void Enter()
             {
                 base.Enter();
 
                 CameraPropertyDescriptor.AddValueChanged(Behavior, HandleCameraChanged);
-                Controller.Camera = ProjectionCamera;
+                Controller.Camera = Camera;
 
                 ActiveMode.KeyChanged += HandleControlModeKeyChanged;
                 ActiveMode.Activate(InputSource, Controller);
@@ -415,7 +415,7 @@ namespace Kingo.Windows.Media3D
                 var controller = Behavior.Controller;
                 if (controller != null)
                 {
-                    controller.Camera = ProjectionCamera;
+                    controller.Camera = Camera;
                 }
             }
 

@@ -5,15 +5,15 @@ using System.Windows.Media.Media3D;
 namespace Kingo.Windows.Media3D
 {
     /// <summary>
-    /// When implemented by a class, represents a controller for <see cref="ProjectionCamera">Projection Cameras</see> that is used
-    /// to translate and rotate a camera.
+    /// When implemented by a class, represents a controller for <see cref="Camera">Cameras</see> that is used
+    /// to translate, rotate and zoom a camera.
     /// </summary>
     public interface IProjectionCameraController : INotifyPropertyChanged
     {
         /// <summary>
         /// Gets or sets the camera that is controlled by this controller.
         /// </summary>
-        ProjectionCamera Camera
+        Camera Camera
         {
             get;
             set;

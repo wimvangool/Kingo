@@ -14,7 +14,7 @@ namespace Kingo.Windows.Media3D
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
         /// <inheritdoc />
-        public abstract ProjectionCamera Camera
+        public abstract Camera Camera
         {
             get;
             set;

@@ -253,7 +253,7 @@ namespace Kingo.Windows.Media3D
         #region [====== Camera ======]       
 
         /// <inheritdoc />
-        public override ProjectionCamera Camera
+        public override Camera Camera
         {
             get { return _currentState.Camera; }
             set
@@ -272,6 +272,10 @@ namespace Kingo.Windows.Media3D
         
         private State MoveToNewState(object camera)
         {
+            if (camera == null)
+            {
+                return new NullCameraState();
+            }
             var orthographicCamera = camera as OrthographicCamera;
             if (orthographicCamera != null)
             {
@@ -282,7 +286,14 @@ namespace Kingo.Windows.Media3D
             {
                 return new PerspectiveCameraState(this, perspectiveCamera);
             }
-            return new NullCameraState();
+            throw NewUnsupportedCameraException(camera);
+        }
+
+        private static Exception NewUnsupportedCameraException(object camera)
+        {
+            var messageFormat = ExceptionMessages.ProjectionCameraController_UnsupportedCamera;
+            var message = string.Format(messageFormat, camera.GetType().Name);
+            return new ArgumentException(message, nameof(camera));
         }
 
         #endregion     

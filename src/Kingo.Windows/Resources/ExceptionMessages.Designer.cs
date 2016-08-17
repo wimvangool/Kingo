@@ -88,6 +88,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera of type &apos;{0}&apos; is not supported by the controller..
+        /// </summary>
+        internal static string ProjectionCameraController_UnsupportedCamera {
+            get {
+                return ResourceManager.GetString("ProjectionCameraController_UnsupportedCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation &apos;{0}&apos; not allowed in state &apos;{1}&apos;..
         /// </summary>
         internal static string State_InvalidOperation {

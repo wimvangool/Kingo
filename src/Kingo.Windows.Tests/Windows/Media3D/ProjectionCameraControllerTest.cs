@@ -16,7 +16,20 @@ namespace Kingo.Windows.Media3D
         public void Setup()
         {
             _controller = new ProjectionCameraController();            
-        }        
+        }  
+        
+        private ProjectionCamera ProjectionCamera => _controller.Camera as ProjectionCamera;
+
+        #region [====== Camera ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void SetCamera_Throws_IfCameraTypeIsNotSupported()
+        {
+            _controller.Camera = new MatrixCamera();
+        }
+
+        #endregion
 
         #region [====== PropertyChanged ======]
 
@@ -52,7 +65,7 @@ namespace Kingo.Windows.Media3D
             _controller.Camera = new PerspectiveCamera();
             _controller.MoveLeftRight(distance);
             
-            AssertAreEqual(distance, 0, 0, _controller.Camera.Position);
+            AssertAreEqual(distance, 0, 0, ProjectionCamera.Position);
         }
 
         [TestMethod]
@@ -67,7 +80,7 @@ namespace Kingo.Windows.Media3D
             };            
             _controller.MoveLeftRight(distance);            
             
-            AssertAreEqual(position.X + distance, position.Y, position.Z, _controller.Camera.Position);
+            AssertAreEqual(position.X + distance, position.Y, position.Z, ProjectionCamera.Position);
         }
 
         #endregion
@@ -89,7 +102,7 @@ namespace Kingo.Windows.Media3D
             _controller.Camera = new PerspectiveCamera();
             _controller.MoveUpDown(distance);
             
-            AssertAreEqual(0, distance, 0, _controller.Camera.Position);
+            AssertAreEqual(0, distance, 0, ProjectionCamera.Position);
         }
 
         [TestMethod]
@@ -104,7 +117,7 @@ namespace Kingo.Windows.Media3D
             };
             _controller.MoveUpDown(distance);
 
-            AssertAreEqual(position.X, position.Y + distance, position.Z, _controller.Camera.Position);
+            AssertAreEqual(position.X, position.Y + distance, position.Z, ProjectionCamera.Position);
         }
 
         #endregion
@@ -126,7 +139,7 @@ namespace Kingo.Windows.Media3D
             _controller.Camera = new PerspectiveCamera();
             _controller.MoveForwardBackward(distance);
 
-            AssertAreEqual(0, 0, -distance, _controller.Camera.Position);
+            AssertAreEqual(0, 0, -distance, ProjectionCamera.Position);
         }
 
         [TestMethod]
@@ -141,7 +154,7 @@ namespace Kingo.Windows.Media3D
             };
             _controller.MoveForwardBackward(distance);
 
-            AssertAreEqual(position.X, position.Y, position.Z - distance, _controller.Camera.Position);
+            AssertAreEqual(position.X, position.Y, position.Z - distance, ProjectionCamera.Position);
         }
 
         #endregion
@@ -161,7 +174,7 @@ namespace Kingo.Windows.Media3D
             _controller.Camera = new PerspectiveCamera();
             _controller.Move(new Vector3D());
             
-            AssertAreEqual(0, 0, 0, _controller.Camera.Position);
+            AssertAreEqual(0, 0, 0, ProjectionCamera.Position);
         }
 
         [TestMethod]
@@ -172,7 +185,7 @@ namespace Kingo.Windows.Media3D
             _controller.Camera = new PerspectiveCamera();
             _controller.Move(direction);
             
-            AssertAreEqual(direction.X, direction.Y, direction.Z, _controller.Camera.Position);
+            AssertAreEqual(direction.X, direction.Y, direction.Z, ProjectionCamera.Position);
         }
 
         [TestMethod]
@@ -187,7 +200,7 @@ namespace Kingo.Windows.Media3D
             };
             _controller.Move(direction);
             
-            AssertAreEqual(position.X + direction.X, position.Y + direction.Y, position.Z + direction.Z, _controller.Camera.Position);
+            AssertAreEqual(position.X + direction.X, position.Y + direction.Y, position.Z + direction.Z, ProjectionCamera.Position);
         }
 
         #endregion
@@ -416,8 +429,8 @@ namespace Kingo.Windows.Media3D
             _controller.Camera = camera;
             _controller.Rotate(_controller.Left, 90);
 
-            AssertAreEqual(0, -1, 0, _controller.Camera.LookDirection);
-            AssertAreEqual(0, 0, -1, _controller.Camera.UpDirection);
+            AssertAreEqual(0, -1, 0, ProjectionCamera.LookDirection);
+            AssertAreEqual(0, 0, -1, ProjectionCamera.UpDirection);
         }
         
         [TestMethod]
@@ -429,8 +442,8 @@ namespace Kingo.Windows.Media3D
             _controller.Rotate(_controller.Left, 45);
             _controller.Rotate(_controller.Left, 45);
 
-            AssertAreEqual(0, -1, 0, _controller.Camera.LookDirection);
-            AssertAreEqual(0, 0, -1, _controller.Camera.UpDirection);
+            AssertAreEqual(0, -1, 0, ProjectionCamera.LookDirection);
+            AssertAreEqual(0, 0, -1, ProjectionCamera.UpDirection);
         }                    
 
         [TestMethod]
