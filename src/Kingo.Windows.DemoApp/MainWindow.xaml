@@ -11,7 +11,12 @@
         Width="1024"
         Height="768">
     <Grid>                  
-      <Viewport3D>         
+      <Viewport3D>  
+        <Viewport3D.Resources>
+          <Media3D:Cube3D x:Key="_cubeA" />
+          <Media3D:Cube3D x:Key="_cubeB" ShareVertices="True" />
+        </Viewport3D.Resources>
+          
         <i:Interaction.Behaviors>
           <Media3D:ProjectionCameraControllerBehavior>
             <Media3D:ControlMode>
@@ -33,7 +38,7 @@
         </i:Interaction.Behaviors>
 
         <Viewport3D.Camera>
-          <PerspectiveCamera Position="0.5, 0.5, 10"                             
+          <PerspectiveCamera Position="10, 10, 40"                             
                              FieldOfView="70" />   
           <!--<OrthographicCamera Position="0.5, 0.5, 5"                             
                               Width="10" />-->
@@ -41,32 +46,43 @@
 
         <ModelVisual3D>
           <ModelVisual3D.Content>
-            <DirectionalLight x:Name="_sunLight" Direction="-1,-2,-3" />
-          </ModelVisual3D.Content>
-        </ModelVisual3D>
+            <Model3DGroup>
+              <DirectionalLight x:Name="_sunLight" Direction="-1,-2,-3" />
+              <AmbientLight x:Name="_ambientLight" Color="#444444"/>
+            </Model3DGroup>
+          </ModelVisual3D.Content>          
+        </ModelVisual3D>                  
 
         <ModelVisual3D>
           <ModelVisual3D.Content>
-            <AmbientLight x:Name="_ambientLight" Color="#444444"/>
-          </ModelVisual3D.Content>
-        </ModelVisual3D>
-
-        <ModelVisual3D>
-          <ModelVisual3D.Content>
-            <GeometryModel3D>
-              <GeometryModel3D.Geometry>
-                <MeshGeometry3D Positions="0 0 0  1 0 0  0 1 0  1 1 0  0 0 1  1 0 1  0 1 1  1 1 1"
-                                TriangleIndices="2 3 1  2 1 0  7 1 3  7 5 1  6 5 7  6 4 5  6 2 0  2 0 4  2 7 3  2 6 7  0 1 5  0 5 4" />
-              </GeometryModel3D.Geometry>
+            <GeometryModel3D Geometry="{Binding Geometry, Source={StaticResource _cubeA}}">
               <GeometryModel3D.Material>
-                <DiffuseMaterial>
-                  <DiffuseMaterial.Brush>
-                    <SolidColorBrush Color="#658C7E"/>
-                  </DiffuseMaterial.Brush>
-                </DiffuseMaterial>
+                <DiffuseMaterial Brush="CornflowerBlue" />          
               </GeometryModel3D.Material>
+
+              <GeometryModel3D.BackMaterial>
+                <DiffuseMaterial Brush="OrangeRed" />
+              </GeometryModel3D.BackMaterial>
             </GeometryModel3D>
           </ModelVisual3D.Content>
+        </ModelVisual3D>
+
+        <ModelVisual3D>
+          <ModelVisual3D.Content>
+            <GeometryModel3D Geometry="{Binding Geometry, Source={StaticResource _cubeB}}">
+              <GeometryModel3D.Material>
+                <DiffuseMaterial Brush="CornflowerBlue" />
+              </GeometryModel3D.Material>
+
+              <GeometryModel3D.BackMaterial>
+                <DiffuseMaterial Brush="OrangeRed" />
+              </GeometryModel3D.BackMaterial>
+            </GeometryModel3D>                       
+          </ModelVisual3D.Content>
+
+          <ModelVisual3D.Transform>
+            <TranslateTransform3D OffsetX="2" />
+          </ModelVisual3D.Transform>
         </ModelVisual3D>
       </Viewport3D>
     </Grid>

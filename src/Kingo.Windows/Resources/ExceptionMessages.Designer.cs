@@ -79,6 +79,24 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified value ({0}) does not represent a valid distance..
+        /// </summary>
+        internal static string Distance_InvalidDistance {
+            get {
+                return ResourceManager.GetString("Distance_InvalidDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified vertex ({0}) does not exist in the mesh..
+        /// </summary>
+        internal static string MeshGeometry3DBuilder_InvalidVertex {
+            get {
+                return ResourceManager.GetString("MeshGeometry3DBuilder_InvalidVertex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot perform the operation because no camera was set on the controller..
         /// </summary>
         internal static string ProjectionCameraController_NoCameraSet {

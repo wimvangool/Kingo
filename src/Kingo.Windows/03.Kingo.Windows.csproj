@@ -68,20 +68,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Angle.cs" />
+    <Compile Include="Windows\Angle.cs" />
     <Compile Include="Windows\Command.T1.cs" />
+    <Compile Include="Windows\DistanceConverter.cs" />
     <Compile Include="Windows\IFocusManager.cs" />
     <Compile Include="Windows\FocusWatcher.cs" />
+    <Compile Include="Windows\Distance.cs" />
     <Compile Include="Windows\Media3D\AlphaBetaGammaRotationSet.cs" />
     <Compile Include="Windows\Media3D\AlphaBetaRotationSet.cs" />
     <Compile Include="Windows\Media3D\AlphaRotationSet.cs" />
     <Compile Include="Windows\Media3D\ControlMode.cs" />
     <Compile Include="Windows\Media3D\ControlModeCommandBinding.cs" />
     <Compile Include="Windows\Media3D\ControlModeCommandBinding.T1.cs" />
+    <Compile Include="Windows\Media3D\Cube3D.cs" />
+    <Compile Include="Windows\Media3D\Cuboid3D.cs" />
     <Compile Include="Windows\Media3D\DebugCameraController.cs" />
     <Compile Include="Windows\Media3D\EulerAngleRotationSet.cs" />
     <Compile Include="Windows\Media3D\IControlModeCommandBinding.cs" />
     <Compile Include="Windows\Media3D\IProjectionCameraController.cs" />
+    <Compile Include="Windows\Media3D\IShape3D.cs" />
+    <Compile Include="Windows\Media3D\MeshGeometry3DBuilder.cs" />
     <Compile Include="Windows\Media3D\MouseOrbitBinding.cs" />
     <Compile Include="Windows\Media3D\KeyCommandBinding.cs" />
     <Compile Include="Windows\Media3D\MouseWheelCommandBinding.cs" />
@@ -92,6 +98,9 @@
     <Compile Include="Windows\Media3D\ProjectionCameraController.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerBase.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerBehavior.cs" />
+    <Compile Include="Windows\Media3D\Shape3D.cs" />
+    <Compile Include="Windows\Media3D\Shape3DDecorator.T1.cs" />
+    <Compile Include="Windows\Media3D\Triangle3DInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Kingo.snk">

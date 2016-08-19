@@ -141,6 +141,120 @@ namespace Kingo.Windows.Media3D
 
         #endregion
 
+        #region [====== AxisLeft ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="AxisLeft"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty AxisLeftProperty =
+            DependencyProperty.Register(nameof(AxisLeft), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that moves the camera along the world-axis that is currently pointing left.
+        /// </summary>
+        public TInput AxisLeft
+        {
+            get { return (TInput) GetValue(AxisLeftProperty); }
+            set { SetValue(AxisLeftProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== AxisRight ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="AxisRight"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty AxisRightProperty =
+            DependencyProperty.Register(nameof(AxisRight), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that moves the camera along the world-axis that is currently pointing right.
+        /// </summary>
+        public TInput AxisRight
+        {
+            get { return (TInput) GetValue(AxisRightProperty); }
+            set { SetValue(AxisRightProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== AxisUp ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="AxisUp"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty AxisUpProperty =
+            DependencyProperty.Register(nameof(AxisUp), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that moves the camera along the world-axis that is currently pointing up.
+        /// </summary>
+        public TInput AxisUp
+        {
+            get { return (TInput) GetValue(AxisUpProperty); }
+            set { SetValue(AxisUpProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== AxisDown ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="AxisDown"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty AxisDownProperty =
+            DependencyProperty.Register(nameof(AxisDown), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that moves the camera along the world-axis that is currently pointing down.
+        /// </summary>
+        public TInput AxisDown
+        {
+            get { return (TInput) GetValue(AxisDownProperty); }
+            set { SetValue(AxisDownProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== AxisForward ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="AxisForward"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty AxisForwardProperty =
+            DependencyProperty.Register(nameof(AxisForward), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that moves the camera along the world-axis that is currently pointing forward.
+        /// </summary>
+        public TInput AxisForward
+        {
+            get { return (TInput) GetValue(AxisForwardProperty); }
+            set { SetValue(AxisForwardProperty, value); }
+        }
+
+        #endregion
+
+        #region [====== AxisBackward ======]
+
+        /// <summary>
+        /// Backing-field of the <see cref="AxisBackward"/>-property.
+        /// </summary>
+        public static readonly DependencyProperty AxisBackwardProperty =
+            DependencyProperty.Register(nameof(AxisBackward), typeof(TInput), typeof(ControlModeCommandBinding<TInput>));
+
+        /// <summary>
+        /// Gets or sets the input that moves the camera along the world-axis that is currently pointing backward.
+        /// </summary>
+        public TInput AxisBackward
+        {
+            get { return (TInput) GetValue(AxisBackwardProperty); }
+            set { SetValue(AxisBackwardProperty, value); }
+        }
+
+        #endregion
+
         #region [====== ZoomSpeed ======]
 
         /// <summary>

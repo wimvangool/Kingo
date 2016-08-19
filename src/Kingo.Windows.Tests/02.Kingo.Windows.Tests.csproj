@@ -83,8 +83,13 @@
     <Compile Include="Windows\Media3D\ControlModeCommandBindingSpy.cs" />
     <Compile Include="Windows\Media3D\ControlModeCommandBindingTest.cs" />
     <Compile Include="Windows\Media3D\ControlModeTest.cs" />
+    <Compile Include="Windows\Media3D\Cube3DTest.cs" />
+    <Compile Include="Windows\Media3D\Cuboid3DTest.cs" />
+    <Compile Include="Windows\Media3D\MeshGeometryBuilderTest.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerBehaviorTest.cs" />
     <Compile Include="Windows\Media3D\ProjectionCameraControllerTest.cs" />
+    <Compile Include="Windows\Media3D\Shape3DSpy.cs" />
+    <Compile Include="Windows\Media3D\Shape3DTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj">

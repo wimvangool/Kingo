@@ -123,6 +123,12 @@
   <data name="ControlModeCommandBinding_AlreadyDeactivated" xml:space="preserve">
     <value>Cannot deactivate binding '{0}' because it is already deactivated.</value>
   </data>
+  <data name="Distance_InvalidDistance" xml:space="preserve">
+    <value>The specified value ({0}) does not represent a valid distance.</value>
+  </data>
+  <data name="MeshGeometry3DBuilder_InvalidVertex" xml:space="preserve">
+    <value>The specified vertex ({0}) does not exist in the mesh.</value>
+  </data>
   <data name="ProjectionCameraController_NoCameraSet" xml:space="preserve">
     <value>Cannot perform the operation because no camera was set on the controller.</value>
   </data>
