@@ -99,9 +99,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.Windows\03.Kingo.Windows.csproj">
+    <ProjectReference Include="..\Kingo.Windows.DemoApp.ViewModels\02.Kingo.Windows.DemoApp.ViewModels.csproj">
+      <Project>{dad73e9a-8eb3-4812-84c7-8bee8530513e}</Project>
+      <Name>02.Kingo.Windows.DemoApp.ViewModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kingo.Windows\04.Kingo.Windows.csproj">
       <Project>{7ab49a38-4b7e-487e-bda3-e01dc21f31aa}</Project>
-      <Name>03.Kingo.Windows</Name>
+      <Name>04.Kingo.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>

@@ -157,6 +157,12 @@
     <Compile Include="Constraints\IConstraintWithErrorMessage.T1.cs" />
     <Compile Include="Constraints\IFilterWithErrorMessage.T2.cs" />
     <Compile Include="IValidator.cs" />
+    <Compile Include="Messaging\IMessageHandler.cs" />
+    <Compile Include="Messaging\MessageStream.cs" />
+    <Compile Include="Messaging\MessageStreamCompositeElement.cs" />
+    <Compile Include="Messaging\MessageStreamElement.cs" />
+    <Compile Include="Messaging\MessageStreamMessageElement.T1.cs" />
+    <Compile Include="Messaging\MessageStreamNullElement.cs" />
     <Compile Include="Messaging\TechnicalException.cs" />
     <Compile Include="IErrorMessageBuilder.cs" />
     <Compile Include="IErrorMessageReader.cs" />

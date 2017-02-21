@@ -71,6 +71,7 @@
     <Compile Include="ErrorInfoTest.cs" />
     <Compile Include="Messaging\CommandTest.cs" />
     <Compile Include="Messaging\Domain\DomainEventTest.cs" />
+    <Compile Include="Messaging\MessageStreamTest.cs" />
     <Compile Include="Messaging\MessageTest.Equals.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Clocks\ClockTest.cs" />

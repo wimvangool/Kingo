@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{10ab6a66-a85f-4c23-88e5-ff4b69f3ad85}</ProjectGuid>
+    <ArchitectureToolsVersion>2.0.0.0</ArchitectureToolsVersion>
+    <Name>Chess.Models</Name>
+    <RootNamespace>Chess.Models</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ItemGroup>
+    <Folder Include="ModelDefinition\" />
+    <Content Include="ModelDefinition\Chess.Models.uml">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Validate Include="Chess.layerdiagram">
+      <SubType>Content</SubType>
+    </Validate>
+    <Validate Include="Chess.layerdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>Chess.layerdiagram</DependentUpon>
+    </Validate>
+    <Validate Include="Chess.layerdiagram.suppressions">
+      <SubType>Content</SubType>
+      <DependentUpon>Chess.layerdiagram</DependentUpon>
+    </Validate>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chess.Api\02.Chess.Api.csproj">
+      <Name>02.Chess.Api</Name>
+      <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Chess.Application\02.Chess.Application.csproj">
+      <Name>02.Chess.Application</Name>
+      <Project>{63fea2b3-4a6c-4673-a6f6-b0be60e9cb46}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Chess.DataAccess\01.Chess.DataAccess.csproj">
+      <Name>01.Chess.DataAccess</Name>
+      <Project>{997b545f-0c34-4eef-a919-ca033bf5e192}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Chess.Domain\03.Chess.Domain.csproj">
+      <Name>03.Chess.Domain</Name>
+      <Project>{1f58a741-2891-4cbf-95fd-abb601fb1d56}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Chess\02.Chess.csproj">
+      <Name>02.Chess</Name>
+      <Project>{aff442d0-7bae-4067-a172-31d5c073dcfd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Clients.Console\Clients.ConsoleApp.csproj">
+      <Name>Clients.ConsoleApp</Name>
+      <Project>{7ff52584-349a-4f3d-98b9-9c6b12fded28}</Project>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

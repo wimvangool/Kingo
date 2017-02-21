@@ -254,7 +254,5 @@ namespace Kingo.Messaging
         public abstract void RegisterSingleton(object concreteType, Type abstractType = null);
 
         #endregion
-
-
     }
 }

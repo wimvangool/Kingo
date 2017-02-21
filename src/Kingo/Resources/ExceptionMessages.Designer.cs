@@ -250,6 +250,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
+        /// </summary>
+        internal static string MessageStream_IndexOutOfRange {
+            get {
+                return ResourceManager.GetString("MessageStream_IndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Epsilon ({0}) cannot be negative..
         /// </summary>
         internal static string NumberExtensions_NegativeEpsilon {

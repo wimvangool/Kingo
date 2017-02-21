@@ -210,5 +210,20 @@ namespace Kingo.Messaging
         }
 
         #endregion
+        
+        /// <summary>
+        /// Combines two messages to form a stream.
+        /// </summary>
+        /// <param name="left">Left message.</param>
+        /// <param name="right">Right message.</param>
+        /// <returns>A new <see cref="MessageStream" /> containing both messages.</returns>
+        public static MessageStream operator +(Message left, Message right)
+        {
+            if (ReferenceEquals(left, null))
+            {
+                return right;
+            };            
+            return MessageStream.FromMessage(left as IMessage) + right;
+        }
     }
 }

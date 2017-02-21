@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Chess.Api", "Chess.Api\02.Chess.Api.csproj", "{2B987966-7FDE-4A2C-8ADB-4BEDAAB05F70}"
 EndProject
@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Api", "Server.Api", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{DD5B5A42-5FE2-4395-AB29-12E16FDC6F3C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Core", "Server.Core", "{1DDB8F7B-6B11-4663-8A1F-E6A60D9ECB67}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.BusinessLogic", "Server.BusinessLogic", "{1DDB8F7B-6B11-4663-8A1F-E6A60D9ECB67}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Data", "Server.Data", "{59C1A494-F094-4208-B5A6-018E0FCB0070}"
 EndProject
@@ -29,9 +29,13 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "02.Chess.Data", "Chess.Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Chess", "Chess\02.Chess.csproj", "{AFF442D0-7BAE-4067-A172-31D5C073DCFD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Api.Services", "Server.Api.Services", "{2DA4CDD5-28E4-4431-8E7B-8AC5260FAEB1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server.Api.Implementation", "Server.Api.Implementation", "{2DA4CDD5-28E4-4431-8E7B-8AC5260FAEB1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Chess.Tests", "Chess.Tests\01.Chess.Tests.csproj", "{D0F66723-95A9-4EFE-996D-A4F1717DAF77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{3A74C1E2-B668-4DD5-9261-26D0B7011869}"
+EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "Chess.Models", "Chess.Models\Chess.Models.modelproj", "{10AB6A66-A85F-4C23-88E5-FF4B69F3AD85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +85,10 @@ Global
 		{D0F66723-95A9-4EFE-996D-A4F1717DAF77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0F66723-95A9-4EFE-996D-A4F1717DAF77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0F66723-95A9-4EFE-996D-A4F1717DAF77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10AB6A66-A85F-4C23-88E5-FF4B69F3AD85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10AB6A66-A85F-4C23-88E5-FF4B69F3AD85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10AB6A66-A85F-4C23-88E5-FF4B69F3AD85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10AB6A66-A85F-4C23-88E5-FF4B69F3AD85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +104,6 @@ Global
 		{63BA61FD-379B-402D-8331-13715C26B057} = {59C1A494-F094-4208-B5A6-018E0FCB0070}
 		{AFF442D0-7BAE-4067-A172-31D5C073DCFD} = {2DA4CDD5-28E4-4431-8E7B-8AC5260FAEB1}
 		{D0F66723-95A9-4EFE-996D-A4F1717DAF77} = {2DA4CDD5-28E4-4431-8E7B-8AC5260FAEB1}
+		{10AB6A66-A85F-4C23-88E5-FF4B69F3AD85} = {3A74C1E2-B668-4DD5-9261-26D0B7011869}
 	EndGlobalSection
 EndGlobal

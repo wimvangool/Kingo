@@ -6,7 +6,7 @@
     public interface IDataTransferObject
     {
         /// <summary>
-        /// Validates this instance and returns a <see cref="ErrorInfo"/> instance
+        /// Validates this instance and returns an <see cref="ErrorInfo"/> instance
         /// that contains error messages for the instance and all invalid members.
         /// </summary>                
         /// <returns>
