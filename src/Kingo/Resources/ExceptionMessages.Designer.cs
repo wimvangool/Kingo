@@ -97,51 +97,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; has incorrect type &apos;{1}&apos;. Expected type is &apos;{2}&apos;..
-        /// </summary>
-        internal static string DomainEvent_IncompatibleMemberType {
-            get {
-                return ResourceManager.GetString("DomainEvent_IncompatibleMemberType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not resolve Key on event of type &apos;{0}&apos;. Please mark one field or property as the Key of this event..
-        /// </summary>
-        internal static string DomainEvent_KeyMemberNotFound {
-            get {
-                return ResourceManager.GetString("DomainEvent_KeyMemberNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains more than one member that is decorated with KeyAttribute, where only one is allowed..
-        /// </summary>
-        internal static string DomainEvent_MultipleKeyMembersFound {
-            get {
-                return ResourceManager.GetString("DomainEvent_MultipleKeyMembersFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Event &apos;{0}&apos; contains more than one member that is decorated with VersionAttribute, where only one is allowed..
-        /// </summary>
-        internal static string DomainEvent_MultipleVersionMembersFound {
-            get {
-                return ResourceManager.GetString("DomainEvent_MultipleVersionMembersFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not resolve Version on event of type &apos;{0}&apos;. Please mark one field or property as the Version of this event..
-        /// </summary>
-        internal static string DomainEvent_VersionMemberNotFound {
-            get {
-                return ResourceManager.GetString("DomainEvent_VersionMemberNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
         /// </summary>
         internal static string DomainModelException_CommandFailed {
@@ -241,29 +196,11 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; could not be copied because it is neither a DataContract nor Serializable. Mark this message with the DataContractAttribute or the SerializableAttribute, or provide a custom implementation of the Copy()-method by overridding it..
-        /// </summary>
-        internal static string Message_CopyNotSupported {
-            get {
-                return ResourceManager.GetString("Message_CopyNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
         internal static string MessageStream_IndexOutOfRange {
             get {
                 return ResourceManager.GetString("MessageStream_IndexOutOfRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Epsilon ({0}) cannot be negative..
-        /// </summary>
-        internal static string NumberExtensions_NegativeEpsilon {
-            get {
-                return ResourceManager.GetString("NumberExtensions_NegativeEpsilon", resourceCulture);
             }
         }
         

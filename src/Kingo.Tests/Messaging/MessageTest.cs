@@ -2,23 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Kingo.Constraints;
+using Kingo.Messaging.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
 {
     [TestClass]
     public sealed partial class MessageTest
-    {                
-        #region [====== MessageWithoutAttributes ======]
+    {
+        #region [====== SomeMessage ======]
 
-        private sealed class MessageWithoutAttributes : Message
+        private sealed class SomeMessage : Message
         {
-            internal readonly int Value;
-    
-            public MessageWithoutAttributes(int value)
+            public static IReadOnlyList<IMessage> AsReadOnlyList()
             {
-                Value = value;
+                return new SomeMessage();
+            }
+
+            public static IMessageStream AsMessageStream()
+            {
+                return new SomeMessage();
             }
         }
 
@@ -41,9 +44,9 @@ namespace Kingo.Messaging
                 IntValues = new List<int>(values);
             }           
 
-            protected override IValidator CreateValidator()
+            protected override IMessageValidator CreateValidator()
             {
-                var validator = new ConstraintValidator<MessageWithPrimitiveMembers>();
+                var validator = new ConstraintMessageValidator<MessageWithPrimitiveMembers>();
 
                 validator.VerifyThat(m => m.IntValue).IsGreaterThan(0);
                 validator.VerifyThat(m => m.IntValues).IsNotNullOrEmpty();
@@ -69,71 +72,7 @@ namespace Kingo.Messaging
             }
         }
 
-        #endregion        
-
-        #region [====== Copy ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void Copy_Throws_IfMessageLacksRequiredAttributes()
-        {            
-            new MessageWithoutAttributes(GenerateIntValue()).Copy();            
-        }
-
-        [TestMethod]
-        public void Copy_ReturnsExpectedCopy_IfMessageIsSerializable()
-        {
-            var message = new SerializableMessage(GenerateIntValue(), GenerateStringValue());
-            var copy = message.Copy() as SerializableMessage;
-
-            Assert.IsNotNull(copy);
-            Assert.AreNotSame(message, copy);
-            Assert.AreEqual(message, copy);
-        }
-
-        [TestMethod]
-        public void Copy_ReturnsExpectedCopy_IfMessageHasNoMembersToCopy()
-        {
-            var message = new EmptyMessage();
-            var copy = message.Copy() as EmptyMessage;
-
-            Assert.IsNotNull(copy);
-            Assert.AreNotSame(message, copy);            
-        }
-
-        [TestMethod]
-        public void Copy_ReturnsExpectedCopy_IsMessageSpecifiesMemberAttributes()
-        {
-            var values = new[] { GenerateIntValue(), GenerateIntValue() + 1, GenerateIntValue() + 2 };
-            var message = new MessageWithPrimitiveMembers(GenerateIntValue(), values);
-            var copy = (MessageWithPrimitiveMembers) message.Copy();
-
-            Assert.IsNotNull(copy);
-            Assert.AreNotSame(message, copy);
-            Assert.AreEqual(message.IntValue, copy.IntValue);
-            Assert.IsNotNull(copy.IntValues);
-            Assert.AreEqual(3, copy.IntValues.Count);
-            Assert.AreEqual(values[0], copy.IntValues[0]);
-            Assert.AreEqual(values[1], copy.IntValues[1]);
-            Assert.AreEqual(values[2], copy.IntValues[2]);
-        }        
-            
-        [TestMethod]
-        public void Copy_ReturnsExpectedCopy_IfMessageContainsMemberOfOwnType()
-        {
-            var child = new MessageWithMemberOfOwnType(GenerateIntValue(), null);
-            var message = new MessageWithMemberOfOwnType(GenerateIntValue() + 1, child);
-            var copy = (MessageWithMemberOfOwnType) message.Copy();
-
-            Assert.IsNotNull(copy);
-            Assert.AreNotSame(message, copy);
-            Assert.AreEqual(message.Value, copy.Value);
-            Assert.IsNotNull(copy.Child);
-            Assert.AreNotSame(child, copy.Child);
-            Assert.AreEqual(child.Value, copy.Child.Value);
-        }
-
-        #endregion
+        #endregion                
 
         #region [====== Validate ======]
 
@@ -160,6 +99,92 @@ namespace Kingo.Messaging
             Assert.AreEqual("IntValues must not be null and contain at least one element.", errorInfo.MemberErrors["IntValues"]);
         }
 
-        #endregion                
+        #endregion
+
+        #region [====== IReadOnlyList<IMessage> ======]        
+
+        [TestMethod]
+        public void Count_ReturnsOne()
+        {
+            Assert.AreEqual(1, SomeMessage.AsReadOnlyList().Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void Item_Throws_IfIndexIsNegative()
+        {
+            SomeMessage.AsReadOnlyList()[-1].IgnoreValue();
+        }
+
+        [TestMethod]
+        public void Item_ReturnsSelf_IfIndexIsZero()
+        {
+            var message = SomeMessage.AsReadOnlyList();
+
+            Assert.AreSame(message, message[0]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void Item_Throws_IfIndexIsGreaterThanZero()
+        {
+            SomeMessage.AsReadOnlyList()[1].IgnoreValue();
+        }
+
+        #endregion
+
+        #region [====== Append(IMessageStream) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Append_Throws_IfStreamIsNull()
+        {
+            SomeMessage.AsMessageStream().Append(null);
+        }
+
+        [TestMethod]
+        public void Append_ReturnsSelf_IfStreamIsEmpty()
+        {
+            var message = SomeMessage.AsMessageStream();
+
+            Assert.AreSame(message, message.Append(MessageStream.Empty));
+        }
+
+        [TestMethod]
+        public void Append_ReturnsNewStream_IfStreamIsNotEmpty()
+        {
+            var messageA = SomeMessage.AsMessageStream();
+            var messageB = SomeMessage.AsMessageStream();
+            var stream = messageA.Append(messageB);
+
+            Assert.IsNotNull(stream);
+            Assert.AreEqual(2, stream.Count);
+            Assert.AreSame(messageA, stream[0]);
+            Assert.AreSame(messageB, stream[1]);
+        }
+
+        #endregion
+
+        #region [====== Accept ======]
+
+        [TestMethod]
+        public void Accept_DoesNothing_IfHandlerIsNull()
+        {
+            SomeMessage.AsMessageStream().Accept(null);
+        }
+
+        [TestMethod]
+        public void Accept_LetsHandlerVisitTheMessage_IfHandlerIsNotNull()
+        {
+            var message = SomeMessage.AsMessageStream();
+            var handler = new MessageHandlerSpy();
+
+            message.Accept(handler);
+
+            handler.AssertMessageCountIs(1);
+            handler.AssertAreSame(message, 0);
+        }
+
+        #endregion
     }
 }

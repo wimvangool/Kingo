@@ -129,21 +129,6 @@
   <data name="Context_IllegalScopeStarted" xml:space="preserve">
     <value>Cannot start this scope because a more restrive scope is still active.</value>
   </data>
-  <data name="DomainEvent_IncompatibleMemberType" xml:space="preserve">
-    <value>Member '{0}' has incorrect type '{1}'. Expected type is '{2}'.</value>
-  </data>
-  <data name="DomainEvent_KeyMemberNotFound" xml:space="preserve">
-    <value>Could not resolve Key on event of type '{0}'. Please mark one field or property as the Key of this event.</value>
-  </data>
-  <data name="DomainEvent_MultipleKeyMembersFound" xml:space="preserve">
-    <value>Event '{0}' contains more than one member that is decorated with KeyAttribute, where only one is allowed.</value>
-  </data>
-  <data name="DomainEvent_MultipleVersionMembersFound" xml:space="preserve">
-    <value>Event '{0}' contains more than one member that is decorated with VersionAttribute, where only one is allowed.</value>
-  </data>
-  <data name="DomainEvent_VersionMemberNotFound" xml:space="preserve">
-    <value>Could not resolve Version on event of type '{0}'. Please mark one field or property as the Version of this event.</value>
-  </data>
   <data name="DomainModelException_CommandFailed" xml:space="preserve">
     <value>Command '{0}' failed.</value>
   </data>
@@ -179,12 +164,6 @@
   </data>
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>
-  </data>
-  <data name="Message_CopyNotSupported" xml:space="preserve">
-    <value>Message of type '{0}' could not be copied because it is neither a DataContract nor Serializable. Mark this message with the DataContractAttribute or the SerializableAttribute, or provide a custom implementation of the Copy()-method by overridding it.</value>
-  </data>
-  <data name="NumberExtensions_NegativeEpsilon" xml:space="preserve">
-    <value>Epsilon ({0}) cannot be negative.</value>
   </data>
   <data name="Range_InvalidRange" xml:space="preserve">
     <value>The specified range is not valid: {0}.</value>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Kingo.Constraints;
+using Kingo.Messaging.Constraints;
 
 namespace Kingo.Messaging
 {

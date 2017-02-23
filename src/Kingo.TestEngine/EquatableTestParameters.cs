@@ -1,5 +1,6 @@
 ﻿using System;
-using Kingo.Constraints;
+using Kingo.Messaging;
+using Kingo.Messaging.Constraints;
 
 namespace Kingo
 {
@@ -43,9 +44,9 @@ namespace Kingo
         }
 
         /// <inheritdoc />
-        protected override IValidator CreateValidator()
+        protected override IMessageValidator CreateValidator()
         {
-            var validator = new ConstraintValidator<EquatableTestParameters>();
+            var validator = new ConstraintMessageValidator<EquatableTestParameters>();
 
             validator.VerifyThat(m => m.Instance)
                 .IsNotNull()

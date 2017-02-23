@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml;
 using Kingo.DynamicMethods;
 using Kingo.Resources;
 
@@ -16,8 +14,100 @@ namespace Kingo.Messaging
     /// Provides a base-implementation of the <see cref="IMessage" /> interface.
     /// </summary>
     [Serializable]    
-    public abstract class Message : DataTransferObject, IMessage
+    public abstract class Message : IMessage
     {
+        #region [====== IReadOnlyList<IMessage> ======]
+
+        private const int _Count = 1;
+
+        /// <inheritdoc />
+        int IReadOnlyCollection<IMessage>.Count => _Count;
+
+        /// <inheritdoc />
+        IMessage IReadOnlyList<IMessage>.this[int index]
+        {
+            get
+            {
+                if (index == 0)
+                {
+                    return this;
+                }
+                throw MessageStream.NewIndexOutOfRangeException(index, _Count);
+            }
+        }
+
+        /// <inheritdoc />
+        IEnumerator<IMessage> IEnumerable<IMessage>.GetEnumerator()
+        {
+            yield return this;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            yield return this;
+        }
+
+        #endregion
+
+        #region [====== IMessageStream ======]
+
+        private static readonly ConcurrentDictionary<Type, Action<Message, IMessageHandler>> _HandleMethods = new ConcurrentDictionary<Type, Action<Message, IMessageHandler>>();
+        private static readonly Lazy<MethodInfo> _HandleMethodDefinition = new Lazy<MethodInfo>(FindHandleMethodDefinition, true);
+
+        private static MethodInfo FindHandleMethodDefinition()
+        {
+            var methods =
+                from method in typeof(IMessageHandler).GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                where method.IsGenericMethodDefinition && method.Name == nameof(IMessageHandler.Handle)
+                select method;
+
+            return methods.Single();
+        }
+
+        IMessageStream IMessageStream.Append(IMessageStream stream)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+            if (stream.Count == 0)
+            {
+                return this;
+            }
+            return new MessageStream(this, stream);
+        }        
+        
+        void IMessageStream.Accept(IMessageHandler handler)
+        {
+            if (handler != null)
+            {
+                Accept(handler);
+            }
+        }
+
+        /// <summary>
+        /// Lets the specified <paramref name="handler"/> handle all messages of this stream.
+        /// </summary>
+        /// <param name="handler">A handler of messages.</param>  
+        protected virtual void Accept(IMessageHandler handler)
+        {
+            _HandleMethods.GetOrAdd(GetType(), CreateHandleMethod).Invoke(this, handler);
+        }
+
+        private static Action<Message, IMessageHandler> CreateHandleMethod(Type messageType)
+        {
+            var messageParameter = Expression.Parameter(typeof(Message), "message");
+            var handlerParameter = Expression.Parameter(typeof(IMessageHandler), "handler");
+
+            var message = Expression.Convert(messageParameter, messageType);
+            var handleMethod = _HandleMethodDefinition.Value.MakeGenericMethod(messageType);
+            var handleMethodCall = Expression.Call(handlerParameter, handleMethod, message);
+
+            return Expression.Lambda<Action<Message, IMessageHandler>>(handleMethodCall, messageParameter, handlerParameter).Compile();
+        }
+
+        #endregion
+
         #region [====== Equals & GetHashCode ======]
 
         /// <inheritdoc />
@@ -32,85 +122,33 @@ namespace Kingo.Messaging
             return GetHashCodeMethod.Invoke(this);
         }
 
-        #endregion
+        #endregion                    
 
-        #region [====== Copy ======]
+        #region [====== Validation ======]
 
-        private static readonly ConcurrentDictionary<Type, Func<object, object>> _CopyMethods = new ConcurrentDictionary<Type, Func<object, object>>();
+        private static readonly ConcurrentDictionary<Type, IMessageValidator> _Validators = new ConcurrentDictionary<Type, IMessageValidator>();
 
-        object ICloneable.Clone()
+        /// <inheritdoc />
+        public ErrorInfo Validate()
         {
-            return Copy();
+            return GetOrAddValidator(CreateValidator).Validate(this);
         }
-        
-        IMessage IMessage.Copy()
+
+        internal IMessageValidator GetOrAddValidator(Func<IMessageValidator> validatorFactory)
         {
-            return Copy();
+            return _Validators.GetOrAdd(GetType(), type => validatorFactory.Invoke());
         }
 
         /// <summary>
-        /// Creates and returns a copy of this message. The default implementation uses
-        /// the <see cref="DataContractSerializer" /> to copy this instance.
+        /// Creates and returns a <see cref="IMessageValidator" /> that can be used to validate this message.        
         /// </summary>
-        /// <returns>A copy of this message.</returns>
-        public virtual Message Copy()
+        /// <returns>A new <see cref="IMessageValidator" /> that can be used to validate this message.</returns>
+        protected virtual IMessageValidator CreateValidator()
         {
-            return (Message) _CopyMethods.GetOrAdd(GetType(), DetermineCopyMethod).Invoke(this);
-        }           
-
-        private static Func<object, object> DetermineCopyMethod(Type messageType)
-        {
-            if (HasAttribute(messageType, typeof(DataContractAttribute)))
-            {
-                return CopyWithDataContractSerializer;
-            }
-            if (HasAttribute(messageType, typeof(SerializableAttribute)))
-            {
-                return CopyWithBinaryFormatter;
-            }
-            return CopyNotSupported;
+            return new NullValidator();
         }
 
-        private static bool HasAttribute(Type messageType, Type attributeType)
-        {
-            return messageType.GetCustomAttributes(attributeType).Any();
-        }
-
-        private static object CopyWithDataContractSerializer(object instance)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                var writer = XmlDictionaryWriter.CreateBinaryWriter(memoryStream);
-                var reader = XmlDictionaryReader.CreateBinaryReader(memoryStream, XmlDictionaryReaderQuotas.Max);
-                var serializer = new DataContractSerializer(instance.GetType());
-
-                serializer.WriteObject(writer, instance);
-                writer.Flush();
-                memoryStream.Position = 0;
-
-                return serializer.ReadObject(reader);
-            }
-        }
-
-        private static object CopyWithBinaryFormatter(object instance)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(memoryStream, instance);
-                memoryStream.Position = 0;
-                return formatter.Deserialize(memoryStream);
-            }
-        }
-
-        private static object CopyNotSupported(object instance)
-        {
-            var messageFormat = ExceptionMessages.Message_CopyNotSupported;
-            var message = string.Format(messageFormat, instance.GetType());
-            throw new NotSupportedException(message);
-        }
-
-        #endregion              
+        #endregion
 
         #region [====== Attributes ======]
 
@@ -209,21 +247,6 @@ namespace Kingo.Messaging
             return messageType.GetCustomAttributes(typeof(Attribute), true).Cast<Attribute>().ToArray();
         }
 
-        #endregion
-        
-        /// <summary>
-        /// Combines two messages to form a stream.
-        /// </summary>
-        /// <param name="left">Left message.</param>
-        /// <param name="right">Right message.</param>
-        /// <returns>A new <see cref="MessageStream" /> containing both messages.</returns>
-        public static MessageStream operator +(Message left, Message right)
-        {
-            if (ReferenceEquals(left, null))
-            {
-                return right;
-            };            
-            return MessageStream.FromMessage(left as IMessage) + right;
-        }
+        #endregion        
     }
 }

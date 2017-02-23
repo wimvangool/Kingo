@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
@@ -19,6 +15,6 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        void Handle<TMessage>(TMessage message) where TMessage : class, IMessage;
+        void Handle<TMessage>(TMessage message);
     }
 }

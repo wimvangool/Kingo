@@ -1,16 +1,17 @@
-﻿using System;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represents a message that can validate and copy itself.
     /// </summary>
-    public interface IMessage : IDataTransferObject, ICloneable
-    {        
+    public interface IMessage : IMessageStream
+    {
         /// <summary>
-        /// Creates and returns a deep copy of this message.
-        /// </summary>
-        /// <returns>A copy of this message.</returns>
-        IMessage Copy();                
+        /// Validates this message and returns an <see cref="ErrorInfo"/> instance
+        /// that contains error messages for the instance and all invalid members.
+        /// </summary>                
+        /// <returns>
+        /// A <see cref="ErrorInfo" /> instance that contains all validation-errors (if any).
+        /// </returns>   
+        ErrorInfo Validate();
     }
 }

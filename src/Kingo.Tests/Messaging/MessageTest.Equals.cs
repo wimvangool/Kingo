@@ -473,7 +473,7 @@ namespace Kingo.Messaging
             public static EnumerableFieldMessage WithItems(params object[] items)
             {
                 return new EnumerableFieldMessage(new EnumerableStub(items));
-            }
+            }            
         }
 
         private sealed class EnumerableStub : IEnumerable

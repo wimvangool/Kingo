@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Kingo.Constraints;
+using Kingo.Messaging.Constraints;
 using Kingo.Resources;
 
 namespace Kingo.Messaging

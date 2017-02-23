@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.Constraints;
+using Kingo.Messaging.Constraints;
 using Kingo.Resources;
 
 namespace Kingo.Messaging

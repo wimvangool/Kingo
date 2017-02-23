@@ -1,4 +1,4 @@
-﻿using Kingo.Constraints;
+﻿using Kingo.Messaging.Constraints;
 
 namespace Kingo.Messaging
 {
@@ -9,12 +9,7 @@ namespace Kingo.Messaging
         public RequiredValueMessage(TValue value = null)
         {
             Value = value;
-        }
-
-        public override Message Copy()
-        {
-            return new RequiredValueMessage<TValue>(Value);
-        }
+        }        
 
         #region [====== Equals & GetHashCode ======]
 
@@ -45,9 +40,9 @@ namespace Kingo.Messaging
 
         #region [====== Validation ======]
 
-        protected override IValidator CreateValidator()
+        protected override IMessageValidator CreateValidator()
         {
-            var validator = new ConstraintValidator<RequiredValueMessage<TValue>>();
+            var validator = new ConstraintMessageValidator<RequiredValueMessage<TValue>>();
 
             validator.VerifyThat(message => message.Value).IsNotNull();
 

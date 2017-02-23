@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Kingo.Constraints;
+using Kingo.Messaging.Constraints;
 using Kingo.Resources;
 
 namespace Kingo

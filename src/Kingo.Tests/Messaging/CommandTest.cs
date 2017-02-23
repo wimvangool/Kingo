@@ -1,5 +1,5 @@
 ﻿using Kingo.Clocks;
-using Kingo.Constraints;
+using Kingo.Messaging.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -24,9 +24,9 @@ namespace Kingo.Messaging
                 set { SetValue(ref _value, value, () => Value); }
             }
 
-            protected override IValidator CreateValidator()
+            protected override IMessageValidator CreateValidator()
             {
-                var validator = new ConstraintValidator<CommandUnderTest>();
+                var validator = new ConstraintMessageValidator<CommandUnderTest>();
                 validator.VerifyThat(m => m.Value).IsGreaterThanOrEqualTo(0);
                 return validator;
             }
