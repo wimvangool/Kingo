@@ -83,6 +83,63 @@ namespace Kingo.Messaging
 
         #endregion
 
+        #region [====== Concat ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Concat_Throws_IfStreamsIsNull()
+        {
+            MessageStream.Concat(null);
+        }
+
+        [TestMethod]
+        public void Concat_ReturnsEmptyStream_IfStreamsContainsOnlyNullElements()
+        {
+            var stream = MessageStream.Concat(new IMessageStream[2]);
+
+            Assert.IsNotNull(stream);
+            Assert.AreEqual(0, stream.Count);
+        }
+
+        [TestMethod]
+        public void Concat_ReturnsSpecifiedStream_IfStreamsContainsOnlyOneStream()
+        {
+            var stream = MessageStream.Concat(new[] { CreateStream() });
+
+            Assert.IsNotNull(stream);
+            Assert.AreEqual(2, stream.Count);
+        }
+
+        [TestMethod]
+        public void Concat_ReturnsSpecifiedStream_IfStreamsContainsMultipleStreams()
+        {
+            var streamA = CreateStream();
+            var streamB = CreateStream();
+            var streamC = CreateStream();
+            var streamD = MessageStream.Concat(new[]
+            {
+                streamA,
+                null,
+                streamB,
+                null,
+                streamC
+            });
+
+            Assert.IsNotNull(streamD);
+            Assert.AreEqual(6, streamD.Count);
+
+            Assert.AreSame(streamA[0], streamD[0]);
+            Assert.AreSame(streamA[1], streamD[1]);
+
+            Assert.AreSame(streamB[0], streamD[2]);
+            Assert.AreSame(streamB[1], streamD[3]);
+
+            Assert.AreSame(streamC[0], streamD[4]);
+            Assert.AreSame(streamC[1], streamD[5]);
+        }
+
+        #endregion
+
         private static IMessageStream CreateStream(int count = 2)
         {
             var stream = MessageStream.Empty;

@@ -94,5 +94,20 @@ namespace Kingo.Messaging
         }
 
         #endregion
+        
+        internal static IMessageStream Concat(IEnumerable<IMessageStream> streams)
+        {
+            if (streams == null)
+            {
+                throw new ArgumentNullException(nameof(streams));
+            }
+            IMessageStream stream = new EmptyStream();
+
+            foreach (var streamElement in streams.WhereNotNull())
+            {
+                stream = stream.Append(streamElement);
+            }
+            return stream;
+        }
     }
 }
