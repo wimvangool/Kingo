@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kingo</RootNamespace>
     <AssemblyName>Kingo</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -42,7 +42,27 @@
       <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -52,7 +72,6 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\DelegateClock.cs" />
@@ -67,146 +86,221 @@
     <Compile Include="DynamicMethods\MemberProvider.cs" />
     <Compile Include="DynamicMethods\MemberFilterAttribute.cs" />
     <Compile Include="DynamicMethods\SerializableFieldProvider.cs" />
-    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="CollectionExtensions.cs" />
     <Compile Include="DynamicMethods\EqualsMethod.cs" />
     <Compile Include="DynamicMethods\EqualsMethod.T1.cs" />
+    <Compile Include="EmptyList.T1.cs" />
     <Compile Include="Equatable.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="DynamicMethods\GetHashCodeMethod.T1.cs" />
-    <Compile Include="Messaging\Command.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\HasValueCallAppender.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\IsNotNullAndCallAppender.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\AndExpressionDecoder.T3.cs" />
-    <Compile Include="Messaging\Constraints\AndMemberConstraint.T3.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\ExpressionBuilder.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\LeftExpressionBuilder.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\LengthCallAppender.T2.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.cs" />
-    <Compile Include="Messaging\Constraints\CollectionConstraints.IsNullOrEmpty.cs" />
-    <Compile Include="Messaging\Constraints\CollectionConstraints.HasItem.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\CompositeAppender.T2.cs" />
-    <Compile Include="Messaging\Constraints\ConstraintVisitor.cs" />
-    <Compile Include="Messaging\Constraints\ConstraintWrapper.T1.cs" />
-    <Compile Include="Messaging\Constraints\DefaultMember.cs" />
-    <Compile Include="Messaging\Constraints\DelegateConstraint.T1.cs" />
-    <Compile Include="Messaging\Constraints\DelegateFilter.T3.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\HasItemCallAppender.T2.cs" />
-    <Compile Include="Messaging\Constraints\IndexerInvocationException.cs" />
-    <Compile Include="Messaging\Constraints\IndexListFactory.T1.cs" />
-    <Compile Include="Messaging\Constraints\EmptyStack.cs" />
-    <Compile Include="Messaging\Constraints\EnumConstraints.cs" />
-    <Compile Include="Messaging\Constraints\EquatableObject.T1.cs" />
-    <Compile Include="Messaging\Constraints\ExpressionNotSupportedException.cs" />
-    <Compile Include="Messaging\Constraints\IConstraint.cs" />
-    <Compile Include="Messaging\Constraints\IConstraintVisitor.cs" />
-    <Compile Include="Messaging\Constraints\IdentifierComponent.cs" />
-    <Compile Include="Messaging\Constraints\IMemberConstraint.T2.cs" />
-    <Compile Include="Messaging\Constraints\IndexList.cs" />
-    <Compile Include="Messaging\Constraints\IndexListComponent.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\MethodCallExpressionBuilder.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\MethodCallExpressionFactory.T2.cs" />
-    <Compile Include="Messaging\Constraints\Member.cs" />
-    <Compile Include="Messaging\Constraints\Member.T1.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraint.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\MemberExpressionDecoder.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\MethodCallDecorator.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\NullAppender.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\RightExpressionBuilder.T2.cs" />
-    <Compile Include="Messaging\Constraints\Decoders\VerifyThatExpressionDecoder.T2.cs" />
-    <Compile Include="Messaging\Constraints\MemberExceptionFactory.cs" />
-    <Compile Include="Messaging\Constraints\MemberNameComponentStack.cs" />
-    <Compile Include="Messaging\Constraints\MemberTransformer.cs" />
-    <Compile Include="Messaging\Constraints\PushIdentifierTransformer.cs" />
-    <Compile Include="Messaging\Constraints\PushIndexListTransformer.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.IsIdentifier.cs" />
+    <Compile Include="Messaging\EventStream.cs" />
+    <Compile Include="Messaging\EventStreamImplementation.cs" />
+    <Compile Include="Messaging\ExecuteAsyncMethod.T1.cs" />
+    <Compile Include="Messaging\ExecuteAsyncResult.T1.cs" />
+    <Compile Include="Messaging\ExecuteQueryAsyncMethod.T1.cs" />
+    <Compile Include="Messaging\ExecuteQueryAsyncMethod.T2.cs" />
+    <Compile Include="Messaging\HandleInputStreamAsyncMethod.cs" />
+    <Compile Include="Messaging\HandleMetadataStreamAsyncMethod.cs" />
+    <Compile Include="Messaging\HandleStreamAsyncMethod.cs" />
+    <Compile Include="Messaging\IEventStream.cs" />
+    <Compile Include="Messaging\InternalProcessorException.cs" />
+    <Compile Include="Messaging\IUnitOfWorkCache.cs" />
+    <Compile Include="Messaging\IMessageHandlerConfiguration.cs" />
+    <Compile Include="Messaging\IMicroProcessorPipeline.cs" />
+    <Compile Include="Messaging\IMicroProcessorPipelineComponent.cs" />
+    <Compile Include="Messaging\IMicroProcessorPipelineVisitor.cs" />
+    <Compile Include="Messaging\IUnitOfWorkController.cs" />
+    <Compile Include="Messaging\MessageHandler.T1.cs" />
+    <Compile Include="Messaging\MessageHandlerAttribute.cs" />
+    <Compile Include="Messaging\MessageHandlerClass.cs" />
+    <Compile Include="Messaging\MessageHandlerConfiguration.cs" />
+    <Compile Include="Messaging\MessageHandlerContext.cs" />
+    <Compile Include="Messaging\MessageHandlerDecorator.T1.cs" />
+    <Compile Include="Messaging\MessageHandlerConnector.T1.cs" />
+    <Compile Include="Messaging\MessageHandlerFactory.cs" />
+    <Compile Include="Messaging\MessageHandlerLifetime.cs" />
+    <Compile Include="Messaging\MessageHandlerOrQuery.T1.cs" />
+    <Compile Include="Messaging\MessageHandlerWrapper.T1.cs" />
+    <Compile Include="Messaging\MessageStackTrace.cs" />
+    <Compile Include="Messaging\HandleAsyncResult.cs" />
+    <Compile Include="Messaging\MicroProcessor.cs" />
+    <Compile Include="Messaging\MicroProcessorExtensions.cs" />
+    <Compile Include="Messaging\MicroProcessorMethod.T1.cs" />
+    <Compile Include="Messaging\MicroProcessorPipeline.cs" />
+    <Compile Include="Messaging\MicroProcessorPipelineStringBuilder.cs" />
+    <Compile Include="Messaging\NullEventStream.cs" />
+    <Compile Include="Messaging\Query.T1.cs" />
+    <Compile Include="Messaging\Query.T2.cs" />
+    <Compile Include="Messaging\QueryConnector.T1.cs" />
+    <Compile Include="Messaging\QueryConnector.T2.cs" />
+    <Compile Include="Messaging\QueryContext.cs" />
+    <Compile Include="Messaging\QueryDecorator.T1.cs" />
+    <Compile Include="Messaging\QueryDecorator.T2.cs" />
+    <Compile Include="Messaging\QueryWrapper.T1.cs" />
+    <Compile Include="Messaging\QueryWrapper.T2.cs" />
+    <Compile Include="Messaging\TypeAttributeProvider.cs" />
+    <Compile Include="Messaging\ITypeAttributeProvider.cs" />
+    <Compile Include="Messaging\IMethodAttributeProvider.cs" />
+    <Compile Include="Messaging\MessageInfo.cs" />
+    <Compile Include="Messaging\MethodAttributeProvider.cs" />
+    <Compile Include="Messaging\MicroProcessorContextRelay.cs" />
+    <Compile Include="Messaging\UnauthorizedRequestException.cs" />
+    <Compile Include="Messaging\UnitOfWorkController.cs" />
+    <Compile Include="Messaging\UnitOfWorkCache.cs" />
+    <Compile Include="Messaging\UnitOfWorkControllerImplementation.cs" />
+    <Compile Include="Messaging\UnityFactory.cs" />
+    <Compile Include="Messaging\UnprocessableEntityException.cs" />
+    <Compile Include="Messaging\Validation\Command.cs" />
+    <Compile Include="Messaging\Validation\Constraints\HasValueCallAppender.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IsNotNullAndCallAppender.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\AndExpressionDecoder.T3.cs" />
+    <Compile Include="Messaging\Validation\Constraints\AndMemberConstraint.T3.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ExpressionBuilder.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\LeftExpressionBuilder.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\LengthCallAppender.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.cs" />
+    <Compile Include="Messaging\Validation\Constraints\CollectionConstraints.IsNullOrEmpty.cs" />
+    <Compile Include="Messaging\Validation\Constraints\CollectionConstraints.HasItem.cs" />
+    <Compile Include="Messaging\Validation\Constraints\CompositeAppender.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ConstraintVisitor.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ConstraintWrapper.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\DefaultMember.cs" />
+    <Compile Include="Messaging\Validation\Constraints\DelegateConstraint.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\DelegateFilter.T3.cs" />
+    <Compile Include="Messaging\Validation\Constraints\HasItemCallAppender.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IndexerInvocationException.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IndexListFactory.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\EmptyStack.cs" />
+    <Compile Include="Messaging\Validation\Constraints\EnumConstraints.cs" />
+    <Compile Include="Messaging\Validation\Constraints\EquatableObject.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ExpressionNotSupportedException.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IConstraint.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IConstraintVisitor.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IdentifierComponent.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IMemberConstraint.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IndexList.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IndexListComponent.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MethodCallExpressionBuilder.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MethodCallExpressionFactory.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\Member.cs" />
+    <Compile Include="Messaging\Validation\Constraints\Member.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberConstraint.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberExpressionDecoder.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MethodCallDecorator.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\NullAppender.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\RightExpressionBuilder.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\VerifyThatExpressionDecoder.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberExceptionFactory.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberNameComponentStack.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberTransformer.cs" />
+    <Compile Include="Messaging\Validation\Constraints\PushIdentifierTransformer.cs" />
+    <Compile Include="Messaging\Validation\Constraints\PushIndexListTransformer.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.IsIdentifier.cs" />
     <Compile Include="EnumOperators.T1.cs" />
-    <Compile Include="Messaging\CompositeValidator.cs" />
-    <Compile Include="Messaging\Domain\DomainException.cs" />
-    <Compile Include="Messaging\ErrorInheritanceLevel.cs" />
-    <Compile Include="Messaging\ErrorMessageReader.cs" />
+    <Compile Include="Messaging\Domain\IllegalOperationException.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ErrorInheritanceLevel.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ErrorMessageReader.cs" />
     <Compile Include="Identifier.cs" />
-    <Compile Include="Messaging\CommandExecutionException.cs" />
-    <Compile Include="Messaging\Constraints\AndConstraint.T1.cs" />
-    <Compile Include="Messaging\Constraints\AndConstraint.T3.cs" />
-    <Compile Include="Messaging\Constraints\ComparableValue.T1.cs" />
-    <Compile Include="Messaging\Constraints\Comparer.cs" />
+    <Compile Include="Messaging\BadRequestException.cs" />
+    <Compile Include="Messaging\Validation\Constraints\AndConstraint.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\AndConstraint.T3.cs" />
+    <Compile Include="ComparableValue.T1.cs" />
+    <Compile Include="Comparer.cs" />
     <Compile Include="LambdaExpressionExtensions.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraintFactory.T3.cs" />
-    <Compile Include="Messaging\Constraints\Constraint.cs" />
-    <Compile Include="Messaging\Constraints\Constraint.T1.cs" />
-    <Compile Include="Messaging\Constraints\Filter.T2.cs" />
-    <Compile Include="Messaging\Constraints\ErrorMessageBuilder.cs" />
-    <Compile Include="Messaging\Constraints\IConstraint.T1.cs" />
-    <Compile Include="Messaging\Constraints\IFilter.T2.cs" />
-    <Compile Include="Messaging\Constraints\IConstraintWithErrorMessage.cs" />
-    <Compile Include="Messaging\Constraints\IConstraintWithErrorMessage.T1.cs" />
-    <Compile Include="Messaging\Constraints\IFilterWithErrorMessage.T2.cs" />
-    <Compile Include="Messaging\IMessageValidator.cs" />
-    <Compile Include="Messaging\EmptyStream.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberConstraintFactory.T3.cs" />
+    <Compile Include="Messaging\Validation\Constraints\Constraint.cs" />
+    <Compile Include="Messaging\Validation\Constraints\Constraint.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\Filter.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ErrorMessageBuilder.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IConstraint.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IFilter.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IConstraintWithErrorMessage.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IConstraintWithErrorMessage.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IFilterWithErrorMessage.T2.cs" />
+    <Compile Include="Messaging\IMessageHandler.T1.cs" />
+    <Compile Include="Messaging\IMessageStackTrace.cs" />
+    <Compile Include="Messaging\IMicroProcessor.cs" />
+    <Compile Include="Messaging\IMicroProcessorContext.cs" />
+    <Compile Include="Messaging\EmptyMessageStream.cs" />
     <Compile Include="Messaging\IMessageHandler.cs" />
     <Compile Include="Messaging\IMessageStream.cs" />
+    <Compile Include="Messaging\IQuery.T1.cs" />
+    <Compile Include="Messaging\IQuery.T2.cs" />
+    <Compile Include="Messaging\IUnitOfWork.cs" />
+    <Compile Include="Messaging\MessageSources.cs" />
+    <Compile Include="Messaging\MessageStreamExtensions.cs" />
+    <Compile Include="Messaging\MicroProcessorContext.cs" />
     <Compile Include="Messaging\MessageStream.cs" />
-    <Compile Include="Messaging\TechnicalException.cs" />
-    <Compile Include="Messaging\IErrorMessageBuilder.cs" />
-    <Compile Include="Messaging\IErrorMessageReader.cs" />
-    <Compile Include="Messaging\IErrorMessageWriter.T1.cs" />
-    <Compile Include="Messaging\Constraints\IMemberConstraintBuilder.T2.cs" />
-    <Compile Include="Messaging\Constraints\InputToOutputMapper.T1.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.IsEqualTo.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.IsGreaterThan.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.IsInstanceOf.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.IsNull.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.IsSameInstanceAs.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.IsSmallerThan.cs" />
-    <Compile Include="Messaging\Constraints\ConstraintInverter.T1.cs" />
-    <Compile Include="Messaging\Constraints\NullConstraint.T1.cs" />
-    <Compile Include="Messaging\Constraints\OrConstraint.T1.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.Contains.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.EndsWith.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.IsEqualTo.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.IsNullOrEmpty.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.Matches.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.StartsWith.cs" />
-    <Compile Include="Messaging\ErrorInfoBuilder.cs" />
-    <Compile Include="Messaging\FunctionalException.cs" />
-    <Compile Include="Messaging\InvalidMessageException.cs" />
-    <Compile Include="Messaging\AuthorizationException.cs" />
-    <Compile Include="Messaging\NullValidator.cs" />
+    <Compile Include="Messaging\MessageStream.T1.cs" />
+    <Compile Include="Messaging\MicroProcessorContextScope.cs" />
+    <Compile Include="Messaging\InternalServerErrorException.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IErrorMessageBuilder.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IErrorMessageReader.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IErrorMessageWriter.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IMemberConstraintBuilder.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\InputToOutputMapper.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.IsEqualTo.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.IsGreaterThan.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.IsInstanceOf.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.IsNull.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.IsSameInstanceAs.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.IsSmallerThan.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ConstraintInverter.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\NullConstraint.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\OrConstraint.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.Contains.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.EndsWith.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.IsEqualTo.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.IsNullOrEmpty.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.IsNullOrWhiteSpace.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.Matches.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.StartsWith.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ErrorInfoBuilder.cs" />
+    <Compile Include="Messaging\MicroProcessorException.cs" />
+    <Compile Include="Messaging\Validation\InvalidMessageException.cs" />
+    <Compile Include="Messaging\Validation\MessageValidationPipeline.cs" />
+    <Compile Include="Messaging\Validation\NullValidator.cs" />
+    <Compile Include="Messaging\Validation\ValidateMethod.cs" />
     <Compile Include="PropertyChangedEventArgs.T1.cs" />
+    <Compile Include="ReadOnlyList.T1.cs" />
+    <Compile Include="Resources\DebugMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DebugMessages.resx</DependentUpon>
+    </Compile>
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ErrorMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Messaging\SortedErrorMessageList.cs" />
+    <Compile Include="Messaging\Validation\Constraints\SortedErrorMessageList.cs" />
     <Compile Include="StringTemplate.cs" />
     <Compile Include="StringTemplateComponent.cs" />
     <Compile Include="StringTemplateLiteral.cs" />
     <Compile Include="StringTemplateVariable.cs" />
-    <Compile Include="Messaging\Constraints\IMemberConstraintBuilder.T1.cs" />
-    <Compile Include="Messaging\Constraints\MemberFactory.T2.cs" />
-    <Compile Include="Messaging\Constraints\BasicConstraints.IsInRange.cs" />
-    <Compile Include="Messaging\Constraints\BooleanConstraints.cs" />
-    <Compile Include="Messaging\Constraints\ConstraintValidator.T1.cs" />
-    <Compile Include="Messaging\Constraints\GuidConstraints.cs" />
-    <Compile Include="Messaging\Constraints\IMemberConstraintSet.T1.cs" />
-    <Compile Include="Messaging\Constraints\IMember.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraintBuilder.T3.cs" />
-    <Compile Include="Messaging\Constraints\MemberConstraintSet.T1.cs" />
-    <Compile Include="Messaging\Constraints\NullableConstraints.cs" />
-    <Compile Include="Messaging\Constraints\StringConstraints.IsNumber.cs" />
-    <Compile Include="Messaging\IMessage.cs" />
-    <Compile Include="Messaging\IMessageValidator.T1.cs" />
-    <Compile Include="Messaging\Message.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IMemberConstraintBuilder.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberFactory.T2.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BasicConstraints.IsInRange.cs" />
+    <Compile Include="Messaging\Validation\Constraints\BooleanConstraints.cs" />
+    <Compile Include="Messaging\Validation\Constraints\ConstraintValidator.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\GuidConstraints.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IMemberConstraintSet.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\IMember.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberConstraintBuilder.T3.cs" />
+    <Compile Include="Messaging\Validation\Constraints\MemberConstraintSet.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\NullableConstraints.cs" />
+    <Compile Include="Messaging\Validation\Constraints\StringConstraints.IsNumber.cs" />
+    <Compile Include="Messaging\Validation\IMessage.cs" />
+    <Compile Include="Messaging\Validation\IMessageValidator.T1.cs" />
+    <Compile Include="Messaging\Validation\Message.cs" />
     <Compile Include="Threading\AsyncMethod.cs" />
     <Compile Include="Threading\Context.T1.cs" />
-    <Compile Include="Messaging\DataAnnotationValidator.cs" />
-    <Compile Include="Messaging\ErrorInfo.cs" />
+    <Compile Include="Messaging\Validation\DataAnnotationValidator.T1.cs" />
+    <Compile Include="Messaging\Validation\ErrorInfo.cs" />
     <Compile Include="Clocks\HighResolutionClock.cs" />
     <Compile Include="Clocks\StopwatchClock.cs" />
-    <Compile Include="Messaging\Constraints\EquatableValue.T1.cs" />
+    <Compile Include="Messaging\Validation\Constraints\EquatableValue.T1.cs" />
     <Compile Include="EventHandlerExtensions.cs" />
     <Compile Include="DynamicMethods\GetHashCodeMethod.cs" />
     <Compile Include="Clocks\IClock.cs" />
@@ -220,11 +314,14 @@
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="Clocks\DefaultClock.cs" />
-    <Compile Include="Threading\AsyncLocal.T1.cs" />
     <Compile Include="Threading\ContextScope.T1.cs" />
-    <Compile Include="Threading\TaskExtensions.cs" />
+    <Compile Include="TypeSet.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\DebugMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DebugMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\ErrorMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
@@ -244,7 +341,7 @@
     <None Include="Properties\Kingo.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="Messaging\Constraints\CollectionConstraints.Length.cs" />
+    <Compile Include="Messaging\Validation\Constraints\CollectionConstraints.Length.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

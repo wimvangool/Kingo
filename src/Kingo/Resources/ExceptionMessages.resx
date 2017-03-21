@@ -147,6 +147,18 @@
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
   </data>
+  <data name="HandleAsyncResult_CannotReplaceOutputStream" xml:space="preserve">
+    <value>The output stream cannot be replaced when the result is obtained by invoking a metadata handler.</value>
+  </data>
+  <data name="HandleInputStreamAsyncMethod_AggregateException" xml:space="preserve">
+    <value>Several errors occurred while processing message of type '{0}'. See inner exceptions for details.</value>
+  </data>
+  <data name="HandleInputStreamAsyncMethod_CommandHandlerException" xml:space="preserve">
+    <value>An error occurred while processing command of type '{0}'. See inner exception for details.</value>
+  </data>
+  <data name="HandleStreamAsyncMethod_EventHandlerException" xml:space="preserve">
+    <value>An error occurred while processing event of type '{0}'. See inner exception for details.</value>
+  </data>
   <data name="HasItemFilter_IndexerNotFound" xml:space="preserve">
     <value>Instance of type '{0}' does not contain an indexer with argument types '[{1}]'.</value>
   </data>
@@ -159,17 +171,44 @@
   <data name="Identifier_InvalidIdentifier" xml:space="preserve">
     <value>Invalid identifier specified: '{0}'.</value>
   </data>
-  <data name="MessageStream_IndexOutOfRange" xml:space="preserve">
-    <value>There is no element at index '{0}' (Count = {1}).</value>
+  <data name="InternalServerErrorException_FromException" xml:space="preserve">
+    <value>An error occurred while processing message of type '{0}'. See inner exception for details.</value>
+  </data>
+  <data name="MessageHandlerClass_InvalidMessageHandlerLifetime" xml:space="preserve">
+    <value>Invalid MessageHandlerLifetime was specified on class '{0}': {1}. </value>
+  </data>
+  <data name="MessageHandlerContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
+    <value>Cannot publish messages to the output stream while handling a metadata message.</value>
+  </data>
+  <data name="MessageValidationPipeline_InvalidMessage" xml:space="preserve">
+    <value>Message of type '{0}' is not valid: {1} validation error(s) found.</value>
   </data>
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>
   </data>
+  <data name="MethodAttributeProvider_AmbiguousAttributeMatch" xml:space="preserve">
+    <value>Cannot obtain single attribute of type '{0}' declared on method '{1}' because multiple attributes are of type '{0}'.</value>
+  </data>
+  <data name="MicroProcessorContextState_InvalidOperation" xml:space="preserve">
+    <value>Invocation of method '{0}()' is not expected at this point.</value>
+  </data>
+  <data name="NullCache_CacheNotSupported" xml:space="preserve">
+    <value>Cache can only be used while a MicroProcessor is handling a message or executing a query.</value>
+  </data>
+  <data name="NullController_OperationNotSupported" xml:space="preserve">
+    <value>Operation '{0}' is not supported at this point.</value>
+  </data>
+  <data name="NullStream_PublishNotSupported" xml:space="preserve">
+    <value>Cannot publish event of type '{0}': events can only be published while a MicroProcessor is handling a message or executing a query.</value>
+  </data>
+  <data name="QueryContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
+    <value>Cannot publish messages to the output stream while executing a query.</value>
+  </data>
   <data name="Range_InvalidRange" xml:space="preserve">
     <value>The specified range is not valid: {0}.</value>
   </data>
-  <data name="ReadOnlyDictionary_KeyNotFound" xml:space="preserve">
-    <value>The specified key '{0}' is not a valid index for this collection.</value>
+  <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
+    <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
   <data name="Scope_CannotCompleteScope" xml:space="preserve">
     <value>Cannot complete this scope because it is not the current scope.</value>
@@ -191,5 +230,8 @@
   </data>
   <data name="StringTemplate_UnexpectedCharacter" xml:space="preserve">
     <value>Invalid format string specified: '{0}'. Unexpected character '{1}' at index {2}.</value>
+  </data>
+  <data name="TypeAttributeProvider_AmbiguousAttributeMatch" xml:space="preserve">
+    <value>Cannot obtain single attribute of type '{0}' declared on type '{1}' because multiple attributes are of type '{0}'.</value>
   </data>
 </root>

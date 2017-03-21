@@ -4,7 +4,7 @@ using Kingo.Threading;
 
 namespace Kingo.Messaging.SampleApplication
 {
-    [MessageHandler(InstanceLifetime.PerUnitOfWork)]
+    [MessageHandler(MessageHandlerLifetime.PerUnitOfWork)]
     internal sealed class ShoppingCartHandler : IMessageHandler<AddProductToCartCommand>,
                                                 IMessageHandler<CreateShoppingCartCommand>,
                                                 IMessageHandler<object>

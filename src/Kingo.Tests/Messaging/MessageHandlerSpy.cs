@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -7,19 +9,25 @@ namespace Kingo.Messaging
     internal sealed class MessageHandlerSpy : IMessageHandler
     {
         private readonly List<object> _messages;
+        private readonly List<object> _handlers; 
 
         public MessageHandlerSpy()
         {
             _messages = new List<object>();
+            _handlers = new List<object>();
         }
 
-        public void Handle<TMessage>(TMessage message)
+        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
         {
             if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
-            _messages.Add(message);
+            return AsyncMethod.RunSynchronously(() =>
+            {
+                _messages.Add(message);
+                _handlers.Add(handler);                
+            });            
         }
 
         public void AssertMessageCountIs(int count)
@@ -35,7 +43,7 @@ namespace Kingo.Messaging
             }
         }
 
-        public void AssertAreSame(IMessageStream message, int index)
+        public void AssertAreSame(object message, int index)
         {
             Assert.AreSame(message, _messages[index]);
         }

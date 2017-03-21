@@ -1,6 +1,7 @@
 ﻿using System;
 using Kingo.Messaging;
-using Kingo.Messaging.Constraints;
+using Kingo.Messaging.Validation;
+using Kingo.Messaging.Validation.Constraints;
 
 namespace Kingo
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -8,11 +9,11 @@ namespace Kingo.Messaging
     {
         #region [====== SomeMessage ======]
 
-        private sealed class SomeMessage : Message { }
+        private sealed class SomeMessage { }
 
         #endregion
 
-        #region [====== IReadOnlyList<IMessage> ======]
+        #region [====== IReadOnlyList<object> ======]
 
         [TestMethod]
         public void Count_IsZero()
@@ -24,58 +25,58 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Item_Throws_IfIndexIsNegative()
         {
-            var message = MessageStream.Empty[-1];
+            MessageStream.Empty[-1].IgnoreValue();
         }
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Item_Throws_IfIndexIsZero()
         {
-            var message = MessageStream.Empty[0];
+            MessageStream.Empty[0].IgnoreValue();
         }
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Item_Throws_IfIndexIsOne()
         {
-            var message = MessageStream.Empty[1];
+            MessageStream.Empty[1].IgnoreValue();
         }
 
         #endregion
 
-        #region [====== Append(IMessageStream) ======]
+        #region [====== AppendStream(IMessageStream) ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Append_Throws_IfStreamIsNull()
+        public void AppendStream_Throws_IfStreamIsNull()
         {
-            MessageStream.Empty.Append(null);
+            MessageStream.Empty.AppendStream(null);
         }
 
         [TestMethod]
-        public void Append_ReturnsStream_IfStreamIsNotNull()
+        public void AppendStream_ReturnsStream_IfStreamIsNotNull()
         {
-            var stream = new SomeMessage();
+            var stream = new MessageStream<SomeMessage>(new SomeMessage());
 
-            Assert.AreSame(stream, MessageStream.Empty.Append(stream));
+            Assert.AreSame(stream, MessageStream.Empty.AppendStream(stream));
         }
 
         #endregion        
 
-        #region [====== Accept ======]
+        #region [====== HandleMessagesWithAsync ======]
 
         [TestMethod]        
-        public void Accept_DoesNothing_IfHandlerIsNull()
+        public void HandleMessagesWithAsync_DoesNothing_IfHandlerIsNull()
         {
-            MessageStream.Empty.Accept(null);
+            MessageStream.Empty.HandleMessagesWithAsync(null);
         }
 
         [TestMethod]
-        public void Accept_DoesNothing_IfHandlerIsNotNull()
+        public async Task HandleMessagesWithAsync_DoesNothing_IfHandlerIsNotNull()
         {
             var handler = new MessageHandlerSpy();
 
-            MessageStream.Empty.Accept(handler);
+            await MessageStream.Empty.HandleMessagesWithAsync(handler);            
 
             handler.AssertMessageCountIs(0);
         }

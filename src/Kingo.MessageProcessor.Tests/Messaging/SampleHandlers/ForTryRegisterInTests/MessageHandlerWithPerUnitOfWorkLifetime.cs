@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging.SampleHandlers.ForTryRegisterInTests
 {
-    [MessageHandler(InstanceLifetime.PerUnitOfWork)]
+    [MessageHandler(MessageHandlerLifetime.PerUnitOfWork)]
     internal sealed class MessageHandlerWithPerUnitOfWorkLifetime : IMessageHandler<Command>
     {
         public Task HandleAsync(Command message)

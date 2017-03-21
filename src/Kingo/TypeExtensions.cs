@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Kingo
 {
@@ -692,6 +693,67 @@ namespace Kingo
                 return parameters[0].ParameterType == parameterType0 && parameters[1].ParameterType == parameterType1;
             }
             return false;
+        }
+
+        #endregion
+
+        #region [====== FriendlyName ======]
+
+        /// <summary>
+        /// Returns the friendly name of a type, useful for displaying type information in consoles or debug strings.
+        /// </summary>
+        /// <param name="type">A type.</param>
+        /// <param name="useFullNames">Indicates whether or not the full name of all types should be used in the friendly name.</param>
+        /// <returns>A friendly name of a type</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> is <c>null</c>.
+        /// </exception>
+        public static string FriendlyName(this Type type, bool useFullNames = false)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            return new StringBuilder().AppendFriendlyNameOf(type, useFullNames).ToString();
+        }
+
+
+
+        private static StringBuilder AppendFriendlyNameOf(this StringBuilder builder, Type type, bool useFullNames)
+        {
+            var typeName = useFullNames ? type.FullName : type.Name;
+
+            if (type.IsGenericType)
+            {
+                return builder
+                    .Append(typeName.RemoveTypeParameterCount())
+                    .Append('<')
+                    .AppendTypeParameters(type.GetGenericArguments(), useFullNames && !type.ContainsGenericParameters)
+                    .Append('>');                
+            }
+            return builder.Append(typeName);
+        }
+
+        internal static string RemoveTypeParameterCount(this string typeName) =>
+            typeName.Substring(0, typeName.IndexOf("`"));
+
+        private static StringBuilder AppendTypeParameters(this StringBuilder builder, Type[] typeParameters, bool useFullNames)
+        {
+            return builder
+                .AppendFriendlyNameOf(typeParameters[0], useFullNames)
+                .AppendTypeParameterTail(typeParameters, useFullNames, 1);
+        }
+
+        private static StringBuilder AppendTypeParameterTail(this StringBuilder builder, Type[] typeParameters, bool useFullNames, int index)
+        {
+            if (index == typeParameters.Length)
+            {
+                return builder;
+            }
+            return builder
+                .Append(", ")
+                .AppendFriendlyNameOf(typeParameters[index], useFullNames)
+                .AppendTypeParameterTail(typeParameters, useFullNames, index + 1);
         }
 
         #endregion

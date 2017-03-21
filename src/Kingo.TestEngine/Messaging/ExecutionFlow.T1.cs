@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Kingo.Messaging.Constraints;
+using Kingo.Messaging.Validation;
+using Kingo.Messaging.Validation.Constraints;
 
 namespace Kingo.Messaging
 {

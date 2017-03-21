@@ -6,8 +6,7 @@ using Kingo.Resources;
 namespace Kingo.Threading
 {
     /// <summary>
-    /// Represents a contextual container for a specific value. All instance methods on this
-    /// class are thread-safe.
+    /// Represents a contextual container for a specific value. All instance methods on this class are thread-safe.
     /// </summary>
     /// <typeparam name="TValue">Type of the value to store.</typeparam>
     public sealed class Context<TValue> : IDisposable
@@ -161,20 +160,14 @@ namespace Kingo.Threading
         /// <summary>
         /// Returns the value of the item that is current with respect to the current thread.
         /// </summary>
-        public TValue Current
-        {
-            get { return ReadCurrent().Item1; }
-        }
+        public TValue Current =>
+            ReadCurrent().Item1;
 
-        private bool IsInsideThreadLocalScope
-        {
-            get { return _currentThreadLocal.Value != null; }
-        }
+        private bool IsInsideThreadLocalScope =>
+            _currentThreadLocal.Value != null;
 
-        private bool IsInsideAsyncLocalScope
-        {
-            get { return _currentAsyncLocal.Value != null; }
-        }
+        private bool IsInsideAsyncLocalScope =>
+            _currentAsyncLocal.Value != null;
 
         private Tuple<TValue> ReadCurrent()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Kingo.Messaging.Domain;
+using Kingo.Messaging.Validation;
 
 namespace Kingo.Messaging.SampleApplication
 {

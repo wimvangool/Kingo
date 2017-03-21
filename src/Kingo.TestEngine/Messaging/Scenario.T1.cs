@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.Messaging.Constraints;
+using Kingo.Messaging.Validation;
+using Kingo.Messaging.Validation.Constraints;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
@@ -103,9 +104,9 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Gets the <see cref="FunctionalException" /> that was caught during the When-phase.
+        /// Gets the <see cref="MicroProcessorException" /> that was caught during the When-phase.
         /// </summary>
-        protected internal FunctionalException ThrownException
+        protected internal MicroProcessorException ThrownException
         {
             get;
             private set;
@@ -147,14 +148,14 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Executes this scenario while expecting a <see cref="CommandExecutionException" /> to be thrown.
+        /// Executes this scenario while expecting a <see cref="BadRequestException" /> to be thrown.
         /// </summary>        
         /// <param name="validator">Optional delegate to define constraints on the expected exception.</param>
         /// <param name="rethrowException">
         /// Indicates whether or not the exception should be rethron after it has been caught and verified.
         /// </param>
         /// <returns>A <see cref="Task" /> representing the operation.</returns>
-        protected Task ExpectedCommandExecutionException(Action<IMemberConstraintSet<CommandExecutionException>> validator = null, bool rethrowException = false)
+        protected Task ExpectedCommandExecutionException(Action<IMemberConstraintSet<BadRequestException>> validator = null, bool rethrowException = false)
         {
             return ExpectedException(validator, rethrowException);
         }
@@ -169,14 +170,14 @@ namespace Kingo.Messaging
         /// </param>
         /// <returns>A <see cref="Task" /> representing the operation.</returns>
         protected async Task ExpectedException<TException>(Action<IMemberConstraintSet<TException>> validator = null, bool rethrowException = false)
-            where TException : FunctionalException
+            where TException : MicroProcessorException
         {
             await Exception(rethrowException).Expect(validator).ExecuteAsync();
         }
 
         /// <summary>
         /// Creates and returns a new <see cref="AlternateFlow{T}" /> which can be used to set some
-        /// expectations on the <see cref="FunctionalException" /> that is expected to be thrown.
+        /// expectations on the <see cref="MicroProcessorException" /> that is expected to be thrown.
         /// </summary>
         /// <param name="rethrowException">
         /// Indicates whether or not the exception should be rethron after it has been caught and verified.
@@ -190,7 +191,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// Executes the scenario in two phases: first the <i>Given</i>-phase, followed by the <i>When</i>-phase.
         /// </summary>                        
-        public override async Task ProcessWithAsync(IMessageProcessor processor, CancellationToken token)
+        public override async Task ProcessWithAsync(IMicroProcessor processor, CancellationToken token)
         {
             await ExecuteGiven(processor, token);
 
@@ -201,7 +202,7 @@ namespace Kingo.Messaging
             {
                 await _message.Value.ProcessWithAsync(processor, token);
             }                   
-            catch (FunctionalException exception)
+            catch (MicroProcessorException exception)
             {                
                 ThrownException = exception;                
             }
@@ -211,7 +212,7 @@ namespace Kingo.Messaging
             }            
         }   
         
-        private async Task ExecuteGiven(IMessageProcessor processor, CancellationToken token)
+        private async Task ExecuteGiven(IMicroProcessor processor, CancellationToken token)
         {
             try
             {
@@ -229,7 +230,7 @@ namespace Kingo.Messaging
 
         private IMessageSequence CreateSetupSequence()
         {
-            return Given().Concatenate();
+            return Given().Join();
         }
 
         /// <summary>

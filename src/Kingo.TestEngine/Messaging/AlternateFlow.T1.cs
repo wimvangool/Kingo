@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Kingo.Messaging.Constraints;
+using Kingo.Messaging.Validation;
+using Kingo.Messaging.Validation.Constraints;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
     /// <summary>
-    /// Represents an alterate flow, in which a certain type of <see cref="FunctionalException" /> is to be thrown.
+    /// Represents an alterate flow, in which a certain type of <see cref="MicroProcessorException" /> is to be thrown.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is processed on the When-phase.</typeparam>
     public sealed class AlternateFlow<TMessage> : ExecutionFlow<TMessage> where TMessage : class, IMessage
@@ -35,7 +36,7 @@ namespace Kingo.Messaging
         /// Optional delegate that is used to add certain constraints to the expected exception.
         /// </param>
         /// <returns>This flow.</returns>
-        public AlternateFlow<TMessage> Expect<TException>(Action<IMemberConstraintSet<TException>> validateMethod = null) where TException : FunctionalException
+        public AlternateFlow<TMessage> Expect<TException>(Action<IMemberConstraintSet<TException>> validateMethod = null) where TException : MicroProcessorException
         {
             if (_hasExpectationBeenSet)
             {

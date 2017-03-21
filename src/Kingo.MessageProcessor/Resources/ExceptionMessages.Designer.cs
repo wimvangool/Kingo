@@ -187,15 +187,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid InstanceLifetime was specified on class &apos;{0}&apos;: {1}. .
-        /// </summary>
-        internal static string MessageHandlerClass_InvalidInstanceLifetimeMode {
-            get {
-                return ResourceManager.GetString("MessageHandlerClass_InvalidInstanceLifetimeMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A module in the query execution pipeline returned an invalid result. Expected result of type &apos;{0}&apos; but was &apos;{1}&apos;..
         /// </summary>
         internal static string MessageOut_InvalidMessageType {
@@ -291,15 +282,6 @@ namespace Kingo.Resources {
         internal static string TypeToContractMap_TypeNotFound {
             get {
                 return ResourceManager.GetString("TypeToContractMap_TypeNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot complete this scope because it has already been completed..
-        /// </summary>
-        internal static string UnitOfWorkScope_AlreadyCompleted {
-            get {
-                return ResourceManager.GetString("UnitOfWorkScope_AlreadyCompleted", resourceCulture);
             }
         }
         

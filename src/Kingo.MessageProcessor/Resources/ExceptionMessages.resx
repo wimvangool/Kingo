@@ -132,9 +132,6 @@
   <data name="IntXXVersion_NegativeValue" xml:space="preserve">
     <value>Version cannot be negative: {0}.</value>
   </data>
-  <data name="MessageHandlerClass_InvalidInstanceLifetimeMode" xml:space="preserve">
-    <value>Invalid InstanceLifetime was specified on class '{0}': {1}. </value>
-  </data>
   <data name="EventStream_MissingEventHandler" xml:space="preserve">
     <value>No event-handler was specified for domain-event of type '{0}'.</value>
   </data>
@@ -173,9 +170,6 @@
   </data>
   <data name="Version_IncrementNotSupported" xml:space="preserve">
     <value>Auto-increment of type '{0}' is not supported. Please override AggregateRoot&lt;,&gt;.NextVersion() or change the version type of the aggregate.</value>
-  </data>
-  <data name="UnitOfWorkScope_AlreadyCompleted" xml:space="preserve">
-    <value>Cannot complete this scope because it has already been completed.</value>
   </data>
   <data name="Repository_UpdateNotSupported" xml:space="preserve">
     <value>Cannot update aggregate of type '{0}' because updates are not supported by repository '{1}'.</value>

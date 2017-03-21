@@ -16,17 +16,17 @@ namespace Kingo.Messaging
             _singleLifetimeTypes = new List<Type>();
         }
 
-        public bool HasRegistered(Type type, InstanceLifetime lifetime)
+        public bool HasRegistered(Type type, MessageHandlerLifetime lifetime)
         {
             switch (lifetime)
             {
-                case InstanceLifetime.PerResolve:
+                case MessageHandlerLifetime.PerResolve:
                     return _perResolveLifetimeTypes.Contains(type);
 
-                case InstanceLifetime.PerUnitOfWork:
+                case MessageHandlerLifetime.PerUnitOfWork:
                     return _perUnitOfWorkLifetimeTypes.Contains(type);                
 
-                case InstanceLifetime.Singleton:
+                case MessageHandlerLifetime.Singleton:
                     return _singleLifetimeTypes.Contains(type);
 
                 default:

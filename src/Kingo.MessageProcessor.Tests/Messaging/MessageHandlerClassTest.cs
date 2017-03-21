@@ -84,7 +84,7 @@ namespace Kingo.Messaging
 
             Assert.IsTrue(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNotNull(handlerClass);
-            Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.PerResolve));
+            Assert.IsTrue(_container.HasRegistered(typeToRegister, MessageHandlerLifetime.PerResolve));
         }
 
         [TestMethod]
@@ -95,7 +95,7 @@ namespace Kingo.Messaging
 
             Assert.IsTrue(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNotNull(handlerClass);
-            Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.PerUnitOfWork));
+            Assert.IsTrue(_container.HasRegistered(typeToRegister, MessageHandlerLifetime.PerUnitOfWork));
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace Kingo.Messaging
 
             Assert.IsTrue(TryRegisterIn(_container, typeToRegister, null, out handlerClass));
             Assert.IsNotNull(handlerClass);
-            Assert.IsTrue(_container.HasRegistered(typeToRegister, InstanceLifetime.Singleton));
+            Assert.IsTrue(_container.HasRegistered(typeToRegister, MessageHandlerLifetime.Singleton));
         }
 
         [TestMethod]

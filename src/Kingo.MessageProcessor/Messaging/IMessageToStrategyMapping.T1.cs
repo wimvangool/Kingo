@@ -1,10 +1,11 @@
 ﻿using System;
+using Kingo.Messaging.Validation;
 
 namespace Kingo.Messaging
 {
     /// <summary>
     /// When implemented by a class, represents a mapping from specific <see cref="IMessage">Messages</see>
-    /// to certain strategies to use inside a <see cref="IMessageProcessor" />'s pipeline.
+    /// to certain strategies to use inside a <see cref="IMicroProcessor" />'s pipeline.
     /// </summary>
     /// <typeparam name="TStrategy"></typeparam>
     public interface IMessageToStrategyMapping<TStrategy> where TStrategy : class

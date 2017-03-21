@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
@@ -8,13 +9,14 @@ namespace Kingo.Messaging
     public interface IMessageHandler
     {
         /// <summary>
-        /// Handles the specified <paramref name="message"/>.
+        /// Handles the specified <paramref name="message"/> asynchronously.
+        /// If <paramref name="handler"/> is specified, this handler is expected to handle the message with this handler.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
         /// <param name="message">The message to handle.</param>
+        /// <param name="handler">Optional handler with which the message is to be handled.</param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        void Handle<TMessage>(TMessage message);
+        Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null);
     }
 }

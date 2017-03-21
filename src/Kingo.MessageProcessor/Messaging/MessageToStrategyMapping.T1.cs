@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kingo.Messaging.Validation;
 
 namespace Kingo.Messaging
 {

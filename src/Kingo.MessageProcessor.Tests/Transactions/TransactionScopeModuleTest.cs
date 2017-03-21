@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Transactions;
 using Kingo.Messaging;
+using Kingo.Messaging.Validation;
 using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

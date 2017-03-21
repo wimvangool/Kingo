@@ -151,6 +151,42 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The output stream cannot be replaced when the result is obtained by invoking a metadata handler..
+        /// </summary>
+        internal static string HandleAsyncResult_CannotReplaceOutputStream {
+            get {
+                return ResourceManager.GetString("HandleAsyncResult_CannotReplaceOutputStream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Several errors occurred while processing message of type &apos;{0}&apos;. See inner exceptions for details..
+        /// </summary>
+        internal static string HandleInputStreamAsyncMethod_AggregateException {
+            get {
+                return ResourceManager.GetString("HandleInputStreamAsyncMethod_AggregateException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while processing command of type &apos;{0}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string HandleInputStreamAsyncMethod_CommandHandlerException {
+            get {
+                return ResourceManager.GetString("HandleInputStreamAsyncMethod_CommandHandlerException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while processing event of type &apos;{0}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string HandleStreamAsyncMethod_EventHandlerException {
+            get {
+                return ResourceManager.GetString("HandleStreamAsyncMethod_EventHandlerException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; does not contain an indexer with argument types &apos;[{1}]&apos;..
         /// </summary>
         internal static string HasItemFilter_IndexerNotFound {
@@ -187,6 +223,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while processing message of type &apos;{0}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string InternalServerErrorException_FromException {
+            get {
+                return ResourceManager.GetString("InternalServerErrorException_FromException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
         /// </summary>
         internal static string Message_AmbiguousAttributeMatch {
@@ -196,11 +241,83 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
+        ///   Looks up a localized string similar to Invalid MessageHandlerLifetime was specified on class &apos;{0}&apos;: {1}. .
         /// </summary>
-        internal static string MessageStream_IndexOutOfRange {
+        internal static string MessageHandlerClass_InvalidMessageHandlerLifetime {
             get {
-                return ResourceManager.GetString("MessageStream_IndexOutOfRange", resourceCulture);
+                return ResourceManager.GetString("MessageHandlerClass_InvalidMessageHandlerLifetime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot publish messages to the output stream while handling a metadata message..
+        /// </summary>
+        internal static string MessageHandlerContext_NullOutputStream_PublishNotAllowed {
+            get {
+                return ResourceManager.GetString("MessageHandlerContext_NullOutputStream_PublishNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not valid: {1} validation error(s) found..
+        /// </summary>
+        internal static string MessageValidationPipeline_InvalidMessage {
+            get {
+                return ResourceManager.GetString("MessageValidationPipeline_InvalidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on method &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string MethodAttributeProvider_AmbiguousAttributeMatch {
+            get {
+                return ResourceManager.GetString("MethodAttributeProvider_AmbiguousAttributeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invocation of method &apos;{0}()&apos; is not expected at this point..
+        /// </summary>
+        internal static string MicroProcessorContextState_InvalidOperation {
+            get {
+                return ResourceManager.GetString("MicroProcessorContextState_InvalidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cache can only be used while a MicroProcessor is handling a message or executing a query..
+        /// </summary>
+        internal static string NullCache_CacheNotSupported {
+            get {
+                return ResourceManager.GetString("NullCache_CacheNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &apos;{0}&apos; is not supported at this point..
+        /// </summary>
+        internal static string NullController_OperationNotSupported {
+            get {
+                return ResourceManager.GetString("NullController_OperationNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot publish event of type &apos;{0}&apos;: events can only be published while a MicroProcessor is handling a message or executing a query..
+        /// </summary>
+        internal static string NullStream_PublishNotSupported {
+            get {
+                return ResourceManager.GetString("NullStream_PublishNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot publish messages to the output stream while executing a query..
+        /// </summary>
+        internal static string QueryContext_NullOutputStream_PublishNotAllowed {
+            get {
+                return ResourceManager.GetString("QueryContext_NullOutputStream_PublishNotAllowed", resourceCulture);
             }
         }
         
@@ -214,11 +331,11 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified key &apos;{0}&apos; is not a valid index for this collection..
+        ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
-        internal static string ReadOnlyDictionary_KeyNotFound {
+        internal static string ReadOnlyList_IndexOutOfRange {
             get {
-                return ResourceManager.GetString("ReadOnlyDictionary_KeyNotFound", resourceCulture);
+                return ResourceManager.GetString("ReadOnlyList_IndexOutOfRange", resourceCulture);
             }
         }
         
@@ -282,6 +399,15 @@ namespace Kingo.Resources {
         internal static string StringTemplateVariable_MemberNotFound {
             get {
                 return ResourceManager.GetString("StringTemplateVariable_MemberNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on type &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string TypeAttributeProvider_AmbiguousAttributeMatch {
+            get {
+                return ResourceManager.GetString("TypeAttributeProvider_AmbiguousAttributeMatch", resourceCulture);
             }
         }
     }

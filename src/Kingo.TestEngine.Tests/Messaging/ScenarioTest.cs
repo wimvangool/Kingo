@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Kingo.Messaging.Constraints;
+using Kingo.Messaging.Validation;
+using Kingo.Messaging.Validation.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -25,7 +26,7 @@ namespace Kingo.Messaging
                 get;
             }
 
-            protected override IMessageProcessor MessageProcessor
+            protected override IMicroProcessor MessageProcessor
             {
                 get;
             }                        
@@ -247,7 +248,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(AssertFailedException))]
         public async Task Execute_Throws_IfUnexpectedFunctionalExceptionWasThrown()
         {
-            var exception = new CommandExecutionException(new object());
+            var exception = new BadRequestException(new object());
             var scenario = new AlternateFlowScenario(exception);
 
             await scenario.ThenAsync();

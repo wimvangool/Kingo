@@ -1,4 +1,6 @@
-﻿using Kingo.Threading;
+﻿using Kingo.Messaging.Validation;
+using Kingo.Messaging.Validation.Constraints;
+using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

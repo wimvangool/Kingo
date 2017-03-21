@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Kingo.Messaging;
+using Kingo.Messaging.Validation;
 using Kingo.Resources;
 
 namespace Kingo

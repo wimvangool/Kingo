@@ -35,7 +35,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// Returns the processor that is used to execute this <see cref="Scenario" />.
         /// </summary>
-        protected abstract IMessageProcessor MessageProcessor
+        protected abstract IMicroProcessor MessageProcessor
         {
             get;
         }

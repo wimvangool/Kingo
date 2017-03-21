@@ -1,4 +1,5 @@
 ﻿using System;
+using Kingo.Messaging.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging

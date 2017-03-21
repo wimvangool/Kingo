@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Transactions;
 using Kingo.Messaging.SampleApplication;
+using Kingo.Messaging.Validation;
+using Kingo.Messaging.Validation.Constraints;
 using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -123,7 +125,7 @@ namespace Kingo.Messaging
             _processor.HandleAsync(new CreateShoppingCartCommand
             {
                 ShoppingCartId = shoppingCartId
-            }).WaitAndHandle<CommandExecutionException>();                       
+            }).WaitAndHandle<BadRequestException>();                       
         }
 
         [TestMethod]

@@ -67,7 +67,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void GetClassAttributes_ReturnsAllClassAttributes_IfAllowMultipleIsFalse()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             var attributes = instance.GetClassAttributesOfType<SingleValueAttribute>().ToArray();
 
             Assert.AreEqual(1, attributes.Length);
@@ -77,7 +77,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void GetClassAttributes_ReturnsAllClassAttributes_IfAllowMultipleIsTrue()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             var attributes = instance.GetClassAttributesOfType<MultiValueAttribute>().ToArray();
 
             Assert.AreEqual(2, attributes.Length);
@@ -92,7 +92,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void GetMethodAttributes_ReturnsAllMethodAttributes_IfAllowMultipleIsFalse_And_MessageIsOfExactDerivedType()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             var attributes = instance.GetMethodAttributesOfType<SingleValueAttribute>().ToArray();
 
             Assert.AreEqual(1, attributes.Length);
@@ -102,7 +102,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void GetMethodAttributes_ReturnsAllMethodAttributes_IfAllowMultipleIsFalse_And_MessageIsOfExactBaseType()
         {
-            var instance = new MessageHandlerInstance<object>(_handler);
+            var instance = new MessageHandler<object>(_handler);
             var attributes = instance.GetMethodAttributesOfType<SingleValueAttribute>().ToArray();
 
             Assert.AreEqual(1, attributes.Length);
@@ -112,7 +112,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void GetMethodAttributes_ReturnsAllMethodAttributes_IfAllowMultipleIsTrue_And_MessageIsOfExactDerivedType()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             var attributes = instance.GetMethodAttributesOfType<MultiValueAttribute>().ToArray();
 
             Assert.AreEqual(2, attributes.Length);
@@ -123,7 +123,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void GetMethodAttributes_ReturnsAllMethodAttributes_IfAllowMultipleIsTrue_And_MessageIsOfExactBaseType()
         {
-            var instance = new MessageHandlerInstance<object>(_handler);
+            var instance = new MessageHandler<object>(_handler);
             var attributes = instance.GetMethodAttributesOfType<MultiValueAttribute>().ToArray();
 
             Assert.AreEqual(2, attributes.Length);
@@ -138,7 +138,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetClassAttribute_ReturnsFalse_IfAttributeWasNotFound()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             string attribute;
 
             Assert.IsFalse(instance.TryGetClassAttributeOfType(out attribute));
@@ -148,7 +148,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetClassAttribute_ReturnsTrue_IfAttributeWasFound()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             SingleValueAttribute attribute;
 
             Assert.IsTrue(instance.TryGetClassAttributeOfType(out attribute));
@@ -160,7 +160,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(AmbiguousMatchException))]
         public void TryGetClassAttribute_Throws_IfMultipleAttributesMatchWithType()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             MultiValueAttribute attribute;
 
             instance.TryGetClassAttributeOfType(out attribute);
@@ -173,7 +173,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetMethodAttribute_ReturnsFalse_IfAttributeWasNotFound()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             string attribute;
 
             Assert.IsFalse(instance.TryGetMethodAttributeOfType(out attribute));
@@ -183,7 +183,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetMethodAttribute_ReturnsTrue_IfAttributeWasFound()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             SingleValueAttribute attribute;
 
             Assert.IsTrue(instance.TryGetMethodAttributeOfType(out attribute));
@@ -195,7 +195,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(AmbiguousMatchException))]
         public void TryGetMethodAttribute_Throws_IfMultipleAttributesMatchWithType()
         {
-            var instance = new MessageHandlerInstance<EmptyMessage>(_handler);
+            var instance = new MessageHandler<EmptyMessage>(_handler);
             MultiValueAttribute attribute;
 
             instance.TryGetMethodAttributeOfType(out attribute);

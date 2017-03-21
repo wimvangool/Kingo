@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -8,47 +10,47 @@ namespace Kingo.Messaging
     {
         #region [====== Messages ======]
 
-        private sealed class SomeMessage : Message { }
+        private sealed class SomeMessage
+        {
+            private static int _InstanceCount = 0;
+            private readonly int _instance;
+
+            public SomeMessage()
+            {
+                _instance = Interlocked.Increment(ref _InstanceCount);
+            }
+
+            public override string ToString()
+            {
+                return _instance.ToString();
+            }
+        }
 
         #endregion        
 
-        #region [====== Append(IMessageStream) ======]
+        #region [====== AppendStream(IMessageStream) ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Append_Throws_IfMessageIsNull()
+        public void AppendStream_Throws_IfMessageIsNull()
         {
-            CreateStream().Append(null);
+            CreateStream().AppendStream(null);
         }        
 
         [TestMethod]
-        public void Append_ReturnsSelf_ISpecifiedStreamIsEmpty()
+        public void AppendStream_ReturnsSelf_ISpecifiedStreamIsEmpty()
         {
             var stream = CreateStream();
 
-            Assert.AreSame(stream, stream.Append(MessageStream.Empty));
-        }
+            Assert.AreSame(stream, stream.AppendStream(MessageStream.Empty));
+        }        
 
         [TestMethod]
-        public void Append_ReturnsNewStream_IfSpecifiedStreamIsMessage()
-        {
-            var message = new SomeMessage();
-            var streamA = CreateStream();
-            var streamB = streamA.Append(message);
-
-            Assert.IsNotNull(streamB);
-            Assert.AreEqual(3, streamB.Count);
-            Assert.AreSame(streamA[0], streamB[0]);
-            Assert.AreSame(streamA[1], streamB[1]);
-            Assert.AreSame(message, streamB[2]);
-        }
-
-        [TestMethod]
-        public void Append_ReturnsNewStream_IfSpecifiedStreamIsOtherStream()
+        public void AppendStream_ReturnsNewStream_IfSpecifiedStreamIsNotEmpty()
         {
             var streamA = CreateStream();
             var streamB = CreateStream(3);
-            var streamC = streamA.Append(streamB);
+            var streamC = streamA.AppendStream(streamB);
 
             Assert.IsNotNull(streamC);
             Assert.AreEqual(5, streamC.Count);
@@ -61,21 +63,21 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== Accept ======]
+        #region [====== HandleMessagesWithAsync ======]
 
         [TestMethod]
-        public void Accept_DoesNothing_IfHandlerIsNull()
+        public void HandleMessagesWithAsync_DoesNothing_IfHandlerIsNull()
         {
-            CreateStream().Accept(null);
+            CreateStream().HandleMessagesWithAsync(null);
         }
 
         [TestMethod]
-        public void Accept_LetsHandlerVisitAllMessages_IfHandleIsNotNull()
+        public async Task HandleMessagesWithAsync_LetsHandlerVisitAllMessages_IfHandleIsNotNull()
         {
             var stream = CreateStream();
             var handler = new MessageHandlerSpy();
 
-            stream.Accept(handler);
+            await stream.HandleMessagesWithAsync(handler);            
 
             handler.AssertMessageCountIs(2);
             handler.AssertVisitedAll(stream);

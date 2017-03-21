@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 
 [assembly: AssemblyTitle("Kingo")]
-[assembly: AssemblyDescription("A core utility assembly primarily useful for Business Application Development.")]
+[assembly: AssemblyDescription("A core utility assembly for Business Application Development.")]
 
 [assembly: AssemblyVersion("3.0.0")]
 [assembly: AssemblyFileVersion("3.0.0")]

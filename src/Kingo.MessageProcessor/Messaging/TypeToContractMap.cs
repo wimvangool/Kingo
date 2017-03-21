@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Kingo.Messaging.Domain;
+using Kingo.Messaging.Validation;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
