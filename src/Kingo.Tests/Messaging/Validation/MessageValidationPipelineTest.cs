@@ -13,6 +13,8 @@ namespace Kingo.Messaging.Validation
     {
         #region [====== Messages ======]
 
+        private static readonly ErrorInfo _Errors = new ErrorInfo(Enumerable.Empty<KeyValuePair<string, string>>(), "Some error.");
+
         private abstract class MessageToValidate : IMessage
         {
             protected abstract bool IsValid
@@ -26,7 +28,7 @@ namespace Kingo.Messaging.Validation
                 {
                     return ErrorInfo.Empty;
                 }
-                return new ErrorInfo(Enumerable.Empty<KeyValuePair<string, string>>(), "Some error.");
+                return _Errors;
             }
         }
 
@@ -56,21 +58,47 @@ namespace Kingo.Messaging.Validation
             }
         }
 
+        private sealed class ObjectValidator : IMessageValidator<object>
+        {
+            private readonly bool _isValid;
+
+            public ObjectValidator(bool isValid)
+            {
+                _isValid = isValid;
+            }
+
+            public ErrorInfo Validate(object message, bool haltOnFirstError = false)
+            {
+                if (_isValid)
+                {
+                    return ErrorInfo.Empty;
+                }
+                return _Errors;
+            }
+        }
+
         #endregion
 
+        private MessageValidationPipeline _pipeline;
         private MicroProcessorSpy _processor;
 
         [TestInitialize]
         public void Setup()
         {
+            _pipeline = new MessageValidationPipeline();
             _processor = new MicroProcessorSpy();
-            _processor.Add(new MessageValidationPipeline());
+            _processor.Add(_pipeline);
         }
 
         [TestMethod]
-        public void Handle_DoesNothing_IfCommandIsValid()
+        public void Handle_HandlesCommand_IfCommandIsValid()
         {
-            AssertIsEmpty(_processor.Handle(new SomeCommand(true), (message, context) => { }));
+            var someEvent = new object();
+
+            AssertContains(_processor.Handle(new SomeCommand(true), (message, context) =>
+            {
+                context.OutputStream.Publish(someEvent);
+            }), someEvent);
         }
 
         [TestMethod]
@@ -96,9 +124,14 @@ namespace Kingo.Messaging.Validation
         }
 
         [TestMethod]
-        public void Handle_DoesNothing_IfEventIsValid()
+        public void Handle_HandlesEvent_IfEventIsValid()
         {
-            AssertIsEmpty(_processor.Handle(new SomeEvent(true), (message, context) => { }));
+            var someEvent = new object();
+
+            AssertContains(_processor.Handle(new SomeEvent(true), (message, context) =>
+            {
+                context.OutputStream.Publish(someEvent);
+            }), someEvent);
         }
 
         [TestMethod]
@@ -123,10 +156,63 @@ namespace Kingo.Messaging.Validation
             }
         }
 
-        private static void AssertIsEmpty(IMessageStream stream)
+        [TestMethod]
+        public void Handle_HandlesMessage_IfMessageDoesNotImplementIMessageInterface_And_NoValidatorForTypeHasBeenRegistered()
+        {
+            var someEvent = new object();
+
+            AssertContains(_processor.Handle(new object(), (message, context) =>
+            {
+                context.OutputStream.Publish(someEvent);
+            }), someEvent);
+        }
+
+        [TestMethod]
+        public void Handle_HandlesMessage_IfMessageDoesNotImplementIMessageInterface_And_ValidatorReturnsNoErrors()
+        {
+            _pipeline.Register(new ObjectValidator(true));
+
+            var someEvent = new object();
+
+            AssertContains(_processor.Handle(new object(), (message, context) =>
+            {
+                context.OutputStream.Publish(someEvent);
+            }), someEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public void Handle_ThrowsInternalServerErrorsException_IfMessageDoesNotImplementIMessageInterface_And_ValidatorReturnsErrors()
+        {            
+            _pipeline.Register(new ObjectValidator(false));
+
+            var someMessage = new object();
+
+            try
+            {
+                _processor.Handle(someMessage, (message, context) => { });
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(someMessage, exception.FailedMessage);
+
+                var invalidMessageException = exception.InnerException as InvalidMessageException;
+
+                Assert.IsNotNull(invalidMessageException);
+                Assert.AreEqual("Message of type 'Object' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
+                throw;
+            }
+        }
+
+        private static void AssertContains(IMessageStream stream, params object[] events)
         {
             Assert.IsNotNull(stream);
-            Assert.AreEqual(0, stream.Count);
+            Assert.AreEqual(events.Length, stream.Count);
+
+            for (int index = 0; index < events.Length; index++)
+            {
+                Assert.AreSame(events[index], stream[index]);
+            }
         }
     }
 }
