@@ -133,6 +133,24 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The query could not be executed because of a bad request. See inner exception for details..
+        /// </summary>
+        internal static string ExecuteAsyncMethod_BadRequest {
+            get {
+                return ResourceManager.GetString("ExecuteAsyncMethod_BadRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while executing the query. See inner exception for details..
+        /// </summary>
+        internal static string ExecuteAsyncMethod_InternalServerError {
+            get {
+                return ResourceManager.GetString("ExecuteAsyncMethod_InternalServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified node or expression is not supported inside a member expression: &apos;{0}&apos;..
         /// </summary>
         internal static string ExpressionBuilder_ExpressionNotSupported {
@@ -156,15 +174,6 @@ namespace Kingo.Resources {
         internal static string HandleAsyncResult_CannotReplaceOutputStream {
             get {
                 return ResourceManager.GetString("HandleAsyncResult_CannotReplaceOutputStream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Several errors occurred while processing message of type &apos;{0}&apos;. See inner exceptions for details..
-        /// </summary>
-        internal static string HandleInputStreamAsyncMethod_AggregateException {
-            get {
-                return ResourceManager.GetString("HandleInputStreamAsyncMethod_AggregateException", resourceCulture);
             }
         }
         

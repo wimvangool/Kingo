@@ -9,9 +9,38 @@ namespace Kingo.Messaging
     internal sealed class HandleInputStreamAsyncMethod : HandleStreamAsyncMethod
     {
         public static async Task<IMessageStream> Invoke(MicroProcessor processor, IMessageStream inputStream, CancellationToken? token)
-        {            
-            var context = new MessageHandlerContext(token);
+        {
+            var message = inputStream[0];
 
+            try
+            {
+                return await Invoke(processor, inputStream, new MessageHandlerContext(token));
+            }
+            catch (ExternalProcessorException)
+            {
+                // Any ExternalProcessorExceptions were thrown by this method
+                // for a down stream message and can therefore just be rethrown here.
+                throw;
+            }
+            catch (ConcurrencyException exception)
+            {
+                // Only commands should promote concurrency-exceptions to conflict-exceptions.
+                if (processor.IsCommand(message))
+                {
+                    throw exception.AsBadRequestException(message, exception.Message);
+                }
+                throw exception.AsInternalServerErrorException(message, exception.Message);
+            }
+            catch (Exception exception)
+            {
+                // Any exceptions other than External- and ConcurrencyExceptions are unexpected by
+                // definition and can therefore be rethrown as InternalServerErrorExceptions immediately.
+                throw InternalServerErrorException.FromInnerException(message, exception);
+            }
+        }
+
+        private static async Task<IMessageStream> Invoke(MicroProcessor processor, IMessageStream inputStream, MessageHandlerContext context)
+        {
             using (var scope = MicroProcessorContext.CreateContextScope(context))
             {
                 var method = new HandleInputStreamAsyncMethod(processor, context);
@@ -23,7 +52,7 @@ namespace Kingo.Messaging
                 return method._outputStream;
             }
         }
-        
+
         private readonly List<Task> _handleMetadataStreamMethods;        
         private IMessageStream _outputStream;
 
@@ -57,15 +86,15 @@ namespace Kingo.Messaging
             {
                 await base.HandleAsyncCore(message, handler);
             }            
-            catch (MicroProcessorException)
+            catch (ExternalProcessorException)
             {
-                // When a MicroProcessorException is thrown, it was probably throw by this method
+                // Any ExternalProcessorExceptions were thrown by this method
                 // for a down stream message and can therefore just be rethrown here.
                 throw;
             }
             catch (InternalProcessorException exception)
             {
-                // When an InternalProcessorException is thrown, it must be determined whether
+                // When an InternalProcessorException is caught, it must be determined whether
                 // the current message is a Command or an Event. If it is a Command, then the cause
                 // of the exception is a bad request; if is an event, it is an internal server error.                        
                 if (IsCommand(message))
@@ -76,7 +105,7 @@ namespace Kingo.Messaging
             }
             catch (Exception exception)
             {
-                // Any exceptions other than MicroProcessor- and InternalProcessorExceptions are unexpected by
+                // Any exceptions other than External- and InternalProcessorExceptions are unexpected by
                 // definition and can therefore be rethrown as InternalServerErrorExceptions immediately.
                 throw InternalServerErrorException.FromInnerException(message, exception);
             }            

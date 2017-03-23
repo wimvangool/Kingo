@@ -28,12 +28,34 @@ namespace Kingo.Messaging
         {
             return Task.Run(async () =>
             {
-                using (var scope = MicroProcessorContext.CreateContextScope(Context))
+                var message = metadataStream[0];
+
+                try
                 {
-                    await metadataStream.HandleMessagesWithAsync(this);
-                    await scope.CompleteAsync();
+                    await RunCore(metadataStream);
+                }
+                catch (ExternalProcessorException)
+                {
+                    throw;
+                }
+                catch (ConcurrencyException exception)
+                {
+                    throw exception.AsInternalServerErrorException(message, exception.Message);
+                }
+                catch (Exception exception)
+                {
+                    throw InternalServerErrorException.FromInnerException(message, exception);
                 }
             });
+        }
+
+        private async Task RunCore(IMessageStream metadataStream)
+        {
+            using (var scope = MicroProcessorContext.CreateContextScope(Context))
+            {
+                await metadataStream.HandleMessagesWithAsync(this);
+                await scope.CompleteAsync();
+            }
         }
 
         protected override async Task HandleAsyncCore<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
@@ -42,7 +64,7 @@ namespace Kingo.Messaging
             {
                 await base.HandleAsyncCore(message, handler);
             }
-            catch (MicroProcessorException)
+            catch (ExternalProcessorException)
             {
                 // When a MicroProcessorException is thrown, it was probably throw by this method
                 // for a down stream message and can therefore just be rethrown here.

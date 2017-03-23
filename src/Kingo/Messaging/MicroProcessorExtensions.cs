@@ -26,7 +26,11 @@ namespace Kingo.Messaging
         /// <returns>A stream of events that represents all changes made by this processor.</returns>    
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>                                            
+        /// </exception>               
+        /// <exception cref="ExternalProcessorException">
+        /// The specified <paramref name="message"/> could not be handled because it was a bad request or because an
+        /// internal server error occurred.
+        /// </exception>                                     
         public static IMessageStream Handle<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, IMicroProcessorContext> handler) =>
             processor.HandleStream(new MessageStream<TMessage>(message, handler));
 
@@ -44,7 +48,11 @@ namespace Kingo.Messaging
         /// <returns>A stream of events that represents all changes made by this processor.</returns>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>                                       
+        /// </exception>    
+        /// <exception cref="ExternalProcessorException">
+        /// The specified <paramref name="message"/> could not be handled because it was a bad request or because an
+        /// internal server error occurred.
+        /// </exception>                                    
         public static IMessageStream Handle<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, IMicroProcessorContext, Task<IMessageStream>> handler) =>
             processor.HandleStream(new MessageStream<TMessage>(message, handler));
 
@@ -61,7 +69,11 @@ namespace Kingo.Messaging
         /// <returns>A stream of events that represents all changes made by this processor.</returns>  
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>                                              
+        /// </exception>                        
+        /// <exception cref="ExternalProcessorException">
+        /// The specified <paramref name="message"/> could not be handled because it was a bad request or because an
+        /// internal server error occurred.
+        /// </exception>                       
         public static IMessageStream Handle<TMessage>(this IMicroProcessor processor, TMessage message, IMessageHandler<TMessage> handler = null) =>
             processor.HandleAsync(message, handler).Await();
 
@@ -73,7 +85,11 @@ namespace Kingo.Messaging
         /// <returns>A stream of events that represents all changes made by this processor.</returns> 
         /// <exception cref="ArgumentNullException">
         /// <paramref name="inputStream"/> is <c>null</c>.
-        /// </exception>       
+        /// </exception>     
+        /// <exception cref="ExternalProcessorException">
+        /// One of the messages inside the <paramref name="inputStream"/> could not be handled because it was a bad request or because an
+        /// internal server error occurred.
+        /// </exception>   
         public static IMessageStream HandleStream(this IMicroProcessor processor, IMessageStream inputStream) =>
             processor.HandleStreamAsync(inputStream).Await();
 
@@ -151,6 +167,9 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>  
+        /// <exception cref="InternalServerErrorException">
+        /// The query could not be executed because an internal server error occurred.
+        /// </exception>  
         public static TMessageOut Execute<TMessageOut>(this IMicroProcessor processor, Func<IMicroProcessorContext, TMessageOut> query) =>
             processor.Execute(Query<TMessageOut>.FromDelegate(query));
 
@@ -164,6 +183,9 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>  
+        /// <exception cref="InternalServerErrorException">
+        /// The query could not be executed because an internal server error occurred.
+        /// </exception> 
         public static TMessageOut Execute<TMessageOut>(this IMicroProcessor processor, Func<IMicroProcessorContext, Task<TMessageOut>> query) =>
             processor.Execute(Query<TMessageOut>.FromDelegate(query));
 
@@ -177,6 +199,9 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>  
+        /// <exception cref="InternalServerErrorException">
+        /// The query could not be executed because an internal server error occurred.
+        /// </exception> 
         public static TMessageOut Execute<TMessageOut>(this IMicroProcessor processor, IQuery<TMessageOut> query) =>
             processor.ExecuteAsync(query).Await();
 
@@ -227,6 +252,10 @@ namespace Kingo.Messaging
         /// <returns>The result of the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
+        /// </exception> 
+        /// <exception cref="ExternalProcessorException">
+        /// The specified <paramref name="query"/> could not be executed because the specified <paramref name="message"/> represents a bad request
+        /// or because because an internal server error occurred.
         /// </exception>                
         public static TMessageOut Execute<TMessageIn, TMessageOut>(this IMicroProcessor processor, TMessageIn message, Func<TMessageIn, IMicroProcessorContext, TMessageOut> query) =>
             processor.Execute(message, Query<TMessageIn, TMessageOut>.FromDelegate(query));
@@ -242,7 +271,11 @@ namespace Kingo.Messaging
         /// <returns>The result of the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>               
+        /// </exception>    
+        /// <exception cref="ExternalProcessorException">
+        /// The specified <paramref name="query"/> could not be executed because the specified <paramref name="message"/> represents a bad request
+        /// or because because an internal server error occurred.
+        /// </exception>            
         public static TMessageOut Execute<TMessageIn, TMessageOut>(this IMicroProcessor processor, TMessageIn message, Func<TMessageIn, IMicroProcessorContext, Task<TMessageOut>> query) =>
             processor.Execute(message, Query<TMessageIn, TMessageOut>.FromDelegate(query));
 
@@ -257,7 +290,11 @@ namespace Kingo.Messaging
         /// <returns>The result of the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
-        /// </exception>               
+        /// </exception>     
+        /// <exception cref="ExternalProcessorException">
+        /// The specified <paramref name="query"/> could not be executed because the specified <paramref name="message"/> represents a bad request
+        /// or because because an internal server error occurred.
+        /// </exception>           
         public static TMessageOut Execute<TMessageIn, TMessageOut>(this IMicroProcessor processor, TMessageIn message, IQuery<TMessageIn, TMessageOut> query) =>
             processor.ExecuteAsync(message, query).Await();
 

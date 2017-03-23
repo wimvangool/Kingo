@@ -14,7 +14,10 @@ namespace Kingo.Messaging
         /// </summary>        
         /// <param name="inputStream">Stream of messages to handle.</param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param> 
-        /// <returns>A stream of events that represents all changes made by this processor.</returns>        
+        /// <returns>A stream of events that represents all changes made by this processor.</returns> 
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="inputStream"/> is <c>null</c>.
+        /// </exception>                      
         Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null);
 
         /// <summary>
@@ -26,7 +29,7 @@ namespace Kingo.Messaging
         /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
-        /// </exception>  
+        /// </exception>           
         Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken? token = null);
 
         /// <summary>

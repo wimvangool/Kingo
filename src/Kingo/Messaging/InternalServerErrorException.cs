@@ -10,7 +10,7 @@ namespace Kingo.Messaging
     /// handling a message or executing a query correctly. This type semantically maps to HTTP response code <c>500</c>.
     /// </summary>
     [Serializable]
-    public class InternalServerErrorException : MicroProcessorException
+    public class InternalServerErrorException : ExternalProcessorException
     {        
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalServerErrorException" /> class.

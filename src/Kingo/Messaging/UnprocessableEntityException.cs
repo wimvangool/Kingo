@@ -13,10 +13,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="UnprocessableEntityException" /> class.
         /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
+        /// <param name="failedMessage">The message that could not be processed.</param>        
         public UnprocessableEntityException(object failedMessage)
             : base(failedMessage) { }
 
@@ -24,10 +21,7 @@ namespace Kingo.Messaging
         /// Initializes a new instance of the <see cref="UnprocessableEntityException" /> class.
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
-        /// <param name="message">Message of the exception.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
+        /// <param name="message">Message of the exception.</param>        
         public UnprocessableEntityException(object failedMessage, string message)
             : base(failedMessage, message) { }
 
@@ -36,10 +30,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="failedMessage">The message that could not be processed.</param>
         /// <param name="message">Message of the exception.</param>
-        /// <param name="innerException">Cause of this exception.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
+        /// <param name="innerException">Cause of this exception.</param>        
         public UnprocessableEntityException(object failedMessage, string message, Exception innerException)
             : base(failedMessage, message, innerException) { }
 

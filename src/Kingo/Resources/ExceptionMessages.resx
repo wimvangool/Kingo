@@ -141,6 +141,12 @@
   <data name="ErrorLevel_InvalidErrorLevel" xml:space="preserve">
     <value>ErrorLevel must be 0 or higher: {0}.</value>
   </data>
+  <data name="ExecuteAsyncMethod_BadRequest" xml:space="preserve">
+    <value>The query could not be executed because of a bad request. See inner exception for details.</value>
+  </data>
+  <data name="ExecuteAsyncMethod_InternalServerError" xml:space="preserve">
+    <value>An error occurred while executing the query. See inner exception for details.</value>
+  </data>
   <data name="ExpressionBuilder_ExpressionNotSupported" xml:space="preserve">
     <value>The specified node or expression is not supported inside a member expression: '{0}'.</value>
   </data>
@@ -149,9 +155,6 @@
   </data>
   <data name="HandleAsyncResult_CannotReplaceOutputStream" xml:space="preserve">
     <value>The output stream cannot be replaced when the result is obtained by invoking a metadata handler.</value>
-  </data>
-  <data name="HandleInputStreamAsyncMethod_AggregateException" xml:space="preserve">
-    <value>Several errors occurred while processing message of type '{0}'. See inner exceptions for details.</value>
   </data>
   <data name="HandleInputStreamAsyncMethod_CommandHandlerException" xml:space="preserve">
     <value>An error occurred while processing command of type '{0}'. See inner exception for details.</value>

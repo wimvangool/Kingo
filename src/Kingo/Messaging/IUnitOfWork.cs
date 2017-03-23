@@ -19,6 +19,9 @@ namespace Kingo.Messaging
         /// <summary>
         /// Flushes any pending changes to the underlying infrastructure.
         /// </summary>
+        /// <exception cref="ConcurrencyException">
+        /// A concurrency exception occurred.
+        /// </exception>
         Task FlushAsync();
     }
 }

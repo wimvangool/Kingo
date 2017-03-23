@@ -838,6 +838,128 @@ namespace Kingo.Messaging
             }
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ConflictException))]
+        public async Task HandleStreamAsync_ThrowsConflictException_IfMessageIsCommand_And_UnitOfWorkThrowsConcurrencyException()
+        {
+            var someCommand = new SomeCommand();
+            var concurrencyException = new ConcurrencyException();
+            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
+
+            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            try
+            {
+                await _processor.HandleAsync(someCommand);
+            }
+            catch (ConflictException exception)
+            {
+                Assert.AreSame(concurrencyException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task HandleStreamAsync_ThrowsInternalServerErrorException_IfMessageIsCommand_And_UnitOfWorkThrowsConcurrencyException()
+        {
+            var someCommand = new SomeCommand();
+            var randomException = new Exception();
+            var unitOfWork = new UnitOfWorkSpy(true, randomException);
+
+            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            try
+            {
+                await _processor.HandleAsync(someCommand);
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(randomException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task HandleStreamAsync_ThrowsInternalServerErrorException_IfMessageIsEvent_And_UnitOfWorkThrowsConcurrencyException()
+        {
+            var eventA = new EventA();
+            var concurrencyException = new ConcurrencyException();
+            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
+
+            _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            try
+            {
+                await _processor.HandleAsync(eventA);
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(concurrencyException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task HandleStreamAsync_ThrowsInternalServerErrorException_IfMessageIsMetadataEvent_And_UnitOfWorkThrowsConcurrencyException()
+        {
+            var someCommand = new SomeCommand();
+            var eventA = new EventA();
+            var concurrencyException = new ConcurrencyException();
+            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
+
+            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            {
+                context.MetadataStream.Publish(eventA);
+            });
+
+            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            try
+            {
+                await _processor.HandleAsync(someCommand);
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(concurrencyException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
         #endregion
 
         #region [====== Queries (1) ======]        
@@ -866,6 +988,175 @@ namespace Kingo.Messaging
                 Assert.AreEqual(0, context.Messages.Count);
                 return messageOut;
             }), messageOut);
+        }
+
+        [TestMethod]        
+        public async Task ExecuteAsync_1_ReturnsResultOfQuery_IfUnitOfWorkIsEnlistedInsideQueryContext()
+        {
+            var unitOfWork = new UnitOfWorkSpy(true);           
+            var messageOut = new object();           
+
+            Assert.AreSame(await _processor.ExecuteAsync(context =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+                return messageOut;
+            }), messageOut);
+
+            unitOfWork.AssertRequiresFlushCountIs(1);
+            unitOfWork.AssertFlushCountIs(1);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_1_ReturnsResultOfQuery_IfUnitOfWorkIsEnlistedInsideMetadataContext()
+        {
+            var unitOfWork = new UnitOfWorkSpy(true);
+            var eventA = new EventA();
+            var messageOut = new object();
+
+            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            {                
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            Assert.AreSame(await _processor.ExecuteAsync(context =>
+            {
+                context.MetadataStream.Publish(eventA);
+                return messageOut;
+            }), messageOut);
+
+            unitOfWork.AssertRequiresFlushCountIs(1);
+            unitOfWork.AssertFlushCountIs(1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadRequestException))]
+        public async Task ExecuteAsync_1_ThrowsBadRequestException_IfQueryThrowsInternalProcessorException()
+        {
+            var internalProcessorException = new SomeInternalProcessorException();
+            Func<IMicroProcessorContext, object> query = context =>
+            {
+                throw internalProcessorException;
+            };
+
+            try
+            {
+                await _processor.ExecuteAsync(query);
+            }
+            catch (BadRequestException exception)
+            {
+                Assert.IsNull(exception.FailedMessage);
+                Assert.AreSame(internalProcessorException, exception.InnerException);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_1_ThrowsInternalServerErrorsException_IfQueryThrowsRandomException()
+        {
+            var randomException = new Exception();
+            Func<IMicroProcessorContext, object> query = context => { throw randomException; };
+
+            try
+            {
+                await _processor.ExecuteAsync(query);
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.IsNull(exception.FailedMessage);
+                Assert.AreSame(randomException, exception.InnerException);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_1_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsConcurrencyException()
+        {
+            var concurrencyException = new ConcurrencyException();
+            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
+
+            try
+            {
+                await _processor.ExecuteAsync(context =>
+                {
+                    context.UnitOfWork.Enlist(unitOfWork);
+                    return new object();
+                });
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.IsNull(exception.FailedMessage);
+                Assert.AreSame(concurrencyException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_1_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsRandomException()
+        {
+            var randomException = new Exception();
+            var unitOfWork = new UnitOfWorkSpy(true, randomException);
+
+            try
+            {
+                await _processor.ExecuteAsync(context =>
+                {
+                    context.UnitOfWork.Enlist(unitOfWork);
+                    return new object();
+                });
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.IsNull(exception.FailedMessage);
+                Assert.AreSame(randomException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_1_ThrowsInternalServerErrorException_IfMetadataEventIsPublished_And_UnitOfWorkThrowsConcurrencyException()
+        {
+            var eventA = new EventA();
+            var concurrencyException = new ConcurrencyException();
+            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
+
+            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            try
+            {
+                await _processor.ExecuteAsync(context =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                    return new object();
+                });
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(eventA, exception.FailedMessage);
+                Assert.AreSame(concurrencyException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
         }
 
         #endregion
@@ -911,6 +1202,183 @@ namespace Kingo.Messaging
                 AssertMessageStack(context.Messages, message, messageIn);
                 return messageOut;
             }), messageOut);
+        }
+
+        [TestMethod]        
+        public async Task ExecuteAsync_2_ReturnsResultOfQuery_IfUnitOfWorkIsEnlistedInsideQueryContext()
+        {
+            var unitOfWork = new UnitOfWorkSpy(true);            
+            var messageOut = new object();            
+
+            Assert.AreSame(await _processor.ExecuteAsync(new object(), (message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+                return messageOut;
+            }), messageOut);
+
+            unitOfWork.AssertRequiresFlushCountIs(1);
+            unitOfWork.AssertFlushCountIs(1);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync_2_ReturnsResultOfQuery_IfUnitOfWorkIsEnlistedInsideMetadataContext()
+        {
+            var unitOfWork = new UnitOfWorkSpy(true);
+            var eventA = new EventA();
+            var messageOut = new object();
+
+            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            Assert.AreSame(await _processor.ExecuteAsync(new object(), (message, context) =>
+            {
+                context.MetadataStream.Publish(eventA);
+                return messageOut;
+            }), messageOut);
+
+            unitOfWork.AssertRequiresFlushCountIs(1);
+            unitOfWork.AssertFlushCountIs(1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadRequestException))]
+        public async Task ExecuteAsync_2_ThrowsBadRequest_IfQueryThrowsInternalProcessorException()
+        {
+            var messageIn = new object();
+            var internalProcessorException = new SomeInternalProcessorException();
+            Func<object, IMicroProcessorContext, object> query = (message, context) =>
+            {
+                throw internalProcessorException;
+            };
+
+            try
+            {
+                await _processor.ExecuteAsync(messageIn, query);
+            }
+            catch (BadRequestException exception)
+            {
+                Assert.AreSame(messageIn, exception.FailedMessage);
+                Assert.AreSame(internalProcessorException, exception.InnerException);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_2_ThrowsInternalServerErrorException_IfQueryThrowsRandomException()
+        {
+            var messageIn = new object();
+            var randomException = new Exception();
+            Func<object, IMicroProcessorContext, object> query = (message, context) =>
+            {
+                throw randomException;
+            };
+
+            try
+            {
+                await _processor.ExecuteAsync(messageIn, query);
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(messageIn, exception.FailedMessage);
+                Assert.AreSame(randomException, exception.InnerException);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_2_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsConcurrencyException()
+        {
+            var messageIn = new object();
+            var concurrencyException = new ConcurrencyException();
+            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
+
+            try
+            {
+                await _processor.ExecuteAsync(messageIn, (message, context) =>
+                {
+                    context.UnitOfWork.Enlist(unitOfWork);
+                    return new object();
+                });
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(messageIn, exception.FailedMessage);
+                Assert.AreSame(concurrencyException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_2_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsRandomException()
+        {
+            var messageIn = new object();
+            var randomException = new Exception();
+            var unitOfWork = new UnitOfWorkSpy(true, randomException);
+
+            try
+            {
+                await _processor.ExecuteAsync(messageIn, (message, context) =>
+                {
+                    context.UnitOfWork.Enlist(unitOfWork);
+                    return new object();
+                });
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(messageIn, exception.FailedMessage);
+                Assert.AreSame(randomException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_2_ThrowsInternalServerErrorException_IfMetadataEventIsPublished_And_UnitOfWorkThrowsConcurrencyException()
+        {
+            var messageIn = new object();
+            var eventA = new EventA();
+            var concurrencyException = new ConcurrencyException();
+            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
+
+            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            {
+                context.UnitOfWork.Enlist(unitOfWork);
+            });
+
+            try
+            {
+                await _processor.ExecuteAsync(messageIn, (message, context) =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                    return new object();
+                });
+            }
+            catch (InternalServerErrorException exception)
+            {
+                Assert.AreSame(eventA, exception.FailedMessage);
+                Assert.AreSame(concurrencyException, exception.InnerException);
+                throw;
+            }
+            finally
+            {
+                unitOfWork.AssertRequiresFlushCountIs(1);
+                unitOfWork.AssertFlushCountIs(1);
+            }
         }
 
         #endregion

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Threading;
 
 namespace Kingo.Messaging
 {
@@ -65,6 +66,10 @@ namespace Kingo.Messaging
             if (inputStream == null)
             {
                 throw new ArgumentNullException(nameof(inputStream));
+            }
+            if (inputStream.Count == 0)
+            {
+                return AsyncMethod.Value(MessageStream.Empty);
             }
             return HandleInputStreamAsyncMethod.Invoke(this, inputStream, token);
         }

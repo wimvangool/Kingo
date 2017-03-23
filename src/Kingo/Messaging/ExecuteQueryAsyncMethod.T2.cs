@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kingo.Messaging
@@ -31,7 +32,16 @@ namespace Kingo.Messaging
             get;
         }
 
-        protected override Task<ExecuteAsyncResult<TMessageOut>> InvokeCore() =>
+        protected override Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore() =>
             MicroProcessorPipeline.BuildPipeline(Processor.ProcessorPipeline, Context, _query).ExecuteAsync(_message, Context);
+
+        protected override BadRequestException NewBadRequestException(InternalProcessorException exception, string message) =>
+            exception.AsBadRequestException(_message, message);
+
+        protected override InternalServerErrorException NewInternalServerErrorException(InternalProcessorException exception, string message) =>
+            exception.AsInternalServerErrorException(_message, message);
+
+        protected override InternalServerErrorException NewInternalServerErrorException(Exception exception, string message) =>
+            new InternalServerErrorException(_message, message, exception);
     }
 }

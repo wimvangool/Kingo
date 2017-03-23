@@ -104,9 +104,9 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Gets the <see cref="MicroProcessorException" /> that was caught during the When-phase.
+        /// Gets the <see cref="ExternalProcessorException" /> that was caught during the When-phase.
         /// </summary>
-        protected internal MicroProcessorException ThrownException
+        protected internal ExternalProcessorException ThrownException
         {
             get;
             private set;
@@ -170,14 +170,14 @@ namespace Kingo.Messaging
         /// </param>
         /// <returns>A <see cref="Task" /> representing the operation.</returns>
         protected async Task ExpectedException<TException>(Action<IMemberConstraintSet<TException>> validator = null, bool rethrowException = false)
-            where TException : MicroProcessorException
+            where TException : ExternalProcessorException
         {
             await Exception(rethrowException).Expect(validator).ExecuteAsync();
         }
 
         /// <summary>
         /// Creates and returns a new <see cref="AlternateFlow{T}" /> which can be used to set some
-        /// expectations on the <see cref="MicroProcessorException" /> that is expected to be thrown.
+        /// expectations on the <see cref="ExternalProcessorException" /> that is expected to be thrown.
         /// </summary>
         /// <param name="rethrowException">
         /// Indicates whether or not the exception should be rethron after it has been caught and verified.
@@ -202,7 +202,7 @@ namespace Kingo.Messaging
             {
                 await _message.Value.ProcessWithAsync(processor, token);
             }                   
-            catch (MicroProcessorException exception)
+            catch (ExternalProcessorException exception)
             {                
                 ThrownException = exception;                
             }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
@@ -9,21 +11,62 @@ namespace Kingo.Messaging
 
         private async Task<TMessageOut> Invoke()
         {
-            ExecuteAsyncResult<TMessageOut> result;
+            try
+            {
+                return await InvokeCore();
+            }
+            catch (ExternalProcessorException)
+            {
+                throw;
+            }
+            catch (ConcurrencyException exception)
+            {
+                throw NewInternalServerErrorException(exception, ExceptionMessages.ExecuteAsyncMethod_InternalServerError);
+            }
+            catch (Exception exception)
+            {
+                throw NewInternalServerErrorException(exception, ExceptionMessages.ExecuteAsyncMethod_InternalServerError);
+            }
+        }
 
+        private async Task<TMessageOut> InvokeCore()
+        {            
             using (var scope = MicroProcessorContext.CreateContextScope(Context))
             {
-                result = await InvokeCore();
+                var messageOut = await InvokeQueryAndHandleMetadataEvents();
                 await scope.CompleteAsync();
-            }
-            var metadataStream = result.MetadataStream;
-            if (metadataStream.Count > 0)
+                return messageOut;
+            }            
+        }
+
+        private async Task<TMessageOut> InvokeQueryAndHandleMetadataEvents()
+        {
+            var result = await InvokeQuery();
+            if (result.MetadataStream.Count > 0)
             {
-                await HandleMetadataStreamAsyncMethod.Invoke(Processor, Context, metadataStream);
+                await HandleMetadataStreamAsyncMethod.Invoke(Processor, Context, result.MetadataStream);
             }
             return result.Message;
         }
 
-        protected abstract Task<ExecuteAsyncResult<TMessageOut>> InvokeCore();        
+        private async Task<ExecuteAsyncResult<TMessageOut>> InvokeQuery()
+        {
+            try
+            {
+                return await InvokeQueryCore();
+            }
+            catch (InternalProcessorException exception)
+            {
+                throw NewBadRequestException(exception, ExceptionMessages.ExecuteAsyncMethod_BadRequest);
+            }
+        }
+
+        protected abstract Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore();
+
+        protected abstract BadRequestException NewBadRequestException(InternalProcessorException exception, string message);
+
+        protected abstract InternalServerErrorException NewInternalServerErrorException(InternalProcessorException exception, string message);
+
+        protected abstract InternalServerErrorException NewInternalServerErrorException(Exception exception, string message);
     }
 }
