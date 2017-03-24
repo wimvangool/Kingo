@@ -35,7 +35,7 @@ namespace Kingo.Messaging
         {
             Assert.AreSame(MessageHandlerType, messageHandlerType, $"Expected invocation of handler '{MessageHandlerType.FriendlyName()}' but was '{messageHandlerType.FriendlyName()}'.");            
 
-            return AsyncMethod.RunSynchronously(() => _implementation?.Invoke(message, context));
+            return AsyncMethod.RunSynchronously(() => _implementation?.Invoke(message, context), context.Token);
         }
     }
 }

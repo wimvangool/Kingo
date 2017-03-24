@@ -56,7 +56,7 @@ namespace Kingo.Messaging
                 {
                     _implementationSequence.AssertNoMoreInvocationsExpected();
                 }
-            });                       
+            }, token);                       
         }
 
         public void Add(IMicroProcessorPipeline pipeline) =>

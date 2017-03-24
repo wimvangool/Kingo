@@ -16,12 +16,14 @@ namespace Kingo.Messaging
             {
                 return await Invoke(processor, inputStream, new MessageHandlerContext(token));
             }
-            catch (ExternalProcessorException)
-            {
-                // Any ExternalProcessorExceptions were thrown by this method
-                // for a down stream message and can therefore just be rethrown here.
+            catch (OperationCanceledException)
+            {                
                 throw;
             }
+            catch (ExternalProcessorException)
+            {                
+                throw;
+            }            
             catch (ConcurrencyException exception)
             {
                 // Only commands should promote concurrency-exceptions to conflict-exceptions.
@@ -32,9 +34,7 @@ namespace Kingo.Messaging
                 throw exception.AsInternalServerErrorException(message, exception.Message);
             }
             catch (Exception exception)
-            {
-                // Any exceptions other than External- and ConcurrencyExceptions are unexpected by
-                // definition and can therefore be rethrown as InternalServerErrorExceptions immediately.
+            {                
                 throw InternalServerErrorException.FromInnerException(message, exception);
             }
         }
@@ -85,18 +85,17 @@ namespace Kingo.Messaging
             try
             {
                 await base.HandleAsyncCore(message, handler);
-            }            
-            catch (ExternalProcessorException)
+            }
+            catch (OperationCanceledException)
             {
-                // Any ExternalProcessorExceptions were thrown by this method
-                // for a down stream message and can therefore just be rethrown here.
                 throw;
             }
+            catch (ExternalProcessorException)
+            {                
+                throw;
+            }            
             catch (InternalProcessorException exception)
-            {
-                // When an InternalProcessorException is caught, it must be determined whether
-                // the current message is a Command or an Event. If it is a Command, then the cause
-                // of the exception is a bad request; if is an event, it is an internal server error.                        
+            {                                      
                 if (IsCommand(message))
                 {
                     throw NewCommandHandlerException(message, exception);
@@ -104,9 +103,7 @@ namespace Kingo.Messaging
                 throw NewEventHandlerException(message, exception);
             }
             catch (Exception exception)
-            {
-                // Any exceptions other than External- and InternalProcessorExceptions are unexpected by
-                // definition and can therefore be rethrown as InternalServerErrorExceptions immediately.
+            {                
                 throw InternalServerErrorException.FromInnerException(message, exception);
             }            
         }

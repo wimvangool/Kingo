@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -200,11 +201,11 @@ namespace Kingo.Messaging
         }
 
         [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.MetadataStream)]
-        private sealed class MetadataMessageHandlerAB : IMessageHandler<EventA>, IMessageHandler<EventB>
+        private sealed class MetadataEventHandlerAB : IMessageHandler<EventA>, IMessageHandler<EventB>
         {
             private readonly IMessageHandlerImplementation _implementation;
 
-            public MetadataMessageHandlerAB(IMessageHandlerImplementation implementation)
+            public MetadataEventHandlerAB(IMessageHandlerImplementation implementation)
             {
                 _implementation = implementation;
             }
@@ -355,7 +356,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 AssertMessageStack(context.Messages, message, someCommand, eventA);
 
@@ -384,7 +385,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 AssertMessageStack(context.Messages, message, someCommand, eventA);
 
@@ -392,7 +393,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventB);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventB>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventB>((message, context) =>
             {
                 AssertMessageStack(context.Messages, message, someCommand, eventA, eventB);
 
@@ -419,7 +420,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 AssertMessageStack(context.Messages, message, someCommand, eventA);
                 
@@ -768,7 +769,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 context.UnitOfWork.Enlist(unitOfWorkB);
 
@@ -811,7 +812,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 context.UnitOfWork.Enlist(unitOfWorkB);
 
@@ -939,7 +940,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 context.UnitOfWork.Enlist(unitOfWork);
             });
@@ -957,6 +958,201 @@ namespace Kingo.Messaging
             {
                 unitOfWork.AssertRequiresFlushCountIs(1);
                 unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideCommandHandler_Through_TokenSource()
+        {
+            using (var tokenSource = new CancellationTokenSource())            
+            {
+                var someCommand = new SomeCommand();
+
+                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                });
+                
+                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (TaskCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideCommandHandler_Through_Token()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var someCommand = new SomeCommand();
+
+                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                    context.Token.ThrowIfCancellationRequested();
+                });
+
+                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (TaskCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideEventHandler_Through_TokenSource()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var someCommand = new SomeCommand();
+                var eventA = new EventA();
+
+                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+                {
+                    context.OutputStream.Publish(eventA);
+                });
+
+                _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                });
+
+                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (TaskCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideEventHandler_Through_Token()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var someCommand = new SomeCommand();
+                var eventA = new EventA();
+
+                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+                {
+                    context.OutputStream.Publish(eventA);
+                });
+
+                _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                    context.Token.ThrowIfCancellationRequested();
+                });
+
+                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (TaskCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_TokenSource()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var someCommand = new SomeCommand();
+                var eventA = new EventA();
+
+                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                });
+
+                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                });
+
+                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (TaskCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_Token()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var someCommand = new SomeCommand();
+                var eventA = new EventA();
+
+                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                });
+
+                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                    context.Token.ThrowIfCancellationRequested();
+                });
+
+                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (TaskCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
             }
         }
 
@@ -1013,7 +1209,7 @@ namespace Kingo.Messaging
             var eventA = new EventA();
             var messageOut = new object();
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {                
                 context.UnitOfWork.Enlist(unitOfWork);
             });
@@ -1133,7 +1329,7 @@ namespace Kingo.Messaging
             var concurrencyException = new ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 context.UnitOfWork.Enlist(unitOfWork);
             });
@@ -1156,6 +1352,122 @@ namespace Kingo.Messaging
             {
                 unitOfWork.AssertRequiresFlushCountIs(1);
                 unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_1_ThrowsOperationCanceledException_IfOperationIsCanceledInsideQuery_Through_TokenSource()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {                
+                var handleTask = _processor.ExecuteAsync(context =>
+                {
+                    tokenSource.Cancel();
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_1_ThrowsOperationCanceledException_IfOperationIsCanceledInsideQuery_Through_Token()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var handleTask = _processor.ExecuteAsync(context =>
+                {
+                    tokenSource.Cancel();
+                    context.Token.ThrowIfCancellationRequested();
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_1_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_TokenSource()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {                
+                var eventA = new EventA();                
+
+                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                });
+
+                var handleTask = _processor.ExecuteAsync(context =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_1_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_Token()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var eventA = new EventA();
+
+                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                    context.Token.ThrowIfCancellationRequested();
+                });
+
+                var handleTask = _processor.ExecuteAsync(context =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
             }
         }
 
@@ -1227,7 +1539,7 @@ namespace Kingo.Messaging
             var eventA = new EventA();
             var messageOut = new object();
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 context.UnitOfWork.Enlist(unitOfWork);
             });
@@ -1355,7 +1667,7 @@ namespace Kingo.Messaging
             var concurrencyException = new ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 context.UnitOfWork.Enlist(unitOfWork);
             });
@@ -1378,6 +1690,126 @@ namespace Kingo.Messaging
             {
                 unitOfWork.AssertRequiresFlushCountIs(1);
                 unitOfWork.AssertFlushCountIs(1);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_2_ThrowsOperationCanceledException_IfOperationIsCanceledInsideQuery_Through_TokenSource()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var messageIn = new object();
+                var handleTask = _processor.ExecuteAsync(messageIn, (message, context) =>
+                {
+                    tokenSource.Cancel();
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_2_ThrowsOperationCanceledException_IfOperationIsCanceledInsideQuery_Through_Token()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {                
+                var messageIn = new object();
+                var handleTask = _processor.ExecuteAsync(messageIn, (message, context) =>
+                {
+                    tokenSource.Cancel();
+                    context.Token.ThrowIfCancellationRequested();
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_2_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_TokenSource()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var messageIn = new object();
+                var eventA = new EventA();
+
+                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                });
+
+                var handleTask = _processor.ExecuteAsync(messageIn, (message, context) =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task ExecuteAsync_2_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_Token()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                var messageIn = new object();
+                var eventA = new EventA();
+
+                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+                {
+                    tokenSource.Cancel();
+                    context.Token.ThrowIfCancellationRequested();
+                });
+
+                var handleTask = _processor.ExecuteAsync(messageIn, (message, context) =>
+                {
+                    context.MetadataStream.Publish(eventA);
+                    return new object();
+                }, tokenSource.Token);
+
+                try
+                {
+                    await handleTask;
+                }
+                catch (OperationCanceledException exception)
+                {
+                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
+                    Assert.IsTrue(handleTask.IsCanceled);
+                    throw;
+                }
             }
         }
 
@@ -1470,7 +1902,7 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataMessageHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
             {
                 AssertMessageStack(context.Messages, message, someCommand, eventA);
             });

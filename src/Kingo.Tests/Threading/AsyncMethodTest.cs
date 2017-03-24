@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -108,6 +109,34 @@ namespace Kingo.Threading
                 Assert.AreSame(exception, e);
                 throw;
             }            
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AggregateException))]
+        public void RunSunchronously_BehavesExactlyAsRunTask_IfTaskIsCanceled()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                tokenSource.Cancel();
+
+                var taskX = Task.Run(() => tokenSource.Token.ThrowIfCancellationRequested(), tokenSource.Token);
+                var taskY = AsyncMethod.RunSynchronously(() => tokenSource.Token.ThrowIfCancellationRequested(), tokenSource.Token);
+
+                try
+                {
+                    Task.WaitAll(taskX, taskY);
+                }
+                catch (AggregateException exception)
+                {
+                    Assert.AreEqual(2, exception.InnerExceptions.Count);
+                    Assert.IsInstanceOfType(exception.InnerExceptions[0], typeof(OperationCanceledException));
+                    Assert.IsInstanceOfType(exception.InnerExceptions[1], typeof(OperationCanceledException));
+
+                    Assert.IsTrue(taskX.IsCanceled);
+                    Assert.IsTrue(taskY.IsCanceled);
+                    throw;
+                }
+            }
         }
     }
 }

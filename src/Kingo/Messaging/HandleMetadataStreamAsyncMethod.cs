@@ -34,6 +34,10 @@ namespace Kingo.Messaging
                 {
                     await RunCore(metadataStream);
                 }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
                 catch (ExternalProcessorException)
                 {
                     throw;
@@ -46,7 +50,7 @@ namespace Kingo.Messaging
                 {
                     throw InternalServerErrorException.FromInnerException(message, exception);
                 }
-            });
+            }, Context.Token);
         }
 
         private async Task RunCore(IMessageStream metadataStream)

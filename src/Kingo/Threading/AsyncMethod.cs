@@ -17,38 +17,60 @@ namespace Kingo.Threading
         /// that might be thrown.
         /// </summary>        
         /// <param name="asyncFunc">The delegate to invoke.</param>
+        /// <param name="token">
+        /// If specified, this token is checked before and after <paramref name="asyncFunc"/> is executed,
+        /// and a cancelled task is returned if cancellation has been requested.
+        /// </param>
         /// <returns>A completed <see cref="Task" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="asyncFunc"/> is <c>null</c>.
         /// </exception>
-        public static Task RunSynchronously(Func<Task> asyncFunc)
+        public static Task RunSynchronously(Func<Task> asyncFunc, CancellationToken? token = null)
         {
             if (asyncFunc == null)
             {
                 throw new ArgumentNullException(nameof(asyncFunc));
             }
-            return RunSynchronously(() => asyncFunc.Invoke().Await());
+            return RunSynchronously(() => asyncFunc.Invoke().Await(), token);
         }
 
         /// <summary>
         /// Executes the specified <paramref name="action"/> synchronously and
-        /// returns a completed <see cref="Task" /> while encapsulation any exceptions
+        /// returns a completed <see cref="Task" /> while encapsulating any exceptions
         /// that might be thrown.
         /// </summary>
         /// <param name="action">The delegate to invoke.</param>
+        /// <param name="token">
+        /// If specified, this token is checked before and after <paramref name="action"/> is executed,
+        /// and a cancelled task is returned if cancellation has been requested.
+        /// </param>
         /// <returns>A completed <see cref="Task" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="action"/> is <c>null</c>.
         /// </exception>
-        public static Task RunSynchronously(Action action)
+        public static Task RunSynchronously(Action action, CancellationToken? token = null)
         {
             if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
+            Task canceledTask;
+
+            if (TryGetCanceledTask(token, out canceledTask))
+            {
+                return canceledTask;
+            }
             try
             {
                 action.Invoke();                
+            }
+            catch (OperationCanceledException exception)
+            {
+                if (TryGetCanceledTask(token, exception, out canceledTask))
+                {
+                    return canceledTask;
+                }
+                return Throw(exception);
             }
             catch (Exception exception)
             {
@@ -64,17 +86,21 @@ namespace Kingo.Threading
         /// </summary>
         /// <typeparam name="TResult">Type of the result of the delegate.</typeparam>        
         /// <param name="asyncFunc">The delegate to invoke.</param>
+        /// <param name="token">
+        /// If specified, this token is checked before and after <paramref name="asyncFunc"/> is executed,
+        /// and a cancelled task is returned if cancellation has been requested.
+        /// </param>
         /// <returns>A completed <see cref="Task" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="asyncFunc"/> is <c>null</c>.
         /// </exception>
-        public static Task<TResult> RunSynchronously<TResult>(Func<Task<TResult>> asyncFunc)
+        public static Task<TResult> RunSynchronously<TResult>(Func<Task<TResult>> asyncFunc, CancellationToken? token = null)
         {
             if (asyncFunc == null)
             {
                 throw new ArgumentNullException(nameof(asyncFunc));
             }
-            return RunSynchronously(() => asyncFunc.Invoke().Await());
+            return RunSynchronously(() => asyncFunc.Invoke().Await(), token);
         }
 
         /// <summary>
@@ -84,25 +110,43 @@ namespace Kingo.Threading
         /// </summary>
         /// <typeparam name="TResult">Type of the result of the delegate.</typeparam>
         /// <param name="func">The delegate to invoke.</param>
+        /// <param name="token">
+        /// If specified, this token is checked before and after <paramref name="func"/> is executed,
+        /// and a cancelled task is returned if cancellation has been requested.
+        /// </param>
         /// <returns>A completed <see cref="Task{T}" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="func"/> is <c>null</c>.
         /// </exception>
-        public static Task<TResult> RunSynchronously<TResult>(Func<TResult> func)
+        public static Task<TResult> RunSynchronously<TResult>(Func<TResult> func, CancellationToken? token = null)
         {
             if (func == null)
             {
                 throw new ArgumentNullException(nameof(func));
             }
+            Task<TResult> canceledTask;
+
+            if (TryGetCanceledTask(token, out canceledTask))
+            {
+                return canceledTask;
+            }
             try
             {
                 return Value(func.Invoke());
+            }
+            catch (OperationCanceledException exception)
+            {
+                if (TryGetCanceledTask(token, exception, out canceledTask))
+                {
+                    return canceledTask;
+                }
+                return Throw<TResult>(exception);
             }
             catch (Exception exception)
             {
                 return Throw<TResult>(exception);
             }           
-        }
+        }        
 
         #endregion
 
@@ -123,6 +167,54 @@ namespace Kingo.Threading
         /// <returns>A completed <see cref="Task{T}" />.</returns>
         public static Task<TResult> Value<TResult>(TResult returnValue) =>
             Task.FromResult(returnValue);
+
+        #endregion
+
+        #region [====== Cancellation ======]
+
+        private static bool TryGetCanceledTask(CancellationToken? token, OperationCanceledException exception, out Task canceledTask)
+        {
+            if (token.HasValue && token.Value.IsCancellationRequested && token.Value.Equals(exception.CancellationToken))
+            {
+                canceledTask = Task.FromCanceled(token.Value);
+                return true;
+            }
+            canceledTask = null;
+            return false;
+        }
+
+        private static bool TryGetCanceledTask<TResult>(CancellationToken? token, OperationCanceledException exception, out Task<TResult> canceledTask)
+        {
+            if (token.HasValue && token.Value.IsCancellationRequested && token.Value.Equals(exception.CancellationToken))
+            {
+                canceledTask = Task.FromCanceled<TResult>(token.Value);
+                return true;
+            }
+            canceledTask = null;
+            return false;
+        }
+
+        private static bool TryGetCanceledTask(CancellationToken? token, out Task canceledTask)
+        {
+            if (token.HasValue && token.Value.IsCancellationRequested)
+            {
+                canceledTask = Task.FromCanceled(token.Value);
+                return true;
+            }
+            canceledTask = null;
+            return false;
+        }
+
+        private static bool TryGetCanceledTask<TResult>(CancellationToken? token, out Task<TResult> canceledTask)
+        {
+            if (token.HasValue && token.Value.IsCancellationRequested)
+            {
+                canceledTask = Task.FromCanceled<TResult>(token.Value);
+                return true;
+            }
+            canceledTask = null;
+            return false;
+        }       
 
         #endregion
 

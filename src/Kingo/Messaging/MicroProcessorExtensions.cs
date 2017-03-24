@@ -98,6 +98,20 @@ namespace Kingo.Messaging
         #region [====== Commands & Events (Async) ======]  
 
         /// <summary>
+        /// Processes the specified message asynchronously by invoking all handlers that are registered for the specified <typeparamref name="TMessage"/>.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message.</typeparam>
+        /// <param name="processor">A processor.</param>
+        /// <param name="message">Message to handle.</param>        
+        /// <param name="token">Optional token that can be used to cancel the operation.</param> 
+        /// <returns>A stream of events that represents all changes made by this processor.</returns>  
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>                                               
+        public static Task<IMessageStream> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, CancellationToken token) =>
+            processor.HandleStreamAsync(new MessageStream<TMessage>(message), token);
+
+        /// <summary>
         /// Processes the specified message asynchronously. If <paramref name="handler"/> is not <c>null</c>, this handler will be invoked
         /// instead of any registered handlers.
         /// </summary>

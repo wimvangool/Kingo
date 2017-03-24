@@ -15,6 +15,10 @@ namespace Kingo.Messaging
             {
                 return await InvokeCore();
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (ExternalProcessorException)
             {
                 throw;
@@ -51,6 +55,8 @@ namespace Kingo.Messaging
 
         private async Task<ExecuteAsyncResult<TMessageOut>> InvokeQuery()
         {
+            Context.Token.ThrowIfCancellationRequested();
+
             try
             {
                 return await InvokeQueryCore();
@@ -58,6 +64,10 @@ namespace Kingo.Messaging
             catch (InternalProcessorException exception)
             {
                 throw NewBadRequestException(exception, ExceptionMessages.ExecuteAsyncMethod_BadRequest);
+            }
+            finally
+            {
+                Context.Token.ThrowIfCancellationRequested();
             }
         }
 
