@@ -78,14 +78,6 @@
     <Compile Include="Messaging\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.MessageProcessor.Tests\01.Kingo.MessageProcessor.Tests.csproj">
-      <Project>{303380db-4167-4bb0-8b78-63c959b65c4b}</Project>
-      <Name>01.Kingo.MessageProcessor.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kingo.MessageProcessor\02.Kingo.MessageProcessor.csproj">
-      <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>02.Kingo.MessageProcessor</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj">
       <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>
       <Name>02.Kingo.TestEngine</Name>

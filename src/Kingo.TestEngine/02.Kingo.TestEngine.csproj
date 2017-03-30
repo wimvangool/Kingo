@@ -89,11 +89,6 @@
     <Compile Include="TestSuiteCoverage.T1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.MessageProcessor\02.Kingo.MessageProcessor.csproj">
-      <Project>{757d77d3-7b32-4f21-9617-88274d50b517}</Project>
-      <Name>02.Kingo.MessageProcessor</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>02.Kingo</Name>
