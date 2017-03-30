@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{07267396-60FD-4EB9-9F23-D787AF91A0F4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kingo</RootNamespace>
+    <AssemblyName>Kingo.Constraints.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.solution.cs">
+      <Link>Properties\AssemblyInfo.solution.cs</Link>
+    </Compile>
+    <Compile Include="Messaging\Validation\AndConstraintTest.cs" />
+    <Compile Include="Messaging\Validation\AndConstraintTestOne.cs" />
+    <Compile Include="Messaging\Validation\AndConstraintTestTwo.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.And.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.Expressions.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.IsEqualTo.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.IsGreaterThan.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.IsInRange.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.IsInstanceOf.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.IsNull.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.IsSameInstanceAs.cs" />
+    <Compile Include="Messaging\Validation\BasicConstraintsTest.IsSmallerThan.cs" />
+    <Compile Include="Messaging\Validation\BooleanConstraintsTest.cs" />
+    <Compile Include="Messaging\Validation\CollectionConstraintsTest.cs" />
+    <Compile Include="Messaging\Validation\CollectionConstraintsTest.HasItem.cs" />
+    <Compile Include="Messaging\Validation\CollectionConstraintsTest.IsNullOrEmpty.cs" />
+    <Compile Include="Messaging\Validation\ComparerStub.T1.cs" />
+    <Compile Include="Messaging\Validation\CompositeConstraintTest.cs" />
+    <Compile Include="Messaging\Validation\ConstraintInverterTest.cs" />
+    <Compile Include="Messaging\Validation\ConstraintTest.cs" />
+    <Compile Include="Messaging\Validation\ConstraintTestBase.cs" />
+    <Compile Include="Messaging\Validation\ConstraintValidatorExtensions.cs" />
+    <Compile Include="Messaging\Validation\DelegateConstraintTest.cs" />
+    <Compile Include="Messaging\Validation\EnumConstraintsTest.cs" />
+    <Compile Include="Messaging\Validation\EqualityComparerStub.T1.cs" />
+    <Compile Include="Messaging\Validation\ErrorInfoExtensions.cs" />
+    <Compile Include="Messaging\Validation\GuidConstraintsTest.cs" />
+    <Compile Include="Messaging\Validation\NullableConstraintsTest.cs" />
+    <Compile Include="Messaging\Validation\OrConstraintTest.cs" />
+    <Compile Include="Messaging\Validation\RangeTest.cs" />
+    <Compile Include="Messaging\Validation\RequiredValueMessage.T1.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.Contains.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.EndsWith.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.IsEqualTo.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.IsIdentifier.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.IsNullOrEmpty.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.IsNullOrWhiteSpace.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.IsNumber.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.Matches.cs" />
+    <Compile Include="Messaging\Validation\StringConstraintsTest.StartsWith.cs" />
+    <Compile Include="Messaging\Validation\StringTemplateTest.cs" />
+    <Compile Include="Messaging\Validation\ValidatedMessage.T1.cs" />
+    <Compile Include="Properties\AssemblyInfo.project.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kingo.Constraints\02.Kingo.Constraints.csproj">
+      <Project>{6a3b9cda-3fe1-4967-99fa-03f98687693a}</Project>
+      <Name>02.Kingo.Constraints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kingo.Tests\01.Kingo.Tests.csproj">
+      <Project>{9697eaca-8e8f-451b-ae46-cf081559e0ed}</Project>
+      <Name>01.Kingo.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kingo\02.Kingo.csproj">
+      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
+      <Name>02.Kingo</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Kingo.snk">
+      <Link>Properties\Kingo.snk</Link>
+    </None>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -120,12 +120,6 @@
   <data name="Comparable_IncomparableType" xml:space="preserve">
     <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'.</value>
   </data>
-  <data name="Constraint_WithErrorMessageNotSupported" xml:space="preserve">
-    <value>WithErrorMessage is not supported by constraint '{0}'.</value>
-  </data>
-  <data name="Constraint_WithNameNotSupported" xml:space="preserve">
-    <value>WithName is not supported by constraint '{0}'.</value>
-  </data>
   <data name="Context_IllegalScopeStarted" xml:space="preserve">
     <value>Cannot start this scope because a more restrive scope is still active.</value>
   </data>
@@ -135,9 +129,6 @@
   <data name="DomainModelException_EventFailed" xml:space="preserve">
     <value>An error occurred while processing event '{0}'.</value>
   </data>
-  <data name="EnumIsInRangeOfValidValues_UnsupportedValue" xml:space="preserve">
-    <value>Instance '{0}' of type '{1}' is not supported because it is not an Enum type.</value>
-  </data>
   <data name="ErrorLevel_InvalidErrorLevel" xml:space="preserve">
     <value>ErrorLevel must be 0 or higher: {0}.</value>
   </data>
@@ -146,9 +137,6 @@
   </data>
   <data name="ExecuteAsyncMethod_InternalServerError" xml:space="preserve">
     <value>An error occurred while executing the query. See inner exception for details.</value>
-  </data>
-  <data name="ExpressionBuilder_ExpressionNotSupported" xml:space="preserve">
-    <value>The specified node or expression is not supported inside a member expression: '{0}'.</value>
   </data>
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
@@ -161,12 +149,6 @@
   </data>
   <data name="HandleStreamAsyncMethod_EventHandlerException" xml:space="preserve">
     <value>An error occurred while processing event of type '{0}'. See inner exception for details.</value>
-  </data>
-  <data name="HasItemFilter_IndexerNotFound" xml:space="preserve">
-    <value>Instance of type '{0}' does not contain an indexer with argument types '[{1}]'.</value>
-  </data>
-  <data name="HasItemFilter_InvalidArrayIndexValues" xml:space="preserve">
-    <value>The specified values are not valid to index an array: {0}.</value>
   </data>
   <data name="Identifier_EmptyIdentifier" xml:space="preserve">
     <value>Cannot create an empty identifier.</value>
@@ -207,9 +189,6 @@
   <data name="QueryContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while executing a query.</value>
   </data>
-  <data name="Range_InvalidRange" xml:space="preserve">
-    <value>The specified range is not valid: {0}.</value>
-  </data>
   <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
@@ -221,18 +200,6 @@
   </data>
   <data name="Scope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
-  </data>
-  <data name="StringTemplateVariable_MemberNotFound" xml:space="preserve">
-    <value>Instance of type '{0}' does not contain public field or property '{1}'.</value>
-  </data>
-  <data name="StringTemplate_MissingClosingBrace" xml:space="preserve">
-    <value>Invalid format string specified: '{0}'. Missing closing brace of variable at index {1}.</value>
-  </data>
-  <data name="StringTemplate_MissingIdentifier" xml:space="preserve">
-    <value>Invalid format string specified: '{0}'. Missing identifier at index {1}.</value>
-  </data>
-  <data name="StringTemplate_UnexpectedCharacter" xml:space="preserve">
-    <value>Invalid format string specified: '{0}'. Unexpected character '{1}' at index {2}.</value>
   </data>
   <data name="TypeAttributeProvider_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Cannot obtain single attribute of type '{0}' declared on type '{1}' because multiple attributes are of type '{0}'.</value>

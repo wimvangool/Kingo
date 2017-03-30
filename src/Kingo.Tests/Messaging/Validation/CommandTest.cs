@@ -1,5 +1,4 @@
 ﻿using Kingo.Clocks;
-using Kingo.Messaging.Validation.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging.Validation
@@ -29,9 +28,16 @@ namespace Kingo.Messaging.Validation
 
             private static IMessageValidator<CommandUnderTest> CreateValidator()
             {
-                var validator = new ConstraintMessageValidator<CommandUnderTest>();
-                validator.VerifyThat(m => m.Value).IsGreaterThanOrEqualTo(0);
-                return validator;
+                return new DelegateValidator<CommandUnderTest>((message, haltOnFirstError) =>
+                {
+                    var errorInfoBuilder = new ErrorInfoBuilder();
+
+                    if (message.Value < 0)
+                    {
+                        errorInfoBuilder.Add("Error.", nameof(message.Value));
+                    }
+                    return errorInfoBuilder.BuildErrorInfo();
+                });
             }
         }
 
@@ -132,8 +138,8 @@ namespace Kingo.Messaging.Validation
             var command = new CommandUnderTest(-1);
 
             Assert.IsNotNull(command.ErrorInfo);
-            Assert.AreEqual(2, command.ErrorInfo.ErrorCount);
-            Assert.AreEqual("Value (-1) must be greater than or equal to '0'.", command.ErrorInfo.MemberErrors["Value"]);
+            Assert.AreEqual(1, command.ErrorInfo.ErrorCount);
+            Assert.AreEqual("Error.", command.ErrorInfo.MemberErrors["Value"]);
         }
 
         [TestMethod]
@@ -155,8 +161,8 @@ namespace Kingo.Messaging.Validation
             command.Value = -1;
 
             Assert.IsNotNull(command.ErrorInfo);
-            Assert.AreEqual(2, command.ErrorInfo.ErrorCount);
-            Assert.AreEqual("Value (-1) must be greater than or equal to '0'.", command.ErrorInfo.MemberErrors["Value"]);
+            Assert.AreEqual(1, command.ErrorInfo.ErrorCount);
+            Assert.AreEqual("Error.", command.ErrorInfo.MemberErrors["Value"]);
         }
 
         #endregion

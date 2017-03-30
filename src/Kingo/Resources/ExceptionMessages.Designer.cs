@@ -70,24 +70,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to WithErrorMessage is not supported by constraint &apos;{0}&apos;..
-        /// </summary>
-        internal static string Constraint_WithErrorMessageNotSupported {
-            get {
-                return ResourceManager.GetString("Constraint_WithErrorMessageNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to WithName is not supported by constraint &apos;{0}&apos;..
-        /// </summary>
-        internal static string Constraint_WithNameNotSupported {
-            get {
-                return ResourceManager.GetString("Constraint_WithNameNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot start this scope because a more restrive scope is still active..
         /// </summary>
         internal static string Context_IllegalScopeStarted {
@@ -115,15 +97,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance &apos;{0}&apos; of type &apos;{1}&apos; is not supported because it is not an Enum type..
-        /// </summary>
-        internal static string EnumIsInRangeOfValidValues_UnsupportedValue {
-            get {
-                return ResourceManager.GetString("EnumIsInRangeOfValidValues_UnsupportedValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ErrorLevel must be 0 or higher: {0}..
         /// </summary>
         internal static string ErrorLevel_InvalidErrorLevel {
@@ -147,15 +120,6 @@ namespace Kingo.Resources {
         internal static string ExecuteAsyncMethod_InternalServerError {
             get {
                 return ResourceManager.GetString("ExecuteAsyncMethod_InternalServerError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified node or expression is not supported inside a member expression: &apos;{0}&apos;..
-        /// </summary>
-        internal static string ExpressionBuilder_ExpressionNotSupported {
-            get {
-                return ResourceManager.GetString("ExpressionBuilder_ExpressionNotSupported", resourceCulture);
             }
         }
         
@@ -192,24 +156,6 @@ namespace Kingo.Resources {
         internal static string HandleStreamAsyncMethod_EventHandlerException {
             get {
                 return ResourceManager.GetString("HandleStreamAsyncMethod_EventHandlerException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; does not contain an indexer with argument types &apos;[{1}]&apos;..
-        /// </summary>
-        internal static string HasItemFilter_IndexerNotFound {
-            get {
-                return ResourceManager.GetString("HasItemFilter_IndexerNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified values are not valid to index an array: {0}..
-        /// </summary>
-        internal static string HasItemFilter_InvalidArrayIndexValues {
-            get {
-                return ResourceManager.GetString("HasItemFilter_InvalidArrayIndexValues", resourceCulture);
             }
         }
         
@@ -331,15 +277,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified range is not valid: {0}..
-        /// </summary>
-        internal static string Range_InvalidRange {
-            get {
-                return ResourceManager.GetString("Range_InvalidRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
         internal static string ReadOnlyList_IndexOutOfRange {
@@ -372,42 +309,6 @@ namespace Kingo.Resources {
         internal static string Scope_ScopeAlreadyCompleted {
             get {
                 return ResourceManager.GetString("Scope_ScopeAlreadyCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid format string specified: &apos;{0}&apos;. Missing closing brace of variable at index {1}..
-        /// </summary>
-        internal static string StringTemplate_MissingClosingBrace {
-            get {
-                return ResourceManager.GetString("StringTemplate_MissingClosingBrace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid format string specified: &apos;{0}&apos;. Missing identifier at index {1}..
-        /// </summary>
-        internal static string StringTemplate_MissingIdentifier {
-            get {
-                return ResourceManager.GetString("StringTemplate_MissingIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid format string specified: &apos;{0}&apos;. Unexpected character &apos;{1}&apos; at index {2}..
-        /// </summary>
-        internal static string StringTemplate_UnexpectedCharacter {
-            get {
-                return ResourceManager.GetString("StringTemplate_UnexpectedCharacter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; does not contain public field or property &apos;{1}&apos;..
-        /// </summary>
-        internal static string StringTemplateVariable_MemberNotFound {
-            get {
-                return ResourceManager.GetString("StringTemplateVariable_MemberNotFound", resourceCulture);
             }
         }
         

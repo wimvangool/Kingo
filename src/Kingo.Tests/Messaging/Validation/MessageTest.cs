@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Kingo.Messaging.Validation.Constraints;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging.Validation
@@ -37,12 +36,27 @@ namespace Kingo.Messaging.Validation
 
             private static IMessageValidator<MessageWithPrimitiveMembers> CreateValidator()
             {
-                var validator = new ConstraintMessageValidator<MessageWithPrimitiveMembers>();
+                return new DelegateValidator<MessageWithPrimitiveMembers>((message, haltOnFirstError) =>
+                {
+                    const string errorMessage = "Error.";
 
-                validator.VerifyThat(m => m.IntValue).IsGreaterThan(0);
-                validator.VerifyThat(m => m.IntValues).IsNotNullOrEmpty();
+                    var errorInfoBuilder = new ErrorInfoBuilder();
 
-                return validator;
+                    if (message.IntValue <= 0)
+                    {
+                        errorInfoBuilder.Add(errorMessage, nameof(message.IntValue));
+
+                        if (haltOnFirstError)
+                        {
+                            return errorInfoBuilder.BuildErrorInfo();
+                        }
+                    }
+                    if (message.IntValues == null || message.IntValues.Count == 0)
+                    {
+                        errorInfoBuilder.Add(errorMessage, nameof(message.IntValues));
+                    }
+                    return errorInfoBuilder.BuildErrorInfo();
+                });                
             }
         }
 
@@ -86,8 +100,8 @@ namespace Kingo.Messaging.Validation
             Assert.IsNotNull(errorInfo);
             Assert.IsTrue(errorInfo.HasErrors);            
             Assert.AreEqual(2, errorInfo.MemberErrors.Count);
-            Assert.AreEqual("IntValue (0) must be greater than '0'.", errorInfo.MemberErrors["IntValue"]);
-            Assert.AreEqual("IntValues must not be null and contain at least one element.", errorInfo.MemberErrors["IntValues"]);
+            Assert.AreEqual("Error.", errorInfo.MemberErrors["IntValue"]);
+            Assert.AreEqual("Error.", errorInfo.MemberErrors["IntValues"]);
         }
 
         #endregion        
