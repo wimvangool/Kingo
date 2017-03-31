@@ -61,6 +61,51 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not convert event of type &apos;{0}&apos; to an instance of type &apos;{1}&apos;. Please review the {2}() method of this event to ensure it returns the correct event type..
+        /// </summary>
+        internal static string AggregateRoot_EventConversionException {
+            get {
+                return ResourceManager.GetString("AggregateRoot_EventConversionException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another handler for event of type &apos;{0}&apos; has already been added to this collection..
+        /// </summary>
+        internal static string AggregateRoot_HandlerForEventTypeAlreadyAdded {
+            get {
+                return ResourceManager.GetString("AggregateRoot_HandlerForEventTypeAlreadyAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id &apos;{0}&apos; on event &apos;{1}&apos; does not match the identifier of the aggregate it is being applied to ({2})..
+        /// </summary>
+        internal static string AggregateRoot_InvalidIdOnEvent {
+            get {
+                return ResourceManager.GetString("AggregateRoot_InvalidIdOnEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing event handler for event of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string AggregateRoot_MissingEventHandlerException {
+            get {
+                return ResourceManager.GetString("AggregateRoot_MissingEventHandlerException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The next version ({0}) must represent a newer version than the current version ({1})..
+        /// </summary>
+        internal static string AggregateRoot_VersionUpdateException {
+            get {
+                return ResourceManager.GetString("AggregateRoot_VersionUpdateException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
         /// </summary>
         internal static string Comparable_IncomparableType {

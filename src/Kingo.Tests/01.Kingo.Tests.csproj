@@ -72,6 +72,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="ComparableTest.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootTest.cs" />
     <Compile Include="Messaging\IMessageHandlerImplementation.cs" />
     <Compile Include="Messaging\MessageHandlerConnectorTest.cs" />
     <Compile Include="Messaging\MessageHandlerImplementation.T1.cs" />

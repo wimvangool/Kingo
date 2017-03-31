@@ -81,7 +81,9 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="sender"/> or <paramref name="e"/> is <c>null</c>.
         /// </exception>
-        public static void Raise<TEventArgs>(this Delegate handlers, object sender, TEventArgs e) where TEventArgs : EventArgs
+        public static void Raise<TDelegate, TEventArgs>(this TDelegate handlers, object sender, TEventArgs e)
+            where TDelegate : class
+            where TEventArgs : EventArgs
         {
             if (sender == null)
             {
@@ -91,9 +93,10 @@ namespace Kingo
             {
                 throw new ArgumentNullException(nameof(e));
             }
-            if (handlers != null)
+            var delegates = handlers as Delegate;
+            if (delegates != null)
             {
-                handlers.DynamicInvoke(sender, e);
+                delegates.DynamicInvoke(sender, e);
             }
         }
 
