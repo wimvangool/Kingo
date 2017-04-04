@@ -14,7 +14,7 @@ namespace Kingo.Messaging
             Append(message, MessageHandler<TMessage>.FromDelegate(handler));
 
         public IMessageStream Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null) =>
-            AppendStream(new MessageStream<TMessage>(message, handler));
+            AppendStream(MessageStream.CreateStream(message, handler));
 
         public abstract IMessageStream AppendStream(IMessageStream stream);
 

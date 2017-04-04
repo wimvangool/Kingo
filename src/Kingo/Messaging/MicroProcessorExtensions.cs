@@ -32,7 +32,7 @@ namespace Kingo.Messaging
         /// internal server error occurred.
         /// </exception>                                     
         public static IMessageStream Handle<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, IMicroProcessorContext> handler) =>
-            processor.HandleStream(new MessageStream<TMessage>(message, handler));
+            processor.HandleStream(MessageStream.CreateStream(message, handler));
 
         /// <summary>
         /// Processes the specified message. If <paramref name="handler"/> is not <c>null</c>, this handler will be invoked
@@ -54,7 +54,7 @@ namespace Kingo.Messaging
         /// internal server error occurred.
         /// </exception>                                    
         public static IMessageStream Handle<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, IMicroProcessorContext, Task<IMessageStream>> handler) =>
-            processor.HandleStream(new MessageStream<TMessage>(message, handler));
+            processor.HandleStream(MessageStream.CreateStream(message, handler));
 
         /// <summary>
         /// Processes the specified message.
@@ -109,7 +109,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>                                               
         public static Task<IMessageStream> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, CancellationToken token) =>
-            processor.HandleStreamAsync(new MessageStream<TMessage>(message), token);
+            processor.HandleStreamAsync(MessageStream.CreateStream(message), token);
 
         /// <summary>
         /// Processes the specified message asynchronously. If <paramref name="handler"/> is not <c>null</c>, this handler will be invoked
@@ -128,7 +128,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>                                               
         public static Task<IMessageStream> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, IMicroProcessorContext> handler, CancellationToken? token = null) =>
-            processor.HandleStreamAsync(new MessageStream<TMessage>(message, handler), token);
+            processor.HandleStreamAsync(MessageStream.CreateStream(message, handler), token);
 
         /// <summary>
         /// Processes the specified message asynchronously. If <paramref name="handler"/> is not <c>null</c>, this handler will be invoked
@@ -147,7 +147,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>                                            
         public static Task<IMessageStream> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, IMicroProcessorContext, Task> handler, CancellationToken? token = null) =>
-            processor.HandleStreamAsync(new MessageStream<TMessage>(message, handler), token);
+            processor.HandleStreamAsync(MessageStream.CreateStream(message, handler), token);
 
         /// <summary>
         /// Processes the specified message asynchronously.
@@ -165,7 +165,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>                                               
         public static Task<IMessageStream> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null) =>
-            processor.HandleStreamAsync(new MessageStream<TMessage>(message, handler), token);
+            processor.HandleStreamAsync(MessageStream.CreateStream(message, handler), token);
 
         #endregion
 

@@ -14,6 +14,6 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="stream"/> is <c>null</c>.
         /// </exception>
-        public abstract void PublishEvent(IEventStream stream);
+        public abstract IEvent WriteEventTo(IEventStream stream);
     }
 }

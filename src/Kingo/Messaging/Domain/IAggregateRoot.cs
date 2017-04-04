@@ -38,9 +38,9 @@ namespace Kingo.Messaging.Domain
         event EventHandler<EventPublishedEventArgs> EventPublished;
 
         /// <summary>
-        /// Indicates whether or not this aggregate has published any events and, as a result, has been updated.
+        /// Indicates whether or not this aggregate has published any events that haven't been flushed yet.
         /// </summary>
-        bool HasPublishedEvents
+        bool HasPendingEvents
         {
             get;
         }

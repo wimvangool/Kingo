@@ -21,12 +21,19 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
-        /// <param name="id">The identifier of this aggregate.</param>
-        /// <param name="version">The version of this aggregate.</param>
-        protected AggregateRoot(TKey id, TVersion? version = null)
+        /// <param name="event">The event that defines the creation of this aggregate.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="event" /> is <c>null</c>.
+        /// </exception>
+        protected AggregateRoot(IEvent<TKey, TVersion> @event)
         {
-            _id = id;
-            _version = version ?? default(TVersion);
+            if (@event == null)
+            {
+                throw new ArgumentNullException(nameof(@event));
+            }
+            _id = @event.Id;
+            _version = @event.Version;
+            _pendingEvents = new List<IEvent>() { @event };
         }
 
         /// <summary>
@@ -44,14 +51,15 @@ namespace Kingo.Messaging.Domain
             }
             _id = snapshot.Id;
             _version = snapshot.Version;
+            _pendingEvents = new List<IEvent>();
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{GetType().FriendlyName()} [Id = {Id}, Version = {Version}, {PublishedEventCount} pending event(s)]";
+            $"{GetType().FriendlyName()} [Id = {Id}, Version = {Version}, Events = {PublishedEventCount}]";
 
         private int PublishedEventCount =>
-            _publishedEvents?.Count ?? 0;
+            _pendingEvents?.Count ?? 0;
 
         #region [====== Id & Version ======]
 
@@ -297,19 +305,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Publish & FlushEvents ======]
 
-        private LinkedList<IEvent> _publishedEvents;
-
-        private LinkedList<IEvent> PublishedEvents
-        {
-            get
-            {
-                if (_publishedEvents == null)
-                {
-                    _publishedEvents = new LinkedList<IEvent>();
-                }
-                return _publishedEvents;
-            }
-        }
+        private List<IEvent> _pendingEvents;      
 
         /// <summary>
         /// Publishes the specified <paramref name="event"/> and updates the version of this aggregate.
@@ -351,33 +347,27 @@ namespace Kingo.Messaging.Domain
         /// <param name="e">Argument of the </param>
         protected virtual void OnEventPublished<TEvent>(EventPublishedEventArgs<TEvent> e) where TEvent : IEvent<TKey, TVersion>
         {
-            EventHandlers.Apply(e.Event);
-            PublishedEvents.AddLast(e.Event);            
+            EventHandlers.Apply(e.Event);                       
             EventPublished.Raise(this, e);
+
+            if (e.HasBeenPublished)
+            {
+                return;
+            }
+            _pendingEvents.Add(e.Event);
         }
 
-        bool IAggregateRoot.HasPublishedEvents =>
+        bool IAggregateRoot.HasPendingEvents =>
             HasPublishedEvents;
 
         protected bool HasPublishedEvents =>
-            _publishedEvents != null && _publishedEvents.Count > 0;
+            _pendingEvents.Count > 0;
 
         IEnumerable<IEvent> IAggregateRoot.FlushEvents() =>
             FlushEvents();
 
-        protected virtual IEnumerable<IEvent> FlushEvents()
-        {
-            LinkedList<IEvent> events;
-
-            if (TryFlushEvents(out events))
-            {
-                return events;
-            }
-            return Enumerable.Empty<IEvent>();            
-        }
-            
-        private bool TryFlushEvents(out LinkedList<IEvent> events) =>
-            (events = Interlocked.Exchange(ref _publishedEvents, null)) != null && events.Count > 0;
+        protected virtual IEnumerable<IEvent> FlushEvents() =>
+            Interlocked.Exchange(ref _pendingEvents, new List<IEvent>());
 
         #endregion
     }

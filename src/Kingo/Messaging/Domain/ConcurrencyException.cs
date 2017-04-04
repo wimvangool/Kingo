@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace Kingo.Messaging
+namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// This exception is thrown by a <see cref="IUnitOfWork" /> when a concurrency conflict has occurred
@@ -26,9 +26,9 @@ namespace Kingo.Messaging
         /// Initializes a new instance of the <see cref="ConcurrencyException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
-        /// <param name="inner">Cause of this exception.</param>
-        public ConcurrencyException(string message, Exception inner)
-            : base(message, inner) { }
+        /// <param name="innerException">Cause of this exception.</param>
+        public ConcurrencyException(string message, Exception innerException)
+            : base(message, innerException) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcurrencyException" /> class.

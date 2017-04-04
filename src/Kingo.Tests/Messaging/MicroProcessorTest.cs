@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Messaging.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -1883,7 +1884,7 @@ namespace Kingo.Messaging
                 AssertMessageStack(context.Messages, message, someCommand, eventB);
             });
 
-            _processor.Add(new ReplaceOutstreamPipeline(new MessageStream<EventB>(eventB), MessageSources.InputStream));
+            _processor.Add(new ReplaceOutstreamPipeline(MessageStream.CreateStream(eventB), MessageSources.InputStream));
 
             AssertStream(await _processor.HandleAsync(someCommand), eventB);
         }
@@ -1907,7 +1908,7 @@ namespace Kingo.Messaging
                 AssertMessageStack(context.Messages, message, someCommand, eventA);
             });
 
-            _processor.Add(new ReplaceOutstreamPipeline(new MessageStream<EventB>(new EventB()), MessageSources.MetadataStream));
+            _processor.Add(new ReplaceOutstreamPipeline(MessageStream.CreateStream(new EventB()), MessageSources.MetadataStream));
 
             try
             {

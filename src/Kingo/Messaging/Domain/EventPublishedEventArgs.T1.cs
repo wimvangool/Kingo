@@ -6,8 +6,8 @@ namespace Kingo.Messaging.Domain
     /// Represents the argument of the <see cref="IAggregateRoot.EventPublished" /> event.
     /// </summary>
     /// <typeparam name="TEvent">Type of the event that was published.</typeparam>
-    public sealed class EventPublishedEventArgs<TEvent> : EventPublishedEventArgs
-    {
+    public sealed class EventPublishedEventArgs<TEvent> : EventPublishedEventArgs where TEvent : IEvent
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPublishedEventArgs" /> class.
         /// </summary>
@@ -32,14 +32,25 @@ namespace Kingo.Messaging.Domain
             get;
         }
 
+        /// <summary>
+        /// Indicates whether or not the event carried by this argument has been published to an event stream.
+        /// </summary>
+        public bool HasBeenPublished
+        {
+            get;
+            private set;
+        }        
+
         /// <inheritdoc />
-        public override void PublishEvent(IEventStream stream)
+        public override IEvent WriteEventTo(IEventStream stream)
         {
             if (stream == null)
             {
                 throw new ArgumentNullException(nameof(stream));
             }
             stream.Publish(Event);
+            HasBeenPublished = true;
+            return Event;
         }
     }
 }

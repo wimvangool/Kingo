@@ -11,14 +11,7 @@ namespace Kingo.Messaging
 
         private sealed class SomeMessage { }
 
-        #endregion
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Constructor_Throws_IfMessageIsNull()
-        {
-            CreateStream(null, null);
-        }
+        #endregion        
 
         #region [====== IReadOnlyList<object> ======]        
 
@@ -108,14 +101,10 @@ namespace Kingo.Messaging
 
         #endregion
 
-        private static IMessageStream CreateStream()
-        {
-            return CreateStream(new SomeMessage(), null);
-        }
+        private static IMessageStream CreateStream() =>
+            CreateStream(new SomeMessage(), null);
 
-        private static IMessageStream CreateStream(SomeMessage message, IMessageHandler<SomeMessage> handler)
-        {
-            return new MessageStream<SomeMessage>(message, handler);
-        }
+        private static IMessageStream CreateStream(SomeMessage message, IMessageHandler<SomeMessage> handler) =>
+            MessageStream.CreateStream(message, handler);
     }
 }

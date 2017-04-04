@@ -56,7 +56,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void AppendStream_ReturnsStream_IfStreamIsNotNull()
         {
-            var stream = new MessageStream<SomeMessage>(new SomeMessage());
+            var stream = MessageStream.CreateStream(new SomeMessage());
 
             Assert.AreSame(stream, MessageStream.Empty.AppendStream(stream));
         }

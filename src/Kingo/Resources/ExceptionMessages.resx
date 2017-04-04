@@ -207,6 +207,12 @@
   <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
+  <data name="Repository_AggregateNotFound" xml:space="preserve">
+    <value>Instance of type '{0}' with Id '{1}' was not found.</value>
+  </data>
+  <data name="Repository_AggregateRestoreException" xml:space="preserve">
+    <value>An error occurred while restoring aggregate of type '{0}'. See inner exception for details.</value>
+  </data>
   <data name="Scope_CannotCompleteScope" xml:space="preserve">
     <value>Cannot complete this scope because it is not the current scope.</value>
   </data>

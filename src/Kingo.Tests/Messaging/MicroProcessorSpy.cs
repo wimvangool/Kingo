@@ -11,13 +11,15 @@ namespace Kingo.Messaging
         private readonly MessageHandlerImplementationSequence _implementationSequence;
         private readonly List<Type> _messageHandlers;
         private readonly List<IMicroProcessorPipeline> _pipeline;
+        private readonly Dictionary<Type, object> _singletonDependencies;
 
         public MicroProcessorSpy()
         {
             _implementationSequence = new MessageHandlerImplementationSequence();
             _messageHandlers = new List<Type>();
             _pipeline = new List<IMicroProcessorPipeline>();
-        }
+            _singletonDependencies = new Dictionary<Type, object>();
+        }       
 
         public void Register<TMessageHandler>() =>
             _messageHandlers.Add(typeof(TMessageHandler));
@@ -33,8 +35,13 @@ namespace Kingo.Messaging
 
         protected override MessageHandlerFactory CreateMessageHandlerFactory()
         {
-            return base.CreateMessageHandlerFactory()         
-                .RegisterSingleton<IMessageHandlerImplementation>(_implementationSequence);            
+            var factory = base.CreateMessageHandlerFactory();
+                
+            foreach (var dependency in _singletonDependencies)
+            {
+                factory = factory.RegisterSingleton(dependency.Key, dependency.Value);
+            }
+            return factory.RegisterSingleton<IMessageHandlerImplementation>(_implementationSequence);
         }
 
         protected override TypeSet CreateMessageHandlerTypeSet(TypeSet typeSet) =>

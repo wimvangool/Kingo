@@ -72,12 +72,23 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="ComparableTest.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootSpy.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootSpyCreatedEvent.cs" />
     <Compile Include="Messaging\Domain\AggregateRootTest.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootWithEventHandlers.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootWithoutEventHandlers.cs" />
+    <Compile Include="Messaging\Domain\MemoryRepositorySpy.T2.cs" />
+    <Compile Include="Messaging\Domain\OldValueChangedEvent.cs" />
+    <Compile Include="Messaging\Domain\RepositoryTest.cs" />
+    <Compile Include="Messaging\Domain\SnapshotMock.cs" />
+    <Compile Include="Messaging\Domain\UnsupportedEvent.cs" />
+    <Compile Include="Messaging\Domain\ValueChangedEvent.cs" />
     <Compile Include="Messaging\IMessageHandlerImplementation.cs" />
     <Compile Include="Messaging\MessageHandlerConnectorTest.cs" />
     <Compile Include="Messaging\MessageHandlerImplementation.T1.cs" />
     <Compile Include="Messaging\MessageHandlerImplementationSequence.cs" />
     <Compile Include="Messaging\MessageHandlerSpy.T1.cs" />
+    <Compile Include="Messaging\MicroProcessorContextSpy.cs" />
     <Compile Include="Messaging\MicroProcessorPipelineSpy.cs" />
     <Compile Include="Messaging\MicroProcessorSpy.cs" />
     <Compile Include="Messaging\MicroProcessorTest.cs" />

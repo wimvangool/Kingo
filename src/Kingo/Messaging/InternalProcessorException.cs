@@ -28,9 +28,9 @@ namespace Kingo.Messaging
         /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
-        /// <param name="inner">Cause of this exception.</param>
-        protected InternalProcessorException(string message, Exception inner)
-            : base(message, inner) { }
+        /// <param name="innerException">Cause of this exception.</param>
+        protected InternalProcessorException(string message, Exception innerException)
+            : base(message, innerException) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.

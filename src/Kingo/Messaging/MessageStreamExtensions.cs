@@ -16,9 +16,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="streams"/> is <c>null</c>.
         /// </exception>
-        public static IMessageStream Join(this IEnumerable<IMessageStream> streams)
-        {
-            return MessageStream.Concat(streams);
-        }
+        public static IMessageStream Join(this IEnumerable<IMessageStream> streams) =>
+            MessageStream.Concat(streams);
     }
 }

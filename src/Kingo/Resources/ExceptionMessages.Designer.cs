@@ -331,6 +331,24 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; with Id &apos;{1}&apos; was not found..
+        /// </summary>
+        internal static string Repository_AggregateNotFound {
+            get {
+                return ResourceManager.GetString("Repository_AggregateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while restoring aggregate of type &apos;{0}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string Repository_AggregateRestoreException {
+            get {
+                return ResourceManager.GetString("Repository_AggregateRestoreException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot complete this scope because it is not the current scope..
         /// </summary>
         internal static string Scope_CannotCompleteScope {
