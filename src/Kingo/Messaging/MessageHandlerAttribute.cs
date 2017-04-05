@@ -15,7 +15,7 @@ namespace Kingo.Messaging
         /// Initializes a new instance of the <see cref="MessageHandlerAttribute" /> class.
         /// </summary>
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
-        public MessageHandlerAttribute(MessageHandlerLifetime lifetime)
+        public MessageHandlerAttribute(InstanceLifetime lifetime)
         {
             _configuration = new MessageHandlerConfiguration(lifetime);
         }
@@ -25,7 +25,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
         /// <param name="sources">Specifies which source(s) the message is accepted from.</param>
-        public MessageHandlerAttribute(MessageHandlerLifetime lifetime, MessageSources sources)
+        public MessageHandlerAttribute(InstanceLifetime lifetime, MessageSources sources)
         {
             _configuration = new MessageHandlerConfiguration(lifetime, sources);
         }
@@ -33,7 +33,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// The lifetime of the <see cref="IMessageHandler{T}" />.
         /// </summary>
-        public MessageHandlerLifetime Lifetime =>
+        public InstanceLifetime Lifetime =>
             _configuration.Lifetime;
 
         /// <summary>

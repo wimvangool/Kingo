@@ -62,23 +62,8 @@ namespace Kingo.Messaging
 
         private MessageHandlerClass RegisterIn(MessageHandlerFactory factory)
         {
-            switch (_configuration.Lifetime)
-            {
-                case MessageHandlerLifetime.PerResolve:
-                    factory.RegisterWithPerResolveLifetime(null, _type);
-                    return this;
-
-                case MessageHandlerLifetime.PerUnitOfWork:
-                    factory.RegisterWithPerUnitOfWorkLifetime(null, _type);
-                    return this;
-
-                case MessageHandlerLifetime.Singleton:
-                    factory.RegisterSingleton(null, _type);
-                    return this;
-
-                default:
-                    throw NewInvalidLifetimeModeSpecifiedException(_type, _configuration.Lifetime);
-            }
+            factory.Register(_type, _configuration.Lifetime);
+            return this;
         }
 
         internal IEnumerable<MessageHandler<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(MessageHandlerFactory factory, MessageHandlerContext context, TMessage message)
@@ -221,13 +206,6 @@ namespace Kingo.Messaging
         }
 
         private static Type GetMessageTypeOf(Type interfaceType) =>
-            interfaceType.GetGenericArguments()[0];
-
-        internal static Exception NewInvalidLifetimeModeSpecifiedException(Type classType, MessageHandlerLifetime lifeTime)
-        {
-            var messageFormat = ExceptionMessages.MessageHandlerClass_InvalidMessageHandlerLifetime;
-            var message = string.Format(CultureInfo.CurrentCulture, messageFormat, classType, lifeTime);
-            return new InvalidOperationException(message);
-        }
+            interfaceType.GetGenericArguments()[0];        
     }
 }

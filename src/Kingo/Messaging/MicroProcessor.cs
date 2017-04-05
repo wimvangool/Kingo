@@ -48,7 +48,7 @@ namespace Kingo.Messaging
         /// </summary>        
         /// <returns>A new <see cref="MessageHandlerFactory" /> to be used by this processor.</returns>
         protected virtual MessageHandlerFactory CreateMessageHandlerFactory() =>
-            new UnityFactory();
+            new UnityContainerFactory();
 
         /// <summary>
         /// Returns a <see cref="TypeSet"/> that will be scanned by the <see cref="MessageHandlerFactory" /> of this processor

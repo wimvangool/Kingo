@@ -250,20 +250,20 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid MessageHandlerLifetime was specified on class &apos;{0}&apos;: {1}. .
-        /// </summary>
-        internal static string MessageHandlerClass_InvalidMessageHandlerLifetime {
-            get {
-                return ResourceManager.GetString("MessageHandlerClass_InvalidMessageHandlerLifetime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot publish messages to the output stream while handling a metadata message..
         /// </summary>
         internal static string MessageHandlerContext_NullOutputStream_PublishNotAllowed {
             get {
                 return ResourceManager.GetString("MessageHandlerContext_NullOutputStream_PublishNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid InstanceLifetime specified: &apos;{0}&apos;..
+        /// </summary>
+        internal static string MessageHandlerFactory_InvalidInstanceLifetime {
+            get {
+                return ResourceManager.GetString("MessageHandlerFactory_InvalidInstanceLifetime", resourceCulture);
             }
         }
         

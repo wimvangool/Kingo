@@ -177,11 +177,11 @@
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
     <value>An error occurred while processing message of type '{0}'. See inner exception for details.</value>
   </data>
-  <data name="MessageHandlerClass_InvalidMessageHandlerLifetime" xml:space="preserve">
-    <value>Invalid MessageHandlerLifetime was specified on class '{0}': {1}. </value>
-  </data>
   <data name="MessageHandlerContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while handling a metadata message.</value>
+  </data>
+  <data name="MessageHandlerFactory_InvalidInstanceLifetime" xml:space="preserve">
+    <value>Invalid InstanceLifetime specified: '{0}'.</value>
   </data>
   <data name="MessageValidationPipeline_InvalidMessage" xml:space="preserve">
     <value>Message of type '{0}' is not valid: {1} validation error(s) found.</value>

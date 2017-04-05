@@ -3,7 +3,7 @@ using Microsoft.Practices.Unity;
 
 namespace Kingo.Messaging
 {    
-    internal sealed class UnityFactory : MessageHandlerFactory
+    internal sealed class UnityContainerFactory : MessageHandlerFactory
     {
         #region [====== PerUnitOfWorkLifetimeManager ======]
         
@@ -36,15 +36,15 @@ namespace Kingo.Messaging
 
         private readonly IUnityContainer _container;
         
-        public UnityFactory()
+        public UnityContainerFactory()
         {            
-            _container = new UnityContainer();
+            _container = new UnityContainer();            
         }        
 
         #region [====== Type Registration ======]
 
         /// <inheritdoc />
-        public override MessageHandlerFactory RegisterWithPerResolveLifetime(Type @from, Type to)
+        protected override MessageHandlerFactory RegisterWithPerResolveLifetime(Type @from, Type to)
         {
             if (to == null)
             {
@@ -62,7 +62,7 @@ namespace Kingo.Messaging
         }       
 
         /// <inheritdoc />
-        public override MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime(Type @from, Type to)
+        protected override MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime(Type @from, Type to)
         {
             if (to == null)
             {
@@ -78,7 +78,7 @@ namespace Kingo.Messaging
         }        
 
         /// <inheritdoc />
-        public override MessageHandlerFactory RegisterSingleton(Type @from,Type to)
+        protected override MessageHandlerFactory RegisterSingleton(Type @from,Type to)
         {
             if (to == null)
             {

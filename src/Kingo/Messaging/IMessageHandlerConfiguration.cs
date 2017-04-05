@@ -8,7 +8,7 @@
         /// <summary>
         /// The lifetime of the <see cref="IMessageHandler{T}" />.
         /// </summary>
-        MessageHandlerLifetime Lifetime
+        InstanceLifetime Lifetime
         {
             get;
         }

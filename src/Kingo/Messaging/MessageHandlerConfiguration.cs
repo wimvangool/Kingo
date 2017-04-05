@@ -11,13 +11,13 @@ namespace Kingo.Messaging
         /// <summary>
         /// The default configuration that is applied for message handlers.
         /// </summary>
-        public static readonly MessageHandlerConfiguration Default = new MessageHandlerConfiguration(MessageHandlerLifetime.PerUnitOfWork);        
+        public static readonly MessageHandlerConfiguration Default = new MessageHandlerConfiguration(InstanceLifetime.PerUnitOfWork);        
 
         /// <summary>
         /// Initializes a new instance of a <see cref="MessageHandlerConfiguration" /> structure.
         /// </summary>
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
-        public MessageHandlerConfiguration(MessageHandlerLifetime lifetime)
+        public MessageHandlerConfiguration(InstanceLifetime lifetime)
         {
             Lifetime = lifetime;
             Sources = MessageSources.InputStream;
@@ -28,14 +28,14 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
         /// <param name="sources">Specifies which source(s) the message is accepted from.</param>
-        public MessageHandlerConfiguration(MessageHandlerLifetime lifetime, MessageSources sources)
+        public MessageHandlerConfiguration(InstanceLifetime lifetime, MessageSources sources)
         {
             Lifetime = lifetime;
             Sources = sources;
         }
 
         /// <inheritdoc />
-        public MessageHandlerLifetime Lifetime
+        public InstanceLifetime Lifetime
         {
             get;
         }

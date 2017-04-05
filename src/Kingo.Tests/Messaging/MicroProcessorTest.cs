@@ -111,7 +111,7 @@ namespace Kingo.Messaging
 
         private sealed class EventC { }
 
-        [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.InputStream | MessageSources.OutputStream)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.InputStream | MessageSources.OutputStream)]
         private sealed class SomeCommandHandler : IMessageHandler<SomeCommand>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -125,7 +125,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.All)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.All)]
         private sealed class EventHandlerAB : IMessageHandler<EventA>, IMessageHandler<EventB>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -142,7 +142,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.All)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.All)]
         private sealed class EventHandlerC : IMessageHandler<EventC>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -156,7 +156,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.All)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.All)]
         private sealed class ObjectHandler : IMessageHandler<object>, IMessageHandler<string>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -173,7 +173,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.InputStream)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.InputStream)]
         private sealed class ExternalMessageHandler : IMessageHandler<EventA>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -187,7 +187,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.OutputStream)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.OutputStream)]
         private sealed class InternalMessageHandler : IMessageHandler<EventB>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -201,7 +201,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(MessageHandlerLifetime.PerUnitOfWork, MessageSources.MetadataStream)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.MetadataStream)]
         private sealed class MetadataEventHandlerAB : IMessageHandler<EventA>, IMessageHandler<EventB>
         {
             private readonly IMessageHandlerImplementation _implementation;

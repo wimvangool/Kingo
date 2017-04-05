@@ -3,7 +3,7 @@ using Kingo.Threading;
 
 namespace Kingo.Messaging
 {
-    [MessageHandler(MessageHandlerLifetime.PerUnitOfWork)]
+    [MessageHandler(InstanceLifetime.PerUnitOfWork)]
     internal sealed class TheCommandHandler : MessageHandler<TheCommand>
     {
         public override Task HandleAsync(TheCommand command)

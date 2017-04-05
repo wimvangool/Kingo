@@ -4,7 +4,7 @@ namespace Kingo.Messaging
     /// <summary>
     /// A value that is used to specify the lifetime of a certain instance that is resolved at runtime.
     /// </summary>
-    public enum MessageHandlerLifetime
+    public enum InstanceLifetime
     {
         /// <summary>
         /// Specifies that a new instance of a type should be created each time it is resolved.

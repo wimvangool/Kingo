@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
@@ -71,35 +73,83 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== Type Registration (Per Resolve Lifetime) ======]
+        #region [====== Type Registration ======]
+
+        private const InstanceLifetime _DefaultLifetime = InstanceLifetime.PerUnitOfWork;
 
         /// <summary>
-        /// Registers the specified type <typeparamref name="T" />. A new instance of this type will be created each time it is
-        /// resolved.
+        /// Registers the specified type <typeparamref name="T" /> with the specified <paramref name="lifetime" />.
         /// </summary>
+        /// <param name="lifetime">
+        /// Lifetime of the instance that will be resolved.
+        /// </param>
         /// <typeparam name="T">The type to register.</typeparam>
-        public MessageHandlerFactory RegisterWithPerResolveLifetime<T>() =>
-            RegisterWithPerResolveLifetime(typeof(T));
+        /// <returns>This instance.</returns>
+        public MessageHandlerFactory Register<T>(InstanceLifetime lifetime = _DefaultLifetime) =>
+            Register(typeof(T), lifetime);
 
         /// <summary>
-        /// Registers the specified <paramref name="type" />. A new instance of this type will be created each time it is
-        /// resolved.
+        /// Registers the specified <paramref name="type" /> with the specified <paramref name="lifetime" />.
         /// </summary>
         /// <param name="type">The type to register.</param>
+        /// <param name="lifetime">Lifetime of the instance that will be resolved.</param>
+        /// <returns>This instance.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public MessageHandlerFactory RegisterWithPerResolveLifetime(Type type) =>
-            RegisterWithPerResolveLifetime(null, type);
+        public MessageHandlerFactory Register(Type type, InstanceLifetime lifetime = _DefaultLifetime) =>
+            Register(null, type, lifetime);
 
         /// <summary>
-        /// Registers a the specified type <typeparamref name="TTo" /> as an implementation of type <typeparamref name="TFrom" />.
-        /// A new instance of this type will be created each time an instance of type <typeparamref name="TFrom"/> is requested.
+        /// Registers a the specified type <typeparamref name="TTo" /> as an implementation of type <typeparamref name="TFrom" />
+        /// with the specified <paramref name="lifetime" />.
         /// </summary>
+        /// <param name="lifetime">Lifetime of the instance that will be resolved.</param>
         /// <typeparam name="TFrom">A base type of <typeparamref name="TTo"/> or interface implemented by <typeparamref name="TTo"/>.</typeparam>
         /// <typeparam name="TTo">The type to register.</typeparam>
-        public MessageHandlerFactory RegisterWithPerResolveLifetime<TFrom, TTo>() where TTo : TFrom =>
-            RegisterWithPerResolveLifetime(typeof(TFrom), typeof(TTo));
+        /// <returns>This instance.</returns>
+        public MessageHandlerFactory Register<TFrom, TTo>(InstanceLifetime lifetime = _DefaultLifetime) =>
+            Register(typeof(TFrom), typeof(TTo), lifetime);
+
+        /// <summary>
+        /// Registers a the specified type <paramref name="to" /> as an implementation of type <paramref name="from" />
+        /// with the specified <paramref name="lifetime" />.
+        /// </summary>
+        /// <param name="from">A base type of <paramref name="to"/> or interface implemented by <paramref name="to"/> (optional).</param>
+        /// <param name="to">The type to register.</param> 
+        /// <param name="lifetime">Lifetime of the instance that will be resolved.</param>       
+        /// <returns>This instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="to"/> is <c>null</c>.
+        /// </exception>
+        public MessageHandlerFactory Register(Type @from, Type to, InstanceLifetime lifetime = _DefaultLifetime)
+        {
+            switch (lifetime)
+            {
+                case InstanceLifetime.PerResolve:
+                    return RegisterWithPerResolveLifetime(@from, to);                    
+
+                case InstanceLifetime.PerUnitOfWork:
+                    return RegisterWithPerUnitOfWorkLifetime(@from, to);                    
+
+                case InstanceLifetime.Singleton:
+                    return RegisterSingleton(@from, to);                    
+
+                default:
+                    throw NewInvalidLifetimeSpecifiedException(lifetime);
+            }
+        }
+
+        private static Exception NewInvalidLifetimeSpecifiedException(InstanceLifetime lifeTime)
+        {
+            var messageFormat = ExceptionMessages.MessageHandlerFactory_InvalidInstanceLifetime;
+            var message = string.Format(messageFormat, lifeTime);
+            return new ArgumentOutOfRangeException(message);
+        }
+
+        #endregion
+
+        #region [====== Type Registration (Per Specific Lifetime) ======]                       
 
         /// <summary>
         /// Registers the specified type <paramref name="to" />. A new instance of this type will be created each time it is
@@ -108,45 +158,11 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="from">A base type of <paramref name="to"/> or interface implemented by <paramref name="to"/> (optional).</param>
         /// <param name="to">The type to register.</param>        
-        /// <returns>This instance.</returns>
-        /// <exception cref="ArgumentNullException">
+        /// <returns>This instance.</returns>   
+        /// /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
-        /// </exception>
-        public abstract MessageHandlerFactory RegisterWithPerResolveLifetime(Type @from, Type to);
-
-        #endregion
-
-        #region [====== Type Registration (Per UnitOfWork Lifetime) ======]
-
-        /// <summary>
-        /// Registers the specified type <typeparamref name="T" />. Only one instance of this type will be created inside the scope of
-        /// a unit of work, represented by the current <see cref="MicroProcessorContext" />.
-        /// </summary>
-        /// <typeparam name="T">The type to register.</typeparam>
-        public MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime<T>() =>
-            RegisterWithPerUnitOfWorkLifetime(typeof(T));
-
-        /// <summary>
-        /// Registers the specified <paramref name="type" />. A new instance of this type will be created each time it is
-        /// resolved.
-        /// </summary>
-        /// <param name="type">The type to register.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> is <c>null</c>.
-        /// </exception>
-        public MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime(Type type) =>
-            RegisterWithPerUnitOfWorkLifetime(null, type);
-
-        /// <summary>
-        /// Registers a the specified type <typeparamref name="TTo" /> as an implementation of type <typeparamref name="TFrom" />.
-        /// An instance of <typeparamref name="TTo"/> will be resolved when an instance of <typeparamref name="TFrom"/> is requested and
-        /// only one instance of this type will be created inside the scope of a unit of work, represented by the current
-        /// <see cref="MicroProcessorContext" />.       
-        /// </summary>
-        /// <typeparam name="TFrom">A base type of <typeparamref name="TTo"/> or interface implemented by <typeparamref name="TTo"/>.</typeparam>
-        /// <typeparam name="TTo">The type to register.</typeparam>
-        public MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime<TFrom, TTo>() where TTo : TFrom =>
-            RegisterWithPerUnitOfWorkLifetime(typeof(TFrom), typeof(TTo));
+        /// </exception>      
+        protected abstract MessageHandlerFactory RegisterWithPerResolveLifetime(Type @from, Type to);
 
         /// <summary>
         /// Registers the specified type <paramref name="to" />. Only one instance of this type will be created inside the scope of
@@ -159,40 +175,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception>     
-        public abstract MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime(Type @from, Type to);
-
-        #endregion
-
-        #region [====== Type Registration (Singletons) ======]
-
-        /// <summary>
-        /// Registers the specified type <typeparamref name="T" />. Only one instance of this type will ever be created by this factory,
-        /// reflecting the singleton pattern.
-        /// </summary>
-        /// <typeparam name="T">The type to register.</typeparam>
-        public MessageHandlerFactory RegisterSingleton<T>()
-            => RegisterSingleton(typeof(T));
-
-        /// <summary>
-        /// Registers the specified <paramref name="type" />. Only one instance of this type will ever be created by this factory,
-        /// reflecting the singleton pattern.
-        /// </summary>
-        /// <param name="type">The type to register.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> is <c>null</c>.
-        /// </exception>
-        public MessageHandlerFactory RegisterSingleton(Type type)
-            => RegisterSingleton(null, type);
-
-        /// <summary>
-        /// Registers a the specified type <typeparamref name="TTo" /> as an implementation of type <typeparamref name="TFrom" />.
-        /// An instance of <typeparamref name="TTo"/> will be resolved when an instance of <typeparamref name="TFrom"/> is requested and
-        /// only one instance of this type will be created by this factory, reflecting the singleton pattern.       
-        /// </summary>
-        /// <typeparam name="TFrom">A base type of <typeparamref name="TTo"/> or interface implemented by <typeparamref name="TTo"/>.</typeparam>
-        /// <typeparam name="TTo">The type to register.</typeparam>
-        public MessageHandlerFactory RegisterSingleton<TFrom, TTo>() where TTo : TFrom =>
-            RegisterSingleton(typeof(TFrom), typeof(TTo));
+        protected abstract MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime(Type @from, Type to);
 
         /// <summary>
         /// Registers the specified type <paramref name="to" />. Only one instance of this type will ever be created by this factory,
@@ -205,7 +188,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception> 
-        public abstract MessageHandlerFactory RegisterSingleton(Type @from, Type to);
+        protected abstract MessageHandlerFactory RegisterSingleton(Type @from, Type to);
 
         /// <summary>
         /// Registers a certain instance as a singleton.
@@ -240,6 +223,6 @@ namespace Kingo.Messaging
         /// </exception> 
         public abstract MessageHandlerFactory RegisterSingleton(Type @from, object to);
 
-        #endregion
+        #endregion        
     }
 }
