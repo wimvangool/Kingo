@@ -76,7 +76,7 @@ namespace Kingo.Messaging.Domain
 
             Assert.IsNotNull(eventArgs);
             Assert.AreEqual(aggregateRoot.Id, eventArgs.Event.Id);
-            Assert.AreEqual(1, eventArgs.Event.Version);
+            Assert.AreEqual(2, eventArgs.Event.Version);
             Assert.AreEqual(newValue, eventArgs.Event.NewValue);
 
             Assert.IsTrue(aggregateRoot.HasPendingEvents);
@@ -96,7 +96,7 @@ namespace Kingo.Messaging.Domain
 
             Assert.IsNotNull(eventArgs);
             Assert.AreEqual(aggregateRoot.Id, eventArgs.Event.Id);
-            Assert.AreEqual(1, eventArgs.Event.Version);
+            Assert.AreEqual(2, eventArgs.Event.Version);
             Assert.AreEqual(newValue, eventArgs.Event.NewValue);
 
             Assert.IsTrue(aggregateRoot.HasPendingEvents);
@@ -147,7 +147,7 @@ namespace Kingo.Messaging.Domain
             var aggregate = new AggregateRootWithoutEventHandlers();
             IAggregateRoot<Guid> aggregateRoot = aggregate;           
 
-            Assert.AreEqual($"AggregateRootWithoutEventHandlers [Id = {aggregateRoot.Id}, Version = 0, Events = 1]", aggregateRoot.ToString());
+            Assert.AreEqual($"AggregateRootWithoutEventHandlers [Id = {aggregateRoot.Id}, Version = 1, Events = 1]", aggregateRoot.ToString());
         }
 
         #endregion
@@ -168,7 +168,7 @@ namespace Kingo.Messaging.Domain
 
             Assert.IsNotNull(snapshot);
             Assert.AreEqual(aggregateRoot.Id, snapshot.Id);
-            Assert.AreEqual(1, snapshot.Version);
+            Assert.AreEqual(2, snapshot.Version);
             Assert.AreEqual(newValue, snapshot.Value);
             
             var restoredAggregate = aggregateRootSnapshot.RestoreAggregate() as AggregateRootWithoutEventHandlers;
@@ -195,7 +195,7 @@ namespace Kingo.Messaging.Domain
 
             Assert.IsNotNull(snapshot);
             Assert.AreEqual(aggregateRoot.Id, snapshot.Id);
-            Assert.AreEqual(1, snapshot.Version);
+            Assert.AreEqual(2, snapshot.Version);
             Assert.AreEqual(newValue, snapshot.Value);
 
             var restoredAggregate = aggregateRootSnapshot.RestoreAggregate() as AggregateRootWithEventHandlers;
@@ -270,12 +270,13 @@ namespace Kingo.Messaging.Domain
                     new ValueChangedEvent()
                     {
                         Id = aggregateRoot.Id,
+                        Version = 1
                     }
                 });
             }
             catch (ArgumentOutOfRangeException exception)
             {
-                Assert.IsTrue(exception.Message.StartsWith("The next version (0) must represent a newer version than the current version (0)."));                
+                Assert.IsTrue(exception.Message.StartsWith("The next version (1) must represent a newer version than the current version (1)."));                
                 throw;
             }
         }
@@ -293,13 +294,14 @@ namespace Kingo.Messaging.Domain
                 {
                     new ValueChangedEvent()
                     {
-                        Id = aggregateRoot.Id
+                        Id = aggregateRoot.Id,
+                        Version = 1
                     }
                 });
             }
             catch (ArgumentOutOfRangeException exception)
             {
-                Assert.IsTrue(exception.Message.StartsWith("The next version (0) must represent a newer version than the current version (0)."));
+                Assert.IsTrue(exception.Message.StartsWith("The next version (1) must represent a newer version than the current version (1)."));
                 throw;
             }            
         }
@@ -318,7 +320,7 @@ namespace Kingo.Messaging.Domain
                     new ValueChangedEvent()
                     {
                         Id = aggregateRoot.Id,
-                        Version = 1
+                        Version = 2
                     }
                 });
             }
@@ -363,14 +365,14 @@ namespace Kingo.Messaging.Domain
 
             var restoredAggregate = aggregateRootSnapshot.RestoreAggregate(new IEvent[]
             {
-                new OldValueChangedEvent(aggregateRoot.Id, 2, 3),
+                new OldValueChangedEvent(aggregateRoot.Id, 3, 3),
                 new ValueChangedEvent()
                 {
                     Id = aggregateRoot.Id,
-                    Version = 3,
+                    Version = 4,
                     NewValue = 4
                 },
-                new OldValueChangedEvent(aggregateRoot.Id, 1, 2),
+                new OldValueChangedEvent(aggregateRoot.Id, 2, 2),
             }) as AggregateRootWithEventHandlers;
 
             IAggregateRoot<Guid> restoredAggregateRoot = restoredAggregate;
@@ -378,7 +380,7 @@ namespace Kingo.Messaging.Domain
             Assert.IsNotNull(restoredAggregate);
             Assert.AreEqual(aggregateRoot.Id, restoredAggregateRoot.Id);
 
-            restoredAggregate.AssertVersionIs(3);
+            restoredAggregate.AssertVersionIs(4);
             restoredAggregate.AssertValueIs(4);
         }
 
@@ -394,14 +396,14 @@ namespace Kingo.Messaging.Domain
 
             var restoredAggregate = aggregateRootSnapshot.RestoreAggregate(new IEvent[]
             {
-                new OldValueChangedEvent(aggregateRoot.Id, 2, 3),
+                new OldValueChangedEvent(aggregateRoot.Id, 3, 3),
                 new ValueChangedEvent()
                 {
                     Id = aggregateRoot.Id,
-                    Version = 3,
+                    Version = 4,
                     NewValue = 4
                 },
-                new OldValueChangedEvent(aggregateRoot.Id, 1, 2),
+                new OldValueChangedEvent(aggregateRoot.Id, 2, 2),
             });
 
             Assert.IsFalse(restoredAggregate.HasPendingEvents);

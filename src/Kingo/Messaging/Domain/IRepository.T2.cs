@@ -26,20 +26,26 @@ namespace Kingo.Messaging.Domain
         /// Adds the specified <paramref name="aggregate"/> to the repository.
         /// </summary>
         /// <param name="aggregate">The aggregate to add.</param>
-        /// <returns>A task representing the operation.</returns>
+        /// <returns>
+        /// <c>true</c> if the aggregate was newly added to the repository; 
+        /// <c>false</c> if the specified <paramref name="aggregate"/> was already present in the repository.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="aggregate"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="DuplicateKeyException">
         /// Another aggregate with the same identifier (key) is already present in the repository.
         /// </exception>
-        Task AddAsync(TAggregate aggregate);
+        Task<bool> AddAsync(TAggregate aggregate);
 
         /// <summary>
         /// Removes the aggregate with the specified <paramref name="id"/> from the repository.
         /// </summary>
         /// <param name="id">Identifier of the aggregate to remove.</param>
-        /// <returns><c>true</c> if the item is removed or scheduled for removal; otherwise <c>false</c>.</returns>        
+        /// <returns>
+        /// <c>true</c> if the aggregates was removed from the repository;
+        /// <c>false</c> if no aggregate with the specified <paramref name="id"/> was found in the data store.
+        /// </returns>        
         Task<bool> RemoveByIdAsync(TKey id);
     }
 }

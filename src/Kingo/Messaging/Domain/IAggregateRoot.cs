@@ -30,7 +30,7 @@ namespace Kingo.Messaging.Domain
 
         #endregion
 
-        #region [====== Publish & FlushEvents ======]
+        #region [====== EventPublished & FlushEvents() ======]
 
         /// <summary>
         /// This event is raised each time this aggregate publishes a new event.
@@ -51,6 +51,13 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         IEnumerable<IEvent> FlushEvents();
 
-        #endregion
+        /// <summary>
+        /// Notifies the aggregate that it was removed from the repository. This method can be used
+        /// to publish some last minute events representing the removal of this aggregate and the end
+        /// of its lifetime.
+        /// </summary>
+        void NotifyRemoved();
+
+        #endregion        
     }
 }

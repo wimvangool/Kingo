@@ -17,6 +17,8 @@ namespace Kingo.Messaging.Domain
     {        
         private readonly TKey _id;
         private TVersion _version;
+        private List<IEvent> _pendingEvents;
+        private bool _wasRemovedFromRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
@@ -303,9 +305,7 @@ namespace Kingo.Messaging.Domain
 
         #endregion
 
-        #region [====== Publish & FlushEvents ======]
-
-        private List<IEvent> _pendingEvents;      
+        #region [====== Publish & FlushEvents ======]        
 
         /// <summary>
         /// Publishes the specified <paramref name="event"/> and updates the version of this aggregate.
@@ -321,11 +321,21 @@ namespace Kingo.Messaging.Domain
             {
                 throw new ArgumentNullException(nameof(@event));
             }
+            if (_wasRemovedFromRepository)
+            {
+                throw NewAggregateRemovedException(GetType(), @event.GetType());
+            }            
             @event.Id = Id;
             @event.Version = NextVersion();
 
-            OnEventPublished(new EventPublishedEventArgs<TEvent>(@event));
-        }                           
+            EventHandlers.Apply(@event);
+
+            if (OnEventPublished(new EventPublishedEventArgs<TEvent>(@event)))
+            {
+                return;
+            }
+            _pendingEvents.Add(@event);
+        }
 
         event EventHandler<EventPublishedEventArgs> IAggregateRoot.EventPublished
         {
@@ -345,16 +355,13 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         /// <typeparam name="TEvent">Type of the event that was published.</typeparam>
         /// <param name="e">Argument of the </param>
-        protected virtual void OnEventPublished<TEvent>(EventPublishedEventArgs<TEvent> e) where TEvent : IEvent<TKey, TVersion>
-        {
-            EventHandlers.Apply(e.Event);                       
+        /// <returns>
+        /// <c>true</c> if the event has been handled by a listener; otherwise <c>false</c>.
+        /// </returns>
+        protected virtual bool OnEventPublished<TEvent>(EventPublishedEventArgs<TEvent> e) where TEvent : IEvent<TKey, TVersion>
+        {                                   
             EventPublished.Raise(this, e);
-
-            if (e.HasBeenPublished)
-            {
-                return;
-            }
-            _pendingEvents.Add(e.Event);
+            return e.HasBeenPublished;            
         }
 
         bool IAggregateRoot.HasPendingEvents =>
@@ -368,6 +375,32 @@ namespace Kingo.Messaging.Domain
 
         protected virtual IEnumerable<IEvent> FlushEvents() =>
             Interlocked.Exchange(ref _pendingEvents, new List<IEvent>());
+
+        void IAggregateRoot.NotifyRemoved()
+        {
+            try
+            {
+                OnRemoved();
+            }
+            finally
+            {
+                _wasRemovedFromRepository = true;
+            }
+        }
+
+        /// <summary>
+        /// This method is called when this aggregate was removed from the repository. It can be used
+        /// to publish some last-minute events representing the removal of this aggregate and the end
+        /// of its lifetime.
+        /// </summary>
+        protected virtual void OnRemoved() { }
+
+        private static Exception NewAggregateRemovedException(Type aggregateType, Type eventType)
+        {
+            var messageFormat = ExceptionMessages.AggregateRoot_AggregateRemovedException;
+            var message = string.Format(messageFormat, aggregateType.FriendlyName(), eventType.FriendlyName());
+            return new IllegalOperationException(message);
+        }
 
         #endregion
     }

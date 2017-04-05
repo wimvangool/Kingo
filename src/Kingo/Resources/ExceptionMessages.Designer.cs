@@ -61,6 +61,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; cannot publish event of type &apos;{1}&apos; because it has been removed from its repository and its lifetime has therefore ended..
+        /// </summary>
+        internal static string AggregateRoot_AggregateRemovedException {
+            get {
+                return ResourceManager.GetString("AggregateRoot_AggregateRemovedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not convert event of type &apos;{0}&apos; to an instance of type &apos;{1}&apos;. Please review the {2}() method of this event to ensure it returns the correct event type..
         /// </summary>
         internal static string AggregateRoot_EventConversionException {
@@ -331,11 +340,20 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance of type &apos;{0}&apos; with Id &apos;{1}&apos; was not found..
+        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; with Id &apos;{1}&apos; was not found in the data store..
         /// </summary>
         internal static string Repository_AggregateNotFound {
             get {
                 return ResourceManager.GetString("Repository_AggregateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; with Id &apos;{1}&apos; could not be retrieved because it was removed from the data store in this session..
+        /// </summary>
+        internal static string Repository_AggregateRemovedInSession {
+            get {
+                return ResourceManager.GetString("Repository_AggregateRemovedInSession", resourceCulture);
             }
         }
         
@@ -345,6 +363,15 @@ namespace Kingo.Resources {
         internal static string Repository_AggregateRestoreException {
             get {
                 return ResourceManager.GetString("Repository_AggregateRestoreException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add aggregate of type &apos;{0}&apos; to the repository because another aggregate with Id &apos;{1}&apos; is already present in the data store..
+        /// </summary>
+        internal static string Repository_DuplicateKeyException_AggregateAlreadyExists {
+            get {
+                return ResourceManager.GetString("Repository_DuplicateKeyException_AggregateAlreadyExists", resourceCulture);
             }
         }
         

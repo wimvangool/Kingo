@@ -35,7 +35,7 @@ namespace Kingo.Messaging.Domain
             _unitOfWork.GetByIdAsync(id);
 
         /// <inheritdoc />
-        public virtual Task AddAsync(TAggregate aggregate) =>
+        public virtual Task<bool> AddAsync(TAggregate aggregate) =>
             _unitOfWork.AddAsync(aggregate);
 
         /// <inheritdoc />
@@ -59,7 +59,7 @@ namespace Kingo.Messaging.Domain
             var aggregateData = await SelectByIdAsync(id);
             if (aggregateData == null)
             {
-                throw NewAggregateNotFoundException(id);
+                return null;
             }            
             try
             {
@@ -78,14 +78,7 @@ namespace Kingo.Messaging.Domain
         /// <returns>
         /// The data of the aggregate, or <c>null</c> if the aggregate was not found.
         /// </returns>
-        protected abstract Task<AggregateData<TKey>> SelectByIdAsync(TKey id);
-
-        private static Exception NewAggregateNotFoundException(TKey id)
-        {
-            var messageFormat = ExceptionMessages.Repository_AggregateNotFound;
-            var message = string.Format(messageFormat, typeof(TAggregate).FriendlyName(), id);
-            return new AggregateNotFoundException(id, message);
-        }
+        protected internal abstract Task<AggregateData<TKey>> SelectByIdAsync(TKey id);        
 
         private static Exception NewAggregateRestoreException(object failedMessage, Exception exception)
         {

@@ -79,7 +79,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Read Operations ======]
 
-        protected override Task<AggregateData<TKey>> SelectByIdAsync(TKey id)
+        protected internal override Task<AggregateData<TKey>> SelectByIdAsync(TKey id)
         {
             return AsyncMethod.RunSynchronously(() =>
             {
@@ -101,17 +101,17 @@ namespace Kingo.Messaging.Domain
         {
             return AsyncMethod.RunSynchronously(() =>
             {
-                foreach (var aggregate in changeSet.AggregatesToDelete)
+                foreach (var aggregate in changeSet.AggregatesToInsert)
                 {
-                    _aggregates.Remove(aggregate);
-                }
+                    _aggregates.Add(aggregate.Id, aggregate.GetSnapshotOnly());
+                }                
                 foreach (var aggregate in changeSet.AggregatesToUpdate)
                 {
                     _aggregates[aggregate.Id] = aggregate.GetSnapshotOnly();
                 }
-                foreach (var aggregate in changeSet.AggregatesToInsert)
+                foreach (var aggregate in changeSet.AggregatesToDelete)
                 {
-                    _aggregates.Add(aggregate.Id, aggregate.GetSnapshotOnly());
+                    _aggregates.Remove(aggregate);
                 }
             });
         }

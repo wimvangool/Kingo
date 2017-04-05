@@ -74,6 +74,7 @@
     <Compile Include="ComparableTest.cs" />
     <Compile Include="Messaging\Domain\AggregateRootSpy.cs" />
     <Compile Include="Messaging\Domain\AggregateRootSpyCreatedEvent.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootSpyRemovedEvent.cs" />
     <Compile Include="Messaging\Domain\AggregateRootTest.cs" />
     <Compile Include="Messaging\Domain\AggregateRootWithEventHandlers.cs" />
     <Compile Include="Messaging\Domain\AggregateRootWithoutEventHandlers.cs" />

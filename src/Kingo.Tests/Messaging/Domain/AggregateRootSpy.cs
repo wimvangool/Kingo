@@ -31,6 +31,9 @@ namespace Kingo.Messaging.Domain
             return Version + 1;
         }
 
+        protected override void OnRemoved() =>
+            Publish(new AggregateRootSpyRemovedEvent());
+
         protected int Value
         {
             get;

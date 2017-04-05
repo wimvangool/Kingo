@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Kingo.Resources;
 using Kingo.Threading;
 
 namespace Kingo.Messaging.Domain
@@ -62,9 +63,16 @@ namespace Kingo.Messaging.Domain
 
             public abstract Task<TAggregate> GetByIdAsync();
 
-            public abstract Task AddAsync(TAggregate aggregate);
+            public abstract Task<bool> AddAsync(TAggregate aggregate);
 
-            public abstract Task<bool> RemoveByIdAsync();            
+            public abstract Task<bool> RemoveByIdAsync();
+
+            protected static Exception NewDuplicateKeyException(TKey id)
+            {
+                var messageFormat = ExceptionMessages.Repository_DuplicateKeyException_AggregateAlreadyExists;
+                var message = string.Format(messageFormat, typeof(TAggregate).FriendlyName(), id);
+                return new DuplicateKeyException(id, message);
+            }
         }
 
         private sealed class NullState : AggregateState
@@ -97,19 +105,42 @@ namespace Kingo.Messaging.Domain
             public override async Task<TAggregate> GetByIdAsync()
             {
                 var aggregate = await Repository.SelectByIdAndRestoreAsync(AggregateId);
+                if (aggregate == null)
+                {
+                    throw NewAggregateNotFoundException(AggregateId);
+                }
                 MoveToState(new UnmodifiedState(UnitOfWork, aggregate));
                 return aggregate;
             }
 
-            public override Task AddAsync(TAggregate aggregate)
+            public override async Task<bool> AddAsync(TAggregate aggregate)
             {
-                throw new NotImplementedException();
+                var aggregateData = await Repository.SelectByIdAsync(aggregate.Id);
+                if (aggregateData != null)
+                {
+                    throw NewDuplicateKeyException(aggregate.Id);
+                }
+                MoveToState(new AddedState(_unitOfWork, aggregate));
+                return true;
+            }            
+
+            public override async Task<bool> RemoveByIdAsync()
+            {
+                var aggregate = await Repository.SelectByIdAndRestoreAsync(AggregateId);
+                if (aggregate == null)
+                {
+                    return false;
+                }
+                MoveToState(new RemovedState(_unitOfWork, aggregate, new List<IEvent>(), false));
+                return true;
             }
 
-            public override Task<bool> RemoveByIdAsync()
+            private static Exception NewAggregateNotFoundException(TKey id)
             {
-                throw new NotImplementedException();
-            }
+                var messageFormat = ExceptionMessages.Repository_AggregateNotFound;
+                var message = string.Format(messageFormat, typeof(TAggregate).FriendlyName(), id);
+                return new AggregateNotFoundException(id, message);
+            }            
         }
 
         private sealed class UnmodifiedState : AggregateState
@@ -149,14 +180,25 @@ namespace Kingo.Messaging.Domain
             public override Task<TAggregate> GetByIdAsync() =>
                 AsyncMethod.Value(_aggregate);
 
-            public override Task AddAsync(TAggregate aggregate)
+            public override Task<bool> AddAsync(TAggregate aggregate)
             {
-                throw new NotImplementedException();
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    if (ReferenceEquals(_aggregate, aggregate))
+                    {
+                        return false;
+                    }
+                    throw NewDuplicateKeyException(aggregate.Id);
+                });                
             }
 
             public override Task<bool> RemoveByIdAsync()
             {
-                throw new NotImplementedException();
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    MoveToState(new RemovedState(_unitOfWork, _aggregate, new List<IEvent>(), false));
+                    return true;
+                });
             }            
         }
 
@@ -203,20 +245,29 @@ namespace Kingo.Messaging.Domain
             protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork) =>
                 new UnmodifiedState(unitOfWork, _aggregate);
 
-            public override Task<TAggregate> GetByIdAsync()
-            {
-                throw new NotImplementedException();
-            }
+            public override Task<TAggregate> GetByIdAsync() =>
+                AsyncMethod.Value(_aggregate);
 
-            public override Task AddAsync(TAggregate aggregate)
+            public override Task<bool> AddAsync(TAggregate aggregate)
             {
-                throw new NotImplementedException();
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    if (ReferenceEquals(_aggregate, aggregate))
+                    {
+                        return false;
+                    }
+                    throw NewDuplicateKeyException(AggregateId);
+                });
             }
 
             public override Task<bool> RemoveByIdAsync()
             {
-                throw new NotImplementedException();
-            }
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    MoveToState(new RemovedState(_unitOfWork, _aggregate, _events, true));
+                    return true;
+                });
+            }                
         }
 
         private sealed class ModifiedState : AggregateState
@@ -259,65 +310,99 @@ namespace Kingo.Messaging.Domain
             public override Task<TAggregate> GetByIdAsync() =>
                 AsyncMethod.Value(_aggregate);
 
-            public override Task AddAsync(TAggregate aggregate)
+            public override Task<bool> AddAsync(TAggregate aggregate)
             {
-                throw new NotImplementedException();
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    if (ReferenceEquals(_aggregate, aggregate))
+                    {
+                        return false;
+                    }
+                    throw NewDuplicateKeyException(AggregateId);
+                });
             }
 
             public override Task<bool> RemoveByIdAsync()
             {
-                throw new NotImplementedException();
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    MoveToState(new RemovedState(_unitOfWork, _aggregate, _events, false));
+                    return true;
+                });
             }
         }
 
         private sealed class RemovedState : AggregateState
         {
-            private readonly UnitOfWork<TKey, TAggregate> _unitOfWork;
-            private readonly TKey _id;
+            private readonly UnitOfWork<TKey, TAggregate> _unitOfWork;            
             private readonly TAggregate _aggregate;
+            private readonly List<IEvent> _events;
+            private readonly bool _hasBeenAddedInSession;
 
-            public RemovedState(UnitOfWork<TKey, TAggregate> unitOfWork, TKey id, TAggregate aggregate)
+            public RemovedState(UnitOfWork<TKey, TAggregate> unitOfWork, TAggregate aggregate, List<IEvent> events, bool hasBeenAddedInSession)
             {
-                _unitOfWork = unitOfWork;
-                _id = id;
+                _unitOfWork = unitOfWork;                
                 _aggregate = aggregate;
+                _events = events;
+                _hasBeenAddedInSession = hasBeenAddedInSession;
             }
 
             protected override UnitOfWork<TKey, TAggregate> UnitOfWork =>
                 _unitOfWork;
 
             protected override TKey AggregateId =>
-                _id;
+                _aggregate.Id;
 
             protected override bool Enter()
             {
-                throw new NotImplementedException();
-            }
+                _aggregate.EventPublished += HandleEventPublished;
+                _aggregate.NotifyRemoved();
+                return true;
+            }            
 
-            protected override void Exit()
+            protected override void Exit() =>
+                _aggregate.EventPublished -= HandleEventPublished;
+
+            private void HandleEventPublished(object sender, EventPublishedEventArgs e) =>
+                _events.Add(e.WriteEventTo(Repository.Context.OutputStream));
+
+            public override void AddToChangeSet(ChangeSet<TKey> changeSet)
             {
-                throw new NotImplementedException();
-            }
-
-            public override void AddToChangeSet(ChangeSet<TKey> changeSet) =>
-                changeSet.AddAggregateToDelete(_id);
+                if (_events.Count > 0)
+                {
+                    if (_hasBeenAddedInSession)
+                    {
+                        changeSet.AddAggregateToInsert(_aggregate, _events);
+                    }
+                    else
+                    {
+                        changeSet.AddAggregateToUpdate(_aggregate, _events);
+                    }
+                }                
+                changeSet.AddAggregateToDelete(_aggregate.Id);
+            }                
 
             protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork) =>
-                new NullState(unitOfWork, _id);
+                new NullState(unitOfWork, _aggregate.Id);
 
             public override Task<TAggregate> GetByIdAsync()
             {
-                throw new NotImplementedException();
+                throw NewAggregateRemovedException(AggregateId);
             }
 
-            public override Task AddAsync(TAggregate aggregate)
+            public override Task<bool> AddAsync(TAggregate aggregate)
             {
-                throw new NotImplementedException();
+                throw NewDuplicateKeyException(AggregateId);
             }
 
-            public override Task<bool> RemoveByIdAsync()
+            public override Task<bool> RemoveByIdAsync() =>
+                AsyncMethod.Value(false);
+
+            private static Exception NewAggregateRemovedException(TKey aggregateId)
             {
-                throw new NotImplementedException();
+                var messageFormat = ExceptionMessages.Repository_AggregateRemovedInSession;
+                var message = string.Format(messageFormat, typeof(TAggregate).FriendlyName(), aggregateId);
+                return new AggregateNotFoundException(aggregateId, message);
             }
         }        
 
@@ -354,7 +439,7 @@ namespace Kingo.Messaging.Domain
         public Task<TAggregate> GetByIdAsync(TKey id) =>
             GetAggregateState(id).GetByIdAsync();
 
-        public Task AddAsync(TAggregate aggregate) =>
+        public Task<bool> AddAsync(TAggregate aggregate) =>
             GetAggregateState(aggregate).AddAsync(aggregate);
 
         public Task<bool> RemoveByIdAsync(TKey id) =>
