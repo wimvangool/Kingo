@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Resources;
 using Kingo.Threading;
 
 namespace Kingo.Messaging
@@ -10,13 +9,7 @@ namespace Kingo.Messaging
         #region [====== IMessageStream ======]  
 
         public override string ToString() =>
-            $"<{DebugMessages.Empty}>";
-
-        public IMessageStream Append<TMessage>(TMessage message, Action<TMessage, IMicroProcessorContext> handler) =>
-            MessageStream.CreateStream(message, handler);
-
-        public IMessageStream Append<TMessage>(TMessage message, Func<TMessage, IMicroProcessorContext, Task> handler) =>
-            MessageStream.CreateStream(message, handler);
+            string.Empty;        
 
         public IMessageStream Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null) =>
             MessageStream.CreateStream(message, handler);

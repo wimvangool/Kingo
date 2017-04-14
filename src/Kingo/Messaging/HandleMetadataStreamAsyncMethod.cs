@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Transactions;
 using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging
@@ -56,10 +57,14 @@ namespace Kingo.Messaging
 
         private async Task RunCore(IMessageStream metadataStream)
         {
-            using (var scope = MicroProcessorContext.CreateContextScope(Context))
+            using (var transactionScope = new TransactionScope(TransactionScopeOption.Suppress))
             {
-                await metadataStream.HandleMessagesWithAsync(this);
-                await scope.CompleteAsync();
+                using (var scope = MicroProcessorContext.CreateContextScope(Context))
+                {
+                    await metadataStream.HandleMessagesWithAsync(this);
+                    await scope.CompleteAsync();
+                }
+                transactionScope.Complete();
             }
         }
 
@@ -88,7 +93,7 @@ namespace Kingo.Messaging
         }
 
         protected override MessageInfo CreateMessageInfo(object message) =>
-            MessageInfo.FromMetadataStream(message);
+            MessageInfo.FromMetadataStream(message);        
 
         protected override async Task HandleStreamsAsync(IMessageStream metadataStream, IMessageStream outputStream)
         {

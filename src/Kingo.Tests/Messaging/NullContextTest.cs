@@ -17,7 +17,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void ToString_ReturnsExpectedValue()
         {
-            Assert.AreEqual("<None>", Context.ToString());
+            Assert.AreEqual(string.Empty, Context.ToString());
         }
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace Kingo.Messaging
             Assert.AreEqual(0, Context.Messages.Count);
             Assert.IsNull(Context.Messages.Current);
             Assert.IsFalse(Context.Messages.Any());
-            Assert.AreEqual("<Empty>", Context.Messages.ToString());
+            Assert.AreEqual(string.Empty, Context.Messages.ToString());
         }
 
         [TestMethod]

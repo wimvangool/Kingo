@@ -41,7 +41,7 @@ namespace Kingo.Messaging
                 CancellationToken.None;                        
 
             public override string ToString() =>
-                $"<{DebugMessages.NullContext_ToString}>";
+                string.Empty;
         }        
 
         private sealed class EmpyStackTrace : EmptyList<MessageInfo>, IMessageStackTrace
@@ -50,7 +50,7 @@ namespace Kingo.Messaging
                 null;
 
             public override string ToString() =>
-                $"<{DebugMessages.Empty}>";
+                string.Empty;
         }
 
         private sealed class NullStream : ReadOnlyList<object>, IEventStream
@@ -114,9 +114,7 @@ namespace Kingo.Messaging
         public abstract IEventStream MetadataStream
         {
             get;
-        }
-
-        internal abstract void Reset();
+        }        
 
         /// <inheritdoc />
         public CancellationToken Token =>

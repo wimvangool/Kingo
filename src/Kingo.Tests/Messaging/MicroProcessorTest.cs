@@ -1155,7 +1155,7 @@ namespace Kingo.Messaging
                     throw;
                 }
             }
-        }
+        }        
 
         #endregion
 
@@ -1816,28 +1816,74 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== Pipeline ======]
+        #region [====== Metadata in the face of Exceptions ======]
 
-        private sealed class ReplaceOutstreamPipeline : MicroProcessorPipelineSpy
+        [TestMethod]
+        [ExpectedException(typeof(UnprocessableEntityException))]
+        public async Task HandleAsync_StillHandlesMetadataStream_IfCommandHandlerThrowsException()
         {
-            private readonly IMessageStream _newOutputStream;
-            private readonly MessageSources _source;
+            var someCommand = new SomeCommand();
+            var eventA = new EventA();
+            var remainingPublishCount = 3;
 
-            public ReplaceOutstreamPipeline(IMessageStream newOutputStream, MessageSources source)
+            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
             {
-                _newOutputStream = newOutputStream;
-                _source = source;
-            }
+                context.MetadataStream.Publish(eventA);
 
-            public override async Task<HandleAsyncResult> HandleAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context)
+                throw new IllegalOperationException("Test");
+            });
+
+            _processor.Implement<MetadataEventHandlerAB>(4).As<EventA>((message, context) =>
             {
-                if (context.Messages.Current.Source == _source)
+                if (Interlocked.Decrement(ref remainingPublishCount) > 0)
                 {
-                    return (await base.HandleAsync(handler, message, context)).ReplaceOutputStream(_newOutputStream);
+                    context.MetadataStream.Publish(message);
                 }
-                return await base.HandleAsync(handler, message, context);
-            }                          
+            });
+
+            try
+            {
+                await _processor.HandleAsync(someCommand);
+            }
+            finally
+            {
+                Assert.AreEqual(0, remainingPublishCount);
+            }
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(InternalServerErrorException))]
+        public async Task ExecuteAsync_StillHandlesMetadataStream_IfQueryThrowsException()
+        {            
+            var eventA = new EventA();
+            var remainingPublishCount = 3;
+            Func<IMicroProcessorContext, object> query = context =>
+            {
+                context.MetadataStream.Publish(eventA);
+                throw new Exception("Test");
+            };
+
+            _processor.Implement<MetadataEventHandlerAB>(4).As<EventA>((message, context) =>
+            {
+                if (Interlocked.Decrement(ref remainingPublishCount) > 0)
+                {
+                    context.MetadataStream.Publish(message);
+                }
+            });
+
+            try
+            {
+                await _processor.ExecuteAsync(query);
+            }
+            finally
+            {
+                Assert.AreEqual(0, remainingPublishCount);
+            }
+        }
+
+        #endregion
+
+        #region [====== Pipeline ======]        
 
         private sealed class PublishExtraEventPipeline<TEvent> : MicroProcessorPipelineSpy
         {
@@ -1864,62 +1910,7 @@ namespace Kingo.Messaging
                 }
                 return await base.HandleAsync(handler, message, context);
             }
-        }
-
-        [TestMethod]
-        public async Task HandleAsync_CanReplaceOutputStream_IfInputStreamIsBeingProcessed()
-        {
-            var someCommand = new SomeCommand();
-            var eventB = new EventB();
-
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
-            {
-                AssertMessageStack(context.Messages, message, someCommand);
-
-                context.OutputStream.Publish(new EventA());
-            });
-
-            _processor.Implement<EventHandlerAB>().As<EventB>((message, context) =>
-            {
-                AssertMessageStack(context.Messages, message, someCommand, eventB);
-            });
-
-            _processor.Add(new ReplaceOutstreamPipeline(MessageStream.CreateStream(eventB), MessageSources.InputStream));
-
-            AssertStream(await _processor.HandleAsync(someCommand), eventB);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public void HandleAsync_Throws_IfMetadataStreamIsBeingProcessed_And_OutputStreamIsReplacedInPipeline()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();
-
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
-            {
-                AssertMessageStack(context.Messages, message, someCommand);
-
-                context.MetadataStream.Publish(eventA);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-            {
-                AssertMessageStack(context.Messages, message, someCommand, eventA);
-            });
-
-            _processor.Add(new ReplaceOutstreamPipeline(MessageStream.CreateStream(new EventB()), MessageSources.MetadataStream));
-
-            try
-            {
-                _processor.Handle(someCommand);
-            }
-            catch (InternalServerErrorException exception)
-            {
-                Assert.IsInstanceOfType(exception.InnerException, typeof(InvalidOperationException));
-                throw;
-            }                       
-        }
+        }                
 
         [TestMethod]
         public async Task HandleAsync_CanPublishMessagesToOutputStream_IfInputStreamIsBeingProcessed_And_EventIsPublishedBeforeMessageHandlerIsInvoked()
@@ -1979,7 +1970,7 @@ namespace Kingo.Messaging
             AssertStream(await _processor.HandleAsync(someCommand), eventA, eventB);
         }
 
-        #endregion
+        #endregion        
 
         private static void AssertIsEmpty(IMessageStream stream) =>
             AssertStream(stream);

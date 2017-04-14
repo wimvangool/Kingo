@@ -12,7 +12,8 @@ namespace Kingo
     public class EmptyList<T> : IReadOnlyList<T>
     {
         /// <inheritdoc />
-        public int Count => 0;
+        public int Count =>
+            0;
 
         /// <inheritdoc />
         public T this[int index]
@@ -21,11 +22,10 @@ namespace Kingo
         }
 
         /// <inheritdoc />
-        public IEnumerator<T> GetEnumerator() => Enumerable.Empty<T>().GetEnumerator();
+        public IEnumerator<T> GetEnumerator() =>
+            Enumerable.Empty<T>().GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
     }
 }

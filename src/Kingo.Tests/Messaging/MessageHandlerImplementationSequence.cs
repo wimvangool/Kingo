@@ -14,10 +14,14 @@ namespace Kingo.Messaging
             _implementations = new Queue<MessageHandlerImplementation>();
         }
 
-        public MessageHandlerImplementation Implement(Type messageHandlerType)
+        public MessageHandlerImplementation Implement(Type messageHandlerType, int count)
         {
             var implementation = new MessageHandlerImplementation(messageHandlerType);
-            _implementations.Enqueue(implementation);
+
+            for (int index = 0; index < count; index++)
+            {
+                _implementations.Enqueue(implementation);
+            }            
             return implementation;
         }
 

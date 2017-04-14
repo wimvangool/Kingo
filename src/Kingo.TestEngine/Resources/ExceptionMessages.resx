@@ -117,37 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Scenario_EmptyCollectionSpecified" xml:space="preserve">
-    <value>Cannot pick a value of type '{0}' because the specified collection is empty.</value>
+  <data name="Scenario_ExceptionAssertFailed_NoException" xml:space="preserve">
+    <value>Expected exception of type '{0}', but no exception was thrown.</value>
   </data>
-  <data name="Scenario_ExceptionExpectationAlreadySet" xml:space="preserve">
-    <value>Cannot set the expectation for exception of type '{0}' because another expectation has already been set.</value>
+  <data name="Scenario_ExceptionAssertFailed_OtherExceptionType" xml:space="preserve">
+    <value>Expected exception of type '{0}' but exception of type '{1}' was thrown instead. See inner exception for details.</value>
   </data>
-  <data name="Scenario_ExpectedExceptionNotThrown" xml:space="preserve">
-    <value>Expected exception was not thrown.</value>
+  <data name="Scenario_InnerExceptionNotFound" xml:space="preserve">
+    <value>Expected inner exception of type '{0}' but exception of type '{1}' did not have an inner exception.</value>
   </data>
-  <data name="Scenario_GivenFailed" xml:space="preserve">
-    <value>An exception of type '{0}' was thrown during the Given()-phase of scenario '{1}': {2}.</value>
+  <data name="Scenario_InnerExceptionOfDifferentType" xml:space="preserve">
+    <value>Expected inner exception op type '{0}' but it was of type '{1}'.</value>
   </data>
-  <data name="Scenario_InvalidMode" xml:space="preserve">
-    <value>Invalid mode has been set for scenario '{0}': {1}.</value>
+  <data name="WriteScenario_InvalidEventCount" xml:space="preserve">
+    <value>The number of expected events cannot be negative: {0}.</value>
   </data>
-  <data name="Scenario_NoEventAtIndex" xml:space="preserve">
-    <value>Scenario '{0}' did not publish an event at index '{1}'. Did you forget to put this scenario in the Given()-method of the current scenario?</value>
+  <data name="WriteScenario_UnexpectedEventCount" xml:space="preserve">
+    <value>The number of expected events ({0}) does not match the actual amount of published events ({1}).</value>
   </data>
-  <data name="Scenario_UnexpectedEventCount" xml:space="preserve">
-    <value>The amount of expected events ({0}) does not match the actual amount of published events ({1}).</value>
-  </data>
-  <data name="Scenario_UnexpectedEventsPublished" xml:space="preserve">
-    <value>Instead, the following events were published: {0}.</value>
-  </data>
-  <data name="TestEngine_TestFailed" xml:space="preserve">
-    <value>Test '{0}' failed.</value>
-  </data>
-  <data name="TestSuiteCoverage_MissingPaths" xml:space="preserve">
-    <value>The following values are missing: </value>
-  </data>
-  <data name="Test_InvalidCommand" xml:space="preserve">
-    <value>Command '{0}' was invalid for test '{1}': {2}.</value>
+  <data name="WriteScenario_UnexpectedEventType" xml:space="preserve">
+    <value>Expected event of type '{0}' at index '{1}', but found event of type '{2}'.</value>
   </data>
 </root>

@@ -47,20 +47,26 @@ namespace Kingo.Messaging
             // Every message potentially returns a new stream of events, which is immediately handled by the processor
             // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
             // sub-tree of events is handled before the next event in the stream.
-            var pipeline = MicroProcessorPipeline.BuildPipeline(Processor.ProcessorPipeline, handler);
-            HandleAsyncResult result;
+            var pipeline = MicroProcessorPipeline.BuildPipeline(Processor.CreateMessagePipelineSegments(), handler);
+            var result = Context.CreateHandleAsyncResult();
 
             try
             {
                 result = await pipeline.HandleAsync(message, Context);
+                result.Commit();                
+            }
+            catch
+            {
+                // If an exception is thrown, the metadata events must still be handled.
+                result = Context.CreateHandleAsyncResult().RemoveOutputStream();
+                result.Commit();
+                throw;
             }
             finally
-            {
-                // The Reset() method flushes the context streams so that a new message handler can be invoked.
-                Context.Reset();
-            }
-            await HandleStreamsAsync(result.MetadataStream, result.OutputStream);
-        }
+            {                
+                await HandleStreamsAsync(result.MetadataStream, result.OutputStream);
+            }            
+        }        
 
         protected abstract Task HandleStreamsAsync(IMessageStream metadataStream, IMessageStream outputStream);
 

@@ -53,15 +53,7 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== IMessageStream ======]                
-
-        /// <inheritdoc />
-        public IMessageStream Append<TMessage>(TMessage message, Action<TMessage, IMicroProcessorContext> handler) =>
-            new MessageStream(this, CreateStream(message, handler));
-
-        /// <inheritdoc />
-        public IMessageStream Append<TMessage>(TMessage message, Func<TMessage, IMicroProcessorContext, Task> handler) =>
-            new MessageStream(this, CreateStream(message, handler));
+        #region [====== IMessageStream ======]                        
 
         /// <inheritdoc />
         public IMessageStream Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null) =>

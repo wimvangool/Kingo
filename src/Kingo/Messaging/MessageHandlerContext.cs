@@ -10,6 +10,9 @@ namespace Kingo.Messaging
 
         private sealed class NullOutputStream : NullEventStream
         {
+            public override string ToString() =>
+                string.Empty;
+
             public override void Publish<TEvent>(TEvent message)
             {
                 throw NewPublishNotAllowedException();
@@ -21,15 +24,39 @@ namespace Kingo.Messaging
 
         #endregion
 
-        private readonly bool _isMetadataController;
+        #region [====== HandleAsyncResultImplementation ======]
+
+        private sealed class HandleAsyncResultImplementation : HandleAsyncResult
+        {
+            private readonly MessageHandlerContext _context;
+
+            public HandleAsyncResultImplementation(bool isMetadataResult, IMessageStream outputStream, IMessageStream metadataStream, MessageHandlerContext context) :
+                base(isMetadataResult, outputStream, metadataStream)
+            {
+                _context = context;
+            }
+
+            internal override HandleAsyncResult RemoveOutputStream() =>
+                new HandleAsyncResultImplementation(IsMetadataResult, MessageStream.Empty, MetadataStream, _context);
+
+            internal override void Commit()
+            {
+                _context._outputStream = CreateOutputStream(IsMetadataResult);
+                _context._metadataStream = new EventStreamImplementation();
+            }
+        }
+
+        #endregion
+
+        private readonly bool _isMetadataContext;
         private EventStream _outputStream;
         private EventStream _metadataStream;
 
         public MessageHandlerContext(CancellationToken? token = null, MessageStackTrace stackTrace = null) :
             base(token, stackTrace)
         {
-            _isMetadataController = stackTrace != null;
-            _outputStream = CreateOutputStream(_isMetadataController);
+            _isMetadataContext = stackTrace != null;
+            _outputStream = CreateOutputStream(_isMetadataContext);
             _metadataStream = new EventStreamImplementation();
         }
 
@@ -40,17 +67,11 @@ namespace Kingo.Messaging
             _metadataStream;
 
         public HandleAsyncResult CreateHandleAsyncResult() =>
-            new HandleAsyncResult(_isMetadataController, _outputStream, _metadataStream);
+            new HandleAsyncResultImplementation(_isMetadataContext, _outputStream, _metadataStream, this);        
 
-        internal override void Reset()
+        private static EventStream CreateOutputStream(bool isMetadataContext)
         {
-            _outputStream = CreateOutputStream(_isMetadataController);
-            _metadataStream = new EventStreamImplementation();
-        }
-
-        private static EventStream CreateOutputStream(bool isMetadataController)
-        {
-            if (isMetadataController)
+            if (isMetadataContext)
             {
                 return new NullOutputStream();
             }

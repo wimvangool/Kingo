@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using Kingo.Resources;
 
@@ -65,10 +64,10 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Create an instance of the requested message handler type.
+        /// Create an instance of the requested type.
         /// </summary>
         /// <param name="type">Type to create.</param>
-        /// <returns>An instance of the requested message handler type.</returns>                       
+        /// <returns>An instance of the requested type.</returns>                       
         protected internal abstract object Resolve(Type type);
 
         #endregion
@@ -127,13 +126,13 @@ namespace Kingo.Messaging
             switch (lifetime)
             {
                 case InstanceLifetime.PerResolve:
-                    return RegisterWithPerResolveLifetime(@from, to);                    
+                    return RegisterPerResolve(@from, to);                    
 
                 case InstanceLifetime.PerUnitOfWork:
-                    return RegisterWithPerUnitOfWorkLifetime(@from, to);                    
+                    return RegisterPerUnitOfWork(@from, to);                    
 
-                case InstanceLifetime.Singleton:
-                    return RegisterSingleton(@from, to);                    
+                case InstanceLifetime.PerProcessor:
+                    return RegisterPerProcessor(@from, to);                    
 
                 default:
                     throw NewInvalidLifetimeSpecifiedException(lifetime);
@@ -162,7 +161,7 @@ namespace Kingo.Messaging
         /// /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception>      
-        protected abstract MessageHandlerFactory RegisterWithPerResolveLifetime(Type @from, Type to);
+        protected abstract MessageHandlerFactory RegisterPerResolve(Type @from, Type to);
 
         /// <summary>
         /// Registers the specified type <paramref name="to" />. Only one instance of this type will be created inside the scope of
@@ -175,12 +174,12 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception>     
-        protected abstract MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime(Type @from, Type to);
+        protected abstract MessageHandlerFactory RegisterPerUnitOfWork(Type @from, Type to);
 
         /// <summary>
         /// Registers the specified type <paramref name="to" />. Only one instance of this type will ever be created by this factory,
-        /// reflecting the singleton pattern. If <paramref name="from"/> is specified, an instance of <paramref name="to"/> will be resolved
-        /// when an instance of <paramref name="from"/> is requested.
+        /// reflecting the singleton pattern (in the light of the owning processor). If <paramref name="from"/> is specified, an
+        /// instance of <paramref name="to"/> will be resolved when an instance of <paramref name="from"/> is requested.
         /// </summary>
         /// <param name="from">A base type of <paramref name="to"/> or interface implemented by <paramref name="to"/> (optional).</param>
         /// <param name="to">The type to register.</param>        
@@ -188,7 +187,11 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception> 
-        protected abstract MessageHandlerFactory RegisterSingleton(Type @from, Type to);
+        protected abstract MessageHandlerFactory RegisterPerProcessor(Type @from, Type to);
+
+        #endregion
+
+        #region [====== RegisterInstance ======]
 
         /// <summary>
         /// Registers a certain instance as a singleton.
@@ -197,8 +200,8 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="instance"/> is <c>null</c>.
         /// </exception> 
-        public MessageHandlerFactory RegisterSingleton(object instance) =>
-            RegisterSingleton(null, instance);
+        public MessageHandlerFactory RegisterInstance(object instance) =>
+            RegisterInstance(null, instance);
 
         /// <summary>
         /// Registers a certain instance as a singleton. The specified <paramref name="instance"/>
@@ -209,8 +212,8 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="instance"/> is <c>null</c>.
         /// </exception> 
-        public MessageHandlerFactory RegisterSingleton<TFrom>(TFrom instance) =>
-            RegisterSingleton(typeof(TFrom), instance);
+        public MessageHandlerFactory RegisterInstance<TFrom>(TFrom instance) =>
+            RegisterInstance(typeof(TFrom), instance);
 
         /// <summary>
         /// Registers a certain instance as a singleton. If <paramref name="from"/> is specified,
@@ -221,7 +224,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception> 
-        public abstract MessageHandlerFactory RegisterSingleton(Type @from, object to);
+        public abstract MessageHandlerFactory RegisterInstance(Type @from, object to);
 
         #endregion        
     }

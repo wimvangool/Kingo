@@ -46,11 +46,26 @@ namespace Kingo.Messaging
 
         private async Task<TMessageOut> InvokeQueryAndHandleMetadataEvents()
         {
-            var result = await InvokeQuery();
-            if (result.MetadataStream.Count > 0)
+            var result = Context.CreateExecuteAsyncResult(default(TMessageOut));
+
+            try
             {
-                await HandleMetadataStreamAsyncMethod.Invoke(Processor, Context, result.MetadataStream);
+                result = await InvokeQuery();
+                result.Commit();
             }
+            catch
+            {
+                result = Context.CreateExecuteAsyncResult(default(TMessageOut));
+                result.Commit();
+                throw;
+            }
+            finally
+            {
+                if (result.MetadataStream.Count > 0)
+                {
+                    await HandleMetadataStreamAsyncMethod.Invoke(Processor, Context, result.MetadataStream);
+                }
+            }            
             return result.Message;
         }
 

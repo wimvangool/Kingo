@@ -31,13 +31,7 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== IMessageStream ======]        
-        
-        public IMessageStream Append<TOther>(TOther message, Action<TOther, IMicroProcessorContext> handler = null) =>
-            new MessageStream(this, MessageStream.CreateStream(message, handler));
-        
-        public IMessageStream Append<TOther>(TOther message, Func<TOther, IMicroProcessorContext, Task> handler = null) =>
-            new MessageStream(this, MessageStream.CreateStream(message, handler));
+        #region [====== IMessageStream ======]                       
         
         public IMessageStream Append<TOther>(TOther message, IMessageHandler<TOther> handler = null) =>
             new MessageStream(this, MessageStream.CreateStream(message, handler));

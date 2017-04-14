@@ -1,23 +1,12 @@
-﻿using System;
-using Kingo.Resources;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents the result of the invocation of a <see cref="IMessageHandler{T}" />.
     /// </summary>
-    public sealed class HandleAsyncResult
+    public abstract class HandleAsyncResult
     {        
         internal HandleAsyncResult(bool isMetadataResult, IMessageStream outputStream, IMessageStream metadataStream)
-        {
-            if (outputStream == null)
-            {
-                throw new ArgumentNullException(nameof(outputStream));
-            }
-            if (metadataStream == null)
-            {
-                throw new ArgumentNullException(nameof(metadataStream));
-            }
+        {            
             IsMetadataResult = isMetadataResult;
             OutputStream = outputStream;
             MetadataStream = metadataStream;
@@ -49,38 +38,12 @@ namespace Kingo.Messaging
             get;
         }
 
-        /// <summary>
-        /// Replaces the existing <see cref="OutputStream" /> with another stream and returns the new result.
-        /// </summary>
-        /// <param name="outputStream">The new output stream to return.</param>
-        /// <returns>A new result containing the specified <paramref name="outputStream"/>.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// <see cref="IsMetadataResult" /> is <c>true</c>.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="outputStream"/> is <c>null</c>.
-        /// </exception>
-        public HandleAsyncResult ReplaceOutputStream(IMessageStream outputStream)
-        {
-            if (IsMetadataResult)
-            {
-                throw NewCannotReplaceOutputStreamException();
-            }
-            return new HandleAsyncResult(IsMetadataResult, outputStream, MetadataStream);
-        }
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"{nameof(OutputStream)}: {OutputStream.Count} message(s), {nameof(MetadataStream)}: {MetadataStream.Count} message(s)";
 
-        /// <summary>
-        /// Replaces the existing <see cref="MetadataStream" /> with another stream and returns the new result.
-        /// </summary>
-        /// <param name="metadataStream">The new output stream to return.</param>
-        /// <returns>A new result containing the specified <paramref name="metadataStream"/>.</returns>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="metadataStream"/> is <c>null</c>.
-        /// </exception>
-        public HandleAsyncResult ReplaceMetadataStream(IMessageStream metadataStream) =>
-            new HandleAsyncResult(IsMetadataResult, OutputStream, metadataStream);
+        internal abstract HandleAsyncResult RemoveOutputStream();
 
-        private static Exception NewCannotReplaceOutputStreamException() =>
-            new InvalidOperationException(ExceptionMessages.HandleAsyncResult_CannotReplaceOutputStream);
+        internal abstract void Commit();
     }
 }

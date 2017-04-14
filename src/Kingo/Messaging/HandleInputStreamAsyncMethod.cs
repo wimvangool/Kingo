@@ -46,8 +46,14 @@ namespace Kingo.Messaging
             {
                 var method = new HandleInputStreamAsyncMethod(processor, context);
 
-                await inputStream.HandleMessagesWithAsync(method);
-                await Task.WhenAll(method._handleMetadataStreamMethods);
+                try
+                {
+                    await inputStream.HandleMessagesWithAsync(method);
+                }
+                finally
+                {
+                    await Task.WhenAll(method._handleMetadataStreamMethods);
+                }                
                 await scope.CompleteAsync();
 
                 return method._outputStream;
@@ -120,7 +126,7 @@ namespace Kingo.Messaging
         }                      
 
         protected override MessageInfo CreateMessageInfo(object message) =>
-            Context.Messages.IsEmpty ? MessageInfo.FromInputStream(message) : MessageInfo.FromOutputStream(message);
+            Context.Messages.IsEmpty ? MessageInfo.FromInputStream(message) : MessageInfo.FromOutputStream(message);        
 
         protected override async Task HandleStreamsAsync(IMessageStream metadataStream, IMessageStream outputStream)
         {            

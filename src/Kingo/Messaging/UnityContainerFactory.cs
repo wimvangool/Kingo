@@ -44,7 +44,7 @@ namespace Kingo.Messaging
         #region [====== Type Registration ======]
 
         /// <inheritdoc />
-        protected override MessageHandlerFactory RegisterWithPerResolveLifetime(Type @from, Type to)
+        protected override MessageHandlerFactory RegisterPerResolve(Type @from, Type to)
         {
             if (to == null)
             {
@@ -62,7 +62,7 @@ namespace Kingo.Messaging
         }       
 
         /// <inheritdoc />
-        protected override MessageHandlerFactory RegisterWithPerUnitOfWorkLifetime(Type @from, Type to)
+        protected override MessageHandlerFactory RegisterPerUnitOfWork(Type @from, Type to)
         {
             if (to == null)
             {
@@ -78,7 +78,7 @@ namespace Kingo.Messaging
         }        
 
         /// <inheritdoc />
-        protected override MessageHandlerFactory RegisterSingleton(Type @from,Type to)
+        protected override MessageHandlerFactory RegisterPerProcessor(Type @from,Type to)
         {
             if (to == null)
             {
@@ -94,7 +94,7 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public override MessageHandlerFactory RegisterSingleton(Type @from, object to)
+        public override MessageHandlerFactory RegisterInstance(Type @from, object to)
         {
             if (to == null)
             {

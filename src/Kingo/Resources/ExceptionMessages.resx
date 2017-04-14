@@ -159,11 +159,11 @@
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
   </data>
-  <data name="HandleAsyncResult_CannotReplaceOutputStream" xml:space="preserve">
-    <value>The output stream cannot be replaced when the result is obtained by invoking a metadata handler.</value>
-  </data>
   <data name="HandleInputStreamAsyncMethod_CommandHandlerException" xml:space="preserve">
     <value>An error occurred while processing command of type '{0}'. See inner exception for details.</value>
+  </data>
+  <data name="HandleInputStreamAsyncMethod_InvalidUnitOfWorkScopeOption" xml:space="preserve">
+    <value>Invalid {0} specified: '{1}'.</value>
   </data>
   <data name="HandleStreamAsyncMethod_EventHandlerException" xml:space="preserve">
     <value>An error occurred while processing event of type '{0}'. See inner exception for details.</value>

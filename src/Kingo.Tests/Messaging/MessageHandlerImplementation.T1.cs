@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
 {
-    internal sealed class MessageHandlerImplementation : IMessageHandlerImplementation
+    public sealed class MessageHandlerImplementation : IMessageHandlerImplementation
     {
         public readonly Type MessageHandlerType;        
         private Action<object, IMicroProcessorContext> _implementation;

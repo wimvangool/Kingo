@@ -12,16 +12,14 @@ namespace Kingo.Messaging
     /// </summary>
     public class MicroProcessor : IMicroProcessor
     {             
-        private readonly Lazy<MessageHandlerFactory> _messageHandlerFactory;
-        private readonly Lazy<IMicroProcessorPipeline[]> _processorPipeline;
+        private readonly Lazy<MessageHandlerFactory> _messageHandlerFactory;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
         /// </summary>
-        protected MicroProcessor()
+        public MicroProcessor()
         {
-            _messageHandlerFactory = new Lazy<MessageHandlerFactory>(BuildMessageHandlerFactory, true);
-            _processorPipeline = new Lazy<IMicroProcessorPipeline[]>(() => CreateProcessorPipeline().WhereNotNull().ToArray(), true);
+            _messageHandlerFactory = new Lazy<MessageHandlerFactory>(BuildMessageHandlerFactory, true);           
         }
 
         #region [====== Command & Events ======]   
@@ -36,9 +34,9 @@ namespace Kingo.Messaging
         {                        
             var factory = CreateMessageHandlerFactory();
 
-            factory.RegisterSingleton(typeof(IMicroProcessor), this);
-            factory.RegisterSingleton(typeof(IMicroProcessorContext), MicroProcessorContext.Current);
-            factory.RegisterMessageHandlers(CreateMessageHandlerTypeSet(TypeSet.Empty));
+            factory.RegisterInstance<IMicroProcessor>(this);
+            factory.RegisterInstance(MicroProcessorContext.Current);
+            factory.RegisterMessageHandlers(CreateMessageHandlerTypeSet());
 
             return factory;
         }
@@ -54,11 +52,10 @@ namespace Kingo.Messaging
         /// Returns a <see cref="TypeSet"/> that will be scanned by the <see cref="MessageHandlerFactory" /> of this processor
         /// to locate <see cref="IMessageHandler{T}"/> classes and auto-register these classes so that instances of them
         /// can be resolved at run-time.
-        /// </summary>
-        /// <param name="typeSet">A set of types that can be used to build the set to return.</param>
-        /// <returns></returns>
-        protected virtual TypeSet CreateMessageHandlerTypeSet(TypeSet typeSet) =>
-            typeSet;
+        /// </summary>        
+        /// <returns>A <see cref="TypeSet" /> that contains all message handler types to register.</returns>
+        protected virtual TypeSet CreateMessageHandlerTypeSet() =>
+            TypeSet.Empty;
 
         /// <inheritdoc />
         public virtual Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)
@@ -131,18 +128,15 @@ namespace Kingo.Messaging
 
         #region [====== MicroProcessorPipeline ======]
 
-        /// <summary>
-        /// Returns all pipeline segments in the order they are invoked at run-time for each message.
-        /// </summary>
-        protected internal IReadOnlyList<IMicroProcessorPipeline> ProcessorPipeline =>
-            _processorPipeline.Value;       
+        internal IReadOnlyList<IMicroProcessorPipeline> CreateMessagePipelineSegments() =>
+            CreateMessagePipeline().WhereNotNull().ToArray();
 
         /// <summary>
         /// Creates and returns a collection of <see cref="IMicroProcessorPipeline" /> segments which will be assembled into a single
         /// pipeline to handle every message or query.
         /// </summary>
         /// <returns>A collection of <see cref="IMicroProcessorPipeline" /> instances.</returns>
-        protected internal virtual IEnumerable<IMicroProcessorPipeline> CreateProcessorPipeline() =>
+        protected virtual IEnumerable<IMicroProcessorPipeline> CreateMessagePipeline() =>
             Enumerable.Empty<IMicroProcessorPipeline>();
 
         #endregion

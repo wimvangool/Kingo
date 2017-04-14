@@ -66,6 +66,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -210,11 +211,6 @@
     <Compile Include="Messaging\Validation\SortedErrorMessageList.cs" />
     <Compile Include="Messaging\Validation\ValidateMethod.cs" />
     <Compile Include="ReadOnlyList.T1.cs" />
-    <Compile Include="Resources\DebugMessages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DebugMessages.resx</DependentUpon>
-    </Compile>
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Messaging\Validation\IMessage.cs" />
     <Compile Include="Messaging\Validation\IMessageValidator.T1.cs" />
@@ -239,10 +235,6 @@
     <Compile Include="TypeSet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DebugMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DebugMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>

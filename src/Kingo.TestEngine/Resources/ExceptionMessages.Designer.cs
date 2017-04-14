@@ -61,101 +61,65 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot pick a value of type &apos;{0}&apos; because the specified collection is empty..
+        ///   Looks up a localized string similar to Expected exception of type &apos;{0}&apos;, but no exception was thrown..
         /// </summary>
-        internal static string Scenario_EmptyCollectionSpecified {
+        internal static string Scenario_ExceptionAssertFailed_NoException {
             get {
-                return ResourceManager.GetString("Scenario_EmptyCollectionSpecified", resourceCulture);
+                return ResourceManager.GetString("Scenario_ExceptionAssertFailed_NoException", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot set the expectation for exception of type &apos;{0}&apos; because another expectation has already been set..
+        ///   Looks up a localized string similar to Expected exception of type &apos;{0}&apos; but exception of type &apos;{1}&apos; was thrown instead. See inner exception for details..
         /// </summary>
-        internal static string Scenario_ExceptionExpectationAlreadySet {
+        internal static string Scenario_ExceptionAssertFailed_OtherExceptionType {
             get {
-                return ResourceManager.GetString("Scenario_ExceptionExpectationAlreadySet", resourceCulture);
+                return ResourceManager.GetString("Scenario_ExceptionAssertFailed_OtherExceptionType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected exception was not thrown..
+        ///   Looks up a localized string similar to Expected inner exception of type &apos;{0}&apos; but exception of type &apos;{1}&apos; did not have an inner exception..
         /// </summary>
-        internal static string Scenario_ExpectedExceptionNotThrown {
+        internal static string Scenario_InnerExceptionNotFound {
             get {
-                return ResourceManager.GetString("Scenario_ExpectedExceptionNotThrown", resourceCulture);
+                return ResourceManager.GetString("Scenario_InnerExceptionNotFound", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An exception of type &apos;{0}&apos; was thrown during the Given()-phase of scenario &apos;{1}&apos;: {2}..
+        ///   Looks up a localized string similar to Expected inner exception op type &apos;{0}&apos; but it was of type &apos;{1}&apos;..
         /// </summary>
-        internal static string Scenario_GivenFailed {
+        internal static string Scenario_InnerExceptionOfDifferentType {
             get {
-                return ResourceManager.GetString("Scenario_GivenFailed", resourceCulture);
+                return ResourceManager.GetString("Scenario_InnerExceptionOfDifferentType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid mode has been set for scenario &apos;{0}&apos;: {1}..
+        ///   Looks up a localized string similar to The number of expected events cannot be negative: {0}..
         /// </summary>
-        internal static string Scenario_InvalidMode {
+        internal static string WriteScenario_InvalidEventCount {
             get {
-                return ResourceManager.GetString("Scenario_InvalidMode", resourceCulture);
+                return ResourceManager.GetString("WriteScenario_InvalidEventCount", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scenario &apos;{0}&apos; did not publish an event at index &apos;{1}&apos;. Did you forget to put this scenario in the Given()-method of the current scenario?.
+        ///   Looks up a localized string similar to The number of expected events ({0}) does not match the actual amount of published events ({1})..
         /// </summary>
-        internal static string Scenario_NoEventAtIndex {
+        internal static string WriteScenario_UnexpectedEventCount {
             get {
-                return ResourceManager.GetString("Scenario_NoEventAtIndex", resourceCulture);
+                return ResourceManager.GetString("WriteScenario_UnexpectedEventCount", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The amount of expected events ({0}) does not match the actual amount of published events ({1})..
+        ///   Looks up a localized string similar to Expected event of type &apos;{0}&apos; at index &apos;{1}&apos;, but found event of type &apos;{2}&apos;..
         /// </summary>
-        internal static string Scenario_UnexpectedEventCount {
+        internal static string WriteScenario_UnexpectedEventType {
             get {
-                return ResourceManager.GetString("Scenario_UnexpectedEventCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instead, the following events were published: {0}..
-        /// </summary>
-        internal static string Scenario_UnexpectedEventsPublished {
-            get {
-                return ResourceManager.GetString("Scenario_UnexpectedEventsPublished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Command &apos;{0}&apos; was invalid for test &apos;{1}&apos;: {2}..
-        /// </summary>
-        internal static string Test_InvalidCommand {
-            get {
-                return ResourceManager.GetString("Test_InvalidCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Test &apos;{0}&apos; failed..
-        /// </summary>
-        internal static string TestEngine_TestFailed {
-            get {
-                return ResourceManager.GetString("TestEngine_TestFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The following values are missing: .
-        /// </summary>
-        internal static string TestSuiteCoverage_MissingPaths {
-            get {
-                return ResourceManager.GetString("TestSuiteCoverage_MissingPaths", resourceCulture);
+                return ResourceManager.GetString("WriteScenario_UnexpectedEventType", resourceCulture);
             }
         }
     }

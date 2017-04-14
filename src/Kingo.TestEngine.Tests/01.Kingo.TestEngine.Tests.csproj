@@ -64,18 +64,26 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="ComparableReferenceTypeTestSuiteTest.cs" />
-    <Compile Include="ComparableValueTypeTestSuiteTest.cs" />
-    <Compile Include="EquatableTestSuiteTest.cs" />
-    <Compile Include="EquatableReferenceTypeTestSuiteTest.cs" />
-    <Compile Include="EquatableValueTypeTestSuiteTest.cs" />
-    <Compile Include="Messaging\DomainEvent.cs" />
-    <Compile Include="Messaging\ScenarioTestProcessor.cs" />
-    <Compile Include="MSTestEngine.cs" />
+    <Compile Include="Messaging\MetaAssertFailedException.cs" />
+    <Compile Include="Messaging\ReadScenarioTest.T1.cs" />
+    <Compile Include="Messaging\WriteScenarioTest.T1.cs" />
+    <Compile Include="Messaging\WriteScenario_Succeeds_IfStreamIsCorrectlyVerified.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfAssertEventCallbackFails.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfAssertEventCallbackIsNull.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButExceptionForInnerExceptionIsNull.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButAssertCallbackForInnerExceptionIsNull.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButAssertCallbackFails.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButNoneIsThrown.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfExpectedEventCountDoesNotMatchActualEventCount.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfExpectedEventCountIsInvalid.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfAssertEventStreamIsNull.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfAssertEventIndexIsOutOfRange.cs" />
+    <Compile Include="Messaging\WriteScenario_Fails_IfAssertEventIndexIsNegative.cs" />
+    <Compile Include="Messaging\WriteScenario_Succeeds_IfCorrectExceptionAndInnerExceptionAreExpected.cs" />
+    <Compile Include="Messaging\WriteScenario_Succeeds_IfCorrectExceptionIsExpected.cs" />
+    <Compile Include="Messaging\WriteScenario_Succeeds_IfStreamIsCorrectlyAssumedEmpty.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
-    <Compile Include="Messaging\ScenarioTest.cs" />
-    <Compile Include="Messaging\TheCommand.cs" />
-    <Compile Include="Messaging\TheCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj">

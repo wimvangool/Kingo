@@ -17,8 +17,8 @@ namespace Kingo.Messaging
         PerUnitOfWork,        
 
         /// <summary>
-        /// Specifies that only one instance of the handler is to be created by the container it was registered in.
+        /// Specifies that the lifetime of the instance is bound to a single <see cref="MicroProcessor" />.
         /// </summary>        
-        Singleton
+        PerProcessor
     }
 }

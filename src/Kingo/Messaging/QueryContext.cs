@@ -21,6 +21,27 @@ namespace Kingo.Messaging
 
         #endregion
 
+        #region [====== ExecuteAsyncResultImplementation ======]
+
+        private sealed class ExecuteAsyncResultImplementation<TMessageOut> : ExecuteAsyncResult<TMessageOut>
+        {
+            private readonly QueryContext _context; 
+
+            public ExecuteAsyncResultImplementation(TMessageOut message, IMessageStream metadataStream, QueryContext context) :
+                base(message, metadataStream)
+            {
+                _context = context;
+            }
+
+            internal override void Commit()
+            {
+                _context._outputStream = new NullOutputStream();
+                _context._metadataStream = new EventStreamImplementation();
+            }
+        }
+
+        #endregion
+
         private EventStream _outputStream;
         private EventStream _metadataStream;
 
@@ -38,12 +59,6 @@ namespace Kingo.Messaging
             _metadataStream;       
 
         public ExecuteAsyncResult<TMessageOut> CreateExecuteAsyncResult<TMessageOut>(TMessageOut message) =>
-            new ExecuteAsyncResult<TMessageOut>(message, _metadataStream);
-
-        internal override void Reset()
-        {
-            _outputStream = new NullOutputStream();
-            _metadataStream = new EventStreamImplementation();
-        }        
+            new ExecuteAsyncResultImplementation<TMessageOut>(message, _metadataStream, this);               
     }
 }

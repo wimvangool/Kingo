@@ -187,20 +187,20 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The output stream cannot be replaced when the result is obtained by invoking a metadata handler..
-        /// </summary>
-        internal static string HandleAsyncResult_CannotReplaceOutputStream {
-            get {
-                return ResourceManager.GetString("HandleAsyncResult_CannotReplaceOutputStream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An error occurred while processing command of type &apos;{0}&apos;. See inner exception for details..
         /// </summary>
         internal static string HandleInputStreamAsyncMethod_CommandHandlerException {
             get {
                 return ResourceManager.GetString("HandleInputStreamAsyncMethod_CommandHandlerException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid {0} specified: &apos;{1}&apos;..
+        /// </summary>
+        internal static string HandleInputStreamAsyncMethod_InvalidUnitOfWorkScopeOption {
+            get {
+                return ResourceManager.GetString("HandleInputStreamAsyncMethod_InvalidUnitOfWorkScopeOption", resourceCulture);
             }
         }
         

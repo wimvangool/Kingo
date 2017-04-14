@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
@@ -81,10 +79,10 @@ namespace Kingo.Messaging
                 return from interfaceType in _interfaces
                        let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                        where messageTypeOfInterface.IsInstanceOfType(message)
-                       select CreateMessageHandlerInstanceFor<TMessage>(factory, context, interfaceType, messageTypeOfInterface);
+                        select CreateMessageHandlerInstanceFor<TMessage>(factory, context, interfaceType, messageTypeOfInterface);
             }
             return Enumerable.Empty<MessageHandler<TMessage>>();
-        }
+        }        
 
         private MessageHandler<TMessage> CreateMessageHandlerInstanceFor<TMessage>(MessageHandlerFactory factory, MessageHandlerContext context, Type interfaceType, Type messageTypeOfInterface)
         {
