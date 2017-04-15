@@ -26,6 +26,10 @@ namespace Kingo.Messaging
                 Assert.IsTrue(exception.Message.StartsWith("There is no element at index '0' (Count = 0)."));
                 throw;
             }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }        
     }
 }

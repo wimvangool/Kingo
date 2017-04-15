@@ -4,28 +4,35 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Messaging
 {
     [TestClass]
-    public sealed class WriteScenario_Fails_IfExpectedEventCountDoesNotMatchActualEventCount : WriteScenarioTest<object>
+    public sealed class ReadScenario_Fails_IfAssertResponseCallbackFails : ReadScenarioTest<object>
     {
-        protected override object When() =>
+        private const string _Message = "Test";
+
+        protected override object ExecuteQuery(IMicroProcessorContext context) =>
             new object();
 
         [TestMethod]
         [ExpectedException(typeof(MetaAssertFailedException))]
         public override async Task ThenAsync()
         {
+            var exceptionToThrow = new MetaAssertFailedException(_Message, null);
+
             try
             {
-                await Result.IsEventStreamAsync(1);
+                await Result.IsResponseAsync(message =>
+                {
+                    throw exceptionToThrow;
+                });
             }
             catch (MetaAssertFailedException exception)
             {
-                Assert.AreEqual("The number of expected events (1) does not match the actual amount of published events (0).", exception.Message);
+                Assert.AreSame(exceptionToThrow, exception);
                 throw;
             }
             finally
             {
                 await base.ThenAsync();
             }
-        }        
+        }
     }
 }

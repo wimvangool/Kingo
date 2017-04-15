@@ -40,6 +40,10 @@ namespace Kingo.Messaging
                 Assert.AreSame(exceptionToThrow, exception);
                 throw;
             }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }        
     }
 }

@@ -22,7 +22,7 @@ namespace Kingo.Messaging
             {
                 Assert.IsTrue(exception.Message.StartsWith("The number of expected events cannot be negative: -1."));
                 throw;
-            }
+            }            
         }        
     }
 }

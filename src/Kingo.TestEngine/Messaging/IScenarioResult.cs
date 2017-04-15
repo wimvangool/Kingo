@@ -16,6 +16,6 @@ namespace Kingo.Messaging
         /// An optional delegate that can be used to assert the properties of the exception.
         /// </param>
         /// <returns>A task that represents the execution of the associated scenario.</returns>
-        Task IsExceptionAsync<TException>(Action<TException> assertCallback = null) where TException : ExternalProcessorException;
+        Task IsExceptionOfTypeAsync<TException>(Action<TException> assertCallback = null) where TException : ExternalProcessorException;
     }
 }

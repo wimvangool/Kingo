@@ -20,7 +20,7 @@ namespace Kingo.Messaging
                 _scenario = scenario;
             }
 
-            public async Task IsMessageAsync(Action<TMessageOut> assertCallback)
+            public async Task IsResponseAsync(Action<TMessageOut> assertCallback)
             {
                 if (assertCallback == null)
                 {
@@ -42,7 +42,7 @@ namespace Kingo.Messaging
                 _scenario.SetupAsync();
 
             protected override Task<TMessageOut> ExecuteScenarioAsync() =>
-                _scenario.ExecuteQuery(_scenario.Processor);
+                _scenario.WhenQueryIsExecuted(_scenario.Processor);
 
             protected override Task TearDownScenarioAsync() =>
                 _scenario.TearDownAsync();
@@ -63,7 +63,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="processor">The processor to execute the query with.</param>
         /// <returns>The result of the query.</returns>
-        protected abstract Task<TMessageOut> ExecuteQuery(IMicroProcessor processor);
+        protected abstract Task<TMessageOut> WhenQueryIsExecuted(IMicroProcessor processor);
 
         #endregion
     }

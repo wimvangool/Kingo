@@ -121,34 +121,39 @@ namespace Kingo.Messaging
         /// Callback that can be used to assert the properties of the inner exception.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="exception"/> or <paramref name="assertCallback" /> is <c>null</c>.
+        /// <paramref name="exception"/> is <c>null</c>.
         /// </exception>
-        protected void AssertInnerException<TException>(Exception exception, Action<TException> assertCallback) where TException : Exception
+        protected void AssertInnerExceptionIsOfType<TException>(Exception exception, Action<TException> assertCallback = null) where TException : Exception
         {
             if (exception == null)
             {
                 throw new ArgumentNullException(nameof(exception));
             }
-            if (assertCallback == null)
-            {
-                throw new ArgumentNullException(nameof(assertCallback));
-            }
-            assertCallback.Invoke(GetInnerException<TException>(exception));
-        }
-
-        private TException GetInnerException<TException>(Exception exception) where TException : Exception
-        {
             if (exception.InnerException == null)
             {
                 throw NewInnerExceptionNotFoundException(typeof(TException), exception.GetType());
             }
+            TException innerException;
+
+            if (TryGetInnerException(exception, out innerException))
+            {
+                assertCallback?.Invoke(innerException);
+                return;
+            }
+            throw NewInnerExceptionOfDifferentTypeException(typeof(TException), exception.InnerException.GetType());
+        }
+
+        private static bool TryGetInnerException<TException>(Exception exception, out TException innerException) where TException : Exception
+        {            
             try
             {
-                return (TException) exception.InnerException;
+                innerException = (TException) exception.InnerException;
+                return true;
             }
             catch (InvalidCastException)
             {
-                throw NewInnerExceptionOfDifferentTypeException(typeof(TException), exception.InnerException.GetType());
+                innerException = null;
+                return false;
             }
         }        
 

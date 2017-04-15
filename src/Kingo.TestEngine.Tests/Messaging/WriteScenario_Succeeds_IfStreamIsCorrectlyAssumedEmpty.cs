@@ -12,7 +12,14 @@ namespace Kingo.Messaging
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await Result.IsEventStreamAsync(0);
+            try
+            {
+                await Result.IsEventStreamAsync(0);
+            }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }        
     }
 }

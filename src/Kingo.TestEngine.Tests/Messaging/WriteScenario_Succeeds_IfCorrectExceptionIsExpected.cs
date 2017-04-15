@@ -23,7 +23,14 @@ namespace Kingo.Messaging
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await Result.IsExceptionAsync<InternalServerErrorException>();
+            try
+            {
+                await Result.IsExceptionOfTypeAsync<InternalServerErrorException>();
+            }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }
     }
 }

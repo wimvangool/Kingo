@@ -14,10 +14,17 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentNullException))]
         public override async Task ThenAsync()
         {
-            await Result.IsEventStreamAsync(0, stream =>
+            try
             {
-                AssertEvent<object>(stream, 0, null);
-            });
+                await Result.IsEventStreamAsync(0, stream =>
+                {
+                    AssertEvent<object>(stream, 0, null);
+                });
+            }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }        
     }
 }

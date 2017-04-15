@@ -22,13 +22,20 @@ namespace Kingo.Messaging
         [TestMethod]        
         public override async Task ThenAsync()
         {
-            await Result.IsEventStreamAsync(1, stream =>
+            try
             {
-                AssertEvent<object>(stream, 0, @event =>
+                await Result.IsEventStreamAsync(1, stream =>
                 {
-                    Assert.AreSame(_event, @event);
+                    AssertEvent<object>(stream, 0, @event =>
+                    {
+                        Assert.AreSame(_event, @event);
+                    });
                 });
-            });
+            }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }        
     }
 }

@@ -19,6 +19,6 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assertCallback"/> is <c>null</c>.
         /// </exception>      
-        Task IsMessageAsync(Action<TMessageOut> assertCallback);
+        Task IsResponseAsync(Action<TMessageOut> assertCallback);
     }
 }

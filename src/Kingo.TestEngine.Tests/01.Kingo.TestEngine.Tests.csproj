@@ -48,7 +48,9 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -66,12 +68,20 @@
     </Compile>
     <Compile Include="Messaging\MetaAssertFailedException.cs" />
     <Compile Include="Messaging\ReadScenarioTest.T1.cs" />
+    <Compile Include="Messaging\ReadScenario_Succeeds_IfCorrectResponseIsExpected.cs" />
+    <Compile Include="Messaging\ReadScenario_Fails_IfAssertResponseCallbackFails.cs" />
+    <Compile Include="Messaging\ReadScenario_Fails_IfAssertResponseCallbackIsNull.cs" />
+    <Compile Include="Messaging\ReadScenario_Fails_IfExceptionIsExpectedButAssertCallbackForInnerExceptionFails.cs" />
+    <Compile Include="Messaging\ReadScenario_Fails_IfExceptionIsExpectedButExceptionForInnerExceptionIsNull.cs" />
+    <Compile Include="Messaging\ReadScenario_Fails_IfExceptionIsExpectedButAssertCallbackFails.cs" />
+    <Compile Include="Messaging\ReadScenario_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown.cs" />
+    <Compile Include="Messaging\ReadScenario_Fails_IfExceptionIsExpectedButNoneIsThrown.cs" />
     <Compile Include="Messaging\WriteScenarioTest.T1.cs" />
+    <Compile Include="Messaging\ReadScenario_Succeeds_IfCorrectExceptionAndInnerExceptionAreExpected.cs" />
     <Compile Include="Messaging\WriteScenario_Succeeds_IfStreamIsCorrectlyVerified.cs" />
     <Compile Include="Messaging\WriteScenario_Fails_IfAssertEventCallbackFails.cs" />
     <Compile Include="Messaging\WriteScenario_Fails_IfAssertEventCallbackIsNull.cs" />
     <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButExceptionForInnerExceptionIsNull.cs" />
-    <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButAssertCallbackForInnerExceptionIsNull.cs" />
     <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButAssertCallbackFails.cs" />
     <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown.cs" />
     <Compile Include="Messaging\WriteScenario_Fails_IfExceptionIsExpectedButNoneIsThrown.cs" />

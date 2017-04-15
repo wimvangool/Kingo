@@ -4,9 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Messaging
 {
     [TestClass]
-    public sealed class WriteScenario_Fails_IfExpectedEventCountDoesNotMatchActualEventCount : WriteScenarioTest<object>
+    public sealed class ReadScenario_Fails_IfExceptionIsExpectedButNoneIsThrown : ReadScenarioTest<object>
     {
-        protected override object When() =>
+        protected override object ExecuteQuery(IMicroProcessorContext context) =>
             new object();
 
         [TestMethod]
@@ -15,17 +15,17 @@ namespace Kingo.Messaging
         {
             try
             {
-                await Result.IsEventStreamAsync(1);
+                await Result.IsExceptionOfTypeAsync<BadRequestException>();
             }
             catch (MetaAssertFailedException exception)
             {
-                Assert.AreEqual("The number of expected events (1) does not match the actual amount of published events (0).", exception.Message);
+                Assert.AreEqual("Expected exception of type 'BadRequestException', but no exception was thrown.", exception.Message);
                 throw;
             }
             finally
             {
                 await base.ThenAsync();
             }
-        }        
+        }
     }
 }

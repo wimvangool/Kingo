@@ -23,10 +23,17 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentNullException))]
         public override async Task ThenAsync()
         {
-            await Result.IsExceptionAsync<InternalServerErrorException>(exception =>
+            try
             {
-                AssertInnerException<IllegalOperationException>(null, innerException => { });
-            });
+                await Result.IsExceptionOfTypeAsync<InternalServerErrorException>(exception =>
+                {
+                    AssertInnerExceptionIsOfType<IllegalOperationException>(null, innerException => { });
+                });
+            }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }        
     }
 }

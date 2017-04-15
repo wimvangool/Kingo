@@ -6,7 +6,7 @@ namespace Kingo.Messaging
 {
     internal abstract class ScenarioResult<TResult> : IScenarioResult
     {
-        public async Task IsExceptionAsync<TException>(Action<TException> assertCallback = null) where TException : ExternalProcessorException
+        public async Task IsExceptionOfTypeAsync<TException>(Action<TException> assertCallback = null) where TException : ExternalProcessorException
         {
             await SetupScenarioAsync();            
 

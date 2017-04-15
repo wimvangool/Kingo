@@ -26,7 +26,7 @@ namespace Kingo.Messaging
 
             try
             {
-                await Result.IsExceptionAsync<InternalServerErrorException>(e =>
+                await Result.IsExceptionOfTypeAsync<InternalServerErrorException>(e =>
                 {
                     throw exceptionToThrow;
                 });
@@ -35,6 +35,10 @@ namespace Kingo.Messaging
             {
                 Assert.AreSame(exceptionToThrow, exception);
                 throw;
+            }
+            finally
+            {
+                await base.ThenAsync();
             }
         }        
     }

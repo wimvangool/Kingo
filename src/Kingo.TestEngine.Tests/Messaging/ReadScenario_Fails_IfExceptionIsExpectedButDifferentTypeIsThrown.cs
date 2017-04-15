@@ -1,25 +1,17 @@
 ﻿using System.Threading.Tasks;
-using Kingo.Messaging.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
 {
     [TestClass]
-    public sealed class WriteScenario_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown : WriteScenarioTest<object>
+    public sealed class ReadScenario_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown : ReadScenarioTest<object>
     {
-                
-        protected override object When() =>
-            new object();
-
-        protected override IMessageHandler<object> CreateMessageHandler()
+        protected override object ExecuteQuery(IMicroProcessorContext context)
         {
-            return MessageHandler<object>.FromDelegate((message, context) =>
-            {
-                throw new IllegalOperationException("Test");
-            });
+            throw new InternalServerErrorException(new object());
         }
 
-        [TestMethod]        
+        [TestMethod]
         [ExpectedException(typeof(MetaAssertFailedException))]
         public override async Task ThenAsync()
         {
@@ -36,6 +28,6 @@ namespace Kingo.Messaging
             {
                 await base.ThenAsync();
             }
-        }        
+        }
     }
 }

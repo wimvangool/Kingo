@@ -20,12 +20,16 @@ namespace Kingo.Messaging
         {
             try
             {
-                await Result.IsExceptionAsync<InternalServerErrorException>();
+                await Result.IsExceptionOfTypeAsync<InternalServerErrorException>();
             }
             catch (MetaAssertFailedException exception)
             {
                 Assert.AreEqual("Expected exception of type 'InternalServerErrorException', but no exception was thrown.", exception.Message);
                 throw;
+            }
+            finally
+            {
+                await base.ThenAsync();
             }
         }        
     }

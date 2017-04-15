@@ -23,13 +23,20 @@ namespace Kingo.Messaging
         [TestMethod]
         public override async Task ThenAsync()
         {
-            await Result.IsExceptionAsync<InternalServerErrorException>(exception =>
+            try
             {
-                AssertInnerException<IllegalOperationException>(exception, innerException =>
+                await Result.IsExceptionOfTypeAsync<InternalServerErrorException>(exception =>
                 {
-                    Assert.AreEqual(_Message, innerException.Message);
+                    AssertInnerExceptionIsOfType<IllegalOperationException>(exception, innerException =>
+                    {
+                        Assert.AreEqual(_Message, innerException.Message);
+                    });
                 });
-            });
+            }
+            finally
+            {
+                await base.ThenAsync();
+            }
         }
     }
 }
