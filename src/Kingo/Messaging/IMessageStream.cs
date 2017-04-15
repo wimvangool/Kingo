@@ -33,8 +33,8 @@ namespace Kingo.Messaging
         /// <summary>
         /// Lets the specified <paramref name="handler"/> handle all messages of this stream and returns a stream of events.
         /// </summary>
-        /// <param name="handler">A handler of messages.</param>      
-        /// <returns>A stream of events.</returns>  
+        /// <param name="handler">A handler of messages.</param>   
+        /// <returns>A task representing the operation.</returns>           
         Task HandleMessagesWithAsync(IMessageHandler handler);
     }
 }

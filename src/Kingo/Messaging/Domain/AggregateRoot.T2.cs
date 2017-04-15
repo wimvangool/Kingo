@@ -367,12 +367,19 @@ namespace Kingo.Messaging.Domain
         bool IAggregateRoot.HasPendingEvents =>
             HasPublishedEvents;
 
+        /// <summary>
+        /// Indicates whether or not this aggregate has published any events that haven't been flushed yet.
+        /// </summary>
         protected bool HasPublishedEvents =>
             _pendingEvents.Count > 0;
 
         IEnumerable<IEvent> IAggregateRoot.FlushEvents() =>
             FlushEvents();
 
+        /// <summary>
+        /// Returns all events that were published by this aggregate since it was instantiated or retrieved from a data store
+        /// and empties the aggregate's internal event buffer.
+        /// </summary>
         protected virtual IEnumerable<IEvent> FlushEvents() =>
             Interlocked.Exchange(ref _pendingEvents, new List<IEvent>());
 

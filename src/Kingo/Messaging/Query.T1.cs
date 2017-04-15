@@ -53,6 +53,7 @@ namespace Kingo.Messaging
         public override string ToString() =>
             MicroProcessorPipelineStringBuilder.ToString(this);
 
+        /// <inheritdoc />
         public abstract void Accept(IMicroProcessorPipelineVisitor visitor);
 
         #region [====== Delegate wrapping ======]

@@ -46,25 +46,38 @@ namespace Kingo.Messaging
         private IMessageStream Stream =>
             _stream.Value;
 
-        int IReadOnlyCollection<object>.Count =>
+        /// <inheritdoc />
+        public int Count =>
             Stream.Count;
 
-        object IReadOnlyList<object>.this[int index] =>
+        /// <inheritdoc />
+        public object this[int index] =>
             Stream[index];
 
-        IEnumerator<object> IEnumerable<object>.GetEnumerator() =>
+        /// <inheritdoc />
+        public IEnumerator<object> GetEnumerator() =>
             Stream.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
             Stream.GetEnumerator();
 
-        IMessageStream IMessageStream.Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) =>
+        /// <inheritdoc />
+        public IMessageStream Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler) =>
             Stream.Append(message, handler);
 
-        IMessageStream IMessageStream.AppendStream(IMessageStream stream) =>
+        /// <inheritdoc />
+        public IMessageStream AppendStream(IMessageStream stream) =>
             Stream.AppendStream(stream);
 
         Task IMessageStream.HandleMessagesWithAsync(IMessageHandler handler) =>
+            HandleMessagesWithAsync(handler);
+
+        /// <summary>
+        /// Lets the specified <paramref name="handler"/> handle all messages of this stream and returns a stream of events.
+        /// </summary>
+        /// <param name="handler">A handler of messages.</param>   
+        /// <returns>A task representing the operation.</returns> 
+        protected Task HandleMessagesWithAsync(IMessageHandler handler) =>
             Stream.HandleMessagesWithAsync(handler);
 
         #endregion

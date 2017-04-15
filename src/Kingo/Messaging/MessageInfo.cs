@@ -81,6 +81,7 @@ namespace Kingo.Messaging
             get;
         }
 
+        /// <inheritdoc />
         public override string ToString() =>
             $"{Message.GetType().FriendlyName()} ({Source})";
 

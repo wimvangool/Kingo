@@ -79,6 +79,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Read Operations ======]
 
+        /// <inheritdoc />
         protected internal override Task<AggregateData<TKey>> SelectByIdAsync(TKey id)
         {
             return AsyncMethod.RunSynchronously(() =>
@@ -97,6 +98,7 @@ namespace Kingo.Messaging.Domain
 
         #region [====== Write Operations ======]
 
+        /// <inheritdoc />
         protected internal override Task FlushAsync(IChangeSet<TKey> changeSet)
         {
             return AsyncMethod.RunSynchronously(() =>

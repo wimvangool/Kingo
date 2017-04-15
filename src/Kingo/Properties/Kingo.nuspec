@@ -11,19 +11,18 @@
     <projectUrl>https://github.com/wimvangool/Kingo/wiki</projectUrl>    
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-      A core utility library that contains some nifty additions to the .NET Framework.
-      Particularly helpful when developing (Message-Driven) Business Applications.                       
+                             
       
       Source code and general guidance on how to use this framework can be found here:
       https://github.com/wimvangool/Kingo/wiki
     </description>
     <summary>
-      A core utility library that contains some nifty additions to the .NET Framework.
+      
     </summary>
     <releaseNotes />
-    <copyright>Wim van Gool, 2016</copyright>
+    <copyright>Wim van Gool, 2017</copyright>
     <language>en-US</language>
-    <tags>CQRS Messaging Validation Specification Pattern Clock Context</tags>
+    <tags>MicroProcessor CQRS DDD EventStore BDD</tags>
 
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" />

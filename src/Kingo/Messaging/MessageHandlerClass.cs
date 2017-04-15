@@ -121,6 +121,7 @@ namespace Kingo.Messaging
             return (sources & source) == source;
         }
 
+        /// <inheritdoc />
         public override string ToString() =>
             $"{_type.Name} ({_interfaces.Length} interface(s) implemented) - Configuration = {_configuration}";
 

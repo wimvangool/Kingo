@@ -126,8 +126,9 @@ namespace Kingo.Messaging
             _unitOfWorkController.Dispose();
 
             base.DisposeManagedResources();
-        }                    
+        }
 
+        /// <inheritdoc />
         public override string ToString() =>
             _stackTrace.ToString();        
 
