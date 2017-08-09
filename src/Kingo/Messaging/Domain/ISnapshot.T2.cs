@@ -15,7 +15,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// The identifier of the aggregate that created this snapshot.
         /// </summary>
-        TKey Id
+        TKey AggregateId
         {
             get;            
         }
@@ -23,7 +23,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// The version of the aggregate at the time it created this snapshot.
         /// </summary>
-        TVersion Version
+        TVersion AggregateVersion
         {
             get;            
         }

@@ -3,31 +3,31 @@
 namespace Kingo.Messaging.Validation
 {
     /// <summary>
-    /// Represents a <see cref="IMessageValidator{T}"/> that is implemented through a delegate.
+    /// Represents a <see cref="IRequestMessageValidator{TMessage}"/> that is implemented through a delegate.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that can be validated by this validator.</typeparam>
-    public sealed class DelegateValidator<TMessage> : IMessageValidator<TMessage>
+    public sealed class DelegateValidator<TMessage> : IRequestMessageValidator<TMessage>
     {
-        private readonly Func<TMessage, bool, ErrorInfo> _implementation;
+        private readonly Func<TMessage, bool, ErrorInfo> _validationMethod;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateValidator{T}" /> class.
         /// </summary>
-        /// <param name="implementation">The delegate that will be used to validate each message.</param>
+        /// <param name="validationMethod">The delegate that will be used to validate each message.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="implementation"/> is <c>null</c>.
+        /// <paramref name="validationMethod"/> is <c>null</c>.
         /// </exception>
-        public DelegateValidator(Func<TMessage, bool, ErrorInfo> implementation)
+        public DelegateValidator(Func<TMessage, bool, ErrorInfo> validationMethod)
         {
-            if (implementation == null)
+            if (validationMethod == null)
             {
-                throw new ArgumentNullException(nameof(implementation));
+                throw new ArgumentNullException(nameof(validationMethod));
             }
-            _implementation = implementation;
+            _validationMethod = validationMethod;
         }
 
         /// <inheritdoc />
         public ErrorInfo Validate(TMessage message, bool haltOnFirstError = false) =>
-            _implementation.Invoke(message, haltOnFirstError);
+            _validationMethod.Invoke(message, haltOnFirstError);
     }
 }

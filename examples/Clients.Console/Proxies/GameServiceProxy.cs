@@ -8,7 +8,7 @@ namespace Clients.ConsoleApp.Proxies
     {
         #region [====== Write Methods ======]
 
-        public Task MovePiece(MovePieceCommand command)
+        public Task MovePieceAsync(MovePieceCommand command)
         {
             return Channel.MovePiece(command);
         }

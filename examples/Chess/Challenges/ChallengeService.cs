@@ -6,7 +6,7 @@ namespace Kingo.Samples.Chess.Challenges
     {                
         #region [====== Write Methods ======]
 
-        public Task ChallengePlayerAsync(ChallengePlayerCommand command)
+        public Task ChallengePlayerAsync(ChallengeUserCommand command)
         {
             return HandleAsync(command);
         }

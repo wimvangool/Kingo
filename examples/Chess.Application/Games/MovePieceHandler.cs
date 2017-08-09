@@ -1,25 +1,24 @@
 ﻿using System.Threading.Tasks;
 using Kingo.Messaging;
-using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Games
 {
-    public sealed class MovePieceHandler : MessageHandler<MovePieceCommand>
+    public sealed class MovePieceHandler : IMessageHandler<MovePieceCommand>
     {
         private readonly IGameRepository _games;
 
-        public MovePieceHandler([NotNull] IGameRepository games)
+        public MovePieceHandler(IGameRepository games)
         {            
             _games = games;
         }
 
-        public override async Task HandleAsync([NotNull] MovePieceCommand message)
+        public async Task HandleAsync(MovePieceCommand message, IMicroProcessorContext context)
         {
             var from = Square.Parse(message.From);
             var to = Square.Parse(message.To);
             var game = await _games.GetByKeyAsync(message.GameId);
             
-            game.MovePiece(Session.Current.PlayerId, from, to);
+            game.MovePiece(Session.Current.UserId, from, to);
         }
     }
 }

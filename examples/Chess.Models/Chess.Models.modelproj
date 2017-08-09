@@ -41,24 +41,24 @@
     </Validate>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chess.Api\02.Chess.Api.csproj">
-      <Name>02.Chess.Api</Name>
-      <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Chess.Application\02.Chess.Application.csproj">
-      <Name>02.Chess.Application</Name>
+    <ProjectReference Include="..\Chess.Application\03.Chess.Application.csproj">
+      <Name>03.Chess.Application</Name>
       <Project>{63fea2b3-4a6c-4673-a6f6-b0be60e9cb46}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Chess.DataAccess\01.Chess.DataAccess.csproj">
-      <Name>01.Chess.DataAccess</Name>
+    <ProjectReference Include="..\Chess.Contracts\02.Chess.Contracts.csproj">
+      <Name>02.Chess.Contracts</Name>
+      <Project>{2b987966-7fde-4a2c-8adb-4bedaab05f70}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Chess.DataAccess\05.Chess.DataAccess.csproj">
+      <Name>05.Chess.DataAccess</Name>
       <Project>{997b545f-0c34-4eef-a919-ca033bf5e192}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Chess.Domain\03.Chess.Domain.csproj">
-      <Name>03.Chess.Domain</Name>
+    <ProjectReference Include="..\Chess.Domain\04.Chess.Domain.csproj">
+      <Name>04.Chess.Domain</Name>
       <Project>{1f58a741-2891-4cbf-95fd-abb601fb1d56}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Chess\02.Chess.csproj">
-      <Name>02.Chess</Name>
+    <ProjectReference Include="..\Chess\01.Chess.WcfEndpoint.csproj">
+      <Name>01.Chess.WcfEndpoint</Name>
       <Project>{aff442d0-7bae-4067-a172-31d5c073dcfd}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Clients.Console\Clients.ConsoleApp.csproj">

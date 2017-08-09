@@ -10,13 +10,15 @@ namespace Kingo.Messaging.Domain
             Version = 1;
         }
 
-        public override Guid Id
+        [AggregateId]
+        public Guid Id
         {
             get;
             set;
         }
 
-        public override int Version
+        [AggregateVersion]
+        public int Version
         {
             get;
             set;

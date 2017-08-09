@@ -7,6 +7,6 @@ namespace Kingo.Samples.Chess.Games
     {
         Task<Game> GetByKeyAsync(Guid gameId);
 
-        void Add(Game game);
+        Task AddAsync(Game game);
     }
 }

@@ -23,12 +23,9 @@ namespace Kingo.Messaging.Validation
                 set { SetValue(ref _value, value, () => Value); }
             }
 
-            protected override ValidateMethod Implement(ValidateMethod method) =>
-                base.Implement(method).Add(this, CreateValidator, true);
-
-            private static IMessageValidator<CommandUnderTest> CreateValidator()
+            protected override IRequestMessageValidator CreateMessageValidator()
             {
-                return new DelegateValidator<CommandUnderTest>((message, haltOnFirstError) =>
+                return base.CreateMessageValidator().Append<CommandUnderTest>((message, haltOnFirstError) =>
                 {
                     var errorInfoBuilder = new ErrorInfoBuilder();
 
@@ -38,7 +35,7 @@ namespace Kingo.Messaging.Validation
                     }
                     return errorInfoBuilder.BuildErrorInfo();
                 });
-            }
+            }           
         }
 
         #endregion

@@ -11,7 +11,7 @@ namespace Kingo.Messaging.Validation
 
         private static readonly ErrorInfo _Errors = new ErrorInfo(Enumerable.Empty<KeyValuePair<string, string>>(), "Some error.");
 
-        private abstract class MessageToValidate : IMessage
+        private abstract class MessageToValidate : IRequestMessage
         {
             protected abstract bool IsValid
             {
@@ -54,18 +54,19 @@ namespace Kingo.Messaging.Validation
             }
         }
 
-        private sealed class ObjectValidator : IMessageValidator<object>
-        {
-            private readonly bool _isValid;
+        private sealed class ExternalEvent { }
 
-            public ObjectValidator(bool isValid)
+        private sealed class ExternalEventValidator : IRequestMessageValidator<ExternalEvent>
+        {
+            public bool IsValid
             {
-                _isValid = isValid;
+                get;
+                set;
             }
 
-            public ErrorInfo Validate(object message, bool haltOnFirstError = false)
+            public ErrorInfo Validate(ExternalEvent message, bool haltOnFirstError = false)
             {
-                if (_isValid)
+                if (IsValid)
                 {
                     return ErrorInfo.Empty;
                 }
@@ -75,13 +76,13 @@ namespace Kingo.Messaging.Validation
 
         #endregion
 
-        private MessageValidationPipeline _pipeline;
+        private RequestMessageValidationPipeline _pipeline;
         private MicroProcessorSpy _processor;
 
         [TestInitialize]
         public void Setup()
         {
-            _pipeline = new MessageValidationPipeline();
+            _pipeline = new RequestMessageValidationPipeline();
             _processor = new MicroProcessorSpy();
             _processor.Add(_pipeline);
         }
@@ -111,7 +112,7 @@ namespace Kingo.Messaging.Validation
             {
                 Assert.AreSame(someCommand, exception.FailedMessage);
 
-                var invalidMessageException = exception.InnerException as InvalidMessageException;
+                var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                 Assert.IsNotNull(invalidMessageException);                
                 Assert.AreEqual("Message of type 'SomeCommand' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
@@ -144,7 +145,7 @@ namespace Kingo.Messaging.Validation
             {
                 Assert.AreSame(someEvent, exception.FailedMessage);
 
-                var invalidMessageException = exception.InnerException as InvalidMessageException;
+                var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                 Assert.IsNotNull(invalidMessageException);
                 Assert.AreEqual("Message of type 'SomeEvent' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
@@ -166,38 +167,51 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         public void Handle_HandlesMessage_IfMessageDoesNotImplementIMessageInterface_And_ValidatorReturnsNoErrors()
         {
-            _pipeline.Register(new ObjectValidator(true));
-
-            var someEvent = new object();
-
-            AssertContains(_processor.Handle(new object(), (message, context) =>
+            lock (_ExternalEventValidator)
             {
-                context.OutputStream.Publish(someEvent);
-            }), someEvent);
+                _ExternalEventValidator.IsValid = true;
+
+                var someEvent = new object();
+
+                AssertContains(_processor.Handle(new ExternalEvent(), (message, context) =>
+                {
+                    context.OutputStream.Publish(someEvent);
+                }), someEvent);
+            }            
         }
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
         public void Handle_ThrowsInternalServerErrorsException_IfMessageDoesNotImplementIMessageInterface_And_ValidatorReturnsErrors()
-        {            
-            _pipeline.Register(new ObjectValidator(false));
-
-            var someMessage = new object();
-
-            try
+        {
+            lock (_ExternalEventValidator)
             {
-                _processor.Handle(someMessage, (message, context) => { });
-            }
-            catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(someMessage, exception.FailedMessage);
+                _ExternalEventValidator.IsValid = false;
 
-                var invalidMessageException = exception.InnerException as InvalidMessageException;
+                var someMessage = new ExternalEvent();
 
-                Assert.IsNotNull(invalidMessageException);
-                Assert.AreEqual("Message of type 'Object' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
-                throw;
+                try
+                {
+                    _processor.Handle(someMessage, (message, context) => { });
+                }
+                catch (InternalServerErrorException exception)
+                {
+                    Assert.AreSame(someMessage, exception.FailedMessage);
+
+                    var invalidMessageException = exception.InnerException as InvalidRequestException;
+
+                    Assert.IsNotNull(invalidMessageException);
+                    Assert.AreEqual("Message of type 'ExternalEvent' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
+                    throw;
+                }
             }
+        }
+
+        private static readonly ExternalEventValidator _ExternalEventValidator = new ExternalEventValidator();
+
+        static MessageValidationPipelineTest()
+        {
+            RequestMessage.Register(_ExternalEventValidator);
         }
 
         private static void AssertContains(IMessageStream stream, params object[] events)

@@ -4,7 +4,7 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Samples.Chess.Games
 {
-    internal sealed class Knight : Piece
+    internal sealed class Knight : ChessPiece
     {
         private static readonly Tuple<int, int> _A_TwoUpOneRight = new Tuple<int, int>(1, 2);
         private static readonly Tuple<int, int> _B_OneUpTwoRight = new Tuple<int, int>(2, 1);

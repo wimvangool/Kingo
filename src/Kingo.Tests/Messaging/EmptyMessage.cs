@@ -4,5 +4,5 @@ using Kingo.Messaging.Validation;
 namespace Kingo.Messaging
 {
     [DataContract]
-    public sealed class EmptyMessage : Message { }
+    public sealed class EmptyMessage : RequestMessage { }
 }

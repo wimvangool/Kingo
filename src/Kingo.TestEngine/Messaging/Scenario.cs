@@ -12,7 +12,7 @@ namespace Kingo.Messaging
     /// Represents a scenario that follows the Behavior Driven Development (BDD) style, which is characterized
     /// by the Given-When-Then pattern.
     /// </summary>    
-    public abstract class Scenario : IMessageStream
+    public abstract class Scenario : AutomatedTest, IMessageStream
     {
         private readonly Lazy<IMicroProcessor> _processor;
         private readonly Lazy<IMessageStream> _stream;
@@ -182,18 +182,7 @@ namespace Kingo.Messaging
             var messageFormat = ExceptionMessages.Scenario_InnerExceptionOfDifferentType;
             var message = string.Format(messageFormat, expectedType.FriendlyName(), actualType.FriendlyName());
             return NewAssertFailedException(message);
-        }
-
-        /// <summary>
-        /// Creates and returns a new exception that indicates that an assertion has failed.
-        /// </summary>
-        /// <param name="message">Message of the exception.</param>
-        /// <param name="innerException">Optional cause of the exception.</param>
-        /// <returns>
-        /// A new exception that indicates that an assertion has failed with the specified <paramref name="message"/>
-        /// and <paramref name="innerException"/> as inner exception.
-        /// </returns>
-        protected abstract Exception NewAssertFailedException(string message, Exception innerException = null);
+        }        
 
         #endregion
     }

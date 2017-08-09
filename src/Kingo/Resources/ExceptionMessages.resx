@@ -177,6 +177,9 @@
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
     <value>An error occurred while processing message of type '{0}'. See inner exception for details.</value>
   </data>
+  <data name="MemoryRepository_InvalidBehavior" xml:space="preserve">
+    <value>Invalid behavior specified: '{0}'. Please choose one of the following values: &lt;{1}&gt;.</value>
+  </data>
   <data name="MessageHandlerContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while handling a metadata message.</value>
   </data>
@@ -186,8 +189,14 @@
   <data name="MessageValidationPipeline_InvalidMessage" xml:space="preserve">
     <value>Message of type '{0}' is not valid: {1} validation error(s) found.</value>
   </data>
+  <data name="MessageValidator_UnsupportedMessageType" xml:space="preserve">
+    <value>Cannot validate message of type '{0}' because this validator only supports messages of type '{1}'.</value>
+  </data>
   <data name="Message_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Two or more attributes declared on message '{0}' are assignable to '{1}'.</value>
+  </data>
+  <data name="Message_ValidatorAlreadyRegisterd" xml:space="preserve">
+    <value>Another validator for message of type '{0}' has already been registered.</value>
   </data>
   <data name="MethodAttributeProvider_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Cannot obtain single attribute of type '{0}' declared on method '{1}' because multiple attributes are of type '{0}'.</value>
@@ -203,6 +212,27 @@
   </data>
   <data name="NullStream_PublishNotSupported" xml:space="preserve">
     <value>Cannot publish event of type '{0}': events can only be published while a MicroProcessor is handling a message or executing a query.</value>
+  </data>
+  <data name="Property_InstructionInfo" xml:space="preserve">
+    <value>Please make sure exactly one public property that has a getter and a setter is decorated with this attribute.</value>
+  </data>
+  <data name="Property_MissingGetMethod" xml:space="preserve">
+    <value>Illegal use of attribute '{0}' in class '{1}': property '{2}' must have a getter.</value>
+  </data>
+  <data name="Property_MissingSetMethod" xml:space="preserve">
+    <value>Illegal use of attribute '{0}' in class '{1}': property '{2}' must have a setter.</value>
+  </data>
+  <data name="Property_PropertyIndexerFound" xml:space="preserve">
+    <value>Illegal use of attribute '{0}' in class '{1}': cannot declare this attribute on an indexer ({2}).</value>
+  </data>
+  <data name="Property_PropertyNotFound" xml:space="preserve">
+    <value>Missing declaration of attribute '{0}' on a property in class '{1}'.</value>
+  </data>
+  <data name="Property_TooManyPropertiesFound" xml:space="preserve">
+    <value>Illegal use of attribute '{0}' in class '{1}': multiple properties ({2}) have been decorated with the attribute where only one is allowed.</value>
+  </data>
+  <data name="Property_WrongPropertyType" xml:space="preserve">
+    <value>Illegal use of attribute '{0}' in class '{1}': property '{2}' must be of type '{3}'.</value>
   </data>
   <data name="QueryContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while executing a query.</value>

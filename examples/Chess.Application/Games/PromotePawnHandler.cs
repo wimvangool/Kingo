@@ -1,23 +1,22 @@
 ﻿using System.Threading.Tasks;
 using Kingo.Messaging;
-using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Games
 {
-    public sealed class PromotePawnHandler : MessageHandler<PromotePawnCommand>
+    public sealed class PromotePawnHandler : IMessageHandler<PromotePawnCommand>
     {
         private readonly IGameRepository _games;
 
-        public PromotePawnHandler([NotNull] IGameRepository games)
+        public PromotePawnHandler(IGameRepository games)
         {
             _games = games;
         }
 
-        public override async Task HandleAsync([NotNull] PromotePawnCommand message)
+        public async Task HandleAsync(PromotePawnCommand message, IMicroProcessorContext context)
         {
             var game = await _games.GetByKeyAsync(message.GameId);
 
-            game.PromotePawn(Session.Current.PlayerId, message.PromoteTo);
+            game.PromotePawn(Session.Current.UserId, message.PromoteTo);
         }
     }
 }

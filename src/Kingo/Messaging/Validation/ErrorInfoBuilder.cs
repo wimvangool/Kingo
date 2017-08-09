@@ -102,18 +102,14 @@ namespace Kingo.Messaging.Validation
         /// </summary>
         /// <param name="errorMessages">A list of error messages.</param>
         /// <returns>A single error message.</returns>
-        protected virtual string ConvertToSingleErrorMessage(SortedErrorMessageList errorMessages)
-        {
-            return errorMessages.Count == 0 ? null : errorMessages.First().Value;
-        }
+        protected virtual string ConvertToSingleErrorMessage(SortedErrorMessageList errorMessages) =>
+            errorMessages.Count == 0 ? null : errorMessages.First().Value;
 
         /// <summary>
         /// Creates and returns a new <see cref="ErrorInfo"/> instance containing all added error messages.
         /// </summary>
         /// <returns>A new <see cref="ErrorInfo"/> instance.</returns>
-        protected virtual ErrorInfo BuildDataErrorInfo(IEnumerable<KeyValuePair<string, string>> memberErrors, string instanceError)
-        {
-            return new ErrorInfo(memberErrors, instanceError);
-        }        
+        protected virtual ErrorInfo BuildDataErrorInfo(IEnumerable<KeyValuePair<string, string>> memberErrors, string instanceError) =>
+            new ErrorInfo(memberErrors, instanceError);
     }
 }

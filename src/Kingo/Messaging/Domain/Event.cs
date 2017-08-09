@@ -1,11 +1,12 @@
-﻿using Kingo.Messaging.Validation;
+﻿using System;
 
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// Serves as a base-class implementation of the <see cref="IEvent"/> interface.
     /// </summary>
-    public abstract class Event : Message, IEvent
+    [Serializable]
+    public abstract class Event : IEvent
     {
         IEvent IEvent.UpdateToLatestVersion() =>
             UpdateToLatestVersion();
@@ -21,6 +22,6 @@ namespace Kingo.Messaging.Domain
 
         /// <inheritdoc />
         public override string ToString() =>
-            GetType().FriendlyName();
+            GetType().FriendlyName();        
     }
 }

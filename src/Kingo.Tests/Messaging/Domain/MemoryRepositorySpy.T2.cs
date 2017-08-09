@@ -9,14 +9,14 @@ namespace Kingo.Messaging.Domain
         where TKey : struct, IEquatable<TKey>
         where TAggregate : class, IAggregateRoot<TKey>
     {
-        private readonly List<IChangeSet<TKey>> _changeSets;
+        private readonly List<IChangeSet<TKey>> _changeSets;        
         private int _requiresFlushCount;
         private int _flushCount;
 
         public MemoryRepositorySpy(IEnumerable<TAggregate> aggregates) :
-            base(aggregates)
+            base(MemoryRepositoryBehavior.StoreSnapshots, aggregates)
         {
-            _changeSets = new List<IChangeSet<TKey>>();
+            _changeSets = new List<IChangeSet<TKey>>();           
         }
 
         public override bool RequiresFlush()

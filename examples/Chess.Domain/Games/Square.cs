@@ -137,7 +137,7 @@ namespace Kingo.Samples.Chess.Games
 
         #region [====== Parse ======]
 
-        public static Square Parse([NotNull] [StringLength(2, 2)] string square)
+        public static Square Parse(string square)
         {
             return new Square(ParseFileIndex(square[0]), ParseRankIndex(square[1]));
         }

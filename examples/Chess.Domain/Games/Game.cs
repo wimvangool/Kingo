@@ -1,15 +1,11 @@
 ﻿using System;
 using Kingo.Messaging.Domain;
 using Kingo.Samples.Chess.Resources;
-using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Games
 {    
-    public sealed class Game : EventStream<Guid, int>
-    {
-        private Guid _id;
-        private int _version;
-
+    public sealed class Game : AggregateRoot<Guid, int>
+    {        
         private Player _white;
         private Player _black;
         private ChessBoard _board;
@@ -18,40 +14,33 @@ namespace Kingo.Samples.Chess.Games
         internal Game(GameStartedEvent @event)
             : base(@event)
         {
-            Handle(@event);            
+            _white = new ActivePlayer(this, @event.WhitePlayerId, ColorOfPiece.White);
+            _black = new PassivePlayer(this, @event.BlackPlayerId, ColorOfPiece.Black);
+            _board = ChessBoard.SetupNewGame(this);
         }
 
-        internal ChessBoard Board
+        internal ChessBoard Board =>
+            _board;
+
+        protected override int NextVersion() =>
+            Version + 1;
+
+        protected override ISnapshot<Guid, int> TakeSnapshot()
         {
-            get { return _board; }
+            throw new NotImplementedException();
         }
-
-        #region [====== Id & Version ======]
-
-        public override Guid Id
-        {
-            get { return _id; }
-        }
-
-        protected override int Version
-        {
-            get { return _version; }
-            set { _version = value; }
-        }
-
-        #endregion
 
         #region [====== CommandHandlers ======]
 
-        public void MovePiece(Guid playerId, [NotNull] Square from, [NotNull] Square to)
+        public void MovePiece(Guid playerId, Square from, Square to)
         {
             if (IsEndState(_state))
             {
-                throw NewGameEndedException(_id);
+                throw NewGameEndedException(Id);
             }
             if (_state == GameState.AwaitingPawnPromotion)
             {
-                throw NewAwaitingPawnPromotionException(_id);
+                throw NewAwaitingPawnPromotionException(Id);
             }
             SelectPlayer(playerId).MovePiece(from, to);
         }
@@ -60,7 +49,7 @@ namespace Kingo.Samples.Chess.Games
         {            
             if (_state != GameState.AwaitingPawnPromotion)
             {
-                throw NewCannotPromotePawnException(_id);
+                throw NewCannotPromotePawnException(Id);
             }
             SelectPlayer(playerId).PromotePawn(promoteTo);
         }        
@@ -69,7 +58,7 @@ namespace Kingo.Samples.Chess.Games
         {
             if (IsEndState(_state))
             {
-                throw NewGameEndedException(_id);
+                throw NewGameEndedException(Id);
             }
             SelectPlayer(playerId).Forfeit();
         }
@@ -84,7 +73,7 @@ namespace Kingo.Samples.Chess.Games
             {
                 return _black;
             }
-            throw NewUnknownPlayerException(_id, playerId);
+            throw NewUnknownPlayerException(Id, playerId);
         }
 
         private static bool IsEndState(GameState state)
@@ -99,53 +88,44 @@ namespace Kingo.Samples.Chess.Games
         {
             var messageFormat = ExceptionMessages.Game_GameEnded;
             var message = string.Format(messageFormat, gameId);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
 
         private static Exception NewAwaitingPawnPromotionException(Guid gameId)
         {
             var messageFormat = ExceptionMessages.Game_AwaitingPawnPromotion;
             var message = string.Format(messageFormat, gameId);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
 
         private static Exception NewCannotPromotePawnException(Guid gameId)
         {
             var messageFormat = ExceptionMessages.Game_CannotPromotePawn;
             var message = string.Format(messageFormat, gameId);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
 
         private static Exception NewUnknownPlayerException(Guid gameId, Guid playerId)
         {
             var messageFormat = ExceptionMessages.Game_UnknownPlayer;
             var message = string.Format(messageFormat, playerId, gameId);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
 
         #endregion
 
         #region [====== EventHandlers ======]
 
-        protected override void RegisterEventHandlers()
+        protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers)
         {
-            RegisterEventHandler<GameStartedEvent>(Handle);
-            RegisterEventHandler<PieceMovedEvent>(Handle);
-            RegisterEventHandler<EnPassantHitEvent>(Handle);
-            RegisterEventHandler<CastlingPerformedEvent>(Handle);
-            RegisterEventHandler<PawnMovedToEightRankEvent>(Handle);
-            RegisterEventHandler<PawnPromotedEvent>(Handle);
-            RegisterEventHandler<GameForfeitedEvent>(Handle);
-        }
-
-        private void Handle(GameStartedEvent @event)
-        {
-            _id = @event.GameId;
-            _version = @event.GameVersion;
-            _white = new ActivePlayer(this, @event.WhitePlayerId, ColorOfPiece.White);
-            _black = new PassivePlayer(this, @event.BlackPlayerId, ColorOfPiece.Black);
-            _board = ChessBoard.SetupNewGame(this);
-        }      
+            return eventHandlers
+                .Register<PieceMovedEvent>(Handle)
+                .Register<EnPassantHitEvent>(Handle)
+                .Register<CastlingPerformedEvent>(Handle)
+                .Register<PawnMovedToEightRankEvent>(Handle)
+                .Register<PawnPromotedEvent>(Handle)
+                .Register<GameForfeitedEvent>(Handle);
+        }                   
 
         private void Handle(PieceMovedEvent @event)
         {            
@@ -190,6 +170,6 @@ namespace Kingo.Samples.Chess.Games
             _state = GameState.Forfeited;
         }
 
-        #endregion
+        #endregion        
     }
 }

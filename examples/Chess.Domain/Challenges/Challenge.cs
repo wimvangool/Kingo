@@ -5,44 +5,34 @@ using Kingo.Samples.Chess.Games;
 using Kingo.Samples.Chess.Resources;
 
 namespace Kingo.Samples.Chess.Challenges
-{
-    [Serializable]
+{    
     public sealed class Challenge : AggregateRoot<Guid, int>
-    {
-        private readonly Guid _id;
+    {        
         private readonly Guid _senderId;
         private readonly Guid _receiverId;
-
-        private ChallengeState _state;
-        private int _version;
+        private ChallengeState _state;        
 
         internal Challenge(PlayerChallengedEvent @event)
             : base(@event)
-        {
-            _id = @event.ChallengeId;
+        {            
             _senderId = @event.SenderId;
             _receiverId = @event.ReceiverId;
-
-            _state = ChallengeState.Pending;
-            _version = @event.ChallengeVersion;
+            _state = ChallengeState.Pending;            
         }
 
-        public override Guid Id
-        {
-            get { return _id; }
-        }
+        protected override int NextVersion() =>
+            Version + 1;
 
-        protected override int Version
+        protected override ISnapshot<Guid, int> TakeSnapshot()
         {
-            get { return _version; }
-            set { _version = value; }
+            throw new NotImplementedException();
         }
 
         public void Accept()
         {
-            if (!_receiverId.Equals(Session.Current.PlayerId))
+            if (!_receiverId.Equals(Session.Current.UserId))
             {
-                throw NewPlayerCannotAcceptChallengeException(Session.Current.PlayerName);                
+                throw NewPlayerCannotAcceptChallengeException(Session.Current.UserName);                
             }
             if (_state == ChallengeState.Accepted)
             {
@@ -54,21 +44,21 @@ namespace Kingo.Samples.Chess.Challenges
             }
             _state = ChallengeState.Accepted;
 
-            Publish(new ChallengeAcceptedEvent(_id, NextVersion()));                
+            Publish(new ChallengeAcceptedEvent());                
         }
 
         private static Exception NewPlayerCannotAcceptChallengeException(string playerName)
         {
             var messageFormat = ExceptionMessages.Challenges_PlayerCannotAcceptChallenge;
             var message = string.Format(messageFormat, playerName);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
 
         public void Reject()
         {
-            if (!_receiverId.Equals(Session.Current.PlayerId))
+            if (!_receiverId.Equals(Session.Current.UserId))
             {
-                throw NewPlayerCannotAcceptChallengeException(Session.Current.PlayerName);
+                throw NewPlayerCannotAcceptChallengeException(Session.Current.UserName);
             }
             if (_state == ChallengeState.Accepted)
             {
@@ -80,13 +70,11 @@ namespace Kingo.Samples.Chess.Challenges
             }
             _state = ChallengeState.Rejected;
 
-            Publish(new ChallengeRejectedEvent(_id, NextVersion()));                
+            Publish(new ChallengeRejectedEvent());                
         }
 
-        public Game StartGame()
-        {
-            return new Game(CreateGameStartedEvent());
-        }
+        public Game StartGame() =>
+            new Game(CreateGameStartedEvent());
 
         private GameStartedEvent CreateGameStartedEvent()
         {
@@ -99,14 +87,10 @@ namespace Kingo.Samples.Chess.Challenges
             return new GameStartedEvent(Guid.NewGuid(), 1, _receiverId, _senderId);
         }
 
-        private static Exception NewChallengeAlreadyAcceptedException()
-        {
-            return new DomainException(ExceptionMessages.Challenges_AlreadyAccepted);
-        }
+        private static Exception NewChallengeAlreadyAcceptedException() =>
+            new IllegalOperationException(ExceptionMessages.Challenges_AlreadyAccepted);
 
-        private static Exception NewChallengeAlreadyRejectedException()
-        {
-            return new DomainException(ExceptionMessages.Challenges_AlreadyRejected);
-        }        
+        private static Exception NewChallengeAlreadyRejectedException() =>
+            new IllegalOperationException(ExceptionMessages.Challenges_AlreadyRejected);
     }
 }

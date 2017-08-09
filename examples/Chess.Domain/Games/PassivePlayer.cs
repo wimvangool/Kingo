@@ -17,15 +17,11 @@ namespace Kingo.Samples.Chess.Games
             _color = color;
         }
 
-        protected override Guid PlayerId
-        {
-            get { return _playerId; }
-        }
+        protected override Guid PlayerId =>
+            _playerId;
 
-        public override Player SwitchTurn()
-        {
-            return new ActivePlayer(_game, _playerId, _color);
-        }
+        public override Player SwitchTurn() =>
+            new ActivePlayer(_game, _playerId, _color);
 
         public override void MovePiece(Square from, Square to)
         {
@@ -46,7 +42,7 @@ namespace Kingo.Samples.Chess.Games
         {
             var messageFormat = ExceptionMessages.Game_NotPlayersTurn;
             var message = string.Format(messageFormat, playerId);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
     }
 }

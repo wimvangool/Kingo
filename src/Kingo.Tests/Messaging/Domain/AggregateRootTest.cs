@@ -258,9 +258,9 @@ namespace Kingo.Messaging.Domain
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void LoadFromHistory_Throws_IfEventVersionIsNotHigherThanAggregateVersion_And_AggregateHasNoEventHandlers()
+        public void LoadFromHistory_Throws_IfEventVersionIsNotHigherThanVersion_And_AggregateHasNoEventHandlers()
         {
-            IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithoutEventHandlers();
+            IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
 
             try
@@ -283,7 +283,7 @@ namespace Kingo.Messaging.Domain
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void LoadFromHistory_Throws_IfEventVersionIsNotHigherThanAggregateVersion_And_AggregateHasEventHandlers()
+        public void LoadFromHistory_Throws_IfEventVersionIsNotHigherThanVersion_And_AggregateHasEventHandlers()
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();

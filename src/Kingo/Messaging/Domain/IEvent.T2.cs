@@ -15,7 +15,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// The identifier of the aggregate that published this event.
         /// </summary>
-        TKey Id
+        TKey AggregateId
         {
             get;
             set;
@@ -24,7 +24,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// The version of the aggregate at the time it published this event.
         /// </summary>
-        TVersion Version
+        TVersion AggregateVersion
         {
             get;
             set;

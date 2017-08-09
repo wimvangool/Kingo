@@ -1,19 +1,18 @@
 ﻿using System.Threading.Tasks;
 using Kingo.Messaging;
-using PostSharp.Patterns.Contracts;
 
 namespace Kingo.Samples.Chess.Challenges
 {
-    public sealed class RejectChallengeHandler : MessageHandler<RejectChallengeCommand>
+    public sealed class RejectChallengeHandler : IMessageHandler<RejectChallengeCommand>
     {
         private readonly IChallengeRepository _challenges;
 
-        public RejectChallengeHandler([NotNull] IChallengeRepository challenges)
+        public RejectChallengeHandler(IChallengeRepository challenges)
         {            
             _challenges = challenges;
         }
 
-        public override async Task HandleAsync([NotNull] RejectChallengeCommand message)
+        public async Task HandleAsync(RejectChallengeCommand message, IMicroProcessorContext context)
         {            
             var challenge = await _challenges.GetByIdAsync(message.ChallengeId);
 

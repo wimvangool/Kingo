@@ -3,9 +3,9 @@
 namespace Kingo.Messaging.Validation
 {
     /// <summary>
-    /// Represents a <see cref="IMessageValidator{T}" /> that is implemented using constraints.
+    /// Represents a <see cref="IRequestMessageValidator{TMessage}" /> that is implemented using constraints.
     /// </summary>    
-    public class ConstraintValidator<TMessage> : MemberConstraintSet<TMessage>, IMessageValidator<TMessage> where TMessage : class
+    public class ConstraintValidator<TMessage> : MemberConstraintSet<TMessage>, IRequestMessageValidator<TMessage> where TMessage : class
     {                
         private readonly IFormatProvider _formatProvider;
 

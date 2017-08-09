@@ -8,10 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 
 [assembly: AssemblyTitle("Kingo.TestEngine")]
-[assembly: AssemblyDescription("Represents a test-engine for projects that are built using messaging-patterns.")]
-[assembly: AssemblyVersion("3.0.0")]
-[assembly: AssemblyFileVersion("3.0.0")]
-[assembly: AssemblyInformationalVersion("3.0.0-beta")]
+[assembly: AssemblyDescription("Enables you to write BDD-style scenario tests for event-driven applications that are built using the Kingo framework.")]
 
 [assembly: InternalsVisibleTo("Kingo.TestEngine.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

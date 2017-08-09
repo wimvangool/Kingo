@@ -12,33 +12,17 @@ namespace Kingo.Messaging.Domain
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
-        TKey ISnapshot<TKey, TVersion>.Id =>
-            Id;
+        TKey ISnapshot<TKey, TVersion>.AggregateId =>
+            AggregateIdAttribute.GetValue<TKey>(this);        
 
-        /// <summary>
-        /// Gets or sets the identifier of the associated aggregate.
-        /// </summary>
-        public abstract TKey Id
-        {
-            get;
-            set;
-        }
-
-        TVersion ISnapshot<TKey, TVersion>.Version =>
-
-            Version;
-
-        /// <summary>
-        /// Gets or sets the version of the associated aggregate.
-        /// </summary>
-        public abstract TVersion Version
-        {
-            get;
-            set;
-        }
+        TVersion ISnapshot<TKey, TVersion>.AggregateVersion =>
+            AggregateVersionAttribute.GetValue<TVersion>(this);                
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{GetType().FriendlyName()} [Id = {Id}, Version = {Version}]";
+            ToString(AggregateIdAttribute.GetPropertyName<TKey>(this), AggregateVersionAttribute.GetPropertyName<TVersion>(this));
+
+        private string ToString(string aggregateIdProperty, string aggregateVersionProperty) =>
+            $"{GetType().FriendlyName()} ({aggregateIdProperty}, {aggregateVersionProperty})";
     }
 }

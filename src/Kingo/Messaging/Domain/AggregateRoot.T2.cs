@@ -33,8 +33,8 @@ namespace Kingo.Messaging.Domain
             {
                 throw new ArgumentNullException(nameof(@event));
             }
-            _id = @event.Id;
-            _version = @event.Version;
+            _id = @event.AggregateId;
+            _version = @event.AggregateVersion;
             _pendingEvents = new List<IEvent>() { @event };
         }
 
@@ -51,8 +51,8 @@ namespace Kingo.Messaging.Domain
             {
                 throw new ArgumentNullException(nameof(snapshot));
             }
-            _id = snapshot.Id;
-            _version = snapshot.Version;
+            _id = snapshot.AggregateId;
+            _version = snapshot.AggregateVersion;
             _pendingEvents = new List<IEvent>();
         }
 
@@ -167,14 +167,15 @@ namespace Kingo.Messaging.Domain
 
             #endregion
 
-            #region [====== Apply ======]
+            #region [====== Apply ======]            
 
             internal void ApplyOld(IEnumerable<IEvent> events)
             {
-                foreach (var @event in UpdateToLatestVersion(events).OrderBy(e => e.Version))
+                foreach (var @event in UpdateToLatestVersion(events).OrderBy(e => e.AggregateVersion))
                 {                    
                     if (Apply(@event))
                     {
+                        _aggregate.Version = @event.AggregateVersion;
                         continue;
                     }
                     throw NewMissingEventHandlerException(@event.GetType());
@@ -201,7 +202,7 @@ namespace Kingo.Messaging.Domain
             {
                 try
                 {
-                    return (IEvent<TKey, TVersion>)@event;
+                    return (IEvent<TKey, TVersion>) @event;
                 }
                 catch (InvalidCastException)
                 {
@@ -210,12 +211,10 @@ namespace Kingo.Messaging.Domain
             }           
 
             internal bool Apply(IEvent<TKey, TVersion> @event)
-            {
-                Action<object> eventHandler;
-
-                if (_aggregate.Id.Equals(@event.Id))
+            {                
+                if (_aggregate.Id.Equals(@event.AggregateId))
                 {
-                    _aggregate.Version = @event.Version;                    
+                    Action<object> eventHandler;
 
                     if (_eventHandlers.TryGetValue(@event.GetType(), out eventHandler))
                     {
@@ -244,7 +243,7 @@ namespace Kingo.Messaging.Domain
             private static Exception NewInvalidIdException(IEvent<TKey, TVersion> @event, TKey id)
             {
                 var messageFormat = ExceptionMessages.AggregateRoot_InvalidIdOnEvent;
-                var message = string.Format(messageFormat, @event.Id, @event.GetType().FriendlyName(), id);
+                var message = string.Format(messageFormat, @event.AggregateId, @event.GetType().FriendlyName(), id);
                 return new ArgumentException(message);
             }
 
@@ -305,7 +304,14 @@ namespace Kingo.Messaging.Domain
 
         #endregion
 
-        #region [====== Publish & FlushEvents ======]        
+        #region [====== Publish & FlushEvents ======]
+
+        /// <summary>
+        /// Indicates whether or not every event that is published by this aggregate is also immediately applied
+        /// to itself by invoking the appropriate event handler. Default is <c>false</c>.
+        /// </summary>
+        protected virtual bool ApplyEventsToSelf =>
+            false;        
 
         /// <summary>
         /// Publishes the specified <paramref name="event"/> and updates the version of this aggregate.
@@ -325,11 +331,13 @@ namespace Kingo.Messaging.Domain
             {
                 throw NewAggregateRemovedException(GetType(), @event.GetType());
             }            
-            @event.Id = Id;
-            @event.Version = NextVersion();
+            @event.AggregateId = Id;
+            @event.AggregateVersion = Version = NextVersion();
 
-            EventHandlers.Apply(@event);
-
+            if (ApplyEventsToSelf)
+            {
+                EventHandlers.Apply(@event);
+            }
             if (OnEventPublished(new EventPublishedEventArgs<TEvent>(@event)))
             {
                 return;

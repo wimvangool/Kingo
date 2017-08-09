@@ -11,13 +11,15 @@ namespace Kingo.Messaging.Domain
             _aggregateHasEventHandlers = aggregateHasEventHandlers;
         }
 
-        public override Guid Id
+        [AggregateId]
+        public Guid Id
         {
             get;
             set;
         }
 
-        public override int Version
+        [AggregateVersion]
+        public int Version
         {
             get;
             set;

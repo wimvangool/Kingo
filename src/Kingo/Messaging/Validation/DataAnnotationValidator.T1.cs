@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations;
 namespace Kingo.Messaging.Validation
 {
     /// <summary>
-    /// Represents a <see cref="IMessageValidator{T}" /> that validates an instance through
+    /// Represents a <see cref="IRequestMessageValidator{TMessage}" /> that validates an instance through
     /// all <see cref="ValidationAttribute">ValidationAttributes</see> that have been declared on the
     /// members of an instance.
     /// </summary>    
-    public class DataAnnotationValidator : IMessageValidator<object>
+    public class DataAnnotationValidator : IRequestMessageValidator<object>
     {                    
         /// <summary>
         /// Initializes a new instance of the <see cref="DataAnnotationValidator" /> class.

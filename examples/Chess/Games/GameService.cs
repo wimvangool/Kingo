@@ -6,7 +6,7 @@ namespace Kingo.Samples.Chess.Games
     {
         #region [====== Write Methods ======]
 
-        public Task MovePiece(MovePieceCommand command)
+        public Task MovePieceAsync(MovePieceCommand command)
         {
             return HandleAsync(command);
         }

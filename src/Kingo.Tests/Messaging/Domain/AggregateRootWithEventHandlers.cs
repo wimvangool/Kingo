@@ -28,6 +28,9 @@ namespace Kingo.Messaging.Domain
             };
         }
 
+        protected override bool ApplyEventsToSelf =>
+            true;
+
         protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers)
         {
             eventHandlers = eventHandlers.Register<ValueChangedEvent>(OnValueChanged);
@@ -38,7 +41,6 @@ namespace Kingo.Messaging.Domain
             }
             return eventHandlers;
         }
-
 
         public override void ChangeValue(int newValue)
         {

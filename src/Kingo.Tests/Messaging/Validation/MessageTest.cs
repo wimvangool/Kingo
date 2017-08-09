@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,17 +8,11 @@ namespace Kingo.Messaging.Validation
 {
     [TestClass]
     public sealed partial class MessageTest
-    {
-        #region [====== SomeMessage ======]
-
-        private sealed class SomeMessage : Message { }
-
-        #endregion
-
-        #region [====== MessageWithPrimitiveMembers ======]
+    {        
+        #region [====== MessageWithValidator ======]
 
         [DataContract]
-        private sealed class MessageWithPrimitiveMembers : Message
+        private sealed class MessageWithValidator : RequestMessage
         {
             [DataMember]
             internal readonly int IntValue;
@@ -25,18 +20,15 @@ namespace Kingo.Messaging.Validation
             [DataMember]
             internal readonly List<int> IntValues;
 
-            public MessageWithPrimitiveMembers(int intValue, IEnumerable<int> values)
+            public MessageWithValidator(int intValue, IEnumerable<int> values)
             {
                 IntValue = intValue;                
                 IntValues = new List<int>(values);
             }
 
-            protected override ValidateMethod Implement(ValidateMethod method) =>
-                base.Implement(method).Add(this, CreateValidator, true);
-
-            private static IMessageValidator<MessageWithPrimitiveMembers> CreateValidator()
+            protected override IRequestMessageValidator CreateMessageValidator()
             {
-                return new DelegateValidator<MessageWithPrimitiveMembers>((message, haltOnFirstError) =>
+                return base.CreateMessageValidator().Append<MessageWithValidator>((message, haltOnFirstError) =>
                 {
                     const string errorMessage = "Error.";
 
@@ -56,26 +48,15 @@ namespace Kingo.Messaging.Validation
                         errorInfoBuilder.Add(errorMessage, nameof(message.IntValues));
                     }
                     return errorInfoBuilder.BuildErrorInfo();
-                });                
-            }
+                });
+            }            
         }
 
         #endregion
 
-        #region [====== MessageWithMemberOfOwnType ======]
+        #region [====== MessageWithoutValidator ======]
 
-        [DataContract]
-        private sealed class MessageWithMemberOfOwnType : Message
-        {
-            [DataMember] internal readonly int Value;
-            [DataMember] internal readonly MessageWithMemberOfOwnType Child;           
-
-            public MessageWithMemberOfOwnType(int value, MessageWithMemberOfOwnType child)
-            {
-                Value = value;
-                Child = child;
-            }
-        }
+        private sealed class MessageWithoutValidator { }
 
         #endregion                
 
@@ -84,7 +65,7 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         public void Validate_ReturnsNoErrors_IfMessageIsValid()
         {
-            var message = new MessageWithPrimitiveMembers(1, Enumerable.Range(0, 10));
+            var message = new MessageWithValidator(1, Enumerable.Range(0, 10));
             var errorInfo = message.Validate();
 
             Assert.IsNotNull(errorInfo);
@@ -94,7 +75,7 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         public void Validate_ReturnsExpectedErrors_IfMessageIsNotValid()
         {
-            var message = new MessageWithPrimitiveMembers(0, Enumerable.Empty<int>());
+            var message = new MessageWithValidator(0, Enumerable.Empty<int>());
             var errorInfo = message.Validate();
 
             Assert.IsNotNull(errorInfo);
@@ -104,6 +85,63 @@ namespace Kingo.Messaging.Validation
             Assert.AreEqual("Error.", errorInfo.MemberErrors["IntValues"]);
         }
 
-        #endregion        
+        #endregion
+
+        #region [====== TryGetValidator & Register ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void TryGetValidator_Throws_IfMessageTypeIsNull()
+        {
+            IRequestMessageValidator validator;
+
+            RequestMessage.TryGetMessageValidator(null, out validator);
+        }
+
+        [TestMethod]
+        public void TryGetValidator_ReturnsFalse_IfNoValidatorHasBeenRegisteredForSpecifiedMessageType()
+        {
+            IRequestMessageValidator validator;
+
+            Assert.IsFalse(RequestMessage.TryGetMessageValidator(typeof(MessageWithoutValidator), out validator));
+            Assert.IsNull(validator);
+        }
+
+        [TestMethod]
+        public void TryGetValidator_ReturnsTrue_IfValidatorHasBeenRegisteredForTheSpecifiedMessageType()
+        {
+            Assert.IsTrue(new MessageWithValidator(0, Enumerable.Empty<int>()).Validate().HasErrors);
+            IRequestMessageValidator validator;
+
+            Assert.IsTrue(RequestMessage.TryGetMessageValidator(typeof(MessageWithValidator), out validator));
+            Assert.IsNotNull(validator);
+            Assert.AreEqual("DelegateValidator<MessageWithValidator>", validator.ToString());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RegisterValidator_Throws_IfValidatorIsNull()
+        {
+            RequestMessage.Register(null as IRequestMessageValidator<MessageWithValidator>);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterValidator_Throws_IfValidatorForSpecifiedMessageTypeHasAlreadyBeenRegistered()
+        {
+            Assert.IsTrue(new MessageWithValidator(0, Enumerable.Empty<int>()).Validate().HasErrors);
+
+            try
+            {
+                RequestMessage.Register<MessageWithValidator>((message, haltOnFirstError) => ErrorInfo.Empty);
+            }
+            catch (ArgumentException exception)
+            {
+                Assert.IsTrue(exception.Message.StartsWith("Another validator for message of type 'MessageWithValidator' has already been registered."));
+                throw;
+            }
+        }
+
+        #endregion
     }
 }

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="6b7a54ee-a2d2-40d5-ab49-0e58045c6122" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
   <layers>
-    <layer Id="8fd2c952-46b4-4da2-a4de-206d5d228903" name="Api">
+    <layer Id="8fd2c952-46b4-4da2-a4de-206d5d228903" name="Contracts">
       <references>
-        <reference Id="ee745854-0124-4c35-8c3b-321f937dd4ed" name="02.Chess.Api">
-          <ArtifactNode Label="02.Chess.Api" Category="CodeSchema_Project" Id="(Assembly=../Chess.Api/02.Chess.Api.csproj)">
+        <reference Id="ed2fb73a-f519-482e-89b2-5cc364916bd7" name="02.Chess.Contracts">
+          <ArtifactNode Label="02.Chess.Contracts" Category="CodeSchema_Project" Id="(Assembly=../Chess.Contracts/02.Chess.Contracts.csproj)">
             <Category Ref="File" />
           </ArtifactNode>
-          <ExpandedNode Id="(Assembly=Kingo.Samples.Chess.Api)" Label="Kingo.Samples.Chess.Api.dll" Category="CodeSchema_Assembly">
+          <ExpandedNode Id="(Assembly=Kingo.Samples.Chess.Contracts)" Label="Kingo.Samples.Chess.Contracts.dll" Category="CodeSchema_Assembly">
             <Category Ref="FileSystem.Category.FileOfType.dll" />
             <LinkCategory Ref="Produces" />
             <LinkCategory Ref="Represents" />
@@ -22,7 +22,7 @@
         </dependencyFromLayerToLayer>
       </dependencyToLayers>
       <childLayers>
-        <layer Id="8c2282f6-b26f-4188-ac36-716cb6dd7b11" name="Network Layer">
+        <layer Id="8c2282f6-b26f-4188-ac36-716cb6dd7b11" name="Endpoints">
           <dependencyToLayers>
             <dependencyFromLayerToLayer Id="44a231e2-9fd9-4ee6-916a-8d4f6a5079bb" direction="Forward">
               <layerMoniker Id="9dde869d-b72a-4453-8902-3820fdee7c74" />
@@ -32,9 +32,11 @@
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
-            <reference Id="e5108423-1cc4-44ad-b5a5-2c394e5223f4" name="02.Chess">
-              <ArtifactNode Label="02.Chess" Category="CodeSchema_Project" Id="(Assembly=../Chess/02.Chess.csproj)" />
-              <ExpandedNode Id="(Assembly=Kingo.Samples.Chess)" Label="Kingo.Samples.Chess.exe" Category="CodeSchema_Assembly">
+            <reference Id="2b0b1f07-c90c-42a8-97b0-ba772b985bb3" name="01.Chess.WcfEndpoint">
+              <ArtifactNode Label="01.Chess.WcfEndpoint" Category="CodeSchema_Project" Id="(Assembly=../Chess/01.Chess.WcfEndpoint.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=Kingo.Samples.Chess.WcfEndpoint)" Label="Kingo.Samples.Chess.WcfEndpoint.exe" Category="CodeSchema_Assembly">
                 <Category Ref="FileSystem.Category.FileOfType.exe" />
                 <LinkCategory Ref="Produces" />
                 <LinkCategory Ref="Represents" />
@@ -42,7 +44,7 @@
             </reference>
           </references>
         </layer>
-        <layer Id="9dde869d-b72a-4453-8902-3820fdee7c74" name="Business Logic Layer">
+        <layer Id="9dde869d-b72a-4453-8902-3820fdee7c74" name="Business Logic">
           <childLayers>
             <layer Id="e60993f0-f31c-4572-bf43-da6d473f131d" name="Application Layer&#xD;&#xA;">
               <dependencyToLayers>
@@ -75,7 +77,7 @@
             </layer>
           </childLayers>
         </layer>
-        <layer Id="a580e463-47dc-406c-a5fa-6c2075e3d48f" name="Data Layer">
+        <layer Id="a580e463-47dc-406c-a5fa-6c2075e3d48f" name="Data Access Layer">
           <dependencyToLayers>
             <dependencyFromLayerToLayer Id="eba6e5e4-836c-466d-a66a-a94faa36da6c" direction="Forward">
               <layerMoniker Id="9dde869d-b72a-4453-8902-3820fdee7c74" />

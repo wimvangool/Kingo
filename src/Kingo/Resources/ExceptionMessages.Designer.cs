@@ -241,11 +241,29 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid behavior specified: &apos;{0}&apos;. Please choose one of the following values: &lt;{1}&gt;..
+        /// </summary>
+        internal static string MemoryRepository_InvalidBehavior {
+            get {
+                return ResourceManager.GetString("MemoryRepository_InvalidBehavior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
         /// </summary>
         internal static string Message_AmbiguousAttributeMatch {
             get {
                 return ResourceManager.GetString("Message_AmbiguousAttributeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another validator for message of type &apos;{0}&apos; has already been registered..
+        /// </summary>
+        internal static string Message_ValidatorAlreadyRegisterd {
+            get {
+                return ResourceManager.GetString("Message_ValidatorAlreadyRegisterd", resourceCulture);
             }
         }
         
@@ -273,6 +291,15 @@ namespace Kingo.Resources {
         internal static string MessageValidationPipeline_InvalidMessage {
             get {
                 return ResourceManager.GetString("MessageValidationPipeline_InvalidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot validate message of type &apos;{0}&apos; because this validator only supports messages of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string MessageValidator_UnsupportedMessageType {
+            get {
+                return ResourceManager.GetString("MessageValidator_UnsupportedMessageType", resourceCulture);
             }
         }
         
@@ -318,6 +345,69 @@ namespace Kingo.Resources {
         internal static string NullStream_PublishNotSupported {
             get {
                 return ResourceManager.GetString("NullStream_PublishNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please make sure exactly one public property that has a getter and a setter is decorated with this attribute..
+        /// </summary>
+        internal static string Property_InstructionInfo {
+            get {
+                return ResourceManager.GetString("Property_InstructionInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: property &apos;{2}&apos; must have a getter..
+        /// </summary>
+        internal static string Property_MissingGetMethod {
+            get {
+                return ResourceManager.GetString("Property_MissingGetMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: property &apos;{2}&apos; must have a setter..
+        /// </summary>
+        internal static string Property_MissingSetMethod {
+            get {
+                return ResourceManager.GetString("Property_MissingSetMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: cannot declare this attribute on an indexer ({2})..
+        /// </summary>
+        internal static string Property_PropertyIndexerFound {
+            get {
+                return ResourceManager.GetString("Property_PropertyIndexerFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing declaration of attribute &apos;{0}&apos; on a property in class &apos;{1}&apos;..
+        /// </summary>
+        internal static string Property_PropertyNotFound {
+            get {
+                return ResourceManager.GetString("Property_PropertyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: multiple properties ({2}) have been decorated with the attribute where only one is allowed..
+        /// </summary>
+        internal static string Property_TooManyPropertiesFound {
+            get {
+                return ResourceManager.GetString("Property_TooManyPropertiesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: property &apos;{2}&apos; must be of type &apos;{3}&apos;..
+        /// </summary>
+        internal static string Property_WrongPropertyType {
+            get {
+                return ResourceManager.GetString("Property_WrongPropertyType", resourceCulture);
             }
         }
         

@@ -10,6 +10,6 @@ namespace Kingo.Samples.Chess.Challenges
     {        
         Task<Challenge> GetByIdAsync(Guid challengeId);
        
-        void Add(Challenge challenge);
+        Task AddAsync(Challenge challenge);
     }
 }

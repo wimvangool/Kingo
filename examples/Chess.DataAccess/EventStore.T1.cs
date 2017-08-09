@@ -30,7 +30,7 @@ namespace Kingo.Samples.Chess
             return command;
         }
 
-        private static IEnumerable<IDomainEvent<Guid, int>> DeserializeEvents(DbDataReader reader, ITypeToContractMap map)
+        private static IEnumerable<IEvent<Guid, int>> DeserializeEvents(DbDataReader reader, ITypeToContractMap map)
         {
             if (reader.HasRows)
             {
@@ -41,13 +41,13 @@ namespace Kingo.Samples.Chess
             }
         }
 
-        private static IDomainEvent<Guid, int> DeserializeEvent(IDataRecord record, ITypeToContractMap map)
+        private static IEvent<Guid, int> DeserializeEvent(IDataRecord record, ITypeToContractMap map)
         {
             var value = record.GetString(0);
             var typeInfo = record.GetString(1);
             var type = map.GetType(typeInfo);
 
-            return (IDomainEvent<Guid, int>) Serializer.Deserialize(value, type);
+            return (IEvent<Guid, int>) Serializer.Deserialize(value, type);
         }
 
         #endregion

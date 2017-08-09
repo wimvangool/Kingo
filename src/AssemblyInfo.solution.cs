@@ -3,5 +3,9 @@ using System.Resources;
 
 [assembly: AssemblyCompany("Wim van Gool")]
 [assembly: AssemblyProduct("Kingo Framework")]
-[assembly: AssemblyCopyright("Copyright © Wim van Gool 2016")]
+[assembly: AssemblyCopyright("Copyright © Wim van Gool 2017")]
 [assembly: NeutralResourcesLanguage("en-US")]
+
+[assembly: AssemblyVersion("3.1")]
+[assembly: AssemblyFileVersion("3.1.0.0")]
+[assembly: AssemblyInformationalVersion("3.1.0-beta")]

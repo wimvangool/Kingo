@@ -48,10 +48,10 @@ namespace Kingo.Messaging.Domain
 
             public abstract void AddToChangeSet(ChangeSet<TKey> changeSet);
 
-            public AggregateState Commit(UnitOfWork<TKey, TAggregate> unitOfWork)
+            public AggregateState Commit(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory)
             {
                 var oldState = this;
-                var newState = CreateCommittedState(unitOfWork);
+                var newState = CreateCommittedState(unitOfWork, keepAggregatesInMemory);
                     
                 oldState.Exit();
                 newState.Enter();
@@ -59,7 +59,7 @@ namespace Kingo.Messaging.Domain
                 return newState;
             }
 
-            protected abstract AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork);
+            protected abstract AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory);
 
             public abstract Task<TAggregate> GetByIdAsync();
 
@@ -99,7 +99,7 @@ namespace Kingo.Messaging.Domain
 
             public override void AddToChangeSet(ChangeSet<TKey> changeSet) { }
 
-            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork) =>
+            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory) =>
                 new NullState(unitOfWork, _id);
 
             public override async Task<TAggregate> GetByIdAsync()
@@ -174,8 +174,14 @@ namespace Kingo.Messaging.Domain
 
             public override void AddToChangeSet(ChangeSet<TKey> changeSet) { }
 
-            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork) =>
-                new UnmodifiedState(unitOfWork, _aggregate);
+            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory)
+            {
+                if (keepAggregatesInMemory)
+                {
+                    return new UnmodifiedState(unitOfWork, _aggregate);
+                }
+                return new NullState(unitOfWork, AggregateId);
+            }               
 
             public override Task<TAggregate> GetByIdAsync() =>
                 AsyncMethod.Value(_aggregate);
@@ -242,8 +248,14 @@ namespace Kingo.Messaging.Domain
             public override void AddToChangeSet(ChangeSet<TKey> changeSet) =>
                 changeSet.AddAggregateToInsert(_aggregate, _events);
 
-            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork) =>
-                new UnmodifiedState(unitOfWork, _aggregate);
+            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory)
+            {
+                if (keepAggregatesInMemory)
+                {
+                    return new UnmodifiedState(unitOfWork, _aggregate);
+                }
+                return new NullState(unitOfWork, AggregateId);
+            }                
 
             public override Task<TAggregate> GetByIdAsync() =>
                 AsyncMethod.Value(_aggregate);
@@ -304,8 +316,14 @@ namespace Kingo.Messaging.Domain
             public override void AddToChangeSet(ChangeSet<TKey> changeSet) =>
                 changeSet.AddAggregateToUpdate(_aggregate, _events);
 
-            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork) =>
-                new UnmodifiedState(unitOfWork, _aggregate);
+            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory)
+            {
+                if (keepAggregatesInMemory)
+                {
+                    return new UnmodifiedState(unitOfWork, _aggregate);
+                }
+                return new NullState(unitOfWork, AggregateId);
+            }                
 
             public override Task<TAggregate> GetByIdAsync() =>
                 AsyncMethod.Value(_aggregate);
@@ -382,7 +400,7 @@ namespace Kingo.Messaging.Domain
                 changeSet.AddAggregateToDelete(_aggregate.Id);
             }                
 
-            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork) =>
+            protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory) =>
                 new NullState(unitOfWork, _aggregate.Id);
 
             public override Task<TAggregate> GetByIdAsync()
@@ -418,14 +436,14 @@ namespace Kingo.Messaging.Domain
             _aggregates = new Dictionary<TKey, AggregateState>();
         }        
 
-        public UnitOfWork<TKey, TAggregate> Commit()
+        public UnitOfWork<TKey, TAggregate> Commit(bool keepAggregatesInMemory)
         {
             var unitOfWork = new UnitOfWork<TKey, TAggregate>(_repository);
             var committedChanges = unitOfWork._aggregates;
 
             foreach (var aggregate in _aggregates)
             {
-                committedChanges.Add(aggregate.Key, aggregate.Value.Commit(unitOfWork));
+                committedChanges.Add(aggregate.Key, aggregate.Value.Commit(unitOfWork, keepAggregatesInMemory));
             }
             return unitOfWork;
         }

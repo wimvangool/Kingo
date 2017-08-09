@@ -10,10 +10,10 @@ namespace Kingo.Samples.Chess.Games
     {
         internal const int Size = 8;
         
-        private readonly Piece[,] _pieces;
+        private readonly ChessPiece[,] _pieces;
         private readonly bool _isSimulated;
 
-        private ChessBoard(Piece[,] pieces, bool isSimulated = false)
+        private ChessBoard(ChessPiece[,] pieces, bool isSimulated = false)
         {            
             _pieces = pieces;
             _isSimulated = isSimulated;
@@ -37,12 +37,12 @@ namespace Kingo.Samples.Chess.Games
             return EnumeratePieces(_pieces, color).Count();
         }
 
-        private static IEnumerable<Tuple<Square, Piece>> EnumeratePieces(Piece[,] pieces, ColorOfPiece color)
+        private static IEnumerable<Tuple<Square, ChessPiece>> EnumeratePieces(ChessPiece[,] pieces, ColorOfPiece color)
         {
             return EnumeratePieces(pieces).Where(piece => piece.Item2.HasColor(color));
         }
 
-        private static IEnumerable<Tuple<Square, Piece>> EnumeratePieces(Piece[,] pieces)
+        private static IEnumerable<Tuple<Square, ChessPiece>> EnumeratePieces(ChessPiece[,] pieces)
         {
             for (int fileIndex = 0; fileIndex < Size; fileIndex++)
             {
@@ -51,7 +51,7 @@ namespace Kingo.Samples.Chess.Games
                     var piece = pieces[fileIndex, rankIndex];
                     if (piece != null)
                     {
-                        yield return new Tuple<Square, Piece>(new Square(fileIndex, rankIndex), piece);
+                        yield return new Tuple<Square, ChessPiece>(new Square(fileIndex, rankIndex), piece);
                     }
                 }
             }
@@ -66,7 +66,7 @@ namespace Kingo.Samples.Chess.Games
             return SelectPiece(square) == null;
         }
 
-        public Piece SelectPiece(Square square)
+        public ChessPiece SelectPiece(Square square)
         {
             return _pieces[square.FileIndex, square.RankIndex];          
         }
@@ -109,14 +109,14 @@ namespace Kingo.Samples.Chess.Games
         {
             var messageFormat = ExceptionMessages.Game_EmptySquare;
             var message = string.Format(messageFormat, square);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
 
         private static Exception NewWrongColorException(Square square, ColorOfPiece expectedColor, ColorOfPiece actualColor)
         {
             var messageFormat = ExceptionMessages.Game_WrongColor;
             var message = string.Format(messageFormat, square, expectedColor, actualColor);
-            return new DomainException(message);
+            return new IllegalOperationException(message);
         }
 
         #endregion        
@@ -203,7 +203,7 @@ namespace Kingo.Samples.Chess.Games
             pawn.PromoteTo(this, position, promoteTo);
         }
 
-        private Tuple<Square, Piece> FindPawnToPromote(ColorOfPiece colorOfPawn)
+        private Tuple<Square, ChessPiece> FindPawnToPromote(ColorOfPiece colorOfPawn)
         {
             var pawns =
                 from pieceAtPosition in EnumeratePieces(_pieces, colorOfPawn)
@@ -318,9 +318,9 @@ namespace Kingo.Samples.Chess.Games
             return true;
         }
 
-        private ChessBoard ApplyPieces(Func<Square, Piece> pieceFactory)
+        private ChessBoard ApplyPieces(Func<Square, ChessPiece> pieceFactory)
         {
-            var piecesAfterMove = new Piece[Size, Size];
+            var piecesAfterMove = new ChessPiece[Size, Size];
 
             for (int fileIndex = 0; fileIndex < Size; fileIndex++)
             {
@@ -338,7 +338,7 @@ namespace Kingo.Samples.Chess.Games
 
         public static ChessBoard SetupNewGame(Game game)
         {
-            var pieces = new Piece[Size, Size];
+            var pieces = new ChessPiece[Size, Size];
 
             AddWhitePiecesTo(game, pieces);
             AddBlackPiecesTo(game, pieces);
@@ -346,19 +346,19 @@ namespace Kingo.Samples.Chess.Games
             return new ChessBoard(pieces);
         } 
 
-        private static void AddWhitePiecesTo(Game game, Piece[,] pieces)
+        private static void AddWhitePiecesTo(Game game, ChessPiece[,] pieces)
         {            
             AddRegularPiecesTo(game, pieces, ColorOfPiece.White, 0);
             AddPawnsTo(game, pieces, ColorOfPiece.White, 1);           
         }
 
-        private static void AddBlackPiecesTo(Game game, Piece[,] pieces)
+        private static void AddBlackPiecesTo(Game game, ChessPiece[,] pieces)
         {
             AddRegularPiecesTo(game, pieces, ColorOfPiece.Black, 7);
             AddPawnsTo(game, pieces, ColorOfPiece.Black, 6);
         }
 
-        private static void AddPawnsTo(Game game, Piece[,] pieces, ColorOfPiece color, int rankIndex)
+        private static void AddPawnsTo(Game game, ChessPiece[,] pieces, ColorOfPiece color, int rankIndex)
         {
             for (int fileIndex = 0; fileIndex < Size; fileIndex++)
             {
@@ -366,7 +366,7 @@ namespace Kingo.Samples.Chess.Games
             }
         }
         
-        private static void AddRegularPiecesTo(Game game, Piece[,] pieces, ColorOfPiece color, int rankIndex)
+        private static void AddRegularPiecesTo(Game game, ChessPiece[,] pieces, ColorOfPiece color, int rankIndex)
         {
             pieces[0, rankIndex] = new Rook(game, color);
             pieces[1, rankIndex] = new Knight(game, color);

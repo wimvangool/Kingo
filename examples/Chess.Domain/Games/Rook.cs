@@ -5,7 +5,7 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Samples.Chess.Games
 {
-    internal sealed class Rook : Piece
+    internal sealed class Rook : ChessPiece
     {
         private readonly bool _hasMoved;
 
@@ -43,7 +43,7 @@ namespace Kingo.Samples.Chess.Games
             get { return !_hasMoved; }
         }
 
-        public override Piece ApplyMove(Move move)
+        public override ChessPiece ApplyMove(Move move)
         {
             return new Rook(EventBus, Color, true);
         }

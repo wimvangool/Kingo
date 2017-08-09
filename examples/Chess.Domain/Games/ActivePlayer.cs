@@ -16,34 +16,22 @@ namespace Kingo.Samples.Chess.Games
             _color = color;
         }
 
-        private IDomainEventBus<Guid, int> EventBus
-        {
-            get { return _game; }
-        }
+        protected override Guid PlayerId =>
+            _playerId;
 
-        protected override Guid PlayerId
-        {
-            get { return _playerId; }
-        }
+        public override Player SwitchTurn() =>
+            new PassivePlayer(_game, _playerId, _color);
 
-        public override Player SwitchTurn()
-        {
-            return new PassivePlayer(_game, _playerId, _color);
-        }
-
-        public override void MovePiece(Square from, Square to)
-        {
+        public override void MovePiece(Square from, Square to) =>
             _game.Board.MovePiece(Move.Calculate(from, to), _color);
-        }
 
-        public override void PromotePawn(TypeOfPiece promoteTo)
-        {
+        public override void PromotePawn(TypeOfPiece promoteTo) =>
             _game.Board.PromotePawn(promoteTo, _color);
-        }
 
         public override void Forfeit()
         {
-            EventBus.Publish(new GameForfeitedEvent());
+            //EventBus.Publish(new GameForfeitedEvent());
+            throw new NotImplementedException();
         }        
     }
 }

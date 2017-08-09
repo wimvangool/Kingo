@@ -27,7 +27,7 @@ namespace Kingo.Samples.Chess.Games
             return GetByKeyAsync(gameId);
         }
 
-        void IGameRepository.Add(Game game)
+        Task IGameRepository.AddAsync(Game game)
         {
             Add(game);
         }              

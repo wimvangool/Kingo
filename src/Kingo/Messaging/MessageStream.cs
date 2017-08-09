@@ -9,7 +9,7 @@ using Kingo.Messaging.Validation;
 namespace Kingo.Messaging
 {
     /// <summary>
-    /// Represents a stream of <see cref="IMessage">messages</see>.
+    /// Represents a stream of <see cref="IRequestMessage">messages</see>.
     /// </summary>
     public sealed class MessageStream : ReadOnlyList<object>, IMessageStream
     {

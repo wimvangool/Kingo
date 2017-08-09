@@ -1,6 +1,6 @@
 ﻿namespace Kingo.Messaging.Validation
 {
-    public sealed class RequiredValueMessage<TValue> : Message where TValue : class
+    public sealed class RequiredValueMessage<TValue> : RequestMessage where TValue : class
     {
         public TValue Value;
 
@@ -38,10 +38,10 @@
 
         #region [====== Validation ======]
 
-        protected override ValidateMethod Implement(ValidateMethod method) =>
-            base.Implement(method).Add(this, CreateValidator, true);
+        protected override IRequestMessageValidator CreateMessageValidator() =>
+            base.CreateMessageValidator().Append(CreateConstraintValidator());
 
-        private static IMessageValidator<RequiredValueMessage<TValue>>  CreateValidator()
+        private static IRequestMessageValidator<RequiredValueMessage<TValue>> CreateConstraintValidator()
         {
             var validator = new ConstraintValidator<RequiredValueMessage<TValue>>();
 

@@ -78,7 +78,9 @@
     <Compile Include="Messaging\Domain\AggregateRootTest.cs" />
     <Compile Include="Messaging\Domain\AggregateRootWithEventHandlers.cs" />
     <Compile Include="Messaging\Domain\AggregateRootWithoutEventHandlers.cs" />
+    <Compile Include="Messaging\Domain\EventTest.cs" />
     <Compile Include="Messaging\Domain\MemoryRepositorySpy.T2.cs" />
+    <Compile Include="Messaging\Domain\MemoryRepositoryTest.cs" />
     <Compile Include="Messaging\Domain\OldValueChangedEvent.cs" />
     <Compile Include="Messaging\Domain\RepositoryTest.cs" />
     <Compile Include="Messaging\Domain\SnapshotMock.cs" />
@@ -110,7 +112,6 @@
     <Compile Include="Messaging\MessageHandlerSpy.cs" />
     <Compile Include="Messaging\MessageStreamTest.cs" />
     <Compile Include="Messaging\MessageStreamOfT1Test.cs" />
-    <Compile Include="Messaging\Validation\MessageTest.Equals.cs" />
     <Compile Include="Messaging\Validation\MessageValidationPipelineTest.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />

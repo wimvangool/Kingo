@@ -5,7 +5,7 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Samples.Chess.Games
 {
-    internal sealed class Bishop : Piece
+    internal sealed class Bishop : ChessPiece
     {
         public Bishop(IDomainEventBus<Guid, int> eventBus, ColorOfPiece color)
         {

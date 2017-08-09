@@ -111,7 +111,21 @@ namespace Kingo.Messaging.Domain
 
         /// <inheritdoc />
         public virtual Task FlushAsync() =>
-            Interlocked.Exchange(ref _unitOfWork, _unitOfWork.Commit()).FlushAsync();
+            FlushAsync(true);
+
+        /// <summary>
+        /// Flushes any pending changes to the underlying infrastructure.
+        /// </summary>
+        /// <param name="keepAggregatesInMemory">
+        /// Indicates whether or not this repository should keep all aggregates that have been retrieved, added and/or updated
+        /// in its internal cache after the flush operation has been completed, so that following read and write operations
+        /// are potentially faster.
+        /// </param>
+        /// <exception cref="ConcurrencyException">
+        /// A concurrency exception occurred.
+        /// </exception>
+        protected Task FlushAsync(bool keepAggregatesInMemory) =>
+            Interlocked.Exchange(ref _unitOfWork, _unitOfWork.Commit(keepAggregatesInMemory)).FlushAsync();
 
         /// <summary>
         /// Flushes all changes made in this session to the data store by inserting, updating and/or deleting several aggregates.

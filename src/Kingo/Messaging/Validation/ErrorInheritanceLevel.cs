@@ -43,16 +43,14 @@ namespace Kingo.Messaging.Validation
         /// Increments the current inheritance level by one.
         /// </summary>
         /// <returns>An incremented inheritance level.</returns>
-        public ErrorInheritanceLevel Increment()
-        {
-            return new ErrorInheritanceLevel(_value + 1);
-        }
+        public ErrorInheritanceLevel Increment() =>
+            new ErrorInheritanceLevel(_value + 1);
 
         private static Exception NewInvalidErrorLevelException(int value)
         {
             var messageFormat = ExceptionMessages.ErrorLevel_InvalidErrorLevel;
             var message = string.Format(messageFormat, value);
-            return new ArgumentOutOfRangeException("value", message);
+            return new ArgumentOutOfRangeException(nameof(value), message);
         }
 
         #region [====== Equals, Compare & GetHashCode ======]

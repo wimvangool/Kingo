@@ -11,7 +11,7 @@ namespace Clients.ConsoleApp.Proxies
 
         #region [====== Write Methods ======]
 
-        public Task ChallengePlayerAsync(ChallengePlayerCommand command)
+        public Task ChallengePlayerAsync(ChallengeUserCommand command)
         {
             return Channel.ChallengePlayerAsync(command);
         }

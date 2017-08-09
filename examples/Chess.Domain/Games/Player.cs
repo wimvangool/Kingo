@@ -9,10 +9,8 @@ namespace Kingo.Samples.Chess.Games
             get;
         }
 
-        public bool IsPlayer(Guid playerId)
-        {
-            return PlayerId == playerId;
-        }
+        public bool IsPlayer(Guid playerId) =>
+            PlayerId == playerId;
 
         public abstract Player SwitchTurn();
 

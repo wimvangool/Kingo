@@ -8,11 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 
 [assembly: AssemblyTitle("Kingo.Constraints")]
-[assembly: AssemblyDescription("Contains the ConstraintValidator<T> and all related features.")]
-
-[assembly: AssemblyVersion("3.0.0")]
-[assembly: AssemblyFileVersion("3.0.0")]
-[assembly: AssemblyInformationalVersion("3.0.0-beta")]
+[assembly: AssemblyDescription("This library contains the ContraintValidator<T> class, which can be used to write message validation constraints using a fluent syntax.")]
 
 [assembly: InternalsVisibleTo("Kingo.Constraints.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

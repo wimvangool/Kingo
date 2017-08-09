@@ -55,16 +55,19 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
-    <Compile Include="Messaging\IReadScenarioResult.T1.cs" />
+    <Compile Include="AutomatedTest.cs" />
+    <Compile Include="Messaging\IIntegrationTestResult.T1.cs" />
     <Compile Include="Messaging\IScenarioResult.cs" />
-    <Compile Include="Messaging\IWriteScenarioResult.cs" />
-    <Compile Include="Messaging\ReadScenario.T1.cs" />
+    <Compile Include="Messaging\IUnitTestResult.cs" />
+    <Compile Include="Messaging\IntegrationTestBase.T1.cs" />
     <Compile Include="Messaging\Scenario.cs" />
     <Compile Include="Messaging\ScenarioResult.T1.cs" />
+    <Compile Include="Messaging\Validation\IValidationResult.cs" />
+    <Compile Include="Messaging\Validation\RequestMessageTestBase.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Messaging\Scenario.T1.cs" />
-    <Compile Include="Messaging\WriteScenario.T1.cs" />
+    <Compile Include="Messaging\UnitTestBase.T1.cs" />
     <Compile Include="Resources\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

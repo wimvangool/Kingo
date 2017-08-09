@@ -4,7 +4,7 @@ using Kingo.Messaging.Domain;
 
 namespace Kingo.Samples.Chess.Games
 {
-    internal sealed class Pawn : Piece
+    internal sealed class Pawn : ChessPiece
     {        
         public Pawn(IDomainEventBus<Guid, int> eventBus, ColorOfPiece color)
         {
@@ -110,12 +110,12 @@ namespace Kingo.Samples.Chess.Games
             return false;
         }
 
-        public override Piece RemainInPlace()
+        public override ChessPiece RemainInPlace()
         {
             return new Pawn(EventBus, Color, false);
         }
 
-        public override Piece ApplyMove(Move move)
+        public override ChessPiece ApplyMove(Move move)
         {
             if (IsTwoStepForward(move))
             {
@@ -207,7 +207,7 @@ namespace Kingo.Samples.Chess.Games
             });
         }
 
-        public override Piece ApplyPromotion(TypeOfPiece promoteTo)
+        public override ChessPiece ApplyPromotion(TypeOfPiece promoteTo)
         {
             switch (promoteTo)
             {

@@ -51,14 +51,12 @@ namespace Kingo.Messaging.Domain
         public IEnumerable<IEvent> Events
         {
             get;
-        }
-
-        /// <summary>
-        /// Creates and returns a new <see cref="AggregateData{T}"/> instance that is a copy of this instance
-        /// but has the events removed from the data.
-        /// </summary>
-        /// <returns></returns>
-        public AggregateData<TKey> GetSnapshotOnly() =>
+        } 
+        
+        internal AggregateData<TKey> SnapshotOnly() =>
             new AggregateData<TKey>(Id, Snapshot);
+
+        internal AggregateData<TKey> Append(IEnumerable<IEvent> events) =>
+            new AggregateData<TKey>(Id, Snapshot, Events.Concat(events).ToArray());
     }
 }

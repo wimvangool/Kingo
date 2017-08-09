@@ -36,7 +36,7 @@ namespace Clients.ConsoleApp.Commandlets
 
             if (_playerService.TryGetRegisteredPlayer(playerName, out player))
             {
-                _challengeService.ChallengePlayerAsync(new ChallengePlayerCommand(Guid.NewGuid(), player.Id)).Await();
+                _challengeService.ChallengePlayerAsync(new ChallengeUserCommand(Guid.NewGuid(), player.Id)).Await();
 
                 using (ChessApplication.UseColor(ConsoleColor.Green))
                 {

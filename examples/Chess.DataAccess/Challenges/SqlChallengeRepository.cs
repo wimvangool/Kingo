@@ -27,7 +27,7 @@ namespace Kingo.Samples.Chess.Challenges
             return GetByKeyAsync(challengeId);
         }
 
-        void IChallengeRepository.Add(Challenge challenge)
+        Task IChallengeRepository.AddAsync(Challenge challenge)
         {
             Add(challenge);
         }        
