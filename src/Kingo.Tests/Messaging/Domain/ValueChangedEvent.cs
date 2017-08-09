@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging.Domain
 {
-    public sealed class ValueChangedEvent : Event<Guid, int>
+    public sealed class ValueChangedEvent : AggregateEvent<Guid, int>
     {
         [AggregateId]
         public Guid Id

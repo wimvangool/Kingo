@@ -78,7 +78,7 @@
     <Compile Include="Messaging\Domain\AggregateRootTest.cs" />
     <Compile Include="Messaging\Domain\AggregateRootWithEventHandlers.cs" />
     <Compile Include="Messaging\Domain\AggregateRootWithoutEventHandlers.cs" />
-    <Compile Include="Messaging\Domain\EventTest.cs" />
+    <Compile Include="Messaging\Domain\AggregateEventTest.cs" />
     <Compile Include="Messaging\Domain\MemoryRepositorySpy.T2.cs" />
     <Compile Include="Messaging\Domain\MemoryRepositoryTest.cs" />
     <Compile Include="Messaging\Domain\OldValueChangedEvent.cs" />

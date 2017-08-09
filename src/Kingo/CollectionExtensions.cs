@@ -21,10 +21,8 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="collection"/> is <c>null</c>.
         /// </exception>
-        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> collection)
-        {
-            return collection.Where(item => !ReferenceEquals(item, null));
-        }
+        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> collection) =>
+            collection.Where(item => !ReferenceEquals(item, null));
 
         /// <summary>
         /// Attempts to retrieve the <paramref name="element"/> at the specified <paramref name="index"/>.

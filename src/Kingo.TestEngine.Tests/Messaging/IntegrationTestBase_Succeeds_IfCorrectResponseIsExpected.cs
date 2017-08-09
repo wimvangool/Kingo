@@ -5,8 +5,7 @@ namespace Kingo.Messaging
 {
     [TestClass]
     public sealed class IntegrationTestBase_Succeeds_IfCorrectResponseIsExpected : IntegrationTestBaseTest<object>
-    {
-        private const string _Message = "Test";
+    {        
         private readonly object _responseMessage = new object();
 
         protected override object ExecuteQuery(IMicroProcessorContext context) =>

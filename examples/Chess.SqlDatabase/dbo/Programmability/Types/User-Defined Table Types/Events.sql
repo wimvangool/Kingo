@@ -1,6 +1,0 @@
-﻿CREATE TYPE [dbo].[Events] AS TABLE
-(	
-	[Version] INT UNIQUE,
-	[Value] NVARCHAR(MAX) NOT NULL,
-	[Type] NVARCHAR(256) NOT NULL
-)

@@ -113,7 +113,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// Returns a collection of streams that are processed by the <see cref="Processor" /> to setup a specific domain state.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A collection of streams resulting from all messages that were processed.</returns>
         protected virtual IEnumerable<IMessageStream> Given() =>
             Enumerable.Empty<IMessageStream>();
 
@@ -170,10 +170,10 @@ namespace Kingo.Messaging
             }
         }        
 
-        private Exception NewInnerExceptionNotFoundException(Type expectedType, Type exceptionType)
+        private Exception NewInnerExceptionNotFoundException(Type expectedType, Type actualType)
         {
             var messageFormat = ExceptionMessages.Scenario_InnerExceptionNotFound;
-            var message = string.Format(messageFormat, expectedType.FriendlyName(), expectedType.FriendlyName());
+            var message = string.Format(messageFormat, expectedType.FriendlyName(), actualType.FriendlyName());
             return NewAssertFailedException(message);
         }
 

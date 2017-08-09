@@ -14,7 +14,7 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfEventIsNull()
         {
-            new AggregateRootWithoutEventHandlers(null as AggregateRootSpyCreatedEvent);
+            new AggregateRootWithoutEventHandlers(null as AggregateRootSpyCreatedAggregateEvent);
         }
 
         [TestMethod]
@@ -352,7 +352,7 @@ namespace Kingo.Messaging.Domain
             }
             catch (ArgumentException exception)
             {
-                Assert.AreEqual("Could not convert event of type 'UnsupportedEvent' to an instance of type 'IEvent<Guid, Int32>'. Please review the UpdateToLatestVersion() method of this event to ensure it returns the correct event type.", exception.Message);
+                Assert.AreEqual("Could not convert event of type 'UnsupportedEvent' to an instance of type 'IAggregateEvent<Guid, Int32>'. Please review the UpdateToLatestVersion() method of this event to ensure it returns the correct event type.", exception.Message);
                 throw;
             }
         }

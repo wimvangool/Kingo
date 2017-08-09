@@ -14,8 +14,8 @@ namespace Kingo.Messaging.Domain
         {            
             private int _value;
 
-            public EventSourcedAggregate(EventSourcedAggregateCreatedEvent @event)
-                : base(@event) { }
+            public EventSourcedAggregate(AggregateEventSourcedAggregateCreatedAggregateEvent aggregateEvent)
+                : base(aggregateEvent) { }
 
             public EventSourcedAggregate(EventSourcedAggregateSnapshot snapshot)
                 : base(snapshot)
@@ -38,7 +38,7 @@ namespace Kingo.Messaging.Domain
                 {
                     return;
                 }
-                Publish(new EventSourcedAggregateValueChangedEvent(Id, Version, newValue));
+                Publish(new AggregateEventSourcedAggregateValueChangedAggregateEvent(Id, Version, newValue));
             }
 
             public void AssertValueIs(int value)
@@ -53,13 +53,13 @@ namespace Kingo.Messaging.Domain
             protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers)
             {
                 return eventHandlers
-                    .Register<EventSourcedAggregateValueChangedEvent>(Handle);
+                    .Register<AggregateEventSourcedAggregateValueChangedAggregateEvent>(Handle);
             }
 
-            private void Handle(EventSourcedAggregateValueChangedEvent @event)
+            private void Handle(AggregateEventSourcedAggregateValueChangedAggregateEvent aggregateEvent)
             {
                 _handleCount++;
-                _value = @event.NewValue;
+                _value = aggregateEvent.NewValue;
             }
 
             public void AssertHandleCountIs(int count)
@@ -70,9 +70,9 @@ namespace Kingo.Messaging.Domain
             #endregion
         }
 
-        private sealed class EventSourcedAggregateCreatedEvent : Event<Guid, int>
+        private sealed class AggregateEventSourcedAggregateCreatedAggregateEvent : AggregateEvent<Guid, int>
         {
-            public EventSourcedAggregateCreatedEvent()
+            public AggregateEventSourcedAggregateCreatedAggregateEvent()
             {
                 Id = Guid.NewGuid();
                 Version = 1;
@@ -126,9 +126,9 @@ namespace Kingo.Messaging.Domain
                 new EventSourcedAggregate(this);
         }
 
-        private sealed class EventSourcedAggregateValueChangedEvent : Event<Guid, int>
+        private sealed class AggregateEventSourcedAggregateValueChangedAggregateEvent : AggregateEvent<Guid, int>
         {
-            public EventSourcedAggregateValueChangedEvent(Guid id, int version, int newValue)
+            public AggregateEventSourcedAggregateValueChangedAggregateEvent(Guid id, int version, int newValue)
             {
                 Id = id;
                 Version = version;
@@ -186,7 +186,7 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public async Task GetByIdAsync_RestoresAggregateBySnapshot_IfBehaviorIsStoreEvents_And_AggregateWasInsertedButNotUpdated()
         {
-            var aggregateCreatedEvent = new EventSourcedAggregateCreatedEvent();
+            var aggregateCreatedEvent = new AggregateEventSourcedAggregateCreatedAggregateEvent();
             var aggregate = new EventSourcedAggregate(aggregateCreatedEvent);
             var newValue = Clock.Current.UtcDateAndTime().Millisecond + 1;
 
@@ -216,7 +216,7 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public async Task GetByIdAsync_RestoresAggregateBySnapshotAndEvents_IfBehaviorIsStoreEvents_And_AggregateWasInsertedAndUpdatedSeveralTimes()
         {
-            var aggregateCreatedEvent = new EventSourcedAggregateCreatedEvent();
+            var aggregateCreatedEvent = new AggregateEventSourcedAggregateCreatedAggregateEvent();
             var aggregate = new EventSourcedAggregate(aggregateCreatedEvent);
             var newValue1 = Clock.Current.UtcDateAndTime().Millisecond + 1;
             var newValue2 = newValue1 * 2;

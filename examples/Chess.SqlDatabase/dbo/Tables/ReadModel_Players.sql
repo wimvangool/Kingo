@@ -1,5 +1,0 @@
-﻿CREATE TABLE [dbo].[ReadModel_Players]
-(
-	[Key] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, 
-    [Name] NVARCHAR(20) NOT NULL
-)

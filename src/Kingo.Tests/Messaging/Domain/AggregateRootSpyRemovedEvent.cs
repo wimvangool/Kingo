@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging.Domain
 {
-    public sealed class AggregateRootSpyRemovedEvent : Event<Guid, int>
+    public sealed class AggregateRootSpyRemovedAggregateEvent : AggregateEvent<Guid, int>
     {
         [AggregateId]
         public Guid Id

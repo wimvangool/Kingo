@@ -23,19 +23,19 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
         /// </summary>
-        /// <param name="event">The event that defines the creation of this aggregate.</param>
+        /// <param name="aggregateEvent">The event that defines the creation of this aggregate.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="event" /> is <c>null</c>.
+        /// <paramref name="aggregateEvent" /> is <c>null</c>.
         /// </exception>
-        protected AggregateRoot(IEvent<TKey, TVersion> @event)
+        protected AggregateRoot(IAggregateEvent<TKey, TVersion> aggregateEvent)
         {
-            if (@event == null)
+            if (aggregateEvent == null)
             {
-                throw new ArgumentNullException(nameof(@event));
+                throw new ArgumentNullException(nameof(aggregateEvent));
             }
-            _id = @event.AggregateId;
-            _version = @event.AggregateVersion;
-            _pendingEvents = new List<IEvent>() { @event };
+            _id = aggregateEvent.AggregateId;
+            _version = aggregateEvent.AggregateVersion;
+            _pendingEvents = new List<IEvent>() { aggregateEvent };
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Kingo.Messaging.Domain
             /// A handler for the specified event type <typeparamref name="TEvent"/> has already been added.
             /// </exception>
             public EventHandlerCollection Register<TEvent>(Action<TEvent> eventHandler)
-                where TEvent : IEvent<TKey, TVersion>
+                where TEvent : IAggregateEvent<TKey, TVersion>
             {
                 if (eventHandler == null)
                 {
@@ -182,14 +182,14 @@ namespace Kingo.Messaging.Domain
                 }
             }
 
-            private static IEnumerable<IEvent<TKey, TVersion>> UpdateToLatestVersion(IEnumerable<IEvent> events)
+            private static IEnumerable<IAggregateEvent<TKey, TVersion>> UpdateToLatestVersion(IEnumerable<IEvent> events)
             {
                 if (events == null)
                 {
                     throw new ArgumentNullException(nameof(events));
                 }
                 var updatedEvents = events.WhereNotNull().Select(@event => @event.UpdateToLatestVersion());
-                var convertedEvents = new LinkedList<IEvent<TKey, TVersion>>();
+                var convertedEvents = new LinkedList<IAggregateEvent<TKey, TVersion>>();
 
                 foreach (var @event in updatedEvents)
                 {
@@ -198,32 +198,32 @@ namespace Kingo.Messaging.Domain
                 return convertedEvents;
             }
 
-            private static IEvent<TKey, TVersion> Convert(IEvent @event)
+            private static IAggregateEvent<TKey, TVersion> Convert(IEvent @event)
             {
                 try
                 {
-                    return (IEvent<TKey, TVersion>) @event;
+                    return (IAggregateEvent<TKey, TVersion>) @event;
                 }
                 catch (InvalidCastException)
                 {
-                    throw NewEventConversionException(@event.GetType(), typeof(IEvent<TKey, TVersion>), nameof(IEvent.UpdateToLatestVersion));
+                    throw NewEventConversionException(@event.GetType(), typeof(IAggregateEvent<TKey, TVersion>), nameof(IEvent.UpdateToLatestVersion));
                 }
             }           
 
-            internal bool Apply(IEvent<TKey, TVersion> @event)
+            internal bool Apply(IAggregateEvent<TKey, TVersion> aggregateEvent)
             {                
-                if (_aggregate.Id.Equals(@event.AggregateId))
+                if (_aggregate.Id.Equals(aggregateEvent.AggregateId))
                 {
                     Action<object> eventHandler;
 
-                    if (_eventHandlers.TryGetValue(@event.GetType(), out eventHandler))
+                    if (_eventHandlers.TryGetValue(aggregateEvent.GetType(), out eventHandler))
                     {
-                        eventHandler.Invoke(@event);
+                        eventHandler.Invoke(aggregateEvent);
                         return true;
                     }
                     return false;
                 }
-                throw NewInvalidIdException(@event, _aggregate.Id);
+                throw NewInvalidIdException(aggregateEvent, _aggregate.Id);
             }            
 
             private static Exception NewMissingEventHandlerException(Type eventType)
@@ -240,10 +240,10 @@ namespace Kingo.Messaging.Domain
                 return new ArgumentException(message);
             }
 
-            private static Exception NewInvalidIdException(IEvent<TKey, TVersion> @event, TKey id)
+            private static Exception NewInvalidIdException(IAggregateEvent<TKey, TVersion> aggregateEvent, TKey id)
             {
                 var messageFormat = ExceptionMessages.AggregateRoot_InvalidIdOnEvent;
-                var message = string.Format(messageFormat, @event.AggregateId, @event.GetType().FriendlyName(), id);
+                var message = string.Format(messageFormat, aggregateEvent.AggregateId, aggregateEvent.GetType().FriendlyName(), id);
                 return new ArgumentException(message);
             }
 
@@ -321,7 +321,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
-        protected void Publish<TEvent>(TEvent @event) where TEvent : IEvent<TKey, TVersion>
+        protected void Publish<TEvent>(TEvent @event) where TEvent : IAggregateEvent<TKey, TVersion>
         {
             if (@event == null)
             {
@@ -366,7 +366,7 @@ namespace Kingo.Messaging.Domain
         /// <returns>
         /// <c>true</c> if the event has been handled by a listener; otherwise <c>false</c>.
         /// </returns>
-        protected virtual bool OnEventPublished<TEvent>(EventPublishedEventArgs<TEvent> e) where TEvent : IEvent<TKey, TVersion>
+        protected virtual bool OnEventPublished<TEvent>(EventPublishedEventArgs<TEvent> e) where TEvent : IAggregateEvent<TKey, TVersion>
         {                                   
             EventPublished.Raise(this, e);
             return e.HasBeenPublished;            
