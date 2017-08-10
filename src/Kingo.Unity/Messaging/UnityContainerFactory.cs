@@ -59,25 +59,25 @@ namespace Kingo.Messaging
         #region [====== Type Registration ======]
 
         /// <inheritdoc />
-        protected override MessageHandlerFactory RegisterPerResolve(Type @from, Type to)
+        protected override MessageHandlerFactory RegisterPerResolve(Type from, Type to)
         {
             if (to == null)
             {
                 throw new ArgumentNullException(nameof(to));
             }
-            if (@from == null)
+            if (from == null)
             {
                 Container.RegisterType(to, new TransientLifetimeManager());
             }
             else
             {
-                Container.RegisterType(@from, to);    
+                Container.RegisterType(from, to);    
             }
             return this;        
         }       
 
         /// <inheritdoc />
-        protected override MessageHandlerFactory RegisterPerUnitOfWork(Type @from, Type to)
+        protected override MessageHandlerFactory RegisterPerUnitOfWork(Type from, Type to)
         {
             if (to == null)
             {
@@ -85,15 +85,15 @@ namespace Kingo.Messaging
             }            
             Container.RegisterType(to, new PerUnitOfWorkLifetimeManager());
 
-            if (@from != null)
+            if (from != null)
             {
-                Container.RegisterType(@from, to);
+                Container.RegisterType(from, to);
             }
             return this;
         }        
 
         /// <inheritdoc />
-        protected override MessageHandlerFactory RegisterPerProcessor(Type @from,Type to)
+        protected override MessageHandlerFactory RegisterPerProcessor(Type from,Type to)
         {
             if (to == null)
             {
@@ -101,33 +101,33 @@ namespace Kingo.Messaging
             }
             Container.RegisterType(to, new ContainerControlledLifetimeManager());
 
-            if (@from != null)
+            if (from != null)
             {
-                Container.RegisterType(@from, to);
+                Container.RegisterType(from, to);
             }
             return this;
         }
 
         /// <inheritdoc />
-        public override MessageHandlerFactory RegisterInstance(Type @from, object to)
+        public override MessageHandlerFactory RegisterInstance(Type from, object to)
         {
             if (to == null)
             {
                 throw new ArgumentNullException(nameof(to));
             }
-            if (@from == null)
+            if (from == null)
             {
                 Container.RegisterInstance(to.GetType(), to);
             }
             else
             {
-                Container.RegisterInstance(@from, to);    
+                Container.RegisterInstance(from, to);    
             }
             return this;      
         }
 
         /// <inheritdoc />
-        protected internal override object Resolve(Type type) =>
+        protected override object Resolve(Type type) =>
             Container.Resolve(type);
 
         #endregion

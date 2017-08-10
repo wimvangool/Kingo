@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{002BBBBE-42B2-4618-B560-509798888BE6}"
 	ProjectSection(SolutionItems) = preProject
@@ -29,6 +29,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02.Kingo.Constraints", "Kingo.Constraints\02.Kingo.Constraints.csproj", "{6A3B9CDA-3FE1-4967-99FA-03F98687693A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01.Kingo.Constraints.Tests", "Kingo.Constraints.Tests\01.Kingo.Constraints.Tests.csproj", "{07267396-60FD-4EB9-9F23-D787AF91A0F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03.Kingo.Unity", "Kingo.Unity\03.Kingo.Unity.csproj", "{326B8F71-69DA-4857-9FFA-698164FE12DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +62,10 @@ Global
 		{07267396-60FD-4EB9-9F23-D787AF91A0F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07267396-60FD-4EB9-9F23-D787AF91A0F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07267396-60FD-4EB9-9F23-D787AF91A0F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{326B8F71-69DA-4857-9FFA-698164FE12DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{326B8F71-69DA-4857-9FFA-698164FE12DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{326B8F71-69DA-4857-9FFA-698164FE12DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{326B8F71-69DA-4857-9FFA-698164FE12DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{C2F7D41B-E748-4EC4-8AD4-0A7E25D7CDC0} = {9A9694D3-C449-4492-B7EF-9AD0E3E8034C}
 		{6A3B9CDA-3FE1-4967-99FA-03F98687693A} = {30BEFFD2-9C0B-4211-99D6-2CE48287431D}
 		{07267396-60FD-4EB9-9F23-D787AF91A0F4} = {30BEFFD2-9C0B-4211-99D6-2CE48287431D}
+		{326B8F71-69DA-4857-9FFA-698164FE12DB} = {9A9694D3-C449-4492-B7EF-9AD0E3E8034C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35

@@ -42,12 +42,13 @@ namespace Kingo.Messaging
 
         #region [====== MessageHandlers ======]        
              
-        internal void RegisterMessageHandlers(IEnumerable<Type> types)
+        internal MessageHandlerFactory RegisterMessageHandlers(IEnumerable<Type> types)
         {
             foreach (var messageHandler in MessageHandlerClass.RegisterMessageHandlers(this, types))
             {
                 _messageHandlers.Add(messageHandler);
             }
+            return this;
         }
 
         /// <inheritdoc />
@@ -121,18 +122,18 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception>
-        public MessageHandlerFactory Register(Type @from, Type to, InstanceLifetime lifetime = _DefaultLifetime)
+        public MessageHandlerFactory Register(Type from, Type to, InstanceLifetime lifetime = _DefaultLifetime)
         {
             switch (lifetime)
             {
                 case InstanceLifetime.PerResolve:
-                    return RegisterPerResolve(@from, to);                    
+                    return RegisterPerResolve(from, to);                    
 
                 case InstanceLifetime.PerUnitOfWork:
-                    return RegisterPerUnitOfWork(@from, to);                    
+                    return RegisterPerUnitOfWork(from, to);                    
 
                 case InstanceLifetime.PerProcessor:
-                    return RegisterPerProcessor(@from, to);                    
+                    return RegisterPerProcessor(from, to);                    
 
                 default:
                     throw NewInvalidLifetimeSpecifiedException(lifetime);
@@ -161,7 +162,7 @@ namespace Kingo.Messaging
         /// /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception>      
-        protected abstract MessageHandlerFactory RegisterPerResolve(Type @from, Type to);
+        protected abstract MessageHandlerFactory RegisterPerResolve(Type from, Type to);
 
         /// <summary>
         /// Registers the specified type <paramref name="to" />. Only one instance of this type will be created inside the scope of
@@ -174,7 +175,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception>     
-        protected abstract MessageHandlerFactory RegisterPerUnitOfWork(Type @from, Type to);
+        protected abstract MessageHandlerFactory RegisterPerUnitOfWork(Type from, Type to);
 
         /// <summary>
         /// Registers the specified type <paramref name="to" />. Only one instance of this type will ever be created by this factory,
@@ -187,7 +188,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception> 
-        protected abstract MessageHandlerFactory RegisterPerProcessor(Type @from, Type to);
+        protected abstract MessageHandlerFactory RegisterPerProcessor(Type from, Type to);
 
         #endregion
 
@@ -224,7 +225,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="to"/> is <c>null</c>.
         /// </exception> 
-        public abstract MessageHandlerFactory RegisterInstance(Type @from, object to);
+        public abstract MessageHandlerFactory RegisterInstance(Type from, object to);
 
         #endregion        
     }

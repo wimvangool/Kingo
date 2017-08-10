@@ -32,21 +32,19 @@ namespace Kingo.Messaging
 
         private MessageHandlerFactory BuildMessageHandlerFactory()
         {                        
-            var factory = CreateMessageHandlerFactory();
-
-            factory.RegisterInstance<IMicroProcessor>(this);
-            factory.RegisterInstance(MicroProcessorContext.Current);
-            factory.RegisterMessageHandlers(CreateMessageHandlerTypeSet());
-
-            return factory;
+            return CreateMessageHandlerFactory()           
+                .RegisterInstance<IMicroProcessor>(this)
+                .RegisterInstance(MicroProcessorContext.Current)
+                .RegisterMessageHandlers(CreateMessageHandlerTypeSet());            
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="MessageHandlerFactory" /> for this processor.
+        /// When overridden, creates and returns a <see cref="MessageHandlerFactory" /> for this processor.
+        /// The default implementation returns <c>null</c>.
         /// </summary>        
         /// <returns>A new <see cref="MessageHandlerFactory" /> to be used by this processor.</returns>
-        protected virtual MessageHandlerFactory CreateMessageHandlerFactory() =>
-            new UnityContainerFactory();
+        protected internal virtual MessageHandlerFactory CreateMessageHandlerFactory() =>
+            new MessageHandlerFactoryStub();
 
         /// <summary>
         /// Returns a <see cref="TypeSet"/> that will be scanned by the <see cref="MessageHandlerFactory" /> of this processor

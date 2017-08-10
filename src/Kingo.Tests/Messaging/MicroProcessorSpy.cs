@@ -36,9 +36,9 @@ namespace Kingo.Messaging
             return _implementationSequence.Implement(messageHandlerType, count);
         }
 
-        protected override MessageHandlerFactory CreateMessageHandlerFactory()
+        protected internal override MessageHandlerFactory CreateMessageHandlerFactory()
         {
-            var factory = base.CreateMessageHandlerFactory();
+            MessageHandlerFactory factory = new UnityContainerFactory();
 
             foreach (var dependency in _dependencies)
             {

@@ -11,25 +11,8 @@
     <projectUrl>https://github.com/wimvangool/Kingo/wiki</projectUrl>    
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-      The Kingo library is a general purpose library for speeding up the development of .NET applications.
-      At the heart of the library lives the MicroProcessor class, which can be used to properly separate
-      your reads (queries) from your writes (commands &amp; events), better known as CQRS. The MicroProcessor
-      will dynamically invoke your queries and your message handlers for you after pushing the incoming
-      messages through your custom made message pipeline, which can be used, for example, to validate these
-      messages. Naturally, the MicroProcessor makes it very easy to dynamically register your message handler
-      types and use your favorite dependency container framework.
-
-      When the MicroProcessor handles a message or executes a query, it sets up a UnitOfWork-context which
-      can be used to dynamically enlist components such as repositories that (may) need to be flushed after
-      all work is done, very similar to how transactions and the transactionscope work.
-
-      On top of all this, the MicroProcessor uses a smart Exception Management system, contains support for
-      developing applications using a Domain-Driven Design and for publishing output events or metadata events
-      from anywhere in your code. It provides convient base classes and implementations for often used structures
-      such as AggregateRoots, Snapshots, Events and Repositories.
-      
-      If you are already developing your applications with event-driven techniques or platforms such as NServiceBus
-      or AzureServiceBus, then the Kingo framework is a perfect extension for your application.
+      A general purpose library for speeding up the development of .NET applications, especially targeting
+      event-driven applications.
 
       Source code and general guidance on how to use this framework can be found here:
       https://github.com/wimvangool/Kingo/wiki

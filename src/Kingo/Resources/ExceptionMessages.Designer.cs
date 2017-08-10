@@ -286,6 +286,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot create instance of type &apos;{0}&apos; because no MessageHandlerFactory has been defined for this processor. Please override method &apos;{1}.{2}&apos; to create and return a custom {3}..
+        /// </summary>
+        internal static string MessageHandlerFactoryStub_CannotResolveMessageHandler {
+            get {
+                return ResourceManager.GetString("MessageHandlerFactoryStub_CannotResolveMessageHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not valid: {1} validation error(s) found..
         /// </summary>
         internal static string MessageValidationPipeline_InvalidMessage {

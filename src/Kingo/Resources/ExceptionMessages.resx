@@ -183,6 +183,9 @@
   <data name="MessageHandlerContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while handling a metadata message.</value>
   </data>
+  <data name="MessageHandlerFactoryStub_CannotResolveMessageHandler" xml:space="preserve">
+    <value>Cannot create instance of type '{0}' because no MessageHandlerFactory has been defined for this processor. Please override method '{1}.{2}' to create and return a custom {3}.</value>
+  </data>
   <data name="MessageHandlerFactory_InvalidInstanceLifetime" xml:space="preserve">
     <value>Invalid InstanceLifetime specified: '{0}'.</value>
   </data>
