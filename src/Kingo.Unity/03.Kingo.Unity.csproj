@@ -69,7 +69,7 @@
     <None Include="..\Kingo.snk">
       <Link>Properties\Kingo.snk</Link>
     </None>
-    <None Include="Properties\03.Kingo.Unity.nuspec" />
+    <None Include="Properties\Kingo.Unity.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
