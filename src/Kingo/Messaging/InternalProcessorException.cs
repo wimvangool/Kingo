@@ -15,13 +15,13 @@ namespace Kingo.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.
         /// </summary>
-        protected InternalProcessorException() { }
+        public InternalProcessorException() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
-        protected InternalProcessorException(string message)
+        public InternalProcessorException(string message)
             : base(message) { }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>
-        protected InternalProcessorException(string message, Exception innerException)
+        public InternalProcessorException(string message, Exception innerException)
             : base(message, innerException) { }
 
         /// <summary>
