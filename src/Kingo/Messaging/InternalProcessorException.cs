@@ -10,7 +10,7 @@ namespace Kingo.Messaging
     /// or <see cref="InternalServerErrorException" /> based on whether or was executing a request or handling an event.   
     /// </summary>
     [Serializable]
-    public abstract class InternalProcessorException : Exception
+    public class InternalProcessorException : Exception
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.
