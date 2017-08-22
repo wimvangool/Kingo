@@ -13,7 +13,7 @@ namespace Kingo.Messaging.Validation
     /// </summary>    
     [DataContract]
     [Serializable]
-    public abstract class Command : RequestMessage, INotifyPropertyChanging, INotifyPropertyChanged, IDataErrorInfo        
+    public abstract class CommandBase : RequestMessageBase, INotifyPropertyChanging, INotifyPropertyChanged, IDataErrorInfo        
     {        
         [NonSerialized]
         private ErrorInfo _errorInfo;

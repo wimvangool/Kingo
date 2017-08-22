@@ -211,7 +211,7 @@ namespace Kingo.Messaging.Validation
 
         static MessageValidationPipelineTest()
         {
-            RequestMessage.Register(_ExternalEventValidator);
+            RequestMessageBase.Register(_ExternalEventValidator);
         }
 
         private static void AssertContains(IMessageStream stream, params object[] events)

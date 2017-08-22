@@ -1,6 +1,6 @@
 ﻿namespace Kingo.Messaging.Validation
 {
-    public sealed class RequiredValueMessage<TValue> : RequestMessage where TValue : class
+    public sealed class RequiredValueMessage<TValue> : RequestMessageBase where TValue : class
     {
         public TValue Value;
 

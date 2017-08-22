@@ -8,7 +8,7 @@ namespace Kingo.Messaging.Validation
     /// Provides a base-implementation of the <see cref="IRequestMessage" /> interface.
     /// </summary>
     [Serializable]    
-    public abstract class RequestMessage : IRequestMessage
+    public abstract class RequestMessageBase : IRequestMessage
     {                
         #region [====== Validation ======]                
 

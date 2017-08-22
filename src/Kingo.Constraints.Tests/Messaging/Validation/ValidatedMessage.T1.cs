@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging.Validation
 {   
-    internal sealed class ValidatedMessage<TValue> : RequestMessage
+    internal sealed class ValidatedMessage<TValue> : RequestMessageBase
     {
         internal readonly TValue Member;
         internal readonly TValue Other;

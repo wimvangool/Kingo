@@ -8,7 +8,7 @@ namespace Kingo.Messaging.Validation
     {
         #region [====== CommandUnderTest ======]
 
-        private sealed class CommandUnderTest : Command
+        private sealed class CommandUnderTest : CommandBase
         {
             private int _value;
 

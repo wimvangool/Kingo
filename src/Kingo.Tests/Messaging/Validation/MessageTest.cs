@@ -12,7 +12,7 @@ namespace Kingo.Messaging.Validation
         #region [====== MessageWithValidator ======]
 
         [DataContract]
-        private sealed class MessageWithValidator : RequestMessage
+        private sealed class MessageWithValidator : RequestMessageBase
         {
             [DataMember]
             internal readonly int IntValue;
@@ -95,7 +95,7 @@ namespace Kingo.Messaging.Validation
         {
             IRequestMessageValidator validator;
 
-            RequestMessage.TryGetMessageValidator(null, out validator);
+            RequestMessageBase.TryGetMessageValidator(null, out validator);
         }
 
         [TestMethod]
@@ -103,7 +103,7 @@ namespace Kingo.Messaging.Validation
         {
             IRequestMessageValidator validator;
 
-            Assert.IsFalse(RequestMessage.TryGetMessageValidator(typeof(MessageWithoutValidator), out validator));
+            Assert.IsFalse(RequestMessageBase.TryGetMessageValidator(typeof(MessageWithoutValidator), out validator));
             Assert.IsNull(validator);
         }
 
@@ -113,7 +113,7 @@ namespace Kingo.Messaging.Validation
             Assert.IsTrue(new MessageWithValidator(0, Enumerable.Empty<int>()).Validate().HasErrors);
             IRequestMessageValidator validator;
 
-            Assert.IsTrue(RequestMessage.TryGetMessageValidator(typeof(MessageWithValidator), out validator));
+            Assert.IsTrue(RequestMessageBase.TryGetMessageValidator(typeof(MessageWithValidator), out validator));
             Assert.IsNotNull(validator);
             Assert.AreEqual("DelegateValidator<MessageWithValidator>", validator.ToString());
         }
@@ -122,7 +122,7 @@ namespace Kingo.Messaging.Validation
         [ExpectedException(typeof(ArgumentNullException))]
         public void RegisterValidator_Throws_IfValidatorIsNull()
         {
-            RequestMessage.Register(null as IRequestMessageValidator<MessageWithValidator>);
+            RequestMessageBase.Register(null as IRequestMessageValidator<MessageWithValidator>);
         }
 
         [TestMethod]
@@ -133,7 +133,7 @@ namespace Kingo.Messaging.Validation
 
             try
             {
-                RequestMessage.Register<MessageWithValidator>((message, haltOnFirstError) => ErrorInfo.Empty);
+                RequestMessageBase.Register<MessageWithValidator>((message, haltOnFirstError) => ErrorInfo.Empty);
             }
             catch (ArgumentException exception)
             {

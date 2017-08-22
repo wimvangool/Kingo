@@ -166,7 +166,7 @@
     <Compile Include="Messaging\UnitOfWorkCache.cs" />
     <Compile Include="Messaging\UnitOfWorkControllerImplementation.cs" />
     <Compile Include="Messaging\UnprocessableEntityException.cs" />
-    <Compile Include="Messaging\Validation\Command.cs" />
+    <Compile Include="Messaging\Validation\CommandBase.cs" />
     <Compile Include="EnumOperators.T1.cs" />
     <Compile Include="Messaging\Domain\IllegalOperationException.cs" />
     <Compile Include="Messaging\BadRequestException.cs" />
@@ -208,7 +208,7 @@
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Messaging\Validation\IRequestMessage.cs" />
     <Compile Include="Messaging\Validation\IRequestMessageValidator.T1.cs" />
-    <Compile Include="Messaging\Validation\RequestMessage.cs" />
+    <Compile Include="Messaging\Validation\RequestMessageBase.cs" />
     <Compile Include="Threading\AsyncMethod.cs" />
     <Compile Include="Threading\Context.T1.cs" />
     <Compile Include="Messaging\Validation\DataAnnotationValidator.T1.cs" />

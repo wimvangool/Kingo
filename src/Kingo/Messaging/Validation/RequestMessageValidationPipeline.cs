@@ -40,7 +40,7 @@ namespace Kingo.Messaging.Validation
             }
             IRequestMessageValidator validator;
 
-            if (RequestMessage.TryGetMessageValidator(messageToValidate.GetType(), out validator))
+            if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out validator))
             {
                 return validator.Validate(messageToValidate, true);
             }            

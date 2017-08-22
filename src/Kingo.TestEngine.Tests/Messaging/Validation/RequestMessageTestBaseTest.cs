@@ -8,7 +8,7 @@ namespace Kingo.Messaging.Validation
     {
         #region [====== MessageToValidate ======]
 
-        private sealed class MessageToValidate : RequestMessage
+        private sealed class MessageToValidate : RequestMessageBase
         {
             public MessageToValidate(bool addInstanceError = false) :
                 this(Guid.NewGuid(), 1, addInstanceError) { }
