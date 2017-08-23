@@ -190,7 +190,7 @@
     <value>Invalid InstanceLifetime specified: '{0}'.</value>
   </data>
   <data name="MessageValidationPipeline_InvalidMessage" xml:space="preserve">
-    <value>Message of type '{0}' is not valid: {1} validation error(s) found.</value>
+    <value>Message of type '{0}' is not valid: {1}.</value>
   </data>
   <data name="MessageValidator_UnsupportedMessageType" xml:space="preserve">
     <value>Cannot validate message of type '{0}' because this validator only supports messages of type '{1}'.</value>

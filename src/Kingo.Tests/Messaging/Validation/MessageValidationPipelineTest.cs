@@ -115,7 +115,7 @@ namespace Kingo.Messaging.Validation
                 var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                 Assert.IsNotNull(invalidMessageException);                
-                Assert.AreEqual("Message of type 'SomeCommand' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
+                Assert.AreEqual("Message of type 'SomeCommand' is not valid: Some error. 0 member error(s).", invalidMessageException.Message);
                 throw;
             }
         }
@@ -148,7 +148,7 @@ namespace Kingo.Messaging.Validation
                 var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                 Assert.IsNotNull(invalidMessageException);
-                Assert.AreEqual("Message of type 'SomeEvent' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
+                Assert.AreEqual("Message of type 'SomeEvent' is not valid: Some error. 0 member error(s).", invalidMessageException.Message);
                 throw;
             }
         }
@@ -201,7 +201,7 @@ namespace Kingo.Messaging.Validation
                     var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                     Assert.IsNotNull(invalidMessageException);
-                    Assert.AreEqual("Message of type 'ExternalEvent' is not valid: 1 validation error(s) found.", invalidMessageException.Message);
+                    Assert.AreEqual("Message of type 'ExternalEvent' is not valid: Some error. 0 member error(s).", invalidMessageException.Message);
                     throw;
                 }
             }

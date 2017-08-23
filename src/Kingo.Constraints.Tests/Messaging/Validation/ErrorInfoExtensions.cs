@@ -6,14 +6,13 @@ namespace Kingo.Messaging.Validation
     {
         internal static void AssertNoErrors(this ErrorInfo errorInfo)
         {
-            Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(0, errorInfo.ErrorCount);
+            Assert.IsFalse(errorInfo.HasErrors);
         }        
 
-        internal static ErrorInfo AssertErrorCountIs(this ErrorInfo errorInfo, int count)
+        internal static ErrorInfo AssertMemberErrorCountIs(this ErrorInfo errorInfo, int count)
         {
             Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(count, errorInfo.ErrorCount);
+            Assert.AreEqual(count, errorInfo.MemberErrors.Count);
 
             return errorInfo;
         }

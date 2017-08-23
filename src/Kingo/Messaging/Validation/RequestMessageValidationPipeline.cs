@@ -50,7 +50,7 @@ namespace Kingo.Messaging.Validation
         private static InvalidRequestException NewInvalidMessageException(Type messageType, ErrorInfo errorInfo)
         {
             var messageFormat = ExceptionMessages.MessageValidationPipeline_InvalidMessage;
-            var message = string.Format(messageFormat, messageType.FriendlyName(), errorInfo.ErrorCount);
+            var message = string.Format(messageFormat, messageType.FriendlyName(), errorInfo);
             return new InvalidRequestException(errorInfo, message);
         }
     }

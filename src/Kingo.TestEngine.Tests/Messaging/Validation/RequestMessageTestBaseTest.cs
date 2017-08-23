@@ -22,14 +22,12 @@ namespace Kingo.Messaging.Validation
 
             public Guid Id
             {
-                get;
-                private set;
+                get;                
             }
 
             public int Version
             {
-                get;
-                private set;
+                get;                
             }
 
             private bool AddInstanceError
@@ -94,22 +92,7 @@ namespace Kingo.Messaging.Validation
         public void AssertIsNotValid_Throws_IfMessageIsNull()
         {
             AssertIsNotValid(null, 1);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void AssertIsNotValid_Throws_IfExpectedErrorCountIsZero()
-        {
-            try
-            {
-                AssertIsNotValid(new MessageToValidate(), 0);
-            }            
-            catch (ArgumentOutOfRangeException exception)
-            {
-                Assert.IsTrue(exception.Message.StartsWith("The specified number of expected errors (0) is invalid. This number must be greater than or equal to 1."));
-                throw;
-            }
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -147,11 +130,11 @@ namespace Kingo.Messaging.Validation
         {
             try
             {
-                AssertIsNotValid(new MessageToValidate(true), 2);
+                AssertIsNotValid(new MessageToValidate(true), 1);
             }
             catch (MetaAssertFailedException exception)
             {
-                Assert.AreEqual("The number of expected validation errors (2) does not match the actual amount of validation errors (1).", exception.Message);
+                Assert.AreEqual("The number of expected validation errors (1) does not match the actual amount of validation errors (0).", exception.Message);
                 throw;
             }
         }
@@ -159,7 +142,7 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         public void AssertIsNotValid_ReturnsExpectedResult_IfNumberOfExpectedValidationErrorsMatchesActualAmountOfValidationErrors()
         {
-            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true), 1));
+            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true)));
         }
 
         #endregion
@@ -172,7 +155,7 @@ namespace Kingo.Messaging.Validation
         {
             try
             {
-                AssertIsNotValid(new MessageToValidate(Guid.Empty, 1), 1).AssertInstanceError();
+                AssertIsNotValid(new MessageToValidate(Guid.NewGuid(), 1)).AssertInstanceError();
             }
             catch (MetaAssertFailedException exception)
             {
@@ -187,7 +170,7 @@ namespace Kingo.Messaging.Validation
         {
             try
             {
-                AssertIsNotValid(new MessageToValidate(true), 1).AssertInstanceError("Bla");
+                AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError("Bla");
             }
             catch (MetaAssertFailedException exception)
             {
@@ -202,7 +185,7 @@ namespace Kingo.Messaging.Validation
         {
             try
             {
-                AssertIsNotValid(new MessageToValidate(true), 1).AssertInstanceError("error");
+                AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError("error");
             }
             catch (MetaAssertFailedException exception)
             {
@@ -214,13 +197,13 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         public void AssertInstanceError_ReturnsExpectedResult_IfInstanceErrorMatchesExpectedError()
         {
-            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true), 1).AssertInstanceError("Error"));
+            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError("Error"));
         }
 
         [TestMethod]
         public void AssertInstanceError_ReturnsExpectedResult_IfInstanceErrorMatchesExpectedError_BasedOnTheSpecifiedComparison()
         {
-            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true), 1).AssertInstanceError("error", StringComparison.OrdinalIgnoreCase));
+            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError("error", StringComparison.OrdinalIgnoreCase));
         }
 
         #endregion
@@ -231,7 +214,7 @@ namespace Kingo.Messaging.Validation
         [ExpectedException(typeof(ArgumentNullException))]
         public void AssertInstanceError_Throws_IfAssertCallbackIsNull()
         {
-            AssertIsNotValid(new MessageToValidate(true), 1).AssertInstanceError(null as Action<string>);
+            AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError(null as Action<string>);
         }
 
         [TestMethod]
@@ -257,7 +240,7 @@ namespace Kingo.Messaging.Validation
 
             try
             {
-                AssertIsNotValid(new MessageToValidate(true), 1).AssertInstanceError(errorMessage =>
+                AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError(errorMessage =>
                 {
                     throw exceptionToThrow;
                 });
@@ -272,7 +255,7 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         public void AssertInstanceError_ReturnsExpectedResult_IfAssertCallbackDoesNotFail()
         {
-            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true), 1).AssertInstanceError(errorMessage => { }));
+            Assert.IsNotNull(AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError(errorMessage => { }));
         }
 
         #endregion
@@ -283,7 +266,7 @@ namespace Kingo.Messaging.Validation
         [ExpectedException(typeof(ArgumentNullException))]
         public void AssertMemberError_Throws_IfMemberNameIsNull()
         {
-            AssertIsNotValid(new MessageToValidate(true), 1).AssertMemberError(null);
+            AssertIsNotValid(new MessageToValidate(true)).AssertMemberError(null);
         }
 
         [TestMethod]
@@ -292,7 +275,7 @@ namespace Kingo.Messaging.Validation
         {
             try
             {
-                AssertIsNotValid(new MessageToValidate(true), 1).AssertMemberError("Id");
+                AssertIsNotValid(new MessageToValidate(true)).AssertMemberError("Id");
             }
             catch (MetaAssertFailedException exception)
             {
@@ -360,7 +343,7 @@ namespace Kingo.Messaging.Validation
         {
             try
             {
-                AssertIsNotValid(new MessageToValidate(true), 1).AssertMemberError("Id", errorMessage => { });
+                AssertIsNotValid(new MessageToValidate(true)).AssertMemberError("Id", errorMessage => { });
             }
             catch (MetaAssertFailedException exception)
             {

@@ -135,7 +135,7 @@ namespace Kingo.Messaging.Validation
             var command = new CommandUnderTest(-1);
 
             Assert.IsNotNull(command.ErrorInfo);
-            Assert.AreEqual(1, command.ErrorInfo.ErrorCount);
+            Assert.AreEqual(1, command.ErrorInfo.MemberErrors.Count);
             Assert.AreEqual("Error.", command.ErrorInfo.MemberErrors["Value"]);
         }
 
@@ -158,7 +158,7 @@ namespace Kingo.Messaging.Validation
             command.Value = -1;
 
             Assert.IsNotNull(command.ErrorInfo);
-            Assert.AreEqual(1, command.ErrorInfo.ErrorCount);
+            Assert.AreEqual(1, command.ErrorInfo.MemberErrors.Count);
             Assert.AreEqual("Error.", command.ErrorInfo.MemberErrors["Value"]);
         }
 

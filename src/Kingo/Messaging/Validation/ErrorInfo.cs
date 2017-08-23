@@ -49,13 +49,7 @@ namespace Kingo.Messaging.Validation
         /// Indicates whether or not this instance carries any error messages.
         /// </summary>
         public bool HasErrors =>
-            ErrorCount > 0;
-
-        /// <summary>
-        /// Returns the number of error messages this instance carries.
-        /// </summary>
-        public int ErrorCount =>
-            (_error.Length == 0 ? 0 : 1) + _memberErrors.Count;
+            !string.IsNullOrEmpty(_error) || _memberErrors.Count > 0;
 
         /// <summary>
         /// Returns the error message that applies to the entire instance.
@@ -86,16 +80,16 @@ namespace Kingo.Messaging.Validation
                 }
                 return null;
             }
-        }                              
+        }
 
-        #endregion                                     
+        #endregion
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{ErrorCount} error(s).";
+            (string.IsNullOrEmpty(_error) ? string.Empty : _error + " ") + $"{_memberErrors.Count} member error(s)";
 
         #region [====== Factory Methods ======]
-        
+
         /// <summary>
         /// An instance of the <see cref="ErrorInfo" /> class without any errors.
         /// </summary>       

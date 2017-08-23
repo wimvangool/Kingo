@@ -295,7 +295,7 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not valid: {1} validation error(s) found..
+        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not valid: {1}..
         /// </summary>
         internal static string MessageValidationPipeline_InvalidMessage {
             get {

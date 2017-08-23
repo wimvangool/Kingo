@@ -84,7 +84,7 @@ namespace Kingo.Messaging.Validation
             validator.VerifyThat(m => m.Other).IsEqualTo(m => m.Member);
 
             validator.Validate(message)
-                .AssertErrorCountIs(3)
+                .AssertMemberErrorCountIs(2)
                 .AssertInstanceError("Member (0) must be equal to '1'.")
                 .AssertMemberError("Member (0) must be equal to '1'.", "Member")
                 .AssertMemberError("Other (1) must be equal to '0'.", "Other");
@@ -100,7 +100,7 @@ namespace Kingo.Messaging.Validation
             validator.VerifyThat(m => m.Other).IsEqualTo(m => m.Member);
 
             validator.Validate(message, true)
-                .AssertErrorCountIs(2)
+                .AssertMemberErrorCountIs(1)
                 .AssertInstanceError("Member (0) must be equal to '1'.")
                 .AssertMemberError("Member (0) must be equal to '1'.", "Member");                
         }
@@ -183,7 +183,7 @@ namespace Kingo.Messaging.Validation
             validator.VerifyThat(m => m.Member).IsNotNull(RandomErrorMessage);
 
             validator.Validate(message)
-                .AssertErrorCountIs(2)
+                .AssertMemberErrorCountIs(1)
                 .AssertInstanceError(RandomErrorMessage)
                 .AssertMemberError(RandomErrorMessage);          
         }

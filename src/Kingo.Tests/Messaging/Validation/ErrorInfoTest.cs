@@ -37,17 +37,21 @@ namespace Kingo.Messaging.Validation
         public void Merge_ReturnsCorrectlyMergedResult_IfBothLeftAndRightContainMemberErrors_And_ErrorsDoNotOverlap()
         {
             var leftErrors = new Dictionary<string, string>
-            { { "A", "left" } };
+            {
+                { "A", "left" }
+            };
             var left = new ErrorInfo(leftErrors);
 
             var rightErrors = new Dictionary<string, string>
-            { { "B", "right" } };
+            {
+                { "B", "right" }
+            };
             var right = new ErrorInfo(rightErrors);
 
             var errorInfo = ErrorInfo.Merge(left, right);
 
             Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(2, errorInfo.ErrorCount);
+            Assert.AreEqual(2, errorInfo.MemberErrors.Count);
             Assert.AreEqual("left", errorInfo.MemberErrors["A"]);
             Assert.AreEqual("right", errorInfo.MemberErrors["B"]);
         }
@@ -56,17 +60,21 @@ namespace Kingo.Messaging.Validation
         public void Merge_ReturnsCorrectlyMergedResult_IfBothLeftAndRightContainMemberErrors_And_ErrorsOverlap()
         {
             var leftErrors = new Dictionary<string, string>
-            { { "A", "left" } };
+            {
+                { "A", "left" }
+            };
             var left = new ErrorInfo(leftErrors);
 
             var rightErrors = new Dictionary<string, string>
-            { { "A", "right" }, { "B", "right" } };
+            {
+                { "A", "right" }, { "B", "right" }
+            };
             var right = new ErrorInfo(rightErrors);
 
             var errorInfo = ErrorInfo.Merge(left, right);
 
             Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(2, errorInfo.ErrorCount);
+            Assert.AreEqual(2, errorInfo.MemberErrors.Count);
             Assert.AreEqual("left", errorInfo.MemberErrors["A"]);
             Assert.AreEqual("right", errorInfo.MemberErrors["B"]);
         }
@@ -80,7 +88,7 @@ namespace Kingo.Messaging.Validation
             var errorInfo = ErrorInfo.Merge(left, right);
 
             Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.AreEqual(0, errorInfo.MemberErrors.Count);
             Assert.AreEqual("left", errorInfo.Error);
         }
 
@@ -93,7 +101,7 @@ namespace Kingo.Messaging.Validation
             var errorInfo = ErrorInfo.Merge(left, right);
 
             Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.AreEqual(0, errorInfo.MemberErrors.Count);
             Assert.AreEqual("right", errorInfo.Error);
         }
 
@@ -106,7 +114,7 @@ namespace Kingo.Messaging.Validation
             var errorInfo = ErrorInfo.Merge(left, right);
 
             Assert.IsNotNull(errorInfo);
-            Assert.AreEqual(1, errorInfo.ErrorCount);
+            Assert.AreEqual(0, errorInfo.MemberErrors.Count);
             Assert.AreEqual("left", errorInfo.Error);
         }
 

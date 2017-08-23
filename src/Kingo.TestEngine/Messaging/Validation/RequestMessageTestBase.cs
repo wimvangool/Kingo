@@ -19,15 +19,23 @@ namespace Kingo.Messaging.Validation
             {
                 _test = test;
                 _errorInfo = errorInfo;
+            }            
+
+            public void AssertNoErrors()
+            {
+                if (_errorInfo.HasErrors)
+                {
+                    throw NewMessageNotValidException();
+                }
             }
 
-            public IValidationResult AssertErrorCountIs(int expectedErrorCount)
+            public IValidationResult AssertMemberErrorCountIs(int expectedErrorCount)
             {
-                if (_errorInfo.ErrorCount == expectedErrorCount)
+                if (_errorInfo.MemberErrors.Count == expectedErrorCount)
                 {
                     return this;
                 }
-                throw NewUnexpectedErrorCountException(expectedErrorCount, _errorInfo.ErrorCount);
+                throw NewUnexpectedErrorCountException(expectedErrorCount, _errorInfo.MemberErrors.Count);
             }            
 
             public IValidationResult AssertInstanceError(string expectedErrorMessage = null, StringComparison comparison = StringComparison.Ordinal)
@@ -91,33 +99,40 @@ namespace Kingo.Messaging.Validation
             private static bool AreEqual(string expectedErrorMessage, string actualErrorMessage, StringComparison comparison) =>
                 expectedErrorMessage == null || string.Compare(expectedErrorMessage, actualErrorMessage, comparison) == 0;
 
+            private Exception NewMessageNotValidException()
+            {
+                var messageFormat = ExceptionMessages.RequestMessageTestBase_MessageNotValid;
+                var message = string.Format(messageFormat, _errorInfo);
+                return _test.NewAssertFailedException(message);
+            }
+
             private Exception NewUnexpectedErrorCountException(int expectedErrorCount, int actualErrorCount)
             {
-                var messageFormat = ExceptionMessages.RequestMessageTest_UnexpectedErrorCount;
+                var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedErrorCount;
                 var message = string.Format(messageFormat, expectedErrorCount, actualErrorCount);
                 return _test.NewAssertFailedException(message);
             }
 
             private Exception NewNoInstanceErrorException() =>
-                _test.NewAssertFailedException(ExceptionMessages.RequestMessageTest_NoInstanceError);
+                _test.NewAssertFailedException(ExceptionMessages.RequestMessageTestBase_NoInstanceError);
 
             private Exception NewNoMemberErrorException(string memberName)
             {
-                var messageFormat = ExceptionMessages.RequestMessageTest_NoMemberError;
+                var messageFormat = ExceptionMessages.RequestMessageTestBase_NoMemberError;
                 var message = string.Format(messageFormat, memberName);
                 return _test.NewAssertFailedException(message);
             }
 
             private Exception NewUnexpectedInstanceErrorException(string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
             {
-                var messageFormat = ExceptionMessages.RequestMessageTest_UnexpectedInstanceError;
+                var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedInstanceError;
                 var message = string.Format(messageFormat, expectedErrorMessage, actualErrorMessage, comparison);
                 return _test.NewAssertFailedException(message);
             }
 
             private Exception NewUnexpectedMemberErrorException(string memberName, string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
             {
-                var messageFormat = ExceptionMessages.RequestMessageTest_UnexpectedMemberError;
+                var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedMemberError;
                 var message = string.Format(messageFormat, memberName, expectedErrorMessage, actualErrorMessage, comparison);
                 return _test.NewAssertFailedException(message);
             }            
@@ -134,29 +149,29 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
         protected virtual void AssertIsValid(IRequestMessage message) =>
-            Validate(message).AssertErrorCountIs(0);
+            Validate(message).AssertNoErrors();
 
         /// <summary>
         /// Validates the specified <paramref name="message"/> and asserts that the result contains a certain amount of errors.
         /// </summary>
         /// <param name="message">The message to validate.</param>
-        /// <param name="expectedErrorCount">
-        /// The expected amount of errors.
+        /// <param name="expectedMemberErrorCount">
+        /// The expected amount of errors. Default is 1.
         /// </param>
         /// <returns>The result of the validation.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>  
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="expectedErrorCount" /> is a negative number.
+        /// <paramref name="expectedMemberErrorCount" /> is a negative number.
         /// </exception>
-        protected virtual IValidationResult AssertIsNotValid(IRequestMessage message, int expectedErrorCount)
+        protected virtual IValidationResult AssertIsNotValid(IRequestMessage message, int expectedMemberErrorCount = 0)
         {
-            if (expectedErrorCount <= 0)
+            if (expectedMemberErrorCount < 0)
             {
-                throw NewInvalidErrorCountException(expectedErrorCount);
+                throw NewInvalidErrorCountException(expectedMemberErrorCount);
             }
-            return Validate(message).AssertErrorCountIs(expectedErrorCount);
+            return Validate(message).AssertMemberErrorCountIs(expectedMemberErrorCount);
         }               
 
         private ValidationResult Validate(IRequestMessage message)
@@ -170,7 +185,7 @@ namespace Kingo.Messaging.Validation
 
         private static Exception NewInvalidErrorCountException(int expectedErrorCount)
         {
-            var messageFormat = ExceptionMessages.RequestMessageTest_InvalidErrorCount;
+            var messageFormat = ExceptionMessages.RequestMessageTestBase_InvalidErrorCount;
             var message = string.Format(messageFormat, expectedErrorCount);
             return new ArgumentOutOfRangeException(nameof(expectedErrorCount), message);
         }

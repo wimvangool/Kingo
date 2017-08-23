@@ -117,22 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RequestMessageTest_InvalidErrorCount" xml:space="preserve">
+  <data name="RequestMessageTestBase_InvalidErrorCount" xml:space="preserve">
     <value>The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1.</value>
   </data>
-  <data name="RequestMessageTest_NoInstanceError" xml:space="preserve">
+  <data name="RequestMessageTestBase_MessageNotValid" xml:space="preserve">
+    <value>The specified message is not valid: {0}.</value>
+  </data>
+  <data name="RequestMessageTestBase_NoInstanceError" xml:space="preserve">
     <value>An instance error was expected but the result of the validation contains no instance error.</value>
   </data>
-  <data name="RequestMessageTest_NoMemberError" xml:space="preserve">
+  <data name="RequestMessageTestBase_NoMemberError" xml:space="preserve">
     <value>An error for member '{0}' was expected, but the result contains no error for this member.</value>
   </data>
-  <data name="RequestMessageTest_UnexpectedErrorCount" xml:space="preserve">
+  <data name="RequestMessageTestBase_UnexpectedErrorCount" xml:space="preserve">
     <value>The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1}).</value>
   </data>
-  <data name="RequestMessageTest_UnexpectedInstanceError" xml:space="preserve">
+  <data name="RequestMessageTestBase_UnexpectedInstanceError" xml:space="preserve">
     <value>The expected instance error ({0}) does not match the actual instance error ({1}) based on the type of comparison specified ({2}).</value>
   </data>
-  <data name="RequestMessageTest_UnexpectedMemberError" xml:space="preserve">
+  <data name="RequestMessageTestBase_UnexpectedMemberError" xml:space="preserve">
     <value>The expected error for member '{0}' ({1}) does not match the actual error ({2}) based on the type of comparison specified ({3}).</value>
   </data>
   <data name="Scenario_ExceptionAssertFailed_NoException" xml:space="preserve">

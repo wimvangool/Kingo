@@ -145,6 +145,7 @@
     <Compile Include="Messaging\MicroProcessorMethod.T1.cs" />
     <Compile Include="Messaging\MicroProcessorPipeline.cs" />
     <Compile Include="Messaging\MicroProcessorPipelineStringBuilder.cs" />
+    <Compile Include="Messaging\NotFoundException.cs" />
     <Compile Include="Messaging\NullEventStream.cs" />
     <Compile Include="Messaging\Query.T1.cs" />
     <Compile Include="Messaging\Query.T2.cs" />

@@ -20,7 +20,7 @@
         public ErrorInfo Validate(object message, bool haltOnFirstError = false)
         {
             var errorInfo = _leftValidator.Validate(message);
-            if (errorInfo.ErrorCount > 0 && haltOnFirstError)
+            if (errorInfo.HasErrors && haltOnFirstError)
             {
                 return errorInfo;
             }

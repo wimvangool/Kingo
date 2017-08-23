@@ -63,54 +63,63 @@ namespace Kingo.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1..
         /// </summary>
-        internal static string RequestMessageTest_InvalidErrorCount {
+        internal static string RequestMessageTestBase_InvalidErrorCount {
             get {
-                return ResourceManager.GetString("RequestMessageTest_InvalidErrorCount", resourceCulture);
+                return ResourceManager.GetString("RequestMessageTestBase_InvalidErrorCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified message is not valid: {0}..
+        /// </summary>
+        internal static string RequestMessageTestBase_MessageNotValid {
+            get {
+                return ResourceManager.GetString("RequestMessageTestBase_MessageNotValid", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to An instance error was expected but the result of the validation contains no instance error..
         /// </summary>
-        internal static string RequestMessageTest_NoInstanceError {
+        internal static string RequestMessageTestBase_NoInstanceError {
             get {
-                return ResourceManager.GetString("RequestMessageTest_NoInstanceError", resourceCulture);
+                return ResourceManager.GetString("RequestMessageTestBase_NoInstanceError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to An error for member &apos;{0}&apos; was expected, but the result contains no error for this member..
         /// </summary>
-        internal static string RequestMessageTest_NoMemberError {
+        internal static string RequestMessageTestBase_NoMemberError {
             get {
-                return ResourceManager.GetString("RequestMessageTest_NoMemberError", resourceCulture);
+                return ResourceManager.GetString("RequestMessageTestBase_NoMemberError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The number of expected validation errors ({0}) does not match the actual amount of validation errors ({1})..
         /// </summary>
-        internal static string RequestMessageTest_UnexpectedErrorCount {
+        internal static string RequestMessageTestBase_UnexpectedErrorCount {
             get {
-                return ResourceManager.GetString("RequestMessageTest_UnexpectedErrorCount", resourceCulture);
+                return ResourceManager.GetString("RequestMessageTestBase_UnexpectedErrorCount", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The expected instance error ({0}) does not match the actual instance error ({1}) based on the type of comparison specified ({2})..
         /// </summary>
-        internal static string RequestMessageTest_UnexpectedInstanceError {
+        internal static string RequestMessageTestBase_UnexpectedInstanceError {
             get {
-                return ResourceManager.GetString("RequestMessageTest_UnexpectedInstanceError", resourceCulture);
+                return ResourceManager.GetString("RequestMessageTestBase_UnexpectedInstanceError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The expected error for member &apos;{0}&apos; ({1}) does not match the actual error ({2}) based on the type of comparison specified ({3})..
         /// </summary>
-        internal static string RequestMessageTest_UnexpectedMemberError {
+        internal static string RequestMessageTestBase_UnexpectedMemberError {
             get {
-                return ResourceManager.GetString("RequestMessageTest_UnexpectedMemberError", resourceCulture);
+                return ResourceManager.GetString("RequestMessageTestBase_UnexpectedMemberError", resourceCulture);
             }
         }
         
