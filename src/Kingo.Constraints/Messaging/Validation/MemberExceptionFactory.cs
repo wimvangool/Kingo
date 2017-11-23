@@ -20,6 +20,7 @@ namespace Kingo.Messaging.Validation
             }
         }
 
-        internal Exception CreateException() => new InvalidOperationException(_errorMessage);
+        internal Exception CreateException() =>
+             new InvalidOperationException(_errorMessage);
     }
 }

@@ -21,7 +21,8 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// Returns the number of error messages in this list.
         /// </summary>
-        public int Count => _errorMessages.Count;
+        public int Count =>
+             _errorMessages.Count;
 
         /// <summary>
         /// Returns the number of non-herited error messages in this list.
@@ -46,6 +47,7 @@ namespace Kingo.Messaging.Validation
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <inheritdoc />
-        public override string ToString() => string.Format(DebugStringFormat, Count, CountNonInheritedErrors());
+        public override string ToString() =>
+             string.Format(DebugStringFormat, Count, CountNonInheritedErrors());
     }
 }

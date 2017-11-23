@@ -35,7 +35,8 @@ namespace Kingo.Messaging.Validation
         private IMemberConstraintBuilder<T, TValue> CreateMember() =>
             CreateMemberExpression().Compile().Invoke();
 
-        private Expression<Func<IMemberConstraintBuilder<T, TValue>>> CreateMemberExpression() => _expressionBuilder.BuildLeftExpression().BuildRightExpression().BuildMethodCallExpression();
+        private Expression<Func<IMemberConstraintBuilder<T, TValue>>> CreateMemberExpression() =>
+             _expressionBuilder.BuildLeftExpression().BuildRightExpression().BuildMethodCallExpression();
 
         internal LambdaExpression CreateLeftExpression(Expression expressionBody) =>
             CreateLeftExpression(expressionBody, PrimaryParameter);

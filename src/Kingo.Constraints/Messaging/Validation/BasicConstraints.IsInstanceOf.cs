@@ -25,7 +25,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraintBuilder<T, TValue> IsNotInstanceOf<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Type type, string errorMessage = null) => member.Apply(NewIsNotInstanceOfConstraint<TValue>(type, errorMessage));
+        public static IMemberConstraintBuilder<T, TValue> IsNotInstanceOf<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Type type, string errorMessage = null) =>
+             member.Apply(NewIsNotInstanceOfConstraint<TValue>(type, errorMessage));
 
         /// <summary>
         /// Verifies that this member's value is not an instance of <paramref name="typeFactory"/>.
@@ -83,7 +84,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraintBuilder<T, TValue> IsInstanceOf<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Type type, string errorMessage = null) => member.Apply(NewIsInstanceOfConstraint<TValue>(type).WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, TValue> IsInstanceOf<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, Type type, string errorMessage = null) =>
+             member.Apply(NewIsInstanceOfConstraint<TValue>(type).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is an instance of <paramref name="typeFactory"/>.
@@ -154,18 +156,22 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// Returns the type that the value is compared to or cast to.
         /// </summary>
-        public Type Type => typeof(TValueOut);
+        public Type Type =>
+             typeof(TValueOut);
 
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.BasicConstraints_IsInstanceOf);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.BasicConstraints_IsInstanceOf);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) => new IsInstanceOfFilter<TValueIn, TValueOut>(this, name);
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) =>
+             new IsInstanceOfFilter<TValueIn, TValueOut>(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) => new IsInstanceOfFilter<TValueIn, TValueOut>(this, errorMessage);
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) =>
+             new IsInstanceOfFilter<TValueIn, TValueOut>(this, errorMessage);
 
         #endregion     
    
@@ -181,7 +187,8 @@ namespace Kingo.Messaging.Validation
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValueIn value) => value is TValueOut;
+        public override bool IsSatisfiedBy(TValueIn value) =>
+             value is TValueOut;
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValueIn value, out TValueOut valueOut)
@@ -234,10 +241,12 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) => new AsFilter<TValueIn, TValueOut>(this, name);
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) =>
+             new AsFilter<TValueIn, TValueOut>(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) => new AsFilter<TValueIn, TValueOut>(this, errorMessage);
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) =>
+             new AsFilter<TValueIn, TValueOut>(this, errorMessage);
 
         #endregion
 
@@ -253,7 +262,8 @@ namespace Kingo.Messaging.Validation
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValueIn value) => value is TValueOut;
+        public override bool IsSatisfiedBy(TValueIn value) =>
+             value is TValueOut;
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValueIn value, out TValueOut valueOut)

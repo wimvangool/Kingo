@@ -25,7 +25,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotSameInstanceAs<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null) => member.Apply(new IsNotSameInstanceAsConstraint<TValue>(other).WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, TValue> IsNotSameInstanceAs<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null) =>
+             member.Apply(new IsNotSameInstanceAsConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value does not refer to the same instance as <paramref name="otherFactory"/>.
@@ -72,7 +73,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsSameInstanceAs<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null) => member.Apply(new IsSameInstanceAsConstraint<TValue>(other).WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, TValue> IsSameInstanceAs<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null) =>
+             member.Apply(new IsSameInstanceAsConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value refers to the same instance as <paramref name="otherFactory"/>.
@@ -139,27 +141,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotSameInstanceAs);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotSameInstanceAs);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new IsNotSameInstanceAsConstraint<TValue>(this, name);
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+             new IsNotSameInstanceAsConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new IsNotSameInstanceAsConstraint<TValue>(this, errorMessage);
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+             new IsNotSameInstanceAsConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) => new IsSameInstanceAsConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new IsSameInstanceAsConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value) => !ReferenceEquals(value, Other);
+        public override bool IsSatisfiedBy(TValue value) =>
+             !ReferenceEquals(value, Other);
 
         #endregion
     }
@@ -202,27 +209,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.BasicConstraints_IsSameInstanceAs);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.BasicConstraints_IsSameInstanceAs);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new IsSameInstanceAsConstraint<TValue>(this, name);
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+             new IsSameInstanceAsConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new IsSameInstanceAsConstraint<TValue>(this, errorMessage);
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+             new IsSameInstanceAsConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) => new IsNotSameInstanceAsConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new IsNotSameInstanceAsConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value) => ReferenceEquals(value, Other);
+        public override bool IsSatisfiedBy(TValue value) =>
+             ReferenceEquals(value, Other);
 
         #endregion
     }

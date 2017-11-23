@@ -30,10 +30,12 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) => new DelegateFilter<T, TValueIn, TValueOut>(this, name);
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) =>
+             new DelegateFilter<T, TValueIn, TValueOut>(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) => new DelegateFilter<T, TValueIn, TValueOut>(this, errorMessage);
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) =>
+             new DelegateFilter<T, TValueIn, TValueOut>(this, errorMessage);
 
         #endregion
 

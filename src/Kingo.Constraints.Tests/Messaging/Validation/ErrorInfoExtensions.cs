@@ -25,7 +25,8 @@ namespace Kingo.Messaging.Validation
             return errorInfo;
         }
 
-        internal static ErrorInfo AssertMemberError(this ErrorInfo errorInfo, string errorMessage) => AssertMemberError(errorInfo, errorMessage, "Member");
+        internal static ErrorInfo AssertMemberError(this ErrorInfo errorInfo, string errorMessage) =>
+             AssertMemberError(errorInfo, errorMessage, "Member");
 
         internal static ErrorInfo AssertMemberError(this ErrorInfo errorInfo, string errorMessage, params string[] memberNames)
         {            

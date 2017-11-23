@@ -191,8 +191,10 @@ namespace Kingo.Messaging.Validation
             return constraints;
         }
 
-        private bool MayBeSatisfied() => _randomizer.NextDouble() <= 0.5;
+        private bool MayBeSatisfied() =>
+             _randomizer.NextDouble() <= 0.5;
 
-        private int GetRandomIndex(IConstraint<object>[] constraints) => _randomizer.Next(0, constraints.Length - 1);
+        private int GetRandomIndex(IConstraint<object>[] constraints) =>
+             _randomizer.Next(0, constraints.Length - 1);
     }
 }

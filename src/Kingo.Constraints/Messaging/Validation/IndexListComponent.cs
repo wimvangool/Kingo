@@ -16,9 +16,11 @@ namespace Kingo.Messaging.Validation
             _bottomStack = bottomStack;
         }
 
-        internal override Type InstanceType => _instanceType;
+        internal override Type InstanceType =>
+             _instanceType;
 
-        internal override string Top => _indexList.ToString();
+        internal override string Top =>
+             _indexList.ToString();
 
         internal override bool Pop(out MemberNameComponentStack memberName)
         {

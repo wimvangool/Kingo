@@ -15,7 +15,8 @@ namespace Kingo.Messaging.Validation
             _methodCallDecorator = methodCallDecorator;
         }
 
-        internal MethodCallExpressionFactory<T, TValue> Append(MethodCallDecorator<T, TValue> methodCallAppender) => new MethodCallExpressionFactory<T, TValue>(_interpreter, _leftExpression, _methodCallDecorator.Append(methodCallAppender));
+        internal MethodCallExpressionFactory<T, TValue> Append(MethodCallDecorator<T, TValue> methodCallAppender) =>
+             new MethodCallExpressionFactory<T, TValue>(_interpreter, _leftExpression, _methodCallDecorator.Append(methodCallAppender));
 
         internal MethodCallExpression CreateMethodCallExpression()
         {

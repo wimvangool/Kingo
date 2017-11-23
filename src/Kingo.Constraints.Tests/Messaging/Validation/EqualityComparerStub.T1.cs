@@ -11,8 +11,10 @@ namespace Kingo.Messaging.Validation
             _result = result;
         }
 
-        public bool Equals(T x, T y) => _result;
+        public bool Equals(T x, T y) =>
+             _result;
 
-        public int GetHashCode(T obj) => 0;
+        public int GetHashCode(T obj) =>
+             0;
     }
 }

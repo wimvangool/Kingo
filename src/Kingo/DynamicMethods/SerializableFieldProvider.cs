@@ -12,9 +12,11 @@ namespace Kingo.DynamicMethods
         private SerializableFieldProvider(Type type)
             : base(type) { }
 
-        public override IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields) => fields.Where(IsSerialized);
+        public override IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields) =>
+             fields.Where(IsSerialized);
 
-        private static bool IsSerialized(MemberInfo member) => !HasAttribute(member, typeof(NonSerializedAttribute));
+        private static bool IsSerialized(MemberInfo member) =>
+             !HasAttribute(member, typeof(NonSerializedAttribute));
 
         #endregion
 

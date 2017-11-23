@@ -22,7 +22,8 @@ namespace Kingo.Messaging.Validation
             _methodCallDecorator = methodCallDecorator;
         }
 
-        protected override LambdaExpression FieldOrPropertyExpression => _interpreter.FieldOrPropertyExpression;
+        protected override LambdaExpression FieldOrPropertyExpression =>
+             _interpreter.FieldOrPropertyExpression;
 
         internal MethodCallExpressionBuilder<T, TValue> BuildRightExpression()
         {

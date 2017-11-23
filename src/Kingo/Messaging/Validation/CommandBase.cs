@@ -30,7 +30,8 @@ namespace Kingo.Messaging.Validation
         public bool HasChanges
         {
             get => _hasChanges;
-            private set => SetValue(ref _hasChanges, value, nameof(HasChanges));
+            private set =>
+             SetValue(ref _hasChanges, value, nameof(HasChanges));
         }
 
         /// <summary>
@@ -65,7 +66,8 @@ namespace Kingo.Messaging.Validation
                 }
                 return _errorInfo;
             }
-            private set => SetValue(ref _errorInfo, value, nameof(ErrorInfo));
+            private set =>
+             SetValue(ref _errorInfo, value, nameof(ErrorInfo));
         }
 
         string IDataErrorInfo.this[string columnName]

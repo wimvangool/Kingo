@@ -302,7 +302,8 @@ namespace Kingo.Threading
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="timeoutInMilliseconds"/> is not a valid timeout period.
         /// </exception>
-        public static bool Await(this Task task, int timeoutInMilliseconds, CancellationToken? token = null) => task.Await(TimeSpan.FromMilliseconds(timeoutInMilliseconds), token);
+        public static bool Await(this Task task, int timeoutInMilliseconds, CancellationToken? token = null) =>
+             task.Await(TimeSpan.FromMilliseconds(timeoutInMilliseconds), token);
 
         /// <summary>
         /// Awaits the specified task, blocking the current thread, and unwraps any <see cref="AggregateException" />

@@ -26,7 +26,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotMatch<T>(this IMemberConstraintBuilder<T, string> member, string pattern, string errorMessage = null) => member.DoesNotMatch(new Regex(pattern), errorMessage);
+        public static IMemberConstraintBuilder<T, string> DoesNotMatch<T>(this IMemberConstraintBuilder<T, string> member, string pattern, string errorMessage = null) =>
+             member.DoesNotMatch(new Regex(pattern), errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value does not match the specified <paramref name="pattern"/>.
@@ -44,7 +45,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotMatch<T>(this IMemberConstraintBuilder<T, string> member, string pattern, RegexOptions options, string errorMessage = null) => member.DoesNotMatch(new Regex(pattern, options), errorMessage);
+        public static IMemberConstraintBuilder<T, string> DoesNotMatch<T>(this IMemberConstraintBuilder<T, string> member, string pattern, RegexOptions options, string errorMessage = null) =>
+             member.DoesNotMatch(new Regex(pattern, options), errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value does not match the specified <paramref name="pattern"/>.
@@ -61,7 +63,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotMatch<T>(this IMemberConstraintBuilder<T, string> member, Regex pattern, string errorMessage = null) => member.Apply(new StringMatchesConstraint(pattern).Invert(errorMessage));
+        public static IMemberConstraintBuilder<T, string> DoesNotMatch<T>(this IMemberConstraintBuilder<T, string> member, Regex pattern, string errorMessage = null) =>
+             member.Apply(new StringMatchesConstraint(pattern).Invert(errorMessage));
 
         #endregion
 
@@ -82,7 +85,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> Matches<T>(this IMemberConstraintBuilder<T, string> member, string pattern, string errorMessage = null) => member.Matches(new Regex(pattern), errorMessage);
+        public static IMemberConstraintBuilder<T, string> Matches<T>(this IMemberConstraintBuilder<T, string> member, string pattern, string errorMessage = null) =>
+             member.Matches(new Regex(pattern), errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value matches the specified <paramref name="pattern"/>.
@@ -100,7 +104,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> is not a valid regular expression, or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> Matches<T>(this IMemberConstraintBuilder<T, string> member, string pattern, RegexOptions options, string errorMessage = null) => member.Matches(new Regex(pattern, options), errorMessage);
+        public static IMemberConstraintBuilder<T, string> Matches<T>(this IMemberConstraintBuilder<T, string> member, string pattern, RegexOptions options, string errorMessage = null) =>
+             member.Matches(new Regex(pattern, options), errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value matches the specified <paramref name="pattern"/>.
@@ -117,7 +122,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> Matches<T>(this IMemberConstraintBuilder<T, string> member, Regex pattern, string errorMessage = null) => member.Apply(new StringMatchesConstraint(pattern).WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, string> Matches<T>(this IMemberConstraintBuilder<T, string> member, Regex pattern, string errorMessage = null) =>
+             member.Apply(new StringMatchesConstraint(pattern).WithErrorMessage(errorMessage));
 
         #endregion        
     }
@@ -175,13 +181,16 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_Matches);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.StringConstraints_Matches);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringMatchesConstraint(this, name);
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) =>
+             new StringMatchesConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringMatchesConstraint(this, errorMessage);
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) =>
+             new StringMatchesConstraint(this, errorMessage);
 
         #endregion
 
@@ -197,7 +206,8 @@ namespace Kingo.Messaging.Validation
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(string value) => Pattern.IsMatch(value);
+        public override bool IsSatisfiedBy(string value) =>
+             Pattern.IsMatch(value);
 
         #endregion
     }

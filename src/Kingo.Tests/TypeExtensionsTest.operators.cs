@@ -31,9 +31,11 @@ namespace Kingo
                 return false;
             }
 
-            public bool Equals(GenericStruct<TValue> other) => _value.Equals(other._value);
+            public bool Equals(GenericStruct<TValue> other) =>
+             _value.Equals(other._value);
 
-            public override int GetHashCode() => _value.GetHashCode();
+            public override int GetHashCode() =>
+             _value.GetHashCode();
 
             #region [====== Binary Operators ======]
 

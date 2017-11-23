@@ -24,7 +24,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, bool> IsTrue<T>(this IMemberConstraintBuilder<T, bool> member, string errorMessage = null) => member.Apply(new BooleanIsTrueConstraint().WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, bool> IsTrue<T>(this IMemberConstraintBuilder<T, bool> member, string errorMessage = null) =>
+             member.Apply(new BooleanIsTrueConstraint().WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -44,7 +45,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, bool> IsFalse<T>(this IMemberConstraintBuilder<T, bool> member, string errorMessage = null) => member.Apply(new BooleanIsFalseConstraint().WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, bool> IsFalse<T>(this IMemberConstraintBuilder<T, bool> member, string errorMessage = null) =>
+             member.Apply(new BooleanIsFalseConstraint().WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -70,27 +72,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.BooleanConstraints_IsTrue);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.BooleanConstraints_IsTrue);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<bool> WithName(Identifier name) => new BooleanIsTrueConstraint(this, name);
+        public override IConstraintWithErrorMessage<bool> WithName(Identifier name) =>
+             new BooleanIsTrueConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage) => new BooleanIsTrueConstraint(this, errorMessage);
+        public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage) =>
+             new BooleanIsTrueConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null) => new BooleanIsFalseConstraint().WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new BooleanIsFalseConstraint().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(bool value) => value;
+        public override bool IsSatisfiedBy(bool value) =>
+             value;
 
         #endregion
     }
@@ -118,27 +125,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.BooleanConstraints_IsFalse);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.BooleanConstraints_IsFalse);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<bool> WithName(Identifier name) => new BooleanIsFalseConstraint(this, name);
+        public override IConstraintWithErrorMessage<bool> WithName(Identifier name) =>
+             new BooleanIsFalseConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage) => new BooleanIsFalseConstraint(this, errorMessage);
+        public override IConstraintWithErrorMessage<bool> WithErrorMessage(StringTemplate errorMessage) =>
+             new BooleanIsFalseConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null) => new BooleanIsTrueConstraint().WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<bool> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new BooleanIsTrueConstraint().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(bool value) => !value;
+        public override bool IsSatisfiedBy(bool value) =>
+             !value;
 
         #endregion
     }

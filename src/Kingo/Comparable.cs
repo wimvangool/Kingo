@@ -102,7 +102,8 @@ namespace Kingo
         /// <c>true</c> if <paramref name="left"/> is less than <paramref name="right"/>; otherwise <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsLessThan<T>(T left, T right) where T : IComparable<T> => Compare(left, right) < _Zero;
+        public static bool IsLessThan<T>(T left, T right) where T : IComparable<T> =>
+             Compare(left, right) < _Zero;
 
         /// <summary>
         /// Determines whether <paramref name="left"/> is less than or equal to <paramref name="right"/>.
@@ -114,7 +115,8 @@ namespace Kingo
         /// <c>true</c> if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsLessThanOrEqualTo<T>(T left, T right) where T : IComparable<T> => Compare(left, right) <= _Zero;
+        public static bool IsLessThanOrEqualTo<T>(T left, T right) where T : IComparable<T> =>
+             Compare(left, right) <= _Zero;
 
         /// <summary>
         /// Determines whether <paramref name="left"/> is greater than <paramref name="right"/>.
@@ -126,7 +128,8 @@ namespace Kingo
         /// <c>true</c> if <paramref name="left"/> is greater than <paramref name="right"/>; otherwise <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsGreaterThan<T>(T left, T right) where T : IComparable<T> => Compare(left, right) > _Zero;
+        public static bool IsGreaterThan<T>(T left, T right) where T : IComparable<T> =>
+             Compare(left, right) > _Zero;
 
         /// <summary>
         /// Determines whether <paramref name="left"/> is greater than or equal to <paramref name="right"/>.
@@ -138,7 +141,8 @@ namespace Kingo
         /// <c>true</c> if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise <c>false</c>.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsGreaterThanOrEqualTo<T>(T left, T right) where T : IComparable<T> => Compare(left, right) >= _Zero;
+        public static bool IsGreaterThanOrEqualTo<T>(T left, T right) where T : IComparable<T> =>
+             Compare(left, right) >= _Zero;
 
         /// <summary>
         /// Determines whether <paramref name="left"/> is less than, equal to or greater than <paramref name="right"/>.

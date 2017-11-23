@@ -17,18 +17,22 @@ namespace Kingo.DynamicMethods
             _representation = implementation.Body.ToString();
         }
 
-        internal override bool Execute(object left, object right) => Execute((TValue) left, (TValue) right);
+        internal override bool Execute(object left, object right) =>
+             Execute((TValue) left, (TValue) right);
 
-        private bool Execute(TValue left, TValue right) => _implementation.Invoke(left, right);
+        private bool Execute(TValue left, TValue right) =>
+             _implementation.Invoke(left, right);
 
-        public override string ToString() => _representation;
+        public override string ToString() =>
+             _representation;
 
         #endregion
 
         #region [====== Static Members ======]
 
         [UsedImplicitly]
-        public static EqualsMethod<TValue> FromExpression(Expression equalsExpression, ParameterExpression left, ParameterExpression right) => new EqualsMethod<TValue>(Expression.Lambda<Func<TValue, TValue, bool>>(equalsExpression, left, right));
+        public static EqualsMethod<TValue> FromExpression(Expression equalsExpression, ParameterExpression left, ParameterExpression right) =>
+             new EqualsMethod<TValue>(Expression.Lambda<Func<TValue, TValue, bool>>(equalsExpression, left, right));
 
         #endregion
     }

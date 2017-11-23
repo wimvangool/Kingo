@@ -43,24 +43,28 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new DelegateConstraint<TValue>(this, name);
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+             new DelegateConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new DelegateConstraint<TValue>(this, errorMessage);
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+             new DelegateConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== Conversion ======]
 
         /// <inheritdoc />
-        public override Predicate<TValue> ToDelegate() => _constraint;
+        public override Predicate<TValue> ToDelegate() =>
+             _constraint;
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value) => _constraint.Invoke(value);
+        public override bool IsSatisfiedBy(TValue value) =>
+             _constraint.Invoke(value);
 
         /// <inheritdoc />
         public override bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)

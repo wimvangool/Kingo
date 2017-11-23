@@ -71,7 +71,8 @@ namespace Kingo.Messaging.Validation
             return false;
         }
 
-        private static bool TryCastToMemberExpression(Expression expression, out MemberExpression memberExpression) => (memberExpression = expression as MemberExpression) != null;
+        private static bool TryCastToMemberExpression(Expression expression, out MemberExpression memberExpression) =>
+             (memberExpression = expression as MemberExpression) != null;
 
         private static Exception NewExpressionNotSupportedException(Expression expression)
         {

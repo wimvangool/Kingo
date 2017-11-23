@@ -18,11 +18,13 @@ namespace Kingo.Messaging.Validation
             _comparer = Comparer.EnsureComparer(comparer);
         }
 
-        internal TValue Value => _value;
+        internal TValue Value =>
+             _value;
 
         #region [====== Equals & GetHashCode ======]
 
-        public override bool Equals(object obj) => Equals(obj as ComparableValue<TValue>);
+        public override bool Equals(object obj) =>
+             Equals(obj as ComparableValue<TValue>);
 
         public bool Equals(ComparableValue<TValue> other)
         {
@@ -37,9 +39,11 @@ namespace Kingo.Messaging.Validation
             return Equals(other._value);
         }
 
-        public bool Equals(TValue other) => Equals(_value, other);
+        public bool Equals(TValue other) =>
+             Equals(_value, other);
 
-        public override int GetHashCode() => ReferenceEquals(_value, null) ? 0 : _value.GetHashCode();
+        public override int GetHashCode() =>
+             ReferenceEquals(_value, null) ? 0 : _value.GetHashCode();
 
         #endregion
 
@@ -72,13 +76,15 @@ namespace Kingo.Messaging.Validation
             return CompareTo(other._value);
         }
 
-        public int CompareTo(TValue other) => _comparer.Compare(_value, other);
+        public int CompareTo(TValue other) =>
+             _comparer.Compare(_value, other);
 
         #endregion
 
         #region [====== Conversion ======]
 
-        public override string ToString() => ReferenceEquals(_value, null) ? StringTemplate.NullValue : _value.ToString();
+        public override string ToString() =>
+             ReferenceEquals(_value, null) ? StringTemplate.NullValue : _value.ToString();
 
         #endregion
     }

@@ -27,12 +27,14 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// Returns the amount of literal characters in this template.
         /// </summary>
-        public int LiteralCount => _template.CountLiterals();
+        public int LiteralCount =>
+             _template.CountLiterals();
 
         #region [====== Equals & GetHashCode ======]
 
         /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as StringTemplate);
+        public override bool Equals(object obj) =>
+             Equals(obj as StringTemplate);
 
         /// <inheritdoc />
         public bool Equals(StringTemplate other)
@@ -49,7 +51,8 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public override int GetHashCode() => _template.GetHashCode();
+        public override int GetHashCode() =>
+             _template.GetHashCode();
 
         #endregion
 
@@ -88,7 +91,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="identifier"/> is not a valid identifier.
         /// </exception>
-        public StringTemplate Format(string identifier, object argument, IFormatProvider formatProvider = null) => Format(Identifier.ParseOrNull(identifier), argument, formatProvider);
+        public StringTemplate Format(string identifier, object argument, IFormatProvider formatProvider = null) =>
+             Format(Identifier.ParseOrNull(identifier), argument, formatProvider);
 
         /// <summary>
         /// Replaces all placeholders of the specified <paramref name="identifier"/> with the value of <paramref name="argument"/>.
@@ -100,10 +104,12 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="identifier"/> is <c>null</c>.
         /// </exception>
-        public StringTemplate Format(Identifier identifier, object argument, IFormatProvider formatProvider = null) => new StringTemplate(_template.Format(identifier, argument, formatProvider ?? CultureInfo.CurrentCulture));
+        public StringTemplate Format(Identifier identifier, object argument, IFormatProvider formatProvider = null) =>
+             new StringTemplate(_template.Format(identifier, argument, formatProvider ?? CultureInfo.CurrentCulture));
 
         /// <inheritdoc />
-        public override string ToString() => _template.ToString(new StringBuilder());
+        public override string ToString() =>
+             _template.ToString(new StringBuilder());
 
         #endregion
 
@@ -114,7 +120,8 @@ namespace Kingo.Messaging.Validation
         /// </summary>
         /// <param name="template">The template to concatenate.</param>
         /// <returns>The concatenated template.</returns>
-        public StringTemplate Concat(string template) => Concat(ParseOrNull(template));
+        public StringTemplate Concat(string template) =>
+             Concat(ParseOrNull(template));
 
         /// <summary>
         /// Concatenates this template with another template.
@@ -139,7 +146,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="right"/> is not in a correct format.
         /// </exception>
-        public static StringTemplate operator +(StringTemplate left, string right) => left + ParseOrNull(right);
+        public static StringTemplate operator +(StringTemplate left, string right) =>
+             left + ParseOrNull(right);
 
         /// <summary>
         /// Returns the concatenation of <paramref name="left"/> and <paramref name="right"/>.
@@ -171,7 +179,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="templateFormat"/> is not in a correct format.
         /// </exception>
-        public static StringTemplate ParseOrNull(string templateFormat) => templateFormat == null ? null : Parse(templateFormat);
+        public static StringTemplate ParseOrNull(string templateFormat) =>
+             templateFormat == null ? null : Parse(templateFormat);
 
         /// <summary>
         /// Parses the specified <paramref name="templateFormat"/> such that it can be formatted using arbitrary arguments.

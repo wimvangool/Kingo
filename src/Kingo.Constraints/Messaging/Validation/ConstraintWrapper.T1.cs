@@ -25,9 +25,11 @@ namespace Kingo.Messaging.Validation
 
         #region [====== Name & ErrorMessage ======]
 
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new ConstraintWrapper<TValue>(this, name);
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+             new ConstraintWrapper<TValue>(this, name);
 
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new ConstraintWrapper<TValue>(this, errorMessage);
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+             new ConstraintWrapper<TValue>(this, errorMessage);
 
         #endregion
 
@@ -42,23 +44,28 @@ namespace Kingo.Messaging.Validation
 
         #region [====== And, Or & Invert ======]
 
-        public override IConstraint<TValue> And(IConstraint<TValue> constraint) => _constraint.And(constraint);
+        public override IConstraint<TValue> And(IConstraint<TValue> constraint) =>
+             _constraint.And(constraint);
 
-        public override IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint) => _constraint.Or(constraint);
+        public override IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint) =>
+             _constraint.Or(constraint);
 
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) => new ConstraintWrapper<TValue>(_constraint.Invert()).WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new ConstraintWrapper<TValue>(_constraint.Invert()).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== Conversion ======]
 
-        public override IFilter<TValue, TValue> MapInputToOutput() => _constraint.MapInputToOutput();
+        public override IFilter<TValue, TValue> MapInputToOutput() =>
+             _constraint.MapInputToOutput();
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        public override bool IsSatisfiedBy(TValue value) => _constraint.IsSatisfiedBy(value);
+        public override bool IsSatisfiedBy(TValue value) =>
+             _constraint.IsSatisfiedBy(value);
 
         #endregion
     }

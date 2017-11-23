@@ -9,7 +9,8 @@ namespace Kingo.Messaging
     {
         private const string _Message = "TestMessage";
 
-        protected override object ExecuteQuery(IMicroProcessorContext context) => throw new BadRequestException(new object(), _Message, new Exception(_Message));
+        protected override object ExecuteQuery(IMicroProcessorContext context) =>
+             throw new BadRequestException(new object(), _Message, new Exception(_Message));
 
         [TestMethod]
         public override async Task ThenAsync()

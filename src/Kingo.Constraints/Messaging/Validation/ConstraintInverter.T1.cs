@@ -62,16 +62,20 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override Identifier NameIfNotSpecified => _name ?? base.NameIfNotSpecified;
+        protected override Identifier NameIfNotSpecified =>
+             _name ?? base.NameIfNotSpecified;
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => _errorMessage ?? base.ErrorMessageIfNotSpecified;
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             _errorMessage ?? base.ErrorMessageIfNotSpecified;
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new ConstraintInverter<TValue>(this, name);
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+             new ConstraintInverter<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new ConstraintInverter<TValue>(this, errorMessage);
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+             new ConstraintInverter<TValue>(this, errorMessage);
 
         #endregion
 
@@ -101,7 +105,8 @@ namespace Kingo.Messaging.Validation
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value) => !_constraint.IsSatisfiedBy(value);
+        public override bool IsSatisfiedBy(TValue value) =>
+             !_constraint.IsSatisfiedBy(value);
 
         /// <inheritdoc />
         public override bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)

@@ -126,7 +126,8 @@ namespace Kingo.Clocks
             }
         }
 
-        private Exception NewObjectDisposedException() => new ObjectDisposedException(GetType().Name);
+        private Exception NewObjectDisposedException() =>
+             new ObjectDisposedException(GetType().Name);
 
         #endregion
 

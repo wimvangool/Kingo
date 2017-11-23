@@ -32,7 +32,8 @@ namespace Kingo.Messaging.Validation
             /// <summary>
             /// Returns the current length of the identifier.
             /// </summary>
-            public int Length => _builder.Length;
+            public int Length =>
+             _builder.Length;
 
             /// <summary>
             /// Attempts to append the specified <paramref name="character"/> to the identifier.
@@ -65,14 +66,16 @@ namespace Kingo.Messaging.Validation
                 return new Identifier(_builder.ToString());
             }
 
-            private static Exception NewEmptyIdentifierException() => new InvalidOperationException(ExceptionMessages.Identifier_EmptyIdentifier);
+            private static Exception NewEmptyIdentifierException() =>
+             new InvalidOperationException(ExceptionMessages.Identifier_EmptyIdentifier);
         }
 
         /// <summary>
         /// Creates and returns a new <see cref="Builder"/> to build a new <see cref="Identifier" /> from a set of characters.
         /// </summary>
         /// <returns>A new <see cref="Builder"/>.</returns>
-        public static Builder NewBuilder() => new Builder();
+        public static Builder NewBuilder() =>
+             new Builder();
 
         /// <summary>
         /// Creates and returns a new <see cref="Builder"/> to build a new <see cref="Identifier" /> from a set of characters.
@@ -82,7 +85,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="capacity"/> is a negative number.
         /// </exception>
-        public static Builder NewBuilder(int capacity) => new Builder(capacity);
+        public static Builder NewBuilder(int capacity) =>
+             new Builder(capacity);
 
         #endregion
 
@@ -94,12 +98,14 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public override string ToString() => _value;
+        public override string ToString() =>
+             _value;
 
         #region [====== Equals & GetHashCode ======]
 
         /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as Identifier);
+        public override bool Equals(object obj) =>
+             Equals(obj as Identifier);
 
         /// <inheritdoc />
         public bool Equals(Identifier other)
@@ -116,7 +122,8 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public override int GetHashCode() => _value.GetHashCode();
+        public override int GetHashCode() =>
+             _value.GetHashCode();
 
         #endregion
 

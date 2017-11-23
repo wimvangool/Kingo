@@ -25,7 +25,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotEndWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, string errorMessage = null) => member.DoesNotEndWith(postfix, StringComparison.Ordinal, errorMessage);
+        public static IMemberConstraintBuilder<T, string> DoesNotEndWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, string errorMessage = null) =>
+             member.DoesNotEndWith(postfix, StringComparison.Ordinal, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value does not end with the specified <paramref name="postfix"/>.
@@ -43,7 +44,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotEndWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, StringComparison compareType, string errorMessage = null) => member.Apply(new StringEndsWithConstraint(postfix, compareType).Invert(errorMessage));
+        public static IMemberConstraintBuilder<T, string> DoesNotEndWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, StringComparison compareType, string errorMessage = null) =>
+             member.Apply(new StringEndsWithConstraint(postfix, compareType).Invert(errorMessage));
 
         #endregion
 
@@ -64,7 +66,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> EndsWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, string errorMessage = null) => member.EndsWith(postfix, StringComparison.Ordinal, errorMessage);
+        public static IMemberConstraintBuilder<T, string> EndsWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, string errorMessage = null) =>
+             member.EndsWith(postfix, StringComparison.Ordinal, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value ends with the specified <paramref name="postfix"/>.
@@ -82,7 +85,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> EndsWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, StringComparison compareType, string errorMessage = null) => member.Apply(new StringEndsWithConstraint(postfix, compareType).WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, string> EndsWith<T>(this IMemberConstraintBuilder<T, string> member, string postfix, StringComparison compareType, string errorMessage = null) =>
+             member.Apply(new StringEndsWithConstraint(postfix, compareType).WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -135,13 +139,16 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_EndsWith);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.StringConstraints_EndsWith);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringEndsWithConstraint(this, name);
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) =>
+             new StringEndsWithConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringEndsWithConstraint(this, errorMessage);
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) =>
+             new StringEndsWithConstraint(this, errorMessage);
 
         #endregion
 

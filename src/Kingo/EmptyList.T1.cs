@@ -16,7 +16,8 @@ namespace Kingo
             0;
 
         /// <inheritdoc />
-        public T this[int index] => throw NewIndexOutOfRangeException(index, Count);
+        public T this[int index] =>
+             throw NewIndexOutOfRangeException(index, Count);
 
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator() =>

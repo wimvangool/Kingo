@@ -32,13 +32,16 @@ namespace Kingo.Messaging.Validation
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public IConstraint<TValue> And(Predicate<TValue> constraint, string errorMessage = null, string name = null) => _constraint.And(constraint, errorMessage, name);
+        public IConstraint<TValue> And(Predicate<TValue> constraint, string errorMessage = null, string name = null) =>
+             _constraint.And(constraint, errorMessage, name);
 
         /// <inheritdoc />
-        public IConstraint<TValue> And(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null) => _constraint.And(constraint, errorMessage, name);
+        public IConstraint<TValue> And(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null) =>
+             _constraint.And(constraint, errorMessage, name);
 
         /// <inheritdoc />
-        public IConstraint<TValue> And(IConstraint<TValue> constraint) => _constraint.And(constraint);
+        public IConstraint<TValue> And(IConstraint<TValue> constraint) =>
+             _constraint.And(constraint);
 
         /// <inheritdoc />
         public IFilter<TValue, TResult> And<TResult>(IFilter<TValue, TResult> constraint)
@@ -51,22 +54,28 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, string errorMessage = null, string name = null) => _constraint.Or(constraint, errorMessage, name);
+        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, string errorMessage = null, string name = null) =>
+             _constraint.Or(constraint, errorMessage, name);
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null) => _constraint.Or(constraint, errorMessage, name);
+        public IConstraintWithErrorMessage<TValue> Or(Predicate<TValue> constraint, StringTemplate errorMessage, Identifier name = null) =>
+             _constraint.Or(constraint, errorMessage, name);
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint) => _constraint.Or(constraint);
+        public IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint) =>
+             _constraint.Or(constraint);
 
         /// <inheritdoc />
-        public IConstraint<TValue> Invert() => new InputToOutputMapper<TValue>(_constraint.Invert());
+        public IConstraint<TValue> Invert() =>
+             new InputToOutputMapper<TValue>(_constraint.Invert());
 
         /// <inheritdoc />
-        public IConstraint<TValue> Invert(string errorMessage, string name = null) => new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
+        public IConstraint<TValue> Invert(string errorMessage, string name = null) =>
+             new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
 
         /// <inheritdoc />
-        public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null) => new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
+        public IConstraint<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new InputToOutputMapper<TValue>(_constraint.Invert(errorMessage, name));
 
         #endregion
 
@@ -75,14 +84,16 @@ namespace Kingo.Messaging.Validation
         IFilter<TValue, TValue> IConstraint<TValue>.MapInputToOutput() => this;
 
         /// <inheritdoc />
-        public Predicate<TValue> ToDelegate() => IsSatisfiedBy;
+        public Predicate<TValue> ToDelegate() =>
+             IsSatisfiedBy;
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(TValue value) => _constraint.IsSatisfiedBy(value);
+        public bool IsSatisfiedBy(TValue value) =>
+             _constraint.IsSatisfiedBy(value);
 
         /// <inheritdoc />
         public bool IsSatisfiedBy(TValue valueIn, out TValue valueOut)
@@ -97,7 +108,8 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage) => _constraint.IsNotSatisfiedBy(value, out errorMessage);
+        public bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage) =>
+             _constraint.IsNotSatisfiedBy(value, out errorMessage);
 
         /// <inheritdoc />
         public bool IsNotSatisfiedBy(TValue valueIn, out IErrorMessageBuilder errorMessage, out TValue valueOut)

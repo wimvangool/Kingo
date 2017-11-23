@@ -116,7 +116,8 @@ namespace Kingo.Messaging
             return new MessageHandlerDecorator<TMessage>(context, instance, _type, interfaceType);
         }
 
-        private static bool IsAcceptedSource(MessageSources sources, MessageSources source) => (sources & source) == source;
+        private static bool IsAcceptedSource(MessageSources sources, MessageSources source) =>
+             (sources & source) == source;
 
         /// <inheritdoc />
         public override string ToString() =>

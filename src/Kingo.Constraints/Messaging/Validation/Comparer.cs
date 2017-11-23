@@ -59,6 +59,7 @@ namespace Kingo.Messaging.Validation
             return other.CompareTo(value) <= 0;
         }
 
-        internal static IComparer<TValue> EnsureComparer<TValue>(IComparer<TValue> comparer) => comparer ?? Comparer<TValue>.Default;
+        internal static IComparer<TValue> EnsureComparer<TValue>(IComparer<TValue> comparer) =>
+             comparer ?? Comparer<TValue>.Default;
     }
 }

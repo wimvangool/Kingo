@@ -25,7 +25,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotContain<T>(this IMemberConstraintBuilder<T, string> member, char value, string errorMessage = null) => member.DoesNotContain(value.ToString(), errorMessage);
+        public static IMemberConstraintBuilder<T, string> DoesNotContain<T>(this IMemberConstraintBuilder<T, string> member, char value, string errorMessage = null) =>
+             member.DoesNotContain(value.ToString(), errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value does not contain the specified <paramref name="value"/>.
@@ -42,7 +43,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotContain<T>(this IMemberConstraintBuilder<T, string> member, string value, string errorMessage = null) => member.Apply(new StringContainsConstraint(value).Invert(errorMessage));
+        public static IMemberConstraintBuilder<T, string> DoesNotContain<T>(this IMemberConstraintBuilder<T, string> member, string value, string errorMessage = null) =>
+             member.Apply(new StringContainsConstraint(value).Invert(errorMessage));
 
         #endregion
 
@@ -63,7 +65,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> Contains<T>(this IMemberConstraintBuilder<T, string> member, char value, string errorMessage = null) => member.Contains(value.ToString(), errorMessage);
+        public static IMemberConstraintBuilder<T, string> Contains<T>(this IMemberConstraintBuilder<T, string> member, char value, string errorMessage = null) =>
+             member.Contains(value.ToString(), errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value contains the specified <paramref name="value"/>.
@@ -80,7 +83,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> Contains<T>(this IMemberConstraintBuilder<T, string> member, string value, string errorMessage = null) => member.Apply(new StringContainsConstraint(value).WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, string> Contains<T>(this IMemberConstraintBuilder<T, string> member, string value, string errorMessage = null) =>
+             member.Apply(new StringContainsConstraint(value).WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -124,13 +128,16 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_Contains);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.StringConstraints_Contains);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringContainsConstraint(this, name);
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) =>
+             new StringContainsConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringContainsConstraint(this, errorMessage);
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) =>
+             new StringContainsConstraint(this, errorMessage);
 
         #endregion
 

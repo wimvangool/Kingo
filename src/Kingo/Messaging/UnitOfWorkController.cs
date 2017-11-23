@@ -41,7 +41,8 @@ namespace Kingo.Messaging
             public bool RequiresFlush() =>
                 false;
 
-            public Task FlushAsync() => throw NewOperationNotSupportedException(nameof(FlushAsync));
+            public Task FlushAsync() =>
+             throw NewOperationNotSupportedException(nameof(FlushAsync));
 
             private static Exception NewOperationNotSupportedException(string methodName)
             {

@@ -13,7 +13,8 @@ namespace Kingo.Messaging.Validation
             yield return "HasValue()";
         }
 
-        public override MethodCallExpression Decorate(MethodCallExpression expression) => AppendHasValue(expression);
+        public override MethodCallExpression Decorate(MethodCallExpression expression) =>
+             AppendHasValue(expression);
 
         private static MethodCallExpression AppendHasValue(MethodCallExpression methodCallExpression)
         {

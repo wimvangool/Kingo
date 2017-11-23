@@ -80,32 +80,39 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public TValue Left => _left.Value;
+        public TValue Left =>
+             _left.Value;
 
         /// <inheritdoc />
-        public TValue Right => _right.Value;
+        public TValue Right =>
+             _right.Value;
 
         /// <summary>
         /// Indicates whether or not the lower boundary is included within the range.
         /// </summary>
-        public bool IsLeftInclusive => !IsLeftExclusive;
+        public bool IsLeftInclusive =>
+             !IsLeftExclusive;
 
         /// <summary>
         /// Indicates whether or not the lower boundary is excluded from the range.
         /// </summary>
-        public bool IsLeftExclusive => IsSet(_options, RangeOptions.LeftExclusive);
+        public bool IsLeftExclusive =>
+             IsSet(_options, RangeOptions.LeftExclusive);
 
         /// <summary>
         /// Indicates whether or not the upper boundary is included within the range.
         /// </summary>
-        public bool IsRightInclusive => !IsRightExclusive;
+        public bool IsRightInclusive =>
+             !IsRightExclusive;
 
         /// <summary>
         /// Indicates whether or not the upper boundary is excluded from the range.
         /// </summary>
-        public bool IsRightExclusive => IsSet(_options, RangeOptions.RightExclusive);
+        public bool IsRightExclusive =>
+             IsSet(_options, RangeOptions.RightExclusive);
 
-        private static bool IsSet(RangeOptions options, RangeOptions option) => (options & option) == option;
+        private static bool IsSet(RangeOptions options, RangeOptions option) =>
+             (options & option) == option;
 
         #region [====== Equals ======]
 
@@ -120,15 +127,18 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public bool Equals(Range<TValue> other) => _options == other._options && Equals(_left, other._left) && Equals(_right, other._right);
+        public bool Equals(Range<TValue> other) =>
+             _options == other._options && Equals(_left, other._left) && Equals(_right, other._right);
 
         /// <inheritdoc />
-        public override int GetHashCode() => GetType().GetHashCode();
+        public override int GetHashCode() =>
+             GetType().GetHashCode();
 
         #endregion
 
         /// <inheritdoc />
-        public bool Contains(TValue value) => IsWithinLeftBoundary(value) && IsWithinRightBoundary(value);
+        public bool Contains(TValue value) =>
+             IsWithinLeftBoundary(value) && IsWithinRightBoundary(value);
 
         private bool IsWithinLeftBoundary(TValue value)
         {
@@ -149,7 +159,8 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public override string ToString() => ToString(Left, Right, _options);
+        public override string ToString() =>
+             ToString(Left, Right, _options);
 
         private static Exception NewInvalidRangeException(TValue left, TValue right, RangeOptions options)
         {

@@ -24,23 +24,32 @@ namespace Kingo.Messaging.Validation
 
         #region [====== And, Or & Invert ======]
 
-        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) => And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) =>
+             And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
 
-        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) => And(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
+        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) =>
+             And(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
 
-        public IConstraint<TValueIn> And(IConstraint<TValueIn> constraint) => new AndConstraint<TValueIn>(this, constraint);
+        public IConstraint<TValueIn> And(IConstraint<TValueIn> constraint) =>
+             new AndConstraint<TValueIn>(this, constraint);
 
-        public IFilter<TValueIn, TResult> And<TResult>(IFilter<TValueOut, TResult> constraint) => new AndConstraint<TValueIn, TValueOut, TResult>(this, constraint);
+        public IFilter<TValueIn, TResult> And<TResult>(IFilter<TValueOut, TResult> constraint) =>
+             new AndConstraint<TValueIn, TValueOut, TResult>(this, constraint);
 
-        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) => Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) =>
+             Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
 
-        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) => Or(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
+        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) =>
+             Or(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
 
-        public IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint) => new OrConstraint<TValueIn>(this, constraint);
+        public IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint) =>
+             new OrConstraint<TValueIn>(this, constraint);
 
-        public IConstraint<TValueIn> Invert() => Invert(null as StringTemplate);
+        public IConstraint<TValueIn> Invert() =>
+             Invert(null as StringTemplate);
 
-        public IConstraint<TValueIn> Invert(string errorMessage, string name = null) => Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        public IConstraint<TValueIn> Invert(string errorMessage, string name = null) =>
+             Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
 
         public IConstraint<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null) => new ConstraintInverter<TValueIn>(new ConstraintWrapper<TValueIn>(this))
             .WithErrorMessage(errorMessage)
@@ -52,7 +61,8 @@ namespace Kingo.Messaging.Validation
 
         IFilter<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput() => new InputToOutputMapper<TValueIn>(this);
 
-        public Predicate<TValueIn> ToDelegate() => IsSatisfiedBy;
+        public Predicate<TValueIn> ToDelegate() =>
+             IsSatisfiedBy;
 
         #endregion
 

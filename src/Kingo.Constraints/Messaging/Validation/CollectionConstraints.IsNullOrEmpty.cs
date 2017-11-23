@@ -29,7 +29,8 @@ namespace Kingo.Messaging.Validation
         public static IMemberConstraintBuilder<T, TValue> IsNotNullOrEmpty<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, string errorMessage = null)   
             where TValue : IEnumerable => member.Apply(new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage));
 
-        internal static bool IsNotNullOrEmpty(IEnumerable value) => value != null && value.Cast<object>().Any();
+        internal static bool IsNotNullOrEmpty(IEnumerable value) =>
+             value != null && value.Cast<object>().Any();
 
         #endregion
 
@@ -77,27 +78,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.CollectionConstraints_IsNotNullOrEmpty);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.CollectionConstraints_IsNotNullOrEmpty);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new CollectionIsNotNullOrEmptyConstraint<TValue>(this, name);
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+             new CollectionIsNotNullOrEmptyConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new CollectionIsNotNullOrEmptyConstraint<TValue>(this, errorMessage);
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+             new CollectionIsNotNullOrEmptyConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) => new CollectionIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new CollectionIsNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value) => CollectionConstraints.IsNotNullOrEmpty(value);
+        public override bool IsSatisfiedBy(TValue value) =>
+             CollectionConstraints.IsNotNullOrEmpty(value);
 
         #endregion        
     }
@@ -126,27 +132,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.CollectionConstraints_IsNullOrEmpty);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.CollectionConstraints_IsNullOrEmpty);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new CollectionIsNullOrEmptyConstraint<TValue>(this, name);
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+             new CollectionIsNullOrEmptyConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new CollectionIsNullOrEmptyConstraint<TValue>(this, errorMessage);
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+             new CollectionIsNullOrEmptyConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) => new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new CollectionIsNotNullOrEmptyConstraint<TValue>().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value) => !CollectionConstraints.IsNotNullOrEmpty(value);
+        public override bool IsSatisfiedBy(TValue value) =>
+             !CollectionConstraints.IsNotNullOrEmpty(value);
 
         #endregion
     }

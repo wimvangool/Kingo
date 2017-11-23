@@ -21,9 +21,11 @@ namespace Kingo.Messaging.Validation
             _methodCallDecorator = new NullAppender<T, TValue>();
         }
 
-        protected override LambdaExpression FieldOrPropertyExpression => _interpreter.FieldOrPropertyExpression;
+        protected override LambdaExpression FieldOrPropertyExpression =>
+             _interpreter.FieldOrPropertyExpression;
 
-        private bool IsBuildingLeftExpression => _leftExpression == null;
+        private bool IsBuildingLeftExpression =>
+             _leftExpression == null;
 
         internal RightExpressionBuilder<T, TValue> BuildLeftExpression()
         {
@@ -141,7 +143,8 @@ namespace Kingo.Messaging.Validation
             return base.VisitParameter(node);
         }        
 
-        private bool MatchesPrimaryParameter(Expression childExpression) => ReferenceEquals(_interpreter.PrimaryParameter, childExpression);
+        private bool MatchesPrimaryParameter(Expression childExpression) =>
+             ReferenceEquals(_interpreter.PrimaryParameter, childExpression);
 
         private static bool IsIndexerExpression(MethodCallExpression expression)
         {
@@ -180,8 +183,10 @@ namespace Kingo.Messaging.Validation
             return CollectionConstraints.TryGetIndexer(instanceType, argumentTypes, out indexer);
         }
 
-        private static ParameterExpression CreateValueParameter(Type parameterType) => Expression.Parameter(parameterType, CreateValueParameterName());
+        private static ParameterExpression CreateValueParameter(Type parameterType) =>
+             Expression.Parameter(parameterType, CreateValueParameterName());
 
-        private static string CreateValueParameterName() => string.Format("x_{0:N}", Guid.NewGuid());
+        private static string CreateValueParameterName() =>
+             string.Format("x_{0:N}", Guid.NewGuid());
     }
 }

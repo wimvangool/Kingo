@@ -48,10 +48,12 @@ namespace Kingo.Messaging
         }
 
         [TestMethod]
-        public async Task HandleStreamAsync_ReturnsEmptyStream_IfStreamIsEmpty() => AssertIsEmpty(await _processor.HandleStreamAsync(MessageStream.Empty));
+        public async Task HandleStreamAsync_ReturnsEmptyStream_IfStreamIsEmpty() =>
+             AssertIsEmpty(await _processor.HandleStreamAsync(MessageStream.Empty));
 
         [TestMethod]
-        public async Task HandleStreamAsync_ReturnsEmptyStream_IfStreamContainsOneMessage_But_NoHandlerForMessageIsRegistered() => AssertIsEmpty(await _processor.HandleAsync(new object()));
+        public async Task HandleStreamAsync_ReturnsEmptyStream_IfStreamContainsOneMessage_But_NoHandlerForMessageIsRegistered() =>
+             AssertIsEmpty(await _processor.HandleAsync(new object()));
 
         [TestMethod]
         public async Task HandleStreamAsync_ReturnsExpectedStream_IfStreamContainsOneMessage()

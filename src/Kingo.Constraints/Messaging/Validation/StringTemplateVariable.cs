@@ -21,7 +21,8 @@ namespace Kingo.Messaging.Validation
             _format = format;
         }
 
-        internal override StringTemplateComponent NextComponent => _nextComponent;
+        internal override StringTemplateComponent NextComponent =>
+             _nextComponent;
 
         internal override StringTemplateComponent AttachLast(StringTemplateComponent nextComponent)
         {
@@ -32,11 +33,13 @@ namespace Kingo.Messaging.Validation
             return new StringTemplateVariable(_identifier, _expression, _format, _nextComponent.AttachLast(nextComponent));
         }
 
-        internal override int CountLiterals() => _nextComponent == null ? 0 : _nextComponent.CountLiterals();
+        internal override int CountLiterals() =>
+             _nextComponent == null ? 0 : _nextComponent.CountLiterals();
 
         #region [====== Equals & GetHashCode ======]
 
-        public override bool Equals(object obj) => Equals(obj as StringTemplateVariable);
+        public override bool Equals(object obj) =>
+             Equals(obj as StringTemplateVariable);
 
         public bool Equals(StringTemplateVariable other)
         {
@@ -55,9 +58,11 @@ namespace Kingo.Messaging.Validation
                 Equals(_nextComponent, other._nextComponent);
         }
 
-        private static bool Equals(IReadOnlyCollection<Identifier> left, IReadOnlyCollection<Identifier> right) => left.Count == right.Count && left.SequenceEqual(right);
+        private static bool Equals(IReadOnlyCollection<Identifier> left, IReadOnlyCollection<Identifier> right) =>
+             left.Count == right.Count && left.SequenceEqual(right);
 
-        public override int GetHashCode() => _identifier.GetHashCode();
+        public override int GetHashCode() =>
+             _identifier.GetHashCode();
 
         #endregion
 

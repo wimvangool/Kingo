@@ -17,9 +17,11 @@ namespace Kingo.DynamicMethods
             _memberFilter = memberFilter;
         }
 
-        public override IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields) => _memberFilter.Filter(fields);
+        public override IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields) =>
+             _memberFilter.Filter(fields);
 
-        public override IEnumerable<PropertyInfo> Filter(IEnumerable<PropertyInfo> properties) => _memberFilter.Filter(properties);
+        public override IEnumerable<PropertyInfo> Filter(IEnumerable<PropertyInfo> properties) =>
+             _memberFilter.Filter(properties);
 
         #endregion
 

@@ -44,7 +44,8 @@ namespace Kingo.DynamicMethods
             return GetHashCodeFromMembers(instance);
         }
 
-        private static int GetHashCodeFromMembers(object instance) => GetOrAddMethod(instance.GetType(), Build).Execute(instance);
+        private static int GetHashCodeFromMembers(object instance) =>
+             GetOrAddMethod(instance.GetType(), Build).Execute(instance);
 
         private static GetHashCodeMethod Build(Type type, MemberProvider memberProvider)
         {
@@ -65,7 +66,8 @@ namespace Kingo.DynamicMethods
             return expression;
         }
 
-        private static Expression XorHashCodes(Expression left, Expression right) => Expression.MakeBinary(ExpressionType.ExclusiveOr, left, GetHashCodeExpression(right));
+        private static Expression XorHashCodes(Expression left, Expression right) =>
+             Expression.MakeBinary(ExpressionType.ExclusiveOr, left, GetHashCodeExpression(right));
 
         private static Expression GetHashCodeExpression(Expression instance)
         {
@@ -77,9 +79,11 @@ namespace Kingo.DynamicMethods
         }
 
         [UsedImplicitly]
-        private static int GetHashCodeOf(object instance) => instance == null ? 0 : instance.GetHashCode();
+        private static int GetHashCodeOf(object instance) =>
+             instance == null ? 0 : instance.GetHashCode();
 
-        private static bool IsImmutable(FieldInfo field) => field.IsInitOnly && (field.FieldType.IsValueType || field.FieldType == typeof(string));
+        private static bool IsImmutable(FieldInfo field) =>
+             field.IsInitOnly && (field.FieldType.IsValueType || field.FieldType == typeof(string));
 
         private static MethodInfo FromExpressionMethod(Type type)
         {

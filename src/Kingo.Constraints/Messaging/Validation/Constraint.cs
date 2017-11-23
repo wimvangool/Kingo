@@ -48,20 +48,24 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public Identifier Name => _name.Value;
+        public Identifier Name =>
+             _name.Value;
 
         /// <summary>
         /// Returns the name of this constraint if it was not explicitly specified.
         /// </summary>
-        protected virtual Identifier NameIfNotSpecified => DefaultName;
+        protected virtual Identifier NameIfNotSpecified =>
+             DefaultName;
 
         /// <inheritdoc />
-        public StringTemplate ErrorMessage => _errorMessage.Value;
+        public StringTemplate ErrorMessage =>
+             _errorMessage.Value;
 
         /// <summary>
         /// Returns the error message of this constraint if it was not explicitly specified.
         /// </summary>
-        protected virtual StringTemplate ErrorMessageIfNotSpecified => DefaultErrorMessage;
+        protected virtual StringTemplate ErrorMessageIfNotSpecified =>
+             DefaultErrorMessage;
 
         IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(string name) => WithNameCore(Identifier.ParseOrNull(name));
 

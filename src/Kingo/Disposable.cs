@@ -65,6 +65,7 @@ namespace Kingo
         /// Creates and returns a new <see cref="ObjectDisposedException" /> indicating this instance has been disposed.
         /// </summary>
         /// <returns>A new <see cref="ObjectDisposedException" />.</returns>
-        protected virtual ObjectDisposedException NewObjectDisposedException() => new ObjectDisposedException(GetType().Name);
+        protected virtual ObjectDisposedException NewObjectDisposedException() =>
+             new ObjectDisposedException(GetType().Name);
     }
 }

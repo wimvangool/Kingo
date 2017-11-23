@@ -40,7 +40,8 @@ namespace Kingo.Messaging.Validation
 
         #region [====== Name & ErrorMessage ======]
 
-        internal override IConstraintWithErrorMessage WithNameCore(Identifier name) => WithName(name);
+        internal override IConstraintWithErrorMessage WithNameCore(Identifier name) =>
+             WithName(name);
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithName(string name) => WithName(Identifier.ParseOrNull(name));
 
@@ -49,7 +50,8 @@ namespace Kingo.Messaging.Validation
         IFilterWithErrorMessage<TValueIn, TValueOut> IFilterWithErrorMessage<TValueIn, TValueOut>.WithName(Identifier name) => WithName(name);
 
         /// <inheritdoc />
-        public IFilterWithErrorMessage<TValueIn, TValueOut> WithName(string name) => WithName(Identifier.ParseOrNull(name));
+        public IFilterWithErrorMessage<TValueIn, TValueOut> WithName(string name) =>
+             WithName(Identifier.ParseOrNull(name));
 
         /// <summary>
         /// When overridden, creates and returns a copy of this constraint, assigning the specified <paramref name="name"/>.
@@ -59,9 +61,11 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> is <c>null</c>.
         /// </exception>   
-        public virtual IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) => throw NewWithNameNotSupportedException();
+        public virtual IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) =>
+             throw NewWithNameNotSupportedException();
 
-        internal override IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage) => WithErrorMessage(errorMessage);
+        internal override IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage) =>
+             WithErrorMessage(errorMessage);
 
         IConstraintWithErrorMessage<TValueIn> IConstraintWithErrorMessage<TValueIn>.WithErrorMessage(string errorMessage) => WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
 
@@ -70,7 +74,8 @@ namespace Kingo.Messaging.Validation
         IFilterWithErrorMessage<TValueIn, TValueOut> IFilterWithErrorMessage<TValueIn, TValueOut>.WithErrorMessage(StringTemplate errorMessage) => WithErrorMessage(errorMessage);
 
         /// <inheritdoc />
-        public IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage) => WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
+        public IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(string errorMessage) =>
+             WithErrorMessage(StringTemplate.ParseOrNull(errorMessage));
 
         /// <summary>
         /// When overridden, creates and returns a copy of this constraint, assigning the specified <paramref name="errorMessage"/>.
@@ -80,32 +85,40 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="errorMessage"/> is <c>null</c>.
         /// </exception>
-        public virtual IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) => throw NewWithErrorMessageNotSupportedException();
+        public virtual IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) =>
+             throw NewWithErrorMessageNotSupportedException();
 
         #endregion        
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) => And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) =>
+             And(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
 
         /// <inheritdoc />
-        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) => And(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
+        public IConstraint<TValueIn> And(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) =>
+             And(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
 
         /// <inheritdoc />
-        public virtual IConstraint<TValueIn> And(IConstraint<TValueIn> constraint) => new AndConstraint<TValueIn>(this, constraint);
+        public virtual IConstraint<TValueIn> And(IConstraint<TValueIn> constraint) =>
+             new AndConstraint<TValueIn>(this, constraint);
 
         /// <inheritdoc />
-        public virtual IFilter<TValueIn, TResult> And<TResult>(IFilter<TValueOut, TResult> filter) => new AndConstraint<TValueIn, TValueOut, TResult>(this, filter);
+        public virtual IFilter<TValueIn, TResult> And<TResult>(IFilter<TValueOut, TResult> filter) =>
+             new AndConstraint<TValueIn, TValueOut, TResult>(this, filter);
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) => Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, string errorMessage = null, string name = null) =>
+             Or(constraint, StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) => Or(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
+        public IConstraintWithErrorMessage<TValueIn> Or(Predicate<TValueIn> constraint, StringTemplate errorMessage, Identifier name = null) =>
+             Or(new DelegateConstraint<TValueIn>(constraint).WithErrorMessage(errorMessage).WithName(name));
 
         /// <inheritdoc />
-        public virtual IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint) => new OrConstraint<TValueIn>(this, constraint);
+        public virtual IConstraintWithErrorMessage<TValueIn> Or(IConstraint<TValueIn> constraint) =>
+             new OrConstraint<TValueIn>(this, constraint);
 
         IConstraint<TValueIn> IConstraint<TValueIn>.Invert() => Invert();
 
@@ -115,13 +128,16 @@ namespace Kingo.Messaging.Validation
         IConstraint<TValueIn> IConstraint<TValueIn>.Invert(StringTemplate errorMessage, Identifier name) => Invert(errorMessage, name);
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn> Invert() => Invert(null as StringTemplate);
+        public IConstraintWithErrorMessage<TValueIn> Invert() =>
+             Invert(null as StringTemplate);
 
         /// <inheritdoc />
-        public IConstraintWithErrorMessage<TValueIn> Invert(string errorMessage, string name = null) => Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
+        public IConstraintWithErrorMessage<TValueIn> Invert(string errorMessage, string name = null) =>
+             Invert(StringTemplate.ParseOrNull(errorMessage), Identifier.ParseOrNull(name));
 
         /// <inheritdoc />
-        public virtual IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null) => new ConstraintInverter<TValueIn>(this).WithErrorMessage(errorMessage).WithName(name);
+        public virtual IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new ConstraintInverter<TValueIn>(this).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
@@ -130,7 +146,8 @@ namespace Kingo.Messaging.Validation
         IFilter<TValueIn, TValueIn> IConstraint<TValueIn>.MapInputToOutput() => new InputToOutputMapper<TValueIn>(this);
 
         /// <inheritdoc />
-        public virtual Predicate<TValueIn> ToDelegate() => IsSatisfiedBy;
+        public virtual Predicate<TValueIn> ToDelegate() =>
+             IsSatisfiedBy;
 
         #endregion
 

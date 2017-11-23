@@ -33,7 +33,8 @@ namespace Kingo.Messaging.Validation
                 return true;
             }
 
-            public int GetHashCode(Tuple<Type, Type[]> obj) => GetHashCodeMethod.Invoke(obj.Item1);
+            public int GetHashCode(Tuple<Type, Type[]> obj) =>
+             GetHashCodeMethod.Invoke(obj.Item1);
         }
 
         private static readonly ConcurrentDictionary<Tuple<Type, Type[]>, PropertyInfo> _Indexers =
@@ -97,18 +98,22 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// Indices of the element to select.
         /// </summary>
-        public IReadOnlyList<object> IndexList => _indexList;
+        public IReadOnlyList<object> IndexList =>
+             _indexList;
 
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.CollectionConstraints_HasItem);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.CollectionConstraints_HasItem);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, object> WithName(Identifier name) => new HasItemFilter<TValueIn>(this, name);
+        public override IFilterWithErrorMessage<TValueIn, object> WithName(Identifier name) =>
+             new HasItemFilter<TValueIn>(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, object> WithErrorMessage(StringTemplate errorMessage) => new HasItemFilter<TValueIn>(this, errorMessage);
+        public override IFilterWithErrorMessage<TValueIn, object> WithErrorMessage(StringTemplate errorMessage) =>
+             new HasItemFilter<TValueIn>(this, errorMessage);
 
         #endregion
 

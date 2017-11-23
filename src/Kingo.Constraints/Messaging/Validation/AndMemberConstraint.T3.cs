@@ -11,7 +11,8 @@
             _rightConstraint = rightConstraint;
         }
 
-        public IMemberConstraint<TValueIn, TOther> And<TOther>(IMemberConstraint<TValueOut, TOther> constraint) => new AndMemberConstraint<TValueIn, TValueOut, TOther>(this, constraint);
+        public IMemberConstraint<TValueIn, TOther> And<TOther>(IMemberConstraint<TValueOut, TOther> constraint) =>
+             new AndMemberConstraint<TValueIn, TValueOut, TOther>(this, constraint);
 
         public bool IsNotSatisfiedBy(Member<TValueIn> member, IErrorMessageCollection reader, out Member<TValueOut> transformedMember)
         {

@@ -282,7 +282,8 @@ namespace Kingo.Clocks
 
         #endregion
 
-        private static IClock CreateClock() => new DefaultClock();
+        private static IClock CreateClock() =>
+             new DefaultClock();
 
         private static void AssertIsCurrent(IClock clock)
         {

@@ -14,7 +14,8 @@ namespace Kingo.Messaging.Validation
             _literal = literal;
         }
 
-        internal override StringTemplateComponent NextComponent => _nextComponent;
+        internal override StringTemplateComponent NextComponent =>
+             _nextComponent;
 
         internal override StringTemplateComponent AttachLast(StringTemplateComponent nextComponent)
         {
@@ -25,11 +26,13 @@ namespace Kingo.Messaging.Validation
             return new StringTemplateLiteral(_literal, _nextComponent.AttachLast(nextComponent));
         }
 
-        internal override int CountLiterals() => _literal.Length + (_nextComponent == null ? 0 : _nextComponent.CountLiterals());
+        internal override int CountLiterals() =>
+             _literal.Length + (_nextComponent == null ? 0 : _nextComponent.CountLiterals());
 
         #region [====== Equals & GetHashCode ======]
 
-        public override bool Equals(object obj) => Equals(obj as StringTemplateLiteral);
+        public override bool Equals(object obj) =>
+             Equals(obj as StringTemplateLiteral);
 
         public bool Equals(StringTemplateLiteral other)
         {
@@ -44,11 +47,13 @@ namespace Kingo.Messaging.Validation
             return _literal == other._literal && Equals(_nextComponent, other._nextComponent);
         }
 
-        public override int GetHashCode() => GetHashCodeMethod.Invoke(_literal) ^ GetHashCodeMethod.Invoke(_nextComponent);
+        public override int GetHashCode() =>
+             GetHashCodeMethod.Invoke(_literal) ^ GetHashCodeMethod.Invoke(_nextComponent);
 
         #endregion        
 
-        public override string ToString() => _literal;
+        public override string ToString() =>
+             _literal;
 
         internal override StringTemplateComponent Format(Identifier identifier, object argument, IFormatProvider formatProvider)
         {

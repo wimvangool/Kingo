@@ -6,7 +6,8 @@ namespace Kingo.Messaging
     [TestClass]
     public sealed class IntegrationTestBase_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown : IntegrationTestBaseTest<object>
     {
-        protected override object ExecuteQuery(IMicroProcessorContext context) => throw new InternalServerErrorException(new object());
+        protected override object ExecuteQuery(IMicroProcessorContext context) =>
+             throw new InternalServerErrorException(new object());
 
         [TestMethod]
         [ExpectedException(typeof(MetaAssertFailedException))]

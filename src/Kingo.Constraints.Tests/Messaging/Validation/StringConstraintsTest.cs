@@ -6,6 +6,7 @@ namespace Kingo.Messaging.Validation
     [TestClass]
     public sealed partial class StringConstraintsTest : ConstraintTestBase
     {                                                                                        
-        private static ValidatedMessage<string> NewValidatedMessage() => new ValidatedMessage<string>(Guid.NewGuid().ToString("N"));
+        private static ValidatedMessage<string> NewValidatedMessage() =>
+             new ValidatedMessage<string>(Guid.NewGuid().ToString("N"));
     }
 }

@@ -21,7 +21,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraintBuilder<T, Guid> IsNotEmpty<T>(this IMemberConstraintBuilder<T, Guid> member, string errorMessage = null) => member.Apply(new GuidIsNotEmptyConstraint().WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, Guid> IsNotEmpty<T>(this IMemberConstraintBuilder<T, Guid> member, string errorMessage = null) =>
+             member.Apply(new GuidIsNotEmptyConstraint().WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -38,7 +39,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraintBuilder<T, Guid> IsEmpty<T>(this IMemberConstraintBuilder<T, Guid> member, string errorMessage = null) => member.Apply(new GuidIsEmptyConstraint().WithErrorMessage(errorMessage));
+        public static IMemberConstraintBuilder<T, Guid> IsEmpty<T>(this IMemberConstraintBuilder<T, Guid> member, string errorMessage = null) =>
+             member.Apply(new GuidIsEmptyConstraint().WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -64,27 +66,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.GuidConstraints_IsNotEmpty);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.GuidConstraints_IsNotEmpty);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<Guid> WithName(Identifier name) => new GuidIsNotEmptyConstraint(this, name);
+        public override IConstraintWithErrorMessage<Guid> WithName(Identifier name) =>
+             new GuidIsNotEmptyConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<Guid> WithErrorMessage(StringTemplate errorMessage) => new GuidIsNotEmptyConstraint(this, errorMessage);
+        public override IConstraintWithErrorMessage<Guid> WithErrorMessage(StringTemplate errorMessage) =>
+             new GuidIsNotEmptyConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<Guid> Invert(StringTemplate errorMessage, Identifier name = null) => new GuidIsEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<Guid> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new GuidIsEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(Guid value) => !Guid.Empty.Equals(value);
+        public override bool IsSatisfiedBy(Guid value) =>
+             !Guid.Empty.Equals(value);
 
         #endregion
     }
@@ -112,27 +119,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.GuidConstraints_IsEmpty);
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+             StringTemplate.Parse(ErrorMessages.GuidConstraints_IsEmpty);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<Guid> WithName(Identifier name) => new GuidIsEmptyConstraint(this, name);
+        public override IConstraintWithErrorMessage<Guid> WithName(Identifier name) =>
+             new GuidIsEmptyConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<Guid> WithErrorMessage(StringTemplate errorMessage) => new GuidIsEmptyConstraint(this, errorMessage);
+        public override IConstraintWithErrorMessage<Guid> WithErrorMessage(StringTemplate errorMessage) =>
+             new GuidIsEmptyConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<Guid> Invert(StringTemplate errorMessage, Identifier name = null) => new GuidIsNotEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
+        public override IConstraintWithErrorMessage<Guid> Invert(StringTemplate errorMessage, Identifier name = null) =>
+             new GuidIsNotEmptyConstraint().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(Guid value) => Guid.Empty.Equals(value);
+        public override bool IsSatisfiedBy(Guid value) =>
+             Guid.Empty.Equals(value);
 
         #endregion
     }

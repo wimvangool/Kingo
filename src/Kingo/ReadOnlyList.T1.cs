@@ -36,7 +36,8 @@ namespace Kingo
         /// </summary>
         /// <param name="index">Index of the item to return.</param>
         /// <returns>The item at the specified <paramref name="index"/>.</returns>
-        protected virtual T GetItem(int index) => this.ElementAt(index);
+        protected virtual T GetItem(int index) =>
+             this.ElementAt(index);
 
         /// <inheritdoc />
         public abstract IEnumerator<T> GetEnumerator();

@@ -20,7 +20,8 @@ namespace Kingo.Messaging
                 _instance = Interlocked.Increment(ref _InstanceCount);
             }
 
-            public override string ToString() => _instance.ToString();
+            public override string ToString() =>
+                _instance.ToString();
         }
 
         #endregion        

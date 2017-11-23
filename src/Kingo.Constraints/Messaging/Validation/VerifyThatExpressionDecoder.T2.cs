@@ -22,13 +22,17 @@ namespace Kingo.Messaging.Validation
             _fieldOrProperty = fieldOrProperty;
         }
 
-        public override Guid Key => _key;
+        public override Guid Key =>
+             _key;
 
-        protected internal override LambdaExpression FieldOrPropertyExpression => _fieldOrProperty;
+        protected internal override LambdaExpression FieldOrPropertyExpression =>
+             _fieldOrProperty;
 
-        protected internal override ParameterExpression PrimaryParameter => InstanceParameter;
+        protected internal override ParameterExpression PrimaryParameter =>
+             InstanceParameter;
 
-        protected override LambdaExpression CreateLeftExpression(Expression expressionBody, ParameterExpression primaryParameter) => Expression.Lambda(expressionBody, primaryParameter);
+        protected override LambdaExpression CreateLeftExpression(Expression expressionBody, ParameterExpression primaryParameter) =>
+             Expression.Lambda(expressionBody, primaryParameter);
 
         #region [====== VerifyThat ======]
 
