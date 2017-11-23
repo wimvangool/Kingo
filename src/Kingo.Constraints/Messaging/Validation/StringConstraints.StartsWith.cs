@@ -25,10 +25,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotStartWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, string errorMessage = null)
-        {
-            return member.DoesNotStartWith(prefix, StringComparison.Ordinal, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, string> DoesNotStartWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, string errorMessage = null) => member.DoesNotStartWith(prefix, StringComparison.Ordinal, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value does not start with the specified <paramref name="prefix"/>.
@@ -46,10 +43,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> DoesNotStartWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, StringComparison compareType, string errorMessage = null)
-        {
-            return member.Apply(new StringStartsWithConstraint(prefix, compareType).Invert(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, string> DoesNotStartWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, StringComparison compareType, string errorMessage = null) => member.Apply(new StringStartsWithConstraint(prefix, compareType).Invert(errorMessage));
 
         #endregion
 
@@ -70,10 +64,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> StartsWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, string errorMessage = null)
-        {
-            return member.StartsWith(prefix, StringComparison.Ordinal, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, string> StartsWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, string errorMessage = null) => member.StartsWith(prefix, StringComparison.Ordinal, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member" />'s value starts with the specified <paramref name="prefix"/>.
@@ -91,10 +82,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> StartsWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, StringComparison compareType, string errorMessage = null)
-        {
-            return member.Apply(new StringStartsWithConstraint(prefix, compareType).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, string> StartsWith<T>(this IMemberConstraintBuilder<T, string> member, string prefix, StringComparison compareType, string errorMessage = null) => member.Apply(new StringStartsWithConstraint(prefix, compareType).WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -125,12 +113,8 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="prefix"/> is <c>null</c>.
         /// </exception>
         public StringStartsWithConstraint(string prefix, StringComparison compareType = StringComparison.Ordinal)
-        {
-            if (prefix == null)
-            {
-                throw new ArgumentNullException(nameof(prefix));
-            }
-            Prefix = prefix;
+        {            
+            Prefix = prefix ?? throw new ArgumentNullException(nameof(prefix));
             CompareType = compareType;
         }
 
@@ -151,34 +135,22 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_StartsWith); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_StartsWith);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
-        {
-            return new StringStartsWithConstraint(this, name);
-        }
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringStartsWithConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringStartsWithConstraint(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringStartsWithConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<string>(this, ErrorMessages.StringConstraints_DoesNotStartWith)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null) => new ConstraintInverter<string>(this, ErrorMessages.StringConstraints_DoesNotStartWith)
+            .WithErrorMessage(errorMessage)
+            .WithName(name);
 
         #endregion
 

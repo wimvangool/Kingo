@@ -15,19 +15,13 @@ namespace Kingo
         /// Returns an Enum value where are values of the Enum are bitwise OR-ed into a single value.
         /// </summary>
         /// <returns>A bitwise OR-ed value of all defined values.</returns>
-        public static TEnum AllValuesCombined()
-        {
-            return Or(AllValues());
-        }
+        public static TEnum AllValuesCombined() => Or(AllValues());
 
         /// <summary>
         /// Returns all declared values of an enum.
         /// </summary>
         /// <returns>A collection of enum values.</returns>
-        public static IEnumerable<TEnum> AllValues()
-        {
-            return Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
-        }
+        public static IEnumerable<TEnum> AllValues() => Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
 
         /// <summary>
         /// Determines whether or not all bits of <paramref name="value"/> are set in <paramref name="compositeValue"/>.
@@ -37,10 +31,7 @@ namespace Kingo
         /// <returns>
         /// <c>true</c> if all bits of <paramref name="value"/> are set in <paramref name="compositeValue"/>; otherwise <c>false</c>.
         /// </returns>
-        public static bool IsDefined(TEnum value, TEnum compositeValue)
-        {
-            return And(value, compositeValue).Equals(value);
-        }
+        public static bool IsDefined(TEnum value, TEnum compositeValue) => And(value, compositeValue).Equals(value);
 
         #region [====== Or ======]
 
@@ -52,10 +43,7 @@ namespace Kingo
         /// <param name="x">The first value.</param>
         /// <param name="y">The second value.</param>
         /// <returns>A value where the bits of <paramref name="x"/> and <paramref name="y"/> have been OR-ed.</returns>        
-        public static TEnum Or(TEnum x, TEnum y)
-        {
-            return _BinaryOrOperator.Invoke(x, y);
-        }
+        public static TEnum Or(TEnum x, TEnum y) => _BinaryOrOperator.Invoke(x, y);
 
         /// <summary>
         /// Performs a binary OR-operation on the specified Enum types.
@@ -117,10 +105,7 @@ namespace Kingo
         /// <param name="x">The first value.</param>
         /// <param name="y">The second value.</param>
         /// <returns>A value where the bits of <paramref name="x"/> and <paramref name="y"/> have been AND-ed.</returns>        
-        public static TEnum And(TEnum x, TEnum y)
-        {
-            return _BinaryAndOperator.Invoke(x, y);
-        }
+        public static TEnum And(TEnum x, TEnum y) => _BinaryAndOperator.Invoke(x, y);
 
         /// <summary>
         /// Performs a binary AND-operation on the specified Enum types.

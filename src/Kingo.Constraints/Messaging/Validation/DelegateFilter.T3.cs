@@ -8,13 +8,9 @@ namespace Kingo.Messaging.Validation
         private readonly Func<T, TValueIn, TValueOut> _fieldOrProperty;
    
         internal DelegateFilter(T instance, Func<T, TValueIn, TValueOut> fieldOrProperty)
-        {
-            if (fieldOrProperty == null)
-            {
-                throw new ArgumentNullException(nameof(fieldOrProperty));
-            }
+        {           
             _instance = instance;
-            _fieldOrProperty = fieldOrProperty;
+            _fieldOrProperty = fieldOrProperty ?? throw new ArgumentNullException(nameof(fieldOrProperty));
         }
 
         private DelegateFilter(DelegateFilter<T, TValueIn, TValueOut> constraint, StringTemplate errorMessage)
@@ -34,28 +30,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name)
-        {
-            return new DelegateFilter<T, TValueIn, TValueOut>(this, name);
-        }
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithName(Identifier name) => new DelegateFilter<T, TValueIn, TValueOut>(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new DelegateFilter<T, TValueIn, TValueOut>(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<TValueIn, TValueOut> WithErrorMessage(StringTemplate errorMessage) => new DelegateFilter<T, TValueIn, TValueOut>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<TValueIn>(this)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null) => new ConstraintInverter<TValueIn>(this)
+            .WithErrorMessage(errorMessage)
+            .WithName(name);
 
         #endregion
 

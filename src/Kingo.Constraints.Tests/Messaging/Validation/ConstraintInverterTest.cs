@@ -105,10 +105,7 @@ namespace Kingo.Messaging.Validation
 
         #endregion
 
-        private static IConstraintWithErrorMessage<object> CreateConstraint(bool value)
-        {
-            return new ConstraintInverter<object>(NewConstraint(value).WithErrorMessage("{child} is not satisfied."))
-                .WithErrorMessage("{parent} is not satisfied.");
-        }
+        private static IConstraintWithErrorMessage<object> CreateConstraint(bool value) => new ConstraintInverter<object>(NewConstraint(value).WithErrorMessage("{child} is not satisfied."))
+            .WithErrorMessage("{parent} is not satisfied.");
     }
 }

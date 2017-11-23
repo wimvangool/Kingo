@@ -70,10 +70,7 @@ namespace Kingo.DynamicMethods
             return false;
         }        
 
-        private static bool HaveEqualMembers(object left, object right, Type type)
-        {
-            return GetOrAddMethod(type, Build).Execute(left, right);
-        }                      
+        private static bool HaveEqualMembers(object left, object right, Type type) => GetOrAddMethod(type, Build).Execute(left, right);
 
         private static EqualsMethod Build(Type type, MemberProvider memberProvider)
         {
@@ -199,15 +196,9 @@ namespace Kingo.DynamicMethods
             return true;
         }
 
-        private static bool IsGenericDictionaryInterfaceType(Type type)
-        {
-            return type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>);
-        }
+        private static bool IsGenericDictionaryInterfaceType(Type type) => type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>);
 
-        private static bool IsDictionaryType(Type type)
-        {
-            return typeof(IDictionary).IsAssignableFrom(type);
-        }
+        private static bool IsDictionaryType(Type type) => typeof(IDictionary).IsAssignableFrom(type);
 
         private static bool IsGenericEnumerableType(ref Type type)
         {
@@ -229,15 +220,9 @@ namespace Kingo.DynamicMethods
             return true;
         }
 
-        private static bool IsGenericEnumerableInterfaceType(Type type)
-        {
-            return type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-        }
+        private static bool IsGenericEnumerableInterfaceType(Type type) => type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
 
-        private static bool IsEnumerableType(Type type)
-        {
-            return typeof(IEnumerable).IsAssignableFrom(type);
-        }
+        private static bool IsEnumerableType(Type type) => typeof(IEnumerable).IsAssignableFrom(type);
 
         #region [====== Value Types ======]
 
@@ -250,10 +235,7 @@ namespace Kingo.DynamicMethods
             return Expression.Call(left, GetEqualsMethod(type), right);
         }
 
-        private static Expression Box(Expression expression)
-        {
-            return Expression.Convert(expression, typeof(object));
-        }
+        private static Expression Box(Expression expression) => Expression.Convert(expression, typeof(object));
 
         private static MethodInfo GetEqualsMethod(Type type)
         {
@@ -265,10 +247,7 @@ namespace Kingo.DynamicMethods
             return typeSafeMethod;
         }
 
-        private static MethodInfo GetEqualsMethod(Type type, Type parameterType)
-        {
-            return type.GetMethod("Equals", BindingFlags.Public | BindingFlags.Instance, null, new[] { parameterType }, null);
-        }
+        private static MethodInfo GetEqualsMethod(Type type, Type parameterType) => type.GetMethod("Equals", BindingFlags.Public | BindingFlags.Instance, null, new[] { parameterType }, null);
 
         #endregion
 
@@ -276,10 +255,7 @@ namespace Kingo.DynamicMethods
 
         private static readonly MethodInfo _EqualsMethod = typeof(object).GetMethod("Equals", BindingFlags.Public | BindingFlags.Static);
 
-        private static Expression AreEqualReferenceTypes(Expression left, Expression right)
-        {
-            return Expression.Call(null, _EqualsMethod, left, right);
-        }
+        private static Expression AreEqualReferenceTypes(Expression left, Expression right) => Expression.Call(null, _EqualsMethod, left, right);
 
         #endregion
 
@@ -300,10 +276,7 @@ namespace Kingo.DynamicMethods
             return methods.Single();
         }
 
-        private static bool IsOfEnumerableType(ParameterInfo parameter)
-        {
-            return parameter.ParameterType == typeof(IEnumerable);
-        }
+        private static bool IsOfEnumerableType(ParameterInfo parameter) => parameter.ParameterType == typeof(IEnumerable);
 
         private static MethodInfo FindAreEqualGenericEnumerableTypesMethod()
         {
@@ -317,10 +290,7 @@ namespace Kingo.DynamicMethods
             return methods.Single();
         }
 
-        private static Expression AreEqualEnumerableTypes(Expression left, Expression right)
-        {
-            return Expression.Call(null, _AreEqualEnumerableTypesMethod, left, right);
-        }
+        private static Expression AreEqualEnumerableTypes(Expression left, Expression right) => Expression.Call(null, _AreEqualEnumerableTypesMethod, left, right);
 
         [UsedImplicitly]
         private static bool AreEqualEnumerableTypes(IEnumerable left, IEnumerable right)
@@ -377,10 +347,7 @@ namespace Kingo.DynamicMethods
             return methods.Single();
         }
 
-        private static bool IsOfDictionaryType(ParameterInfo parameter)
-        {
-            return parameter.ParameterType == typeof(IDictionary);
-        }
+        private static bool IsOfDictionaryType(ParameterInfo parameter) => parameter.ParameterType == typeof(IDictionary);
 
         private static MethodInfo FindAreEqualGenericDictionaryTypesMethod()
         {
@@ -394,10 +361,7 @@ namespace Kingo.DynamicMethods
             return methods.Single();
         }
 
-        private static Expression AreEqualDictionaryTypes(Expression left, Expression right)
-        {
-            return Expression.Call(null, _AreEqualDictionaryTypesMethod, left, right);
-        }
+        private static Expression AreEqualDictionaryTypes(Expression left, Expression right) => Expression.Call(null, _AreEqualDictionaryTypesMethod, left, right);
 
         [UsedImplicitly]
         private static bool AreEqualDictionaryTypes(IDictionary left, IDictionary right)

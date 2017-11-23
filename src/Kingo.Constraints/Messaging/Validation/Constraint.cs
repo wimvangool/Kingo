@@ -48,42 +48,24 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public Identifier Name
-        {
-            get { return _name.Value; }
-        }
+        public Identifier Name => _name.Value;
 
         /// <summary>
         /// Returns the name of this constraint if it was not explicitly specified.
         /// </summary>
-        protected virtual Identifier NameIfNotSpecified
-        {
-            get { return DefaultName; }
-        }
+        protected virtual Identifier NameIfNotSpecified => DefaultName;
 
         /// <inheritdoc />
-        public StringTemplate ErrorMessage
-        {
-            get { return _errorMessage.Value; }
-        }        
+        public StringTemplate ErrorMessage => _errorMessage.Value;
 
         /// <summary>
         /// Returns the error message of this constraint if it was not explicitly specified.
         /// </summary>
-        protected virtual StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return DefaultErrorMessage; }
-        }
+        protected virtual StringTemplate ErrorMessageIfNotSpecified => DefaultErrorMessage;
 
-        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(string name)
-        {
-            return WithNameCore(Identifier.ParseOrNull(name));
-        }
+        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(string name) => WithNameCore(Identifier.ParseOrNull(name));
 
-        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(Identifier name)
-        {
-            return WithNameCore(name);
-        }
+        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithName(Identifier name) => WithNameCore(name);
 
         internal abstract IConstraintWithErrorMessage WithNameCore(Identifier name);
 
@@ -94,15 +76,9 @@ namespace Kingo.Messaging.Validation
             return new NotSupportedException(message);
         }             
 
-        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithErrorMessage(string errorMessage)
-        {
-            return WithErrorMessageCore(StringTemplate.ParseOrNull(errorMessage));
-        }
+        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithErrorMessage(string errorMessage) => WithErrorMessageCore(StringTemplate.ParseOrNull(errorMessage));
 
-        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithErrorMessage(StringTemplate errorMessage)
-        {
-            return WithErrorMessageCore(errorMessage);
-        }
+        IConstraintWithErrorMessage IConstraintWithErrorMessage.WithErrorMessage(StringTemplate errorMessage) => WithErrorMessageCore(errorMessage);
 
         internal abstract IConstraintWithErrorMessage WithErrorMessageCore(StringTemplate errorMessage);
 

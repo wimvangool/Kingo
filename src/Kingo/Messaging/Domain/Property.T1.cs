@@ -76,13 +76,9 @@ namespace Kingo.Messaging.Domain
             return properties[0];
         }        
 
-        private static IEnumerable<PropertyInfo> FindCandidateProperties(Type type, Type attributeType)
-        {
-            return
-                from property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                where HasAttribute(property, attributeType)
-                select property;
-        }
+        private static IEnumerable<PropertyInfo> FindCandidateProperties(Type type, Type attributeType) => from property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                                                                                           where HasAttribute(property, attributeType)
+                                                                                                           select property;
 
         private static bool HasAttribute(MemberInfo property, Type attributeType) =>
             property.GetCustomAttributes(attributeType).Any();

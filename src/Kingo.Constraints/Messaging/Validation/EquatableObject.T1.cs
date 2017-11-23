@@ -11,14 +11,8 @@ namespace Kingo.Messaging.Validation
             _value = value;
         }
 
-        public bool Equals(TValue other)
-        {
-            return Equals(_value, other);
-        }
+        public bool Equals(TValue other) => Equals(_value, other);
 
-        public override string ToString()
-        {
-            return ReferenceEquals(_value, null) ? StringTemplate.NullValue : _value.ToString();
-        }
+        public override string ToString() => ReferenceEquals(_value, null) ? StringTemplate.NullValue : _value.ToString();
     }
 }

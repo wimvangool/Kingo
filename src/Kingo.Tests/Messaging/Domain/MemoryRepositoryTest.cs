@@ -50,11 +50,8 @@ namespace Kingo.Messaging.Domain
 
             private int _handleCount;
 
-            protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers)
-            {
-                return eventHandlers
-                    .Register<AggregateEventSourcedAggregateValueChangedAggregateEvent>(Handle);
-            }
+            protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers) => eventHandlers
+                .Register<AggregateEventSourcedAggregateValueChangedAggregateEvent>(Handle);
 
             private void Handle(AggregateEventSourcedAggregateValueChangedAggregateEvent aggregateEvent)
             {

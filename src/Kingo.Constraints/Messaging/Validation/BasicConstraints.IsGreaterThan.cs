@@ -29,10 +29,8 @@ namespace Kingo.Messaging.Validation
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
-        {
-            return member.Apply(new IsGreaterThanConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null) =>
+            member.Apply(new IsGreaterThanConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member is greater than <paramref name="other"/>.
@@ -53,10 +51,8 @@ namespace Kingo.Messaging.Validation
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
-        {
-            return member.Apply(new IsGreaterThanConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null) =>
+            member.Apply(new IsGreaterThanConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member is greater than <paramref name="other"/>.
@@ -73,10 +69,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
-        {
-            return member.Apply(new IsGreaterThanConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThan<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IComparable<TValue> other, string errorMessage = null) =>
+            member.Apply(new IsGreaterThanConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member is greater than <paramref name="otherFactory"/>.
@@ -185,10 +179,8 @@ namespace Kingo.Messaging.Validation
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
-        {
-            return member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null) =>
+            member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member is greater than or equal to <paramref name="other"/>.
@@ -209,10 +201,8 @@ namespace Kingo.Messaging.Validation
         /// - or -        
         /// <paramref name="errorMessage"/> is not in a correct format.        
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null)
-        {
-            return member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IComparer<TValue> comparer, string errorMessage = null) =>
+            member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member is equal to <paramref name="other"/>.
@@ -229,10 +219,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>        
-        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IComparable<TValue> other, string errorMessage = null)
-        {
-            return member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsGreaterThanOrEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IComparable<TValue> other, string errorMessage = null) =>
+            member.Apply(new IsGreaterThanOrEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member is greater than or equal to <paramref name="otherFactory"/>.
@@ -366,42 +354,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsGreaterThan); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+            StringTemplate.Parse(ErrorMessages.BasicConstraints_IsGreaterThan);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new IsGreaterThanConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+            new IsGreaterThanConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new IsGreaterThanConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+            new IsGreaterThanConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new IsSmallerThanOrEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+            new IsSmallerThanOrEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return Comparer.IsGreaterThan(value, Other);
-        }
+        public override bool IsSatisfiedBy(TValue value) =>
+            Comparer.IsGreaterThan(value, Other);
 
         #endregion
     }
@@ -452,42 +430,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsGreaterThanOrEqualTo); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+            StringTemplate.Parse(ErrorMessages.BasicConstraints_IsGreaterThanOrEqualTo);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new IsGreaterThanOrEqualToConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+            new IsGreaterThanOrEqualToConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new IsGreaterThanOrEqualToConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+            new IsGreaterThanOrEqualToConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new IsSmallerThanConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+            new IsSmallerThanConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return Comparer.IsGreaterThanOrEqualTo(value, Other);
-        }
+        public override bool IsSatisfiedBy(TValue value) =>
+            Comparer.IsGreaterThanOrEqualTo(value, Other);
 
         #endregion
     }

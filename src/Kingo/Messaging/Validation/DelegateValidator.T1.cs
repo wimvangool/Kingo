@@ -18,12 +18,8 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="validationMethod"/> is <c>null</c>.
         /// </exception>
         public DelegateValidator(Func<TMessage, bool, ErrorInfo> validationMethod)
-        {
-            if (validationMethod == null)
-            {
-                throw new ArgumentNullException(nameof(validationMethod));
-            }
-            _validationMethod = validationMethod;
+        {           
+            _validationMethod = validationMethod ?? throw new ArgumentNullException(nameof(validationMethod));
         }
 
         /// <inheritdoc />

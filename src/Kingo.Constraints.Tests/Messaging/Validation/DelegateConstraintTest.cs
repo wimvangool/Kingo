@@ -166,9 +166,6 @@ namespace Kingo.Messaging.Validation
 
         #endregion
 
-        private static bool IsValid(object value)
-        {
-            throw new NotSupportedException("This is a dummy implementation.");
-        }
+        private static bool IsValid(object value) => throw new NotSupportedException("This is a dummy implementation.");
     }
 }

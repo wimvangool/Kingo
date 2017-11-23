@@ -61,24 +61,12 @@ namespace Kingo.Messaging.Validation
             _arguments[name] = argument;
         }
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        public override string ToString() => ToString(null);
 
-        public string ToString(IFormatProvider formatProvider)
-        {
-            return FormatErrorMessage(_arguments, formatProvider).ToString();
-        }        
+        public string ToString(IFormatProvider formatProvider) => FormatErrorMessage(_arguments, formatProvider).ToString();
 
-        private StringTemplate FormatErrorMessage(IEnumerable<KeyValuePair<Identifier, object>> arguments, IFormatProvider formatProvider)
-        {
-            return _failedConstraint.ErrorMessage.Format(arguments, formatProvider);
-        }
+        private StringTemplate FormatErrorMessage(IEnumerable<KeyValuePair<Identifier, object>> arguments, IFormatProvider formatProvider) => _failedConstraint.ErrorMessage.Format(arguments, formatProvider);
 
-        internal static ErrorMessageBuilder Build(IConstraintWithErrorMessage failedConstraint, object value)
-        {
-            return Builder.BuildErrorMessage(failedConstraint, value);
-        }
+        internal static ErrorMessageBuilder Build(IConstraintWithErrorMessage failedConstraint, object value) => Builder.BuildErrorMessage(failedConstraint, value);
     }
 }

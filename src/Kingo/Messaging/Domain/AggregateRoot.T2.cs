@@ -35,7 +35,7 @@ namespace Kingo.Messaging.Domain
             }
             _id = aggregateEvent.AggregateId;
             _version = aggregateEvent.AggregateVersion;
-            _pendingEvents = new List<IEvent>() { aggregateEvent };
+            _pendingEvents = new List<IEvent> { aggregateEvent };
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Kingo.Messaging.Domain
         /// </summary>        
         protected TVersion Version
         {
-            get { return _version; }
+            get => _version;
             private set
             {
                 var oldVersion = _version;
@@ -347,8 +347,8 @@ namespace Kingo.Messaging.Domain
 
         event EventHandler<EventPublishedEventArgs> IAggregateRoot.EventPublished
         {
-            add { EventPublished += value; }
-            remove { EventPublished -= value; }
+            add => EventPublished += value;
+            remove => EventPublished -= value;
         }
 
         /// <summary>

@@ -18,14 +18,10 @@ namespace Kingo.Messaging.Validation
             return new ExpressionNotSupportedException(FieldOrPropertyExpression, message);
         }
 
-        protected static bool IsSupported(ExpressionType nodeType)
-        {
-            return
-                nodeType == ExpressionType.ArrayIndex ||
-                nodeType == ExpressionType.ArrayLength ||
-                nodeType == ExpressionType.Call ||
-                nodeType == ExpressionType.MemberAccess ||
-                nodeType == ExpressionType.Parameter;
-        }
+        protected static bool IsSupported(ExpressionType nodeType) => nodeType == ExpressionType.ArrayIndex ||
+            nodeType == ExpressionType.ArrayLength ||
+            nodeType == ExpressionType.Call ||
+            nodeType == ExpressionType.MemberAccess ||
+            nodeType == ExpressionType.Parameter;
     }
 }

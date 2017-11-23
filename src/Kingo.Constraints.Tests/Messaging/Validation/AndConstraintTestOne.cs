@@ -307,19 +307,13 @@ namespace Kingo.Messaging.Validation
 
         #endregion        
 
-        private static IConstraint<object> CreateAndConstraint(bool left, bool right)
-        {
-            return new AndConstraint<object>(
-                NewConstraint(left).WithErrorMessage(ErrorMessageLeft),
-                NewConstraint(right).WithErrorMessage(ErrorMessageRight));
-        }
+        private static IConstraint<object> CreateAndConstraint(bool left, bool right) => new AndConstraint<object>(
+            NewConstraint(left).WithErrorMessage(ErrorMessageLeft),
+            NewConstraint(right).WithErrorMessage(ErrorMessageRight));
 
-        private static IConstraint<object> CreateAndConstraint(bool left, bool middle, bool right)
-        {
-            return new AndConstraint<object>(
-                NewConstraint(left).WithErrorMessage(ErrorMessageLeft),
-                NewConstraint(middle).WithErrorMessage(ErrorMessageMiddle)).And(
-                NewConstraint(right).WithErrorMessage(ErrorMessageRight));
-        }
+        private static IConstraint<object> CreateAndConstraint(bool left, bool middle, bool right) => new AndConstraint<object>(
+            NewConstraint(left).WithErrorMessage(ErrorMessageLeft),
+            NewConstraint(middle).WithErrorMessage(ErrorMessageMiddle)).And(
+            NewConstraint(right).WithErrorMessage(ErrorMessageRight));
     }
 }

@@ -11,10 +11,7 @@
 
         #region [====== Equals & GetHashCode ======]
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as RequiredValueMessage<TValue>);
-        }
+        public override bool Equals(object obj) => Equals(obj as RequiredValueMessage<TValue>);
 
         public bool Equals(RequiredValueMessage<TValue> other)
         {
@@ -29,10 +26,7 @@
             return Equals(Value, other.Value);
         }
 
-        public override int GetHashCode()
-        {
-            return typeof(TValue).GetHashCode();
-        }
+        public override int GetHashCode() => typeof(TValue).GetHashCode();
 
         #endregion
 

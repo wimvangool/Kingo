@@ -12,9 +12,6 @@ namespace Kingo.Messaging.Validation
             _methodCallExpressionFactory = new MethodCallExpressionFactory<T, TValue>(interpreter, leftExpression, methodCallDecorator);
         }
 
-        internal Expression<Func<IMemberConstraintBuilder<T, TValue>>> BuildMethodCallExpression()
-        {
-            return Expression.Lambda<Func<IMemberConstraintBuilder<T, TValue>>>(_methodCallExpressionFactory.CreateMethodCallExpression());
-        }                    
+        internal Expression<Func<IMemberConstraintBuilder<T, TValue>>> BuildMethodCallExpression() => Expression.Lambda<Func<IMemberConstraintBuilder<T, TValue>>>(_methodCallExpressionFactory.CreateMethodCallExpression());
     }
 }

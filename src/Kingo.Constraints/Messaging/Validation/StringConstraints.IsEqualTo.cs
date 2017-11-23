@@ -26,10 +26,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> IsNotEqualTo<T>(this IMemberConstraintBuilder<T, string> member, string other, StringComparison compareType, string errorMessage = null)
-        {
-            return member.Apply(new StringIsNotEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, string> IsNotEqualTo<T>(this IMemberConstraintBuilder<T, string> member, string other, StringComparison compareType, string errorMessage = null) => member.Apply(new StringIsNotEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -51,10 +48,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> IsEqualTo<T>(this IMemberConstraintBuilder<T, string> member, string other, StringComparison compareType, string errorMessage = null)
-        {
-            return member.Apply(new StringIsEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, string> IsEqualTo<T>(this IMemberConstraintBuilder<T, string> member, string other, StringComparison compareType, string errorMessage = null) => member.Apply(new StringIsEqualToConstraint(other, compareType).WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -104,34 +98,22 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotEqualTo); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotEqualTo);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
-        {
-            return new StringIsNotEqualToConstraint(this, name);
-        }
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringIsNotEqualToConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsNotEqualToConstraint(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringIsNotEqualToConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new StringIsEqualToConstraint(Other, CompareType)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null) => new StringIsEqualToConstraint(Other, CompareType)
+            .WithErrorMessage(errorMessage)
+            .WithName(name);
 
         #endregion
 
@@ -197,34 +179,22 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsEqualTo); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.BasicConstraints_IsEqualTo);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
-        {
-            return new StringIsEqualToConstraint(this, name);
-        }
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringIsEqualToConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsEqualToConstraint(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringIsEqualToConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new StringIsNotEqualToConstraint(Other, CompareType)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null) => new StringIsNotEqualToConstraint(Other, CompareType)
+            .WithErrorMessage(errorMessage)
+            .WithName(name);
 
         #endregion
 

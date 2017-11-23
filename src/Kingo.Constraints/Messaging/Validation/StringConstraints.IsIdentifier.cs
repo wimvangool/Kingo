@@ -24,10 +24,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, Identifier> IsIdentifier<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return member.Apply(new StringIsIdentifierFilter().WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, Identifier> IsIdentifier<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => member.Apply(new StringIsIdentifierFilter().WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -53,32 +50,20 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsIdentifier); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsIdentifier);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, Identifier> WithName(Identifier name)
-        {
-            return new StringIsIdentifierFilter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, Identifier> WithName(Identifier name) => new StringIsIdentifierFilter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, Identifier> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsIdentifierFilter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, Identifier> WithErrorMessage(StringTemplate errorMessage) => new StringIsIdentifierFilter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(string valueIn, out Identifier valueOut)
-        {
-            return Identifier.TryParse(valueIn, out valueOut);
-        }
+        public override bool IsSatisfiedBy(string valueIn, out Identifier valueOut) => Identifier.TryParse(valueIn, out valueOut);
 
         #endregion
     }

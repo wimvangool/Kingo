@@ -322,10 +322,7 @@ namespace Kingo.Messaging.Validation
             validator.Validate(message).AssertNoErrors();
         }
 
-        private static int GetLastIndex(int[] array)
-        {
-            return array.Length - 1;
-        }
+        private static int GetLastIndex(int[] array) => array.Length - 1;
 
         #endregion
 

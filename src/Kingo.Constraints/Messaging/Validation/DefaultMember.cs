@@ -20,25 +20,13 @@ namespace Kingo.Messaging.Validation
             _value = value;            
         }
 
-        internal override MemberNameComponentStack NameComponentStack
-        {
-            get { return _nameComponentStack.Value; }
-        }
+        internal override MemberNameComponentStack NameComponentStack => _nameComponentStack.Value;
 
-        public override Type Type
-        {
-            get { return _type.Value; }
-        }
+        public override Type Type => _type.Value;
 
-        public object Value
-        {
-            get { return _value; }
-        }
+        public object Value => _value;
 
-        private MemberNameComponentStack DefaultName()
-        {
-            return new IdentifierComponent(Type, _DefaultName, null);
-        }
+        private MemberNameComponentStack DefaultName() => new IdentifierComponent(Type, _DefaultName, null);
 
         private Type DetermineType()
         {

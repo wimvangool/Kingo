@@ -35,20 +35,7 @@ namespace Kingo.Messaging.Validation
         private IMemberConstraintBuilder<T, TValue> CreateMember() =>
             CreateMemberExpression().Compile().Invoke();
 
-        private Expression<Func<IMemberConstraintBuilder<T, TValue>>> CreateMemberExpression()
-        {
-            //                          Left          Right
-            // [m => m]         becomes [m => m]    + <null>
-            // [m => m.A]       becomes [m => m.A]  + [a => a]
-            // [m => m.A.B]     becomes [m => m.A]  + [a => a.B]  
-            // [m => m[0]]      becomes [m => m][0] + <null>
-            // [m => m.A[0]]    becomes [m => m.A]  + [a => a[0]]                                                         
-
-            // [m => m]     becomes VerifyThat(m => m, null)    or And((m, x) => x, null)
-            // [m => m[0]]  becomes VerifyThat(m => m, null)    or And((m, x) => x, null)
-            // [m => m.A]   becomes VerifyThat(m => m.A, "A")   or And((m, a) => a, "A")                        
-            return _expressionBuilder.BuildLeftExpression().BuildRightExpression().BuildMethodCallExpression();
-        }
+        private Expression<Func<IMemberConstraintBuilder<T, TValue>>> CreateMemberExpression() => _expressionBuilder.BuildLeftExpression().BuildRightExpression().BuildMethodCallExpression();
 
         internal LambdaExpression CreateLeftExpression(Expression expressionBody) =>
             CreateLeftExpression(expressionBody, PrimaryParameter);

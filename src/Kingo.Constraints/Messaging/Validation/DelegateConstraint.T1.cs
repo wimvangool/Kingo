@@ -21,12 +21,8 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
         public DelegateConstraint(Predicate<TValue> constraint, object errorMessageArgument = null)          
-        {
-            if (constraint == null)
-            {
-                throw new ArgumentNullException(nameof(constraint));
-            }
-            _constraint = constraint;
+        {            
+            _constraint = constraint ?? throw new ArgumentNullException(nameof(constraint));
             _errorMessageArgument = errorMessageArgument;
         }
 
@@ -47,36 +43,24 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new DelegateConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new DelegateConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new DelegateConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new DelegateConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== Conversion ======]
 
         /// <inheritdoc />
-        public override Predicate<TValue> ToDelegate()
-        {
-            return _constraint;
-        }
+        public override Predicate<TValue> ToDelegate() => _constraint;
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return _constraint.Invoke(value);
-        }
+        public override bool IsSatisfiedBy(TValue value) => _constraint.Invoke(value);
 
         /// <inheritdoc />
         public override bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)

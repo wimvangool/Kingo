@@ -27,10 +27,7 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
         public static IMemberConstraintBuilder<T, TValue> IsInRangeOfValidValues<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, string errorMessage = null)
-            where TValue : struct
-        {
-            return member.Apply(new EnumIsInRangeOfValidValuesConstraint<TValue>().WithErrorMessage(errorMessage));
-        }
+            where TValue : struct => member.Apply(new EnumIsInRangeOfValidValuesConstraint<TValue>().WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Determines whether or not the specified <paramref name="value"/> does not contain any value or bitflags
@@ -94,10 +91,7 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
         public static IMemberConstraintBuilder<T, TValue> IsDefined<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, string errorMessage = null)
-            where TValue : struct
-        {
-            return member.Apply(new EnumIsDefinedConstraint<TValue>().WithErrorMessage(errorMessage));
-        }
+            where TValue : struct => member.Apply(new EnumIsDefinedConstraint<TValue>().WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Determines whether or not the specified <paramref name="value"/> is valid relative to the values that have been
@@ -141,10 +135,7 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="flag"/> is not an Enum type or <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
         public static IMemberConstraintBuilder<T, TValue> HasFlag<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue flag, string errorMessage = null)
-            where TValue : struct
-        {
-            return member.Apply(new EnumHasFlagConstraint<TValue>(flag).WithErrorMessage(errorMessage));
-        }
+            where TValue : struct => member.Apply(new EnumHasFlagConstraint<TValue>(flag).WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -188,40 +179,25 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// Returns the type of enumeration this constraint is for.
         /// </summary>
-        public Type EnumType
-        {
-            get { return typeof(TValue); }
-        }
+        public Type EnumType => typeof(TValue);
 
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.EnumConstraints_IsInRangeOfValidValues); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.EnumConstraints_IsInRangeOfValidValues);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new EnumIsInRangeOfValidValuesConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new EnumIsInRangeOfValidValuesConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new EnumIsInRangeOfValidValuesConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new EnumIsInRangeOfValidValuesConstraint<TValue>(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return EnumConstraints.IsInRangeOfValidValues(value);
-        }
+        public override bool IsSatisfiedBy(TValue value) => EnumConstraints.IsInRangeOfValidValues(value);
 
         #endregion
     }
@@ -249,41 +225,26 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// Returns the type of enumeration this constraint is for.
         /// </summary>
-        public Type EnumType
-        {
-            get { return typeof(TValue); }
-        }
+        public Type EnumType => typeof(TValue);
 
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.EnumConstraints_IsDefined); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.EnumConstraints_IsDefined);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new EnumIsDefinedConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new EnumIsDefinedConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new EnumIsDefinedConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new EnumIsDefinedConstraint<TValue>(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {                        
-            return EnumConstraints.CastToEnum(value).IsDefined();
-        }
-              
+        public override bool IsSatisfiedBy(TValue value) => EnumConstraints.CastToEnum(value).IsDefined();
+
         #endregion
     }
 
@@ -326,32 +287,20 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.EnumConstraints_HasFlag); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.EnumConstraints_HasFlag);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new EnumHasFlagConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new EnumHasFlagConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new EnumHasFlagConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new EnumHasFlagConstraint<TValue>(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return EnumConstraints.CastToEnum(value).HasFlag(Flag);
-        }
+        public override bool IsSatisfiedBy(TValue value) => EnumConstraints.CastToEnum(value).HasFlag(Flag);
 
         #endregion
     }

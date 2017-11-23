@@ -14,14 +14,14 @@ namespace Kingo.Messaging.Domain
     {
         TKey IAggregateEvent<TKey, TVersion>.AggregateId
         {
-            get { return AggregateIdAttribute.GetValue<TKey>(this); }
-            set { AggregateIdAttribute.SetValue(this, value); }
+            get => AggregateIdAttribute.GetValue<TKey>(this);
+            set => AggregateIdAttribute.SetValue(this, value);
         }
 
         TVersion IAggregateEvent<TKey, TVersion>.AggregateVersion
         {
-            get { return AggregateVersionAttribute.GetValue<TVersion>(this); }
-            set { AggregateVersionAttribute.SetValue(this, value); }
+            get => AggregateVersionAttribute.GetValue<TVersion>(this);
+            set => AggregateVersionAttribute.SetValue(this, value);
         }
 
         /// <inheritdoc />

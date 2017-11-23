@@ -116,10 +116,7 @@ namespace Kingo.Messaging
             return new MessageHandlerDecorator<TMessage>(context, instance, _type, interfaceType);
         }
 
-        private static bool IsAcceptedSource(MessageSources sources, MessageSources source)
-        {
-            return (sources & source) == source;
-        }
+        private static bool IsAcceptedSource(MessageSources sources, MessageSources source) => (sources & source) == source;
 
         /// <inheritdoc />
         public override string ToString() =>
@@ -187,13 +184,9 @@ namespace Kingo.Messaging
         private static Type[] GetMessageHandlerInterfaceTypesImplementedBy(Type classType) =>
             _MessageHandlerInterfaceTypes.GetOrAdd(classType, type => GetMessageHandlerInterfaceTypesImplementedByCore(type).ToArray());
 
-        private static IEnumerable<Type> GetMessageHandlerInterfaceTypesImplementedByCore(Type classType)
-        {
-            return
-                from interfaceType in classType.GetInterfaces()
-                where IsMessageHandlerInterface(interfaceType)
-                select interfaceType;
-        }
+        private static IEnumerable<Type> GetMessageHandlerInterfaceTypesImplementedByCore(Type classType) => from interfaceType in classType.GetInterfaces()
+                                                                                                             where IsMessageHandlerInterface(interfaceType)
+                                                                                                             select interfaceType;
 
         private static bool IsMessageHandlerInterface(Type interfaceType)
         {

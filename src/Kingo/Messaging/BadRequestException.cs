@@ -18,7 +18,7 @@ namespace Kingo.Messaging
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
         public BadRequestException(object failedMessage)
-            : base(failedMessage) {}
+            : base(failedMessage) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BadRequestException" /> class.
@@ -29,7 +29,7 @@ namespace Kingo.Messaging
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
         public BadRequestException(object failedMessage, string message)
-            : base(failedMessage, message) {}
+            : base(failedMessage, message) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BadRequestException" /> class.
@@ -41,7 +41,7 @@ namespace Kingo.Messaging
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
         public BadRequestException(object failedMessage, string message, Exception innerException)
-            : base(failedMessage, message, innerException) {}
+            : base(failedMessage, message, innerException) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BadRequestException" /> class.
@@ -49,6 +49,12 @@ namespace Kingo.Messaging
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
         protected BadRequestException(SerializationInfo info, StreamingContext context)
-            : base(info, context) {}
+            : base(info, context) { }
+
+        /// <summary>
+        /// Returns a value between <c>400</c> and <c>499</c>.
+        /// </summary>
+        public override int ErrorCode =>
+            400;
     }
 }

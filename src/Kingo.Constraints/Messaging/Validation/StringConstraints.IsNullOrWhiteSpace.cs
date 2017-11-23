@@ -24,10 +24,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> IsNotNullOrWhiteSpace<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return member.Apply(new StringIsNotNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, string> IsNotNullOrWhiteSpace<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => member.Apply(new StringIsNotNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -47,10 +44,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, string> IsNullOrWhiteSpace<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return member.Apply(new StringIsNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, string> IsNullOrWhiteSpace<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => member.Apply(new StringIsNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage));
 
         #endregion        
     }
@@ -76,42 +70,27 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_NotNullOrWhiteSpace); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_NotNullOrWhiteSpace);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
-        {
-            return new StringIsNotNullOrWhiteSpaceConstraint(this, name);
-        }
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringIsNotNullOrWhiteSpaceConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsNotNullOrWhiteSpaceConstraint(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringIsNotNullOrWhiteSpaceConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new StringIsNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null) => new StringIsNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(string value)
-        {
-            return !string.IsNullOrWhiteSpace(value);
-        }
+        public override bool IsSatisfiedBy(string value) => !string.IsNullOrWhiteSpace(value);
 
         #endregion
     }
@@ -139,42 +118,27 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_NullOrWhiteSpace); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_NullOrWhiteSpace);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithName(Identifier name)
-        {
-            return new StringIsNullOrWhiteSpaceConstraint(this, name);
-        }
+        public override IConstraintWithErrorMessage<string> WithName(Identifier name) => new StringIsNullOrWhiteSpaceConstraint(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsNullOrWhiteSpaceConstraint(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<string> WithErrorMessage(StringTemplate errorMessage) => new StringIsNullOrWhiteSpaceConstraint(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new StringIsNotNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<string> Invert(StringTemplate errorMessage, Identifier name = null) => new StringIsNotNullOrWhiteSpaceConstraint().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(string value)
-        {
-            return string.IsNullOrWhiteSpace(value);
-        }
+        public override bool IsSatisfiedBy(string value) => string.IsNullOrWhiteSpace(value);
 
         #endregion
     }

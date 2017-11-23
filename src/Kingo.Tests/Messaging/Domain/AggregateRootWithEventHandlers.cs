@@ -18,15 +18,12 @@ namespace Kingo.Messaging.Domain
         public AggregateRootWithEventHandlers(SnapshotMock snapshot)
             : base(snapshot) { }
 
-        protected override ISnapshot<Guid, int> TakeSnapshot()
+        protected override ISnapshot<Guid, int> TakeSnapshot() => new SnapshotMock(true)
         {
-            return new SnapshotMock(true)
-            {
-                Id = Id,
-                Version = Version,
-                Value = Value
-            };
-        }
+            Id = Id,
+            Version = Version,
+            Value = Value
+        };
 
         protected override bool ApplyEventsToSelf =>
             true;
@@ -48,7 +45,7 @@ namespace Kingo.Messaging.Domain
             {
                 return;
             }
-            Publish(new ValueChangedEvent()
+            Publish(new ValueChangedEvent
             {
                 NewValue = newValue
             });

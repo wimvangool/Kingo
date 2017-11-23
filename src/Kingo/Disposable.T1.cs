@@ -39,10 +39,7 @@ namespace Kingo
         /// <summary>
         /// Indicates whether or not the instance has been created.
         /// </summary>
-        public bool IsValueCreated
-        {
-            get { return _value.IsValueCreated; }
-        }
+        public bool IsValueCreated => _value.IsValueCreated;
 
         /// <summary>
         /// Returns the instance. If it was not yet created, it is created on the spot.

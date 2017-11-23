@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
@@ -54,5 +50,11 @@ namespace Kingo.Messaging
         /// <param name="context">The streaming context.</param>
         protected NotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+
+        /// <summary>
+        /// Returns <c>404</c>.
+        /// </summary>
+        public override int ErrorCode =>
+            404;
     }
 }

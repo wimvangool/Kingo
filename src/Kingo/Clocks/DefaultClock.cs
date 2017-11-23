@@ -5,15 +5,9 @@ namespace Kingo.Clocks
     internal sealed class DefaultClock : Clock
     {        
         /// <inheritdoc />
-        public override DateTimeOffset LocalDateAndTime()
-        {
-            return DateTimeOffset.Now;
-        }
+        public override DateTimeOffset LocalDateAndTime() => DateTimeOffset.Now;
 
         /// <inheritdoc />
-        public override DateTimeOffset UtcDateAndTime()
-        {
-            return DateTimeOffset.UtcNow;
-        }                                   
+        public override DateTimeOffset UtcDateAndTime() => DateTimeOffset.UtcNow;
     }
 }

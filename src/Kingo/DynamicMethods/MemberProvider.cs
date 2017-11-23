@@ -19,27 +19,15 @@ namespace Kingo.DynamicMethods
 
         public IEnumerable<FieldInfo> Fields => Filter(FieldsOf(_type));
 
-        private static IEnumerable<FieldInfo> FieldsOf(IReflect type)
-        {
-            return type.GetFields(_MemberFlags);
-        }
+        private static IEnumerable<FieldInfo> FieldsOf(IReflect type) => type.GetFields(_MemberFlags);
 
         public IEnumerable<PropertyInfo> Properties => Filter(PropertiesOf(_type));
 
-        private static IEnumerable<PropertyInfo> PropertiesOf(IReflect type)
-        {
-            return type.GetProperties(_MemberFlags);
-        }               
+        private static IEnumerable<PropertyInfo> PropertiesOf(IReflect type) => type.GetProperties(_MemberFlags);
 
-        public virtual IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields)
-        {
-            return fields;
-        }
+        public virtual IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields) => fields;
 
-        public virtual IEnumerable<PropertyInfo> Filter(IEnumerable<PropertyInfo> properties)
-        {
-            return Enumerable.Empty<PropertyInfo>();
-        }
+        public virtual IEnumerable<PropertyInfo> Filter(IEnumerable<PropertyInfo> properties) => Enumerable.Empty<PropertyInfo>();
 
         #endregion
 
@@ -64,10 +52,7 @@ namespace Kingo.DynamicMethods
             return new MemberProvider(type);
         }
 
-        protected static bool HasAttribute(MemberInfo typeOrMember, Type attributeType)
-        {
-            return typeOrMember.GetCustomAttributes(attributeType).Any();
-        }        
+        protected static bool HasAttribute(MemberInfo typeOrMember, Type attributeType) => typeOrMember.GetCustomAttributes(attributeType).Any();
 
         #endregion
     }

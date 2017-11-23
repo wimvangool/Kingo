@@ -19,13 +19,9 @@ namespace Kingo.Messaging.Domain
         /// <paramref name="snapshot"/> is <c>null</c>.
         /// </exception>
         public AggregateData(TKey id, ISnapshot snapshot, IEnumerable<IEvent> events = null)
-        {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
+        {            
             Id = id;
-            Snapshot = snapshot;
+            Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
             Events = events?.ToArray() ?? Enumerable.Empty<IEvent>();
         }
 

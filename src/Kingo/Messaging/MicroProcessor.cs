@@ -30,13 +30,10 @@ namespace Kingo.Messaging
         protected internal MessageHandlerFactory MessageHandlerFactory =>
             _messageHandlerFactory.Value;
 
-        private MessageHandlerFactory BuildMessageHandlerFactory()
-        {                        
-            return CreateMessageHandlerFactory()           
-                .RegisterInstance<IMicroProcessor>(this)
-                .RegisterInstance(MicroProcessorContext.Current)
-                .RegisterMessageHandlers(CreateMessageHandlerTypeSet());            
-        }
+        private MessageHandlerFactory BuildMessageHandlerFactory() => CreateMessageHandlerFactory()           
+            .RegisterInstance<IMicroProcessor>(this)
+            .RegisterInstance(MicroProcessorContext.Current)
+            .RegisterMessageHandlers(CreateMessageHandlerTypeSet());
 
         /// <summary>
         /// When overridden, creates and returns a <see cref="MessageHandlerFactory" /> for this processor.

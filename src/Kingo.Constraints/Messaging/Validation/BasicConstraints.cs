@@ -18,10 +18,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraintBuilder<T, TValueOut> member, IConstraint<TValueOut> constraint)
-        {
-            return EnsureNotNull(member).Satisfies(constraint);
-        }
+        public static IMemberConstraintBuilder<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraintBuilder<T, TValueOut> member, IConstraint<TValueOut> constraint) =>
+            EnsureNotNull(member).Satisfies(constraint);
 
         /// <summary>
         /// Applies the constraint that is created by the specified <paramref name="constraintFactory"/>.
@@ -32,10 +30,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraintFactory"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraintBuilder<T, TValueOut> member, Func<T, IConstraint<TValueOut>> constraintFactory)
-        {
-            return EnsureNotNull(member).Satisfies(constraintFactory);
-        }
+        public static IMemberConstraintBuilder<T, TValueOut> Apply<T, TValueOut>(this IMemberConstraintBuilder<T, TValueOut> member, Func<T, IConstraint<TValueOut>> constraintFactory) =>
+            EnsureNotNull(member).Satisfies(constraintFactory);
 
         /// <summary>
         /// Applies the specified <paramref name="constraint"/>.
@@ -46,10 +42,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraintBuilder<T, TValueOut> member, IFilter<TValueOut, TOther> constraint)
-        {
-            return EnsureNotNull(member).Satisfies(constraint);
-        }
+        public static IMemberConstraintBuilder<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraintBuilder<T, TValueOut> member, IFilter<TValueOut, TOther> constraint) =>
+            EnsureNotNull(member).Satisfies(constraint);
 
         /// <summary>
         /// Applies the constraint that is created by the specified <paramref name="constraintFactory"/>.
@@ -60,10 +54,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentNullException">
         /// <paramref name="member"/> or <paramref name="constraintFactory"/> is <c>null</c>.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraintBuilder<T, TValueOut> member, Func<T, IFilter<TValueOut, TOther>> constraintFactory)
-        {
-            return EnsureNotNull(member).Satisfies(constraintFactory);
-        }
+        public static IMemberConstraintBuilder<T, TOther> Apply<T, TValueOut, TOther>(this IMemberConstraintBuilder<T, TValueOut> member, Func<T, IFilter<TValueOut, TOther>> constraintFactory) =>
+            EnsureNotNull(member).Satisfies(constraintFactory);
 
         private static TMember EnsureNotNull<TMember>(TMember member) where TMember : class
         {

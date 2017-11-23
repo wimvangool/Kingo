@@ -33,10 +33,7 @@ namespace Kingo.Messaging.Validation
                 return true;
             }
 
-            public int GetHashCode(Tuple<Type, Type[]> obj)
-            {
-                return GetHashCodeMethod.Invoke(obj.Item1);
-            }
+            public int GetHashCode(Tuple<Type, Type[]> obj) => GetHashCodeMethod.Invoke(obj.Item1);
         }
 
         private static readonly ConcurrentDictionary<Tuple<Type, Type[]>, PropertyInfo> _Indexers =
@@ -100,42 +97,27 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// Indices of the element to select.
         /// </summary>
-        public IReadOnlyList<object> IndexList
-        {
-            get { return _indexList; }
-        }                            
+        public IReadOnlyList<object> IndexList => _indexList;
 
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.CollectionConstraints_HasItem); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.CollectionConstraints_HasItem);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, object> WithName(Identifier name)
-        {
-            return new HasItemFilter<TValueIn>(this, name);
-        }
+        public override IFilterWithErrorMessage<TValueIn, object> WithName(Identifier name) => new HasItemFilter<TValueIn>(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValueIn, object> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new HasItemFilter<TValueIn>(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<TValueIn, object> WithErrorMessage(StringTemplate errorMessage) => new HasItemFilter<TValueIn>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new ConstraintInverter<TValueIn>(this, ErrorMessages.CollectionConstraints_HasNoItem)
-                .WithErrorMessage(errorMessage)
-                .WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValueIn> Invert(StringTemplate errorMessage, Identifier name = null) => new ConstraintInverter<TValueIn>(this, ErrorMessages.CollectionConstraints_HasNoItem)
+            .WithErrorMessage(errorMessage)
+            .WithName(name);
 
         #endregion
 

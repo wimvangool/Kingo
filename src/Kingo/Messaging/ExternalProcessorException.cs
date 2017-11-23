@@ -71,5 +71,15 @@ namespace Kingo.Messaging
         {
             get;
         }
+
+        /// <summary>
+        /// The ErrorCode that is associated with this Exception. This code typically corresponds with HttpStatusCodes,
+        /// which implies the returned value is always somewhere between <c>400</c> and <c>599</c>, depending on the
+        /// run-time type of the exception.
+        /// </summary>
+        public abstract int ErrorCode
+        {
+            get;            
+        }
     }
 }

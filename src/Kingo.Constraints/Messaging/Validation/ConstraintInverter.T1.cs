@@ -37,12 +37,8 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="constraint"/> is <c>null</c>.
         /// </exception>
         public ConstraintInverter(IConstraintWithErrorMessage<TValue> constraint, StringTemplate errorMessage = null, Identifier name = null)            
-        {
-            if (constraint == null)
-            {
-                throw new ArgumentNullException(nameof(constraint));
-            }
-            _constraint = constraint;
+        {            
+            _constraint = constraint ?? throw new ArgumentNullException(nameof(constraint));
             _errorMessage = errorMessage;
             _name = name;
         }
@@ -66,28 +62,16 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override Identifier NameIfNotSpecified
-        {
-            get { return _name ?? base.NameIfNotSpecified; }
-        }
+        protected override Identifier NameIfNotSpecified => _name ?? base.NameIfNotSpecified;
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return _errorMessage ?? base.ErrorMessageIfNotSpecified; }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => _errorMessage ?? base.ErrorMessageIfNotSpecified;
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new ConstraintInverter<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new ConstraintInverter<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new ConstraintInverter<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new ConstraintInverter<TValue>(this, errorMessage);
 
         #endregion
 
@@ -108,22 +92,16 @@ namespace Kingo.Messaging.Validation
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return _constraint
-                .WithErrorMessage(errorMessage ?? _constraint.ErrorMessage)
-                .WithName(name ?? _constraint.Name);
-        }
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) => _constraint
+            .WithErrorMessage(errorMessage ?? _constraint.ErrorMessage)
+            .WithName(name ?? _constraint.Name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return !_constraint.IsSatisfiedBy(value);
-        }
+        public override bool IsSatisfiedBy(TValue value) => !_constraint.IsSatisfiedBy(value);
 
         /// <inheritdoc />
         public override bool IsNotSatisfiedBy(TValue value, out IErrorMessageBuilder errorMessage)

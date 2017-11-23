@@ -9,12 +9,8 @@ namespace Kingo.Messaging
     public sealed class MessageInfo : ITypeAttributeProvider
     {        
         private MessageInfo(object message, MessageSources source)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-            Message = message;
+        {            
+            Message = message ?? throw new ArgumentNullException(nameof(message));
             Source = source;
             TypeAttributeProvider = new TypeAttributeProvider(message.GetType());
         }

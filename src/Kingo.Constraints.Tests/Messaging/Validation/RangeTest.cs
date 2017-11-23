@@ -219,9 +219,6 @@ namespace Kingo.Messaging.Validation
 
         #endregion
 
-        private static int RandomValue()
-        {
-            return Clock.Current.UtcDateAndTime().Millisecond;
-        }
+        private static int RandomValue() => Clock.Current.UtcDateAndTime().Millisecond;
     }
 }

@@ -19,7 +19,7 @@ namespace Kingo.Messaging.Validation
 
             public int Value
             {
-                get { return _value; }
+                get => _value;
                 set { SetValue(ref _value, value, () => Value); }
             }
 
@@ -312,9 +312,6 @@ namespace Kingo.Messaging.Validation
 
         #endregion
 
-        private static int RandomValue()
-        {
-            return Clock.Current.UtcDateAndTime().Millisecond;
-        }
+        private static int RandomValue() => Clock.Current.UtcDateAndTime().Millisecond;
     }
 }

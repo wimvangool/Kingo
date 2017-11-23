@@ -15,14 +15,8 @@ namespace Kingo.Messaging.Validation
             _rightAppender = rightAppender;
         }
 
-        internal override IEnumerable<string> MethodCalls()
-        {
-            return _leftAppender.MethodCalls().Concat(_rightAppender.MethodCalls());
-        }
+        internal override IEnumerable<string> MethodCalls() => _leftAppender.MethodCalls().Concat(_rightAppender.MethodCalls());
 
-        public override MethodCallExpression Decorate(MethodCallExpression expression)
-        {
-            return _rightAppender.Decorate(_leftAppender.Decorate(expression));
-        }        
+        public override MethodCallExpression Decorate(MethodCallExpression expression) => _rightAppender.Decorate(_leftAppender.Decorate(expression));
     }
 }

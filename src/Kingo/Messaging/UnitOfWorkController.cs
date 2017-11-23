@@ -41,10 +41,7 @@ namespace Kingo.Messaging
             public bool RequiresFlush() =>
                 false;
 
-            public Task FlushAsync()
-            {
-                throw NewOperationNotSupportedException(nameof(FlushAsync));
-            }
+            public Task FlushAsync() => throw NewOperationNotSupportedException(nameof(FlushAsync));
 
             private static Exception NewOperationNotSupportedException(string methodName)
             {
@@ -66,7 +63,7 @@ namespace Kingo.Messaging
                     }
                     return null;
                 }
-                set { throw NewCacheNotSupportedException(); }
+                set => throw NewCacheNotSupportedException();
             }
 
             public void Remove(string key)

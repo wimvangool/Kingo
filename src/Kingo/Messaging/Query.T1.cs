@@ -67,10 +67,7 @@ namespace Kingo.Messaging
                 _query = query;
             }
 
-            public Task<T> ExecuteAsync(IMicroProcessorContext context)
-            {
-                return _query.Invoke(context);
-            }
+            public Task<T> ExecuteAsync(IMicroProcessorContext context) => _query.Invoke(context);
         }
 
         /// <summary>
@@ -101,10 +98,7 @@ namespace Kingo.Messaging
         /// <c>null</c> if <paramref name="query"/> is <c>null</c>; otherwise, a <see cref="IQuery{T}"/> instance
         /// that wraps the specified <paramref name="query"/>.
         /// </returns>
-        public static IQuery<TMessageOut> FromDelegate(Func<IMicroProcessorContext, Task<TMessageOut>> query)
-        {
-            return query == null ? null : new QueryDelegate<TMessageOut>(query);
-        }
+        public static IQuery<TMessageOut> FromDelegate(Func<IMicroProcessorContext, Task<TMessageOut>> query) => query == null ? null : new QueryDelegate<TMessageOut>(query);
 
         #endregion
     }

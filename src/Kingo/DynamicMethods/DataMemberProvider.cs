@@ -13,20 +13,11 @@ namespace Kingo.DynamicMethods
         private DataMemberProvider(Type type)
             : base(type) { }
 
-        public override IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields)
-        {
-            return fields.Where(IsDataMember);
-        }
+        public override IEnumerable<FieldInfo> Filter(IEnumerable<FieldInfo> fields) => fields.Where(IsDataMember);
 
-        public override IEnumerable<PropertyInfo> Filter(IEnumerable<PropertyInfo> properties)
-        {
-            return properties.Where(IsDataMember);
-        }
+        public override IEnumerable<PropertyInfo> Filter(IEnumerable<PropertyInfo> properties) => properties.Where(IsDataMember);
 
-        private static bool IsDataMember(MemberInfo member)
-        {
-            return HasAttribute(member, typeof(DataMemberAttribute));
-        }
+        private static bool IsDataMember(MemberInfo member) => HasAttribute(member, typeof(DataMemberAttribute));
 
         #endregion
 

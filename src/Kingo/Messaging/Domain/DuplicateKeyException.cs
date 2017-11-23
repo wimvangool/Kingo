@@ -19,12 +19,8 @@ namespace Kingo.Messaging.Domain
         /// <paramref name="aggregateId"/> is <c>null</c>.
         /// </exception>
         public DuplicateKeyException(object aggregateId)
-        {
-            if (ReferenceEquals(aggregateId, null))
-            {
-                throw new ArgumentNullException(nameof(aggregateId));
-            }
-            AggregateId = aggregateId;
+        {           
+            AggregateId = aggregateId ?? throw new ArgumentNullException(nameof(aggregateId));
         }
 
         /// <summary>
@@ -37,12 +33,8 @@ namespace Kingo.Messaging.Domain
         /// </exception>
         public DuplicateKeyException(object aggregateId, string message) :
             base(message)
-        {
-            if (ReferenceEquals(aggregateId, null))
-            {
-                throw new ArgumentNullException(nameof(aggregateId));
-            }
-            AggregateId = aggregateId;
+        {            
+            AggregateId = aggregateId ?? throw new ArgumentNullException(nameof(aggregateId));
         }
 
         /// <summary>
@@ -56,12 +48,8 @@ namespace Kingo.Messaging.Domain
         /// </exception>
         public DuplicateKeyException(object aggregateId, string message, Exception innerException) :
             base(message, innerException)
-        {
-            if (ReferenceEquals(aggregateId, null))
-            {
-                throw new ArgumentNullException(nameof(aggregateId));
-            }
-            AggregateId = aggregateId;
+        {            
+            AggregateId = aggregateId ?? throw new ArgumentNullException(nameof(aggregateId));
         }
 
         /// <summary>

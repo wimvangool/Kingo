@@ -32,10 +32,7 @@ namespace Kingo.Messaging.Validation
             /// <summary>
             /// Returns the current length of the identifier.
             /// </summary>
-            public int Length
-            {
-                get { return _builder.Length; }
-            }
+            public int Length => _builder.Length;
 
             /// <summary>
             /// Attempts to append the specified <paramref name="character"/> to the identifier.
@@ -68,20 +65,14 @@ namespace Kingo.Messaging.Validation
                 return new Identifier(_builder.ToString());
             }
 
-            private static Exception NewEmptyIdentifierException()
-            {
-                return new InvalidOperationException(ExceptionMessages.Identifier_EmptyIdentifier);
-            }
+            private static Exception NewEmptyIdentifierException() => new InvalidOperationException(ExceptionMessages.Identifier_EmptyIdentifier);
         }
 
         /// <summary>
         /// Creates and returns a new <see cref="Builder"/> to build a new <see cref="Identifier" /> from a set of characters.
         /// </summary>
         /// <returns>A new <see cref="Builder"/>.</returns>
-        public static Builder NewBuilder()
-        {
-            return new Builder();
-        }
+        public static Builder NewBuilder() => new Builder();
 
         /// <summary>
         /// Creates and returns a new <see cref="Builder"/> to build a new <see cref="Identifier" /> from a set of characters.
@@ -91,10 +82,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="capacity"/> is a negative number.
         /// </exception>
-        public static Builder NewBuilder(int capacity)
-        {
-            return new Builder(capacity);
-        }
+        public static Builder NewBuilder(int capacity) => new Builder(capacity);
 
         #endregion
 
@@ -106,18 +94,12 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public override string ToString()
-        {
-            return _value;
-        }
+        public override string ToString() => _value;
 
         #region [====== Equals & GetHashCode ======]
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Identifier);
-        }
+        public override bool Equals(object obj) => Equals(obj as Identifier);
 
         /// <inheritdoc />
         public bool Equals(Identifier other)
@@ -134,10 +116,7 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return _value.GetHashCode();
-        }
+        public override int GetHashCode() => _value.GetHashCode();
 
         #endregion
 
@@ -155,10 +134,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="value"/> is not a valid identifier.
         /// </exception>
-        public static Identifier ParseOrNull(string value)
-        {
-            return value == null ? null : Parse(value);
-        }
+        public static Identifier ParseOrNull(string value) =>
+            value == null ? null : Parse(value);
 
         /// <summary>
         /// Parses the specified <paramref name="value"/>.
@@ -226,21 +203,17 @@ namespace Kingo.Messaging.Validation
             return true;
         }
 
-        private static bool IsValidCharacter(char character, int characterIndex)
-        {
-            return IsValidCharacter(character) || (char.IsDigit(character) && characterIndex > 0);
-        }
+        private static bool IsValidCharacter(char character, int characterIndex) =>
+            IsValidCharacter(character) || char.IsDigit(character) && characterIndex > 0;
 
-        private static bool IsValidCharacter(char character)
-        {
-            return char.IsLetter(character) || character == '_';
-        }
+        private static bool IsValidCharacter(char character) =>
+            char.IsLetter(character) || character == '_';
 
         private static Exception NewInvalidIdentifierException(string value)
         {
             var messageFormat = ExceptionMessages.Identifier_InvalidIdentifier;
             var message = string.Format(messageFormat, value);
-            return new ArgumentException(message, "value");
+            return new ArgumentException(message, nameof(value));
         }
 
         #endregion
@@ -284,10 +257,8 @@ namespace Kingo.Messaging.Validation
         /// <returns>
         /// The string-representation of the identifier, or <c>null</c> if <paramref name="value"/> is <c>null</c>.
         /// </returns>
-        public static implicit operator string(Identifier value)
-        {
-            return value == null ? null : value._value;
-        }
+        public static implicit operator string(Identifier value) =>
+            value == null ? null : value._value;
 
         #endregion
     }

@@ -66,16 +66,10 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public bool Equals(ErrorInheritanceLevel other)
-        {
-            return _value.Equals(other._value);
-        }
+        public bool Equals(ErrorInheritanceLevel other) => _value.Equals(other._value);
 
         /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return _value;
-        }
+        public override int GetHashCode() => _value;
 
         /// <summary>
         /// Compares this instance to a specified object and returns an indication of their relative values.
@@ -114,10 +108,7 @@ namespace Kingo.Messaging.Validation
         /// <returns>
         /// A signed number indicating the relative values of this instance and <paramref name="other" />.
         /// </returns>
-        public int CompareTo(ErrorInheritanceLevel other)
-        {
-            return _value.CompareTo(other._value);
-        }
+        public int CompareTo(ErrorInheritanceLevel other) => _value.CompareTo(other._value);
 
         private static Exception NewIncomparableTypeException(object obj)
         {            
@@ -134,16 +125,10 @@ namespace Kingo.Messaging.Validation
         /// Converts the error level back to an integer.
         /// </summary>
         /// <returns>The integer value of this error level.</returns>
-        public int ToInt32()
-        {
-            return _value; ;
-        }
+        public int ToInt32() => _value;
 
         /// <inheritdoc />
-        public override string ToString()
-        {
-            return _value.ToString();
-        }        
+        public override string ToString() => _value.ToString();
 
         #endregion
 
@@ -155,10 +140,7 @@ namespace Kingo.Messaging.Validation
         /// <param name="left">The first instance to compare.</param>
         /// <param name="right">The second instance to compare</param>
         /// <returns><c>true</c> if both instances have the same value; otherwise <c>false</c>.</returns>
-        public static bool operator ==(ErrorInheritanceLevel left, ErrorInheritanceLevel right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(ErrorInheritanceLevel left, ErrorInheritanceLevel right) => left.Equals(right);
 
         /// <summary>
         /// Determines whether two specified <see cref="ErrorInheritanceLevel" />-instances do not have the same value.
@@ -166,10 +148,7 @@ namespace Kingo.Messaging.Validation
         /// <param name="left">The first instance to compare.</param>
         /// <param name="right">The second instance to compare</param>
         /// <returns><c>true</c> if both instances do not have the same value; otherwise <c>false</c>.</returns>
-        public static bool operator !=(ErrorInheritanceLevel left, ErrorInheritanceLevel right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(ErrorInheritanceLevel left, ErrorInheritanceLevel right) => !left.Equals(right);
 
         /// <summary>Determines whether one value is smaller than another.</summary>
         /// <param name="left">The first instance to compare.</param>
@@ -177,19 +156,13 @@ namespace Kingo.Messaging.Validation
         /// <returns>
         /// <c>true</c> if the left operand is smaller than the right operand; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator <(ErrorInheritanceLevel left, ErrorInheritanceLevel right)
-        {
-            return left.CompareTo(right) < 0;
-        }
+        public static bool operator <(ErrorInheritanceLevel left, ErrorInheritanceLevel right) => left.CompareTo(right) < 0;
 
         /// <summary>Determines whether one value is greater than another.</summary>
         /// <param name="left">The first instance to compare.</param>
         /// <param name="right">The second instance to compare.</param>
         /// <returns><c>true</c> if the left operand is greater than the right operand; otherwise <c>false</c>.</returns>
-        public static bool operator >(ErrorInheritanceLevel left, ErrorInheritanceLevel right)
-        {
-            return left.CompareTo(right) > 0;
-        }
+        public static bool operator >(ErrorInheritanceLevel left, ErrorInheritanceLevel right) => left.CompareTo(right) > 0;
 
         /// <summary>Determines whether one value is smaller than or equal to another.</summary>
         /// <param name="left">The first instance to compare.</param>
@@ -197,10 +170,7 @@ namespace Kingo.Messaging.Validation
         /// <returns>
         /// <c>true</c> if the left operand is smaller than or equal to the right operand; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator <=(ErrorInheritanceLevel left, ErrorInheritanceLevel right)
-        {
-            return left.CompareTo(right) <= 0;
-        }
+        public static bool operator <=(ErrorInheritanceLevel left, ErrorInheritanceLevel right) => left.CompareTo(right) <= 0;
 
         /// <summary>Determines whether one value is greater than or equal to another.</summary>
         /// <param name="left">The first instance to compare.</param>
@@ -208,10 +178,7 @@ namespace Kingo.Messaging.Validation
         /// <returns>
         /// <c>true</c> if the left operand is greater than or equal to the right operand; otherwise <c>false</c>.
         /// </returns>
-        public static bool operator >=(ErrorInheritanceLevel left, ErrorInheritanceLevel right)
-        {
-            return left.CompareTo(right) >= 0;
-        }
+        public static bool operator >=(ErrorInheritanceLevel left, ErrorInheritanceLevel right) => left.CompareTo(right) >= 0;
 
         #endregion        
     }

@@ -27,9 +27,6 @@ namespace Kingo.Messaging.Validation
             return _comparer.Equals(_value, other);
         }
 
-        public override string ToString()
-        {
-            return _value.ToString();
-        }
+        public override string ToString() => _value.ToString();
     }
 }

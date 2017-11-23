@@ -15,14 +15,11 @@ namespace Kingo.Messaging.Domain
             _value = value;
         }
 
-        protected override IEvent UpdateToLatestVersion()
+        protected override IEvent UpdateToLatestVersion() => new ValueChangedEvent
         {
-            return new ValueChangedEvent()
-            {
-                Id = _id,
-                Version = _version,
-                NewValue = _value
-            };
-        }
+            Id = _id,
+            Version = _version,
+            NewValue = _value
+        };
     }
 }

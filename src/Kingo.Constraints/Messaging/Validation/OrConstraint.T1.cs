@@ -46,15 +46,9 @@ namespace Kingo.Messaging.Validation
 
         #region [====== Name & ErrorMessage ======]
 
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new OrConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) => new OrConstraint<TValue>(this, name);
 
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new OrConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) => new OrConstraint<TValue>(this, errorMessage);
 
         #endregion
 
@@ -73,10 +67,7 @@ namespace Kingo.Messaging.Validation
 
         #region [====== And, Or & Invert ======]
 
-        public override IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint)
-        {            
-            return new OrConstraint<TValue>(this, constraint);
-        }
+        public override IConstraintWithErrorMessage<TValue> Or(IConstraint<TValue> constraint) => new OrConstraint<TValue>(this, constraint);
 
         #endregion
 

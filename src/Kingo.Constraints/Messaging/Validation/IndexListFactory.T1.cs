@@ -22,15 +22,9 @@ namespace Kingo.Messaging.Validation
         }
 
         /// <inheritdoc />
-        public int Count
-        {
-            get { return _indexFactoryList.Count; }
-        }
+        public int Count => _indexFactoryList.Count;
 
-        Delegate IReadOnlyList<Delegate>.this[int index]
-        {
-            get { return _indexFactoryList[index]; }
-        }
+        Delegate IReadOnlyList<Delegate>.this[int index] => _indexFactoryList[index];
 
         /// <summary>
         /// Adds a new index-delegate to this list.
@@ -67,14 +61,8 @@ namespace Kingo.Messaging.Validation
         }       
 
         /// <inheritdoc />
-        public IEnumerator<Delegate> GetEnumerator()
-        {
-            return _indexFactoryList.GetEnumerator();
-        }
+        public IEnumerator<Delegate> GetEnumerator() => _indexFactoryList.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

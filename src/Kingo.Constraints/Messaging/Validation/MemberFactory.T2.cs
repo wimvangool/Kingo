@@ -31,10 +31,7 @@ namespace Kingo.Messaging.Validation
             _memberFactory = memberFactory;
         }
         
-        internal Member<TValue> CreateMember(T instance)
-        {
-            return _memberFactory.Invoke(instance);
-        }                
+        internal Member<TValue> CreateMember(T instance) => _memberFactory.Invoke(instance);
 
         internal MemberFactory<T, TValueOut> CreateChildMember<TValueOut>(Func<T, IMemberConstraint<TValue, TValueOut>> memberConstraintFactory)
         {

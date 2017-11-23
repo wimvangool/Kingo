@@ -11,34 +11,22 @@ namespace Kingo.Messaging.Validation
         private readonly Expression<Func<T, TValueOut, TOther>> _fieldOrProperty;
 
         internal AndExpressionDecoder(IMemberConstraintBuilder<T, TValueOut> builder, Expression<Func<T, TValueOut, TOther>> fieldOrProperty)
-        {
-            if (fieldOrProperty == null)
-            {
-                throw new ArgumentNullException(nameof(fieldOrProperty));
-            }
+        {            
             _builder = builder;
-            _fieldOrProperty = fieldOrProperty;
+            _fieldOrProperty = fieldOrProperty ?? throw new ArgumentNullException(nameof(fieldOrProperty));
         }
 
-        public override Guid Key
-        {
-            get { return _builder.Key; }
-        }
+        public override Guid Key =>
+            _builder.Key;
 
-        protected internal override LambdaExpression FieldOrPropertyExpression
-        {
-            get { return _fieldOrProperty; }
-        }
+        protected internal override LambdaExpression FieldOrPropertyExpression =>
+            _fieldOrProperty;
 
-        protected internal override ParameterExpression PrimaryParameter
-        {
-            get { return FieldOrPropertyExpression.Parameters[1]; }
-        }
+        protected internal override ParameterExpression PrimaryParameter =>
+            FieldOrPropertyExpression.Parameters[1];
 
-        protected override LambdaExpression CreateLeftExpression(Expression expressionBody, ParameterExpression primaryParameter)
-        {
-            return Expression.Lambda(expressionBody, InstanceParameter, primaryParameter);
-        }
+        protected override LambdaExpression CreateLeftExpression(Expression expressionBody, ParameterExpression primaryParameter) =>
+            Expression.Lambda(expressionBody, InstanceParameter, primaryParameter);
 
         #region [====== And ======]
 

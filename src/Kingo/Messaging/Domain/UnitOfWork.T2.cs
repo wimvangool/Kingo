@@ -292,7 +292,7 @@ namespace Kingo.Messaging.Domain
             {
                 _unitOfWork = unitOfWork;
                 _aggregate = aggregate;
-                _events = new List<IEvent>() { @event };
+                _events = new List<IEvent> { @event };
             }
 
             protected override UnitOfWork<TKey, TAggregate> UnitOfWork =>
@@ -403,15 +403,9 @@ namespace Kingo.Messaging.Domain
             protected override AggregateState CreateCommittedState(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory) =>
                 new NullState(unitOfWork, _aggregate.Id);
 
-            public override Task<TAggregate> GetByIdAsync()
-            {
-                throw NewAggregateRemovedException(AggregateId);
-            }
+            public override Task<TAggregate> GetByIdAsync() => throw NewAggregateRemovedException(AggregateId);
 
-            public override Task<bool> AddAsync(TAggregate aggregate)
-            {
-                throw NewDuplicateKeyException(AggregateId);
-            }
+            public override Task<bool> AddAsync(TAggregate aggregate) => throw NewDuplicateKeyException(AggregateId);
 
             public override Task<bool> RemoveByIdAsync() =>
                 AsyncMethod.Value(false);

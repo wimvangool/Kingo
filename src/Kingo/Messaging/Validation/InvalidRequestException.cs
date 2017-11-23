@@ -20,12 +20,8 @@ namespace Kingo.Messaging.Validation
         /// </exception> 
         public InvalidRequestException(ErrorInfo errors, string message) :
             base(message)
-        {
-            if (errors == null)
-            {
-                throw new ArgumentNullException(nameof(errors));
-            }
-            Errors = errors;
+        {            
+            Errors = errors ?? throw new ArgumentNullException(nameof(errors));
         }
 
         /// <summary>
@@ -39,12 +35,8 @@ namespace Kingo.Messaging.Validation
         /// </exception> 
         public InvalidRequestException(ErrorInfo errors, string message, Exception innerException) :
             base(message, innerException)
-        {
-            if (errors == null)
-            {
-                throw new ArgumentNullException(nameof(errors));
-            }
-            Errors = errors;
+        {            
+            Errors = errors ?? throw new ArgumentNullException(nameof(errors));
         }               
 
         /// <summary>

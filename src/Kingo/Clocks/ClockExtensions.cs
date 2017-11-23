@@ -16,9 +16,6 @@ namespace Kingo.Clocks
         /// <exception cref="ArgumentNullException">
         /// <paramref name="clock"/> is <c>null</c>.
         /// </exception>
-        public static IClock Shift(this IClock clock, TimeSpan offset)
-        {
-            return ShiftedClock.Shift(clock, offset);
-        }
+        public static IClock Shift(this IClock clock, TimeSpan offset) => ShiftedClock.Shift(clock, offset);
     }
 }

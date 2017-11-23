@@ -38,9 +38,6 @@ namespace Kingo.Threading
 
         internal abstract bool RestoreOldValue();
 
-        private static Exception NewIncorrectNestingOfScopesException()
-        {
-            return new InvalidOperationException(ExceptionMessages.Scope_IncorrectNesting);
-        }
+        private static Exception NewIncorrectNestingOfScopesException() => new InvalidOperationException(ExceptionMessages.Scope_IncorrectNesting);
     }
 }

@@ -20,12 +20,8 @@ namespace Kingo.Clocks
         private bool _isDisposed;               
         
         private HighResolutionClock(IClock referenceClock, TimeSpan synchronizationInterval)
-        {
-            if (referenceClock == null)
-            {
-                throw new ArgumentNullException(nameof(referenceClock));
-            }
-            _referenceClock = referenceClock;
+        {           
+            _referenceClock = referenceClock ?? throw new ArgumentNullException(nameof(referenceClock));
 
             if (synchronizationInterval.Equals(TimeSpan.Zero))
             {
@@ -130,10 +126,7 @@ namespace Kingo.Clocks
             }
         }
 
-        private Exception NewObjectDisposedException()
-        {
-            return new ObjectDisposedException(GetType().Name);
-        }
+        private Exception NewObjectDisposedException() => new ObjectDisposedException(GetType().Name);
 
         #endregion
 
@@ -167,10 +160,8 @@ namespace Kingo.Clocks
         /// Creates and returns a new <see cref="HighResolutionClock" /> that is counting from the current date and time.
         /// </summary>        
         /// <returns>A new <see cref="HighResolutionClock" />.</returns>
-        public static HighResolutionClock StartNew()
-        {
-            return StartNew(Default);
-        }
+        public static HighResolutionClock StartNew() =>
+            StartNew(Default);
 
         /// <summary>
         /// Creates and returns a new <see cref="HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.
@@ -182,10 +173,8 @@ namespace Kingo.Clocks
         /// <exception cref="ArgumentNullException">
         /// <paramref name="referenceClock "/> is <c>null</c>.
         /// </exception>         
-        public static HighResolutionClock StartNew(IClock referenceClock)
-        {
-            return StartNew(referenceClock, DefaultSynchronizationInterval);
-        }
+        public static HighResolutionClock StartNew(IClock referenceClock) =>
+            StartNew(referenceClock, DefaultSynchronizationInterval);
 
         /// <summary>
         /// Creates and returns a new <see cref="HighResolutionClock" /> based on the specified <paramref name="referenceClock"/>.

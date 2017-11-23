@@ -12,51 +12,39 @@ namespace Kingo.Clocks
         #region [====== Local Time ======]
 
         /// <inheritdoc />
-        public TimeSpan LocalTime()
-        {
-            return LocalDateAndTime().TimeOfDay;
-        }
+        public TimeSpan LocalTime() =>
+            LocalDateAndTime().TimeOfDay;
 
         /// <inheritdoc />
-        public DateTimeOffset LocalDate()
-        {
-            return StripTimeOfDay(LocalDateAndTime());
-        }
+        public DateTimeOffset LocalDate() =>
+            StripTimeOfDay(LocalDateAndTime());
 
         /// <inheritdoc />
-        public virtual DateTimeOffset LocalDateAndTime()
-        {
-            return UtcDateAndTime().ToLocalTime();
-        }        
+        public virtual DateTimeOffset LocalDateAndTime() =>
+            UtcDateAndTime().ToLocalTime();
 
         #endregion
 
         #region [====== UTC Time ======]
 
         /// <inheritdoc />
-        public TimeSpan UtcTime()
-        {
-            return UtcDateAndTime().TimeOfDay;
-        }
+        public TimeSpan UtcTime() =>
+            UtcDateAndTime().TimeOfDay;
 
         /// <inheritdoc />
-        public DateTimeOffset UtcDate()
-        {
-            return StripTimeOfDay(UtcDateAndTime());
-        }
+        public DateTimeOffset UtcDate() =>
+            StripTimeOfDay(UtcDateAndTime());
 
         /// <inheritdoc />
         public abstract DateTimeOffset UtcDateAndTime();        
 
         #endregion    
         
-        private static DateTimeOffset StripTimeOfDay(DateTimeOffset value)
-        {
-            return new DateTimeOffset(value.Year, value.Month, value.Day, 0, 0, 0, value.Offset);
-        }
+        private static DateTimeOffset StripTimeOfDay(DateTimeOffset value) =>
+            new DateTimeOffset(value.Year, value.Month, value.Day, 0, 0, 0, value.Offset);
 
         #region [====== Current ======]
-        
+
         /// <summary>
         /// Returns the default clock of this system.
         /// </summary>
@@ -67,10 +55,8 @@ namespace Kingo.Clocks
         /// <summary>
         /// Returns the clock associated to the current thread.
         /// </summary>
-        public static IClock Current
-        {
-            get { return _Context.Current; }
-        }
+        public static IClock Current =>
+            _Context.Current;
 
         /// <summary>
         /// Sets the current clock that is accessible by the current thread through <see cref="Current" />
@@ -81,10 +67,8 @@ namespace Kingo.Clocks
         /// <exception cref="ArgumentNullException">
         /// <paramref name="utcDateAndTimeFactory"/> is <c>null</c>.
         /// </exception>                       
-        public static IDisposable OverrideThreadLocal(Func<DateTimeOffset> utcDateAndTimeFactory)
-        {            
-            return _Context.OverrideThreadLocal(new DelegateClock(utcDateAndTimeFactory));
-        }
+        public static IDisposable OverrideThreadLocal(Func<DateTimeOffset> utcDateAndTimeFactory) =>
+            _Context.OverrideThreadLocal(new DelegateClock(utcDateAndTimeFactory));
 
         /// <summary>
         /// Sets the current clock that is accessible by the current thread through <see cref="Current" />
@@ -116,10 +100,8 @@ namespace Kingo.Clocks
         /// <exception cref="InvalidOperationException">
         /// The call is made inside a thread local scope.
         /// </exception>
-        public static IDisposable OverrideAsyncLocal(Func<DateTimeOffset> utcDateAndTimeFactory)
-        {
-            return _Context.OverrideAsyncLocal(new DelegateClock(utcDateAndTimeFactory));
-        }
+        public static IDisposable OverrideAsyncLocal(Func<DateTimeOffset> utcDateAndTimeFactory) =>
+            _Context.OverrideAsyncLocal(new DelegateClock(utcDateAndTimeFactory));
 
         /// <summary>
         /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
@@ -154,10 +136,8 @@ namespace Kingo.Clocks
         /// <exception cref="InvalidOperationException">
         /// The call is made inside an async local or thread local scope.
         /// </exception>      
-        public static IDisposable Override(Func<DateTimeOffset> utcDateAndTimeFactory)
-        {
-            return _Context.Override(new DelegateClock(utcDateAndTimeFactory));
-        }   
+        public static IDisposable Override(Func<DateTimeOffset> utcDateAndTimeFactory) =>
+            _Context.Override(new DelegateClock(utcDateAndTimeFactory));
 
         /// <summary>
         /// Sets the current value that is accessible by all threads

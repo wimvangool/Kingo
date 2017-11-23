@@ -31,25 +31,13 @@ namespace Kingo.Messaging.Validation
 
         #region [====== ReadOnlyList ======]
 
-        public Tuple<Type, object> this[int index]
-        {
-            get { return Indices[index]; }
-        }
+        public Tuple<Type, object> this[int index] => Indices[index];
 
-        public int Count
-        {
-            get { return Indices.Length; }
-        }
+        public int Count => Indices.Length;
 
-        public IEnumerator<Tuple<Type, object>> GetEnumerator()
-        {
-            return Indices.OfType<Tuple<Type, object>>().GetEnumerator();
-        }
+        public IEnumerator<Tuple<Type, object>> GetEnumerator() => Indices.OfType<Tuple<Type, object>>().GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return Indices.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => Indices.GetEnumerator();
 
         #endregion
     }

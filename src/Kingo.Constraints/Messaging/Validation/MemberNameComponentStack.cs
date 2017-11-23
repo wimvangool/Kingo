@@ -5,10 +5,7 @@ namespace Kingo.Messaging.Validation
 {
     internal abstract class MemberNameComponentStack
     {
-        protected string InstanceName
-        {
-            get { return ToInstanceName(InstanceType); }
-        }
+        protected string InstanceName => ToInstanceName(InstanceType);
 
         internal abstract Type InstanceType
         {
@@ -20,22 +17,13 @@ namespace Kingo.Messaging.Validation
             get;
         }
 
-        internal virtual MemberNameComponentStack Push(Identifier identifier)
-        {
-            return new IdentifierComponent(InstanceType, identifier, this);
-        }
+        internal virtual MemberNameComponentStack Push(Identifier identifier) => new IdentifierComponent(InstanceType, identifier, this);
 
-        internal virtual MemberNameComponentStack Push(IndexList indexList)
-        {
-            return new IndexListComponent(InstanceType, indexList, this);
-        }        
+        internal virtual MemberNameComponentStack Push(IndexList indexList) => new IndexListComponent(InstanceType, indexList, this);
 
         internal abstract bool Pop(out MemberNameComponentStack memberName);        
 
-        public override string ToString()
-        {
-            return ToString(false);
-        }
+        public override string ToString() => ToString(false);
 
         public string ToString(bool displayName)
         {

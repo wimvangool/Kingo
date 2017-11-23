@@ -17,30 +17,18 @@ namespace Kingo.DynamicMethods
             _representation = implementation.Body.ToString();
         }
 
-        internal override int Execute(object instance)
-        {
-            return Execute((TValue) instance);
-        }
+        internal override int Execute(object instance) => Execute((TValue) instance);
 
-        private int Execute(TValue instance)
-        {
-            return _implementation.Invoke(instance);
-        }
+        private int Execute(TValue instance) => _implementation.Invoke(instance);
 
-        public override string ToString()
-        {
-            return _representation;
-        }
+        public override string ToString() => _representation;
 
         #endregion
 
         #region [====== Static Members ======]
 
         [UsedImplicitly]
-        public static GetHashCodeMethod<TValue> FromExpression(Expression expression, ParameterExpression instance)
-        {
-            return new GetHashCodeMethod<TValue>(Expression.Lambda<Func<TValue, int>>(expression, instance));
-        }
+        public static GetHashCodeMethod<TValue> FromExpression(Expression expression, ParameterExpression instance) => new GetHashCodeMethod<TValue>(Expression.Lambda<Func<TValue, int>>(expression, instance));
 
         #endregion
     }

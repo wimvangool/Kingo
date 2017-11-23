@@ -24,10 +24,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> HasValue<T, TValue>(this IMemberConstraintBuilder<T, TValue?> member, string errorMessage = null) where TValue : struct
-        {
-            return member.Apply(new HasValueFilter<TValue>().WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, TValue> HasValue<T, TValue>(this IMemberConstraintBuilder<T, TValue?> member, string errorMessage = null) where TValue : struct => member.Apply(new HasValueFilter<TValue>().WithErrorMessage(errorMessage));
 
         #endregion
     }
@@ -53,42 +50,27 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.NullableConstraints_HasValue); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.NullableConstraints_HasValue);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValue?, TValue> WithName(Identifier name)
-        {
-            return new HasValueFilter<TValue>(this, name);
-        }
+        public override IFilterWithErrorMessage<TValue?, TValue> WithName(Identifier name) => new HasValueFilter<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<TValue?, TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new HasValueFilter<TValue>(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<TValue?, TValue> WithErrorMessage(StringTemplate errorMessage) => new HasValueFilter<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue?> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new IsNullConstraint<TValue?>().WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValue?> Invert(StringTemplate errorMessage, Identifier name = null) => new IsNullConstraint<TValue?>().WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue? value)
-        {
-            return value.HasValue;
-        }
+        public override bool IsSatisfiedBy(TValue? value) => value.HasValue;
 
         /// <inheritdoc />
         public override bool IsSatisfiedBy(TValue? valueIn, out TValue valueOut)

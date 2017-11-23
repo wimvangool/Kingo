@@ -21,15 +21,9 @@ namespace Kingo.Messaging.Validation
             _methodCallDecorator = new NullAppender<T, TValue>();
         }
 
-        protected override LambdaExpression FieldOrPropertyExpression
-        {
-            get { return _interpreter.FieldOrPropertyExpression; }
-        }        
+        protected override LambdaExpression FieldOrPropertyExpression => _interpreter.FieldOrPropertyExpression;
 
-        private bool IsBuildingLeftExpression
-        {
-            get { return _leftExpression == null; }
-        }
+        private bool IsBuildingLeftExpression => _leftExpression == null;
 
         internal RightExpressionBuilder<T, TValue> BuildLeftExpression()
         {
@@ -147,10 +141,7 @@ namespace Kingo.Messaging.Validation
             return base.VisitParameter(node);
         }        
 
-        private bool MatchesPrimaryParameter(Expression childExpression)
-        {
-            return ReferenceEquals(_interpreter.PrimaryParameter, childExpression);
-        }
+        private bool MatchesPrimaryParameter(Expression childExpression) => ReferenceEquals(_interpreter.PrimaryParameter, childExpression);
 
         private static bool IsIndexerExpression(MethodCallExpression expression)
         {
@@ -174,20 +165,12 @@ namespace Kingo.Messaging.Validation
             return false;
         }
 
-        private static bool IsMultiDimensionalArrayIndexer(MethodCallExpression expression)
-        {
-            return
-                expression.Method.Name == "Get" &&
-                expression.Arguments.Count > 1;
-        }
+        private static bool IsMultiDimensionalArrayIndexer(MethodCallExpression expression) => expression.Method.Name == "Get" &&
+            expression.Arguments.Count > 1;
 
-        private static bool IsIndexerCandidate(MethodCallExpression expression)
-        {
-            return                
-                expression.Method.MemberType == MemberTypes.Method &&
-                expression.Arguments.Count > 0 &&
-                expression.Method.Name.StartsWith("get_");
-        }
+        private static bool IsIndexerCandidate(MethodCallExpression expression) => expression.Method.MemberType == MemberTypes.Method &&
+            expression.Arguments.Count > 0 &&
+            expression.Method.Name.StartsWith("get_");
 
         private static bool TryGetIndexer(Expression instance, IEnumerable<Expression> arguments, out PropertyInfo indexer)
         {
@@ -197,14 +180,8 @@ namespace Kingo.Messaging.Validation
             return CollectionConstraints.TryGetIndexer(instanceType, argumentTypes, out indexer);
         }
 
-        private static ParameterExpression CreateValueParameter(Type parameterType)
-        {
-            return Expression.Parameter(parameterType, CreateValueParameterName());
-        }
+        private static ParameterExpression CreateValueParameter(Type parameterType) => Expression.Parameter(parameterType, CreateValueParameterName());
 
-        private static string CreateValueParameterName()
-        {
-            return string.Format("x_{0:N}", Guid.NewGuid());
-        }
+        private static string CreateValueParameterName() => string.Format("x_{0:N}", Guid.NewGuid());
     }
 }

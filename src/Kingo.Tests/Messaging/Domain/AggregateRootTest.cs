@@ -219,7 +219,7 @@ namespace Kingo.Messaging.Domain
             {
                 aggregateRootSnapshot.RestoreAggregate(new IEvent[]
                 {
-                    new ValueChangedEvent()
+                    new ValueChangedEvent
                     {
                         Version = 1
                     }
@@ -243,7 +243,7 @@ namespace Kingo.Messaging.Domain
             {
                 aggregateRootSnapshot.RestoreAggregate(new IEvent[]
                 {
-                    new ValueChangedEvent()
+                    new ValueChangedEvent
                     {
                         Version = 1
                     }
@@ -267,7 +267,7 @@ namespace Kingo.Messaging.Domain
             {
                 aggregateRootSnapshot.RestoreAggregate(new IEvent[]
                 {
-                    new ValueChangedEvent()
+                    new ValueChangedEvent
                     {
                         Id = aggregateRoot.Id,
                         Version = 1
@@ -292,7 +292,7 @@ namespace Kingo.Messaging.Domain
             {
                 aggregateRootSnapshot.RestoreAggregate(new IEvent[]
                 {
-                    new ValueChangedEvent()
+                    new ValueChangedEvent
                     {
                         Id = aggregateRoot.Id,
                         Version = 1
@@ -317,7 +317,7 @@ namespace Kingo.Messaging.Domain
             {
                 aggregateRootSnapshot.RestoreAggregate(new IEvent[]
                 {
-                    new ValueChangedEvent()
+                    new ValueChangedEvent
                     {
                         Id = aggregateRoot.Id,
                         Version = 2
@@ -342,12 +342,12 @@ namespace Kingo.Messaging.Domain
             {
                 aggregateRootSnapshot.RestoreAggregate(new IEvent[]
                 {
-                    new ValueChangedEvent()
+                    new ValueChangedEvent
                     {
                         Id = aggregateRoot.Id,
                         Version = 1
                     },
-                    new UnsupportedEvent(), 
+                    new UnsupportedEvent() 
                 });
             }
             catch (ArgumentException exception)
@@ -366,13 +366,13 @@ namespace Kingo.Messaging.Domain
             var restoredAggregate = aggregateRootSnapshot.RestoreAggregate(new IEvent[]
             {
                 new OldValueChangedEvent(aggregateRoot.Id, 3, 3),
-                new ValueChangedEvent()
+                new ValueChangedEvent
                 {
                     Id = aggregateRoot.Id,
                     Version = 4,
                     NewValue = 4
                 },
-                new OldValueChangedEvent(aggregateRoot.Id, 2, 2),
+                new OldValueChangedEvent(aggregateRoot.Id, 2, 2)
             }) as AggregateRootWithEventHandlers;
 
             IAggregateRoot<Guid> restoredAggregateRoot = restoredAggregate;
@@ -397,13 +397,13 @@ namespace Kingo.Messaging.Domain
             var restoredAggregate = aggregateRootSnapshot.RestoreAggregate(new IEvent[]
             {
                 new OldValueChangedEvent(aggregateRoot.Id, 3, 3),
-                new ValueChangedEvent()
+                new ValueChangedEvent
                 {
                     Id = aggregateRoot.Id,
                     Version = 4,
                     NewValue = 4
                 },
-                new OldValueChangedEvent(aggregateRoot.Id, 2, 2),
+                new OldValueChangedEvent(aggregateRoot.Id, 2, 2)
             });
 
             Assert.IsFalse(restoredAggregate.HasPendingEvents);

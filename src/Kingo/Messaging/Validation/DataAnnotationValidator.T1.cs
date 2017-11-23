@@ -74,10 +74,7 @@ namespace Kingo.Messaging.Validation
         /// The format provider that is used to format all error messages.
         /// </param>
         /// <returns>A new <see cref="ErrorInfoBuilder" />.</returns>
-        protected virtual ErrorInfoBuilder CreateErrorInfoBuilder(IFormatProvider formatProvider)
-        {
-            return new ErrorInfoBuilder(formatProvider);
-        }
+        protected virtual ErrorInfoBuilder CreateErrorInfoBuilder(IFormatProvider formatProvider) => new ErrorInfoBuilder(formatProvider);
 
         private static ErrorInfo BuildErrorInfo(ErrorInfoBuilder errorInfoBuilder, IEnumerable<ValidationResult> validationResults)
         {            

@@ -11,9 +11,6 @@ namespace Kingo.Messaging.Validation
             _result = result;
         }
 
-        public int Compare(T x, T y)
-        {
-            return _result;
-        }
+        public int Compare(T x, T y) => _result;
     }
 }

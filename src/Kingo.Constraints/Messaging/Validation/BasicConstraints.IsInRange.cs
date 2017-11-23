@@ -31,10 +31,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, string errorMessage = null)
-        {
-            return member.Apply(new IsNotInRangeConstraint<TValue>(left, right).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, string errorMessage = null) =>
+            member.Apply(new IsNotInRangeConstraint<TValue>(left, right).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value does not lie within the specified range.
@@ -61,10 +59,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null)
-        {
-            return member.Apply(new IsNotInRangeConstraint<TValue>(left, right, options).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null) =>
+            member.Apply(new IsNotInRangeConstraint<TValue>(left, right, options).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value does not lie within the specified range.
@@ -87,10 +83,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null)
-        {
-            return member.Apply(new IsNotInRangeConstraint<TValue>(left, right, comparer).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null) =>
+            member.Apply(new IsNotInRangeConstraint<TValue>(left, right, comparer).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value does not lie within the specified range.
@@ -118,10 +112,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null)
-        {
-            return member.Apply(new IsNotInRangeConstraint<TValue>(left, right, comparer, options).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null) =>
+            member.Apply(new IsNotInRangeConstraint<TValue>(left, right, comparer, options).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value does not lie within the specified <paramref name="range"/>.
@@ -141,10 +133,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IRange<TValue> range, string errorMessage = null)
-        {
-            return member.Apply(new IsNotInRangeConstraint<TValue>(range).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IRange<TValue> range, string errorMessage = null) =>
+            member.Apply(new IsNotInRangeConstraint<TValue>(range).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value does not lie within the specified range.
@@ -321,10 +311,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, string errorMessage = null)
-        {
-            return member.Apply(new IsInRangeConstraint<TValue>(left, right).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, string errorMessage = null) =>
+            member.Apply(new IsInRangeConstraint<TValue>(left, right).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value lies within the specified range.
@@ -351,10 +339,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null)
-        {
-            return member.Apply(new IsInRangeConstraint<TValue>(left, right, options).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, RangeOptions options, string errorMessage = null) =>
+            member.Apply(new IsInRangeConstraint<TValue>(left, right, options).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value lies within the specified range.
@@ -377,10 +363,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null)
-        {
-            return member.Apply(new IsInRangeConstraint<TValue>(left, right, comparer).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, string errorMessage = null) =>
+            member.Apply(new IsInRangeConstraint<TValue>(left, right, comparer).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value lies within the specified range.
@@ -408,10 +392,8 @@ namespace Kingo.Messaging.Validation
         /// - or -
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null)
-        {
-            return member.Apply(new IsInRangeConstraint<TValue>(left, right, comparer, options).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue left, TValue right, IComparer<TValue> comparer, RangeOptions options, string errorMessage = null) =>
+            member.Apply(new IsInRangeConstraint<TValue>(left, right, comparer, options).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value lies within the specified <paramref name="range"/>.
@@ -431,10 +413,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>  
-        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IRange<TValue> range, string errorMessage = null)
-        {
-            return member.Apply(new IsInRangeConstraint<TValue>(range).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsInRange<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IRange<TValue> range, string errorMessage = null) =>
+            member.Apply(new IsInRangeConstraint<TValue>(range).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value lies within the specified range.
@@ -647,12 +627,8 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="range"/> is <c>null</c>.
         /// </exception> 
         public IsNotInRangeConstraint(IRange<TValue> range)
-        {
-            if (range == null)
-            {
-                throw new ArgumentNullException(nameof(range));
-            }
-            Range = range;
+        {           
+            Range = range ?? throw new ArgumentNullException(nameof(range));
         }
 
         private IsNotInRangeConstraint(IsNotInRangeConstraint<TValue> constraint, StringTemplate errorMessage)
@@ -670,42 +646,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotInRange); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+            StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotInRange);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new IsNotInRangeConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+            new IsNotInRangeConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new IsNotInRangeConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+            new IsNotInRangeConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new IsInRangeConstraint<TValue>(Range).WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+            new IsInRangeConstraint<TValue>(Range).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return !Range.Contains(value);
-        }
+        public override bool IsSatisfiedBy(TValue value) =>
+            !Range.Contains(value);
 
         #endregion
     }
@@ -769,12 +735,8 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="range"/> is <c>null</c>.
         /// </exception> 
         public IsInRangeConstraint(IRange<TValue> range)
-        {
-            if (range == null)
-            {
-                throw new ArgumentNullException(nameof(range));
-            }
-            Range = range;
+        {            
+            Range = range ?? throw new ArgumentNullException(nameof(range));
         }
 
         private IsInRangeConstraint(IsInRangeConstraint<TValue> constraint, StringTemplate errorMessage)
@@ -792,42 +754,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsInRange); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+            StringTemplate.Parse(ErrorMessages.BasicConstraints_IsInRange);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new IsInRangeConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+            new IsInRangeConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new IsInRangeConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+            new IsInRangeConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new IsNotInRangeConstraint<TValue>(Range).WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+            new IsNotInRangeConstraint<TValue>(Range).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return Range.Contains(value);
-        }
+        public override bool IsSatisfiedBy(TValue value) =>
+            Range.Contains(value);
 
         #endregion
     }

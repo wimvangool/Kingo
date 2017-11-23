@@ -41,5 +41,11 @@ namespace Kingo.Messaging
         /// <param name="context">The streaming context.</param>
         protected UnauthorizedRequestException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+
+        /// <summary>
+        /// Returns <c>401</c>.
+        /// </summary>
+        public override int ErrorCode =>
+            401;
     }
 }

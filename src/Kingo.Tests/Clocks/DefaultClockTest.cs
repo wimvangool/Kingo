@@ -30,9 +30,6 @@ namespace Kingo.Clocks
             Assert.AreEqual(TimeSpan.Zero, Clock.Default.UtcDateAndTime().Offset);
         }        
 
-        private static TimeSpan LocalTimeOffset()
-        {
-            return DateTimeOffset.Now.Offset;
-        }
+        private static TimeSpan LocalTimeOffset() => DateTimeOffset.Now.Offset;
     }
 }

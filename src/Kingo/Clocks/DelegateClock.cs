@@ -17,18 +17,12 @@ namespace Kingo.Clocks
         /// <paramref name="utcDateAndTimeFactory"/> is <c>null</c>.
         /// </exception>
         public DelegateClock(Func<DateTimeOffset> utcDateAndTimeFactory)
-        {
-            if (utcDateAndTimeFactory == null)
-            {
-                throw new ArgumentNullException(nameof(utcDateAndTimeFactory));
-            }
-            _utcDateAndTimeFactory = utcDateAndTimeFactory;
+        {           
+            _utcDateAndTimeFactory = utcDateAndTimeFactory ?? throw new ArgumentNullException(nameof(utcDateAndTimeFactory));
         }
 
         /// <inheritdoc />
-        public override DateTimeOffset UtcDateAndTime()
-        {
-            return _utcDateAndTimeFactory.Invoke();
-        }
+        public override DateTimeOffset UtcDateAndTime() =>
+            _utcDateAndTimeFactory.Invoke();
     }
 }

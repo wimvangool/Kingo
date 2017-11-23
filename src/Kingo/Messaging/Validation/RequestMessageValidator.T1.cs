@@ -8,12 +8,8 @@ namespace Kingo.Messaging.Validation
         private readonly IRequestMessageValidator<TMessage> _validator;
 
         public RequestRequestMessageValidator(IRequestMessageValidator<TMessage> validator)
-        {
-            if (validator == null)
-            {
-                throw new ArgumentNullException(nameof(validator));
-            }
-            _validator = validator;
+        {            
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         public override string ToString() =>

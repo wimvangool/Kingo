@@ -12,7 +12,7 @@ namespace Kingo.Messaging
 
         private sealed class SomeMessage
         {
-            private static int _InstanceCount = 0;
+            private static int _InstanceCount;
             private readonly int _instance;
 
             public SomeMessage()
@@ -20,10 +20,7 @@ namespace Kingo.Messaging
                 _instance = Interlocked.Increment(ref _InstanceCount);
             }
 
-            public override string ToString()
-            {
-                return _instance.ToString();
-            }
+            public override string ToString() => _instance.ToString();
         }
 
         #endregion        

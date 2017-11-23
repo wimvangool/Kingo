@@ -95,11 +95,8 @@ namespace Kingo.Messaging.Validation
         /// </summary>       
         public static readonly ErrorInfo Empty = new ErrorInfo(EmptyDictionary());                    
 
-        private static ReadOnlyDictionary<string, string> EmptyDictionary()
-        {
-            return new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());    
-        }       
- 
+        private static ReadOnlyDictionary<string, string> EmptyDictionary() => new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
+
         private static ReadOnlyDictionary<string, string> CreateDictionary(IEnumerable<KeyValuePair<string, string>> memberErrors)
         {
             if (memberErrors == null)

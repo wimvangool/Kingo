@@ -49,7 +49,7 @@ namespace Kingo.Messaging
             }
             else
             {
-                _resourceGroups.Add(resourceId, new List<IUnitOfWork>() { unitOfWork });
+                _resourceGroups.Add(resourceId, new List<IUnitOfWork> { unitOfWork });
             }
         }
 

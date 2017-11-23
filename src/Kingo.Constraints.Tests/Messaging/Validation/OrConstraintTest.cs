@@ -343,14 +343,8 @@ namespace Kingo.Messaging.Validation
 
         #endregion
 
-        private static IConstraintWithErrorMessage<object> CreateOrConstraint(bool left, bool right)
-        {
-            return new OrConstraint<object>(NewConstraint(left), NewConstraint(right));
-        }
+        private static IConstraintWithErrorMessage<object> CreateOrConstraint(bool left, bool right) => new OrConstraint<object>(NewConstraint(left), NewConstraint(right));
 
-        private static IConstraintWithErrorMessage<object> CreateOrConstraint(bool left, bool middle, bool right)
-        {
-            return new OrConstraint<object>(NewConstraint(left), NewConstraint(middle)).Or(NewConstraint(right));
-        }
+        private static IConstraintWithErrorMessage<object> CreateOrConstraint(bool left, bool middle, bool right) => new OrConstraint<object>(NewConstraint(left), NewConstraint(middle)).Or(NewConstraint(right));
     }
 }

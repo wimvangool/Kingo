@@ -30,10 +30,7 @@ namespace Kingo.Messaging.Validation
 
         #region [====== Equals & GetHashCode ======]        
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as ValidatedMessage<TValue>);
-        }
+        public override bool Equals(object obj) => Equals(obj as ValidatedMessage<TValue>);
 
         private bool Equals(ValidatedMessage<TValue> other)
         {
@@ -52,10 +49,7 @@ namespace Kingo.Messaging.Validation
                 Equals(Right, other.Right);
         }
 
-        public override int GetHashCode()
-        {
-            return GetType().GetHashCode();
-        }
+        public override int GetHashCode() => GetType().GetHashCode();
 
         #endregion        
 

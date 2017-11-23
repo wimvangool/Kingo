@@ -13,25 +13,13 @@ namespace Kingo.Messaging.Validation
             _value = value;
         }
 
-        internal override MemberNameComponentStack NameComponentStack
-        {
-            get { return _nameComponentStack; }
-        }
+        internal override MemberNameComponentStack NameComponentStack => _nameComponentStack;
 
-        public override Type Type
-        {
-            get { return ReferenceEquals(_value, null) ? typeof(TValue) : _value.GetType(); }
-        }
+        public override Type Type => ReferenceEquals(_value, null) ? typeof(TValue) : _value.GetType();
 
-        public TValue Value
-        {
-            get { return _value; }
-        }
+        public TValue Value => _value;
 
-        internal Member<TOther> Transform<TOther>(TOther other)
-        {            
-            return new Member<TOther>(NameComponentStack, other);
-        }
+        internal Member<TOther> Transform<TOther>(TOther other) => new Member<TOther>(NameComponentStack, other);
 
         internal Member<TOther> Transform<TOther>(TOther other, Identifier identifier)
         {
@@ -44,10 +32,7 @@ namespace Kingo.Messaging.Validation
             return new Member<TOther>(name, other);
         }
 
-        internal Member<TOther> Transform<TOther>(TOther other, IndexList indexList)
-        {
-            return new Member<TOther>(NameComponentStack.Push(indexList), other);
-        }
+        internal Member<TOther> Transform<TOther>(TOther other, IndexList indexList) => new Member<TOther>(NameComponentStack.Push(indexList), other);
 
         internal void WriteErrorMessageTo(IErrorMessageCollection reader, IErrorMessageBuilder errorMessage)
         {

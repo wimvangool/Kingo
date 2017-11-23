@@ -53,7 +53,13 @@ namespace Kingo.Messaging
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected InternalServerErrorException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
-        
+
+        /// <summary>
+        /// Returns a value between <c>500</c> and <c>599</c>.
+        /// </summary>
+        public override int ErrorCode =>
+            500;
+
         internal static InternalServerErrorException FromInnerException(object failedMessage, Exception innerException)
         {
             var messageFormat = ExceptionMessages.InternalServerErrorException_FromException;

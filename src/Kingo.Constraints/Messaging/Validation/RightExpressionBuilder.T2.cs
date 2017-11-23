@@ -22,10 +22,7 @@ namespace Kingo.Messaging.Validation
             _methodCallDecorator = methodCallDecorator;
         }
 
-        protected override LambdaExpression FieldOrPropertyExpression
-        {
-            get { return _interpreter.FieldOrPropertyExpression; }
-        }
+        protected override LambdaExpression FieldOrPropertyExpression => _interpreter.FieldOrPropertyExpression;
 
         internal MethodCallExpressionBuilder<T, TValue> BuildRightExpression()
         {
@@ -107,14 +104,10 @@ namespace Kingo.Messaging.Validation
             return node;
         }        
 
-        private static bool IsNullableValue(MemberExpression node)
-        {
-            return
-                node.Member.Name == "Value" &&
-                node.Expression.Type.IsValueType &&
-                node.Expression.Type.IsGenericType &&
-                node.Expression.Type.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
+        private static bool IsNullableValue(MemberExpression node) => node.Member.Name == "Value" &&
+            node.Expression.Type.IsValueType &&
+            node.Expression.Type.IsGenericType &&
+            node.Expression.Type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
         private static ParameterExpression GetValueOf(ParameterExpression parameter)
         {

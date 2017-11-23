@@ -214,7 +214,7 @@ namespace Kingo.Messaging.Validation
         [ExpectedException(typeof(ArgumentNullException))]
         public void AssertInstanceError_Throws_IfAssertCallbackIsNull()
         {
-            AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError(null as Action<string>);
+            AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError(null);
         }
 
         [TestMethod]
@@ -334,7 +334,7 @@ namespace Kingo.Messaging.Validation
         [ExpectedException(typeof(ArgumentNullException))]
         public void AssertMemberError_Throws_IfAssertCallbackIsNull()
         {
-            AssertIsNotValid(new MessageToValidate(Guid.Empty, 1), 1).AssertMemberError("Id", null as Action<string>);
+            AssertIsNotValid(new MessageToValidate(Guid.Empty, 1), 1).AssertMemberError("Id", null);
         }
 
         [TestMethod]

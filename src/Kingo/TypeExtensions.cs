@@ -31,10 +31,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetEqualityOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> equalityOperator)
-        {
-            return TryGetBinaryOperator(type, "op_Equality", out equalityOperator);
-        }
+        public static bool TryGetEqualityOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> equalityOperator) => TryGetBinaryOperator(type, "op_Equality", out equalityOperator);
 
         /// <summary>
         /// Attempts to obtain the equality operator (!=) defined within the specified <paramref name="type"/>
@@ -54,10 +51,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetInequalityOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> inequalityOperator)
-        {
-            return TryGetBinaryOperator(type, "op_Inequality", out inequalityOperator);
-        }
+        public static bool TryGetInequalityOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> inequalityOperator) => TryGetBinaryOperator(type, "op_Inequality", out inequalityOperator);
 
         #endregion
 
@@ -81,10 +75,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetLessThanOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> lessThanOperator)
-        {
-            return TryGetBinaryOperator(type, "op_LessThan", out lessThanOperator);
-        }
+        public static bool TryGetLessThanOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> lessThanOperator) => TryGetBinaryOperator(type, "op_LessThan", out lessThanOperator);
 
         /// <summary>
         /// Attempts to obtain the less than or equal to operator (&lt;=) defined within the specified <paramref name="type"/>
@@ -104,10 +95,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetLessThanOrEqualOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> lessThanOrEqualOperator)
-        {
-            return TryGetBinaryOperator(type, "op_LessThanOrEqual", out lessThanOrEqualOperator);
-        }
+        public static bool TryGetLessThanOrEqualOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> lessThanOrEqualOperator) => TryGetBinaryOperator(type, "op_LessThanOrEqual", out lessThanOrEqualOperator);
 
         /// <summary>
         /// Attempts to obtain the greater than operator (&gt;) defined within the specified <paramref name="type"/>
@@ -127,10 +115,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetGreaterThanOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> greaterThanOperator)
-        {
-            return TryGetBinaryOperator(type, "op_GreaterThan", out greaterThanOperator);
-        }
+        public static bool TryGetGreaterThanOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> greaterThanOperator) => TryGetBinaryOperator(type, "op_GreaterThan", out greaterThanOperator);
 
         /// <summary>
         /// Attempts to obtain the greater than or equal to operator (&gt;=) defined within the specified <paramref name="type"/>
@@ -150,10 +135,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetGreaterThanOrEqualOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> greaterThanOrEqualOperator)
-        {
-            return TryGetBinaryOperator(type, "op_GreaterThanOrEqual", out greaterThanOrEqualOperator);
-        }
+        public static bool TryGetGreaterThanOrEqualOperator<TIn1, TIn2>(this Type type, out Func<TIn1, TIn2, bool> greaterThanOrEqualOperator) => TryGetBinaryOperator(type, "op_GreaterThanOrEqual", out greaterThanOrEqualOperator);
 
         #endregion
 
@@ -178,10 +160,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetAdditionOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> additionOperator)
-        {
-            return TryGetBinaryOperator(type, "op_Addition", out additionOperator);
-        }
+        public static bool TryGetAdditionOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> additionOperator) => TryGetBinaryOperator(type, "op_Addition", out additionOperator);
 
         /// <summary>
         /// Attempts to obtain the subtraction operator (-) defined within the specified <paramref name="type"/>
@@ -202,10 +181,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetSubtractionOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> subtractiontOperator)
-        {
-            return TryGetBinaryOperator(type, "op_Subtraction", out subtractiontOperator);
-        }
+        public static bool TryGetSubtractionOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> subtractiontOperator) => TryGetBinaryOperator(type, "op_Subtraction", out subtractiontOperator);
 
         #endregion
 
@@ -230,10 +206,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetMultiplyOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> multiplyOperator)
-        {
-            return TryGetBinaryOperator(type, "op_Multiply", out multiplyOperator);
-        }
+        public static bool TryGetMultiplyOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> multiplyOperator) => TryGetBinaryOperator(type, "op_Multiply", out multiplyOperator);
 
         /// <summary>
         /// Attempts to obtain the division operator (/) defined within the specified <paramref name="type"/>
@@ -254,10 +227,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetDivisionOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> divisionOperator)
-        {
-            return TryGetBinaryOperator(type, "op_Division", out divisionOperator);
-        }
+        public static bool TryGetDivisionOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> divisionOperator) => TryGetBinaryOperator(type, "op_Division", out divisionOperator);
 
         #endregion
 
@@ -282,10 +252,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetModulusOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> modulusOperator)
-        {
-            return TryGetBinaryOperator(type, "op_Modulus", out modulusOperator);
-        }
+        public static bool TryGetModulusOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> modulusOperator) => TryGetBinaryOperator(type, "op_Modulus", out modulusOperator);
 
         /// <summary>
         /// Attempts to obtain the exclusiveOr operator (^) defined within the specified <paramref name="type"/>
@@ -306,10 +273,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetExclusiveOrOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> exclusiveOrOperator)
-        {
-            return TryGetBinaryOperator(type, "op_ExclusiveOr", out exclusiveOrOperator);
-        }
+        public static bool TryGetExclusiveOrOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> exclusiveOrOperator) => TryGetBinaryOperator(type, "op_ExclusiveOr", out exclusiveOrOperator);
 
         #endregion
 
@@ -334,10 +298,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetBitwiseAndOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> bitwiseAndOperator)
-        {
-            return TryGetBinaryOperator(type, "op_BitwiseAnd", out bitwiseAndOperator);
-        }
+        public static bool TryGetBitwiseAndOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> bitwiseAndOperator) => TryGetBinaryOperator(type, "op_BitwiseAnd", out bitwiseAndOperator);
 
         /// <summary>
         /// Attempts to obtain the bitwiseOr operator (|) defined within the specified <paramref name="type"/>
@@ -358,10 +319,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetBitwiseOrOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> bitwiseOrOperator)
-        {
-            return TryGetBinaryOperator(type, "op_BitwiseOr", out bitwiseOrOperator);
-        }
+        public static bool TryGetBitwiseOrOperator<TIn1, TIn2, TOut>(this Type type, out Func<TIn1, TIn2, TOut> bitwiseOrOperator) => TryGetBinaryOperator(type, "op_BitwiseOr", out bitwiseOrOperator);
 
         #endregion
 
@@ -385,10 +343,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetLeftShiftOperator<TIn, TOut>(this Type type, out Func<TIn, int, TOut> leftShiftOperator)
-        {
-            return TryGetBinaryOperator(type, "op_LeftShift", out leftShiftOperator);
-        }
+        public static bool TryGetLeftShiftOperator<TIn, TOut>(this Type type, out Func<TIn, int, TOut> leftShiftOperator) => TryGetBinaryOperator(type, "op_LeftShift", out leftShiftOperator);
 
         /// <summary>
         /// Attempts to obtain the rightShift operator (&gt;&gt;) defined within the specified <paramref name="type"/>
@@ -408,10 +363,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetRightShiftOperator<TIn, TOut>(this Type type, out Func<TIn, int, TOut> rightShiftOperator)
-        {
-            return TryGetBinaryOperator(type, "op_RightShift", out rightShiftOperator);
-        }
+        public static bool TryGetRightShiftOperator<TIn, TOut>(this Type type, out Func<TIn, int, TOut> rightShiftOperator) => TryGetBinaryOperator(type, "op_RightShift", out rightShiftOperator);
 
         #endregion
 
@@ -435,10 +387,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetUnaryPlusOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> unaryPlusOperator)
-        {
-            return TryGetUnaryOperator(type, "op_UnaryPlus", out unaryPlusOperator);
-        }
+        public static bool TryGetUnaryPlusOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> unaryPlusOperator) => TryGetUnaryOperator(type, "op_UnaryPlus", out unaryPlusOperator);
 
         /// <summary>
         /// Attempts to obtain the unaryNegation operator (-) defined within the specified <paramref name="type"/>
@@ -458,10 +407,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetUnaryNegationOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> unaryNegationtOperator)
-        {
-            return TryGetUnaryOperator(type, "op_UnaryNegation", out unaryNegationtOperator);
-        }
+        public static bool TryGetUnaryNegationOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> unaryNegationtOperator) => TryGetUnaryOperator(type, "op_UnaryNegation", out unaryNegationtOperator);
 
         #endregion
 
@@ -485,10 +431,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetLogicalNotOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> logicalNotOperator)
-        {
-            return TryGetUnaryOperator(type, "op_LogicalNot", out logicalNotOperator);
-        }
+        public static bool TryGetLogicalNotOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> logicalNotOperator) => TryGetUnaryOperator(type, "op_LogicalNot", out logicalNotOperator);
 
         /// <summary>
         /// Attempts to obtain the onesComplement operator (~) defined within the specified <paramref name="type"/>
@@ -508,10 +451,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetOnesComplementOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> onesComplementOperator)
-        {
-            return TryGetUnaryOperator(type, "op_OnesComplement", out onesComplementOperator);
-        }
+        public static bool TryGetOnesComplementOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> onesComplementOperator) => TryGetUnaryOperator(type, "op_OnesComplement", out onesComplementOperator);
 
         #endregion
 
@@ -534,10 +474,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetTrueOperator<TIn>(this Type type, out Func<TIn, bool> trueOperator)
-        {
-            return TryGetUnaryOperator(type, "op_True", out trueOperator);
-        }
+        public static bool TryGetTrueOperator<TIn>(this Type type, out Func<TIn, bool> trueOperator) => TryGetUnaryOperator(type, "op_True", out trueOperator);
 
         /// <summary>
         /// Attempts to obtain the false operator (false) defined within the specified <paramref name="type"/>
@@ -556,10 +493,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetFalseOperator<TIn>(this Type type, out Func<TIn, bool> falseOperator)
-        {
-            return TryGetUnaryOperator(type, "op_False", out falseOperator);
-        }
+        public static bool TryGetFalseOperator<TIn>(this Type type, out Func<TIn, bool> falseOperator) => TryGetUnaryOperator(type, "op_False", out falseOperator);
 
         #endregion
 
@@ -583,10 +517,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetImplicitOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> implicitOperator)
-        {
-            return TryGetUnaryOperator(type, "op_Implicit", out implicitOperator);
-        }
+        public static bool TryGetImplicitOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> implicitOperator) => TryGetUnaryOperator(type, "op_Implicit", out implicitOperator);
 
         /// <summary>
         /// Attempts to obtain the explicit operator defined within the specified <paramref name="type"/>
@@ -606,10 +537,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> is <c>null</c>.
         /// </exception>
-        public static bool TryGetExplicitOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> explicitOperator)
-        {
-            return TryGetUnaryOperator(type, "op_Explicit", out explicitOperator);
-        }
+        public static bool TryGetExplicitOperator<TIn, TOut>(this Type type, out Func<TIn, TOut> explicitOperator) => TryGetUnaryOperator(type, "op_Explicit", out explicitOperator);
 
         #endregion
 
@@ -625,7 +553,7 @@ namespace Kingo
             var unaryOperatorMethod = methods.SingleOrDefault();
             if (unaryOperatorMethod != null)
             {
-                unaryOperator = (value) => (TOut) unaryOperatorMethod.Invoke(null, new object[] { value });
+                unaryOperator = value => (TOut) unaryOperatorMethod.Invoke(null, new object[] { value });
                 return true;
             }
             unaryOperator = null;
@@ -670,10 +598,7 @@ namespace Kingo
             return Enumerable.Empty<MethodInfo>();
         }
 
-        private static bool IsOperatorOfType(MethodInfo method, string name, Type returnType)
-        {
-            return method.IsSpecialName && method.Name == name && method.ReturnType == returnType;
-        }
+        private static bool IsOperatorOfType(MethodInfo method, string name, Type returnType) => method.IsSpecialName && method.Name == name && method.ReturnType == returnType;
 
         private static bool HasParameterOfType(MethodInfo method, Type parameterType)
         {
@@ -737,12 +662,9 @@ namespace Kingo
         internal static string RemoveTypeParameterCount(this string typeName) =>
             typeName.Substring(0, typeName.IndexOf("`"));
 
-        private static StringBuilder AppendTypeParameters(this StringBuilder builder, Type[] typeParameters, bool useFullNames)
-        {
-            return builder
-                .AppendFriendlyNameOf(typeParameters[0], useFullNames)
-                .AppendTypeParameterTail(typeParameters, useFullNames, 1);
-        }
+        private static StringBuilder AppendTypeParameters(this StringBuilder builder, Type[] typeParameters, bool useFullNames) => builder
+            .AppendFriendlyNameOf(typeParameters[0], useFullNames)
+            .AppendTypeParameterTail(typeParameters, useFullNames, 1);
 
         private static StringBuilder AppendTypeParameterTail(this StringBuilder builder, Type[] typeParameters, bool useFullNames, int index)
         {

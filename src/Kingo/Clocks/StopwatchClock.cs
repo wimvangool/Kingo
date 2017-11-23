@@ -24,10 +24,7 @@ namespace Kingo.Clocks
         /// <summary>
         /// Indicates whether or not this clock is running.
         /// </summary>
-        public bool IsRunning
-        {
-            get { return _stopwatch.IsRunning; }
-        }
+        public bool IsRunning => _stopwatch.IsRunning;
 
         /// <summary>
         /// Starts the clock.
@@ -48,10 +45,7 @@ namespace Kingo.Clocks
         /// <summary>
         /// Returns the total amount of time the stopwatch has been running.
         /// </summary>
-        public TimeSpan ElapsedTime
-        {
-            get { return _stopwatch.Elapsed; }
-        }        
+        public TimeSpan ElapsedTime => _stopwatch.Elapsed;
 
         /// <inheritdoc />
         public override DateTimeOffset UtcDateAndTime()
@@ -66,10 +60,7 @@ namespace Kingo.Clocks
         /// Creates and returns a new <see cref="StopwatchClock" /> that is started immediately.
         /// </summary>        
         /// <returns>A new <see cref="StopwatchClock" />.</returns>
-        public static StopwatchClock StartNew()
-        {
-            return StartNew(DateTimeOffset.UtcNow);
-        }
+        public static StopwatchClock StartNew() => StartNew(DateTimeOffset.UtcNow);
 
         /// <summary>
         /// Creates and returns a new <see cref="StopwatchClock" /> that is started immediately.

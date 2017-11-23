@@ -26,10 +26,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null)
-        {
-            return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null) =>
+            member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is not equal to <paramref name="other"/>.
@@ -46,10 +44,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
-        {
-            return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null) =>
+            member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is not equal to <paramref name="other"/>.
@@ -67,10 +63,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>     
-        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
-        {
-            return member.Apply(new IsNotEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null) =>
+            member.Apply(new IsNotEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is not equal to <paramref name="other"/>.
@@ -87,10 +81,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>           
-        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
-        {
-            return member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsNotEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IEquatable<TValue> other, string errorMessage = null) =>
+            member.Apply(new IsNotEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is not equal to <paramref name="otherFactory"/>.
@@ -216,10 +208,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null)
-        {
-            return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, object other, string errorMessage = null) =>
+            member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is equal to <paramref name="other"/>.
@@ -236,10 +226,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception> 
-        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null)
-        {
-            return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, string errorMessage = null) =>
+            member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is equal to <paramref name="other"/>.
@@ -257,10 +245,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null)
-        {
-            return member.Apply(new IsEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, TValue other, IEqualityComparer<TValue> comparer, string errorMessage = null) =>
+            member.Apply(new IsEqualToConstraint<TValue>(other, comparer).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is equal to <paramref name="other"/>.
@@ -277,10 +263,8 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>    
-        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IEquatable<TValue> other, string errorMessage = null)
-        {
-            return member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
-        }
+        public static IMemberConstraintBuilder<T, TValue> IsEqualTo<T, TValue>(this IMemberConstraintBuilder<T, TValue> member, IEquatable<TValue> other, string errorMessage = null) =>
+            member.Apply(new IsEqualToConstraint<TValue>(other).WithErrorMessage(errorMessage));
 
         /// <summary>
         /// Verifies that the member's value is equal to <paramref name="otherFactory"/>.
@@ -441,42 +425,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotEqualTo); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+            StringTemplate.Parse(ErrorMessages.BasicConstraints_IsNotEqualTo);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new IsNotEqualToConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+            new IsNotEqualToConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new IsNotEqualToConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+            new IsNotEqualToConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new IsEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+            new IsEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return !Comparer.IsEqualTo(value, Other);
-        }
+        public override bool IsSatisfiedBy(TValue value) =>
+            !Comparer.IsEqualTo(value, Other);
 
         #endregion
     }
@@ -534,42 +508,32 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.BasicConstraints_IsEqualTo); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified =>
+            StringTemplate.Parse(ErrorMessages.BasicConstraints_IsEqualTo);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name)
-        {
-            return new IsEqualToConstraint<TValue>(this, name);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithName(Identifier name) =>
+            new IsEqualToConstraint<TValue>(this, name);
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new IsEqualToConstraint<TValue>(this, errorMessage);
-        }
+        public override IConstraintWithErrorMessage<TValue> WithErrorMessage(StringTemplate errorMessage) =>
+            new IsEqualToConstraint<TValue>(this, errorMessage);
 
         #endregion
 
         #region [====== And, Or & Invert ======]
 
         /// <inheritdoc />
-        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null)
-        {
-            return new IsNotEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
-        }
+        public override IConstraintWithErrorMessage<TValue> Invert(StringTemplate errorMessage, Identifier name = null) =>
+            new IsNotEqualToConstraint<TValue>(Other).WithErrorMessage(errorMessage).WithName(name);
 
         #endregion
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(TValue value)
-        {
-            return Comparer.IsEqualTo(value, Other);
-        }
+        public override bool IsSatisfiedBy(TValue value) =>
+            Comparer.IsEqualTo(value, Other);
 
         #endregion
     }

@@ -22,12 +22,8 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="expression"/> is <c>null</c>.
         /// </exception>
         public ExpressionNotSupportedException(Expression expression)
-        {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(nameof(expression));
-            }
-            _expression = expression.ToString();
+        {            
+            _expression = expression?.ToString() ?? throw new ArgumentNullException(nameof(expression));
         }
 
         /// <summary>
@@ -40,12 +36,8 @@ namespace Kingo.Messaging.Validation
         /// </exception>
         public ExpressionNotSupportedException(Expression expression, string message)
             : base(message)
-        {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(nameof(expression));
-            }
-            _expression = expression.ToString();
+        {           
+            _expression = expression?.ToString() ?? throw new ArgumentNullException(nameof(expression));
         }
 
         /// <summary>
@@ -59,12 +51,8 @@ namespace Kingo.Messaging.Validation
         /// </exception>
         public ExpressionNotSupportedException(Expression expression, string message, Exception innerException)
             : base(message, innerException)
-        {
-            if (expression == null)
-            {
-                throw new ArgumentNullException(nameof(expression));
-            }
-            _expression = expression.ToString();
+        {            
+            _expression = expression?.ToString() ?? throw new ArgumentNullException(nameof(expression));
         }
 
         /// <summary>
@@ -91,9 +79,7 @@ namespace Kingo.Messaging.Validation
         /// <summary>
         /// The expression that was not supported in string-form.
         /// </summary>
-        public string Expression
-        {
-            get { return _expression; }
-        }
+        public string Expression =>
+            _expression;
     }
 }

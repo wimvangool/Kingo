@@ -30,10 +30,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, byte> IsByte<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsByte(member, DefaultByteNumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, byte> IsByte<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsByte(member, DefaultByteNumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="byte"/>.
@@ -56,10 +53,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, byte> IsByte<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null)
-        {
-            return member.Apply(new StringIsByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, byte> IsByte<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider = null, string errorMessage = null) => member.Apply(new StringIsByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -84,10 +78,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, sbyte> IsSByte<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsSByte(member, DefaultSByteNumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, sbyte> IsSByte<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsSByte(member, DefaultSByteNumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="sbyte"/>.
@@ -110,10 +101,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, sbyte> IsSByte<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
-        {
-            return member.Apply(new StringIsSByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, sbyte> IsSByte<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null) => member.Apply(new StringIsSByteFilter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -133,10 +121,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, char> IsChar<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return member.Apply(new StringIsCharFilter().WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, char> IsChar<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => member.Apply(new StringIsCharFilter().WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -161,10 +146,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, short> IsInt16<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsInt16(member, DefaultInt16NumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, short> IsInt16<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsInt16(member, DefaultInt16NumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="short"/>.
@@ -187,10 +169,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, short> IsInt16<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
-        {
-            return member.Apply(new StringIsInt16Filter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, short> IsInt16<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null) => member.Apply(new StringIsInt16Filter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion        
 
@@ -215,10 +194,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, int> IsInt32<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsInt32(member, DefaultInt32NumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, int> IsInt32<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsInt32(member, DefaultInt32NumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="int"/>.
@@ -241,10 +217,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, int> IsInt32<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
-        {
-            return member.Apply(new StringIsInt32Filter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, int> IsInt32<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null) => member.Apply(new StringIsInt32Filter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion        
 
@@ -269,10 +242,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, long> IsInt64<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsInt64(member, DefaultInt64NumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, long> IsInt64<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsInt64(member, DefaultInt64NumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="long"/>.
@@ -295,10 +265,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, long> IsInt64<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
-        {
-            return member.Apply(new StringIsInt64Filter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, long> IsInt64<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null) => member.Apply(new StringIsInt64Filter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion      
 
@@ -323,10 +290,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, float> IsSingle<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsSingle(member, DefaultSingleNumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, float> IsSingle<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsSingle(member, DefaultSingleNumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="float"/>.
@@ -349,10 +313,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, float> IsSingle<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
-        {
-            return member.Apply(new StringIsSingleFilter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, float> IsSingle<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null) => member.Apply(new StringIsSingleFilter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -377,10 +338,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, double> IsDouble<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsDouble(member, DefaultDoubleNumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, double> IsDouble<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsDouble(member, DefaultDoubleNumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="double"/>.
@@ -403,10 +361,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, double> IsDouble<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
-        {
-            return member.Apply(new StringIsDoubleFilter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, double> IsDouble<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null) => member.Apply(new StringIsDoubleFilter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion
 
@@ -431,10 +386,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, decimal> IsDecimal<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null)
-        {
-            return IsDecimal(member, DefaultDecimalNumberStyles, null, errorMessage);
-        }
+        public static IMemberConstraintBuilder<T, decimal> IsDecimal<T>(this IMemberConstraintBuilder<T, string> member, string errorMessage = null) => IsDecimal(member, DefaultDecimalNumberStyles, null, errorMessage);
 
         /// <summary>
         /// Verifies that the <paramref name="member"/>'s value can be converted to a <see cref="decimal"/>.
@@ -457,10 +409,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentException">
         /// <paramref name="errorMessage"/> is not in a correct format.
         /// </exception>
-        public static IMemberConstraintBuilder<T, decimal> IsDecimal<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null)
-        {
-            return member.Apply(new StringIsDecimalFilter(style, formatProvider).WithErrorMessage(errorMessage));
-        }        
+        public static IMemberConstraintBuilder<T, decimal> IsDecimal<T>(this IMemberConstraintBuilder<T, string> member, NumberStyles style, IFormatProvider formatProvider, string errorMessage = null) => member.Apply(new StringIsDecimalFilter(style, formatProvider).WithErrorMessage(errorMessage));
 
         #endregion        
     }
@@ -505,11 +454,8 @@ namespace Kingo.Messaging.Validation
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public override bool IsSatisfiedBy(string valueIn, out TValueOut valueOut)
-        {
-            return TryParse(valueIn, Style, FormatProvider, out valueOut);
-        }
-        
+        public override bool IsSatisfiedBy(string valueIn, out TValueOut valueOut) => TryParse(valueIn, Style, FormatProvider, out valueOut);
+
         internal abstract bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out TValueOut valueOut);
 
         #endregion
@@ -545,31 +491,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsByte); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsByte);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, byte> WithName(Identifier name)
-        {
-            return new StringIsByteFilter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, byte> WithName(Identifier name) => new StringIsByteFilter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, byte> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsByteFilter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, byte> WithErrorMessage(StringTemplate errorMessage) => new StringIsByteFilter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out byte valueOut)
-        {
-            return byte.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out byte valueOut) => byte.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }
@@ -604,31 +538,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsSByte); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsSByte);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, sbyte> WithName(Identifier name)
-        {
-            return new StringIsSByteFilter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, sbyte> WithName(Identifier name) => new StringIsSByteFilter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, sbyte> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsSByteFilter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, sbyte> WithErrorMessage(StringTemplate errorMessage) => new StringIsSByteFilter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out sbyte valueOut)
-        {
-            return sbyte.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out sbyte valueOut) => sbyte.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }
@@ -656,22 +578,13 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsChar); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsChar);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, char> WithName(Identifier name)
-        {
-            return new StringIsCharFilter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, char> WithName(Identifier name) => new StringIsCharFilter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, char> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsCharFilter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, char> WithErrorMessage(StringTemplate errorMessage) => new StringIsCharFilter(this, errorMessage);
 
         #endregion        
 
@@ -726,31 +639,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsInt16); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsInt16);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, short> WithName(Identifier name)
-        {
-            return new StringIsInt16Filter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, short> WithName(Identifier name) => new StringIsInt16Filter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, short> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsInt16Filter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, short> WithErrorMessage(StringTemplate errorMessage) => new StringIsInt16Filter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out short valueOut)
-        {
-            return short.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out short valueOut) => short.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }
@@ -785,31 +686,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsInt32); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsInt32);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, int> WithName(Identifier name)
-        {
-            return new StringIsInt32Filter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, int> WithName(Identifier name) => new StringIsInt32Filter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, int> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsInt32Filter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, int> WithErrorMessage(StringTemplate errorMessage) => new StringIsInt32Filter(this, errorMessage);
 
         #endregion       
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out int valueOut)
-        {
-            return int.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out int valueOut) => int.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }
@@ -844,31 +733,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsInt64); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsInt64);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, long> WithName(Identifier name)
-        {
-            return new StringIsInt64Filter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, long> WithName(Identifier name) => new StringIsInt64Filter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, long> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsInt64Filter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, long> WithErrorMessage(StringTemplate errorMessage) => new StringIsInt64Filter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out long valueOut)
-        {
-            return long.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out long valueOut) => long.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }
@@ -903,31 +780,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsSingle); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsSingle);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, float> WithName(Identifier name)
-        {
-            return new StringIsSingleFilter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, float> WithName(Identifier name) => new StringIsSingleFilter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, float> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsSingleFilter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, float> WithErrorMessage(StringTemplate errorMessage) => new StringIsSingleFilter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out float valueOut)
-        {
-            return float.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out float valueOut) => float.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }
@@ -962,31 +827,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsDouble); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsDouble);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, double> WithName(Identifier name)
-        {
-            return new StringIsDoubleFilter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, double> WithName(Identifier name) => new StringIsDoubleFilter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, double> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsDoubleFilter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, double> WithErrorMessage(StringTemplate errorMessage) => new StringIsDoubleFilter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out double valueOut)
-        {
-            return double.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out double valueOut) => double.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }
@@ -1021,31 +874,19 @@ namespace Kingo.Messaging.Validation
         #region [====== Name & ErrorMessage ======]
 
         /// <inheritdoc />
-        protected override StringTemplate ErrorMessageIfNotSpecified
-        {
-            get { return StringTemplate.Parse(ErrorMessages.StringConstraints_IsDecimal); }
-        }
+        protected override StringTemplate ErrorMessageIfNotSpecified => StringTemplate.Parse(ErrorMessages.StringConstraints_IsDecimal);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, decimal> WithName(Identifier name)
-        {
-            return new StringIsDecimalFilter(this, name);
-        }
+        public override IFilterWithErrorMessage<string, decimal> WithName(Identifier name) => new StringIsDecimalFilter(this, name);
 
         /// <inheritdoc />
-        public override IFilterWithErrorMessage<string, decimal> WithErrorMessage(StringTemplate errorMessage)
-        {
-            return new StringIsDecimalFilter(this, errorMessage);
-        }
+        public override IFilterWithErrorMessage<string, decimal> WithErrorMessage(StringTemplate errorMessage) => new StringIsDecimalFilter(this, errorMessage);
 
         #endregion        
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out decimal valueOut)
-        {
-            return decimal.TryParse(valueIn, style, formatProvider, out valueOut);
-        }
+        internal override bool TryParse(string valueIn, NumberStyles style, IFormatProvider formatProvider, out decimal valueOut) => decimal.TryParse(valueIn, style, formatProvider, out valueOut);
 
         #endregion
     }

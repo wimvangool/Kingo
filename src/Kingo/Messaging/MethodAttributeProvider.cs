@@ -34,13 +34,10 @@ namespace Kingo.Messaging
             return attribute != null;
         }        
 
-        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class
-        {
-            return from attribute in _Attributes.GetOrAdd(Method, LoadAttributes)
-                   let desiredAttribute = attribute as TAttribute
-                   where desiredAttribute != null
-                   select desiredAttribute;
-        }
+        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class => from attribute in _Attributes.GetOrAdd(Method, LoadAttributes)
+                                                                                                           let desiredAttribute = attribute as TAttribute
+                                                                                                           where desiredAttribute != null
+                                                                                                           select desiredAttribute;
 
         private static Attribute[] LoadAttributes(MethodInfo method) =>
             method.GetCustomAttributes().ToArray();

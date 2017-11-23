@@ -26,10 +26,7 @@ namespace Kingo.Threading
                 _newValue = newValue;
             }
 
-            public override T Value
-            {
-                get { return _newValue.Item1; }
-            }
+            public override T Value => _newValue.Item1;
 
             internal override bool RestoreOldValue()
             {
@@ -55,10 +52,7 @@ namespace Kingo.Threading
                 _newValue = newValue;
             }
 
-            public override T Value
-            {
-                get { return _newValue.Item1; }
-            }
+            public override T Value => _newValue.Item1;
 
             internal override bool RestoreOldValue()
             {
@@ -99,10 +93,7 @@ namespace Kingo.Threading
                 _newValue = newValue;
             }
 
-            public override T Value
-            {
-                get { return _newValue.Item1; }
-            }
+            public override T Value => _newValue.Item1;
 
             internal override bool RestoreOldValue()
             {
@@ -308,14 +299,8 @@ namespace Kingo.Threading
             _isDisposed = true;
         }
 
-        private static Exception NewContextDisposedException()
-        {
-            return new ObjectDisposedException(typeof(Context<TValue>).Name);
-        }
+        private static Exception NewContextDisposedException() => new ObjectDisposedException(typeof(Context<TValue>).Name);
 
-        private static Exception NewIllegalScopeStartedException()
-        {
-            return new InvalidOperationException(ExceptionMessages.Context_IllegalScopeStarted);
-        }
+        private static Exception NewIllegalScopeStartedException() => new InvalidOperationException(ExceptionMessages.Context_IllegalScopeStarted);
     }
 }

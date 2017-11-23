@@ -249,7 +249,7 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public void GetAggregateId_ReturnsExpectedValue_IfAttributeIsPlacedOnPropertyWithPublicGetterAndSetter()
         {
-            var @event = new EventWithPublicGettersAndSetters()
+            var @event = new EventWithPublicGettersAndSetters
             {
                 Id = Guid.NewGuid()
             };
@@ -394,7 +394,7 @@ namespace Kingo.Messaging.Domain
         [TestMethod]
         public void GetAggregateVersion_ReturnsExpectedValue_IfAttributeIsPlacedOnPropertyWithPublicGetterAndSetter()
         {
-            var @event = new EventWithPublicGettersAndSetters()
+            var @event = new EventWithPublicGettersAndSetters
             {
                 Version = Clock.Current.UtcDateAndTime().Millisecond
             };
