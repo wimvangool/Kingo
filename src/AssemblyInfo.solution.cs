@@ -3,7 +3,7 @@ using System.Resources;
 
 [assembly: AssemblyCompany("Wim van Gool")]
 [assembly: AssemblyProduct("Kingo Framework")]
-[assembly: AssemblyCopyright("Copyright © Wim van Gool 2017")]
+[assembly: AssemblyCopyright("Copyright © Wim van Gool 2018")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
 [assembly: AssemblyVersion("3.2")]
