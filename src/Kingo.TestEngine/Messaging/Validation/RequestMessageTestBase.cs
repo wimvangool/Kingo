@@ -8,6 +8,8 @@ namespace Kingo.Messaging.Validation
     /// </summary>
     public abstract class RequestMessageTestBase : AutomatedTest
     {
+        private const int _DefaultMemberErrorCount = 0;
+
         #region [====== ValidationResult ======]
 
         private sealed class ValidationResult : IValidationResult
@@ -149,14 +151,31 @@ namespace Kingo.Messaging.Validation
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>        
         protected virtual void AssertIsValid(IRequestMessage message) =>
-            Validate(message).AssertNoErrors();
+            Validate(message, false).AssertNoErrors();
+
+        /// <summary>
+        /// Validates the specified <paramref name="message"/> and asserts that the result contains a certain amount of errors.
+        /// </summary>
+        /// <param name="message">The message to validate.</param>        
+        /// <param name="haltOnFirstError">
+        /// Indicates whether or not the validation function should halt on the first error it detects. Default is <c>false</c>.
+        /// </param>
+        /// <returns>The result of the validation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="message"/> is <c>null</c>.
+        /// </exception>          
+        protected IValidationResult AssertIsNotValid(IRequestMessage message, bool haltOnFirstError) =>
+            AssertIsNotValid(message, _DefaultMemberErrorCount, haltOnFirstError);
 
         /// <summary>
         /// Validates the specified <paramref name="message"/> and asserts that the result contains a certain amount of errors.
         /// </summary>
         /// <param name="message">The message to validate.</param>
         /// <param name="expectedMemberErrorCount">
-        /// The expected amount of errors. Default is 1.
+        /// The expected amount of errors. Default is 0.
+        /// </param>
+        /// <param name="haltOnFirstError">
+        /// Indicates whether or not the validation function should halt on the first error it detects. Default is <c>false</c>.
         /// </param>
         /// <returns>The result of the validation.</returns>
         /// <exception cref="ArgumentNullException">
@@ -165,22 +184,22 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="expectedMemberErrorCount" /> is a negative number.
         /// </exception>
-        protected virtual IValidationResult AssertIsNotValid(IRequestMessage message, int expectedMemberErrorCount = 0)
+        protected virtual IValidationResult AssertIsNotValid(IRequestMessage message, int expectedMemberErrorCount = _DefaultMemberErrorCount, bool haltOnFirstError = false)
         {
             if (expectedMemberErrorCount < 0)
             {
                 throw NewInvalidErrorCountException(expectedMemberErrorCount);
             }
-            return Validate(message).AssertMemberErrorCountIs(expectedMemberErrorCount);
+            return Validate(message, haltOnFirstError).AssertMemberErrorCountIs(expectedMemberErrorCount);
         }               
 
-        private ValidationResult Validate(IRequestMessage message)
+        private ValidationResult Validate(IRequestMessage message, bool haltOnFirstError)
         {
             if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
-            return new ValidationResult(this, message.Validate());
+            return new ValidationResult(this, message.Validate(haltOnFirstError));
         }
 
         private static Exception NewInvalidErrorCountException(int expectedErrorCount)
