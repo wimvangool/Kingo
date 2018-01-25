@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging
 {
-    internal class MicroProcessorPipelineSpy : MicroProcessorPipeline
+    internal class MicroProcessorFilterSpy : MicroProcessorFilter
     {                
         protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context) =>
              handlerOrQuery.HandleMessageOrExecuteQueryAsync(context);

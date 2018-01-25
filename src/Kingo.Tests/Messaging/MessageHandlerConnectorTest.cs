@@ -11,7 +11,7 @@ namespace Kingo.Messaging
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var connector = CreateConnector(handler, new MicroProcessorPipelineSpy());
+            var connector = CreateConnector(handler, new MicroProcessorFilterSpy());
 
             var result = await connector.HandleAsync(message, MicroProcessorContext.None);
 
@@ -28,8 +28,8 @@ namespace Kingo.Messaging
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var connectorA = CreateConnector(handler, new MicroProcessorPipelineSpy());
-            var connectorB = CreateConnector(connectorA, new MicroProcessorPipelineSpy());
+            var connectorA = CreateConnector(handler, new MicroProcessorFilterSpy());
+            var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
             var result = await connectorB.HandleAsync(message, MicroProcessorContext.None);
 
@@ -45,25 +45,25 @@ namespace Kingo.Messaging
         public void ToString_ReturnsExpectedValue_IfOnlyOnePipelineIsUsed()
         {
             var handler = new MessageHandlerSpy<object>();            
-            var connector = CreateConnector(handler, new MicroProcessorPipelineSpy());
+            var connector = CreateConnector(handler, new MicroProcessorFilterSpy());
 
-            Assert.AreEqual("MicroProcessorPipelineSpy | MessageHandlerSpy<Object>", connector.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpy | MessageHandlerSpy<Object>", connector.ToString());
         }
 
         [TestMethod]
         public void ToString_ReturnsExpectedValue_IfManyPipelinesAreUsed()
         {
             var handler = new MessageHandlerSpy<object>();                      
-            var connectorA = CreateConnector(handler, new MicroProcessorPipelineSpy());
-            var connectorB = CreateConnector(connectorA, new MicroProcessorPipelineSpy());
+            var connectorA = CreateConnector(handler, new MicroProcessorFilterSpy());
+            var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
-            Assert.AreEqual("MicroProcessorPipelineSpy | MicroProcessorPipelineSpy | MessageHandlerSpy<Object>", connectorB.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | MessageHandlerSpy<Object>", connectorB.ToString());
         }
 
-        private static MessageHandlerConnector<TMessage> CreateConnector<TMessage>(IMessageHandler<TMessage> handler, IMicroProcessorPipeline pipeline) =>
-            CreateConnector(new MessageHandlerDecorator<TMessage>(new MessageHandlerContext(), handler), pipeline);
+        private static MessageHandlerConnector<TMessage> CreateConnector<TMessage>(IMessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
+            CreateConnector(new MessageHandlerDecorator<TMessage>(new MessageHandlerContext(), handler), filter);
 
-        private static MessageHandlerConnector<TMessage> CreateConnector<TMessage>(MessageHandler<TMessage> handler, IMicroProcessorPipeline pipeline) =>
-            new MessageHandlerConnector<TMessage>(handler, pipeline);
+        private static MessageHandlerConnector<TMessage> CreateConnector<TMessage>(MessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
+            new MessageHandlerConnector<TMessage>(handler, filter);
     }
 }

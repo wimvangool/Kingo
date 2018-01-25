@@ -1881,7 +1881,7 @@ namespace Kingo.Messaging
 
         #region [====== Pipeline ======]        
 
-        private sealed class PublishExtraEventPipeline<TEvent> : MicroProcessorPipelineSpy
+        private sealed class PublishExtraEventPipeline<TEvent> : MicroProcessorFilterSpy
         {
             private readonly TEvent _event;
             private readonly bool _afterHandleAsync;

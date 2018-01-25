@@ -5,11 +5,32 @@ using Kingo.Resources;
 namespace Kingo.Messaging.Validation
 {
     /// <summary>
-    /// Represents a pipeline that validates all messages going through and throws an <see cref="InvalidRequestException" /> when
+    /// Represents a filter that validates all messages going through and throws an <see cref="InvalidRequestException" /> when
     /// a message contains valiation errors.
     /// </summary>
-    public class RequestMessageValidationPipeline : MicroProcessorPipeline
-    {        
+    public sealed class ValidateRequestMessageAttribute : MicroProcessorFilterAttribute
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValidateRequestMessageAttribute" /> class.
+        /// </summary>
+        /// <param name="haltOnFirstError">Indicates whether or not every validation should halt on the first validation-error.</param>
+        /// <param name="stagePosition">
+        /// Indicates which position this filter should have relative to all other filters in the <see cref="MicroProcessorPipelineStage.ValidationStage" />.
+        /// </param>
+        public ValidateRequestMessageAttribute(bool haltOnFirstError = true, byte stagePosition = 0) :
+            base(MicroProcessorPipelineStage.ValidationStage, stagePosition)
+        {
+            HaltOnFirstError = haltOnFirstError;
+        }
+
+        /// <summary>
+        /// Indicates whether or not every validation should halt on the first validation-error.
+        /// </summary>
+        public bool HaltOnFirstError
+        {
+            get;
+        }
+
         /// <summary>
         /// Validates the message and throws an <see cref="InvalidRequestException" /> is any validation errors are found.
         /// </summary>
@@ -31,18 +52,18 @@ namespace Kingo.Messaging.Validation
             return await handlerOrQuery.HandleMessageOrExecuteQueryAsync(context);
         }  
 
-        private static ErrorInfo Validate(object messageToValidate)
+        private ErrorInfo Validate(object messageToValidate)
         {
             var message = messageToValidate as IRequestMessage;
             if (message != null)
             {
-                return message.Validate(true);
+                return message.Validate(HaltOnFirstError);
             }
             IRequestMessageValidator validator;
 
             if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out validator))
             {
-                return validator.Validate(messageToValidate, true);
+                return validator.Validate(messageToValidate, HaltOnFirstError);
             }            
             return ErrorInfo.Empty;
         }        

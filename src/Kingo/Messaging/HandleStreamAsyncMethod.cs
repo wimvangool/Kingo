@@ -47,7 +47,7 @@ namespace Kingo.Messaging
             // Every message potentially returns a new stream of events, which is immediately handled by the processor
             // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
             // sub-tree of events is handled before the next event in the stream.
-            var pipeline = MicroProcessorPipeline.BuildPipeline(Processor.CreateMessagePipelineSegments(), handler);
+            var pipeline = Processor.Pipeline.Build(handler);
             var result = Context.CreateHandleAsyncResult();
 
             try

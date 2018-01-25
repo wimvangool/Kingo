@@ -29,7 +29,7 @@ namespace Kingo.Messaging
         public override async Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync(TMessageIn message, IMicroProcessorContext context) =>
             _controller.CreateExecuteAsyncResult(await _query.ExecuteAsync(message, context));            
 
-        public override void Accept(IMicroProcessorPipelineVisitor visitor) =>
+        public override void Accept(IMicroProcessorFilterVisitor visitor) =>
             visitor?.Visit(_query);
     }
 }

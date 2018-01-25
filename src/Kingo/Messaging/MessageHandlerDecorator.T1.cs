@@ -44,7 +44,7 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public override void Accept(IMicroProcessorPipelineVisitor visitor) =>
+        public override void Accept(IMicroProcessorFilterVisitor visitor) =>
             visitor?.Visit(_handler);
     }
 }

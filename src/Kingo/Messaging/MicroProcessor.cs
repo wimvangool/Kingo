@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Threading;
@@ -12,14 +10,16 @@ namespace Kingo.Messaging
     /// </summary>
     public class MicroProcessor : IMicroProcessor
     {             
-        private readonly Lazy<MessageHandlerFactory> _messageHandlerFactory;        
+        private readonly Lazy<MessageHandlerFactory> _messageHandlerFactory;
+        private readonly Lazy<MicroProcessorPipeline> _pipeline;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
         /// </summary>
         public MicroProcessor()
         {
-            _messageHandlerFactory = new Lazy<MessageHandlerFactory>(BuildMessageHandlerFactory, true);           
+            _messageHandlerFactory = new Lazy<MessageHandlerFactory>(BuildMessageHandlerFactory, true);  
+            _pipeline = new Lazy<MicroProcessorPipeline>(() => BuildPipeline(new MicroProcessorPipeline()), true);
         }
 
         #region [====== Command & Events ======]   
@@ -123,16 +123,16 @@ namespace Kingo.Messaging
 
         #region [====== MicroProcessorPipeline ======]
 
-        internal IReadOnlyList<IMicroProcessorPipeline> CreateMessagePipelineSegments() =>
-            CreateMessagePipeline().WhereNotNull().ToArray();
+        internal MicroProcessorPipeline Pipeline =>
+            _pipeline.Value;       
 
         /// <summary>
-        /// Creates and returns a collection of <see cref="IMicroProcessorPipeline" /> segments which will be assembled into a single
-        /// pipeline to handle every message or query.
+        /// When overridden, this method can be used to add global filters and configuration to the pipeline of this processor.
         /// </summary>
-        /// <returns>A collection of <see cref="IMicroProcessorPipeline" /> instances.</returns>
-        protected virtual IEnumerable<IMicroProcessorPipeline> CreateMessagePipeline() =>
-            Enumerable.Empty<IMicroProcessorPipeline>();
+        /// <param name="pipeline">The pipeline to configure.</param>
+        /// <returns>The configured pipeline.</returns>
+        protected virtual MicroProcessorPipeline BuildPipeline(MicroProcessorPipeline pipeline) =>
+            pipeline;
 
         #endregion
     }

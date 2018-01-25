@@ -2,6 +2,6 @@
 {    
     internal interface IMicroProcessorPipelineComponent
     {        
-        void Accept(IMicroProcessorPipelineVisitor visitor);
+        void Accept(IMicroProcessorFilterVisitor visitor);
     }
 }

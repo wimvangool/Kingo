@@ -1,15 +1,15 @@
 ﻿namespace Kingo.Messaging
 {
     /// <summary>
-    /// When implemented by a class, represents a visitor that visits all elements of a constructed <see cref="IMicroProcessorPipeline" />.
+    /// When implemented by a class, represents a visitor that visits all filter of a constructed message pipeline.
     /// </summary>
-    public interface IMicroProcessorPipelineVisitor
+    public interface IMicroProcessorFilterVisitor
     {
         /// <summary>
-        /// Visits one element of the entire pipeline.
+        /// Visits one filter of the entire pipeline.
         /// </summary>
-        /// <param name="pipeline">The pipeline to visit.</param>
-        void Visit(IMicroProcessorPipeline pipeline);
+        /// <param name="filter">The filter to visit.</param>
+        void Visit(IMicroProcessorFilter filter);
 
         /// <summary>
         /// Visits the <see cref="IMessageHandler{T}" /> at the end of the pipeline.

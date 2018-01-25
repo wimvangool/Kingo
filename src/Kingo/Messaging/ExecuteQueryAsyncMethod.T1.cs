@@ -30,7 +30,7 @@ namespace Kingo.Messaging
         }
 
         protected override Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore() =>
-            MicroProcessorPipeline.BuildPipeline(Processor.CreateMessagePipelineSegments(), Context, _query).ExecuteAsync(Context);
+            Processor.Pipeline.Build(new QueryDecorator<TMessageOut>(Context, _query)).ExecuteAsync(Context);
 
         protected override BadRequestException NewBadRequestException(InternalProcessorException exception, string message) =>
             exception.AsBadRequestException(null, message);

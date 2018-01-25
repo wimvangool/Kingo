@@ -5,12 +5,12 @@ namespace Kingo.Messaging
     internal sealed class QueryConnector<TMessageIn, TMessageOut> : Query<TMessageIn, TMessageOut>
     {
         private readonly Query<TMessageIn, TMessageOut> _nextQuery;
-        private readonly IMicroProcessorPipeline _pipeline;
+        private readonly IMicroProcessorFilter _filter;
 
-        public QueryConnector(Query<TMessageIn, TMessageOut> nextQuery, IMicroProcessorPipeline pipeline)
+        public QueryConnector(Query<TMessageIn, TMessageOut> nextQuery, IMicroProcessorFilter filter)
         {
             _nextQuery = nextQuery;
-            _pipeline = pipeline;
+            _filter = filter;
         }
 
         protected override ITypeAttributeProvider TypeAttributeProvider =>
@@ -20,13 +20,13 @@ namespace Kingo.Messaging
             _nextQuery;
 
         public override Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync(TMessageIn message, IMicroProcessorContext context) =>
-            _pipeline.ExecuteAsync(_nextQuery, message, context);
+            _filter.ExecuteAsync(_nextQuery, message, context);
 
-        public override void Accept(IMicroProcessorPipelineVisitor visitor)
+        public override void Accept(IMicroProcessorFilterVisitor visitor)
         {
             if (visitor != null)
             {
-                visitor.Visit(_pipeline);
+                visitor.Visit(_filter);
 
                 _nextQuery.Accept(visitor);
             }

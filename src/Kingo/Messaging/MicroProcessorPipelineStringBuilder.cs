@@ -2,7 +2,7 @@
 
 namespace Kingo.Messaging
 {
-    internal sealed class MicroProcessorPipelineStringBuilder : IMicroProcessorPipelineVisitor
+    internal sealed class MicroProcessorPipelineStringBuilder : IMicroProcessorFilterVisitor
     {
         private readonly StringBuilder _builder;
 
@@ -11,7 +11,7 @@ namespace Kingo.Messaging
             _builder = new StringBuilder();
         }
 
-        public void Visit(IMicroProcessorPipeline pipeline) =>
+        public void Visit(IMicroProcessorFilter pipeline) =>
             _builder.AppendFormat("{0} | ", pipeline.GetType().FriendlyName());
 
         public void Visit<TMessage>(IMessageHandler<TMessage> handler) =>

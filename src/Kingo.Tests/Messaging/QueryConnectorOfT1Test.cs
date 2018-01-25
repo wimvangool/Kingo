@@ -10,7 +10,7 @@ namespace Kingo.Messaging
         public async Task ExecuteAsync_InvokesEmbeddedPipelineAndQuery_IfOnlyOnePipelineIsUsed()
         {            
             var query = new QuerySpy<object>();
-            var connector = CreateConnector(query, new MicroProcessorPipelineSpy());
+            var connector = CreateConnector(query, new MicroProcessorFilterSpy());
 
             var result = await connector.ExecuteAsync(MicroProcessorContext.None);
 
@@ -25,8 +25,8 @@ namespace Kingo.Messaging
         public async Task ExecuteAsync_InvokesEmbeddedPipelinesAndQuery_IfManyPipelinesAreUsed()
         {
             var query = new QuerySpy<object>();
-            var connectorA = CreateConnector(query, new MicroProcessorPipelineSpy());
-            var connectorB = CreateConnector(connectorA, new MicroProcessorPipelineSpy());
+            var connectorA = CreateConnector(query, new MicroProcessorFilterSpy());
+            var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
             var result = await connectorB.ExecuteAsync(MicroProcessorContext.None);
 
@@ -41,25 +41,25 @@ namespace Kingo.Messaging
         public void ToString_ReturnsExpectedValue_IfOnlyOnePipelineIsUsed()
         {
             var query = new QuerySpy<object>();
-            var connector = CreateConnector(query, new MicroProcessorPipelineSpy());
+            var connector = CreateConnector(query, new MicroProcessorFilterSpy());
 
-            Assert.AreEqual("MicroProcessorPipelineSpy | QuerySpy<Object>", connector.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpy | QuerySpy<Object>", connector.ToString());
         }
 
         [TestMethod]
         public void ToString_ReturnsExpectedValue_IfManyPipelinesAreUsed()
         {
             var query = new QuerySpy<object>();
-            var connectorA = CreateConnector(query, new MicroProcessorPipelineSpy());
-            var connectorB = CreateConnector(connectorA, new MicroProcessorPipelineSpy());
+            var connectorA = CreateConnector(query, new MicroProcessorFilterSpy());
+            var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
-            Assert.AreEqual("MicroProcessorPipelineSpy | MicroProcessorPipelineSpy | QuerySpy<Object>", connectorB.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | QuerySpy<Object>", connectorB.ToString());
         }
 
-        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(IQuery<TMessageOut> query, IMicroProcessorPipeline pipeline) =>
-            CreateConnector(new QueryDecorator<TMessageOut>(new QueryContext(), query), pipeline);
+        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(IQuery<TMessageOut> query, IMicroProcessorFilter filter) =>
+            CreateConnector(new QueryDecorator<TMessageOut>(new QueryContext(), query), filter);
 
-        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(Query<TMessageOut> query, IMicroProcessorPipeline pipeline) =>
-            new QueryConnector<TMessageOut>(query, pipeline);
+        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(Query<TMessageOut> query, IMicroProcessorFilter filter) =>
+            new QueryConnector<TMessageOut>(query, filter);
     }
 }

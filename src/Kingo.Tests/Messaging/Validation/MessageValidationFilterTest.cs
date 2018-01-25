@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.Messaging.Validation
 {
     [TestClass]
-    public sealed class MessageValidationPipelineTest
+    public sealed class MessageValidationFilterTest
     {
         #region [====== Messages ======]
 
@@ -76,15 +76,15 @@ namespace Kingo.Messaging.Validation
 
         #endregion
 
-        private RequestMessageValidationPipeline _pipeline;
+        private ValidateRequestMessageAttribute _filter;
         private MicroProcessorSpy _processor;
 
         [TestInitialize]
         public void Setup()
         {
-            _pipeline = new RequestMessageValidationPipeline();
+            _filter = new ValidateRequestMessageAttribute();
             _processor = new MicroProcessorSpy();
-            _processor.Add(_pipeline);
+            _processor.Add(_filter);
         }
 
         [TestMethod]
@@ -209,7 +209,7 @@ namespace Kingo.Messaging.Validation
 
         private static readonly ExternalEventValidator _ExternalEventValidator = new ExternalEventValidator();
 
-        static MessageValidationPipelineTest()
+        static MessageValidationFilterTest()
         {
             RequestMessageBase.Register(_ExternalEventValidator);
         }

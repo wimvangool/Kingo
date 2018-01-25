@@ -207,6 +207,9 @@
   <data name="MicroProcessorContextState_InvalidOperation" xml:space="preserve">
     <value>Invocation of method '{0}()' is not expected at this point.</value>
   </data>
+  <data name="MicroProcessorPipeline_InvalidStage" xml:space="preserve">
+    <value>Filter '{0}' specifies an invalid stage: {1}.</value>
+  </data>
   <data name="NullCache_CacheNotSupported" xml:space="preserve">
     <value>Cache can only be used while a MicroProcessor is handling a message or executing a query.</value>
   </data>

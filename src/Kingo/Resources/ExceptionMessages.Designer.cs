@@ -331,6 +331,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter &apos;{0}&apos; specifies an invalid stage: {1}..
+        /// </summary>
+        internal static string MicroProcessorPipeline_InvalidStage {
+            get {
+                return ResourceManager.GetString("MicroProcessorPipeline_InvalidStage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cache can only be used while a MicroProcessor is handling a message or executing a query..
         /// </summary>
         internal static string NullCache_CacheNotSupported {
