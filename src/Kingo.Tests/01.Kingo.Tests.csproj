@@ -103,7 +103,6 @@
     <Compile Include="Messaging\MessageHandlerImplementation.T1.cs" />
     <Compile Include="Messaging\MessageHandlerImplementationSequence.cs" />
     <Compile Include="Messaging\MessageHandlerSpy.T1.cs" />
-    <Compile Include="Messaging\MicroProcessorContextSpy.cs" />
     <Compile Include="Messaging\MicroProcessorFilterSpy.cs" />
     <Compile Include="Messaging\MicroProcessorSpy.cs" />
     <Compile Include="Messaging\MicroProcessorTest.cs" />

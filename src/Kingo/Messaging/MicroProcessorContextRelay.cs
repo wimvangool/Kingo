@@ -15,6 +15,9 @@ namespace Kingo.Messaging
         private IMicroProcessorContext Current =>
             _context.Current ?? MicroProcessorContext.None;
 
+        public bool IsMetadataContext =>
+            Current.IsMetadataContext;
+
         public IMessageStackTrace Messages =>
             Current.Messages;
 

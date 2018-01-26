@@ -79,16 +79,18 @@ namespace Kingo.Messaging
         private readonly Stage _authorizationStage;
         private readonly Stage _validationStage;
         private readonly Stage _processingStage;
+        private readonly bool _disableClassAndMethodAttributes;
 
         internal MicroProcessorPipeline() :
-            this(new Stage(), new Stage(), new Stage(), new Stage()) { }
+            this(new Stage(), new Stage(), new Stage(), new Stage(), false) { }
 
-        private MicroProcessorPipeline(Stage exceptionHandlingStage, Stage authorizationStage, Stage validationStage, Stage processingStage)
+        private MicroProcessorPipeline(Stage exceptionHandlingStage, Stage authorizationStage, Stage validationStage, Stage processingStage, bool disableClassAndMethodAttributes)
         {
             _exceptionHandlingStage = exceptionHandlingStage;
             _authorizationStage = authorizationStage;
             _validationStage = validationStage;
             _processingStage = processingStage;
+            _disableClassAndMethodAttributes = disableClassAndMethodAttributes;
         }
 
         /// <inheritdoc />
@@ -160,13 +162,22 @@ namespace Kingo.Messaging
             AddClassLevelFilters(messageHandlerOrQuery).AddMethodLevelFilters(messageHandlerOrQuery);
 
         private MicroProcessorPipeline AddClassLevelFilters(ITypeAttributeProvider classAttributeProvider) =>
-            NextLevel().Add(classAttributeProvider.GetTypeAttributesOfType<IMicroProcessorFilter>());
+            NextLevel().Add(_disableClassAndMethodAttributes ? Enumerable.Empty<IMicroProcessorFilter>() : classAttributeProvider.GetTypeAttributesOfType<IMicroProcessorFilter>());
 
         private MicroProcessorPipeline AddMethodLevelFilters(IMethodAttributeProvider methodAttributeProvider) =>
-            NextLevel().Add(methodAttributeProvider.GetMethodAttributesOfType<IMicroProcessorFilter>());
+            NextLevel().Add(_disableClassAndMethodAttributes ? Enumerable.Empty<IMicroProcessorFilter>() : methodAttributeProvider.GetMethodAttributesOfType<IMicroProcessorFilter>());
 
         private MicroProcessorPipeline NextLevel() =>
-            new MicroProcessorPipeline(_exceptionHandlingStage.NextLevel(), _authorizationStage.NextLevel(), _validationStage.NextLevel(), _processingStage.NextLevel());
+            new MicroProcessorPipeline(_exceptionHandlingStage.NextLevel(), _authorizationStage.NextLevel(), _validationStage.NextLevel(), _processingStage.NextLevel(), _disableClassAndMethodAttributes);
+
+        /// <summary>
+        /// Disables all <see cref="IMicroProcessorFilter">filters</see> that were declared as <see cref="Attribute" /> on message handlers and queries.
+        /// This can be useful to prevent any code related to security, logging and/or caching to run while running tests that are focussed on the
+        /// functional aspects of your code.
+        /// </summary>
+        /// <returns></returns>
+        public MicroProcessorPipeline DisableClassAndMethodAttributes() =>
+            new MicroProcessorPipeline(_exceptionHandlingStage, _authorizationStage, _validationStage, _processingStage, true);
 
         /// <summary>
         /// Adds a collection of filters to this pipeline.

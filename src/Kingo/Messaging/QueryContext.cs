@@ -52,6 +52,9 @@ namespace Kingo.Messaging
             _metadataStream = new EventStreamImplementation();
         }
 
+        public override bool IsMetadataContext =>
+            false;
+
         public override IEventStream OutputStream =>
             _outputStream;
 

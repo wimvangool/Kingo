@@ -8,6 +8,14 @@ namespace Kingo.Messaging
     public interface IMicroProcessorContext
     {
         /// <summary>
+        /// Indicates whether or not the processor is currently handling a message from the metadata stream.
+        /// </summary>
+        bool IsMetadataContext
+        {
+            get;
+        }
+
+        /// <summary>
         /// Returns message-info about the message that is currently being handled or executed by the processor.
         /// </summary>
         IMessageStackTrace Messages
