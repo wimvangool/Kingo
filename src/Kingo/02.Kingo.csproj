@@ -80,6 +80,7 @@
     <Compile Include="Equatable.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="DynamicMethods\GetHashCodeMethod.T1.cs" />
+    <Compile Include="Messaging\AuthorizationFilterAttribute.cs" />
     <Compile Include="Messaging\Domain\AggregateVersionAttribute.cs" />
     <Compile Include="Messaging\Domain\AggregateIdAttribute.cs" />
     <Compile Include="Messaging\Domain\ChangeSet.T1.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Messaging\Domain\Snapshot.T2.cs" />
     <Compile Include="Messaging\EventStream.cs" />
     <Compile Include="Messaging\EventStreamImplementation.cs" />
+    <Compile Include="Messaging\ExceptionHandlingFilterAttribute.cs" />
     <Compile Include="Messaging\ExecuteAsyncMethod.T1.cs" />
     <Compile Include="Messaging\ExecuteAsyncResult.T1.cs" />
     <Compile Include="Messaging\ExecuteQueryAsyncMethod.T1.cs" />
@@ -119,12 +121,11 @@
     <Compile Include="Messaging\HandleMetadataStreamAsyncMethod.cs" />
     <Compile Include="Messaging\HandleStreamAsyncMethod.cs" />
     <Compile Include="Messaging\IEventStream.cs" />
+    <Compile Include="Messaging\IMicroProcessorFilter.cs" />
     <Compile Include="Messaging\InternalProcessorException.cs" />
     <Compile Include="Messaging\IUnitOfWorkCache.cs" />
     <Compile Include="Messaging\IMessageHandlerConfiguration.cs" />
-    <Compile Include="Messaging\IMicroProcessorFilter.cs" />
-    <Compile Include="Messaging\IMicroProcessorPipelineComponent.cs" />
-    <Compile Include="Messaging\IMicroProcessorFilterVisitor.cs" />
+    <Compile Include="Messaging\IMicroProcessorFilterAttributeVisitor.cs" />
     <Compile Include="Messaging\IUnitOfWorkController.cs" />
     <Compile Include="Messaging\MessageHandler.T1.cs" />
     <Compile Include="Messaging\MessageHandlerAttribute.cs" />
@@ -132,28 +133,28 @@
     <Compile Include="Messaging\MessageHandlerConfiguration.cs" />
     <Compile Include="Messaging\MessageHandlerContext.cs" />
     <Compile Include="Messaging\MessageHandlerDecorator.T1.cs" />
-    <Compile Include="Messaging\MessageHandlerConnector.T1.cs" />
+    <Compile Include="Messaging\MessageHandlerPipelineConnector.T1.cs" />
     <Compile Include="Messaging\MessageHandlerFactory.cs" />
     <Compile Include="Messaging\InstanceLifetime.cs" />
     <Compile Include="Messaging\MessageHandlerFactoryStub.cs" />
+    <Compile Include="Messaging\MessageHandlerOrQuery.cs" />
     <Compile Include="Messaging\MessageHandlerOrQuery.T1.cs" />
     <Compile Include="Messaging\MessageHandlerWrapper.T1.cs" />
     <Compile Include="Messaging\MessageStackTrace.cs" />
     <Compile Include="Messaging\HandleAsyncResult.cs" />
     <Compile Include="Messaging\MicroProcessor.cs" />
     <Compile Include="Messaging\MicroProcessorExtensions.cs" />
-    <Compile Include="Messaging\MicroProcessorFilter.cs" />
+    <Compile Include="Messaging\MicroProcessorFilterDecorator.cs" />
     <Compile Include="Messaging\MicroProcessorMethod.T1.cs" />
     <Compile Include="Messaging\MicroProcessorFilterAttribute.cs" />
     <Compile Include="Messaging\MicroProcessorPipeline.cs" />
-    <Compile Include="Messaging\MicroProcessorPipelineStage.cs" />
-    <Compile Include="Messaging\MicroProcessorPipelineStringBuilder.cs" />
     <Compile Include="Messaging\NotFoundException.cs" />
     <Compile Include="Messaging\NullEventStream.cs" />
+    <Compile Include="Messaging\ProcessingFilterAttribute.cs" />
     <Compile Include="Messaging\Query.T1.cs" />
     <Compile Include="Messaging\Query.T2.cs" />
-    <Compile Include="Messaging\QueryConnector.T1.cs" />
-    <Compile Include="Messaging\QueryConnector.T2.cs" />
+    <Compile Include="Messaging\QueryPipelineConnector.T1.cs" />
+    <Compile Include="Messaging\QueryPipelineConnector.T2.cs" />
     <Compile Include="Messaging\QueryContext.cs" />
     <Compile Include="Messaging\QueryDecorator.T1.cs" />
     <Compile Include="Messaging\QueryDecorator.T2.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Messaging\UnitOfWorkCache.cs" />
     <Compile Include="Messaging\UnitOfWorkControllerImplementation.cs" />
     <Compile Include="Messaging\UnprocessableEntityException.cs" />
+    <Compile Include="Messaging\ValidationFilterAttribute.cs" />
     <Compile Include="Messaging\Validation\CommandBase.cs" />
     <Compile Include="EnumOperators.T1.cs" />
     <Compile Include="Messaging\Domain\IllegalOperationException.cs" />
@@ -247,6 +249,9 @@
     <None Include="Properties\Kingo.nuspec">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messaging\Authorization\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

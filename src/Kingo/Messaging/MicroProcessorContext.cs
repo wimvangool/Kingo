@@ -21,10 +21,7 @@ namespace Kingo.Messaging
             public NullContext()
             {
                 Messages = new EmpyStackTrace();                                               
-            }
-
-            public bool IsMetadataContext =>
-                false;
+            }            
 
             public IMessageStackTrace Messages
             {
@@ -90,13 +87,7 @@ namespace Kingo.Messaging
             _stackTrace = stackTrace ?? new MessageStackTrace();
             _unitOfWorkController = new UnitOfWorkController();            
             _token = token ?? CancellationToken.None;
-        }
-
-        /// <inheritdoc />
-        public abstract bool IsMetadataContext
-        {
-            get;
-        }
+        }      
 
         internal MessageHandlerContext CreateMetadataContext() =>
             new MessageHandlerContext(_token, _stackTrace.Copy());

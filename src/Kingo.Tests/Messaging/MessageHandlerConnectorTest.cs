@@ -60,10 +60,10 @@ namespace Kingo.Messaging
             Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | MessageHandlerSpy<Object>", connectorB.ToString());
         }
 
-        private static MessageHandlerConnector<TMessage> CreateConnector<TMessage>(IMessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
+        private static MessageHandlerPipelineConnector<TMessage> CreateConnector<TMessage>(IMessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
             CreateConnector(new MessageHandlerDecorator<TMessage>(new MessageHandlerContext(), handler), filter);
 
-        private static MessageHandlerConnector<TMessage> CreateConnector<TMessage>(MessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
-            new MessageHandlerConnector<TMessage>(handler, filter);
+        private static MessageHandlerPipelineConnector<TMessage> CreateConnector<TMessage>(MessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
+            new MessageHandlerPipelineConnector<TMessage>(handler, filter);
     }
 }

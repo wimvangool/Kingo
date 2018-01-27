@@ -6,23 +6,7 @@ namespace Kingo.Messaging
     /// When implemented by a class, represents a filter that a <see cref="IMicroProcessor" /> uses to process each message.
     /// </summary>
     public interface IMicroProcessorFilter
-    {
-        /// <summary>
-        /// Indicates which stage of the pipeline this filter is part of.
-        /// </summary>
-        MicroProcessorPipelineStage Stage
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Indicates which position this filter should have in its stage, relative to all other filters in the specified <see cref="Stage" />.        
-        /// </summary>
-        byte StagePosition
-        {
-            get;
-        }
-
+    {        
         /// <summary>
         /// Handles the specified <paramref name="message"/> asynchronously.
         /// </summary>

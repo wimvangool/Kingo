@@ -9,60 +9,16 @@ namespace Kingo.Messaging
     /// Represents a <see cref="IMessageHandler{T}" /> instance that is able to provide access to its own attributes.
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is handled by this handler.</typeparam>
-    public abstract class MessageHandler<TMessage> : IMessageHandler<TMessage>, ITypeAttributeProvider, IMethodAttributeProvider, IMicroProcessorPipelineComponent
-    {
-        #region [====== ITypeAttributeProvider ======]
-
-        /// <summary>
-        /// Returns the provider that is used to access all attributes declared on the <see cref="IMessageHandler{T}" />.
-        /// </summary>
-        protected abstract ITypeAttributeProvider TypeAttributeProvider
-        {
-            get;
-        }
-
-        /// <inheritdoc />
-        public bool TryGetTypeAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            TypeAttributeProvider.TryGetTypeAttributeOfType(out attribute);
-
-        /// <inheritdoc />
-        public IEnumerable<TAttribute> GetTypeAttributesOfType<TAttribute>() where TAttribute : class =>
-            TypeAttributeProvider.GetTypeAttributesOfType<TAttribute>();
-
-        #endregion
-
-        #region [====== IMethodAttributeProvider ======]
-
-        /// <summary>
-        /// Returns the provider that is used to access all attributes declared on the <see cref="IMessageHandler{T}.HandleAsync(T, IMicroProcessorContext)" /> method.
-        /// </summary>
-        protected abstract IMethodAttributeProvider MethodAttributeProvider
-        {
-            get;
-        }
-
-        /// <inheritdoc />
-        public bool TryGetMethodAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            MethodAttributeProvider.TryGetMethodAttributeOfType(out attribute);
-
-        /// <inheritdoc />
-        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class =>
-            MethodAttributeProvider.GetMethodAttributesOfType<TAttribute>();
-
-        #endregion
+    public abstract class MessageHandler<TMessage> : MessageHandlerOrQuery, IMessageHandler<TMessage>
+    {        
+        internal MessageHandler(ITypeAttributeProvider typeAttributeProvider, IMethodAttributeProvider methodAttributeProvider) :
+            base(typeAttributeProvider, methodAttributeProvider) { }
 
         Task IMessageHandler<TMessage>.HandleAsync(TMessage message, IMicroProcessorContext context) =>
             HandleAsync(message, context);
 
         /// <inheritdoc />
-        public abstract Task<HandleAsyncResult> HandleAsync(TMessage message, IMicroProcessorContext context);              
-
-        /// <inheritdoc />
-        public override string ToString() =>
-            MicroProcessorPipelineStringBuilder.ToString(this);
-
-        /// <inheritdoc />
-        public abstract void Accept(IMicroProcessorFilterVisitor visitor);
+        public abstract Task<HandleAsyncResult> HandleAsync(TMessage message, IMicroProcessorContext context);                              
 
         #region [====== Delegate wrapping ======]
 

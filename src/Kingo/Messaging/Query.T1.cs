@@ -9,52 +9,16 @@ namespace Kingo.Messaging
     /// Represents a <see cref="IQuery{T}" /> instance that is able to provide access to its own attributes.
     /// </summary>
     /// <typeparam name="TMessageOut">Type of the response that is returned by this query.</typeparam>
-    public abstract class Query<TMessageOut> : IQuery<TMessageOut>, ITypeAttributeProvider, IMethodAttributeProvider, IMicroProcessorPipelineComponent
-    {
-        /// <summary>
-        /// Returns the provider that is used to access all attributes declared on the <see cref="IQuery{T}" />.
-        /// </summary>
-        protected abstract ITypeAttributeProvider TypeAttributeProvider
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Returns the provider that is used to access all attributes declared on the <see cref="IQuery{T}.ExecuteAsync(IMicroProcessorContext)" /> method.
-        /// </summary>
-        protected abstract IMethodAttributeProvider MethodAttributeProvider
-        {
-            get;
-        }
-
-        /// <inheritdoc />
-        public bool TryGetTypeAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            TypeAttributeProvider.TryGetTypeAttributeOfType(out attribute);
-
-        /// <inheritdoc />
-        public IEnumerable<TAttribute> GetTypeAttributesOfType<TAttribute>() where TAttribute : class =>
-            TypeAttributeProvider.GetTypeAttributesOfType<TAttribute>();
-
-        /// <inheritdoc />
-        public bool TryGetMethodAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            MethodAttributeProvider.TryGetMethodAttributeOfType(out attribute);
-
-        /// <inheritdoc />
-        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class =>
-            MethodAttributeProvider.GetMethodAttributesOfType<TAttribute>();
+    public abstract class Query<TMessageOut> : MessageHandlerOrQuery, IQuery<TMessageOut>
+    {        
+        internal Query(ITypeAttributeProvider typeAttributeProvider, IMethodAttributeProvider methodAttributeProvider) :
+            base(typeAttributeProvider, methodAttributeProvider) { }
 
         async Task<TMessageOut> IQuery<TMessageOut>.ExecuteAsync(IMicroProcessorContext context) =>
             (await ExecuteAsync(context)).Message;
 
         /// <inheritdoc />
         public abstract Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync(IMicroProcessorContext context);
-
-        /// <inheritdoc />
-        public override string ToString() =>
-            MicroProcessorPipelineStringBuilder.ToString(this);
-
-        /// <inheritdoc />
-        public abstract void Accept(IMicroProcessorFilterVisitor visitor);
 
         #region [====== Delegate wrapping ======]
 

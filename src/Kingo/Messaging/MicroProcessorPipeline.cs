@@ -11,14 +11,50 @@ namespace Kingo.Messaging
     /// globally, declared on the class-level or declared on the method-level of the message handler or query that
     /// is being invoked.
     /// </summary>
-    public sealed class MicroProcessorPipeline : IEnumerable<IMicroProcessorFilter>
+    public sealed class MicroProcessorPipeline : IEnumerable<MicroProcessorFilterAttribute>
     {
+        #region [====== AddFilterFunction ======]
+
+        private sealed class AddFilterFunction : IMicroProcessorFilterAttributeVisitor
+        {
+            private readonly MicroProcessorPipeline _pipeline;
+
+            public AddFilterFunction(MicroProcessorPipeline pipeline)
+            {
+                _pipeline = pipeline;
+            }
+
+            public MicroProcessorPipeline Invoke(MicroProcessorFilterAttribute filter)
+            {
+                if (filter == null)
+                {
+                    throw new ArgumentNullException(nameof(filter));
+                }
+                filter.Accept(this);
+                return _pipeline;
+            }
+
+            void IMicroProcessorFilterAttributeVisitor.Visit(ExceptionHandlingFilterAttribute filter) =>
+                _pipeline._exceptionHandlingStage.Add(filter);
+
+            void IMicroProcessorFilterAttributeVisitor.Visit(AuthorizationFilterAttribute filter) =>
+                _pipeline._authorizationStage.Add(filter);
+
+            void IMicroProcessorFilterAttributeVisitor.Visit(ValidationFilterAttribute filter) =>
+                _pipeline._validationStage.Add(filter);
+
+            void IMicroProcessorFilterAttributeVisitor.Visit(ProcessingFilterAttribute filter) =>
+                _pipeline._processingStage.Add(filter);
+        }
+
+        #endregion
+
         #region [====== Stage ======]
 
-        private sealed class Stage : IEnumerable<IMicroProcessorFilter>
+        private sealed class Stage : IEnumerable<MicroProcessorFilterAttribute>
         {
             private readonly Stage _previousLevel;
-            private readonly LinkedList<IMicroProcessorFilter> _filters;
+            private readonly List<MicroProcessorFilterAttribute> _filters;
 
             public Stage() :
                 this(null) { }
@@ -26,48 +62,20 @@ namespace Kingo.Messaging
             private Stage(Stage previousLevel)
             {
                 _previousLevel = previousLevel;
-                _filters = new LinkedList<IMicroProcessorFilter>();
+                _filters = new List<MicroProcessorFilterAttribute>();
             }
 
             public Stage NextLevel() =>
                 new Stage(this);
 
-            public void Add(IMicroProcessorFilter filter)
-            {
-                if (MustBeAddedBeforeOtherFilter(filter.StagePosition, out LinkedListNode<IMicroProcessorFilter> otherFilter))
-                {
-                    _filters.AddBefore(otherFilter, filter);
-                }
-                else
-                {
-                    _filters.AddLast(filter);
-                }
-            }
+            public void Add(MicroProcessorFilterAttribute filter) =>
+                _filters.Add(filter);
 
-            private bool MustBeAddedBeforeOtherFilter(byte position, out LinkedListNode<IMicroProcessorFilter> otherFilter)
-            {
-                if (_filters.Count > 0)
-                {
-                    var filter = _filters.First;
-
-                    do
-                    {
-                        if (position < filter.Value.StagePosition)
-                        {
-                            otherFilter = filter;
-                            return true;
-                        }
-                    } while ((filter = filter.Next) != null);
-                }
-                otherFilter = null;
-                return false;
-            }
-
-            public IEnumerator<IMicroProcessorFilter> GetEnumerator() =>
+            public IEnumerator<MicroProcessorFilterAttribute> GetEnumerator() =>
                 PreviousLevelFilters().Concat(_filters).GetEnumerator();
 
-            private IEnumerable<IMicroProcessorFilter> PreviousLevelFilters() =>
-                _previousLevel ?? Enumerable.Empty<IMicroProcessorFilter>();
+            private IEnumerable<MicroProcessorFilterAttribute> PreviousLevelFilters() =>
+                _previousLevel ?? Enumerable.Empty<MicroProcessorFilterAttribute>();
 
             IEnumerator IEnumerable.GetEnumerator() =>
                 GetEnumerator();
@@ -75,6 +83,7 @@ namespace Kingo.Messaging
 
         #endregion
 
+        private readonly AddFilterFunction _addFilterFunction;
         private readonly Stage _exceptionHandlingStage;
         private readonly Stage _authorizationStage;
         private readonly Stage _validationStage;
@@ -86,6 +95,7 @@ namespace Kingo.Messaging
 
         private MicroProcessorPipeline(Stage exceptionHandlingStage, Stage authorizationStage, Stage validationStage, Stage processingStage, bool disableClassAndMethodAttributes)
         {
+            _addFilterFunction = new AddFilterFunction(this);
             _exceptionHandlingStage = exceptionHandlingStage;
             _authorizationStage = authorizationStage;
             _validationStage = validationStage;
@@ -93,12 +103,24 @@ namespace Kingo.Messaging
             _disableClassAndMethodAttributes = disableClassAndMethodAttributes;
         }
 
-        /// <inheritdoc />
-        public override string ToString() =>
-            string.Join(" | ", this.Select(filter => filter.GetType().FriendlyName()));
+        #region [====== ToString ======]
+
+        private const string _FilterSeparator = " | ";
 
         /// <inheritdoc />
-        public IEnumerator<IMicroProcessorFilter> GetEnumerator() =>
+        public override string ToString() =>
+            string.Join(_FilterSeparator, this.Select(filter => ToString(filter)));
+
+        internal static string ToString(object pipelineComponent) =>
+            pipelineComponent.GetType().FriendlyName();
+
+        internal static string ToString(object leftComponent, object rightComponent) =>
+            leftComponent + _FilterSeparator + rightComponent;
+
+        #endregion
+
+        /// <inheritdoc />
+        public IEnumerator<MicroProcessorFilterAttribute> GetEnumerator() =>
             _exceptionHandlingStage.Concat(_authorizationStage).Concat(_validationStage).Concat(_processingStage).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
@@ -109,13 +131,13 @@ namespace Kingo.Messaging
         internal MessageHandler<TMessage> Build<TMessage>(MessageHandler<TMessage> handler) =>
             Build(handler, AddNextLevelFilters(handler));
 
-        private static MessageHandler<TMessage> Build<TMessage>(MessageHandler<TMessage> handler, IEnumerable<IMicroProcessorFilter> filters)
+        private static MessageHandler<TMessage> Build<TMessage>(MessageHandler<TMessage> handler, IEnumerable<MicroProcessorFilterAttribute> filters)
         {
             var pipeline = handler;
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new MessageHandlerConnector<TMessage>(pipeline, filter);
+                pipeline = new MessageHandlerPipelineConnector<TMessage>(pipeline, filter.CreateFilterPipeline());
             }
             return pipeline;
         }
@@ -127,13 +149,13 @@ namespace Kingo.Messaging
         internal Query<TMessageOut> Build<TMessageOut>(Query<TMessageOut> query) =>
             Build(query, AddNextLevelFilters(query));
 
-        private static Query<TMessageOut> Build<TMessageOut>(Query<TMessageOut> query, IEnumerable<IMicroProcessorFilter> filters)
+        private static Query<TMessageOut> Build<TMessageOut>(Query<TMessageOut> query, IEnumerable<MicroProcessorFilterAttribute> filters)
         {
             Query<TMessageOut> pipeline = query;
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new QueryConnector<TMessageOut>(pipeline, filter);
+                pipeline = new QueryPipelineConnector<TMessageOut>(pipeline, filter.CreateFilterPipeline());
             }
             return pipeline;
         }
@@ -145,13 +167,13 @@ namespace Kingo.Messaging
         internal Query<TMessageIn, TMessageOut> Build<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query) =>
             Build(query, AddNextLevelFilters(query));
 
-        private static Query<TMessageIn, TMessageOut> Build<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, IEnumerable<IMicroProcessorFilter> filters)
+        private static Query<TMessageIn, TMessageOut> Build<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, IEnumerable<MicroProcessorFilterAttribute> filters)
         {
             Query<TMessageIn, TMessageOut> pipeline = query;
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new QueryConnector<TMessageIn, TMessageOut>(pipeline, filter);
+                pipeline = new QueryPipelineConnector<TMessageIn, TMessageOut>(pipeline, filter.CreateFilterPipeline());
             }
             return pipeline;
         }
@@ -162,16 +184,16 @@ namespace Kingo.Messaging
             AddClassLevelFilters(messageHandlerOrQuery).AddMethodLevelFilters(messageHandlerOrQuery);
 
         private MicroProcessorPipeline AddClassLevelFilters(ITypeAttributeProvider classAttributeProvider) =>
-            NextLevel().Add(_disableClassAndMethodAttributes ? Enumerable.Empty<IMicroProcessorFilter>() : classAttributeProvider.GetTypeAttributesOfType<IMicroProcessorFilter>());
+            NextLevel().Add(_disableClassAndMethodAttributes ? Enumerable.Empty<MicroProcessorFilterAttribute>() : classAttributeProvider.GetTypeAttributesOfType<MicroProcessorFilterAttribute>());
 
         private MicroProcessorPipeline AddMethodLevelFilters(IMethodAttributeProvider methodAttributeProvider) =>
-            NextLevel().Add(_disableClassAndMethodAttributes ? Enumerable.Empty<IMicroProcessorFilter>() : methodAttributeProvider.GetMethodAttributesOfType<IMicroProcessorFilter>());
+            NextLevel().Add(_disableClassAndMethodAttributes ? Enumerable.Empty<MicroProcessorFilterAttribute>() : methodAttributeProvider.GetMethodAttributesOfType<MicroProcessorFilterAttribute>());
 
         private MicroProcessorPipeline NextLevel() =>
             new MicroProcessorPipeline(_exceptionHandlingStage.NextLevel(), _authorizationStage.NextLevel(), _validationStage.NextLevel(), _processingStage.NextLevel(), _disableClassAndMethodAttributes);
 
         /// <summary>
-        /// Disables all <see cref="IMicroProcessorFilter">filters</see> that were declared as <see cref="Attribute" /> on message handlers and queries.
+        /// Disables all <see cref="MicroProcessorFilterAttribute">filters</see> that were declared as <see cref="Attribute" /> on message handlers and queries.
         /// This can be useful to prevent any code related to security, logging and/or caching to run while running tests that are focussed on the
         /// functional aspects of your code.
         /// </summary>
@@ -187,7 +209,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="filters"/> is <c>null</c>.
         /// </exception>
-        public MicroProcessorPipeline Add(IEnumerable<IMicroProcessorFilter> filters)
+        public MicroProcessorPipeline Add(IEnumerable<MicroProcessorFilterAttribute> filters)
         {
             if (filters == null)
             {
@@ -213,38 +235,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentException">
         /// <paramref name="filter"/> specifies an invalid stage.
         /// </exception>
-        public MicroProcessorPipeline Add(IMicroProcessorFilter filter)
-        {
-            StageOf(filter).Add(filter);
-            return this;
-        } 
-        
-        private Stage StageOf(IMicroProcessorFilter filter)
-        {
-            if (filter == null)
-            {
-                throw new ArgumentNullException(nameof(filter));
-            }
-            switch (filter.Stage)
-            {
-                case MicroProcessorPipelineStage.ExceptionHandlingStage:
-                    return _exceptionHandlingStage;
-                case MicroProcessorPipelineStage.AuthorizationStage:
-                    return _authorizationStage;
-                case MicroProcessorPipelineStage.ValidationStage:
-                    return _validationStage;
-                case MicroProcessorPipelineStage.ProcessingStage:
-                    return _processingStage;
-                default:
-                    throw NewInvalidStageException(filter);
-            }
-        }
-
-        private static Exception NewInvalidStageException(IMicroProcessorFilter filter)
-        {
-            var messageFormat = ExceptionMessages.MicroProcessorPipeline_InvalidStage;
-            var message = string.Format(messageFormat, filter.GetType().FriendlyName(), filter.Stage);
-            return new ArgumentException(message, nameof(filter));
-        }        
+        public MicroProcessorPipeline Add(MicroProcessorFilterAttribute filter) =>
+            _addFilterFunction.Invoke(filter);        
     }
 }

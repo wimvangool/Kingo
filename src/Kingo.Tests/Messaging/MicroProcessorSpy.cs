@@ -11,14 +11,14 @@ namespace Kingo.Messaging
         private readonly MessageHandlerImplementationSequence _implementationSequence;
         private readonly List<Type> _messageHandlers;
         private readonly Dictionary<Type, Type> _dependencies;
-        private readonly List<IMicroProcessorFilter> _filters;        
+        private readonly List<MicroProcessorFilterAttribute> _filters;        
 
         public MicroProcessorSpy()
         {
             _implementationSequence = new MessageHandlerImplementationSequence();
             _messageHandlers = new List<Type>();
             _dependencies = new Dictionary<Type, Type>();
-            _filters = new List<IMicroProcessorFilter>();            
+            _filters = new List<MicroProcessorFilterAttribute>();            
         }       
 
         public void Register<TMessageHandler>() =>
@@ -79,7 +79,7 @@ namespace Kingo.Messaging
             }, token);                       
         }
 
-        public void Add(IMicroProcessorFilter filter) =>
+        public void Add(MicroProcessorFilterAttribute filter) =>
             _filters.Add(filter);
 
         protected override MicroProcessorPipeline BuildPipeline(MicroProcessorPipeline pipeline) =>

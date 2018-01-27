@@ -56,10 +56,10 @@ namespace Kingo.Messaging
             Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | QuerySpy<Object>", connectorB.ToString());
         }
 
-        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(IQuery<TMessageOut> query, IMicroProcessorFilter filter) =>
+        private static QueryPipelineConnector<TMessageOut> CreateConnector<TMessageOut>(IQuery<TMessageOut> query, IMicroProcessorFilter filter) =>
             CreateConnector(new QueryDecorator<TMessageOut>(new QueryContext(), query), filter);
 
-        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(Query<TMessageOut> query, IMicroProcessorFilter filter) =>
-            new QueryConnector<TMessageOut>(query, filter);
+        private static QueryPipelineConnector<TMessageOut> CreateConnector<TMessageOut>(Query<TMessageOut> query, IMicroProcessorFilter filter) =>
+            new QueryPipelineConnector<TMessageOut>(query, filter);
     }
 }

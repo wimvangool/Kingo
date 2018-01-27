@@ -8,17 +8,12 @@ namespace Kingo.Messaging.Validation
     /// Represents a filter that validates all messages going through and throws an <see cref="InvalidRequestException" /> when
     /// a message contains valiation errors.
     /// </summary>
-    public sealed class ValidateRequestMessageAttribute : MicroProcessorFilterAttribute
+    public sealed class ValidateRequestMessageAttribute : ValidationFilterAttribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateRequestMessageAttribute" /> class.
-        /// </summary>
-        /// <param name="haltOnFirstError">Indicates whether or not every validation should halt on the first validation-error.</param>
-        /// <param name="stagePosition">
-        /// Indicates which position this filter should have relative to all other filters in the <see cref="MicroProcessorPipelineStage.ValidationStage" />.
-        /// </param>
-        public ValidateRequestMessageAttribute(bool haltOnFirstError = true, byte stagePosition = 0) :
-            base(MicroProcessorPipelineStage.ValidationStage, stagePosition)
+        /// </summary>       
+        public ValidateRequestMessageAttribute(bool haltOnFirstError = true)           
         {
             HaltOnFirstError = haltOnFirstError;
         }

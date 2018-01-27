@@ -50,10 +50,7 @@ namespace Kingo.Messaging
         {           
             _outputStream = new NullOutputStream();
             _metadataStream = new EventStreamImplementation();
-        }
-
-        public override bool IsMetadataContext =>
-            false;
+        }        
 
         public override IEventStream OutputStream =>
             _outputStream;

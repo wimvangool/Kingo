@@ -79,7 +79,7 @@ namespace Kingo.Messaging
                 return from interfaceType in _interfaces
                        let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                        where messageTypeOfInterface.IsInstanceOfType(message)
-                        select CreateMessageHandlerInstanceFor<TMessage>(factory, context, interfaceType, messageTypeOfInterface);
+                       select CreateMessageHandlerInstanceFor<TMessage>(factory, context, interfaceType, messageTypeOfInterface);
             }
             return Enumerable.Empty<MessageHandler<TMessage>>();
         }        

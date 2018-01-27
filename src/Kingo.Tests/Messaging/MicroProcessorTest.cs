@@ -1881,12 +1881,12 @@ namespace Kingo.Messaging
 
         #region [====== Pipeline ======]        
 
-        private sealed class PublishExtraEventPipeline<TEvent> : MicroProcessorFilterSpy
+        private sealed class PublishExtraEventPipeline : MicroProcessorFilterSpy
         {
-            private readonly TEvent _event;
+            private readonly object _event;
             private readonly bool _afterHandleAsync;
 
-            public PublishExtraEventPipeline(TEvent @event, bool afterHandleAsync)
+            public PublishExtraEventPipeline(object @event, bool afterHandleAsync)
             {
                 _event = @event;
                 _afterHandleAsync = afterHandleAsync;
@@ -1901,7 +1901,7 @@ namespace Kingo.Messaging
                         var result = await base.HandleAsync(handler, message, context);
                         context.OutputStream.Publish(_event);
                         return result;
-                    }
+                    }                    
                     context.OutputStream.Publish(_event);                    
                 }
                 return await base.HandleAsync(handler, message, context);
@@ -1932,7 +1932,7 @@ namespace Kingo.Messaging
                 AssertMessageStack(context.Messages, message, someCommand, eventA);
             });
 
-            _processor.Add(new PublishExtraEventPipeline<EventB>(eventB, false));
+            _processor.Add(new PublishExtraEventPipeline(eventB, false));
 
             AssertStream(await _processor.HandleAsync(someCommand), eventB, eventA);
         }
@@ -1961,7 +1961,7 @@ namespace Kingo.Messaging
                 AssertMessageStack(context.Messages, message, someCommand, eventB);
             });            
 
-            _processor.Add(new PublishExtraEventPipeline<EventB>(eventB, true));
+            _processor.Add(new PublishExtraEventPipeline(eventB, true));
 
             AssertStream(await _processor.HandleAsync(someCommand), eventA, eventB);
         }
