@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kingo.Messaging
@@ -9,7 +6,7 @@ namespace Kingo.Messaging
     /// <summary>
     /// When implemented, represents a filter that decorates, and therefore extends the functionality of, another filter in the pipeline.
     /// </summary>
-    public abstract class MicroProcessorFilterDecorator : IMicroProcessorFilter
+    public abstract class MicroProcessorFilterDecorator<TFilter> : IMicroProcessorFilter where TFilter : class, IMicroProcessorFilter
     {
         #region [====== MessagePipeline ======]
 
@@ -57,6 +54,7 @@ namespace Kingo.Messaging
             public override Task<HandleAsyncResult> InvokeNextFilterAsync(IMicroProcessorContext context) =>
                 _nextFilter.HandleAsync(_handler, _message, context);
 
+            /// <inheritdoc />
             public override Task<HandleAsyncResult> SkipNextFilterAsync(IMicroProcessorContext context) =>
                 _handler.HandleAsync(_message, context);
         }
@@ -120,13 +118,13 @@ namespace Kingo.Messaging
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MicroProcessorFilterDecorator" /> class.
+        /// Initializes a new instance of the <see cref="MicroProcessorFilterDecorator{T}" /> class.
         /// </summary>
         /// <param name="nextFilter">The filter to decorate.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="nextFilter"/> is <c>null</c>.
         /// </exception>
-        protected MicroProcessorFilterDecorator(IMicroProcessorFilter nextFilter)
+        protected MicroProcessorFilterDecorator(TFilter nextFilter)
         {
             NextFilter = nextFilter ?? throw new ArgumentNullException(nameof(nextFilter));
         }
@@ -134,7 +132,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// The decorated filter, which is next in line to invoke, if required.
         /// </summary>
-        protected IMicroProcessorFilter NextFilter
+        protected TFilter NextFilter
         {
             get;
         }

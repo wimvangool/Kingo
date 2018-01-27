@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Principal;
+using System.Threading;
+using Kingo.Messaging.Authorization;
 
 namespace Kingo.Messaging
 {
@@ -11,7 +9,21 @@ namespace Kingo.Messaging
     /// </summary>
     public abstract class AuthorizationFilterAttribute : MicroProcessorFilterAttribute
     {
+        /// <summary>
+        /// Returns the current principal.
+        /// </summary>
+        protected internal IPrincipal Principal =>
+            Thread.CurrentPrincipal;
+
         internal override void Accept(IMicroProcessorFilterAttributeVisitor visitor) =>
             visitor.Visit(this);
+
+        /// <inheritdoc />
+        protected internal override IMicroProcessorFilter CreateFilterPipeline()
+        {            
+            IMicroProcessorFilter pipeline = new RequiresAuthenticatedPrincipalFilter(this);
+            pipeline = new RequiresMessageSourceFilter(pipeline, MessageSources.InputStream | MessageSources.Query);
+            return pipeline;
+        }            
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {    
     internal interface IMicroProcessorFilterAttributeVisitor
     {                

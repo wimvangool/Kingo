@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     /// <summary>
     /// Serves as a base class for all filters that are designed to execute just before the message is dispatched to a
