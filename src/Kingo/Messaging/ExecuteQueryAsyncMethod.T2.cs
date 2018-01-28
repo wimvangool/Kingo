@@ -7,7 +7,7 @@ namespace Kingo.Messaging
     internal sealed class ExecuteQueryAsyncMethod<TMessageIn, TMessageOut> : ExecuteAsyncMethod<TMessageOut>
     {
         public static Task<TMessageOut> Invoke(MicroProcessor processor, IQuery<TMessageIn, TMessageOut> query, TMessageIn message, CancellationToken? token) =>
-            Invoke(new ExecuteQueryAsyncMethod<TMessageIn, TMessageOut>(processor, new QueryContext(token), query, message));
+            Invoke(new ExecuteQueryAsyncMethod<TMessageIn, TMessageOut>(processor, new QueryContext(processor.Principal, token), query, message));
 
         private readonly IQuery<TMessageIn, TMessageOut> _query;
         private readonly TMessageIn _message;

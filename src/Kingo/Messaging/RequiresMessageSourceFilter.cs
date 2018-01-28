@@ -7,7 +7,7 @@ namespace Kingo.Messaging
     /// Represents a filter-decorator that will invoke the next filter of the source of message matches
     /// with one of the supported sources; otherwise it will skip it.
     /// </summary>
-    public sealed class RequiresMessageSourceFilter : MicroProcessorFilterDecorator<IMicroProcessorFilter>
+    public sealed class RequiresMessageSourceFilter : MicroProcessorFilterDecorator
     {
         private readonly MessageSources _sources;
 

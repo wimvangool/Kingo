@@ -36,11 +36,11 @@ namespace Kingo.Messaging.Authorization
         {
             foreach (var requiredRole in Roles)
             {
-                if (Principal.IsInRole(requiredRole))
+                if (context.Principal.IsInRole(requiredRole))
                 {
                     continue;
                 }
-                throw NewPrincipalNotInRoleException(Principal.Identity, requiredRole, context.Messages.Current.Message);
+                throw NewPrincipalNotInRoleException(context.Principal.Identity, requiredRole, context.Messages.Current.Message);
             }
             return base.HandleOrExecuteAsync(handlerOrQuery, context);                       
         }                

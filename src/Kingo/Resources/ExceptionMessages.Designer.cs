@@ -502,15 +502,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User &apos;{0}&apos; must be a ClaimsPrincipal..
-        /// </summary>
-        internal static string RequiresClaimsAttribute_PrincipalIsNoClaimsPrincipal {
-            get {
-                return ResourceManager.GetString("RequiresClaimsAttribute_PrincipalIsNoClaimsPrincipal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to User &apos;{0}&apos; must be in role &apos;{1}&apos;..
         /// </summary>
         internal static string RequiresRoleAttribute_MissingRole {

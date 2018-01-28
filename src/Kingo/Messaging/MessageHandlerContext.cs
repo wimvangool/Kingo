@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Principal;
 using System.Threading;
 using Kingo.Resources;
 
@@ -52,8 +53,8 @@ namespace Kingo.Messaging
         private EventStream _outputStream;
         private EventStream _metadataStream;
 
-        public MessageHandlerContext(CancellationToken? token = null, MessageStackTrace stackTrace = null) :
-            base(token, stackTrace)
+        public MessageHandlerContext(IPrincipal principal, CancellationToken? token = null, MessageStackTrace stackTrace = null) :
+            base(principal, token, stackTrace)
         {
             _isMetadataContext = stackTrace != null;
             _outputStream = CreateOutputStream(_isMetadataContext);

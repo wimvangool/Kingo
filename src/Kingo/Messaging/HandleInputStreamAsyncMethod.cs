@@ -15,7 +15,7 @@ namespace Kingo.Messaging
 
             try
             {
-                return await Invoke(processor, inputStream, new MessageHandlerContext(token));
+                return await Invoke(processor, inputStream, new MessageHandlerContext(processor.Principal, token));
             }
             catch (OperationCanceledException)
             {                

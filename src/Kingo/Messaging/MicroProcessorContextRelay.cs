@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Security.Principal;
+using System.Threading;
 using Kingo.Threading;
 
 namespace Kingo.Messaging
@@ -13,7 +14,10 @@ namespace Kingo.Messaging
         }
 
         private IMicroProcessorContext Current =>
-            _context.Current ?? MicroProcessorContext.None;        
+            _context.Current ?? MicroProcessorContext.None;
+
+        public IPrincipal Principal =>
+            Current.Principal;
 
         public IMessageStackTrace Messages =>
             Current.Messages;

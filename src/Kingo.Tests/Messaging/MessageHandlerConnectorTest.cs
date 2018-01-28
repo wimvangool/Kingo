@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -61,7 +62,7 @@ namespace Kingo.Messaging
         }
 
         private static MessageHandlerPipelineConnector<TMessage> CreateConnector<TMessage>(IMessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
-            CreateConnector(new MessageHandlerDecorator<TMessage>(new MessageHandlerContext(), handler), filter);
+            CreateConnector(new MessageHandlerDecorator<TMessage>(new MessageHandlerContext(Thread.CurrentPrincipal), handler), filter);
 
         private static MessageHandlerPipelineConnector<TMessage> CreateConnector<TMessage>(MessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
             new MessageHandlerPipelineConnector<TMessage>(handler, filter);

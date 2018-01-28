@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,7 +15,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void Token_IsNone_IfSpecifiedTokenIsNull()
         {
-            using (CreateScope(new MessageHandlerContext()))
+            using (CreateScope(new MessageHandlerContext(Principal)))
             {
                 Assert.AreEqual(CancellationToken.None, CurrentContext.Token);
             }
@@ -25,7 +26,7 @@ namespace Kingo.Messaging
         {
             var token = new CancellationToken();
 
-            using (CreateScope(new MessageHandlerContext(token)))
+            using (CreateScope(new MessageHandlerContext(Principal, token)))
             {
                 Assert.AreEqual(token, CurrentContext.Token);
             }
@@ -39,7 +40,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MessageStackIndexer_Throws_IfIndexIsNegative()
         {
-            using (CreateScope(new MessageHandlerContext()))
+            using (CreateScope(new MessageHandlerContext(Principal)))
             {
                 CurrentContext.Messages[-1].IgnoreValue();
             }
@@ -49,7 +50,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MessageStackIndexer_Throws_IfIndexIsZero_And_NoMessageHasBeenPushed()
         {
-            using (CreateScope(new MessageHandlerContext()))
+            using (CreateScope(new MessageHandlerContext(Principal)))
             {
                 CurrentContext.Messages[0].IgnoreValue();
             }
@@ -59,7 +60,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MessageStackIndexer_Throws_IfIndexIsGreaterThanZero()
         {
-            using (CreateScope(new MessageHandlerContext()))
+            using (CreateScope(new MessageHandlerContext(Principal)))
             {
                 CurrentContext.Messages[1].IgnoreValue();
             }
@@ -70,7 +71,7 @@ namespace Kingo.Messaging
         {
             const string expectedStringValue = "Object (InputStream)";
 
-            var context = new MessageHandlerContext();
+            var context = new MessageHandlerContext(Principal);
             var message = new object();
 
             using (CreateScope(context))
@@ -95,7 +96,7 @@ namespace Kingo.Messaging
         {
             const string expectedStringValue = "Object (InputStream) -> Int32 (OutputStream)";
 
-            var context = new MessageHandlerContext();
+            var context = new MessageHandlerContext(Principal);
             var messageA = new object();
             int messageB = 10;
 
@@ -126,7 +127,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentNullException))]
         public void EnlistAsync_Throws_IfUnitOfWorkIsNull()
         {
-            using (CreateScope(new MessageHandlerContext()))
+            using (CreateScope(new MessageHandlerContext(Principal)))
             {
                 CurrentContext.UnitOfWork.EnlistAsync(null);
             }
@@ -137,7 +138,7 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(false);
 
-            using (CreateScope(new MessageHandlerContext()))
+            using (CreateScope(new MessageHandlerContext(Principal)))
             {
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
             }
@@ -150,7 +151,7 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(false);
 
-            using (var scope = CreateScope(new MessageHandlerContext()))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
                 await scope.CompleteAsync();
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
@@ -164,7 +165,7 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            using (var scope = CreateScope(new MessageHandlerContext()))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
                 await scope.CompleteAsync();
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
@@ -178,7 +179,7 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            using (var scope = CreateScope(new MessageHandlerContext()))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
@@ -193,7 +194,7 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            using (var scope = CreateScope(new MessageHandlerContext()))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork, new object());
@@ -212,7 +213,7 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(false);
 
-            using (var scope = CreateScope(new MessageHandlerContext()))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
                 await scope.CompleteAsync();
@@ -226,7 +227,7 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            using (var scope = CreateScope(new MessageHandlerContext()))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
                 await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
                 await scope.CompleteAsync();
@@ -239,7 +240,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(NotSupportedException))]
         public async Task CompleteAsync_DoesNothing_IfCalledMoreThanOnce()
         {
-            using (var scope = CreateScope(new MessageHandlerContext()))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
                 await scope.CompleteAsync();
                 await scope.CompleteAsync();
@@ -251,7 +252,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void PreviousContext_IsRestored_AfterScopeHasBeenDisposed()
         {
-            using (CreateScope(new MessageHandlerContext())) { }
+            using (CreateScope(new MessageHandlerContext(Principal))) { }
 
             Assert.AreEqual(0, CurrentContext.Messages.Count);
         }
@@ -259,7 +260,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public async Task CreateScope_CanSafelyBeUsedInsideAnotherThread_AsLongAsRelativeDisposeOrderIsCorrect()
         {
-            var outerContext = new MessageHandlerContext();
+            var outerContext = new MessageHandlerContext(Principal);
 
             using (var waitHandleOuter = new AutoResetEvent(false))
             using (var waitHandleInner = new AutoResetEvent(false))
@@ -325,6 +326,9 @@ namespace Kingo.Messaging
                 Assert.AreEqual(2, CurrentContext.Messages.Current.Message);
             }
         }
+
+        private static IPrincipal Principal =>
+            Thread.CurrentPrincipal;
 
         private static IMicroProcessorContext CurrentContext =>
             MicroProcessorContext.Current;

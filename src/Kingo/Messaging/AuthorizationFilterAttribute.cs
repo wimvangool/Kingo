@@ -8,13 +8,7 @@ namespace Kingo.Messaging
     /// Serves as a base class for all filters that are designed to authorize the request and/or message that is being processed.
     /// </summary>
     public abstract class AuthorizationFilterAttribute : MicroProcessorFilterAttribute
-    {
-        /// <summary>
-        /// Returns the current principal.
-        /// </summary>
-        protected internal IPrincipal Principal =>
-            Thread.CurrentPrincipal;
-
+    {        
         internal override void Accept(IMicroProcessorFilterAttributeVisitor visitor) =>
             visitor.Visit(this);
 

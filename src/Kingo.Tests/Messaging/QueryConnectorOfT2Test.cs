@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -60,8 +62,11 @@ namespace Kingo.Messaging
             Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | QuerySpy<Object, Object>", connectorB.ToString());
         }
 
+        private static IPrincipal Principal =>
+            Thread.CurrentPrincipal;
+
         private static QueryPipelineConnector<TMessageIn, TMessageOut> CreateConnector<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, IMicroProcessorFilter filter) =>
-            CreateConnector(new QueryDecorator<TMessageIn, TMessageOut>(new QueryContext(), query), filter);
+            CreateConnector(new QueryDecorator<TMessageIn, TMessageOut>(new QueryContext(Principal), query), filter);
 
         private static QueryPipelineConnector<TMessageIn, TMessageOut> CreateConnector<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, IMicroProcessorFilter filter) =>
             new QueryPipelineConnector<TMessageIn, TMessageOut>(query, filter);

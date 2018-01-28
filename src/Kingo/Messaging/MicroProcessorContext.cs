@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading;
 using Kingo.Resources;
 using Kingo.Threading;
@@ -21,7 +22,10 @@ namespace Kingo.Messaging
             public NullContext()
             {
                 Messages = new EmpyStackTrace();                                               
-            }            
+            }
+
+            public IPrincipal Principal =>
+                Thread.CurrentPrincipal;
 
             public IMessageStackTrace Messages
             {
@@ -77,20 +81,28 @@ namespace Kingo.Messaging
         #endregion
 
         #region [====== IMicroProcessorContext ======]
-
+        
         private readonly MessageStackTrace _stackTrace;        
         private readonly UnitOfWorkController _unitOfWorkController;        
         private readonly CancellationToken _token;                
 
-        internal MicroProcessorContext(CancellationToken? token, MessageStackTrace stackTrace = null)
+        internal MicroProcessorContext(IPrincipal principal, CancellationToken? token, MessageStackTrace stackTrace = null)
         {
+            Principal = principal;
+
             _stackTrace = stackTrace ?? new MessageStackTrace();
             _unitOfWorkController = new UnitOfWorkController();            
             _token = token ?? CancellationToken.None;
-        }      
+        }
+
+        /// <inheritdoc />
+        public IPrincipal Principal
+        {
+            get;
+        }
 
         internal MessageHandlerContext CreateMetadataContext() =>
-            new MessageHandlerContext(_token, _stackTrace.Copy());
+            new MessageHandlerContext(Principal, _token, _stackTrace.Copy());
 
         IMessageStackTrace IMicroProcessorContext.Messages =>
             _stackTrace;

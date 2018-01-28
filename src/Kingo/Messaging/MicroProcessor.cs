@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Threading;
@@ -21,6 +22,18 @@ namespace Kingo.Messaging
             _messageHandlerFactory = new Lazy<MessageHandlerFactory>(BuildMessageHandlerFactory, true);  
             _pipeline = new Lazy<MicroProcessorPipeline>(() => BuildPipeline(new MicroProcessorPipeline()), true);
         }
+
+        #region [====== Security ======]
+
+        /// <summary>
+        /// Returns the <see cref="IPrincipal" /> this processor is currently associated with. By default, it returns
+        /// the <see cref="Thread.CurrentPrincipal">current thread's principal</see>. This property can be overridden
+        /// to return a principal from a different context.
+        /// </summary>
+        protected internal virtual IPrincipal Principal =>
+            Thread.CurrentPrincipal;
+
+        #endregion
 
         #region [====== Command & Events ======]   
 

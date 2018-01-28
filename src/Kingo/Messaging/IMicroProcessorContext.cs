@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Security.Principal;
+using System.Threading;
 
 namespace Kingo.Messaging
 {
@@ -7,6 +8,14 @@ namespace Kingo.Messaging
     /// </summary>
     public interface IMicroProcessorContext
     {        
+        /// <summary>
+        /// Returns the <see cref="IPrincipal" /> that was retrieved from the <see cref="MicroProcessor" /> that is processing this message.
+        /// </summary>
+        IPrincipal Principal
+        {
+            get;
+        }
+
         /// <summary>
         /// Returns message-info about the message that is currently being handled or executed by the processor.
         /// </summary>

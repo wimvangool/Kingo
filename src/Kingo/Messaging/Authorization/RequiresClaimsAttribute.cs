@@ -35,33 +35,17 @@ namespace Kingo.Messaging.Authorization
         /// <inheritdoc />
         protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
-            if (Principal is ClaimsPrincipal principal)
-            {
-                foreach (var requiredClaimType in ClaimTypes)
-                {
-                    if (HasClaim(principal, requiredClaimType))
-                    {
-                        continue;
-                    }
-                    throw NewMissingClaimTypeException(principal.Identity, requiredClaimType, context.Messages.Current.Message);
-                }
-                return base.HandleOrExecuteAsync(handlerOrQuery, context);
-            }
-            throw NewPrincipalIsNoClaimsPrincipalException(Principal.Identity, context.Messages.Current.Message);
-        }
-
-        private static bool HasClaim(ClaimsPrincipal principal, string claimType) =>
-            HasClaim(principal.FindFirst(claimType));
-
-        private static bool HasClaim(Claim claim) =>
-            !string.IsNullOrEmpty(claim?.Value);
-
-        private static Exception NewPrincipalIsNoClaimsPrincipalException(IIdentity identity, object failedMessage)
-        {
-            var messageFormat = ExceptionMessages.RequiresClaimsAttribute_PrincipalIsNoClaimsPrincipal;
-            var message = string.Format(messageFormat, identity.Name);
-            return new UnauthorizedRequestException(failedMessage, message);
-        }
+            //foreach (var requiredClaimType in ClaimTypes)
+            //{
+            //    if (HasClaim(principal, requiredClaimType))
+            //    {
+            //        continue;
+            //    }
+            //    throw NewMissingClaimTypeException(principal.Identity, requiredClaimType, context.Messages.Current.Message);
+            //}
+            //return base.HandleOrExecuteAsync(handlerOrQuery, context);
+            throw new NotImplementedException();
+        }            
 
         private static Exception NewMissingClaimTypeException(IIdentity identity, string requiredClaimType, object failedMessage)
         {

@@ -264,9 +264,6 @@
   <data name="RequiresClaimsAttribute_MissingClaim" xml:space="preserve">
     <value>User '{0}' must have claim '{1}'.</value>
   </data>
-  <data name="RequiresClaimsAttribute_PrincipalIsNoClaimsPrincipal" xml:space="preserve">
-    <value>User '{0}' must be a ClaimsPrincipal.</value>
-  </data>
   <data name="RequiresRoleAttribute_MissingRole" xml:space="preserve">
     <value>User '{0}' must be in role '{1}'.</value>
   </data>
