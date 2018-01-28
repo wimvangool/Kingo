@@ -19,6 +19,9 @@ namespace Kingo.Messaging
         public IPrincipal Principal =>
             Current.Principal;
 
+        public IClaimsProvider ClaimsProvider =>
+            Current.ClaimsProvider;
+
         public IMessageStackTrace Messages =>
             Current.Messages;
 

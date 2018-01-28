@@ -1,6 +1,4 @@
-﻿using System.Security.Principal;
-using System.Threading;
-using Kingo.Messaging.Authorization;
+﻿using Kingo.Messaging.Authorization;
 
 namespace Kingo.Messaging
 {

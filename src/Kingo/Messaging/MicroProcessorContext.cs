@@ -27,6 +27,9 @@ namespace Kingo.Messaging
             public IPrincipal Principal =>
                 Thread.CurrentPrincipal;
 
+            public IClaimsProvider ClaimsProvider =>
+                new ClaimsProvider(Principal);
+
             public IMessageStackTrace Messages
             {
                 get;
@@ -89,6 +92,7 @@ namespace Kingo.Messaging
         internal MicroProcessorContext(IPrincipal principal, CancellationToken? token, MessageStackTrace stackTrace = null)
         {
             Principal = principal;
+            ClaimsProvider = new ClaimsProvider(principal);
 
             _stackTrace = stackTrace ?? new MessageStackTrace();
             _unitOfWorkController = new UnitOfWorkController();            
@@ -97,6 +101,12 @@ namespace Kingo.Messaging
 
         /// <inheritdoc />
         public IPrincipal Principal
+        {
+            get;
+        }
+
+        /// <inheritdoc />
+        public IClaimsProvider ClaimsProvider
         {
             get;
         }

@@ -17,6 +17,14 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
+        /// Returns a <see cref="IClaimsProvider" /> that is based on the <see cref="Principal" /> of this context.
+        /// </summary>
+        IClaimsProvider ClaimsProvider
+        {
+            get;
+        }
+
+        /// <summary>
         /// Returns message-info about the message that is currently being handled or executed by the processor.
         /// </summary>
         IMessageStackTrace Messages
@@ -25,7 +33,7 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Returns the 
+        /// Returns the associated unit of work controller.
         /// </summary>
         IUnitOfWorkController UnitOfWork
         {

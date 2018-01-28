@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
-using Kingo.Resources;
 
 namespace Kingo.Messaging.Authorization
 {
@@ -35,23 +33,15 @@ namespace Kingo.Messaging.Authorization
         /// <inheritdoc />
         protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
-            //foreach (var requiredClaimType in ClaimTypes)
-            //{
-            //    if (HasClaim(principal, requiredClaimType))
-            //    {
-            //        continue;
-            //    }
-            //    throw NewMissingClaimTypeException(principal.Identity, requiredClaimType, context.Messages.Current.Message);
-            //}
-            //return base.HandleOrExecuteAsync(handlerOrQuery, context);
-            throw new NotImplementedException();
-        }            
-
-        private static Exception NewMissingClaimTypeException(IIdentity identity, string requiredClaimType, object failedMessage)
-        {
-            var messageFormat = ExceptionMessages.RequiresClaimsAttribute_MissingClaim;
-            var message = string.Format(messageFormat, identity.Name, requiredClaimType);
-            return new UnauthorizedRequestException(failedMessage, message);
-        }
+            foreach (var requiredClaimType in ClaimTypes)
+            {
+                if (context.ClaimsProvider.HasClaim(requiredClaimType))
+                {
+                    continue;
+                }
+                throw ClaimsProvider.NewClaimNotFoundException(context.Principal.Identity, requiredClaimType);
+            }
+            return base.HandleOrExecuteAsync(handlerOrQuery, context);
+        }                    
     }
 }

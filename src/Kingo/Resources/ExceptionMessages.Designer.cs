@@ -115,6 +115,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User &apos;{0}&apos; must have claim &apos;{1}&apos;..
+        /// </summary>
+        internal static string ClaimsProvider_ClaimNotFound {
+            get {
+                return ResourceManager.GetString("ClaimsProvider_ClaimNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified object of type &apos;{0}&apos; cannot be compared to instance of type &apos;{1}&apos;..
         /// </summary>
         internal static string Comparable_IncomparableType {

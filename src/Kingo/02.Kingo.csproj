@@ -59,6 +59,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="Messaging\ClaimsProviderExtensions.cs" />
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockExtensions.cs" />
     <Compile Include="Clocks\DelegateClock.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="Messaging\AuthorizationFilterAttribute.cs" />
     <Compile Include="Messaging\Authorization\RequiresClaimsAttribute.cs" />
     <Compile Include="Messaging\Authorization\RequiresRolesAttribute.cs" />
+    <Compile Include="Messaging\ClaimNotFoundException.cs" />
+    <Compile Include="Messaging\ClaimsProvider.cs" />
     <Compile Include="Messaging\Domain\AggregateVersionAttribute.cs" />
     <Compile Include="Messaging\Domain\AggregateIdAttribute.cs" />
     <Compile Include="Messaging\Domain\ChangeSet.T1.cs" />
@@ -122,6 +125,7 @@
     <Compile Include="Messaging\HandleInputStreamAsyncMethod.cs" />
     <Compile Include="Messaging\HandleMetadataStreamAsyncMethod.cs" />
     <Compile Include="Messaging\HandleStreamAsyncMethod.cs" />
+    <Compile Include="Messaging\IClaimsProvider.cs" />
     <Compile Include="Messaging\IEventStream.cs" />
     <Compile Include="Messaging\IMicroProcessorFilter.cs" />
     <Compile Include="Messaging\InternalProcessorException.cs" />

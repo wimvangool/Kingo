@@ -135,6 +135,9 @@
   <data name="AggregateRoot_VersionUpdateException" xml:space="preserve">
     <value>The next version ({0}) must represent a newer version than the current version ({1}).</value>
   </data>
+  <data name="ClaimsProvider_ClaimNotFound" xml:space="preserve">
+    <value>User '{0}' must have claim '{1}'.</value>
+  </data>
   <data name="Comparable_IncomparableType" xml:space="preserve">
     <value>The specified object of type '{0}' cannot be compared to instance of type '{1}'.</value>
   </data>
