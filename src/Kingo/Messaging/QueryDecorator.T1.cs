@@ -19,6 +19,5 @@ namespace Kingo.Messaging
 
         public override string ToString() =>
             MicroProcessorPipeline.ToString(_query);
-
     }
 }

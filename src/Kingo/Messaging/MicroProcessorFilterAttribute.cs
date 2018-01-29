@@ -83,7 +83,7 @@ namespace Kingo.Messaging
                 var pipeline = filter;
 
                 while (_filterFactories.Count > 0)
-                {
+                {                   
                     pipeline = _filterFactories.Pop().Invoke(pipeline);
                 }
                 return pipeline;

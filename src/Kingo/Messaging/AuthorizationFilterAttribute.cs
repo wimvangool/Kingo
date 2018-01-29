@@ -16,6 +16,6 @@ namespace Kingo.Messaging
             return pipeline
                 .Add(filter => new RequiresMessageSourceFilter(filter, MessageSources.InputStream | MessageSources.Query))
                 .Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
-        }
+        }                 
     }
 }

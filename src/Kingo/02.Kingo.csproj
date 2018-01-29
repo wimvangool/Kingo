@@ -151,7 +151,7 @@
     <Compile Include="Messaging\HandleAsyncResult.cs" />
     <Compile Include="Messaging\MicroProcessor.cs" />
     <Compile Include="Messaging\MicroProcessorExtensions.cs" />
-    <Compile Include="Messaging\MicroProcessorFilterDecorator.T1.cs" />
+    <Compile Include="Messaging\MicroProcessorFilterDecorator.cs" />
     <Compile Include="Messaging\MicroProcessorMethod.T1.cs" />
     <Compile Include="Messaging\MicroProcessorFilterAttribute.cs" />
     <Compile Include="Messaging\MicroProcessorPipeline.cs" />

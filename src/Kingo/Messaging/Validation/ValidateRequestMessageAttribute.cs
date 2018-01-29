@@ -49,17 +49,19 @@ namespace Kingo.Messaging.Validation
 
         private ErrorInfo Validate(object messageToValidate)
         {
-            var message = messageToValidate as IRequestMessage;
-            if (message != null)
+            if (messageToValidate != null)
             {
-                return message.Validate(HaltOnFirstError);
-            }
-            IRequestMessageValidator validator;
+                if (messageToValidate is IRequestMessage message)
+                {
+                    return message.Validate(HaltOnFirstError);
+                }               
+                IRequestMessageValidator validator;
 
-            if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out validator))
-            {
-                return validator.Validate(messageToValidate, HaltOnFirstError);
-            }            
+                if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out validator))
+                {
+                    return validator.Validate(messageToValidate, HaltOnFirstError);
+                }
+            }                        
             return ErrorInfo.Empty;
         }        
 

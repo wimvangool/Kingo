@@ -16,7 +16,7 @@ namespace Kingo.Messaging.Authorization
             {
                 return pipeline.InvokeNextFilterAsync(context);
             }
-            throw NewPrincipalNotAuthenticatedException(context.Principal.Identity, context.Messages.Current.Message);            
+            throw NewPrincipalNotAuthenticatedException(context.Principal.Identity, context.Messages.Current?.Message);            
         }
 
         private static Exception NewPrincipalNotAuthenticatedException(IIdentity identity, object failedMessage)

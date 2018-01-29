@@ -8,7 +8,7 @@ namespace Kingo.Messaging
     public interface IMessageStackTrace : IReadOnlyList<MessageInfo>
     {
         /// <summary>
-        /// Returns the current message.
+        /// Returns the current message, or <c>null</c> if there is no current message.
         /// </summary>
         MessageInfo Current
         {

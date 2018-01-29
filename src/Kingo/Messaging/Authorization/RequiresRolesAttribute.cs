@@ -40,7 +40,7 @@ namespace Kingo.Messaging.Authorization
                 {
                     continue;
                 }
-                throw NewPrincipalNotInRoleException(context.Principal.Identity, requiredRole, context.Messages.Current.Message);
+                throw NewPrincipalNotInRoleException(context.Principal.Identity, requiredRole, context.Messages.Current?.Message);
             }
             return base.HandleOrExecuteAsync(handlerOrQuery, context);                       
         }                
