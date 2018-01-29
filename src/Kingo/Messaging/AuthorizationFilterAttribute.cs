@@ -11,11 +11,11 @@ namespace Kingo.Messaging
             visitor.Visit(this);
 
         /// <inheritdoc />
-        protected internal override IMicroProcessorFilter CreateFilterPipeline()
-        {            
-            IMicroProcessorFilter pipeline = new RequiresAuthenticatedPrincipalFilter(this);
-            pipeline = new RequiresMessageSourceFilter(pipeline, MessageSources.InputStream | MessageSources.Query);
-            return pipeline;
-        }            
+        protected override Pipeline CreateFilterPipeline(Pipeline pipeline)
+        {
+            return pipeline
+                .Add(filter => new RequiresMessageSourceFilter(filter, MessageSources.InputStream | MessageSources.Query))
+                .Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
+        }
     }
 }

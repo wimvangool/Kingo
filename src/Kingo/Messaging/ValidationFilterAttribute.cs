@@ -9,7 +9,7 @@
             visitor.Visit(this);
 
         /// <inheritdoc />
-        protected internal override IMicroProcessorFilter CreateFilterPipeline() =>
-            new RequiresMessageSourceFilter(this, MessageSources.InputStream | MessageSources.Query);
+        protected override Pipeline CreateFilterPipeline(Pipeline pipeline) =>
+            pipeline.Add(filter => new RequiresMessageSourceFilter(filter, MessageSources.InputStream | MessageSources.Query));
     }
 }

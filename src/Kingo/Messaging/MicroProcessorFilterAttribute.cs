@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kingo.Messaging
@@ -43,12 +44,63 @@ namespace Kingo.Messaging
 
         #endregion
 
+        #region [====== Pipeline ======]
+
         /// <summary>
-        /// Creates a mini-pipeline based on this filter that will be integrated into the <see cref="IMicroProcessor" />'s pipeline to process each message.
-        /// Returns this filter by default.
+        /// Represents a pipeline of filters.
         /// </summary>
-        /// <returns>A filter or filter pipeline that will be integrated into the <see cref="IMicroProcessor"/>'s pipeline.</returns>
-        protected internal virtual IMicroProcessorFilter CreateFilterPipeline() =>
-            this;
+        protected sealed class Pipeline
+        {            
+            private readonly Stack<Func<IMicroProcessorFilter, IMicroProcessorFilter>> _filterFactories;
+
+            internal Pipeline()
+            {                
+                _filterFactories = new Stack<Func<IMicroProcessorFilter, IMicroProcessorFilter>>();
+            }
+
+            /// <summary>
+            /// Adds the specified <paramref name="filterFactory" /> to this pipeline, representing one filter.
+            /// </summary>
+            /// <param name="filterFactory">
+            /// A delegate that can be used to create one filter decorating another filter.
+            /// </param>
+            /// <returns>A pipeline that contains the added <paramref name="filterFactory"/>.</returns>
+            /// <exception cref="ArgumentNullException">
+            /// <paramref name="filterFactory" /> is <c>null</c>.
+            /// </exception>
+            public Pipeline Add(Func<IMicroProcessorFilter, IMicroProcessorFilter> filterFactory)
+            {
+                if (filterFactory == null)
+                {
+                    throw new ArgumentNullException(nameof(filterFactory));
+                }
+                _filterFactories.Push(filterFactory);
+                return this;
+            }
+
+            internal IMicroProcessorFilter Build(IMicroProcessorFilter filter)
+            {
+                var pipeline = filter;
+
+                while (_filterFactories.Count > 0)
+                {
+                    pipeline = _filterFactories.Pop().Invoke(pipeline);
+                }
+                return pipeline;
+            }
+        }
+
+        internal IMicroProcessorFilter CreateFilterPipeline() =>
+            CreateFilterPipeline(new Pipeline()).Build(this);
+
+        /// <summary>
+        /// Creates and returns a pipeline of filter that is placed on top of this filter.
+        /// </summary>
+        /// <param name="pipeline">A pipeline of filters.</param>
+        /// <returns>A pipeline to which a collection of other filters are added.</returns>
+        protected virtual Pipeline CreateFilterPipeline(Pipeline pipeline) =>
+            pipeline;
+
+        #endregion
     }
 }

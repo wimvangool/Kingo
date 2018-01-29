@@ -7,7 +7,7 @@ namespace Kingo.Messaging.Authorization
 {
     internal sealed class RequiresAuthenticatedPrincipalFilter : MicroProcessorFilterDecorator
     {
-        public RequiresAuthenticatedPrincipalFilter(AuthorizationFilterAttribute nextFilter) :
+        public RequiresAuthenticatedPrincipalFilter(IMicroProcessorFilter nextFilter) :
             base(nextFilter) { }
 
         protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessagePipeline<TResult> pipeline, IMicroProcessorContext context)
