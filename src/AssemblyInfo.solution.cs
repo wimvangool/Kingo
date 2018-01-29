@@ -8,4 +8,4 @@ using System.Resources;
 
 [assembly: AssemblyVersion("3.4")]
 [assembly: AssemblyFileVersion("3.4.0.0")]
-[assembly: AssemblyInformationalVersion("3.4.1")]
+[assembly: AssemblyInformationalVersion("3.4.2")]
