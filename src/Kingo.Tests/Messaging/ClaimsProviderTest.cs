@@ -14,14 +14,7 @@ namespace Kingo.Messaging
 
         private static readonly Claim _ClaimA = new Claim(nameof(_ClaimA), Guid.NewGuid().ToString("N"));
         private static readonly Claim _ClaimB_OfType_Int = new Claim(nameof(_ClaimB_OfType_Int), "0", _ValueTypeInt);
-        private static readonly Claim _ClaimB_OfType_Single = new Claim(nameof(_ClaimB_OfType_Int), "0.0", _ValueTypeSingle);
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Constructor_Throws_IfPrincipalIsNull()
-        {
-            new ClaimsProvider(null);
-        }
+        private static readonly Claim _ClaimB_OfType_Single = new Claim(nameof(_ClaimB_OfType_Int), "0.0", _ValueTypeSingle);       
 
         #region [====== HasClaim ======]
 

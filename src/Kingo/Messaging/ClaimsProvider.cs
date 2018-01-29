@@ -17,26 +17,51 @@ namespace Kingo.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="ClaimsProvider" /> class.
         /// </summary>
-        /// <param name="principal">The principal this provider will be based on.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="principal" /> is <c>null</c>.
-        /// </exception>
+        /// <param name="principal">The principal this provider will be based on.</param>       
         public ClaimsProvider(ClaimsPrincipal principal)
         {
-            _principal = principal ?? throw new ArgumentNullException(nameof(principal));
+            _principal = principal ?? CreatePrincipal(null);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClaimsProvider" /> class.
         /// </summary>
-        /// <param name="principal">The principal this provider will be based on.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="principal" /> is <c>null</c>.
-        /// </exception>
+        /// <param name="principal">The principal this provider will be based on.</param>        
         public ClaimsProvider(IPrincipal principal)
         {
-            _principal = principal as ClaimsPrincipal ?? new ClaimsPrincipal(principal);
+            _principal = principal as ClaimsPrincipal ?? CreatePrincipal(null);
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClaimsProvider" /> class.
+        /// </summary>
+        /// <param name="claims">
+        /// A collection of claims to be managed by this provider, where each key represents
+        /// the claim-type and each value represents the claim-value.
+        /// </param>
+        public ClaimsProvider(IEnumerable<KeyValuePair<string, string>> claims) :
+            this(claims.EnsureNotNull().Select(pair => new Claim(pair.Key, pair.Value))) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClaimsProvider" /> class.
+        /// </summary>
+        /// <param name="claims">A collection of claims to be managed by this provider.</param>        
+        public ClaimsProvider(IEnumerable<Claim> claims)
+        {
+            _principal = CreatePrincipal(claims);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClaimsProvider" /> class.
+        /// </summary>
+        /// <param name="claims">A collection of claims to be managed by this provider.</param>
+        public ClaimsProvider(params Claim[] claims)
+        {
+            _principal = CreatePrincipal(claims);
+        }        
+
+        private static ClaimsPrincipal CreatePrincipal(IEnumerable<Claim> claims) =>
+            new ClaimsPrincipal(new[] { new ClaimsIdentity(claims.EnsureNotNull()) });        
 
         /// <inheritdoc />
         public IEnumerable<Claim> Claims =>
