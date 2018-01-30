@@ -38,30 +38,30 @@ namespace Kingo.Messaging.Validation
         /// </exception>
         protected override async Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
-            var messageToValidate = context.Messages.Current.Message;
-            var errorInfo = Validate(messageToValidate);
-            if (errorInfo.HasErrors)
+            var messageToValidate = context.Messages.Current?.Message;
+            if (messageToValidate != null)
             {
-                throw NewInvalidMessageException(messageToValidate.GetType(), errorInfo);
+                var errorInfo = Validate(messageToValidate);
+                if (errorInfo.HasErrors)
+                {
+                    throw NewInvalidMessageException(messageToValidate.GetType(), errorInfo);
+                }
             }
             return await handlerOrQuery.HandleMessageOrExecuteQueryAsync(context);
         }  
 
         private ErrorInfo Validate(object messageToValidate)
         {
-            if (messageToValidate != null)
+            if (messageToValidate is IRequestMessage message)
             {
-                if (messageToValidate is IRequestMessage message)
-                {
-                    return message.Validate(HaltOnFirstError);
-                }               
-                IRequestMessageValidator validator;
+                return message.Validate(HaltOnFirstError);
+            }
+            IRequestMessageValidator validator;
 
-                if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out validator))
-                {
-                    return validator.Validate(messageToValidate, HaltOnFirstError);
-                }
-            }                        
+            if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out validator))
+            {
+                return validator.Validate(messageToValidate, HaltOnFirstError);
+            }
             return ErrorInfo.Empty;
         }        
 

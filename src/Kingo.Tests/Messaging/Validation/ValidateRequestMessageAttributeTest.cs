@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging.Validation
 {
     [TestClass]
-    public sealed class MessageValidationFilterTest
+    public sealed class ValidateRequestMessageAttributeTest
     {
         #region [====== Messages ======]
 
@@ -86,6 +88,8 @@ namespace Kingo.Messaging.Validation
             _processor = new MicroProcessorSpy();
             _processor.Add(_filter);
         }
+
+        #region [====== Handle ======]
 
         [TestMethod]
         public void Handle_HandlesCommand_IfCommandIsValid()
@@ -207,9 +211,75 @@ namespace Kingo.Messaging.Validation
             }
         }
 
+        #endregion
+
+        #region [====== Query<TMessageOut> ======]
+
+        private sealed class SomeRequest : RequestMessageBase
+        {
+            public SomeRequest(int value)
+            {
+                Value = value;
+            }
+
+            public int Value
+            {
+                get;
+            }
+
+            protected override IRequestMessageValidator CreateMessageValidator()
+            {
+                var validator = new DelegateValidator<SomeRequest>((message, haltOnFirstError) =>
+                {
+                    var errorInfoBuilder = new ErrorInfoBuilder();
+
+                    if (message.Value < 0)
+                    {
+                        errorInfoBuilder.Add("Value is invalid.", nameof(message.Value));
+                    }
+                    return errorInfoBuilder.BuildErrorInfo();
+                });
+                return base.CreateMessageValidator().Append(validator);
+            }
+        }
+
+        [ValidateRequestMessage]
+        private sealed class SomeQuery : IQuery<object>, IQuery<object, object>
+        {
+            public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
+                AsyncMethod.Value(new object());
+
+            public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
+                AsyncMethod.Value(message);
+        }
+
+        [TestMethod]
+        public async Task ExecuteQuery_DoesNotThrow_IfThereIsNoRequestMessage()
+        {
+            await CreateProcessor().ExecuteAsync(new SomeQuery());
+        }
+
+        [TestMethod]
+        public async Task ExecuteQuery_DoesNotThrow_IfThereIsRequestMessageIsValid()
+        {
+            await CreateProcessor().ExecuteAsync(new SomeRequest(0), new SomeQuery());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadRequestException))]
+        public async Task ExecuteQuery_Throws_IfThereIsRequestMessageIsValid()
+        {
+            await CreateProcessor().ExecuteAsync(new SomeRequest(-1), new SomeQuery());
+        }
+
+        private static MicroProcessor CreateProcessor() =>
+            new MicroProcessor();
+
+        #endregion
+
         private static readonly ExternalEventValidator _ExternalEventValidator = new ExternalEventValidator();
 
-        static MessageValidationFilterTest()
+        static ValidateRequestMessageAttributeTest()
         {
             RequestMessageBase.Register(_ExternalEventValidator);
         }

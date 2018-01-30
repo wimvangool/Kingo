@@ -126,7 +126,7 @@
     <Compile Include="Messaging\MessageHandlerSpy.cs" />
     <Compile Include="Messaging\MessageStreamTest.cs" />
     <Compile Include="Messaging\MessageStreamOfT1Test.cs" />
-    <Compile Include="Messaging\Validation\MessageValidationFilterTest.cs" />
+    <Compile Include="Messaging\Validation\ValidateRequestMessageAttributeTest.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Clocks\ClockTest.cs" />
