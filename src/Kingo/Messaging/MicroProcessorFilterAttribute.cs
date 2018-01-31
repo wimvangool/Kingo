@@ -10,7 +10,19 @@ namespace Kingo.Messaging
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public abstract class MicroProcessorFilterAttribute : Attribute, IMicroProcessorFilter
     {                       
-        internal MicroProcessorFilterAttribute() { }
+        internal MicroProcessorFilterAttribute()
+        {
+            Sources = MessageSources.All;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MessageSources Sources
+        {
+            get;
+            set;
+        }
 
         internal abstract void Accept(IMicroProcessorFilterAttributeVisitor visitor);
 
@@ -52,10 +64,11 @@ namespace Kingo.Messaging
         protected sealed class FilterPipeline
         {            
             private readonly Stack<Func<IMicroProcessorFilter, IMicroProcessorFilter>> _filterFactories;
-
-            internal FilterPipeline()
+            
+            internal FilterPipeline(MessageSources sources)
             {                
                 _filterFactories = new Stack<Func<IMicroProcessorFilter, IMicroProcessorFilter>>();
+                _filterFactories.Push(filter => new RequiresMessageSourceFilter(filter, sources));
             }
 
             /// <summary>
@@ -95,10 +108,10 @@ namespace Kingo.Messaging
 
         /// <summary>
         /// Creates and returns a pipeline of filter that is placed on top of this filter.
-        /// </summary>        
+        /// </summary>                
         /// <returns>A pipeline to which a collection of other filters are added.</returns>
         protected virtual FilterPipeline CreateFilterPipeline() =>
-            new FilterPipeline();
+            new FilterPipeline(Sources);
 
         #endregion
     }

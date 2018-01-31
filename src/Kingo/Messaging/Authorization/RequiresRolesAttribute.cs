@@ -29,11 +29,7 @@ namespace Kingo.Messaging.Authorization
         public IEnumerable<string> Roles
         {
             get;
-        }
-
-        /// <inheritdoc />
-        protected override FilterPipeline CreateFilterPipeline() =>
-            base.CreateFilterPipeline().Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
+        }        
 
         /// <inheritdoc />
         protected override Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)

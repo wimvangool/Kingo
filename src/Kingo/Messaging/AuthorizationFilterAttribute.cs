@@ -7,11 +7,19 @@ namespace Kingo.Messaging
     /// </summary>
     public abstract class AuthorizationFilterAttribute : MicroProcessorFilterAttribute
     {        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthorizationFilterAttribute" /> class.
+        /// </summary>
+        protected AuthorizationFilterAttribute()
+        {
+            Sources = MessageSources.InputStream | MessageSources.Query;
+        }
+
         internal override void Accept(IMicroProcessorFilterAttributeVisitor visitor) =>
             visitor.Visit(this);
 
         /// <inheritdoc />
         protected override FilterPipeline CreateFilterPipeline() =>
-            base.CreateFilterPipeline().Add(filter => new RequiresMessageSourceFilter(filter, MessageSources.InputStream | MessageSources.Query));
+            base.CreateFilterPipeline().Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
     }
 }
