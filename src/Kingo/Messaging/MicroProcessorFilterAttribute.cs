@@ -90,16 +90,15 @@ namespace Kingo.Messaging
             }
         }
 
-        internal IMicroProcessorFilter CreateFilterPipeline() =>
-            CreateFilterPipeline(new Pipeline()).Build(this);
+        internal IMicroProcessorFilter BuildFilterPipeline() =>
+            CreateFilterPipeline().Build(this);
 
         /// <summary>
         /// Creates and returns a pipeline of filter that is placed on top of this filter.
-        /// </summary>
-        /// <param name="pipeline">A pipeline of filters.</param>
+        /// </summary>        
         /// <returns>A pipeline to which a collection of other filters are added.</returns>
-        protected virtual Pipeline CreateFilterPipeline(Pipeline pipeline) =>
-            pipeline;
+        protected virtual Pipeline CreateFilterPipeline() =>
+            new Pipeline();
 
         #endregion
     }

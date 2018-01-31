@@ -11,11 +11,7 @@ namespace Kingo.Messaging
             visitor.Visit(this);
 
         /// <inheritdoc />
-        protected override Pipeline CreateFilterPipeline(Pipeline pipeline)
-        {
-            return pipeline
-                .Add(filter => new RequiresMessageSourceFilter(filter, MessageSources.InputStream | MessageSources.Query))
-                .Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
-        }                 
+        protected override Pipeline CreateFilterPipeline() =>
+            base.CreateFilterPipeline().Add(filter => new RequiresMessageSourceFilter(filter, MessageSources.InputStream | MessageSources.Query));
     }
 }

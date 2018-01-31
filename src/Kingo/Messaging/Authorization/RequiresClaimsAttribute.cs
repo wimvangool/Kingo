@@ -31,6 +31,10 @@ namespace Kingo.Messaging.Authorization
         }
 
         /// <inheritdoc />
+        protected override Pipeline CreateFilterPipeline() =>
+            base.CreateFilterPipeline().Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
+
+        /// <inheritdoc />
         protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
             foreach (var requiredClaimType in ClaimTypes)

@@ -136,7 +136,7 @@ namespace Kingo.Messaging
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new MessageHandlerPipelineConnector<TMessage>(pipeline, filter.CreateFilterPipeline());
+                pipeline = new MessageHandlerPipelineConnector<TMessage>(pipeline, filter.BuildFilterPipeline());
             }
             return pipeline;
         }
@@ -154,7 +154,7 @@ namespace Kingo.Messaging
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new QueryPipelineConnector<TMessageOut>(pipeline, filter.CreateFilterPipeline());
+                pipeline = new QueryPipelineConnector<TMessageOut>(pipeline, filter.BuildFilterPipeline());
             }
             return pipeline;
         }
@@ -172,7 +172,7 @@ namespace Kingo.Messaging
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new QueryPipelineConnector<TMessageIn, TMessageOut>(pipeline, filter.CreateFilterPipeline());
+                pipeline = new QueryPipelineConnector<TMessageIn, TMessageOut>(pipeline, filter.BuildFilterPipeline());
             }
             return pipeline;
         }
