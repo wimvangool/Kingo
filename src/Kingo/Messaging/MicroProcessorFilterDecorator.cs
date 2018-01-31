@@ -39,20 +39,20 @@ namespace Kingo.Messaging
         /// </summary>        
         protected sealed class MessageHandlerPipeline<TMessage> : MessagePipeline<HandleAsyncResult>
         {
-            private readonly IMicroProcessorFilter _NextFilter;
+            private readonly IMicroProcessorFilter _nextFilter;
             private readonly MessageHandler<TMessage> _handler;
             private readonly TMessage _message;
 
-            internal MessageHandlerPipeline(IMicroProcessorFilter NextFilter, MessageHandler<TMessage> handler, TMessage message)                
+            internal MessageHandlerPipeline(IMicroProcessorFilter nextFilter, MessageHandler<TMessage> handler, TMessage message)                
             {
-                _NextFilter = NextFilter;
+                _nextFilter = nextFilter;
                 _handler = handler;
                 _message = message;
             }
 
             /// <inheritdoc />
             public override Task<HandleAsyncResult> InvokeNextFilterAsync(IMicroProcessorContext context) =>
-                _NextFilter.HandleAsync(_handler, _message, context);
+                _nextFilter.InvokeMessageHandlerAsync(_handler, _message, context);
 
             /// <inheritdoc />
             public override Task<HandleAsyncResult> SkipNextFilterAsync(IMicroProcessorContext context) =>
@@ -68,18 +68,18 @@ namespace Kingo.Messaging
         /// </summary>        
         protected sealed class QueryPipeline<TMessageOut> : MessagePipeline<ExecuteAsyncResult<TMessageOut>>
         {
-            private readonly IMicroProcessorFilter _NextFilter;
+            private readonly IMicroProcessorFilter _nextFilter;
             private readonly Query<TMessageOut> _query;
 
-            internal QueryPipeline(IMicroProcessorFilter NextFilter, Query<TMessageOut> query)                
+            internal QueryPipeline(IMicroProcessorFilter nextFilter, Query<TMessageOut> query)                
             {
-                _NextFilter = NextFilter;
+                _nextFilter = nextFilter;
                 _query = query;
             }
 
             /// <inheritdoc />
             public override Task<ExecuteAsyncResult<TMessageOut>> InvokeNextFilterAsync(IMicroProcessorContext context) =>
-                _NextFilter.ExecuteAsync(_query, context);
+                _nextFilter.InvokeQueryAsync(_query, context);
 
             /// <inheritdoc />
             public override Task<ExecuteAsyncResult<TMessageOut>> SkipNextFilterAsync(IMicroProcessorContext context) =>
@@ -95,20 +95,20 @@ namespace Kingo.Messaging
         /// </summary>        
         protected sealed class QueryPipeline<TMessageIn, TMessageOut> : MessagePipeline<ExecuteAsyncResult<TMessageOut>>
         {
-            private readonly IMicroProcessorFilter _NextFilter;
+            private readonly IMicroProcessorFilter _nextFilter;
             private readonly Query<TMessageIn, TMessageOut> _query;
             private readonly TMessageIn _message;
 
-            internal QueryPipeline(IMicroProcessorFilter NextFilter, Query<TMessageIn, TMessageOut> query, TMessageIn message)               
+            internal QueryPipeline(IMicroProcessorFilter nextFilter, Query<TMessageIn, TMessageOut> query, TMessageIn message)               
             {
-                _NextFilter = NextFilter;
+                _nextFilter = nextFilter;
                 _query = query;
                 _message = message;
             }
 
             /// <inheritdoc />
             public override Task<ExecuteAsyncResult<TMessageOut>> InvokeNextFilterAsync(IMicroProcessorContext context) =>
-                _NextFilter.ExecuteAsync(_query, _message, context);
+                _nextFilter.InvokeQueryAsync(_query, _message, context);
 
             /// <inheritdoc />
             public override Task<ExecuteAsyncResult<TMessageOut>> SkipNextFilterAsync(IMicroProcessorContext context) =>
@@ -142,8 +142,8 @@ namespace Kingo.Messaging
             MicroProcessorPipeline.ToString(this, NextFilter);
 
         /// <inheritdoc />
-        Task<HandleAsyncResult> IMicroProcessorFilter.HandleAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context) =>
-            HandleAsync(new MessageHandlerPipeline<TMessage>(NextFilter, handler, message), context);
+        Task<HandleAsyncResult> IMicroProcessorFilter.InvokeMessageHandlerAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context) =>
+            InvokeMessageHandlerAsync(new MessageHandlerPipeline<TMessage>(NextFilter, handler, message), context);
 
         /// <summary>
         /// Invokes the next filter or skips it by invoking the appropriate method on the specified <paramref name="pipeline"/>.
@@ -151,12 +151,12 @@ namespace Kingo.Messaging
         /// <param name="pipeline">The remaining piece of the pipeline.</param>
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently handling the message.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<HandleAsyncResult> HandleAsync<TMessage>(MessageHandlerPipeline<TMessage> pipeline, IMicroProcessorContext context) =>
-            HandleOrExecuteAsync(pipeline, context);
+        protected virtual Task<HandleAsyncResult> InvokeMessageHandlerAsync<TMessage>(MessageHandlerPipeline<TMessage> pipeline, IMicroProcessorContext context) =>
+            InvokeMessageHandlerOrQueryAsync(pipeline, context);
 
         /// <inheritdoc />
-        Task<ExecuteAsyncResult<TMessageOut>> IMicroProcessorFilter.ExecuteAsync<TMessageOut>(Query<TMessageOut> query, IMicroProcessorContext context) =>
-            ExecuteAsync(new QueryPipeline<TMessageOut>(NextFilter, query), context);
+        Task<ExecuteAsyncResult<TMessageOut>> IMicroProcessorFilter.InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query, IMicroProcessorContext context) =>
+            InvokeQueryAsync(new QueryPipeline<TMessageOut>(NextFilter, query), context);
 
         /// <summary>
         /// Invokes the next filter or skips it by invoking the appropriate method on the specified <paramref name="pipeline"/>.
@@ -164,12 +164,12 @@ namespace Kingo.Messaging
         /// <param name="pipeline">The remaining piece of the pipeline.</param>
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently handling the message.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync<TMessageOut>(QueryPipeline<TMessageOut> pipeline, IMicroProcessorContext context) =>
-            HandleOrExecuteAsync(pipeline, context);
+        protected virtual Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(QueryPipeline<TMessageOut> pipeline, IMicroProcessorContext context) =>
+            InvokeMessageHandlerOrQueryAsync(pipeline, context);
 
         /// <inheritdoc />
-        Task<ExecuteAsyncResult<TMessageOut>> IMicroProcessorFilter.ExecuteAsync<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, TMessageIn message, IMicroProcessorContext context) =>
-            ExecuteAsync(new QueryPipeline<TMessageIn, TMessageOut>(NextFilter, query, message), context);
+        Task<ExecuteAsyncResult<TMessageOut>> IMicroProcessorFilter.InvokeQueryAsync<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, TMessageIn message, IMicroProcessorContext context) =>
+            InvokeQueryAsync(new QueryPipeline<TMessageIn, TMessageOut>(NextFilter, query, message), context);
 
         /// <summary>
         /// Invokes the next filter or skips it by invoking the appropriate method on the specified <paramref name="pipeline"/>.
@@ -177,8 +177,8 @@ namespace Kingo.Messaging
         /// <param name="pipeline">The remaining piece of the pipeline.</param>
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently handling the message.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync<TMessageIn, TMessageOut>(QueryPipeline<TMessageIn, TMessageOut> pipeline, IMicroProcessorContext context) =>
-            HandleOrExecuteAsync(pipeline, context);
+        protected virtual Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageIn, TMessageOut>(QueryPipeline<TMessageIn, TMessageOut> pipeline, IMicroProcessorContext context) =>
+            InvokeMessageHandlerOrQueryAsync(pipeline, context);
 
         /// <summary>
         /// Invokes the next filter or skips it by invoking the appropriate method on the specified <paramref name="pipeline"/>.
@@ -186,7 +186,7 @@ namespace Kingo.Messaging
         /// <param name="pipeline">The remaining piece of the pipeline.</param>
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently handling the message.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<TResult> HandleOrExecuteAsync<TResult>(MessagePipeline<TResult> pipeline, IMicroProcessorContext context) =>
+        protected virtual Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessagePipeline<TResult> pipeline, IMicroProcessorContext context) =>
             pipeline.InvokeNextFilterAsync(context);
     }
 }

@@ -36,9 +36,9 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="InvalidRequestException">
         /// The specified message is invalid.
         /// </exception>
-        protected override async Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
+        protected override async Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
-            var messageToValidate = context.Messages.Current?.Message;
+            var messageToValidate = context.Messages.Current.Message;
             if (messageToValidate != null)
             {
                 var errorInfo = Validate(messageToValidate);
@@ -47,7 +47,7 @@ namespace Kingo.Messaging.Validation
                     throw NewInvalidMessageException(messageToValidate.GetType(), errorInfo);
                 }
             }
-            return await handlerOrQuery.HandleMessageOrExecuteQueryAsync(context);
+            return await handlerOrQuery.InvokeAsync(context);
         }  
 
         private ErrorInfo Validate(object messageToValidate)

@@ -7,12 +7,15 @@ namespace Kingo.Messaging
     /// Represents a message that is being processed by a <see cref="IMicroProcessor" />.
     /// </summary>
     public sealed class MessageInfo : ITypeAttributeProvider
-    {        
+    {
+        private readonly ITypeAttributeProvider _attributeProvider;
+
         private MessageInfo(object message, MessageSources source)
         {            
-            Message = message ?? throw new ArgumentNullException(nameof(message));
+            Message = message;
             Source = source;
-            TypeAttributeProvider = new TypeAttributeProvider(message.GetType());
+
+            _attributeProvider = message == null ? TypeAttributeProvider.None : new TypeAttributeProvider(message.GetType());
         }
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static MessageInfo FromQuery(object message) =>
+        public static MessageInfo FromQuery(object message = null) =>
             new MessageInfo(message, MessageSources.Query);
 
         /// <summary>
@@ -35,7 +38,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static MessageInfo FromInputStream(object message) =>
-            new MessageInfo(message, MessageSources.InputStream);
+            FromStream(message, MessageSources.InputStream);
 
         /// <summary>
         /// Creates and returns a new <see cref="MessageInfo" /> for a message that originates from the <see cref="IMicroProcessorContext.OutputStream" />
@@ -46,7 +49,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static MessageInfo FromOutputStream(object message) =>
-            new MessageInfo(message, MessageSources.OutputStream);
+            FromStream(message, MessageSources.OutputStream);
 
         /// <summary>
         /// Creates and returns a new <see cref="MessageInfo" /> for a message that originates from the <see cref="IMicroProcessorContext.MetadataStream" />
@@ -57,7 +60,10 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static MessageInfo FromMetadataStream(object message) =>
-            new MessageInfo(message, MessageSources.MetadataStream);
+            FromStream(message, MessageSources.MetadataStream);
+
+        private static MessageInfo FromStream(object message, MessageSources source) =>
+            new MessageInfo(message ?? throw new ArgumentNullException(nameof(message)), source);
 
         #region [====== Message & Source ======]
 
@@ -138,18 +144,13 @@ namespace Kingo.Messaging
 
         #region [====== ITypeAttributeProvider ======]
 
-        private TypeAttributeProvider TypeAttributeProvider
-        {
-            get;
-        }
-
         /// <inheritdoc />
         public bool TryGetTypeAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>
-            TypeAttributeProvider.TryGetTypeAttributeOfType(out attribute);
+            _attributeProvider.TryGetTypeAttributeOfType(out attribute);
 
         /// <inheritdoc />
         public IEnumerable<TAttribute> GetTypeAttributesOfType<TAttribute>() where TAttribute : class =>
-            TypeAttributeProvider.GetTypeAttributesOfType<TAttribute>();
+            _attributeProvider.GetTypeAttributesOfType<TAttribute>();
 
         #endregion
     }

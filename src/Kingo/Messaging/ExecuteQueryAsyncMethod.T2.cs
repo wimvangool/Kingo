@@ -15,8 +15,7 @@ namespace Kingo.Messaging
         private ExecuteQueryAsyncMethod(MicroProcessor processor, QueryContext context, IQuery<TMessageIn, TMessageOut> query, TMessageIn message)
         {
             Processor = processor;
-            Context = context;
-            Context.Messages.Push(MessageInfo.FromQuery(message));
+            Context = context;            
 
             _query = query;
             _message = message;
@@ -32,8 +31,19 @@ namespace Kingo.Messaging
             get;
         }
 
-        protected override Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore() =>
-            Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(Context, _query)).ExecuteAsync(_message, Context);
+        protected override Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore()
+        {
+            Context.Messages.Push(MessageInfo.FromQuery(_message));
+
+            try
+            {
+                return Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(Context, _query)).ExecuteAsync(_message, Context);
+            }
+            finally
+            {
+                Context.Messages.Pop();
+            }
+        }            
 
         protected override BadRequestException NewBadRequestException(InternalProcessorException exception, string message) =>
             exception.AsBadRequestException(_message, message);

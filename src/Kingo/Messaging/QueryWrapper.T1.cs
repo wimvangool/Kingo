@@ -17,7 +17,7 @@ namespace Kingo.Messaging
         protected override IMethodAttributeProvider MethodAttributeProvider =>
              _query;
 
-        public override Task<ExecuteAsyncResult<TMessageOut>> HandleMessageOrExecuteQueryAsync(IMicroProcessorContext context) =>
+        public override Task<ExecuteAsyncResult<TMessageOut>> InvokeAsync(IMicroProcessorContext context) =>
             _query.ExecuteAsync(context);
 
         public override string ToString() =>

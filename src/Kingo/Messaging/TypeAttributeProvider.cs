@@ -8,6 +8,23 @@ namespace Kingo.Messaging
 {
     internal sealed class TypeAttributeProvider : ITypeAttributeProvider
     {
+        #region [====== NullProvider ======]
+
+        private sealed class NullProvider : ITypeAttributeProvider
+        {
+            public bool TryGetTypeAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class
+            {
+                attribute = null;
+                return false;
+            }
+
+            public IEnumerable<TAttribute> GetTypeAttributesOfType<TAttribute>() where TAttribute : class =>
+                Enumerable.Empty<TAttribute>();
+        }
+
+        #endregion
+
+        public static readonly ITypeAttributeProvider None = new NullProvider();
         private static readonly ConcurrentDictionary<Type, Attribute[]> _Attributes = new ConcurrentDictionary<Type, Attribute[]>();
 
         public TypeAttributeProvider(Type type)
@@ -33,10 +50,11 @@ namespace Kingo.Messaging
             return attribute != null;
         }
 
-        public IEnumerable<TAttribute> GetTypeAttributesOfType<TAttribute>() where TAttribute : class => from attribute in _Attributes.GetOrAdd(Type, LoadAttributes)
-                                                                                                         let desiredAttribute = attribute as TAttribute
-                                                                                                         where desiredAttribute != null
-                                                                                                         select desiredAttribute;
+        public IEnumerable<TAttribute> GetTypeAttributesOfType<TAttribute>() where TAttribute : class =>
+            from attribute in _Attributes.GetOrAdd(Type, LoadAttributes)
+            let desiredAttribute = attribute as TAttribute
+            where desiredAttribute != null
+            select desiredAttribute;
 
         private static Attribute[] LoadAttributes(Type type) =>
             type.GetCustomAttributes(true).Cast<Attribute>().ToArray();

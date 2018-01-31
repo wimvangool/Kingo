@@ -1178,7 +1178,8 @@ namespace Kingo.Messaging
 
             Assert.AreSame(await _processor.ExecuteAsync(context =>
             {
-                Assert.AreEqual(0, context.Messages.Count);
+                Assert.AreEqual(MessageSources.Query, context.Messages.Current.Source);
+                Assert.AreEqual(1, context.Messages.Count);
                 return messageOut;
             }), messageOut);
         }
@@ -1892,19 +1893,19 @@ namespace Kingo.Messaging
                 _afterHandleAsync = afterHandleAsync;
             }
 
-            public override async Task<HandleAsyncResult> HandleAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context)
+            public override async Task<HandleAsyncResult> InvokeMessageHandlerAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context)
             {
                 if (context.Messages.Current.Source == MessageSources.InputStream)
                 {
                     if (_afterHandleAsync)
                     {
-                        var result = await base.HandleAsync(handler, message, context);
+                        var result = await base.InvokeMessageHandlerAsync(handler, message, context);
                         context.OutputStream.Publish(_event);
                         return result;
                     }                    
                     context.OutputStream.Publish(_event);                    
                 }
-                return await base.HandleAsync(handler, message, context);
+                return await base.InvokeMessageHandlerAsync(handler, message, context);
             }
         }                
 

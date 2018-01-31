@@ -31,11 +31,11 @@ namespace Kingo.Messaging.Authorization
         }
 
         /// <inheritdoc />
-        protected override Pipeline CreateFilterPipeline() =>
+        protected override FilterPipeline CreateFilterPipeline() =>
             base.CreateFilterPipeline().Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
 
         /// <inheritdoc />
-        protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
+        protected override Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
             foreach (var requiredClaimType in ClaimTypes)
             {
@@ -45,7 +45,7 @@ namespace Kingo.Messaging.Authorization
                 }
                 throw ClaimsProvider.NewClaimNotFoundException(context.Principal.Identity, requiredClaimType);
             }
-            return base.HandleOrExecuteAsync(handlerOrQuery, context);
+            return base.InvokeMessageHandlerOrQueryAsync(handlerOrQuery, context);
         }                    
     }
 }

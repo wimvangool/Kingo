@@ -54,6 +54,6 @@ namespace Kingo.Messaging
         /// </summary>
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently handling the message.</param>
         /// <returns>The result of the operation.</returns>
-        public abstract Task<TResult> HandleMessageOrExecuteQueryAsync(IMicroProcessorContext context);        
+        public abstract Task<TResult> InvokeAsync(IMicroProcessorContext context);        
     }
 }

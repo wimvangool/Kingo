@@ -19,7 +19,7 @@ namespace Kingo.Messaging
         protected override IMethodAttributeProvider MethodAttributeProvider =>
             _handler;
 
-        public override Task<HandleAsyncResult> HandleMessageOrExecuteQueryAsync(IMicroProcessorContext context) =>
+        public override Task<HandleAsyncResult> InvokeAsync(IMicroProcessorContext context) =>
             _handler.HandleAsync(_message, context);
 
         public override string ToString() =>

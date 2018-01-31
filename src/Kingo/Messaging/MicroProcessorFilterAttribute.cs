@@ -21,16 +21,16 @@ namespace Kingo.Messaging
         #region [====== IMicroProcessorFilter ======]                                
 
         /// <inheritdoc /> 
-        public virtual Task<HandleAsyncResult> HandleAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context) =>
-            HandleOrExecuteAsync(new MessageHandlerWrapper<TMessage>(handler, message), context);
+        public virtual Task<HandleAsyncResult> InvokeMessageHandlerAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context) =>
+            InvokeMessageHandlerOrQueryAsync(new MessageHandlerWrapper<TMessage>(handler, message), context);
 
         /// <inheritdoc />
-        public virtual Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync<TMessageOut>(Query<TMessageOut> query, IMicroProcessorContext context) =>
-            HandleOrExecuteAsync(new QueryWrapper<TMessageOut>(query), context);
+        public virtual Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query, IMicroProcessorContext context) =>
+            InvokeMessageHandlerOrQueryAsync(new QueryWrapper<TMessageOut>(query), context);
 
         /// <inheritdoc />
-        public virtual Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, TMessageIn message, IMicroProcessorContext context) =>
-            HandleOrExecuteAsync(new QueryWrapper<TMessageIn, TMessageOut>(query, message), context);
+        public virtual Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, TMessageIn message, IMicroProcessorContext context) =>
+            InvokeMessageHandlerOrQueryAsync(new QueryWrapper<TMessageIn, TMessageOut>(query, message), context);
 
         /// <summary>
         /// Processes the current command, event or query asynchronously and returns the result.
@@ -39,21 +39,21 @@ namespace Kingo.Messaging
         /// <param name="handlerOrQuery">A message handler or query that will perform the operation.</param>
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently handling the message.</param>
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context) =>
-            handlerOrQuery.HandleMessageOrExecuteQueryAsync(context);
+        protected virtual Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context) =>
+            handlerOrQuery.InvokeAsync(context);
 
         #endregion
 
-        #region [====== Pipeline ======]
+        #region [====== FilterPipeline ======]
 
         /// <summary>
         /// Represents a pipeline of filters.
         /// </summary>
-        protected sealed class Pipeline
+        protected sealed class FilterPipeline
         {            
             private readonly Stack<Func<IMicroProcessorFilter, IMicroProcessorFilter>> _filterFactories;
 
-            internal Pipeline()
+            internal FilterPipeline()
             {                
                 _filterFactories = new Stack<Func<IMicroProcessorFilter, IMicroProcessorFilter>>();
             }
@@ -68,7 +68,7 @@ namespace Kingo.Messaging
             /// <exception cref="ArgumentNullException">
             /// <paramref name="filterFactory" /> is <c>null</c>.
             /// </exception>
-            public Pipeline Add(Func<IMicroProcessorFilter, IMicroProcessorFilter> filterFactory)
+            public FilterPipeline Add(Func<IMicroProcessorFilter, IMicroProcessorFilter> filterFactory)
             {
                 if (filterFactory == null)
                 {
@@ -97,8 +97,8 @@ namespace Kingo.Messaging
         /// Creates and returns a pipeline of filter that is placed on top of this filter.
         /// </summary>        
         /// <returns>A pipeline to which a collection of other filters are added.</returns>
-        protected virtual Pipeline CreateFilterPipeline() =>
-            new Pipeline();
+        protected virtual FilterPipeline CreateFilterPipeline() =>
+            new FilterPipeline();
 
         #endregion
     }

@@ -15,7 +15,7 @@ namespace Kingo.Messaging
         }        
 
         public override Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync(TMessageIn message, IMicroProcessorContext context) =>
-            _filter.ExecuteAsync(_nextQuery, message, context);
+            _filter.InvokeQueryAsync(_nextQuery, message, context);
 
         public override string ToString() =>
             MicroProcessorPipeline.ToString(_filter, _nextQuery);

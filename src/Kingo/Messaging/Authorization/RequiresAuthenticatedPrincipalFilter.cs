@@ -10,13 +10,13 @@ namespace Kingo.Messaging.Authorization
         public RequiresAuthenticatedPrincipalFilter(IMicroProcessorFilter nextFilter) :
             base(nextFilter) { }
 
-        protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessagePipeline<TResult> pipeline, IMicroProcessorContext context)
+        protected override Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessagePipeline<TResult> pipeline, IMicroProcessorContext context)
         {
             if (context.Principal.Identity.IsAuthenticated)
             {
                 return pipeline.InvokeNextFilterAsync(context);
             }
-            throw NewPrincipalNotAuthenticatedException(context.Principal.Identity, context.Messages.Current?.Message);            
+            throw NewPrincipalNotAuthenticatedException(context.Principal.Identity, context.Messages.Current.Message);            
         }
 
         private static Exception NewPrincipalNotAuthenticatedException(IIdentity identity, object failedMessage)

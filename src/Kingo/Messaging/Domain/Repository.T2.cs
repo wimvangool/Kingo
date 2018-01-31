@@ -67,7 +67,7 @@ namespace Kingo.Messaging.Domain
             }
             catch (Exception exception)
             {
-                throw NewAggregateRestoreException(Context.Messages.Current?.Message, exception);
+                throw NewAggregateRestoreException(Context.Messages.Current.Message, exception);
             }            
         }
 

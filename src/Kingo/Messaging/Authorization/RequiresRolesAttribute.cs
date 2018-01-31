@@ -32,11 +32,11 @@ namespace Kingo.Messaging.Authorization
         }
 
         /// <inheritdoc />
-        protected override Pipeline CreateFilterPipeline() =>
+        protected override FilterPipeline CreateFilterPipeline() =>
             base.CreateFilterPipeline().Add(filter => new RequiresAuthenticatedPrincipalFilter(filter));
 
         /// <inheritdoc />
-        protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
+        protected override Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
             foreach (var requiredRole in Roles)
             {
@@ -44,9 +44,9 @@ namespace Kingo.Messaging.Authorization
                 {
                     continue;
                 }
-                throw NewPrincipalNotInRoleException(context.Principal.Identity, requiredRole, context.Messages.Current?.Message);
+                throw NewPrincipalNotInRoleException(context.Principal.Identity, requiredRole, context.Messages.Current.Message);
             }
-            return base.HandleOrExecuteAsync(handlerOrQuery, context);                       
+            return base.InvokeMessageHandlerOrQueryAsync(handlerOrQuery, context);                       
         }                
 
         private static Exception NewPrincipalNotInRoleException(IIdentity identity, string requiredRole, object failedMessage)

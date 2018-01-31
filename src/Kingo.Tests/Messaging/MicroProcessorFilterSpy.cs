@@ -4,7 +4,7 @@ namespace Kingo.Messaging
 {
     internal class MicroProcessorFilterSpy : ProcessingFilterAttribute
     {                
-        protected override Task<TResult> HandleOrExecuteAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context) =>
-             handlerOrQuery.HandleMessageOrExecuteQueryAsync(context);
+        protected override Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context) =>
+             handlerOrQuery.InvokeAsync(context);
     }
 }

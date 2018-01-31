@@ -15,7 +15,7 @@ namespace Kingo.Messaging
         }        
 
         public override Task<HandleAsyncResult> HandleAsync(TMessage message, IMicroProcessorContext context) =>
-            _filter.HandleAsync(_nextHandler, message, context);
+            _filter.InvokeMessageHandlerAsync(_nextHandler, message, context);
 
         public override string ToString() =>
             MicroProcessorPipeline.ToString(_filter, _nextHandler);
