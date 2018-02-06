@@ -31,13 +31,13 @@ namespace Kingo.Messaging
             get;
         }
 
-        protected override Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore()
+        protected override async Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore()
         {
             Context.Messages.Push(MessageInfo.FromQuery(_message));
 
             try
             {
-                return Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(Context, _query)).ExecuteAsync(_message, Context);
+                return await Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(Context, _query)).ExecuteAsync(_message, Context);
             }
             finally
             {
