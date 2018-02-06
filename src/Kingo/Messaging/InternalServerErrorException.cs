@@ -42,7 +42,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="failedMessage"/> is <c>null</c>.
         /// </exception>
-        internal InternalServerErrorException(object failedMessage, string message, Exception innerException)
+        public InternalServerErrorException(object failedMessage, string message, Exception innerException)
             : base(failedMessage, message, innerException) { }
 
         /// <summary>
