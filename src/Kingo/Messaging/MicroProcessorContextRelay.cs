@@ -22,8 +22,8 @@ namespace Kingo.Messaging
         public IClaimsProvider ClaimsProvider =>
             Current.ClaimsProvider;
 
-        public IMessageStackTrace Messages =>
-            Current.Messages;
+        public IMessageStackTrace StackTrace =>
+            Current.StackTrace;
 
         public IUnitOfWorkController UnitOfWork =>
             Current.UnitOfWork;

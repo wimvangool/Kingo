@@ -23,18 +23,18 @@ namespace Kingo.Messaging
         [TestMethod]
         public void MessageStack_IsEmpty_IfContextIsNone()
         {                        
-            Assert.IsNotNull(Context.Messages);
-            Assert.AreEqual(0, Context.Messages.Count);
-            Assert.IsNull(Context.Messages.Current);
-            Assert.IsFalse(Context.Messages.Any());
-            Assert.AreEqual(string.Empty, Context.Messages.ToString());
+            Assert.IsNotNull(Context.StackTrace);
+            Assert.AreEqual(0, Context.StackTrace.Count);
+            Assert.IsNull(Context.StackTrace.Current);
+            Assert.IsFalse(Context.StackTrace.Any());
+            Assert.AreEqual(string.Empty, Context.StackTrace.ToString());
         }
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void MessageStackIndexer_Throws_ForAnyValue()
         {
-            Context.Messages[0].IgnoreValue();
+            Context.StackTrace[0].IgnoreValue();
         }
 
         [TestMethod]

@@ -21,7 +21,7 @@ namespace Kingo.Messaging
 
             public NullContext()
             {
-                Messages = new EmpyStackTrace();                                               
+                StackTrace = new EmpyStackTrace();                                               
             }
 
             public IPrincipal Principal =>
@@ -30,7 +30,7 @@ namespace Kingo.Messaging
             public IClaimsProvider ClaimsProvider =>
                 new ClaimsProvider(Principal);
 
-            public IMessageStackTrace Messages
+            public IMessageStackTrace StackTrace
             {
                 get;
             }
@@ -114,7 +114,7 @@ namespace Kingo.Messaging
         internal MessageHandlerContext CreateMetadataContext() =>
             new MessageHandlerContext(Principal, _token, _stackTrace.Copy());
 
-        IMessageStackTrace IMicroProcessorContext.Messages =>
+        IMessageStackTrace IMicroProcessorContext.StackTrace =>
             _stackTrace;
 
         internal MessageStackTrace Messages =>

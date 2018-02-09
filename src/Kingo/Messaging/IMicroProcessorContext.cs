@@ -25,9 +25,9 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Returns message-info about the message that is currently being handled or executed by the processor.
+        /// Returns the logical call-stack, containing information about the messages that are currently being handled or executed by the processor.
         /// </summary>
-        IMessageStackTrace Messages
+        IMessageStackTrace StackTrace
         {
             get;
         }

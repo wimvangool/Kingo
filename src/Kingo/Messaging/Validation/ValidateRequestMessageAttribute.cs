@@ -38,7 +38,7 @@ namespace Kingo.Messaging.Validation
         /// </exception>
         protected override async Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
         {
-            var messageToValidate = context.Messages.Current.Message;
+            var messageToValidate = context.StackTrace.Current.Message;
             if (messageToValidate != null)
             {
                 var errorInfo = Validate(messageToValidate);

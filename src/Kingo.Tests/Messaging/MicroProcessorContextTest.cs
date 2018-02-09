@@ -42,7 +42,7 @@ namespace Kingo.Messaging
         {
             using (CreateScope(new MessageHandlerContext(Principal)))
             {
-                CurrentContext.Messages[-1].IgnoreValue();
+                CurrentContext.StackTrace[-1].IgnoreValue();
             }
         }
 
@@ -52,7 +52,7 @@ namespace Kingo.Messaging
         {
             using (CreateScope(new MessageHandlerContext(Principal)))
             {
-                CurrentContext.Messages[0].IgnoreValue();
+                CurrentContext.StackTrace[0].IgnoreValue();
             }
         }
 
@@ -62,7 +62,7 @@ namespace Kingo.Messaging
         {
             using (CreateScope(new MessageHandlerContext(Principal)))
             {
-                CurrentContext.Messages[1].IgnoreValue();
+                CurrentContext.StackTrace[1].IgnoreValue();
             }
         }
 
@@ -78,15 +78,15 @@ namespace Kingo.Messaging
             {
                 context.Messages.Push(MessageInfo.FromInputStream(message));
 
-                Assert.IsNotNull(CurrentContext.Messages);
-                Assert.AreEqual(1, CurrentContext.Messages.Count);
-                Assert.AreEqual(1, CurrentContext.Messages.Count());
+                Assert.IsNotNull(CurrentContext.StackTrace);
+                Assert.AreEqual(1, CurrentContext.StackTrace.Count);
+                Assert.AreEqual(1, CurrentContext.StackTrace.Count());
 
-                Assert.IsNotNull(CurrentContext.Messages.Current);
-                Assert.AreSame(message, CurrentContext.Messages.Current.Message);
-                Assert.AreSame(message, CurrentContext.Messages[0].Message);
+                Assert.IsNotNull(CurrentContext.StackTrace.Current);
+                Assert.AreSame(message, CurrentContext.StackTrace.Current.Message);
+                Assert.AreSame(message, CurrentContext.StackTrace[0].Message);
 
-                Assert.AreEqual(expectedStringValue, CurrentContext.Messages.ToString());
+                Assert.AreEqual(expectedStringValue, CurrentContext.StackTrace.ToString());
                 Assert.AreEqual(expectedStringValue, CurrentContext.ToString());                                
             }
         }
@@ -105,16 +105,16 @@ namespace Kingo.Messaging
                 context.Messages.Push(MessageInfo.FromInputStream(messageA));
                 context.Messages.Push(MessageInfo.FromOutputStream(messageB));
 
-                Assert.IsNotNull(CurrentContext.Messages);
-                Assert.AreEqual(2, CurrentContext.Messages.Count);
-                Assert.AreEqual(2, CurrentContext.Messages.Count());
+                Assert.IsNotNull(CurrentContext.StackTrace);
+                Assert.AreEqual(2, CurrentContext.StackTrace.Count);
+                Assert.AreEqual(2, CurrentContext.StackTrace.Count());
 
-                Assert.IsNotNull(CurrentContext.Messages.Current);
-                Assert.AreEqual(messageB, CurrentContext.Messages.Current.Message);
-                Assert.AreEqual(messageB, CurrentContext.Messages[0].Message);
-                Assert.AreSame(messageA, CurrentContext.Messages[1].Message);
+                Assert.IsNotNull(CurrentContext.StackTrace.Current);
+                Assert.AreEqual(messageB, CurrentContext.StackTrace.Current.Message);
+                Assert.AreEqual(messageB, CurrentContext.StackTrace[0].Message);
+                Assert.AreSame(messageA, CurrentContext.StackTrace[1].Message);
 
-                Assert.AreEqual(expectedStringValue, CurrentContext.Messages.ToString());
+                Assert.AreEqual(expectedStringValue, CurrentContext.StackTrace.ToString());
                 Assert.AreEqual(expectedStringValue, CurrentContext.ToString());
             }
         }
@@ -254,7 +254,7 @@ namespace Kingo.Messaging
         {
             using (CreateScope(new MessageHandlerContext(Principal))) { }
 
-            Assert.AreEqual(0, CurrentContext.Messages.Count);
+            Assert.AreEqual(0, CurrentContext.StackTrace.Count);
         }
 
         [TestMethod]
@@ -271,36 +271,36 @@ namespace Kingo.Messaging
                 var innerContext = outerContext.CreateMetadataContext();
                 var innerTask = Task.Run(async () =>
                 {
-                    Assert.AreEqual(1, CurrentContext.Messages.Current.Message);
+                    Assert.AreEqual(1, CurrentContext.StackTrace.Current.Message);
 
                     using (CreateScope(innerContext))
                     {
-                        Assert.AreEqual(1, CurrentContext.Messages.Count);
-                        Assert.AreEqual(1, CurrentContext.Messages.Current.Message);
+                        Assert.AreEqual(1, CurrentContext.StackTrace.Count);
+                        Assert.AreEqual(1, CurrentContext.StackTrace.Current.Message);
 
                         // After the inner scope is created on this thread, we signal the outer thread to continue and wait for a signal.
                         waitHandleOuter.Set();
                         waitHandleInner.WaitOne();
 
                         // When we got a signal, the outer thread has pushed another message to its stack, which should be invisible to us.
-                        Assert.AreEqual(1, CurrentContext.Messages.Count);
-                        Assert.AreEqual(1, CurrentContext.Messages.Current.Message);
+                        Assert.AreEqual(1, CurrentContext.StackTrace.Count);
+                        Assert.AreEqual(1, CurrentContext.StackTrace.Current.Message);
 
                         innerContext.Messages.Push(MessageInfo.FromMetadataStream(3));
 
-                        Assert.AreEqual(2, CurrentContext.Messages.Count);
-                        Assert.AreEqual(3, CurrentContext.Messages.Current.Message);
+                        Assert.AreEqual(2, CurrentContext.StackTrace.Count);
+                        Assert.AreEqual(3, CurrentContext.StackTrace.Current.Message);
 
                         // We await a certain amount of time just to make sure the await-construct does not destroy the context.
                         await Task.Delay(10);
 
-                        Assert.AreEqual(2, CurrentContext.Messages.Count);
-                        Assert.AreEqual(3, CurrentContext.Messages.Current.Message);
+                        Assert.AreEqual(2, CurrentContext.StackTrace.Count);
+                        Assert.AreEqual(3, CurrentContext.StackTrace.Current.Message);
                     }
 
                     // As soon as the inner task has left its scope, it will see the outer scope again.
-                    Assert.AreEqual(2, CurrentContext.Messages.Count);
-                    Assert.AreEqual(2, CurrentContext.Messages.Current.Message);
+                    Assert.AreEqual(2, CurrentContext.StackTrace.Count);
+                    Assert.AreEqual(2, CurrentContext.StackTrace.Current.Message);
                 });
                 
                 // Here we will wait for the innerTask to create a new scope on its own thread.
@@ -308,13 +308,13 @@ namespace Kingo.Messaging
                 // must have remained unchanged.
                 waitHandleOuter.WaitOne();
 
-                Assert.AreEqual(1, CurrentContext.Messages.Count);
-                Assert.AreEqual(1, CurrentContext.Messages.Current.Message);                
+                Assert.AreEqual(1, CurrentContext.StackTrace.Count);
+                Assert.AreEqual(1, CurrentContext.StackTrace.Current.Message);                
 
                 outerContext.Messages.Push(MessageInfo.FromOutputStream(2));
 
-                Assert.AreEqual(2, CurrentContext.Messages.Count);
-                Assert.AreEqual(2, CurrentContext.Messages.Current.Message);
+                Assert.AreEqual(2, CurrentContext.StackTrace.Count);
+                Assert.AreEqual(2, CurrentContext.StackTrace.Current.Message);
 
                 waitHandleInner.Set();
 
@@ -322,8 +322,8 @@ namespace Kingo.Messaging
                 // this should have no effect on our view of the context.
                 await innerTask;
 
-                Assert.AreEqual(2, CurrentContext.Messages.Count);
-                Assert.AreEqual(2, CurrentContext.Messages.Current.Message);
+                Assert.AreEqual(2, CurrentContext.StackTrace.Count);
+                Assert.AreEqual(2, CurrentContext.StackTrace.Current.Message);
             }
         }
 

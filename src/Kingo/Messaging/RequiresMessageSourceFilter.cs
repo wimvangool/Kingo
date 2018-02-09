@@ -28,7 +28,7 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         protected override Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessagePipeline<TResult> pipeline, IMicroProcessorContext context)
         {            
-            if (_sources.HasFlag(context.Messages.Current.Source))
+            if (_sources.HasFlag(context.StackTrace.Current.Source))
             {
                 return pipeline.InvokeNextFilterAsync(context);
             }
