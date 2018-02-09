@@ -46,12 +46,12 @@ namespace Kingo.Messaging
         }            
 
         protected override BadRequestException NewBadRequestException(InternalProcessorException exception, string message) =>
-            exception.AsBadRequestException(_message, message);
+            exception.AsBadRequestException(message);
 
         protected override InternalServerErrorException NewInternalServerErrorException(InternalProcessorException exception, string message) =>
-            exception.AsInternalServerErrorException(_message, message);
+            exception.AsInternalServerErrorException(message);
 
         protected override InternalServerErrorException NewInternalServerErrorException(Exception exception, string message) =>
-            new InternalServerErrorException(_message, message, exception);
+            new InternalServerErrorException(message, exception);
     }
 }

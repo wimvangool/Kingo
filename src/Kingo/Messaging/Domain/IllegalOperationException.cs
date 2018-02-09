@@ -8,20 +8,13 @@ namespace Kingo.Messaging.Domain
     /// </summary>    
     [Serializable]
     public class IllegalOperationException : InternalProcessorException
-    {        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IllegalOperationException" /> class.
-        /// </summary>
-        /// <param name="message">Message of the exception.</param>
-        public IllegalOperationException(string message) :
-            base(message) { }
-
+    {                
         /// <summary>
         /// Initializes a new instance of the <see cref="IllegalOperationException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of the exception.</param>
-        public IllegalOperationException(string message, Exception innerException) :
+        public IllegalOperationException(string message = null, Exception innerException = null) :
             base(message, innerException) { }
 
         /// <summary>
@@ -33,7 +26,7 @@ namespace Kingo.Messaging.Domain
             base(info, context) { }
 
         /// <inheritdoc />
-        public override BadRequestException AsBadRequestException(object failedMessage, string message) =>
-            new UnprocessableEntityException(failedMessage, message, this);
+        public override BadRequestException AsBadRequestException(string message) =>
+            new UnprocessableEntityException(message, this);
     }
 }

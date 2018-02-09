@@ -9,25 +9,13 @@ namespace Kingo.Messaging.Domain
     /// while flushing any changes.
     /// </summary>
     public class ConcurrencyException : InternalProcessorException
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrencyException" /> class.
-        /// </summary>
-        public ConcurrencyException() { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConcurrencyException" /> class.
-        /// </summary>
-        /// <param name="message">Message of the exception.</param>
-        public ConcurrencyException(string message)
-            : base(message) { }
-
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcurrencyException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>
-        public ConcurrencyException(string message, Exception innerException)
+        public ConcurrencyException(string message = null, Exception innerException = null)
             : base(message, innerException) { }
 
         /// <summary>
@@ -40,7 +28,7 @@ namespace Kingo.Messaging.Domain
             : base(info, context) { }
 
         /// <inheritdoc />
-        public override BadRequestException AsBadRequestException(object failedMessage, string message) =>
-            new ConflictException(failedMessage, message, this);        
+        public override BadRequestException AsBadRequestException(string message) =>
+            new ConflictException(message, this);        
     }
 }

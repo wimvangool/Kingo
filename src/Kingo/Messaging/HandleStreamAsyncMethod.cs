@@ -74,7 +74,7 @@ namespace Kingo.Messaging
         {
             var messageFormat = ExceptionMessages.HandleStreamAsyncMethod_EventHandlerException;
             var message = string.Format(messageFormat, @event.GetType().FriendlyName());
-            return exception.AsInternalServerErrorException(@event, message);
+            return exception.AsInternalServerErrorException(message);
         }
     }
 }

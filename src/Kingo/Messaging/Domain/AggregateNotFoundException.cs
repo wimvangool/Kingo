@@ -10,33 +10,7 @@ namespace Kingo.Messaging.Domain
     /// </summary>
     [Serializable]
     public class AggregateNotFoundException : InternalProcessorException
-    {        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
-        /// </summary>
-        /// <param name="aggregateId">Identifier of the aggregate.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="aggregateId"/> is <c>null</c>.
-        /// </exception>
-        public AggregateNotFoundException(object aggregateId)
-        {            
-            AggregateId = aggregateId ?? throw new ArgumentNullException(nameof(aggregateId));
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
-        /// </summary>
-        /// <param name="aggregateId">Identifier of the aggregate.</param>
-        /// <param name="message">Message of the exception.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="aggregateId"/> is <c>null</c>.
-        /// </exception>
-        public AggregateNotFoundException(object aggregateId, string message) :
-            base(message)
-        {            
-            AggregateId = aggregateId ?? throw new ArgumentNullException(nameof(aggregateId));
-        }
-
+    {                
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
         /// </summary>
@@ -46,7 +20,7 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="aggregateId"/> is <c>null</c>.
         /// </exception>
-        public AggregateNotFoundException(object aggregateId, string message, Exception innerException) :
+        public AggregateNotFoundException(object aggregateId, string message = null, Exception innerException = null) :
             base(message, innerException)
         {            
             AggregateId = aggregateId ?? throw new ArgumentNullException(nameof(aggregateId));

@@ -67,7 +67,7 @@ namespace Kingo.Messaging.Domain
             }
             catch (Exception exception)
             {
-                throw NewAggregateRestoreException(Context.Messages.Current.Message, exception);
+                throw NewAggregateRestoreException(exception);
             }            
         }
 
@@ -80,11 +80,11 @@ namespace Kingo.Messaging.Domain
         /// </returns>
         protected internal abstract Task<AggregateData<TKey>> SelectByIdAsync(TKey id);        
 
-        private static Exception NewAggregateRestoreException(object failedMessage, Exception exception)
+        private static Exception NewAggregateRestoreException(Exception exception)
         {
             var messageFormat = ExceptionMessages.Repository_AggregateRestoreException;
             var message = string.Format(messageFormat, typeof(TAggregate).FriendlyName());
-            return new InternalServerErrorException(failedMessage, message, exception);
+            return new InternalServerErrorException(message, exception);
         }
 
         #endregion

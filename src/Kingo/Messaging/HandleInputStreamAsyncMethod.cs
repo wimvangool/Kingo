@@ -30,13 +30,13 @@ namespace Kingo.Messaging
                 // Only commands should promote concurrency-exceptions to conflict-exceptions.
                 if (processor.IsCommand(message))
                 {
-                    throw exception.AsBadRequestException(message, exception.Message);
+                    throw exception.AsBadRequestException(exception.Message);
                 }
-                throw exception.AsInternalServerErrorException(message, exception.Message);
+                throw exception.AsInternalServerErrorException(exception.Message);
             }
             catch (Exception exception)
             {                
-                throw InternalServerErrorException.FromInnerException(message, exception);
+                throw InternalServerErrorException.FromInnerException(exception);
             }
         }
 
@@ -111,7 +111,7 @@ namespace Kingo.Messaging
             }
             catch (Exception exception)
             {                
-                throw InternalServerErrorException.FromInnerException(message, exception);
+                throw InternalServerErrorException.FromInnerException(exception);
             }            
         }
 
@@ -122,7 +122,7 @@ namespace Kingo.Messaging
         {
             var messageFormat = ExceptionMessages.HandleInputStreamAsyncMethod_CommandHandlerException;
             var message = string.Format(messageFormat, command.GetType().FriendlyName());
-            return exception.AsBadRequestException(command, message);
+            return exception.AsBadRequestException(message);
         }                      
 
         protected override MessageInfo CreateMessageInfo(object message) =>

@@ -178,7 +178,7 @@
     <value>Invalid identifier specified: '{0}'.</value>
   </data>
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
-    <value>An error occurred while processing message of type '{0}'. See inner exception for details.</value>
+    <value>An error occurred while processing a message. See inner exception for details.</value>
   </data>
   <data name="MemoryRepository_InvalidBehavior" xml:space="preserve">
     <value>Invalid behavior specified: '{0}'. Please choose one of the following values: &lt;{1}&gt;.</value>

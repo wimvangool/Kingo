@@ -461,8 +461,7 @@ namespace Kingo.Messaging
                 _processor.Handle(someCommand);
             }
             catch (BadRequestException exception)
-            {                
-                Assert.AreSame(someCommand, exception.FailedMessage);
+            {                                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -493,8 +492,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(someCommand);
             }
             catch (BadRequestException exception)
-            {                                                                
-                Assert.AreSame(someCommand, exception.FailedMessage);
+            {                                                                                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -530,8 +528,7 @@ namespace Kingo.Messaging
                 await _processor.HandleStreamAsync(inputStream);
             }
             catch (BadRequestException exception)
-            {
-                Assert.AreSame(someCommand, exception.FailedMessage);
+            {                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -562,8 +559,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(someCommand);
             }
             catch (BadRequestException exception)
-            {                                
-                Assert.AreSame(someCommand, exception.FailedMessage);
+            {                                                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -594,8 +590,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(someCommand);
             }
             catch (BadRequestException exception)
-            {
-                Assert.AreSame(someCommand, exception.FailedMessage);
+            {                
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
@@ -626,8 +621,7 @@ namespace Kingo.Messaging
                 _processor.Handle(eventA);
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(eventA, exception.FailedMessage);
+            {                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -658,8 +652,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(eventA);
             }
             catch (InternalServerErrorException exception)
-            {                                
-                Assert.AreSame(eventA, exception.FailedMessage);
+            {                                                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -698,8 +691,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(someCommand);
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(eventA, exception.FailedMessage);
+            {                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -738,8 +730,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(eventA);
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(someCommand, exception.FailedMessage);
+            {                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -778,8 +769,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(someCommand);
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(eventA, exception.FailedMessage);
+            {                
                 Assert.AreSame(internalException, exception.InnerException);
                 throw;
             }
@@ -821,8 +811,7 @@ namespace Kingo.Messaging
                 await _processor.HandleAsync(someCommand);
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(eventA, exception.FailedMessage);
+            {                
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
@@ -1237,8 +1226,7 @@ namespace Kingo.Messaging
                 await _processor.ExecuteAsync(query);
             }
             catch (BadRequestException exception)
-            {
-                Assert.IsNull(exception.FailedMessage);
+            {                
                 Assert.AreSame(internalProcessorException, exception.InnerException);
                 throw;
             }
@@ -1256,8 +1244,7 @@ namespace Kingo.Messaging
                 await _processor.ExecuteAsync(query);
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.IsNull(exception.FailedMessage);
+            {                
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
@@ -1279,8 +1266,7 @@ namespace Kingo.Messaging
                 });
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.IsNull(exception.FailedMessage);
+            {                
                 Assert.AreSame(concurrencyException, exception.InnerException);
                 throw;
             }
@@ -1307,8 +1293,7 @@ namespace Kingo.Messaging
                 });
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.IsNull(exception.FailedMessage);
+            {                
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
@@ -1341,8 +1326,7 @@ namespace Kingo.Messaging
                 });
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(eventA, exception.FailedMessage);
+            {                
                 Assert.AreSame(concurrencyException, exception.InnerException);
                 throw;
             }
@@ -1568,8 +1552,7 @@ namespace Kingo.Messaging
                 await _processor.ExecuteAsync(messageIn, query);
             }
             catch (BadRequestException exception)
-            {
-                Assert.AreSame(messageIn, exception.FailedMessage);
+            {                
                 Assert.AreSame(internalProcessorException, exception.InnerException);
                 throw;
             }
@@ -1591,8 +1574,7 @@ namespace Kingo.Messaging
                 await _processor.ExecuteAsync(messageIn, query);
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(messageIn, exception.FailedMessage);
+            {                
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
@@ -1615,8 +1597,7 @@ namespace Kingo.Messaging
                 });
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(messageIn, exception.FailedMessage);
+            {                
                 Assert.AreSame(concurrencyException, exception.InnerException);
                 throw;
             }
@@ -1644,8 +1625,7 @@ namespace Kingo.Messaging
                 });
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(messageIn, exception.FailedMessage);
+            {                
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
@@ -1679,8 +1659,7 @@ namespace Kingo.Messaging
                 });
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(eventA, exception.FailedMessage);
+            {                
                 Assert.AreSame(concurrencyException, exception.InnerException);
                 throw;
             }

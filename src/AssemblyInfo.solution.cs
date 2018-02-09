@@ -6,6 +6,6 @@ using System.Resources;
 [assembly: AssemblyCopyright("Copyright © Wim van Gool 2018")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
-[assembly: AssemblyVersion("3.5")]
-[assembly: AssemblyFileVersion("3.5.0.0")]
-[assembly: AssemblyInformationalVersion("3.5.3")]
+[assembly: AssemblyVersion("3.6")]
+[assembly: AssemblyFileVersion("3.6.0.0")]
+[assembly: AssemblyInformationalVersion("3.6.0")]

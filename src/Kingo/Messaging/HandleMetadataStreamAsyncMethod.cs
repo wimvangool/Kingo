@@ -29,9 +29,7 @@ namespace Kingo.Messaging
         private Task Run(IMessageStream metadataStream)
         {
             return Task.Run(async () =>
-            {
-                var message = metadataStream[0];
-
+            {                
                 try
                 {
                     await RunCore(metadataStream);
@@ -46,11 +44,11 @@ namespace Kingo.Messaging
                 }
                 catch (ConcurrencyException exception)
                 {
-                    throw exception.AsInternalServerErrorException(message, exception.Message);
+                    throw exception.AsInternalServerErrorException(exception.Message);
                 }
                 catch (Exception exception)
                 {
-                    throw InternalServerErrorException.FromInnerException(message, exception);
+                    throw InternalServerErrorException.FromInnerException(exception);
                 }
             }, Context.Token);
         }
@@ -88,7 +86,7 @@ namespace Kingo.Messaging
             {
                 // Any exceptions other than MicroProcessor- and InternalProcessorExceptions are unexpected by
                 // definition and can therefore be rethrown as InternalServerErrorExceptions immediately.
-                throw InternalServerErrorException.FromInnerException(message, exception);
+                throw InternalServerErrorException.FromInnerException(exception);
             }
         }
 

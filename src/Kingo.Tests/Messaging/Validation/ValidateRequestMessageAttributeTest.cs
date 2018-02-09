@@ -113,9 +113,7 @@ namespace Kingo.Messaging.Validation
                 _processor.Handle(someCommand, (message, context) => { });
             }
             catch (BadRequestException exception)
-            {
-                Assert.AreSame(someCommand, exception.FailedMessage);
-
+            {                
                 var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                 Assert.IsNotNull(invalidMessageException);                
@@ -146,9 +144,7 @@ namespace Kingo.Messaging.Validation
                 _processor.Handle(someEvent, (message, context) => { });
             }
             catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(someEvent, exception.FailedMessage);
-
+            {                
                 var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                 Assert.IsNotNull(invalidMessageException);
@@ -199,9 +195,7 @@ namespace Kingo.Messaging.Validation
                     _processor.Handle(someMessage, (message, context) => { });
                 }
                 catch (InternalServerErrorException exception)
-                {
-                    Assert.AreSame(someMessage, exception.FailedMessage);
-
+                {                    
                     var invalidMessageException = exception.InnerException as InvalidRequestException;
 
                     Assert.IsNotNull(invalidMessageException);

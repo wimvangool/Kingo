@@ -11,39 +11,14 @@ namespace Kingo.Messaging
     /// </summary>
     [Serializable]
     public class InternalServerErrorException : ExternalProcessorException
-    {        
+    {                
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalServerErrorException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public InternalServerErrorException(object failedMessage) :
-            base(failedMessage) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InternalServerErrorException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
+        /// </summary>        
         /// <param name="message">Message of the exception.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public InternalServerErrorException(object failedMessage, string message)
-            : base(failedMessage, message) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InternalServerErrorException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
-        /// <param name="message">Message of the exception.</param>
-        /// <param name="innerException">Cause of this exception.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public InternalServerErrorException(object failedMessage, string message, Exception innerException)
-            : base(failedMessage, message, innerException) { }
+        /// <param name="innerException">Cause of this exception.</param>        
+        public InternalServerErrorException(string message = null, Exception innerException = null)
+            : base(message, innerException) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalServerErrorException" /> class.
@@ -60,11 +35,7 @@ namespace Kingo.Messaging
         public override int ErrorCode =>
             500;
 
-        internal static InternalServerErrorException FromInnerException(object failedMessage, Exception innerException)
-        {
-            var messageFormat = ExceptionMessages.InternalServerErrorException_FromException;
-            var message = string.Format(messageFormat, failedMessage.GetType().FriendlyName());
-            return new InternalServerErrorException(failedMessage, message, innerException);
-        }
+        internal static InternalServerErrorException FromInnerException(Exception innerException) =>
+            new InternalServerErrorException(ExceptionMessages.InternalServerErrorException_FromException, innerException);
     }
 }

@@ -9,39 +9,14 @@ namespace Kingo.Messaging
     /// </summary>
     [Serializable]
     public class NotFoundException : BadRequestException
-    {
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="NotFoundException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public NotFoundException(object failedMessage)
-            : base(failedMessage) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotFoundException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
+        /// </summary>        
         /// <param name="message">Message of the exception.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public NotFoundException(object failedMessage, string message)
-            : base(failedMessage, message) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotFoundException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
-        /// <param name="message">Message of the exception.</param>
-        /// <param name="innerException">Cause of this exception.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public NotFoundException(object failedMessage, string message, Exception innerException)
-            : base(failedMessage, message, innerException) { }
+        /// <param name="innerException">Cause of this exception.</param>        
+        public NotFoundException(string message, Exception innerException)
+            : base(message, innerException) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NotFoundException" /> class.

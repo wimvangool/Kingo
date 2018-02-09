@@ -11,25 +11,13 @@ namespace Kingo.Messaging
     /// </summary>
     [Serializable]
     public class InternalProcessorException : Exception
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.
-        /// </summary>
-        public InternalProcessorException() { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.
-        /// </summary>
-        /// <param name="message">Message of the exception.</param>
-        public InternalProcessorException(string message)
-            : base(message) { }
-
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalProcessorException" /> class.
         /// </summary>
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>
-        public InternalProcessorException(string message, Exception innerException)
+        public InternalProcessorException(string message = null, Exception innerException = null)
             : base(message, innerException) { }
 
         /// <summary>
@@ -42,31 +30,21 @@ namespace Kingo.Messaging
             : base(info, context) { }
 
         /// <summary>
-        /// Creates and returns this exception as a <see cref="BadRequestException"/> that is associated with the
-        /// specified <paramref name="failedMessage"/>, indicating that the current exception occurred because of
-        /// a bad client request.
-        /// </summary>
-        /// <param name="failedMessage">The message that was being handled the moment this exception was caught.</param>
+        /// Creates and returns this exception as a <see cref="BadRequestException"/>, indicating that
+        /// the current exception occurred because of a bad client request.
+        /// </summary>        
         /// <param name="message">Message describing the context of the newly created message.</param>
-        /// <returns>A new <see cref="BadRequestException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public virtual BadRequestException AsBadRequestException(object failedMessage, string message) =>
-            new BadRequestException(failedMessage, message, this);
+        /// <returns>A new <see cref="BadRequestException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>        
+        public virtual BadRequestException AsBadRequestException(string message) =>
+            new BadRequestException(message, this);
 
         /// <summary>
-        /// Creates and returns this exception as a <see cref="InternalServerErrorException"/> that is associated with the
-        /// specified <paramref name="failedMessage"/>, indicating that the current exception occurred because of an internal
-        /// server error.        
-        /// </summary>
-        /// <param name="failedMessage">The message that was being handled the moment this exception was caught.</param>
+        /// Creates and returns this exception as a <see cref="InternalServerErrorException"/>, indicating that
+        /// the current exception occurred because of an internal server error.        
+        /// </summary>        
         /// <param name="message">Message describing the context of the newly created message.</param>
-        /// <returns>A new <see cref="InternalServerErrorException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public virtual InternalServerErrorException AsInternalServerErrorException(object failedMessage, string message) =>
-            new InternalServerErrorException(failedMessage, Message, this);
+        /// <returns>A new <see cref="InternalServerErrorException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>        
+        public virtual InternalServerErrorException AsInternalServerErrorException(string message) =>
+            new InternalServerErrorException(message, this);
     }
 }

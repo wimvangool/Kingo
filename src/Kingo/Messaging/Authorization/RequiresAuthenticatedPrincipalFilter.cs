@@ -16,14 +16,14 @@ namespace Kingo.Messaging.Authorization
             {
                 return pipeline.InvokeNextFilterAsync(context);
             }
-            throw NewPrincipalNotAuthenticatedException(context.Principal.Identity, context.Messages.Current.Message);            
+            throw NewPrincipalNotAuthenticatedException(context.Principal.Identity);            
         }
 
-        private static Exception NewPrincipalNotAuthenticatedException(IIdentity identity, object failedMessage)
+        private static Exception NewPrincipalNotAuthenticatedException(IIdentity identity)
         {
             var messageFormat = ExceptionMessages.RequiresAuthenticatedPrincipalFilter_PrincipalNotAuthenticated;
             var message = string.Format(messageFormat, identity.Name);
-            return new UnauthorizedRequestException(failedMessage, message);
+            return new UnauthorizedRequestException(message);
         }
     }
 }

@@ -8,35 +8,7 @@ namespace Kingo.Messaging
     /// This exception is thrown when a certain required claim was not found.
     /// </summary>
     public class ClaimNotFoundException : InternalProcessorException
-    {
-        private const string _ClaimType = nameof(_ClaimType);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClaimNotFoundException" /> class.
-        /// </summary>
-        /// <param name="claimType">The type of the claim that could not be found.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="claimType" /> is <c>null</c>.
-        /// </exception>
-        public ClaimNotFoundException(string claimType)
-        {
-            ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClaimNotFoundException" /> class.
-        /// </summary>
-        /// <param name="claimType">The type of the claim that could not be found.</param>
-        /// <param name="message">Message of the exception.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="claimType" /> is <c>null</c>.
-        /// </exception>
-        public ClaimNotFoundException(string claimType, string message)
-            : base(message)
-        {
-            ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
-        }
-
+    {                
         /// <summary>
         /// Initializes a new instance of the <see cref="ClaimNotFoundException" /> class.
         /// </summary>
@@ -46,7 +18,7 @@ namespace Kingo.Messaging
         /// <exception cref="ArgumentNullException">
         /// <paramref name="claimType" /> is <c>null</c>.
         /// </exception>
-        public ClaimNotFoundException(string claimType, string message, Exception innerException)
+        public ClaimNotFoundException(string claimType, string message = null, Exception innerException = null)
             : base(message, innerException)
         {
             ClaimType = claimType ?? throw new ArgumentNullException(nameof(claimType));
@@ -61,7 +33,7 @@ namespace Kingo.Messaging
         protected ClaimNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            ClaimType = info.GetString(_ClaimType);
+            ClaimType = info.GetString(nameof(ClaimType));
         }
 
         /// <inheritdoc />
@@ -69,7 +41,7 @@ namespace Kingo.Messaging
         {
             base.GetObjectData(info, context);
 
-            info.AddValue(_ClaimType, ClaimType);
+            info.AddValue(nameof(ClaimType), ClaimType);
         }
 
         /// <summary>
@@ -81,17 +53,12 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="UnauthorizedRequestException"/> that is associated with the
-        /// specified <paramref name="failedMessage"/>, indicating that the current exception occurred because of
-        /// a bad client request.
-        /// </summary>
-        /// <param name="failedMessage">The message that was being handled the moment this exception was caught.</param>
+        /// Creates and returns a <see cref="UnauthorizedRequestException"/>, indicating that the current
+        /// exception occurred because of a unauthorized client request.
+        /// </summary>        
         /// <param name="message">Message describing the context of the newly created message.</param>
-        /// <returns>A new <see cref="BadRequestException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="failedMessage"/> is <c>null</c>.
-        /// </exception>
-        public override BadRequestException AsBadRequestException(object failedMessage, string message) =>
-            new UnauthorizedRequestException(failedMessage, message, this);
+        /// <returns>A new <see cref="BadRequestException"/> with its <see cref="Exception.InnerException"/> set to this instance.</returns>        
+        public override BadRequestException AsBadRequestException(string message) =>
+            new UnauthorizedRequestException(message, this);
     }
 }

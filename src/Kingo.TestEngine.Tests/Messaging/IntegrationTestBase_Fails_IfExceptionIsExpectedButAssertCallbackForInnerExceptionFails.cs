@@ -10,7 +10,7 @@ namespace Kingo.Messaging
         private const string _Message = "Test";
 
         protected override object ExecuteQuery(IMicroProcessorContext context) =>
-            throw new BadRequestException(new object(), _Message, new Exception(_Message));
+            throw new BadRequestException(_Message, new Exception(_Message));
 
         [TestMethod]
         [ExpectedException(typeof(MetaAssertFailedException))]

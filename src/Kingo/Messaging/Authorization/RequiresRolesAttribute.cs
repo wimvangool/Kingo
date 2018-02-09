@@ -40,16 +40,16 @@ namespace Kingo.Messaging.Authorization
                 {
                     continue;
                 }
-                throw NewPrincipalNotInRoleException(context.Principal.Identity, requiredRole, context.Messages.Current.Message);
+                throw NewPrincipalNotInRoleException(context.Principal.Identity, requiredRole);
             }
             return base.InvokeMessageHandlerOrQueryAsync(handlerOrQuery, context);                       
         }                
 
-        private static Exception NewPrincipalNotInRoleException(IIdentity identity, string requiredRole, object failedMessage)
+        private static Exception NewPrincipalNotInRoleException(IIdentity identity, string requiredRole)
         {
             var messageFormat = ExceptionMessages.RequiresRoleAttribute_MissingRole;
             var message = string.Format(messageFormat, identity.Name, requiredRole);
-            return new UnauthorizedRequestException(failedMessage, message);
+            return new UnauthorizedRequestException(message);
         }
     }
 }

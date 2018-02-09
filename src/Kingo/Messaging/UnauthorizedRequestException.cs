@@ -9,30 +9,14 @@ namespace Kingo.Messaging
     /// </summary>
     [Serializable]
     public class UnauthorizedRequestException : BadRequestException
-    {
+    {        
         /// <summary>
         /// Initializes a new instance of the <see cref="UnauthorizedRequestException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>        
-        public UnauthorizedRequestException(object failedMessage) :
-            base(failedMessage) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedRequestException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
-        /// <param name="message">Message of the exception.</param>        
-        public UnauthorizedRequestException(object failedMessage, string message)
-            : base(failedMessage, message) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedRequestException" /> class.
-        /// </summary>
-        /// <param name="failedMessage">The message that could not be processed.</param>
+        /// </summary>        
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>        
-        public UnauthorizedRequestException(object failedMessage, string message, Exception innerException)
-            : base(failedMessage, message, innerException) { }
+        public UnauthorizedRequestException(string message = null, Exception innerException = null)
+            : base(message, innerException) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnauthorizedRequestException" /> class.

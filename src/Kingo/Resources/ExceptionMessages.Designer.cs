@@ -241,7 +241,7 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while processing message of type &apos;{0}&apos;. See inner exception for details..
+        ///   Looks up a localized string similar to An error occurred while processing a message. See inner exception for details..
         /// </summary>
         internal static string InternalServerErrorException_FromException {
             get {
