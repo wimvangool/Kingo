@@ -15,7 +15,7 @@ namespace Kingo.Messaging
         /// </summary>        
         /// <param name="message">Message of the exception.</param>
         /// <param name="innerException">Cause of this exception.</param>        
-        public NotFoundException(string message, Exception innerException)
+        public NotFoundException(string message = null, Exception innerException = null)
             : base(message, innerException) { }
 
         /// <summary>
