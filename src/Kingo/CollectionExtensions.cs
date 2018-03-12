@@ -79,6 +79,76 @@ namespace Kingo
             return false;
         }
 
+        /// <summary>
+        /// Attempts to retrieve the first element of the specified collection.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the element.</typeparam>
+        /// <param name="collection">The collection to get the element from.</param>
+        /// <param name="element">
+        /// If this method returns <c>true</c>, this parameter will refer to the first element of the specified <paramref name="collection"/>;
+        /// otherwise, it will be set to the default value of <typeparamref name="TValue"/>.
+        /// </param>
+        /// <returns><c>true</c> if <paramref name="collection"/> contains any elements; otherwise <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> is <c>null</c>.
+        /// </exception>  
+        public static bool TryGetFirstItem<TValue>(this IEnumerable<TValue> collection, out TValue element)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            using (var enumerator = collection.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                {
+                    element = enumerator.Current;
+                    return true;
+                }
+                element = default(TValue);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to retrieve the first element of the specified collection that matches the specified <paramref name="predicate"/>. If
+        /// <paramref name="predicate"/> is <c>null</c>, the first element of the collection will be returned.
+        /// </summary>
+        /// <typeparam name="TValue">Type of the element.</typeparam>
+        /// <param name="collection">The collection to get the element from.</param>
+        /// <param name="predicate">The predicate that will be used to return the correct element.</param>
+        /// <param name="element">
+        /// If this method returns <c>true</c>, this parameter will refer to the first element of the specified <paramref name="collection"/>;
+        /// otherwise, it will be set to the default value of <typeparamref name="TValue"/>.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="collection"/> contains any elements that matches the specified <paramref name="predicate"/>;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> is <c>null</c>.
+        /// </exception>  
+        public static bool TryGetFirstItem<TValue>(this IEnumerable<TValue> collection, Func<TValue, bool> predicate, out TValue element)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            using (var enumerator = collection.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    if (Satisfies(enumerator.Current, predicate))
+                    {
+                        element = enumerator.Current;
+                        return true;
+                    }                    
+                }
+                element = default(TValue);
+                return false;
+            }
+        }
+
         #endregion
 
         #region [====== Array ======]
@@ -109,6 +179,9 @@ namespace Kingo
         }
 
         #endregion
+
+        private static bool Satisfies<TValue>(TValue element, Func<TValue, bool> predicate) =>
+            predicate == null || predicate.Invoke(element);
 
         internal static IndexOutOfRangeException NewIndexOutOfRangeException(int index, int count)
         {
