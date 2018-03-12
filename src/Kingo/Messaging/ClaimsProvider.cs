@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
@@ -90,6 +91,33 @@ namespace Kingo.Messaging
 
         private static Func<IEnumerable<Claim>, Claim> EnsureFilter(Func<IEnumerable<Claim>, Claim> filter) =>
             filter ?? (claims => claims.FirstOrDefault());
+
+        #region [====== OfCurrentPrincipal ======]
+
+        private sealed class ClaimsProviderOfCurrentPrincipal : IClaimsProvider
+        {
+            public IEnumerable<Claim> Claims =>
+                CreateClaimsProvider().Claims;
+
+            public bool HasClaim(string type, Func<IEnumerable<Claim>, Claim> filter = null) =>
+                CreateClaimsProvider().HasClaim(type, filter);
+
+            public Claim FindClaim(string type, Func<IEnumerable<Claim>, Claim> filter = null) =>
+                CreateClaimsProvider().FindClaim(type, filter);
+
+            public bool TryFindClaim(string type, out Claim claim, Func<IEnumerable<Claim>, Claim> filter = null) =>
+                CreateClaimsProvider().TryFindClaim(type, out claim, filter);
+
+            private static IClaimsProvider CreateClaimsProvider() =>
+                new ClaimsProvider(Thread.CurrentPrincipal);
+        }        
+
+        /// <summary>
+        /// Represents a claims provider that extracts its claims from the current principal.
+        /// </summary>
+        public static readonly IClaimsProvider OfCurrentPrincipal = new ClaimsProviderOfCurrentPrincipal();
+
+        #endregion
 
         internal static Exception NewClaimNotFoundException(IIdentity identity, string type)
         {
