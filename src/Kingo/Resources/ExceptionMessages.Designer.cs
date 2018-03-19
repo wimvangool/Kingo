@@ -142,6 +142,24 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid time span specified: [{0}, {1}]..
+        /// </summary>
+        internal static string DateTimeSpan_InvalidTimeSpan {
+            get {
+                return ResourceManager.GetString("DateTimeSpan_InvalidTimeSpan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not allowed to be zero..
+        /// </summary>
+        internal static string DateTimeSpan_TimeSpanZeroNotAllowed {
+            get {
+                return ResourceManager.GetString("DateTimeSpan_TimeSpanZeroNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
         /// </summary>
         internal static string DomainModelException_CommandFailed {

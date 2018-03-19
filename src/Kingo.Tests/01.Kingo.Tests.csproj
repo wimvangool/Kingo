@@ -84,6 +84,7 @@
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
     <Compile Include="ComparableTest.cs" />
+    <Compile Include="DateTimeSpanTest.cs" />
     <Compile Include="Messaging\Authorization\RequiresClaimsAttributeTest.cs" />
     <Compile Include="Messaging\Authorization\RequiresRolesAttributeTest.cs" />
     <Compile Include="Messaging\ClaimsProviderTest.cs" />

@@ -59,6 +59,7 @@
     <Compile Include="..\AssemblyInfo.solution.cs">
       <Link>Properties\AssemblyInfo.solution.cs</Link>
     </Compile>
+    <Compile Include="DateTimeSpan.cs" />
     <Compile Include="Messaging\ClaimsProviderExtensions.cs" />
     <Compile Include="Clocks\Clock.cs" />
     <Compile Include="Clocks\ClockExtensions.cs" />
