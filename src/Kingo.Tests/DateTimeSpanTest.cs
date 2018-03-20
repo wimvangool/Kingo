@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo
@@ -539,7 +537,98 @@ namespace Kingo
 
         #region [====== GetDifference ======]
 
+        [TestMethod]
+        public void GetDifference_ReturnsNoDifference_IfSpansAreEqual()
+        {
+            var today = DateTimeSpan.Today();
 
+            AssertDifference(today, today);
+        }
+
+        [TestMethod]
+        public void GetDifference_ReturnsBothSpans_IfSpansDoNotOverlap()
+        {
+            var left = DateTimeSpan.FromYear(2017);
+            var right = DateTimeSpan.FromYear(2019);
+
+            AssertDifference(left, right, left, right);
+        }
+
+        [TestMethod]
+        public void GetDifference_ReturnsBothSpans_IfSpansAreAdjacent()
+        {
+            var left = DateTimeSpan.FromYear(2017);
+            var right = DateTimeSpan.FromYear(2018);
+
+            AssertDifference(left, right, left, right);
+        }
+
+        [TestMethod]
+        public void GetDifference_ReturnsExpectedDifference_IfSpansPartiallyOverlap()
+        {
+            var left = DateTimeSpan.FromMonth(2018, 1);
+            var right = left.Shift(TimeSpan.FromDays(1));
+
+            var differenceLeft = new DateTimeSpan(left.Start, right.Start);
+            var differenceRight = new DateTimeSpan(left.End, right.End);
+
+            AssertDifference(left, right, differenceLeft, differenceRight);
+        }
+
+        [TestMethod]
+        public void GetDifference_ReturnsExpectedDifference_IfOneSpanBeginsWithOtherSpan()
+        {
+            var left = DateTimeSpan.FromMonth(2018, 1);
+            var right = left.ShiftEnd(TimeSpan.FromDays(1));
+
+            var differenceRight = new DateTimeSpan(left.End, right.End);
+
+            AssertDifference(left, right, differenceRight);
+        }
+
+        [TestMethod]
+        public void GetDifference_ReturnsExpectedDifference_IfOneSpanEndsWithOtherSpan()
+        {
+            var left = DateTimeSpan.FromMonth(2018, 1);
+            var right = left.ShiftStart(TimeSpan.FromDays(1));
+
+            var differenceLeft = new DateTimeSpan(left.Start, right.Start);
+
+            AssertDifference(left, right, differenceLeft);
+        }
+
+        [TestMethod]
+        public void GetDifference_ReturnsExpectedDifference_IfOneSpanFullyContainsOtherSpan()
+        {
+            var left = DateTimeSpan.FromMonth(2018, 1);
+            var right = left.ShiftStart(TimeSpan.FromDays(1)).ShiftEnd(TimeSpan.FromDays(-1));
+
+            var differenceLeft = new DateTimeSpan(left.Start, right.Start);
+            var differenceRight = new DateTimeSpan(right.End, left.End);
+
+            AssertDifference(left, right, differenceLeft, differenceRight);
+        }
+
+        private static void AssertDifference(DateTimeSpan left, DateTimeSpan right, params DateTimeSpan[] expectedDifference)
+        {
+            var difference = left.GetDifference(right).ToArray();
+            
+            AssertAreEqual(expectedDifference, difference);
+            AssertAreEqual(difference, right.GetDifference(left));
+        }
+
+        private static void AssertAreEqual(IEnumerable<DateTimeSpan> expected, IEnumerable<DateTimeSpan> actual) =>
+            AssertAreEqual(new Queue<DateTimeSpan>(expected), new LinkedList<DateTimeSpan>(actual));
+
+        private static void AssertAreEqual(Queue<DateTimeSpan> expected, LinkedList<DateTimeSpan> actual)
+        {
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            while (expected.Count > 0)
+            {
+                Assert.IsTrue(actual.Remove(expected.Dequeue()));
+            }
+        }        
 
         #endregion
 

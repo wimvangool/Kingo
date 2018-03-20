@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kingo.Messaging;
 using Kingo.Resources;
 
 namespace Kingo
@@ -513,13 +508,36 @@ namespace Kingo
 
         /// <summary>
         /// Returns a collection of time spans that represent the differences or non-intersecting spans between this time span and <paramref name="other"/>.
-        /// The resulting collection may contain, zero, one or two span, depending on if and how this time span intersects with <paramref name="other"/>.
+        /// The resulting collection may contain zero, one or two spans, depending on if and how this time span intersects with <paramref name="other"/>.
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public IEnumerable<DateTimeSpan> GetDifference(DateTimeSpan other)
+        /// <param name="other">Another time span.</param>
+        /// <returns>
+        /// The difference between this span and <paramref name="other"/> in the form of a collection of spans with either
+        /// zero, one or two elements.
+        /// </returns>
+        public IEnumerable<DateTimeSpan> GetDifference(DateTimeSpan other) =>
+            GetDifferenceWith(other.ToOffset(Start.Offset));
+
+        private IEnumerable<DateTimeSpan> GetDifferenceWith(DateTimeSpan other)
         {
-            throw new NotImplementedException();
+            if (TryGetIntersectionWith(other, out DateTimeSpan intersection))
+            {
+                var differenceLeftStart = Min(Start, other.Start);
+                if (differenceLeftStart < intersection.Start)
+                {
+                    yield return new DateTimeSpan(differenceLeftStart, intersection.Start);
+                }
+                var differenceRightEnd = Max(End, other.End);
+                if (differenceRightEnd > intersection.End)
+                {
+                    yield return new DateTimeSpan(intersection.End, differenceRightEnd);
+                }
+            }
+            else
+            {
+                yield return this;
+                yield return other;
+            }            
         }
 
         #endregion
