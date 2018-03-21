@@ -47,6 +47,7 @@ namespace Kingo
 
             Assert.AreEqual(today, span.Start);
             Assert.AreEqual(today.Add(duration), span.End);
+            Assert.IsTrue(span.EndInclusive < span.End);
             Assert.AreEqual(duration, span.Duration);
         }
 

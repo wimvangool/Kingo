@@ -90,6 +90,12 @@ namespace Kingo
             get;
         }
 
+        /// <summary>
+        /// End of this time span in its inclusive form.
+        /// </summary>
+        public DateTimeOffset EndInclusive =>
+            EndIsIncluded ? End : End.Subtract(TimeSpan.FromTicks(1));
+
         private bool EndIsIncluded =>
             Start.Equals(End) || End.Equals(DateTimeOffset.MaxValue);
 
