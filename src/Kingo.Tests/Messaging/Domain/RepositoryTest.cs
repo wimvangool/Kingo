@@ -147,7 +147,7 @@ namespace Kingo.Messaging.Domain
             var outputStream = await _processor.HandleAsync(command);
 
             Assert.AreEqual(1, outputStream.Count);
-            AssertEvent<AggregateRootSpyCreatedAggregateEvent>(outputStream, 0, @event =>
+            AssertEvent<AggregateRootSpyCreatedEvent>(outputStream, 0, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(1, @event.Version);                
@@ -302,7 +302,7 @@ namespace Kingo.Messaging.Domain
             var outputStream = await _processor.HandleAsync(command);
 
             Assert.AreEqual(1, outputStream.Count);
-            AssertEvent<AggregateRootSpyCreatedAggregateEvent>(outputStream, 0, @event =>
+            AssertEvent<AggregateRootSpyCreatedEvent>(outputStream, 0, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(1, @event.Version);
@@ -483,7 +483,7 @@ namespace Kingo.Messaging.Domain
             var outputStream = await _processor.HandleAsync(command);
 
             Assert.AreEqual(1, outputStream.Count);
-            AssertEvent<AggregateRootSpyCreatedAggregateEvent>(outputStream, 0, @event =>
+            AssertEvent<AggregateRootSpyCreatedEvent>(outputStream, 0, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(1, @event.Version);
@@ -567,7 +567,7 @@ namespace Kingo.Messaging.Domain
             var outputStream = await _processor.HandleAsync(command);
 
             Assert.AreEqual(1, outputStream.Count);
-            AssertEvent<AggregateRootSpyRemovedAggregateEvent>(outputStream, 0, @event =>
+            AssertEvent<AggregateRootSpyRemovedEvent>(outputStream, 0, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(2, @event.Version);
@@ -600,7 +600,7 @@ namespace Kingo.Messaging.Domain
             var outputStream = await _processor.HandleAsync(command);
 
             Assert.AreEqual(1, outputStream.Count);
-            AssertEvent<AggregateRootSpyRemovedAggregateEvent>(outputStream, 0, @event =>
+            AssertEvent<AggregateRootSpyRemovedEvent>(outputStream, 0, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(2, @event.Version);
@@ -631,12 +631,12 @@ namespace Kingo.Messaging.Domain
             var outputStream = await _processor.HandleAsync(command);
 
             Assert.AreEqual(2, outputStream.Count);
-            AssertEvent<AggregateRootSpyCreatedAggregateEvent>(outputStream, 0, @event =>
+            AssertEvent<AggregateRootSpyCreatedEvent>(outputStream, 0, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(1, @event.Version);
             });
-            AssertEvent<AggregateRootSpyRemovedAggregateEvent>(outputStream, 1, @event =>
+            AssertEvent<AggregateRootSpyRemovedEvent>(outputStream, 1, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(2, @event.Version);
@@ -677,7 +677,7 @@ namespace Kingo.Messaging.Domain
                 Assert.AreEqual(2, @event.Version);
                 Assert.AreEqual(command.NewValue, @event.NewValue);
             });
-            AssertEvent<AggregateRootSpyRemovedAggregateEvent>(outputStream, 1, @event =>
+            AssertEvent<AggregateRootSpyRemovedEvent>(outputStream, 1, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(3, @event.Version);
@@ -709,7 +709,7 @@ namespace Kingo.Messaging.Domain
             var outputStream = await _processor.HandleAsync(command);
 
             Assert.AreEqual(1, outputStream.Count);            
-            AssertEvent<AggregateRootSpyRemovedAggregateEvent>(outputStream, 0, @event =>
+            AssertEvent<AggregateRootSpyRemovedEvent>(outputStream, 0, @event =>
             {
                 Assert.AreEqual(command.Id, @event.Id);
                 Assert.AreEqual(2, @event.Version);

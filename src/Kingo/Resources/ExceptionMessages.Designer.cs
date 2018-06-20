@@ -61,6 +61,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restoring an aggregate from an instance of type &apos;{0}&apos; is not supported..
+        /// </summary>
+        internal static string AggregateDataObject_RestoreAggregateNotSupported {
+            get {
+                return ResourceManager.GetString("AggregateDataObject_RestoreAggregateNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; cannot publish event of type &apos;{1}&apos; because it has been removed from its repository and its lifetime has therefore ended..
         /// </summary>
         internal static string AggregateRoot_AggregateRemovedException {
@@ -88,15 +97,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Id &apos;{0}&apos; on event &apos;{1}&apos; does not match the identifier of the aggregate it is being applied to ({2})..
-        /// </summary>
-        internal static string AggregateRoot_InvalidIdOnEvent {
-            get {
-                return ResourceManager.GetString("AggregateRoot_InvalidIdOnEvent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Missing event handler for event of type &apos;{0}&apos;..
         /// </summary>
         internal static string AggregateRoot_MissingEventHandlerException {
@@ -106,11 +106,29 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Snapshots are not supported by aggregate of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string AggregateRoot_SnapshotsNotSupported {
+            get {
+                return ResourceManager.GetString("AggregateRoot_SnapshotsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The next version ({0}) must represent a newer version than the current version ({1})..
         /// </summary>
         internal static string AggregateRoot_VersionUpdateException {
             get {
                 return ResourceManager.GetString("AggregateRoot_VersionUpdateException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot restore the aggregate because the dataset does not contain a snapshot or event that can be used to initialize the aggregate..
+        /// </summary>
+        internal static string AggregateRootFactory_MissingSnapshotOrCreatedEvent {
+            get {
+                return ResourceManager.GetString("AggregateRootFactory_MissingSnapshotOrCreatedEvent", resourceCulture);
             }
         }
         
@@ -268,15 +286,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid behavior specified: &apos;{0}&apos;. Please choose one of the following values: &lt;{1}&gt;..
-        /// </summary>
-        internal static string MemoryRepository_InvalidBehavior {
-            get {
-                return ResourceManager.GetString("MemoryRepository_InvalidBehavior", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
         /// </summary>
         internal static string Message_AmbiguousAttributeMatch {
@@ -394,69 +403,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please make sure exactly one public property that has a getter and a setter is decorated with this attribute..
-        /// </summary>
-        internal static string Property_InstructionInfo {
-            get {
-                return ResourceManager.GetString("Property_InstructionInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: property &apos;{2}&apos; must have a getter..
-        /// </summary>
-        internal static string Property_MissingGetMethod {
-            get {
-                return ResourceManager.GetString("Property_MissingGetMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: property &apos;{2}&apos; must have a setter..
-        /// </summary>
-        internal static string Property_MissingSetMethod {
-            get {
-                return ResourceManager.GetString("Property_MissingSetMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: cannot declare this attribute on an indexer ({2})..
-        /// </summary>
-        internal static string Property_PropertyIndexerFound {
-            get {
-                return ResourceManager.GetString("Property_PropertyIndexerFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing declaration of attribute &apos;{0}&apos; on a property in class &apos;{1}&apos;..
-        /// </summary>
-        internal static string Property_PropertyNotFound {
-            get {
-                return ResourceManager.GetString("Property_PropertyNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: multiple properties ({2}) have been decorated with the attribute where only one is allowed..
-        /// </summary>
-        internal static string Property_TooManyPropertiesFound {
-            get {
-                return ResourceManager.GetString("Property_TooManyPropertiesFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Illegal use of attribute &apos;{0}&apos; in class &apos;{1}&apos;: property &apos;{2}&apos; must be of type &apos;{3}&apos;..
-        /// </summary>
-        internal static string Property_WrongPropertyType {
-            get {
-                return ResourceManager.GetString("Property_WrongPropertyType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot publish messages to the output stream while executing a query..
         /// </summary>
         internal static string QueryContext_NullOutputStream_PublishNotAllowed {
@@ -570,6 +516,15 @@ namespace Kingo.Resources {
         internal static string TypeAttributeProvider_AmbiguousAttributeMatch {
             get {
                 return ResourceManager.GetString("TypeAttributeProvider_AmbiguousAttributeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid serialization strategy specified ({0}): strategy must support either snapshots, events or both..
+        /// </summary>
+        internal static string UnitOfWork_InvalidSerializationStrategySpecified {
+            get {
+                return ResourceManager.GetString("UnitOfWork_InvalidSerializationStrategySpecified", resourceCulture);
             }
         }
     }

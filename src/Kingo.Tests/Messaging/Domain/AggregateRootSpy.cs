@@ -8,13 +8,13 @@ namespace Kingo.Messaging.Domain
         private readonly bool _subtractOneForNextVersion;
 
         protected AggregateRootSpy(bool subtractOneForNextVersion) :
-            base(new AggregateRootSpyCreatedAggregateEvent(Guid.NewGuid()))
+            base(new AggregateRootSpyCreatedEvent(Guid.NewGuid()), true)
         {
             _subtractOneForNextVersion = subtractOneForNextVersion;
         }
 
-        protected AggregateRootSpy(AggregateRootSpyCreatedAggregateEvent aggregateEvent) :
-            base(aggregateEvent) { }        
+        protected AggregateRootSpy(AggregateRootSpyCreatedEvent aggregateEvent, bool isNewAggregate) :
+            base(aggregateEvent, isNewAggregate) { }        
 
         protected AggregateRootSpy(SnapshotMock snapshot) :
             base(snapshot)
@@ -32,7 +32,7 @@ namespace Kingo.Messaging.Domain
         }
 
         protected override void OnRemoved() =>
-            Publish(new AggregateRootSpyRemovedAggregateEvent());
+            Publish(new AggregateRootSpyRemovedEvent());
 
         protected int Value
         {

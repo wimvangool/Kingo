@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AggregateDataObject_RestoreAggregateNotSupported" xml:space="preserve">
+    <value>Restoring an aggregate from an instance of type '{0}' is not supported.</value>
+  </data>
+  <data name="AggregateRootFactory_MissingSnapshotOrCreatedEvent" xml:space="preserve">
+    <value>Cannot restore the aggregate because the dataset does not contain a snapshot or event that can be used to initialize the aggregate.</value>
+  </data>
   <data name="AggregateRoot_AggregateRemovedException" xml:space="preserve">
     <value>Aggregate of type '{0}' cannot publish event of type '{1}' because it has been removed from its repository and its lifetime has therefore ended.</value>
   </data>
@@ -126,11 +132,11 @@
   <data name="AggregateRoot_HandlerForEventTypeAlreadyAdded" xml:space="preserve">
     <value>Another handler for event of type '{0}' has already been added to this collection.</value>
   </data>
-  <data name="AggregateRoot_InvalidIdOnEvent" xml:space="preserve">
-    <value>Id '{0}' on event '{1}' does not match the identifier of the aggregate it is being applied to ({2}).</value>
-  </data>
   <data name="AggregateRoot_MissingEventHandlerException" xml:space="preserve">
     <value>Missing event handler for event of type '{0}'.</value>
+  </data>
+  <data name="AggregateRoot_SnapshotsNotSupported" xml:space="preserve">
+    <value>Snapshots are not supported by aggregate of type '{0}'.</value>
   </data>
   <data name="AggregateRoot_VersionUpdateException" xml:space="preserve">
     <value>The next version ({0}) must represent a newer version than the current version ({1}).</value>
@@ -186,9 +192,6 @@
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
     <value>An error occurred while processing a message. See inner exception for details.</value>
   </data>
-  <data name="MemoryRepository_InvalidBehavior" xml:space="preserve">
-    <value>Invalid behavior specified: '{0}'. Please choose one of the following values: &lt;{1}&gt;.</value>
-  </data>
   <data name="MessageHandlerContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while handling a metadata message.</value>
   </data>
@@ -228,27 +231,6 @@
   <data name="NullStream_PublishNotSupported" xml:space="preserve">
     <value>Cannot publish event of type '{0}': events can only be published while a MicroProcessor is handling a message or executing a query.</value>
   </data>
-  <data name="Property_InstructionInfo" xml:space="preserve">
-    <value>Please make sure exactly one public property that has a getter and a setter is decorated with this attribute.</value>
-  </data>
-  <data name="Property_MissingGetMethod" xml:space="preserve">
-    <value>Illegal use of attribute '{0}' in class '{1}': property '{2}' must have a getter.</value>
-  </data>
-  <data name="Property_MissingSetMethod" xml:space="preserve">
-    <value>Illegal use of attribute '{0}' in class '{1}': property '{2}' must have a setter.</value>
-  </data>
-  <data name="Property_PropertyIndexerFound" xml:space="preserve">
-    <value>Illegal use of attribute '{0}' in class '{1}': cannot declare this attribute on an indexer ({2}).</value>
-  </data>
-  <data name="Property_PropertyNotFound" xml:space="preserve">
-    <value>Missing declaration of attribute '{0}' on a property in class '{1}'.</value>
-  </data>
-  <data name="Property_TooManyPropertiesFound" xml:space="preserve">
-    <value>Illegal use of attribute '{0}' in class '{1}': multiple properties ({2}) have been decorated with the attribute where only one is allowed.</value>
-  </data>
-  <data name="Property_WrongPropertyType" xml:space="preserve">
-    <value>Illegal use of attribute '{0}' in class '{1}': property '{2}' must be of type '{3}'.</value>
-  </data>
   <data name="QueryContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while executing a query.</value>
   </data>
@@ -287,5 +269,8 @@
   </data>
   <data name="TypeAttributeProvider_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Cannot obtain single attribute of type '{0}' declared on type '{1}' because multiple attributes are of type '{0}'.</value>
+  </data>
+  <data name="UnitOfWork_InvalidSerializationStrategySpecified" xml:space="preserve">
+    <value>Invalid serialization strategy specified ({0}): strategy must support either snapshots, events or both.</value>
   </data>
 </root>

@@ -12,7 +12,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// A collection of aggregates that must be inserted into the data store.
         /// </summary>
-        IReadOnlyCollection<AggregateData<TKey>> AggregatesToInsert
+        IReadOnlyCollection<AggregateDataSet<TKey>> AggregatesToInsert
         {
             get;
         }
@@ -20,7 +20,7 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// A collection of aggregates that must be updated in the data store.
         /// </summary>
-        IReadOnlyCollection<AggregateData<TKey>> AggregatesToUpdate
+        IReadOnlyCollection<AggregateDataSet<TKey>> AggregatesToUpdate
         {
             get;
         }

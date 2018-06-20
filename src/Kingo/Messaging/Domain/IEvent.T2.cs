@@ -3,27 +3,27 @@
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// When implemented by a class, represent an event that was published by an aggregate.
+    /// Represents an event that carries the id and version of an aggregate.
     /// </summary>
     /// <typeparam name="TKey">Type of the identifier of the aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
-    public interface IAggregateEvent<TKey, TVersion> : IEvent
+    public interface IEvent<TKey, TVersion> : IEvent, IAggregateDataObject<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
     {
         /// <summary>
-        /// The identifier of the aggregate that published this event.
+        /// Identifier of the aggregate.
         /// </summary>
-        TKey AggregateId
+        new TKey Id
         {
             get;
             set;
         }
 
         /// <summary>
-        /// The version of the aggregate at the time it published this event.
+        /// Version of the aggregate.
         /// </summary>
-        TVersion AggregateVersion
+        new TVersion Version
         {
             get;
             set;

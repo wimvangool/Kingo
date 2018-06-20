@@ -12,8 +12,8 @@ namespace Kingo.Messaging.Domain
             _registerEventHandlerTwice = registerEventHandlerTwice;
         }
 
-        public AggregateRootWithEventHandlers(AggregateRootSpyCreatedAggregateEvent aggregateEvent) :
-            base(aggregateEvent) { }
+        public AggregateRootWithEventHandlers(AggregateRootSpyCreatedEvent aggregateEvent) :
+            base(aggregateEvent, true) { }
 
         public AggregateRootWithEventHandlers(SnapshotMock snapshot)
             : base(snapshot) { }

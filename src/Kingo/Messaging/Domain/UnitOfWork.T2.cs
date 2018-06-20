@@ -423,18 +423,37 @@ namespace Kingo.Messaging.Domain
         #endregion
 
         private readonly Repository<TKey, TAggregate> _repository;
+        private readonly AggregateSerializationStrategy _serializationStrategy;
         private readonly Dictionary<TKey, AggregateState> _aggregates;
         private bool _requiresFlush;
 
-        public UnitOfWork(Repository<TKey, TAggregate> repository)
+        public UnitOfWork(Repository<TKey, TAggregate> repository, AggregateSerializationStrategy serializationStrategy)
         {
+            if (IsNotValid(serializationStrategy))
+            {
+                throw NewInvalidSerializationStrategyException(serializationStrategy);
+            }
             _repository = repository;
+            _serializationStrategy = serializationStrategy;
             _aggregates = new Dictionary<TKey, AggregateState>();
         }        
 
+        public AggregateSerializationStrategy SerializationStrategy =>
+            _serializationStrategy;        
+
+        private static bool IsNotValid(AggregateSerializationStrategy serializationStrategy) =>
+            !serializationStrategy.UsesSnapshots() && !serializationStrategy.UsesEvents();       
+
+        private static Exception NewInvalidSerializationStrategyException(AggregateSerializationStrategy serializationStrategy)
+        {
+            var messageFormat = ExceptionMessages.UnitOfWork_InvalidSerializationStrategySpecified;
+            var message = string.Format(messageFormat, serializationStrategy);
+            return new ArgumentOutOfRangeException(nameof(serializationStrategy), message);
+        }
+
         public UnitOfWork<TKey, TAggregate> Commit(bool keepAggregatesInMemory)
         {
-            var unitOfWork = new UnitOfWork<TKey, TAggregate>(_repository);
+            var unitOfWork = new UnitOfWork<TKey, TAggregate>(_repository, _serializationStrategy);
             var committedChanges = unitOfWork._aggregates;
 
             foreach (var aggregate in _aggregates)
@@ -491,7 +510,7 @@ namespace Kingo.Messaging.Domain
 
         private ChangeSet<TKey> BuildChangeSet()
         {
-            var changeSet = new ChangeSet<TKey>();
+            var changeSet = new ChangeSet<TKey>(SerializationStrategy);
 
             foreach (var aggregate in _aggregates.Values)
             {

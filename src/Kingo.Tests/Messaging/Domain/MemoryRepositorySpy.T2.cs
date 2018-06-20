@@ -14,7 +14,7 @@ namespace Kingo.Messaging.Domain
         private int _flushCount;
 
         public MemoryRepositorySpy(IEnumerable<TAggregate> aggregates) :
-            base(MemoryRepositoryBehavior.StoreSnapshots, aggregates)
+            base(AggregateSerializationStrategy.Snapshots, aggregates)
         {
             _changeSets = new List<IChangeSet<TKey>>();           
         }

@@ -8,10 +8,10 @@ namespace Kingo.Messaging.Domain
             : base(subtractOneForNextVersion) { }
 
         public AggregateRootWithoutEventHandlers(Guid id)
-            : base(new AggregateRootSpyCreatedAggregateEvent(id)) { }
+            : base(new AggregateRootSpyCreatedEvent(id), true) { }
 
-        public AggregateRootWithoutEventHandlers(AggregateRootSpyCreatedAggregateEvent aggregateEvent) :
-            base(aggregateEvent) { }
+        public AggregateRootWithoutEventHandlers(AggregateRootSpyCreatedEvent aggregateEvent, bool isNewAggregate) :
+            base(aggregateEvent, isNewAggregate) { }
 
         public AggregateRootWithoutEventHandlers(SnapshotMock snapshot)
             : base(snapshot) { }

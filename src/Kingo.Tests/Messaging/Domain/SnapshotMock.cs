@@ -9,21 +9,7 @@ namespace Kingo.Messaging.Domain
         public SnapshotMock(bool aggregateHasEventHandlers)
         {
             _aggregateHasEventHandlers = aggregateHasEventHandlers;
-        }
-
-        [AggregateId]
-        public Guid Id
-        {
-            get;
-            set;
-        }
-
-        [AggregateVersion]
-        public int Version
-        {
-            get;
-            set;
-        }
+        }        
 
         public int Value
         {

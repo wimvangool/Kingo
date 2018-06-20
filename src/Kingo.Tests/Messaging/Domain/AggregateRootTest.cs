@@ -14,14 +14,14 @@ namespace Kingo.Messaging.Domain
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfEventIsNull()
         {
-            new AggregateRootWithoutEventHandlers(null as AggregateRootSpyCreatedAggregateEvent);
+            new AggregateRootWithoutEventHandlers(null, true);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfSnapshotIsNull()
         {
-            new AggregateRootWithoutEventHandlers(null as SnapshotMock);
+            new AggregateRootWithoutEventHandlers(null);
         }
 
         #endregion       
@@ -208,102 +208,70 @@ namespace Kingo.Messaging.Domain
             restoredAggregate.AssertValueIs(newValue);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void LoadFromHistory_Throws_IfEventIdDoesNotMatchAggregateId_And_AggregateHasNoEventHandlers()
+        [TestMethod]        
+        public void LoadFromHistory_IgnoresEvent_IfEventIdDoesNotMatchAggregateId_And_AggregateHasNoEventHandlers()
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithoutEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
-
-            try
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
             {
-                aggregateRootSnapshot.RestoreAggregate(new IEvent[]
+                new ValueChangedEvent
                 {
-                    new ValueChangedEvent
-                    {
-                        Version = 1
-                    }
-                });
-            }
-            catch (ArgumentException exception)
-            {
-                Assert.AreEqual($"Id '{Guid.Empty}' on event 'ValueChangedEvent' does not match the identifier of the aggregate it is being applied to ({aggregateRoot.Id}).", exception.Message);
-                throw;
-            }
+                    Version = 1
+                }
+            });
+
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithoutEventHandlers);            
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void LoadFromHistory_Throws_IfEventIdDoesNotMatchAggregateId_And_AggregateHasEventHandlers()
+        [TestMethod]        
+        public void LoadFromHistory_IgnoresEvent_IfEventIdDoesNotMatchAggregateId_And_AggregateHasEventHandlers()
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
-
-            try
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
             {
-                aggregateRootSnapshot.RestoreAggregate(new IEvent[]
+                new ValueChangedEvent
                 {
-                    new ValueChangedEvent
-                    {
-                        Version = 1
-                    }
-                });
-            }
-            catch (ArgumentException exception)
-            {
-                Assert.AreEqual($"Id '{Guid.Empty}' on event 'ValueChangedEvent' does not match the identifier of the aggregate it is being applied to ({aggregateRoot.Id}).", exception.Message);
-                throw;
-            }
+                    Version = 1
+                }
+            });
+
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void LoadFromHistory_Throws_IfEventVersionIsNotHigherThanVersion_And_AggregateHasNoEventHandlers()
+        [TestMethod]        
+        public void LoadFromHistory_IgnoresEvent_IfEventVersionIsNotHigherThanVersion_And_AggregateHasNoEventHandlers()
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
-
-            try
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
             {
-                aggregateRootSnapshot.RestoreAggregate(new IEvent[]
+                new ValueChangedEvent
                 {
-                    new ValueChangedEvent
-                    {
-                        Id = aggregateRoot.Id,
-                        Version = 1
-                    }
-                });
-            }
-            catch (ArgumentOutOfRangeException exception)
-            {
-                Assert.IsTrue(exception.Message.StartsWith("The next version (1) must represent a newer version than the current version (1)."));                
-                throw;
-            }
+                    Id = aggregateRoot.Id,
+                    Version = 1
+                }
+            });
+
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers);            
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void LoadFromHistory_Throws_IfEventVersionIsNotHigherThanVersion_And_AggregateHasEventHandlers()
+        [TestMethod]        
+        public void LoadFromHistory_IgnoresEvent_IfEventVersionIsNotHigherThanVersion_And_AggregateHasEventHandlers()
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
-
-            try
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
             {
-                aggregateRootSnapshot.RestoreAggregate(new IEvent[]
+                new ValueChangedEvent
                 {
-                    new ValueChangedEvent
-                    {
-                        Id = aggregateRoot.Id,
-                        Version = 1
-                    }
-                });
-            }
-            catch (ArgumentOutOfRangeException exception)
-            {
-                Assert.IsTrue(exception.Message.StartsWith("The next version (1) must represent a newer version than the current version (1)."));
-                throw;
-            }            
+                    Id = aggregateRoot.Id,
+                    Version = 1
+                }
+            });
+
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers);                      
         }
 
         [TestMethod]
@@ -312,17 +280,18 @@ namespace Kingo.Messaging.Domain
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithoutEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
+            {
+                new ValueChangedEvent
+                {
+                    Id = aggregateRoot.Id,
+                    Version = 2
+                }
+            });
 
             try
             {
-                aggregateRootSnapshot.RestoreAggregate(new IEvent[]
-                {
-                    new ValueChangedEvent
-                    {
-                        Id = aggregateRoot.Id,
-                        Version = 2
-                    }
-                });
+                aggregateDataSet.RestoreAggregate();
             }
             catch (ArgumentException exception)
             {
@@ -337,22 +306,23 @@ namespace Kingo.Messaging.Domain
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
+            {
+                new ValueChangedEvent
+                {
+                    Id = aggregateRoot.Id,
+                    Version = 1
+                },
+                new UnsupportedEvent()
+            });
 
             try
             {
-                aggregateRootSnapshot.RestoreAggregate(new IEvent[]
-                {
-                    new ValueChangedEvent
-                    {
-                        Id = aggregateRoot.Id,
-                        Version = 1
-                    },
-                    new UnsupportedEvent() 
-                });
+                aggregateDataSet.RestoreAggregate();
             }
             catch (ArgumentException exception)
             {
-                Assert.AreEqual("Could not convert event of type 'UnsupportedEvent' to an instance of type 'IAggregateEvent<Guid, Int32>'. Please review the UpdateToLatestVersion() method of this event to ensure it returns the correct event type.", exception.Message);
+                Assert.AreEqual("Could not convert event of type 'UnsupportedEvent' to an instance of type 'IEvent<Guid, Int32>'. Please review the UpdateToLatestVersion() method of this event to ensure it returns the correct event type.", exception.Message);
                 throw;
             }
         }
@@ -362,8 +332,7 @@ namespace Kingo.Messaging.Domain
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
-
-            var restoredAggregate = aggregateRootSnapshot.RestoreAggregate(new IEvent[]
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
             {
                 new OldValueChangedEvent(aggregateRoot.Id, 3, 3),
                 new ValueChangedEvent
@@ -373,7 +342,9 @@ namespace Kingo.Messaging.Domain
                     NewValue = 4
                 },
                 new OldValueChangedEvent(aggregateRoot.Id, 2, 2)
-            }) as AggregateRootWithEventHandlers;
+            });
+
+            var restoredAggregate = aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers;
 
             IAggregateRoot<Guid> restoredAggregateRoot = restoredAggregate;
 
@@ -393,8 +364,7 @@ namespace Kingo.Messaging.Domain
         {
             IAggregateRoot<Guid> aggregateRoot = new AggregateRootWithEventHandlers();
             var aggregateRootSnapshot = aggregateRoot.TakeSnapshot();
-
-            var restoredAggregate = aggregateRootSnapshot.RestoreAggregate(new IEvent[]
+            var aggregateDataSet = new AggregateDataSet<Guid>(aggregateRoot.Id, aggregateRootSnapshot, new IEvent[]
             {
                 new OldValueChangedEvent(aggregateRoot.Id, 3, 3),
                 new ValueChangedEvent
@@ -405,6 +375,8 @@ namespace Kingo.Messaging.Domain
                 },
                 new OldValueChangedEvent(aggregateRoot.Id, 2, 2)
             });
+
+            var restoredAggregate = aggregateDataSet.RestoreAggregate();
 
             Assert.IsFalse(restoredAggregate.HasPendingEvents);
             Assert.AreEqual(0, restoredAggregate.FlushEvents().Count());

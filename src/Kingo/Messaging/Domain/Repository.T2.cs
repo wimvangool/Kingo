@@ -19,10 +19,20 @@ namespace Kingo.Messaging.Domain
         /// <summary>
         /// Initializes a new instance of the <see cref="Repository{T, S}" /> class.
         /// </summary>
-        protected Repository()
+        /// <param name="serializationStrategy">Specifies the serialization strategy of this repository.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="serializationStrategy" /> does not specify a valid serialization strategy.
+        /// </exception>
+        protected Repository(AggregateSerializationStrategy serializationStrategy)
         {
-            _unitOfWork = new UnitOfWork<TKey, TAggregate>(this);                     
+            _unitOfWork = new UnitOfWork<TKey, TAggregate>(this, serializationStrategy);                     
         }
+
+        /// <summary>
+        /// Specifies the serialization strategy of this repository.
+        /// </summary>
+        public AggregateSerializationStrategy SerializationStrategy =>
+            _unitOfWork.SerializationStrategy;
 
         /// <inheritdoc />
         public override string ToString() =>
@@ -56,14 +66,14 @@ namespace Kingo.Messaging.Domain
         /// </exception>
         protected internal async Task<TAggregate> SelectByIdAndRestoreAsync(TKey id)
         {
-            var aggregateData = await SelectByIdAsync(id);
-            if (aggregateData == null)
+            var aggregateDataSet = await SelectByIdAsync(id);
+            if (aggregateDataSet == null)
             {
                 return null;
             }            
             try
             {
-                return (TAggregate) aggregateData.Snapshot.RestoreAggregate(aggregateData.Events);
+                return (TAggregate) aggregateDataSet.RestoreAggregate();
             }
             catch (Exception exception)
             {
@@ -78,7 +88,7 @@ namespace Kingo.Messaging.Domain
         /// <returns>
         /// The data of the aggregate, or <c>null</c> if the aggregate was not found.
         /// </returns>
-        protected internal abstract Task<AggregateData<TKey>> SelectByIdAsync(TKey id);        
+        protected internal abstract Task<AggregateDataSet<TKey>> SelectByIdAsync(TKey id);        
 
         private static Exception NewAggregateRestoreException(Exception exception)
         {
@@ -121,6 +131,7 @@ namespace Kingo.Messaging.Domain
         /// in its internal cache after the flush operation has been completed, so that following read and write operations
         /// are potentially faster.
         /// </param>
+        /// <returns>A task representing the operation.</returns>
         /// <exception cref="ConcurrencyException">
         /// A concurrency exception occurred.
         /// </exception>

@@ -14,8 +14,8 @@ namespace Kingo.Messaging.Domain
         {            
             private int _value;
 
-            public EventSourcedAggregate(AggregateEventSourcedAggregateCreatedAggregateEvent aggregateEvent)
-                : base(aggregateEvent) { }
+            public EventSourcedAggregate(AggregateEventSourcedAggregateCreatedAggregateEvent aggregateEvent, bool isNewAggregate)
+                : base(aggregateEvent, isNewAggregate) { }
 
             public EventSourcedAggregate(EventSourcedAggregateSnapshot snapshot)
                 : base(snapshot)
@@ -67,89 +67,42 @@ namespace Kingo.Messaging.Domain
             #endregion
         }
 
-        private sealed class AggregateEventSourcedAggregateCreatedAggregateEvent : AggregateEvent<Guid, int>
+        private sealed class AggregateEventSourcedAggregateCreatedAggregateEvent : Event<Guid, int>
         {
-            public AggregateEventSourcedAggregateCreatedAggregateEvent()
-            {
-                Id = Guid.NewGuid();
-                Version = 1;
-            }
+            public AggregateEventSourcedAggregateCreatedAggregateEvent() :
+                base(Guid.NewGuid(), 1) { } 
+            
 
-            [AggregateId]
-            public Guid Id
-            {
-                get;
-                private set;
-            }
-
-            [AggregateVersion]
-            public int Version
-            {
-                get;
-                private set;
-            }            
         }
 
         private sealed class EventSourcedAggregateSnapshot : Snapshot<Guid, int>
         {            
-            public EventSourcedAggregateSnapshot(Guid id, int version, int value)
-            {
-                Id = id;
-                Version = version;
+            public EventSourcedAggregateSnapshot(Guid id, int version, int value) :
+                base(id, version)
+            {                
                 Value = value;
-            }
-
-            [AggregateId]
-            public Guid Id
-            {
-                get;
-                private set;
-            }
-
-            [AggregateVersion]
-            public int Version
-            {
-                get;
-                private set;
-            }
+            }            
 
             public int Value
             {
-                get;
-                private set;
+                get;                
             }
 
             protected override IAggregateRoot RestoreAggregate() =>
                 new EventSourcedAggregate(this);
         }
 
-        private sealed class AggregateEventSourcedAggregateValueChangedAggregateEvent : AggregateEvent<Guid, int>
+        private sealed class AggregateEventSourcedAggregateValueChangedAggregateEvent : Event<Guid, int>
         {
-            public AggregateEventSourcedAggregateValueChangedAggregateEvent(Guid id, int version, int newValue)
-            {
-                Id = id;
-                Version = version;
+            public AggregateEventSourcedAggregateValueChangedAggregateEvent(Guid id, int version, int newValue) :
+                base(id, version)
+            {               
                 NewValue = newValue;
-            }
-
-            [AggregateId]
-            public Guid Id
-            {
-                get;
-                private set;
-            }
-
-            [AggregateVersion]
-            public int Version
-            {
-                get;
-                private set;
-            }
+            }            
 
             public int NewValue
             {
-                get;
-                private set;
+                get;                
             }
         }
 
@@ -162,29 +115,29 @@ namespace Kingo.Messaging.Domain
         public void Setup()
         {
             _processor = new MicroProcessor();
-            _repository = new MemoryRepository<Guid, EventSourcedAggregate>(MemoryRepositoryBehavior.StoreEvents);
+            _repository = new MemoryRepository<Guid, EventSourcedAggregate>(AggregateSerializationStrategy.EventsAndSnapshots);
         }        
             
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Constructor_Throws_IfBehaviorIsNotValid()
+        public void Constructor_Throws_IfSerializationStrategyIsNotValid()
         {
             try
             {
-                new MemoryRepository<Guid, AggregateRootSpy>((MemoryRepositoryBehavior) (-1));
+                new MemoryRepository<Guid, AggregateRootSpy>(AggregateSerializationStrategy.Unspecified);
             }
             catch (ArgumentOutOfRangeException exception)
             {
-                Assert.IsTrue(exception.Message.StartsWith("Invalid behavior specified: '-1'. Please choose one of the following values: <StoreSnapshots, StoreEvents>."));
+                Assert.IsTrue(exception.Message.StartsWith("Invalid serialization strategy specified (Unspecified): strategy must support either snapshots, events or both."));
                 throw;
             }
         }
 
         [TestMethod]
-        public async Task GetByIdAsync_RestoresAggregateBySnapshot_IfBehaviorIsStoreEvents_And_AggregateWasInsertedButNotUpdated()
+        public async Task GetByIdAsync_RestoresAggregateBySnapshot_IfStrategyIsEventsAndSnapshots_And_AggregateWasInsertedButNotUpdated()
         {
             var aggregateCreatedEvent = new AggregateEventSourcedAggregateCreatedAggregateEvent();
-            var aggregate = new EventSourcedAggregate(aggregateCreatedEvent);
+            var aggregate = new EventSourcedAggregate(aggregateCreatedEvent, true);
             var newValue = Clock.Current.UtcDateAndTime().Millisecond + 1;
 
             aggregate.ChangeValue(newValue);
@@ -214,7 +167,7 @@ namespace Kingo.Messaging.Domain
         public async Task GetByIdAsync_RestoresAggregateBySnapshotAndEvents_IfBehaviorIsStoreEvents_And_AggregateWasInsertedAndUpdatedSeveralTimes()
         {
             var aggregateCreatedEvent = new AggregateEventSourcedAggregateCreatedAggregateEvent();
-            var aggregate = new EventSourcedAggregate(aggregateCreatedEvent);
+            var aggregate = new EventSourcedAggregate(aggregateCreatedEvent, true);
             var newValue1 = Clock.Current.UtcDateAndTime().Millisecond + 1;
             var newValue2 = newValue1 * 2;
             var newValue3 = newValue2 * 2;
@@ -235,6 +188,7 @@ namespace Kingo.Messaging.Domain
 
                 restoredAggregate.ChangeValue(newValue2);
                 restoredAggregate.ChangeValue(newValue3);
+                restoredAggregate.AssertHandleCountIs(2);
             });
 
             Assert.AreEqual(1, _repository.Count);
@@ -246,7 +200,7 @@ namespace Kingo.Messaging.Domain
                 Assert.AreNotSame(aggregate, restoredAggregate);
 
                 restoredAggregate.AssertValueIs(newValue3);
-                restoredAggregate.AssertHandleCountIs(2);
+                restoredAggregate.AssertHandleCountIs(0);
             });
         }
     }

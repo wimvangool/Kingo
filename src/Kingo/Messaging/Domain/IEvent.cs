@@ -3,7 +3,7 @@
     /// <summary>
     /// When implemented by a class, represent an event message that may be published or stored in an event store.
     /// </summary>
-    public interface IEvent
+    public interface IEvent : IAggregateRootFactory
     {
         /// <summary>
         /// Converts this event to its latest version and returns the result. This method can be used to upgrade
