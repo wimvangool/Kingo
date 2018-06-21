@@ -117,11 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AggregateDataObject_RestoreAggregateNotSupported" xml:space="preserve">
-    <value>Restoring an aggregate from an instance of type '{0}' is not supported.</value>
+  <data name="AggregateRootFactory_ConstructorNotFound" xml:space="preserve">
+    <value>Cannot restore aggregate of type '{0}': required constructor '{0}({1})' not found.</value>
   </data>
   <data name="AggregateRootFactory_MissingSnapshotOrCreatedEvent" xml:space="preserve">
     <value>Cannot restore the aggregate because the dataset does not contain a snapshot or event that can be used to initialize the aggregate.</value>
+  </data>
+  <data name="AggregateRootFactory_NotInstantiableClassType" xml:space="preserve">
+    <value>Cannot restore aggregate of type '{0}': type must be a non-abstract class.</value>
   </data>
   <data name="AggregateRoot_AggregateRemovedException" xml:space="preserve">
     <value>Aggregate of type '{0}' cannot publish event of type '{1}' because it has been removed from its repository and its lifetime has therefore ended.</value>

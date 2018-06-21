@@ -52,11 +52,11 @@ namespace Kingo.Messaging.Domain
             new AggregateDataSet<TKey>(Id, dataSet.Snapshot ?? Snapshot, Events.Concat(dataSet.Events));
 
         /// <inheritdoc />
-        public IAggregateRoot RestoreAggregate() =>
-            UpdateToLatestVersion().RestoreAggregateCore();
+        public TAggregate RestoreAggregate<TAggregate>() where TAggregate : IAggregateRoot =>
+            UpdateToLatestVersion().RestoreAggregateCore<TAggregate>();
 
-        private IAggregateRoot RestoreAggregateCore() =>
-            AggregateRootFactory.FromDataSet(Snapshot, Events).RestoreAggregate();        
+        private TAggregate RestoreAggregateCore<TAggregate>() where TAggregate : IAggregateRoot  =>
+            AggregateRootFactory.FromDataSet(Snapshot, Events).RestoreAggregate<TAggregate>();        
 
         /// <summary>
         /// Updates all data (snapshots and events) to the latest version and returns the result in the form of a new data object.

@@ -61,15 +61,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restoring an aggregate from an instance of type &apos;{0}&apos; is not supported..
-        /// </summary>
-        internal static string AggregateDataObject_RestoreAggregateNotSupported {
-            get {
-                return ResourceManager.GetString("AggregateDataObject_RestoreAggregateNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; cannot publish event of type &apos;{1}&apos; because it has been removed from its repository and its lifetime has therefore ended..
         /// </summary>
         internal static string AggregateRoot_AggregateRemovedException {
@@ -124,11 +115,29 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot restore aggregate of type &apos;{0}&apos;: required constructor &apos;{0}({1})&apos; not found..
+        /// </summary>
+        internal static string AggregateRootFactory_ConstructorNotFound {
+            get {
+                return ResourceManager.GetString("AggregateRootFactory_ConstructorNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot restore the aggregate because the dataset does not contain a snapshot or event that can be used to initialize the aggregate..
         /// </summary>
         internal static string AggregateRootFactory_MissingSnapshotOrCreatedEvent {
             get {
                 return ResourceManager.GetString("AggregateRootFactory_MissingSnapshotOrCreatedEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot restore aggregate of type &apos;{0}&apos;: type must be a non-abstract class..
+        /// </summary>
+        internal static string AggregateRootFactory_NotInstantiableClassType {
+            get {
+                return ResourceManager.GetString("AggregateRootFactory_NotInstantiableClassType", resourceCulture);
             }
         }
         

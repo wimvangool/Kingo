@@ -88,6 +88,7 @@
     <Compile Include="Messaging\Authorization\RequiresClaimsAttributeTest.cs" />
     <Compile Include="Messaging\Authorization\RequiresRolesAttributeTest.cs" />
     <Compile Include="Messaging\ClaimsProviderTest.cs" />
+    <Compile Include="Messaging\Domain\AggregateRootFactoryTest.cs" />
     <Compile Include="Messaging\Domain\AggregateRootSpy.cs" />
     <Compile Include="Messaging\Domain\AggregateRootSpyCreatedEvent.cs" />
     <Compile Include="Messaging\Domain\AggregateRootSpyRemovedEvent.cs" />

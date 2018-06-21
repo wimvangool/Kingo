@@ -42,5 +42,8 @@ namespace Kingo.Messaging.Domain
         /// <returns>The latest version of this snapshot.</returns>
         protected virtual ISnapshot UpdateToLatestVersion() =>
             this;
+
+        internal override object RestoreAggregate(Type aggregateType) =>
+            AggregateRootFactory.RestoreAggregateFromSnapshot(aggregateType, this);
     }
 }

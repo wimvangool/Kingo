@@ -13,6 +13,6 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="NotSupportedException">
         /// The operation is not supported by this instance.
         /// </exception>  
-        IAggregateRoot RestoreAggregate();
+        TAggregate RestoreAggregate<TAggregate>() where TAggregate : IAggregateRoot;
     }
 }

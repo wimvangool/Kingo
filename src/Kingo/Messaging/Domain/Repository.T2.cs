@@ -73,7 +73,7 @@ namespace Kingo.Messaging.Domain
             }            
             try
             {
-                return (TAggregate) aggregateDataSet.RestoreAggregate();
+                return aggregateDataSet.RestoreAggregate<TAggregate>();
             }
             catch (Exception exception)
             {

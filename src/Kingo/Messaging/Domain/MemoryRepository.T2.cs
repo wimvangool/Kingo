@@ -63,7 +63,7 @@ namespace Kingo.Messaging.Domain
 
         /// <inheritdoc />
         public IEnumerator<TAggregate> GetEnumerator() =>
-            _aggregates.Values.Select(aggregate => aggregate.RestoreAggregate()).Cast<TAggregate>().GetEnumerator();
+            _aggregates.Values.Select(aggregate => aggregate.RestoreAggregate<TAggregate>()).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
             GetEnumerator();

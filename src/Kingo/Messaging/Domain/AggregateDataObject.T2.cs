@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
 {
@@ -74,8 +73,8 @@ namespace Kingo.Messaging.Domain
         public override string ToString() =>
             $"{ GetType().FriendlyName() } (Id = { Id }, Version = { Version })";
 
-        IAggregateRoot IAggregateRootFactory.RestoreAggregate() =>
-            RestoreAggregate();
+        TAggregate IAggregateRootFactory.RestoreAggregate<TAggregate>() =>
+            RestoreAggregate<TAggregate>();
 
         /// <summary>
         /// Restores an aggregate and returns its root.
@@ -83,14 +82,9 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="NotSupportedException">
         /// The operation is not supported by this instance.
         /// </exception> 
-        protected virtual IAggregateRoot RestoreAggregate() =>
-            throw NewRestoreAggregateNotSupportedException();
+        protected virtual TAggregate RestoreAggregate<TAggregate>() =>
+            (TAggregate) RestoreAggregate(typeof(TAggregate));
 
-        private Exception NewRestoreAggregateNotSupportedException()
-        {
-            var messageFormat = ExceptionMessages.AggregateDataObject_RestoreAggregateNotSupported;
-            var message = string.Format(messageFormat, GetType().FriendlyName());
-            return new NotSupportedException(message);
-        }
+        internal abstract object RestoreAggregate(Type aggregateType);        
     }
 }

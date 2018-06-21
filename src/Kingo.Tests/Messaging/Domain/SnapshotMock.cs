@@ -17,7 +17,10 @@ namespace Kingo.Messaging.Domain
             set;
         }
 
-        protected override IAggregateRoot RestoreAggregate()
+        protected override TAggregate RestoreAggregate<TAggregate>() =>
+            (TAggregate) RestoreAggregate();
+
+        private IAggregateRoot RestoreAggregate()
         {
             if (_aggregateHasEventHandlers)
             {

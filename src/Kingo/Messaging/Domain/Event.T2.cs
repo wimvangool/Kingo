@@ -42,5 +42,8 @@ namespace Kingo.Messaging.Domain
         /// <returns>The latest version of this event.</returns>
         protected virtual IEvent UpdateToLatestVersion() =>
             this;
+
+        internal override object RestoreAggregate(Type aggregateType) =>
+            AggregateRootFactory.RestoreAggregateFromEvent(aggregateType, this);
     }
 }

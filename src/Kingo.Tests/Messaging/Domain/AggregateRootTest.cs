@@ -170,8 +170,8 @@ namespace Kingo.Messaging.Domain
             Assert.AreEqual(aggregateRoot.Id, snapshot.Id);
             Assert.AreEqual(2, snapshot.Version);
             Assert.AreEqual(newValue, snapshot.Value);
-            
-            var restoredAggregate = aggregateRootSnapshot.RestoreAggregate() as AggregateRootWithoutEventHandlers;
+
+            var restoredAggregate = aggregateRootSnapshot.RestoreAggregate<AggregateRootWithoutEventHandlers>();
             IAggregateRoot<Guid> restoredAggregateRoot = restoredAggregate;
 
             Assert.IsNotNull(restoredAggregate);
@@ -198,7 +198,7 @@ namespace Kingo.Messaging.Domain
             Assert.AreEqual(2, snapshot.Version);
             Assert.AreEqual(newValue, snapshot.Value);
 
-            var restoredAggregate = aggregateRootSnapshot.RestoreAggregate() as AggregateRootWithEventHandlers;
+            var restoredAggregate = aggregateRootSnapshot.RestoreAggregate<AggregateRootWithEventHandlers>();
             IAggregateRoot<Guid> restoredAggregateRoot = restoredAggregate;
 
             Assert.IsNotNull(restoredAggregate);
@@ -221,7 +221,7 @@ namespace Kingo.Messaging.Domain
                 }
             });
 
-            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithoutEventHandlers);            
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate<AggregateRootWithoutEventHandlers>());            
         }
 
         [TestMethod]        
@@ -237,7 +237,7 @@ namespace Kingo.Messaging.Domain
                 }
             });
 
-            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers);
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate<AggregateRootWithEventHandlers>());
         }
 
         [TestMethod]        
@@ -254,7 +254,7 @@ namespace Kingo.Messaging.Domain
                 }
             });
 
-            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers);            
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate<AggregateRootWithEventHandlers>());            
         }
 
         [TestMethod]        
@@ -271,7 +271,7 @@ namespace Kingo.Messaging.Domain
                 }
             });
 
-            Assert.IsNotNull(aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers);                      
+            Assert.IsNotNull(aggregateDataSet.RestoreAggregate<AggregateRootWithEventHandlers>());                      
         }
 
         [TestMethod]
@@ -291,7 +291,7 @@ namespace Kingo.Messaging.Domain
 
             try
             {
-                aggregateDataSet.RestoreAggregate();
+                aggregateDataSet.RestoreAggregate<AggregateRootWithoutEventHandlers>();
             }
             catch (ArgumentException exception)
             {
@@ -318,7 +318,7 @@ namespace Kingo.Messaging.Domain
 
             try
             {
-                aggregateDataSet.RestoreAggregate();
+                aggregateDataSet.RestoreAggregate<AggregateRootWithEventHandlers>();
             }
             catch (ArgumentException exception)
             {
@@ -344,7 +344,7 @@ namespace Kingo.Messaging.Domain
                 new OldValueChangedEvent(aggregateRoot.Id, 2, 2)
             });
 
-            var restoredAggregate = aggregateDataSet.RestoreAggregate() as AggregateRootWithEventHandlers;
+            var restoredAggregate = aggregateDataSet.RestoreAggregate<AggregateRootWithEventHandlers>();
 
             IAggregateRoot<Guid> restoredAggregateRoot = restoredAggregate;
 
@@ -376,7 +376,7 @@ namespace Kingo.Messaging.Domain
                 new OldValueChangedEvent(aggregateRoot.Id, 2, 2)
             });
 
-            var restoredAggregate = aggregateDataSet.RestoreAggregate();
+            IAggregateRoot restoredAggregate = aggregateDataSet.RestoreAggregate<AggregateRootWithEventHandlers>();
 
             Assert.IsFalse(restoredAggregate.HasPendingEvents);
             Assert.AreEqual(0, restoredAggregate.FlushEvents().Count());
