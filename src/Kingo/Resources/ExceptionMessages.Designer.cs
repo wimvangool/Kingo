@@ -61,6 +61,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot append specified dataset because its Id ({0}) does not match the Id of the current dataset ({1})..
+        /// </summary>
+        internal static string AggregateDataSet_NonMatchingIdentifiers {
+            get {
+                return ResourceManager.GetString("AggregateDataSet_NonMatchingIdentifiers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; cannot publish event of type &apos;{1}&apos; because it has been removed from its repository and its lifetime has therefore ended..
         /// </summary>
         internal static string AggregateRoot_AggregateRemovedException {

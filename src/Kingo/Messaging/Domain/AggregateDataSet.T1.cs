@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kingo.Resources;
 
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
     /// Contains a snapshot and a set of events that represent the state and state-changes of an aggregate.
     /// </summary>
+    [Serializable]
     public sealed class AggregateDataSet<TKey> : IAggregateRootFactory where TKey : struct, IEquatable<TKey>
     {
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateDataSet{TKey}" /> class.
         /// </summary>
@@ -46,10 +46,48 @@ namespace Kingo.Messaging.Domain
         public IReadOnlyList<IEvent> Events
         {
             get;
-        }        
+        }
 
-        internal AggregateDataSet<TKey> Append(AggregateDataSet<TKey> dataSet) =>
-            new AggregateDataSet<TKey>(Id, dataSet.Snapshot ?? Snapshot, Events.Concat(dataSet.Events));
+        /// <inheritdoc />
+        public override string ToString() =>
+            AggregateRootFactory.FromDataSet(Snapshot, Events).ToString();
+
+        #region [====== Append ======]
+
+        /// <summary>
+        /// Appends the specified <paramref name="dataSet"/> to the current dataset.
+        /// </summary>
+        /// <param name="dataSet">A set of changes to append to the current data set.</param>
+        /// <returns>The resulting (merged) dataset.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dataSet"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The <see cref="Id"/> of the specified <paramref name="dataSet"/> does not match the <see cref="Id"/> of this dataset.
+        /// </exception>
+        public AggregateDataSet<TKey> Append(AggregateDataSet<TKey> dataSet)
+        {
+            if (dataSet == null)
+            {
+                throw new ArgumentNullException(nameof(dataSet));
+            }
+            if (dataSet.Id.Equals(Id))
+            {
+                return new AggregateDataSet<TKey>(Id, dataSet.Snapshot ?? Snapshot, Events.Concat(dataSet.Events));
+            }
+            throw NewNonMatchingIdentifiersException(dataSet);
+        }
+
+        private Exception NewNonMatchingIdentifiersException(AggregateDataSet<TKey> dataSet)
+        {
+            var messageFormat = ExceptionMessages.AggregateDataSet_NonMatchingIdentifiers;
+            var message = string.Format(messageFormat, dataSet.Id, Id);
+            return new ArgumentException(message, nameof(dataSet));
+        }
+
+        #endregion
+
+        #region [====== RestoreAggregate ======]
 
         /// <inheritdoc />
         public TAggregate RestoreAggregate<TAggregate>() where TAggregate : IAggregateRoot =>
@@ -65,8 +103,6 @@ namespace Kingo.Messaging.Domain
         public AggregateDataSet<TKey> UpdateToLatestVersion() =>
             new AggregateDataSet<TKey>(Id, Snapshot?.UpdateToLatestVersion(), Events.Select(@event => @event.UpdateToLatestVersion()));
 
-        /// <inheritdoc />
-        public override string ToString() =>
-            AggregateRootFactory.FromDataSet(Snapshot, Events).ToString();
+        #endregion
     }
 }
