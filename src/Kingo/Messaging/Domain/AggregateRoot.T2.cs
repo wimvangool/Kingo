@@ -303,14 +303,7 @@ namespace Kingo.Messaging.Domain
 
         #endregion
 
-        #region [====== Publish & FlushEvents ======]
-
-        /// <summary>
-        /// Indicates whether or not every event that is published by this aggregate is also immediately applied
-        /// to itself by invoking the appropriate event handler. Default is <c>false</c>.
-        /// </summary>
-        protected virtual bool ApplyEventsToSelf =>
-            false;        
+        #region [====== Publish & FlushEvents ======]              
 
         /// <summary>
         /// Publishes the specified <paramref name="event"/> and updates the version of this aggregate.
@@ -333,10 +326,8 @@ namespace Kingo.Messaging.Domain
             @event.Id = Id;
             @event.Version = Version = NextVersion();
 
-            if (ApplyEventsToSelf)
-            {
-                EventHandlers.Apply(@event);
-            }
+            EventHandlers.Apply(@event);
+
             if (OnEventPublished(new EventPublishedEventArgs<TEvent>(@event)))
             {
                 return;

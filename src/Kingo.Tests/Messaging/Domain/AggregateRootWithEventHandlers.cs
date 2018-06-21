@@ -23,10 +23,7 @@ namespace Kingo.Messaging.Domain
             Id = Id,
             Version = Version,
             Value = Value
-        };
-
-        protected override bool ApplyEventsToSelf =>
-            true;
+        };       
 
         protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers)
         {

@@ -27,10 +27,7 @@ namespace Kingo.Messaging.Domain
                 Version + 1;
 
             protected override ISnapshot<Guid, int> TakeSnapshot() =>
-                new EventSourcedAggregateSnapshot(Id, Version, _value);
-
-            protected override bool ApplyEventsToSelf =>
-                true;
+                new EventSourcedAggregateSnapshot(Id, Version, _value);            
 
             public void ChangeValue(int newValue)
             {
