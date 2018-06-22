@@ -171,7 +171,7 @@ namespace Kingo
         /// The caller does not have the required permission
         /// </exception>
         public TypeSet AddAssembliesFromCurrentDirectory(string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            AddAssembliesFromDirectory(CurrentDirectory(), searchPattern, searchOption);
+            AddAssembliesFromDirectory(CurrentDirectory, searchPattern, searchOption);
 
         /// <summary>
         /// Adds all types defined in the assemblies that are located in the specified <paramref name="path"/> and match the specified
@@ -296,7 +296,7 @@ namespace Kingo
         /// The caller does not have the required permission
         /// </exception>
         public TypeSet RemoveAssembliesFromCurrentDirectory(string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            RemoveAssembliesFromDirectory(CurrentDirectory(), searchPattern, searchOption);
+            RemoveAssembliesFromDirectory(CurrentDirectory, searchPattern, searchOption);
 
         /// <summary>
         /// Adds all types defined in the assemblies that are located in the specified <paramref name="path"/> and match the specified
@@ -400,8 +400,14 @@ namespace Kingo
 
         #endregion
 
-        private static string CurrentDirectory() =>
-            Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
+        /// <summary>
+        /// Returns the location of the calling assembly which is used by the type-set as the current directory.
+        /// </summary>
+        public static string CurrentDirectory =>
+            Path.GetDirectoryName(DetermineDirectoryPath(Assembly.GetCallingAssembly()));
+
+        private static string DetermineDirectoryPath(Assembly assembly) =>
+            Uri.UnescapeDataString(new UriBuilder(assembly.CodeBase).Path);
 
         private static IEnumerable<Assembly> FindAssemblies(string path, string searchPattern, SearchOption searchOption) =>
             from file in Directory.GetFiles(path, searchPattern, searchOption)
