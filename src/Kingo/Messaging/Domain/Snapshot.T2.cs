@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace Kingo.Messaging.Domain
 {
@@ -20,16 +18,7 @@ namespace Kingo.Messaging.Domain
         /// <param name="id">Identifier of the aggregate.</param>
         /// <param name="version">Version of the aggregate.</param>
         protected Snapshot(TKey id = default(TKey), TVersion version = default(TVersion)) :
-            base(id, version) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Snapshot{T, S}" /> class.
-        /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected Snapshot(SerializationInfo info, StreamingContext context) :
-            base(info, context) { }
+            base(id, version) { }        
 
         ISnapshot ISnapshot.UpdateToLatestVersion() =>
             UpdateToLatestVersion();

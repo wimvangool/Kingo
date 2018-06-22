@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo
@@ -97,13 +98,13 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddAssemblyArray_Throws_IfCollectionIsNull()
         {
-            TypeSet.Empty.AddAssemblies(null);
+            TypeSet.Empty.Add(null as Assembly[]);
         }
 
         [TestMethod]        
         public void AddAssemblyArray_AddsAllTypesOfSpecifiedAssemblies_IfCollectionIsNotNull()
         {
-            var set = TypeSet.Empty.AddAssemblies(
+            var set = TypeSet.Empty.Add(
                 typeof(object).Assembly,
                 typeof(TypeSetTest).Assembly,
                 typeof(TypeSet).Assembly);
@@ -184,7 +185,7 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void RemoveAssemblyArray_Throws_IfCollectionIsNull()
         {
-            TypeSet.Empty.RemoveAssemblies(null);
+            TypeSet.Empty.Remove(null as Assembly[]);
         }
 
         [TestMethod]
@@ -195,7 +196,7 @@ namespace Kingo
                 .Add<string>()
                 .Add<int>()
                 .Add<TypeSet>()
-                .RemoveAssemblies(typeof(object).Assembly);
+                .Remove(typeof(object).Assembly);
 
             AssertContainsExactly(set, typeof(TypeSet));
         }
@@ -208,19 +209,19 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddAssembliesFromCurrentDirectory_Throws_IfSearchPatternIsNull()
         {
-            TypeSet.Empty.AddAssembliesFromCurrentDirectory(null);
+            TypeSet.Empty.Add(null, string.Empty);
         }
 
         [TestMethod]
         public void AddAssembliesFromCurrentDirectory_DoesNothing_IfSearchPatternMatchesNoAssemblies()
         {
-            AssertIsEmpty(TypeSet.Empty.AddAssembliesFromCurrentDirectory("DoesNotExist.*"));
+            AssertIsEmpty(TypeSet.Empty.Add("DoesNotExist.*"));
         }
 
         [TestMethod]
         public void AddAssembliesFromCurrentDirectory_AddsAllExpectedTypes_IfSearchPatternMatchesSomeAssemblies()
         {
-            var set = TypeSet.Empty.AddAssembliesFromCurrentDirectory("Kingo.*");
+            var set = TypeSet.Empty.Add("Kingo.*");
 
             AssertContainsAtLeast(set, typeof(TypeSet), typeof(TypeSet));
         }

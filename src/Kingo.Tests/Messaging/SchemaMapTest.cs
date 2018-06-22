@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.Messaging
@@ -12,6 +8,9 @@ namespace Kingo.Messaging
     public sealed class SchemaMapTest
     {
         #region [====== DataContracts ======]
+
+        [DataContract]
+        private abstract class AbstractDataContract { }
 
         [DataContract]
         private sealed class DataContractWithDefaultValues { }
@@ -45,6 +44,12 @@ namespace Kingo.Messaging
         public void AddDataContracts_DoesNothing_IfTypeDoesNotHaveDataContractAttribute()
         {
             Assert.AreEqual(0, AddDataContracts(typeof(object)).Count);
+        }
+
+        [TestMethod]
+        public void AddDataContracts_DoesNothing_IfTypeHasDataContractAttribute_But_IsAbstract()
+        {
+            Assert.AreEqual(0, AddDataContracts(typeof(AbstractDataContract)).Count);
         }
 
         [TestMethod]

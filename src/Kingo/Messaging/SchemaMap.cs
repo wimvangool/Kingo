@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Security;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
@@ -12,7 +14,7 @@ namespace Kingo.Messaging
     /// Basic implementation of the <see cref="ISchemaMap" /> interface.
     /// This map uses <see cref="StringComparer.OrdinalIgnoreCase" /> to compare type-identifiers.
     /// </summary>
-    public sealed class SchemaMap : ISchemaMap, IReadOnlyDictionary<string, Type>, IReadOnlyDictionary<Type, string>
+    public class SchemaMap : ISchemaMap, IReadOnlyDictionary<string, Type>, IReadOnlyDictionary<Type, string>
     {
         private readonly Dictionary<string, Type> _identifierToTypeMap;
         private readonly Dictionary<Type, string> _typeToIdentifierMap;
@@ -36,12 +38,63 @@ namespace Kingo.Messaging
         public override string ToString() =>
             $"{ Count } mapping(s)";
 
-        #region [====== Add ======]              
+        #region [====== Add ======]       
 
         /// <summary>
-        /// Scans the specified <paramref name="types"/> for types that declare the <see cref="DataContractAttribute" /> and adds
-        /// a mapping for those to this map using the attribute's <see cref="DataContractAttribute.Namespace"/> and <see cref="DataContractAttribute.Name"/>
-        /// properties to obtain the type-id.
+        /// Adds a mapping for each type from the assemblies that match the specified search criteria that is non-abstract, decorated with the <see cref="DataContractAttribute"/>
+        /// and satisfies the specified <paramref name="predicate" />. The type-id is derived from the information provided by the <see cref="DataContractAttribute"/>.
+        /// </summary>
+        /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>        
+        /// <param name="predicate">Optional predicate that is used to filter specific types from the assemblies.</param>
+        /// <returns>The map that contains all added mappings.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="searchPattern"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified collection causes a specific type or type-id to be added more than once to this map.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public SchemaMap AddDataContracts(string searchPattern, Func<Type, bool> predicate = null) =>
+            AddDataContracts(searchPattern, null, predicate);
+
+        /// <summary>
+        /// Adds a mapping for each type from the assemblies that match the specified search criteria that is non-abstract, decorated with the <see cref="DataContractAttribute"/>
+        /// and satisfies the specified <paramref name="predicate" />. The type-id is derived from the information provided by the <see cref="DataContractAttribute"/>.
+        /// </summary>
+        /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
+        /// <param name="path">A path pointing to a specific directory. If <c>null</c>, the <see cref="TypeSet.CurrentDirectory"/> is used.</param>
+        /// <param name="predicate">Optional predicate that is used to filter specific types from the assemblies.</param>
+        /// <returns>The map that contains all added mappings.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="searchPattern"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified collection causes a specific type or type-id to be added more than once to this map.
+        /// </exception>
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public SchemaMap AddDataContracts(string searchPattern, string path = null, Func<Type, bool> predicate = null)
+        {
+            var types =
+                from type in TypeSet.Empty.Add(searchPattern, path)
+                where predicate == null || predicate.Invoke(type)
+                select type;
+
+            return AddDataContracts(types);
+        }
+
+        /// <summary>
+        /// Adds a mapping for each type in <paramref name="types"/> that is non-abstract and is decorated with the <see cref="DataContractAttribute"/>.
+        /// The type-id is derived from the information provided by the <see cref="DataContractAttribute"/>.
         /// </summary>
         /// <param name="types">A collection of types.</param>
         /// <returns>The map that contains all added mappings.</returns>
@@ -56,13 +109,17 @@ namespace Kingo.Messaging
 
         private static string GetTypeIdFromDataContract(Type type)
         {
+            if (type.IsAbstract)
+            {
+                return null;
+            }
             var attribute = type.GetCustomAttribute(typeof(DataContractAttribute), false) as DataContractAttribute;
             if (attribute == null)
             {
                 return null;
             }
             return attribute.Namespace + (attribute.Name ?? type.FriendlyName());
-        }
+        }        
 
         /// <summary>
         /// Iterates over the specified <paramref name="types"/> and obtains the associated type-id for each type

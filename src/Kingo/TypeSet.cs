@@ -150,13 +150,13 @@ namespace Kingo
 
         #endregion
 
-        #region [====== AddAssemblies ======]
+        #region [====== Add ======]
 
         /// <summary>
-        /// Adds all types defined in the assemblies that are located in the current directory and match the specified
-        /// <paramref name="searchPattern"/> to this set.
+        /// Adds all types defined in the assemblies that match the specified search criteria to this set.
         /// </summary>
         /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
+        /// <param name="path">A path pointing to a specific directory. If <c>null</c>, the <see cref="CurrentDirectory"/> is used.</param>
         /// <param name="searchOption">
         /// Indicates whether or not only the top-level directory is to be searched.        
         /// </param>
@@ -170,34 +170,8 @@ namespace Kingo
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission
         /// </exception>
-        public TypeSet AddAssembliesFromCurrentDirectory(string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            AddAssembliesFromDirectory(CurrentDirectory, searchPattern, searchOption);
-
-        /// <summary>
-        /// Adds all types defined in the assemblies that are located in the specified <paramref name="path"/> and match the specified
-        /// <paramref name="searchPattern"/> to this set.
-        /// </summary>
-        /// <param name="path">A path pointing to a specific directory.</param>
-        /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
-        /// <param name="searchOption">
-        /// Indicates whether or not only the top-level directory specified by <paramref name="path"/> is to be searched.        
-        /// </param>
-        /// <returns>A new set containing all types from the specified assemblies.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> or <paramref name="searchPattern"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="path"/> is not a valid path, <paramref name="searchPattern"/> is not a valid search-pattern,
-        /// or <paramref name="searchOption"/> is not a valid <see cref="SearchOption" />.
-        /// </exception>
-        /// <exception cref="IOException">
-        /// An error occurred while reading files from the specified location(s).
-        /// </exception>
-        /// <exception cref="SecurityException">
-        /// The caller does not have the required permission
-        /// </exception>
-        public TypeSet AddAssembliesFromDirectory(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            AddAssemblies(FindAssemblies(path, searchPattern, searchOption));
+        public TypeSet Add(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
+            Add(FindAssemblies(path, searchPattern, searchOption));        
 
         /// <summary>
         /// Adds all types from the specified <paramref name="assemblies"/> to this set.
@@ -207,8 +181,8 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public TypeSet AddAssemblies(params Assembly[] assemblies) =>
-            AddAssemblies(assemblies as IEnumerable<Assembly>);
+        public TypeSet Add(params Assembly[] assemblies) =>
+            Add(assemblies as IEnumerable<Assembly>);
 
         /// <summary>
         /// Adds all types from the specified <paramref name="assemblies"/> to this set.
@@ -218,7 +192,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public TypeSet AddAssemblies(IEnumerable<Assembly> assemblies)
+        public TypeSet Add(IEnumerable<Assembly> assemblies)
         {
             if (assemblies == null)
             {
@@ -226,10 +200,6 @@ namespace Kingo
             }
             return Add(assemblies.WhereNotNull().SelectMany(assembly => assembly.GetTypes()));
         }
-
-        #endregion
-
-        #region [====== Add ======]
 
         /// <summary>
         /// Adds all the specified <paramref name="types"/> to this set.
@@ -275,13 +245,14 @@ namespace Kingo
 
         #endregion
 
-        #region [====== RemoveAssemblies ======]
+        #region [====== Remove ======]
 
         /// <summary>
-        /// Removes all types defined in the assemblies that are located in the current directory and match the specified
+        /// Removes all types defined in the assemblies that match the specified search criteria to this set.
         /// <paramref name="searchPattern"/> from this set.
         /// </summary>
         /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
+        /// <param name="path">A path pointing to a specific directory. If <c>null</c>, the <see cref="CurrentDirectory"/> is used.</param>
         /// <param name="searchOption">
         /// Indicates whether or not only the top-level directory is to be searched.        
         /// </param>
@@ -295,34 +266,8 @@ namespace Kingo
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission
         /// </exception>
-        public TypeSet RemoveAssembliesFromCurrentDirectory(string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            RemoveAssembliesFromDirectory(CurrentDirectory, searchPattern, searchOption);
-
-        /// <summary>
-        /// Adds all types defined in the assemblies that are located in the specified <paramref name="path"/> and match the specified
-        /// <paramref name="searchPattern"/> from this set.
-        /// </summary>
-        /// <param name="path">A path pointing to a specific directory.</param>
-        /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
-        /// <param name="searchOption">
-        /// Indicates whether or not only the top-level directory specified by <paramref name="path"/> is to be searched.        
-        /// </param>
-        /// <returns>A new set containing all types from the specified assemblies.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> or <paramref name="searchPattern"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="path"/> is not a valid path, <paramref name="searchPattern"/> is not a valid search-pattern,
-        /// or <paramref name="searchOption"/> is not a valid <see cref="SearchOption" />.
-        /// </exception>
-        /// <exception cref="IOException">
-        /// An error occurred while reading files from the specified location(s).
-        /// </exception>
-        /// <exception cref="SecurityException">
-        /// The caller does not have the required permission
-        /// </exception>
-        public TypeSet RemoveAssembliesFromDirectory(string path, string searchPattern, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            RemoveAssemblies(FindAssemblies(path, searchPattern, searchOption));
+        public TypeSet RemoveAssembliesFromCurrentDirectory(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
+            Remove(FindAssemblies(path, searchPattern, searchOption));        
 
         /// <summary>
         /// Removes all types from the specified <paramref name="assemblies"/> from this set.
@@ -332,8 +277,8 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public TypeSet RemoveAssemblies(params Assembly[] assemblies) =>
-            RemoveAssemblies(assemblies as IEnumerable<Assembly>);
+        public TypeSet Remove(params Assembly[] assemblies) =>
+            Remove(assemblies as IEnumerable<Assembly>);
 
         /// <summary>
         /// Removes all types from the specified <paramref name="assemblies"/> from this set.
@@ -343,7 +288,7 @@ namespace Kingo
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assemblies"/> is <c>null</c>.
         /// </exception>
-        public TypeSet RemoveAssemblies(IEnumerable<Assembly> assemblies)
+        public TypeSet Remove(IEnumerable<Assembly> assemblies)
         {
             if (assemblies == null)
             {
@@ -410,7 +355,7 @@ namespace Kingo
             Uri.UnescapeDataString(new UriBuilder(assembly.CodeBase).Path);
 
         private static IEnumerable<Assembly> FindAssemblies(string path, string searchPattern, SearchOption searchOption) =>
-            from file in Directory.GetFiles(path, searchPattern, searchOption)
+            from file in Directory.GetFiles(path ?? CurrentDirectory, searchPattern, searchOption)
             where file.EndsWith(".dll")
             select Assembly.LoadFrom(file);
     }
