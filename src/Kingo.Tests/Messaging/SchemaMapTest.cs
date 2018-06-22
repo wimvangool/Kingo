@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +11,19 @@ namespace Kingo.Messaging
     [TestClass]
     public sealed class SchemaMapTest
     {
+        #region [====== DataContracts ======]
+
+        [DataContract]
+        private sealed class DataContractWithDefaultValues { }
+
+        [DataContract(Name = "CustomName/v1")]
+        private sealed class DataContractWithNameSetExplicitly { }
+
+        [DataContract(Namespace = "http://www.github.com/wimvangool/kingo/", Name = "CustomName/v1")]
+        private sealed class DataContractWithAllValuesSetExplicitly { }
+
+        #endregion
+
         private SchemaMap _map;
 
         [TestInitialize]
@@ -17,6 +31,56 @@ namespace Kingo.Messaging
         {
             _map = new SchemaMap();
         }
+
+        #region [====== AddDataContracts ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddDataContracts_Throws_IfTypesIsNull()
+        {
+            AddDataContracts(null);
+        }
+
+        [TestMethod]
+        public void AddDataContracts_DoesNothing_IfTypeDoesNotHaveDataContractAttribute()
+        {
+            Assert.AreEqual(0, AddDataContracts(typeof(object)).Count);
+        }
+
+        [TestMethod]
+        public void AddDataContracts_AddsTypeMapping_IfTypeHasDataContractAttributeWithDefaultValues()
+        {
+            var type = typeof(DataContractWithDefaultValues);
+            var map = AddDataContracts(type);
+
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual(nameof(DataContractWithDefaultValues), map.GetTypeId(type));
+        }
+
+        [TestMethod]
+        public void AddDataContracts_AddsTypeMapping_IfTypeHasDataContractAttributeWithNameSetExplicitly()
+        {
+            var type = typeof(DataContractWithNameSetExplicitly);
+            var map = AddDataContracts(type);
+
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual("CustomName/v1", map.GetTypeId(type));
+        }
+
+        [TestMethod]
+        public void AddDataContracts_AddsTypeMapping_IfTypeHasDataContractAttributeWithAllValuesSetExplicitly()
+        {
+            var type = typeof(DataContractWithAllValuesSetExplicitly);
+            var map = AddDataContracts(type);
+
+            Assert.AreEqual(1, map.Count);
+            Assert.AreEqual("http://www.github.com/wimvangool/kingo/CustomName/v1", map.GetTypeId(type));
+        }
+
+        private SchemaMap AddDataContracts(params Type[] types) =>
+            _map.AddDataContracts(types);
+
+        #endregion
 
         #region [====== Add ======]
 
@@ -36,7 +100,7 @@ namespace Kingo.Messaging
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void Add_Throws_IfTypeIdIsAlreadyMapped()
+        public void Add_Throws_IfTypeIdIsAlreadyMapped_And_TypeIdsAreSame()
         {
             _map.Add(string.Empty, typeof(object));
 
@@ -49,6 +113,23 @@ namespace Kingo.Messaging
                 Assert.IsTrue(exception.Message.Contains("Cannot add mapping for type-id '' because it has already been mapped."));
                 throw;
             }            
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Add_Throws_IfTypeIdIsAlreadyMapped_And_TypeIdsDifferOnlyByCase()
+        {
+            _map.Add("a", typeof(object));
+
+            try
+            {
+                _map.Add("A", typeof(string));
+            }
+            catch (ArgumentException exception)
+            {
+                Assert.IsTrue(exception.Message.Contains("Cannot add mapping for type-id 'A' because it has already been mapped."));
+                throw;
+            }
         }
 
         [TestMethod]

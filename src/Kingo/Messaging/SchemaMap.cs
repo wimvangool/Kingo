@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Serialization;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
@@ -33,7 +36,70 @@ namespace Kingo.Messaging
         public override string ToString() =>
             $"{ Count } mapping(s)";
 
-        #region [====== Add ======]
+        #region [====== Add ======]              
+
+        /// <summary>
+        /// Scans the specified <paramref name="types"/> for types that declare the <see cref="DataContractAttribute" /> and adds
+        /// a mapping for those to this map using the attribute's <see cref="DataContractAttribute.Namespace"/> and <see cref="DataContractAttribute.Name"/>
+        /// properties to obtain the type-id.
+        /// </summary>
+        /// <param name="types">A collection of types.</param>
+        /// <returns>The map that contains all added mappings.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified collection causes a specific type or type-id to be added more than once to this map.
+        /// </exception>
+        public SchemaMap AddDataContracts(IEnumerable<Type> types) =>
+            Add(types, GetTypeIdFromDataContract);
+
+        private static string GetTypeIdFromDataContract(Type type)
+        {
+            var attribute = type.GetCustomAttribute(typeof(DataContractAttribute), false) as DataContractAttribute;
+            if (attribute == null)
+            {
+                return null;
+            }
+            return attribute.Namespace + (attribute.Name ?? type.FriendlyName());
+        }
+
+        /// <summary>
+        /// Iterates over the specified <paramref name="types"/> and obtains the associated type-id for each type
+        /// by calling the specified <paramref name="typeIdFactory" />. If this delegate returns <c>null</c>, the type
+        /// is ignored; otherwise, the type and resulting type-id mapping are added to this map.
+        /// </summary>
+        /// <param name="types">A collection of types.</param>
+        /// <param name="typeIdFactory">Delegate that is used to obtain a unique type-id for a specific type.</param>
+        /// <returns>The map that contains all added mappings.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> or <paramref name="typeIdFactory"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The operation causes a specific type or type-id to be added more than once to this map.
+        /// </exception>
+        public SchemaMap Add(IEnumerable<Type> types, Func<Type, string> typeIdFactory)
+        {
+            if (types == null)
+            {
+                throw new ArgumentNullException(nameof(types));
+            }
+            if (typeIdFactory == null)
+            {
+                throw new ArgumentNullException(nameof(typeIdFactory));
+            }
+            var map = this;
+
+            foreach (var type in types.WhereNotNull())
+            {
+                var typeId = typeIdFactory.Invoke(type);
+                if (typeId != null)
+                {
+                    map = map.Add(typeId, type);
+                }
+            }
+            return map;
+        }
 
         /// <summary>
         /// Adds the specified mapping to this map.

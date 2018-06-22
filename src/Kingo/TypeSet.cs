@@ -403,8 +403,9 @@ namespace Kingo
         private static string CurrentDirectory() =>
             Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
 
-        private static IEnumerable<Assembly> FindAssemblies(string path, string searchPattern, SearchOption searchOption) => from file in Directory.GetFiles(path, searchPattern, searchOption)
-                                                                                                                             where file.EndsWith(".dll")
-                                                                                                                             select Assembly.LoadFrom(file);
+        private static IEnumerable<Assembly> FindAssemblies(string path, string searchPattern, SearchOption searchOption) =>
+            from file in Directory.GetFiles(path, searchPattern, searchOption)
+            where file.EndsWith(".dll")
+            select Assembly.LoadFrom(file);
     }
 }
