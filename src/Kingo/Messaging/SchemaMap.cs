@@ -59,7 +59,7 @@ namespace Kingo.Messaging
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission
         /// </exception>
-        public SchemaMap AddDataContracts(string searchPattern, Func<Type, bool> predicate = null) =>
+        public SchemaMap AddDataContracts(string searchPattern, Func<Type, bool> predicate) =>
             AddDataContracts(searchPattern, null, predicate);
 
         /// <summary>
