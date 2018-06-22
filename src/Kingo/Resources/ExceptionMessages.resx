@@ -264,6 +264,18 @@
   <data name="RequiresRoleAttribute_MissingRole" xml:space="preserve">
     <value>User '{0}' must be in role '{1}'.</value>
   </data>
+  <data name="SchemaMap_TypeAlreadyMapped" xml:space="preserve">
+    <value>Cannot add mapping for type '{0}' because it has already been mapped.</value>
+  </data>
+  <data name="SchemaMap_TypeIdAlreadyMapped" xml:space="preserve">
+    <value>Cannot add mapping for type-id '{0}' because it has already been mapped.</value>
+  </data>
+  <data name="SchemaMap_TypeIdNotFound" xml:space="preserve">
+    <value>Type-id that corresponds to type '{0}' not found.</value>
+  </data>
+  <data name="SchemaMap_TypeNotFound" xml:space="preserve">
+    <value>Type that corresponds to type-id '{0}' not found.</value>
+  </data>
   <data name="Scope_CannotCompleteScope" xml:space="preserve">
     <value>Cannot complete this scope because it is not the current scope.</value>
   </data>

@@ -114,6 +114,7 @@
     <Compile Include="Messaging\QueryConnectorOfT2Test.cs" />
     <Compile Include="Messaging\QuerySpy.T1.cs" />
     <Compile Include="Messaging\QuerySpy.T2.cs" />
+    <Compile Include="Messaging\SchemaMapTest.cs" />
     <Compile Include="Messaging\TypeAttributeProviderTest.cs" />
     <Compile Include="Messaging\MicroProcessorContextTest.cs" />
     <Compile Include="Messaging\MessageInfoTest.cs" />

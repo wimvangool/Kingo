@@ -502,6 +502,42 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot add mapping for type &apos;{0}&apos; because it has already been mapped..
+        /// </summary>
+        internal static string SchemaMap_TypeAlreadyMapped {
+            get {
+                return ResourceManager.GetString("SchemaMap_TypeAlreadyMapped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add mapping for type-id &apos;{0}&apos; because it has already been mapped..
+        /// </summary>
+        internal static string SchemaMap_TypeIdAlreadyMapped {
+            get {
+                return ResourceManager.GetString("SchemaMap_TypeIdAlreadyMapped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type-id that corresponds to type &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string SchemaMap_TypeIdNotFound {
+            get {
+                return ResourceManager.GetString("SchemaMap_TypeIdNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type that corresponds to type-id &apos;{0}&apos; not found..
+        /// </summary>
+        internal static string SchemaMap_TypeNotFound {
+            get {
+                return ResourceManager.GetString("SchemaMap_TypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot complete this scope because it is not the current scope..
         /// </summary>
         internal static string Scope_CannotCompleteScope {

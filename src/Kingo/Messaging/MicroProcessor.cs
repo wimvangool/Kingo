@@ -46,7 +46,8 @@ namespace Kingo.Messaging
         private MessageHandlerFactory BuildMessageHandlerFactory() => CreateMessageHandlerFactory()           
             .RegisterInstance<IMicroProcessor>(this)
             .RegisterInstance(MicroProcessorContext.Current)
-            .RegisterMessageHandlers(CreateMessageHandlerTypeSet());
+            .RegisterInstance(typeof(ISchemaMap), BuildSchemaMap(new SchemaMap()))
+            .RegisterMessageHandlers(CreateMessageHandlerTypeSet());        
 
         /// <summary>
         /// When overridden, creates and returns a <see cref="MessageHandlerFactory" /> for this processor.
@@ -64,6 +65,15 @@ namespace Kingo.Messaging
         /// <returns>A <see cref="TypeSet" /> that contains all message handler types to register.</returns>
         protected virtual TypeSet CreateMessageHandlerTypeSet() =>
             TypeSet.Empty;
+
+        /// <summary>
+        /// Builds and returns a <see cref="ISchemaMap" /> that will be registered as a dependency and can be used by repositories
+        /// to serialize and deserialize objects using specific type-information.
+        /// </summary>
+        /// <param name="schemaMap">A schema-map</param>
+        /// <returns>A schema-map instance.</returns>
+        protected virtual ISchemaMap BuildSchemaMap(SchemaMap schemaMap) =>
+            schemaMap;
 
         /// <inheritdoc />
         public virtual Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)
