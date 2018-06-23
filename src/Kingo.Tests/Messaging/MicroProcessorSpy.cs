@@ -46,7 +46,7 @@ namespace Kingo.Messaging
             }
             return factory
                 .RegisterInstance<IMessageHandlerImplementation>(_implementationSequence)
-                .RegisterMessageHandlers(TypeSet.Empty.Add(_messageHandlers));
+                .Register(_messageHandlers);
         }                    
 
         public override Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)

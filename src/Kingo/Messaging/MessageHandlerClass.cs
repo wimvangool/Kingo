@@ -130,7 +130,7 @@ namespace Kingo.Messaging
         {            
             var messageHandlers = new List<MessageHandlerClass>();            
 
-            foreach (var type in types)
+            foreach (var type in types.Distinct())
             {
                 MessageHandlerClass handler;
 

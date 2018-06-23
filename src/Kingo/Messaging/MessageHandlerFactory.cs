@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Security;
 using Kingo.Resources;
 
 namespace Kingo.Messaging
@@ -69,13 +72,57 @@ namespace Kingo.Messaging
         private const InstanceLifetime _DefaultLifetime = InstanceLifetime.PerUnitOfWork;
 
         /// <summary>
+        /// Registers all message handlers that are found in the assemblies that match the specified search criteria.
+        /// </summary>
+        /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>        
+        /// <param name="predicate">Optional predicate that is used to filter specific types from the assemblies.</param>
+        /// <returns>The factory that contains all registered message handlers.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="searchPattern"/> is <c>null</c>.
+        /// </exception>        
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public MessageHandlerFactory Register(string searchPattern, Func<Type, bool> predicate) =>
+            Register(searchPattern, null, predicate);
+
+        /// <summary>
+        /// Registers all message handlers that are found in the assemblies that match the specified search criteria.
+        /// </summary>
+        /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
+        /// <param name="path">A path pointing to a specific directory. If <c>null</c>, the <see cref="TypeSet.CurrentDirectory"/> is used.</param>
+        /// <param name="predicate">Optional predicate that is used to filter specific types from the assemblies.</param>
+        /// <returns>The factory that contains all registered message handlers..</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="searchPattern"/> is <c>null</c>.
+        /// </exception>        
+        /// <exception cref="IOException">
+        /// An error occurred while reading files from the specified location(s).
+        /// </exception>
+        /// <exception cref="SecurityException">
+        /// The caller does not have the required permission
+        /// </exception>
+        public MessageHandlerFactory Register(string searchPattern, string path = null, Func<Type, bool> predicate = null)
+        {
+            var types =
+                from type in TypeSet.Empty.Add(searchPattern, path)
+                where predicate == null || predicate.Invoke(type)
+                select type;
+
+            return Register(types);
+        }
+
+        /// <summary>
         /// Registers all types of the specified <paramref name="types"/> that implement
         /// <see cref="IMessageHandler{T}" /> as message handlers. The exact behavior and lifetime
         /// of these handlers will be determined by the values or their <see cref="MessageHandlerAttribute" />.
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        public MessageHandlerFactory RegisterMessageHandlers(IEnumerable<Type> types)
+        public MessageHandlerFactory Register(IEnumerable<Type> types)
         {
             if (types == null)
             {

@@ -376,6 +376,15 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find implementation of method &apos;{0}.{1}({2})&apos; on type &apos;{3}&apos;..
+        /// </summary>
+        internal static string MethodAttributeProvider_InterfaceMethodNotFound {
+            get {
+                return ResourceManager.GetString("MethodAttributeProvider_InterfaceMethodNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invocation of method &apos;{0}()&apos; is not expected at this point..
         /// </summary>
         internal static string MicroProcessorContextState_InvalidOperation {

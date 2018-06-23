@@ -266,7 +266,7 @@ namespace Kingo
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission
         /// </exception>
-        public TypeSet RemoveAssembliesFromCurrentDirectory(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
+        public TypeSet Remove(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
             Remove(FindAssemblies(path, searchPattern, searchOption));        
 
         /// <summary>

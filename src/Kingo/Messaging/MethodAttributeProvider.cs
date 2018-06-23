@@ -34,10 +34,11 @@ namespace Kingo.Messaging
             return attribute != null;
         }        
 
-        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class => from attribute in _Attributes.GetOrAdd(Method, LoadAttributes)
-                                                                                                           let desiredAttribute = attribute as TAttribute
-                                                                                                           where desiredAttribute != null
-                                                                                                           select desiredAttribute;
+        public IEnumerable<TAttribute> GetMethodAttributesOfType<TAttribute>() where TAttribute : class =>
+            from attribute in _Attributes.GetOrAdd(Method, LoadAttributes)
+            let desiredAttribute = attribute as TAttribute
+            where desiredAttribute != null
+            select desiredAttribute;
 
         private static Attribute[] LoadAttributes(MethodInfo method) =>
             method.GetCustomAttributes().ToArray();
@@ -76,8 +77,22 @@ namespace Kingo.Messaging
                 where method.Name == methodName && IsMatch(method.GetParameters(), methodParameters)
                 select method;
 
-            return new MethodAttributeProvider(methods.Single());
+            try
+            {
+                return new MethodAttributeProvider(methods.Single());
+            }     
+            catch (InvalidOperationException)
+            {
+                throw NewInterfaceMethodNotFoundException(type, interfaceType, methodName, methodParameters);
+            }
         }
+
+        private static Exception NewInterfaceMethodNotFoundException(Type type, Type interfaceType, string methodName, IEnumerable<Type> methodParameters)
+        {
+            var messageFormat = ExceptionMessages.MethodAttributeProvider_InterfaceMethodNotFound;
+            var message = string.Format(messageFormat, interfaceType.FriendlyName(), methodName, methodParameters.FriendlyNames(), type.FriendlyName());
+            return new InvalidOperationException(message);
+        }        
 
         private static bool IsMatch(IReadOnlyList<ParameterInfo> parameters, IReadOnlyList<Type> expectedTypes)
         {

@@ -222,6 +222,9 @@
   <data name="MethodAttributeProvider_AmbiguousAttributeMatch" xml:space="preserve">
     <value>Cannot obtain single attribute of type '{0}' declared on method '{1}' because multiple attributes are of type '{0}'.</value>
   </data>
+  <data name="MethodAttributeProvider_InterfaceMethodNotFound" xml:space="preserve">
+    <value>Could not find implementation of method '{0}.{1}({2})' on type '{3}'.</value>
+  </data>
   <data name="MicroProcessorContextState_InvalidOperation" xml:space="preserve">
     <value>Invocation of method '{0}()' is not expected at this point.</value>
   </data>

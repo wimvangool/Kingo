@@ -650,6 +650,19 @@ namespace Kingo
         #region [====== FriendlyName ======]
 
         /// <summary>
+        /// Concatenates the names of the specified <paramref name="types"/> into a single string using the specified <paramref name="separator"/>.
+        /// </summary>
+        /// <param name="types">A collection of types.</param>
+        /// <param name="useFullNames">Indicates whether or not the full name of all types should be used in the friendly name.</param>
+        /// <param name="separator">The separator that is used to concatenate all names.</param>
+        /// <returns>A single string containing all names of the specified <paramref name="types"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> is <c>null</c>
+        /// </exception>
+        public static string FriendlyNames(this IEnumerable<Type> types, bool useFullNames = false, string separator = null) =>
+            string.Join(separator ?? ", ", types.Select(type => type.FriendlyName(useFullNames)));
+
+        /// <summary>
         /// Returns the friendly name of a type, useful for displaying type information in consoles or debug strings.
         /// </summary>
         /// <param name="type">A type.</param>
@@ -666,8 +679,6 @@ namespace Kingo
             }
             return new StringBuilder().AppendFriendlyNameOf(type, useFullNames).ToString();
         }
-
-
 
         private static StringBuilder AppendFriendlyNameOf(this StringBuilder builder, Type type, bool useFullNames)
         {

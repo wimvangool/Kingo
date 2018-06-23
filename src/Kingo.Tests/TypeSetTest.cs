@@ -230,13 +230,13 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void RemoveAssembliesFromCurrentDirectory_Throws_IfSearchPatternIsNull()
         {
-            TypeSet.Empty.RemoveAssembliesFromCurrentDirectory(null);
+            TypeSet.Empty.Remove(null as string);
         }
 
         [TestMethod]
         public void RemoveAssembliesFromCurrentDirectory_DoesNothing_IfSearchPatternMatchesNoAssemblies()
         {
-            var set = TypeSet.Empty.Add<object>().RemoveAssembliesFromCurrentDirectory("DoesNotExist.*");
+            var set = TypeSet.Empty.Add<object>().Remove("DoesNotExist.*");
 
             AssertContainsExactly(set, typeof(object));
         }
@@ -248,7 +248,7 @@ namespace Kingo
                 .Add<object>()
                 .Add<TypeSet>()
                 .Add<TypeSetTest>()
-                .RemoveAssembliesFromCurrentDirectory("Kingo.*");
+                .Remove("Kingo.*");
 
             AssertContainsExactly(set, typeof(object));
         }
