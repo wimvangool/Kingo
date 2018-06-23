@@ -71,10 +71,10 @@ namespace Kingo.Messaging
             FromInterfaceMethod(query.GetType(), typeof(IQuery<TMessageIn, TMessageOut>), _ExecuteAsync, typeof(TMessageIn), typeof(IMicroProcessorContext));
 
         private static MethodAttributeProvider FromInterfaceMethod(Type type, Type interfaceType, string methodName, params Type[] methodParameters)
-        {
+        {            
             var methods =
                 from method in type.GetInterfaceMap(interfaceType).TargetMethods
-                where method.Name == methodName && IsMatch(method.GetParameters(), methodParameters)
+                where Normalize(method.Name) == methodName && IsMatch(method.GetParameters(), methodParameters)
                 select method;
 
             try
@@ -85,6 +85,16 @@ namespace Kingo.Messaging
             {
                 throw NewInterfaceMethodNotFoundException(type, interfaceType, methodName, methodParameters);
             }
+        }
+
+        private static string Normalize(string methodName)
+        {
+            var dotIndex = methodName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase);
+            if (dotIndex < 0)
+            {
+                return methodName;
+            }
+            return methodName.Substring(dotIndex + 1);
         }
 
         private static Exception NewInterfaceMethodNotFoundException(Type type, Type interfaceType, string methodName, IEnumerable<Type> methodParameters)

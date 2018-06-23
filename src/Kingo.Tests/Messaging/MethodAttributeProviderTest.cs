@@ -53,7 +53,7 @@ namespace Kingo.Messaging
 
         private sealed class NoAttributeHandler : IMessageHandler<object>
         {
-            public Task HandleAsync(object message, IMicroProcessorContext context) =>
+            Task IMessageHandler<object>.HandleAsync(object message, IMicroProcessorContext context) =>
                 AsyncMethod.Void;
         }
 
