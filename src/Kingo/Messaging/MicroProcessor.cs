@@ -19,7 +19,7 @@ namespace Kingo.Messaging
         /// </summary>
         public MicroProcessor()
         {
-            _messageHandlerFactory = new Lazy<MessageHandlerFactory>(BuildMessageHandlerFactory, true);  
+            _messageHandlerFactory = new Lazy<MessageHandlerFactory>(CreateMessageHandlerFactory, true);             
             _pipeline = new Lazy<MicroProcessorPipeline>(() => BuildPipeline(new MicroProcessorPipeline()), true);
         }
 
@@ -43,37 +43,27 @@ namespace Kingo.Messaging
         protected internal MessageHandlerFactory MessageHandlerFactory =>
             _messageHandlerFactory.Value;
 
-        private MessageHandlerFactory BuildMessageHandlerFactory() => CreateMessageHandlerFactory()           
-            .RegisterInstance<IMicroProcessor>(this)
-            .RegisterInstance(MicroProcessorContext.Current)
-            .RegisterInstance(typeof(ISchemaMap), BuildSchemaMap(new SchemaMap()))
-            .RegisterMessageHandlers(CreateMessageHandlerTypeSet());        
+        private MessageHandlerFactory CreateMessageHandlerFactory() =>
+            BuildMessageHandlerFactory()
+                .RegisterInstance<IMicroProcessor>(this)
+                .RegisterInstance(MicroProcessorContext.Current)
+                .RegisterInstance(typeof(ISchemaMap), BuildSchemaMap());             
 
         /// <summary>
         /// When overridden, creates and returns a <see cref="MessageHandlerFactory" /> for this processor.
         /// The default implementation returns <c>null</c>.
         /// </summary>        
         /// <returns>A new <see cref="MessageHandlerFactory" /> to be used by this processor.</returns>
-        protected internal virtual MessageHandlerFactory CreateMessageHandlerFactory() =>
+        protected internal virtual MessageHandlerFactory BuildMessageHandlerFactory() =>
             new MessageHandlerFactoryStub();
-
-        /// <summary>
-        /// Returns a <see cref="TypeSet"/> that will be scanned by the <see cref="MessageHandlerFactory" /> of this processor
-        /// to locate <see cref="IMessageHandler{T}"/> classes and auto-register these classes so that instances of them
-        /// can be resolved at run-time.
-        /// </summary>        
-        /// <returns>A <see cref="TypeSet" /> that contains all message handler types to register.</returns>
-        protected virtual TypeSet CreateMessageHandlerTypeSet() =>
-            TypeSet.Empty;
 
         /// <summary>
         /// Builds and returns a <see cref="ISchemaMap" /> that will be registered as a dependency and can be used by repositories
         /// to serialize and deserialize objects using specific type-information.
-        /// </summary>
-        /// <param name="schemaMap">A schema-map</param>
+        /// </summary>        
         /// <returns>A schema-map instance.</returns>
-        protected virtual ISchemaMap BuildSchemaMap(SchemaMap schemaMap) =>
-            schemaMap;
+        protected virtual ISchemaMap BuildSchemaMap() =>
+            SchemaMap.None;
 
         /// <inheritdoc />
         public virtual Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)

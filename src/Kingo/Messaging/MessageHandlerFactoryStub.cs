@@ -19,7 +19,7 @@ namespace Kingo.Messaging
             var message = string.Format(messageFormat,                
                 typeToResolve.FriendlyName(),
                 nameof(MicroProcessor),
-                nameof(MicroProcessor.CreateMessageHandlerFactory),
+                nameof(MicroProcessor.BuildMessageHandlerFactory),
                 nameof(MessageHandlerFactory));
 
             return new NotSupportedException(message);

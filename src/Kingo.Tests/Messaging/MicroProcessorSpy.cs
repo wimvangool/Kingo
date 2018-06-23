@@ -36,7 +36,7 @@ namespace Kingo.Messaging
             return _implementationSequence.Implement(messageHandlerType, count);
         }
 
-        protected internal override MessageHandlerFactory CreateMessageHandlerFactory()
+        protected internal override MessageHandlerFactory BuildMessageHandlerFactory()
         {
             MessageHandlerFactory factory = new UnityContainerFactory();
 
@@ -44,11 +44,10 @@ namespace Kingo.Messaging
             {
                 factory = factory.Register(dependency.Key, dependency.Value);
             }
-            return factory.RegisterInstance<IMessageHandlerImplementation>(_implementationSequence);
-        }
-            
-        protected override TypeSet CreateMessageHandlerTypeSet() =>
-            TypeSet.Empty.Add(_messageHandlers);
+            return factory
+                .RegisterInstance<IMessageHandlerImplementation>(_implementationSequence)
+                .RegisterMessageHandlers(TypeSet.Empty.Add(_messageHandlers));
+        }                    
 
         public override Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)
         {

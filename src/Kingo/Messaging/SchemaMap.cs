@@ -16,6 +16,20 @@ namespace Kingo.Messaging
     /// </summary>
     public class SchemaMap : ISchemaMap, IReadOnlyDictionary<string, Type>, IReadOnlyDictionary<Type, string>
     {
+        #region [====== NullMap ======]
+
+        private sealed class NullMap : ISchemaMap
+        {
+            public Type GetType(string typeId) =>
+                throw NewTypeNotFoundException(typeId, null);
+
+            public string GetTypeId(Type type) =>
+                throw NewTypeIdNotFoundException(type, null);
+        }
+
+        #endregion
+
+        public static readonly ISchemaMap None = new NullMap();
         private readonly Dictionary<string, Type> _identifierToTypeMap;
         private readonly Dictionary<Type, string> _typeToIdentifierMap;
 

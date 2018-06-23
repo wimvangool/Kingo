@@ -40,16 +40,7 @@ namespace Kingo.Messaging
         public override string ToString() =>
             $"{_messageHandlers.Count} MessageHandler(s) Registered";
 
-        #region [====== MessageHandlers ======]        
-             
-        internal MessageHandlerFactory RegisterMessageHandlers(IEnumerable<Type> types)
-        {
-            foreach (var messageHandler in MessageHandlerClass.RegisterMessageHandlers(this, types))
-            {
-                _messageHandlers.Add(messageHandler);
-            }
-            return this;
-        }
+        #region [====== Resolve ======]                            
 
         /// <inheritdoc />
         internal IEnumerable<MessageHandler<TMessage>> ResolveMessageHandlers<TMessage>(MessageHandlerContext context, TMessage message)
@@ -76,6 +67,26 @@ namespace Kingo.Messaging
         #region [====== Type Registration ======]
 
         private const InstanceLifetime _DefaultLifetime = InstanceLifetime.PerUnitOfWork;
+
+        /// <summary>
+        /// Registers all types of the specified <paramref name="types"/> that implement
+        /// <see cref="IMessageHandler{T}" /> as message handlers. The exact behavior and lifetime
+        /// of these handlers will be determined by the values or their <see cref="MessageHandlerAttribute" />.
+        /// </summary>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        public MessageHandlerFactory RegisterMessageHandlers(IEnumerable<Type> types)
+        {
+            if (types == null)
+            {
+                throw new ArgumentNullException(nameof(types));
+            }
+            foreach (var messageHandler in MessageHandlerClass.RegisterMessageHandlers(this, types))
+            {
+                _messageHandlers.Add(messageHandler);
+            }
+            return this;
+        }
 
         /// <summary>
         /// Registers the specified type <typeparamref name="T" /> with the specified <paramref name="lifetime" />.
