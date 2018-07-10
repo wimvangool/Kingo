@@ -7,5 +7,5 @@ using System.Resources;
 [assembly: NeutralResourcesLanguage("en-US")]
 
 [assembly: AssemblyVersion("3.7")]
-[assembly: AssemblyFileVersion("3.7.12.0")]
-[assembly: AssemblyInformationalVersion("3.7.12")]
+[assembly: AssemblyFileVersion("3.7.13.0")]
+[assembly: AssemblyInformationalVersion("3.7.13")]

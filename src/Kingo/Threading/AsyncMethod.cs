@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Kingo.Threading
 {
     /// <summary>
-    /// Contains several helper methods for async methods that need to run synchronously.
+    /// Contains several helper methods for async methods.
     /// </summary>
     public static class AsyncMethod
     {

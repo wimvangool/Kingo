@@ -42,7 +42,7 @@ namespace Kingo.Messaging
 
         private static async Task<IMessageStream> Invoke(MicroProcessor processor, IMessageStream inputStream, MessageHandlerContext context)
         {
-            using (var scope = MicroProcessorContext.CreateContextScope(context))
+            using (var scope = MicroProcessorContext.CreateScope(context))
             {
                 var method = new HandleInputStreamAsyncMethod(processor, context);
 

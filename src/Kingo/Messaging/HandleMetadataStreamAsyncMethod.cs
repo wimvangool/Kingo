@@ -57,7 +57,7 @@ namespace Kingo.Messaging
         {
             using (var transactionScope = new TransactionScope(TransactionScopeOption.Suppress))
             {
-                using (var scope = MicroProcessorContext.CreateContextScope(Context))
+                using (var scope = MicroProcessorContext.CreateScope(Context))
                 {
                     await metadataStream.HandleMessagesWithAsync(this);
                     await scope.CompleteAsync();

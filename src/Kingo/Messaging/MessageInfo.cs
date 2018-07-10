@@ -76,7 +76,7 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Returns the source of a message.
+        /// Returns the source of the message.
         /// </summary>
         public MessageSources Source
         {
@@ -85,7 +85,7 @@ namespace Kingo.Messaging
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Message.GetType().FriendlyName()} ({Source})";
+            $"{Message} ({Source})";
 
         #endregion
 

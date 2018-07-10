@@ -17,6 +17,26 @@ namespace Kingo.Messaging
             _processor = new MicroProcessorSpy();
         }
 
+        #region [====== Run Tests ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Run_Throws_IfCommandIsNull()
+        {
+            _processor.Run(null);
+        }
+
+        [TestMethod]
+        public void Run_RunsCommandInExpectedContext_IfCommandIsNotNull()
+        {
+            Assert.AreEqual(0, _processor.Run(context =>
+            {
+                Assert.AreEqual($"RunCommand [Name = {nameof(Run_RunsCommandInExpectedContext_IfCommandIsNotNull)}] (InputStream)", context.StackTrace.ToString());
+            }).Count);
+        }
+
+        #endregion
+
         #region [====== Commands & Events (Input/Output Tests) ======]
 
         [TestMethod]
@@ -224,20 +244,20 @@ namespace Kingo.Messaging
             
             var unitOfWork = new UnitOfWorkSpy(true);        
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {                
                 AssertMessageStack(context.StackTrace, message, someCommand);
 
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
                 context.OutputStream.Publish(eventA);
                 context.OutputStream.Publish(eventB);
             });
 
-            _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {                
                 AssertMessageStack(context.StackTrace, message, someCommand, eventA);
 
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
                 context.OutputStream.Publish(eventC);
             });
 
@@ -345,19 +365,19 @@ namespace Kingo.Messaging
             var eventA = new EventA();
             var unitOfWork = new UnitOfWorkSpy(false);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
                 AssertMessageStack(context.StackTrace, message, someCommand);
 
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
                 AssertMessageStack(context.StackTrace, message, someCommand, eventA);
 
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             AssertIsEmpty(await _processor.HandleAsync(someCommand));
@@ -374,27 +394,27 @@ namespace Kingo.Messaging
             var eventB = new EventB();
             var unitOfWork = new UnitOfWorkSpy(false);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
                 AssertMessageStack(context.StackTrace, message, someCommand);
 
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
                 AssertMessageStack(context.StackTrace, message, someCommand, eventA);
 
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
                 context.MetadataStream.Publish(eventB);
             });
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventB>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventB>(async (message, context) =>
             {
                 AssertMessageStack(context.StackTrace, message, someCommand, eventA, eventB);
 
-                context.UnitOfWork.Enlist(unitOfWork);                
+                await context.UnitOfWork.EnlistAsync(unitOfWork);                
             });
 
             AssertIsEmpty(await _processor.HandleAsync(someCommand));
@@ -449,9 +469,9 @@ namespace Kingo.Messaging
             var internalException = new SomeInternalProcessorException();
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 throw internalException;
             });
@@ -480,9 +500,9 @@ namespace Kingo.Messaging
             var internalException = new SomeInternalProcessorException();
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 throw internalException;
             });
@@ -516,9 +536,9 @@ namespace Kingo.Messaging
 
             _processor.Implement<EventHandlerAB>().As<EventA>((message, context) => {});
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 throw internalException;
             });
@@ -609,9 +629,9 @@ namespace Kingo.Messaging
             var internalException = new SomeInternalProcessorException();
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 throw internalException;
             });
@@ -640,9 +660,9 @@ namespace Kingo.Messaging
             var internalException = new SomeInternalProcessorException();
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 throw internalException;
             });
@@ -672,16 +692,17 @@ namespace Kingo.Messaging
             var internalException = new SomeInternalProcessorException();
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
+
                 context.OutputStream.Publish(eventA);
                 
             });
 
-            _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 throw internalException;
             });            
@@ -711,16 +732,16 @@ namespace Kingo.Messaging
             var internalException = new SomeInternalProcessorException();
             var unitOfWork = new UnitOfWorkSpy(true);
 
-            _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 context.OutputStream.Publish(someCommand);
             });
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
 
                 throw internalException;
             });
@@ -751,15 +772,16 @@ namespace Kingo.Messaging
             var unitOfWorkA = new UnitOfWorkSpy(true);
             var unitOfWorkB = new UnitOfWorkSpy(true);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWorkA);
+                await context.UnitOfWork.EnlistAsync(unitOfWorkA);
+
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWorkB);
+                await context.UnitOfWork.EnlistAsync(unitOfWorkB);
 
                 throw internalException;
             });
@@ -793,15 +815,15 @@ namespace Kingo.Messaging
             var unitOfWorkA = new UnitOfWorkSpy(true);
             var unitOfWorkB = new UnitOfWorkSpy(true);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWorkA);
+                await context.UnitOfWork.EnlistAsync(unitOfWorkA);
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWorkB);
+                await context.UnitOfWork.EnlistAsync(unitOfWorkB);
 
                 throw randomException;
             });
@@ -833,9 +855,9 @@ namespace Kingo.Messaging
             var concurrencyException = new ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             try
@@ -862,9 +884,9 @@ namespace Kingo.Messaging
             var randomException = new Exception();
             var unitOfWork = new UnitOfWorkSpy(true, randomException);
 
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
+            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             try
@@ -891,9 +913,9 @@ namespace Kingo.Messaging
             var concurrencyException = new ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
-            _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             try
@@ -926,9 +948,9 @@ namespace Kingo.Messaging
                 context.MetadataStream.Publish(eventA);
             });
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             try
@@ -1179,9 +1201,9 @@ namespace Kingo.Messaging
             var unitOfWork = new UnitOfWorkSpy(true);           
             var messageOut = new object();           
 
-            Assert.AreSame(await _processor.ExecuteAsync(context =>
+            Assert.AreSame(await _processor.ExecuteAsync(async context =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
                 return messageOut;
             }), messageOut);
 
@@ -1196,9 +1218,9 @@ namespace Kingo.Messaging
             var eventA = new EventA();
             var messageOut = new object();
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {                
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             Assert.AreSame(await _processor.ExecuteAsync(context =>
@@ -1259,9 +1281,9 @@ namespace Kingo.Messaging
 
             try
             {
-                await _processor.ExecuteAsync(context =>
+                await _processor.ExecuteAsync(async context =>
                 {
-                    context.UnitOfWork.Enlist(unitOfWork);
+                    await context.UnitOfWork.EnlistAsync(unitOfWork);
                     return new object();
                 });
             }
@@ -1286,9 +1308,9 @@ namespace Kingo.Messaging
 
             try
             {
-                await _processor.ExecuteAsync(context =>
+                await _processor.ExecuteAsync(async context =>
                 {
-                    context.UnitOfWork.Enlist(unitOfWork);
+                    await context.UnitOfWork.EnlistAsync(unitOfWork);
                     return new object();
                 });
             }
@@ -1312,9 +1334,9 @@ namespace Kingo.Messaging
             var concurrencyException = new ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             try
@@ -1504,9 +1526,9 @@ namespace Kingo.Messaging
             var unitOfWork = new UnitOfWorkSpy(true);            
             var messageOut = new object();            
 
-            Assert.AreSame(await _processor.ExecuteAsync(new object(), (message, context) =>
+            Assert.AreSame(await _processor.ExecuteAsync(new object(), async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
                 return messageOut;
             }), messageOut);
 
@@ -1521,9 +1543,9 @@ namespace Kingo.Messaging
             var eventA = new EventA();
             var messageOut = new object();
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             Assert.AreSame(await _processor.ExecuteAsync(new object(), (message, context) =>
@@ -1590,9 +1612,9 @@ namespace Kingo.Messaging
 
             try
             {
-                await _processor.ExecuteAsync(messageIn, (message, context) =>
+                await _processor.ExecuteAsync(messageIn, async (message, context) =>
                 {
-                    context.UnitOfWork.Enlist(unitOfWork);
+                    await context.UnitOfWork.EnlistAsync(unitOfWork);
                     return new object();
                 });
             }
@@ -1618,9 +1640,9 @@ namespace Kingo.Messaging
 
             try
             {
-                await _processor.ExecuteAsync(messageIn, (message, context) =>
+                await _processor.ExecuteAsync(messageIn, async (message, context) =>
                 {
-                    context.UnitOfWork.Enlist(unitOfWork);
+                    await context.UnitOfWork.EnlistAsync(unitOfWork);
                     return new object();
                 });
             }
@@ -1645,9 +1667,9 @@ namespace Kingo.Messaging
             var concurrencyException = new ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
+            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
             {
-                context.UnitOfWork.Enlist(unitOfWork);
+                await context.UnitOfWork.EnlistAsync(unitOfWork);
             });
 
             try

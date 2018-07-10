@@ -170,7 +170,7 @@ namespace Kingo.Messaging
         /// </summary>
         public static readonly IMicroProcessorContext Current = new MicroProcessorContextRelay(_Context);       
 
-        internal static MicroProcessorContextScope CreateContextScope(MicroProcessorContext context) =>
+        internal static MicroProcessorContextScope CreateScope(MicroProcessorContext context) =>
             new MicroProcessorContextScope(_Context.OverrideAsyncLocal(context));
 
         #endregion

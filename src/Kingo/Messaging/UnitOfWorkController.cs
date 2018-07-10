@@ -20,10 +20,7 @@ namespace Kingo.Messaging
             public IUnitOfWorkCache Cache
             {
                 get;
-            }
-
-            public void Enlist(IUnitOfWork unitOfWork, object resourceId = null) =>
-                EnlistAsync(unitOfWork, resourceId).Await();
+            }           
 
             public Task EnlistAsync(IUnitOfWork unitOfWork, object resourceId = null)
             {
@@ -42,7 +39,7 @@ namespace Kingo.Messaging
                 false;
 
             public Task FlushAsync() =>
-             throw NewOperationNotSupportedException(nameof(FlushAsync));
+                throw NewOperationNotSupportedException(nameof(FlushAsync));
 
             private static Exception NewOperationNotSupportedException(string methodName)
             {
@@ -90,10 +87,7 @@ namespace Kingo.Messaging
         }
         
         public IUnitOfWorkCache Cache =>
-            _cache;
-
-        public void Enlist(IUnitOfWork unitOfWork, object resourceId = null) =>
-            _controller.Enlist(unitOfWork, resourceId);
+            _cache;        
 
         public Task EnlistAsync(IUnitOfWork unitOfWork, object resourceId = null) =>
             _controller.EnlistAsync(unitOfWork, resourceId);

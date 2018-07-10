@@ -169,6 +169,7 @@
     <Compile Include="Messaging\QueryWrapper.T1.cs" />
     <Compile Include="Messaging\QueryWrapper.T2.cs" />
     <Compile Include="Messaging\Authorization\RequiresAuthenticatedPrincipalFilter.cs" />
+    <Compile Include="Messaging\RunCommand.cs" />
     <Compile Include="Messaging\SchemaMap.cs" />
     <Compile Include="Messaging\TypeAttributeProvider.cs" />
     <Compile Include="Messaging\ITypeAttributeProvider.cs" />

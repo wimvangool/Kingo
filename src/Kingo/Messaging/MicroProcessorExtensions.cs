@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Threading;
@@ -12,6 +13,22 @@ namespace Kingo.Messaging
     {
         #region [====== Commands & Events ======]
 
+        /// <summary>
+        /// Runs the specified <paramref name="command"/> using the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">A processor.</param>
+        /// <param name="command">The command to run.</param>        
+        /// <param name="name">
+        /// Optional name of the command. If not specified, the name will be equal to the method or property that invokes
+        /// this method.
+        /// </param>
+        /// <returns>A stream of events that represents all changes made by this processor.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="command"/> is <c>null</c>.
+        /// </exception>
+        public static IMessageStream Run(this IMicroProcessor processor, Action<IMicroProcessorContext> command, [CallerMemberName] string name = null) =>
+            processor.RunAsync(command, null, name).Await();
+        
         /// <summary>
         /// Processes the specified message. If <paramref name="handler"/> is not <c>null</c>, this handler will be invoked
         /// instead of any registered handlers.
@@ -32,29 +49,7 @@ namespace Kingo.Messaging
         /// internal server error occurred.
         /// </exception>                                     
         public static IMessageStream Handle<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, IMicroProcessorContext> handler) =>
-            processor.HandleStream(MessageStream.CreateStream(message, handler));
-
-        /// <summary>
-        /// Processes the specified message. If <paramref name="handler"/> is not <c>null</c>, this handler will be invoked
-        /// instead of any registered handlers.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message.</typeparam>
-        /// <param name="processor">A processor.</param>
-        /// <param name="message">Message to handle.</param>
-        /// <param name="handler">
-        /// Optional handler that will be used to handle the message.
-        /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
-        /// </param>  
-        /// <returns>A stream of events that represents all changes made by this processor.</returns>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>    
-        /// <exception cref="ExternalProcessorException">
-        /// The specified <paramref name="message"/> could not be handled because it was a bad request or because an
-        /// internal server error occurred.
-        /// </exception>                                    
-        public static IMessageStream Handle<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, IMicroProcessorContext, Task<IMessageStream>> handler) =>
-            processor.HandleStream(MessageStream.CreateStream(message, handler));
+            processor.HandleStream(MessageStream.CreateStream(message, handler));        
 
         /// <summary>
         /// Processes the specified message.
@@ -95,7 +90,53 @@ namespace Kingo.Messaging
 
         #endregion        
 
-        #region [====== Commands & Events (Async) ======]  
+        #region [====== Commands & Events (Async) ======]          
+
+        /// <summary>
+        /// Runs the specified <paramref name="command"/> using the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">A processor.</param>
+        /// <param name="command">The command to run.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <param name="name">
+        /// Optional name of the command. If not specified, the name will be equal to the method or property that invokes
+        /// this method.
+        /// </param>
+        /// <returns>A stream of events that represents all changes made by this processor.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="command"/> is <c>null</c>.
+        /// </exception>
+        public static Task<IMessageStream> RunAsync(this IMicroProcessor processor, Action<IMicroProcessorContext> command, CancellationToken? token = null, [CallerMemberName] string name = null)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+            return processor.RunAsync(context => AsyncMethod.RunSynchronously(() => command.Invoke(context)), token, name);
+        }
+
+        /// <summary>
+        /// Runs the specified <paramref name="command"/> using the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">A processor.</param>
+        /// <param name="command">The command to run.</param>
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <param name="name">
+        /// Optional name of the command. If not specified, the name will be equal to the method or property that invokes
+        /// this method.
+        /// </param>
+        /// <returns>A stream of events that represents all changes made by this processor.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="command"/> is <c>null</c>.
+        /// </exception>
+        public static Task<IMessageStream> RunAsync(this IMicroProcessor processor, Func<IMicroProcessorContext, Task> command, CancellationToken? token = null, [CallerMemberName] string name = null)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+            return processor.HandleStreamAsync(MessageStream.CreateStream(new RunCommand(name), (message, context) => command.Invoke(context)), token);
+        }
 
         /// <summary>
         /// Processes the specified message asynchronously by invoking all handlers that are registered for the specified <typeparamref name="TMessage"/>.

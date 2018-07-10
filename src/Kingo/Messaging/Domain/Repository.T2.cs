@@ -135,8 +135,8 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ConcurrencyException">
         /// A concurrency exception occurred.
         /// </exception>
-        protected Task FlushAsync(bool keepAggregatesInMemory) =>
-            Interlocked.Exchange(ref _unitOfWork, _unitOfWork.Commit(keepAggregatesInMemory)).FlushAsync();
+        protected async Task FlushAsync(bool keepAggregatesInMemory) =>
+            await Interlocked.Exchange(ref _unitOfWork, await _unitOfWork.CommitAsync(keepAggregatesInMemory)).FlushAsync();
 
         /// <summary>
         /// Flushes all changes made in this session to the data store by inserting, updating and/or deleting several aggregates.

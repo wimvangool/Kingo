@@ -27,34 +27,35 @@ namespace Kingo.Messaging.Domain
                 get;
             }
 
-            protected void MoveToState(AggregateState newState)
+            protected async Task MoveToStateAsync(AggregateState newState)
             {
-                Exit();
-                Enter(UnitOfWork._aggregates[AggregateId] = newState);
+                await ExitAsync();
+                await EnterAsync(UnitOfWork._aggregates[AggregateId] = newState);
             }
 
-            private void Enter(AggregateState newState)
+            private async Task EnterAsync(AggregateState newState)
             {
-                if (newState.Enter())
+                if (await newState.EnterAsync())
                 {
                     UnitOfWork._requiresFlush = true;
-                    Repository.Context.UnitOfWork.Enlist(Repository, Repository.ResourceId);
+
+                    await Repository.Context.UnitOfWork.EnlistAsync(Repository, Repository.ResourceId);
                 }
             }
 
-            protected abstract bool Enter();
+            protected abstract Task<bool> EnterAsync();
 
-            protected abstract void Exit();
+            protected abstract Task ExitAsync();
 
             public abstract void AddToChangeSet(ChangeSet<TKey> changeSet);
 
-            public AggregateState Commit(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory)
+            public async Task<AggregateState> CommitAsync(UnitOfWork<TKey, TAggregate> unitOfWork, bool keepAggregatesInMemory)
             {
                 var oldState = this;
                 var newState = CreateCommittedState(unitOfWork, keepAggregatesInMemory);
                     
-                oldState.Exit();
-                newState.Enter();
+                await oldState.ExitAsync();
+                await newState.EnterAsync();
 
                 return newState;
             }
@@ -92,10 +93,11 @@ namespace Kingo.Messaging.Domain
             protected override TKey AggregateId =>
                 _id;
 
-            protected override bool Enter() =>
-                false;
+            protected override Task<bool> EnterAsync() =>
+                AsyncMethod.Value(false);
 
-            protected override void Exit() { }
+            protected override Task ExitAsync() =>
+                AsyncMethod.Void;
 
             public override void AddToChangeSet(ChangeSet<TKey> changeSet) { }
 
@@ -109,7 +111,7 @@ namespace Kingo.Messaging.Domain
                 {
                     throw NewAggregateNotFoundException(AggregateId);
                 }
-                MoveToState(new UnmodifiedState(UnitOfWork, aggregate));
+                await MoveToStateAsync(new UnmodifiedState(UnitOfWork, aggregate));
                 return aggregate;
             }
 
@@ -120,7 +122,7 @@ namespace Kingo.Messaging.Domain
                 {
                     throw NewDuplicateKeyException(aggregate.Id);
                 }
-                MoveToState(new AddedState(_unitOfWork, aggregate));
+                await MoveToStateAsync(new AddedState(_unitOfWork, aggregate));
                 return true;
             }            
 
@@ -131,7 +133,7 @@ namespace Kingo.Messaging.Domain
                 {
                     return false;
                 }
-                MoveToState(new RemovedState(_unitOfWork, aggregate, new List<IEvent>(), false));
+                await MoveToStateAsync(new RemovedState(_unitOfWork, aggregate, new List<IEvent>(), false));
                 return true;
             }
 
@@ -160,17 +162,25 @@ namespace Kingo.Messaging.Domain
             protected override TKey AggregateId =>
                 _aggregate.Id;
 
-            protected override bool Enter()
+            protected override Task<bool> EnterAsync()
             {
-                _aggregate.EventPublished += HandleEventPublished;
-                return false;
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _aggregate.EventPublished += HandleEventPublished;
+                    return false;
+                });          
             }
 
-            protected override void Exit() =>
-                _aggregate.EventPublished -= HandleEventPublished;
+            protected override Task ExitAsync()
+            {
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _aggregate.EventPublished -= HandleEventPublished;
+                });
+            }                
 
             private void HandleEventPublished(object sender, EventPublishedEventArgs e) =>
-                MoveToState(new ModifiedState(UnitOfWork, _aggregate, e.WriteEventTo(Repository.Context.OutputStream)));
+                MoveToStateAsync(new ModifiedState(UnitOfWork, _aggregate, e.WriteEventTo(Repository.Context.OutputStream))).Await();
 
             public override void AddToChangeSet(ChangeSet<TKey> changeSet) { }
 
@@ -198,13 +208,10 @@ namespace Kingo.Messaging.Domain
                 });                
             }
 
-            public override Task<bool> RemoveByIdAsync()
+            public override async Task<bool> RemoveByIdAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
-                {
-                    MoveToState(new RemovedState(_unitOfWork, _aggregate, new List<IEvent>(), false));
-                    return true;
-                });
+                await MoveToStateAsync(new RemovedState(_unitOfWork, _aggregate, new List<IEvent>(), false));
+                return true;
             }            
         }
 
@@ -227,20 +234,28 @@ namespace Kingo.Messaging.Domain
             protected override TKey AggregateId =>
                 _aggregate.Id;
 
-            protected override bool Enter()
+            protected override Task<bool> EnterAsync()
             {
-                foreach (var @event in _aggregate.FlushEvents())
+                return AsyncMethod.RunSynchronously(() =>
                 {
-                    _events.Add(@event);
+                    foreach (var @event in _aggregate.FlushEvents())
+                    {
+                        _events.Add(@event);
 
-                    Repository.Context.OutputStream.Publish(@event);
-                }
-                _aggregate.EventPublished += HandleEventPublished;
-                return true;
+                        Repository.Context.OutputStream.Publish(@event);
+                    }
+                    _aggregate.EventPublished += HandleEventPublished;
+                    return true;
+                });                
             }
 
-            protected override void Exit() =>
-                _aggregate.EventPublished -= HandleEventPublished;
+            protected override Task ExitAsync()
+            {
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _aggregate.EventPublished -= HandleEventPublished;
+                });   
+            }                
 
             private void HandleEventPublished(object sender, EventPublishedEventArgs e) =>
                 _events.Add(e.WriteEventTo(Repository.Context.OutputStream));
@@ -272,13 +287,10 @@ namespace Kingo.Messaging.Domain
                 });
             }
 
-            public override Task<bool> RemoveByIdAsync()
+            public override async Task<bool> RemoveByIdAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
-                {
-                    MoveToState(new RemovedState(_unitOfWork, _aggregate, _events, true));
-                    return true;
-                });
+                await MoveToStateAsync(new RemovedState(_unitOfWork, _aggregate, _events, true));
+                return true;
             }                
         }
 
@@ -301,14 +313,22 @@ namespace Kingo.Messaging.Domain
             protected override TKey AggregateId =>
                 _aggregate.Id;
 
-            protected override bool Enter()
+            protected override Task<bool> EnterAsync()
             {
-                _aggregate.EventPublished += HandleEventPublished;                
-                return true;
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _aggregate.EventPublished += HandleEventPublished;
+                    return true;
+                });
             }
 
-            protected override void Exit() =>
-                _aggregate.EventPublished -= HandleEventPublished;
+            protected override Task ExitAsync()
+            {
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _aggregate.EventPublished -= HandleEventPublished;
+                });
+            }                
 
             private void HandleEventPublished(object sender, EventPublishedEventArgs e) =>
                 _events.Add(e.WriteEventTo(Repository.Context.OutputStream));
@@ -340,13 +360,10 @@ namespace Kingo.Messaging.Domain
                 });
             }
 
-            public override Task<bool> RemoveByIdAsync()
+            public override async Task<bool> RemoveByIdAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
-                {
-                    MoveToState(new RemovedState(_unitOfWork, _aggregate, _events, false));
-                    return true;
-                });
+                await MoveToStateAsync(new RemovedState(_unitOfWork, _aggregate, _events, false));
+                return true;
             }
         }
 
@@ -371,15 +388,23 @@ namespace Kingo.Messaging.Domain
             protected override TKey AggregateId =>
                 _aggregate.Id;
 
-            protected override bool Enter()
+            protected override Task<bool> EnterAsync()
             {
-                _aggregate.EventPublished += HandleEventPublished;
-                _aggregate.NotifyRemoved();
-                return true;
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _aggregate.EventPublished += HandleEventPublished;
+                    _aggregate.NotifyRemoved();
+                    return true;
+                });                
             }            
 
-            protected override void Exit() =>
-                _aggregate.EventPublished -= HandleEventPublished;
+            protected override Task ExitAsync()
+            {
+                return AsyncMethod.RunSynchronously(() =>
+                {
+                    _aggregate.EventPublished -= HandleEventPublished;
+                });  
+            }                
 
             private void HandleEventPublished(object sender, EventPublishedEventArgs e) =>
                 _events.Add(e.WriteEventTo(Repository.Context.OutputStream));
@@ -451,14 +476,14 @@ namespace Kingo.Messaging.Domain
             return new ArgumentOutOfRangeException(nameof(serializationStrategy), message);
         }
 
-        public UnitOfWork<TKey, TAggregate> Commit(bool keepAggregatesInMemory)
+        public async Task<UnitOfWork<TKey, TAggregate>> CommitAsync(bool keepAggregatesInMemory)
         {
             var unitOfWork = new UnitOfWork<TKey, TAggregate>(_repository, _serializationStrategy);
             var committedChanges = unitOfWork._aggregates;
 
             foreach (var aggregate in _aggregates)
             {
-                committedChanges.Add(aggregate.Key, aggregate.Value.Commit(unitOfWork, keepAggregatesInMemory));
+                committedChanges.Add(aggregate.Key, await aggregate.Value.CommitAsync(unitOfWork, keepAggregatesInMemory));
             }
             return unitOfWork;
         }

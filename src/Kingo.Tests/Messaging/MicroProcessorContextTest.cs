@@ -69,7 +69,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void MessageStack_ContainsExpectedMessage_IfOneMessageIsPushed()
         {
-            const string expectedStringValue = "Object (InputStream)";
+            const string expectedStringValue = "System.Object (InputStream)";
 
             var context = new MessageHandlerContext(Principal);
             var message = new object();
@@ -94,13 +94,13 @@ namespace Kingo.Messaging
         [TestMethod]
         public void MessageStack_ContainsExpectedMessages_IfTwoMessagesArePushed()
         {
-            const string expectedStringValue = "Object (InputStream) -> Int32 (OutputStream)";
+            const string expectedStringValue = "System.Object (InputStream) -> 10 (OutputStream)";
 
             var context = new MessageHandlerContext(Principal);
             var messageA = new object();
             int messageB = 10;
 
-            using (var scope = CreateScope(context))
+            using (CreateScope(context))
             {
                 context.Messages.Push(MessageInfo.FromInputStream(messageA));
                 context.Messages.Push(MessageInfo.FromOutputStream(messageB));
@@ -334,6 +334,6 @@ namespace Kingo.Messaging
             MicroProcessorContext.Current;
 
         private static MicroProcessorContextScope CreateScope(MicroProcessorContext context) =>
-            MicroProcessorContext.CreateContextScope(context);
+            MicroProcessorContext.CreateScope(context);
     }
 }

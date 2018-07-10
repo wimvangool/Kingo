@@ -24,7 +24,7 @@ namespace Kingo.Messaging
             Assert.IsNotNull(messageInfo);
             Assert.AreSame(message, messageInfo.Message);
             Assert.AreEqual(MessageSources.InputStream, messageInfo.Source);
-            Assert.AreEqual("Object (InputStream)", messageInfo.ToString());
+            Assert.AreEqual("System.Object (InputStream)", messageInfo.ToString());
         }
 
         [TestMethod]
@@ -43,7 +43,7 @@ namespace Kingo.Messaging
             Assert.IsNotNull(messageInfo);
             Assert.AreSame(message, messageInfo.Message);
             Assert.AreEqual(MessageSources.OutputStream, messageInfo.Source);
-            Assert.AreEqual("Object (OutputStream)", messageInfo.ToString());
+            Assert.AreEqual("System.Object (OutputStream)", messageInfo.ToString());
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace Kingo.Messaging
             Assert.IsNotNull(messageInfo);
             Assert.AreSame(message, messageInfo.Message);
             Assert.AreEqual(MessageSources.MetadataStream, messageInfo.Source);
-            Assert.AreEqual("Object (MetadataStream)", messageInfo.ToString());
+            Assert.AreEqual("System.Object (MetadataStream)", messageInfo.ToString());
         }
 
         #endregion

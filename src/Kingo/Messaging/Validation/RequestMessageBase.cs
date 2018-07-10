@@ -81,6 +81,10 @@ namespace Kingo.Messaging.Validation
             return new ArgumentException(message, nameof(messageType));
         }
 
-        #endregion              
+        #endregion
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            GetType().FriendlyName();
     }
 }
