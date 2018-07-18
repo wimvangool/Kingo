@@ -21,15 +21,19 @@ namespace Kingo.Messaging
             _methodAttributeProvider = Messaging.MethodAttributeProvider.FromQuery(query);
         }
 
+        /// <inheritdoc />
         protected override ITypeAttributeProvider TypeAttributeProvider =>
             _typeAttributeProvider;
 
+        /// <inheritdoc />
         protected override IMethodAttributeProvider MethodAttributeProvider =>
             _methodAttributeProvider;
 
+        /// <inheritdoc />
         public override async Task<InvokeAsyncResult<TMessageOut>> InvokeAsync(MicroProcessorContext context) =>
             new ExecuteAsyncResult<TMessageOut>(await _query.ExecuteAsync(context));
 
+        /// <inheritdoc />
         public override string ToString() =>
             MicroProcessorPipeline.ToString(_query);
 

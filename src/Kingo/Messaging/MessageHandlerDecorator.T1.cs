@@ -29,12 +29,15 @@ namespace Kingo.Messaging
             _methodAttributeProvider = methodAttributeProvider;
         }
 
+        /// <inheritdoc />
         protected override ITypeAttributeProvider TypeAttributeProvider =>
             _typeAttributeProvider;
 
+        /// <inheritdoc />
         protected override IMethodAttributeProvider MethodAttributeProvider =>
             _methodAttributeProvider;
 
+        /// <inheritdoc />
         public override async Task<InvokeAsyncResult<IMessageStream>> InvokeAsync(MicroProcessorContext context)
         {
             await _handler.HandleAsync(_message, context);
@@ -42,6 +45,7 @@ namespace Kingo.Messaging
             return Yield(context);
         }
 
+        /// <inheritdoc />
         public override string ToString() =>
             MicroProcessorPipeline.ToString(_handler);
 

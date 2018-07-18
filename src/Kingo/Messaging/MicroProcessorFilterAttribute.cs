@@ -47,7 +47,7 @@ namespace Kingo.Messaging
             InvokeMessageHandlerOrQueryAsync(query, context);        
 
         /// <summary>
-        /// Invokes the specified <paramref name="handlerOrQuery"/> and returns it result, unless it's <see cref="MessageHandlerOrQuery{TResult}.Yield(TResult)"/> method is used.
+        /// Invokes the specified <paramref name="handlerOrQuery"/> and returns it result.
         /// </summary>
         /// <typeparam name="TResult">Type of the result of the operation.</typeparam>
         /// <param name="handlerOrQuery">A message handler or query that will perform the operation.</param>

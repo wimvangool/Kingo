@@ -29,7 +29,11 @@ namespace Kingo.Messaging
 
         #endregion
 
+        /// <summary>
+        /// Represents an empty schema map.
+        /// </summary>
         public static readonly ISchemaMap None = new NullMap();
+
         private readonly Dictionary<string, Type> _identifierToTypeMap;
         private readonly Dictionary<Type, string> _typeToIdentifierMap;
 

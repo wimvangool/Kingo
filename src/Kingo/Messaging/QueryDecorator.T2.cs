@@ -15,8 +15,8 @@ namespace Kingo.Messaging
         private readonly TMessageIn _message;
         private readonly TypeAttributeProvider _typeAttributeProvider;
         private readonly MethodAttributeProvider _methodAttributeProvider;
-        
-        public QueryDecorator(IQuery<TMessageIn, TMessageOut> query, TMessageIn message)            
+                
+        internal QueryDecorator(IQuery<TMessageIn, TMessageOut> query, TMessageIn message)            
         {            
             _query = query;
             _message = message;
@@ -24,15 +24,19 @@ namespace Kingo.Messaging
             _methodAttributeProvider = Messaging.MethodAttributeProvider.FromQuery(query);
         }
 
+        /// <inheritdoc />
         protected override ITypeAttributeProvider TypeAttributeProvider =>
             _typeAttributeProvider;
 
+        /// <inheritdoc />
         protected override IMethodAttributeProvider MethodAttributeProvider =>
             _methodAttributeProvider;
 
+        /// <inheritdoc />
         public override async Task<InvokeAsyncResult<TMessageOut>> InvokeAsync(MicroProcessorContext context) =>
             new ExecuteAsyncResult<TMessageOut>(await _query.ExecuteAsync(_message, context));
 
+        /// <inheritdoc />
         public override string ToString() =>
             MicroProcessorPipeline.ToString(_query);
 
