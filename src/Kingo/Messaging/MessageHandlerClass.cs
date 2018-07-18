@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -15,12 +16,14 @@ namespace Kingo.Messaging
         private readonly Type _type;
         private readonly Type[] _interfaces;
         private readonly IMessageHandlerConfiguration _configuration;
+        private readonly ConcurrentDictionary<Type, Func<object, object, Type, Type, MessageHandler>> _messageHandlerFactories;
 
         private MessageHandlerClass(Type type, Type[] interfaces, IMessageHandlerConfiguration configuration)
         {            
             _type = type;
             _interfaces = interfaces;
             _configuration = configuration;
+            _messageHandlerFactories = new ConcurrentDictionary<Type, Func<object, object, Type, Type, MessageHandler>>();
         }        
 
         private MessageHandlerClass RegisterIn(MessageHandlerFactory factory)
@@ -59,26 +62,38 @@ namespace Kingo.Messaging
             //
             // public sealed class ObjectHandler : IMessageHandler<object>
             // {
-            //     public Task<IMessageStream> HandleAsync(object message, IMicroProcessorContext context) 
+            //     public Task HandleAsync(object message, IMicroProcessorContext context) 
             //     {
             //         ...
             //     }    
             // }
             //
             // ...and this method is called with a TMessage of type 'string', then the code will do something allong the following lines:
-            //
-            // - var handler = Resolve<ObjectHandler>();
-            // - var objectHandler = new Instance<object>(handler);
-            // - var stringHandler = (IMessageHandler<string>) objectHandler;
-            //
-            // - return new MessageHandlerDecorator<string>(stringHandler, message, typeof(ObjectHandler), typeof(IMessageHandler<object>));
-            var handler = factory.Resolve(_type);
-            var decoratorTypeDefinition = typeof(MessageHandlerDecorator<>);
-            var decoratorType = decoratorTypeDefinition.MakeGenericType(messageTypeOfInterface);
-            var decoratorConstructorParameters = new [] { interfaceType, messageTypeOfInterface, typeof(Type), typeof(Type) };
-            var decoratorConstructor = decoratorType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, decoratorConstructorParameters, null);
+            //            
+            // - return new MessageHandlerDecorator<object>(Resolve<ObjectHandler>(), "abc", typeof(ObjectHandler), typeof(IMessageHandler<object>));                                    
+            return _messageHandlerFactories.GetOrAdd(interfaceType, t =>
+            {
+                var handlerParameter = Expression.Parameter(typeof(object), "handler");
+                var handlerOfExpectedType = Expression.Convert(handlerParameter, interfaceType);
+                var messageParameter = Expression.Parameter(typeof(object), "message");
+                var messageOfExpectedType = Expression.Convert(messageParameter, messageTypeOfInterface);
+                var typeParameter = Expression.Parameter(typeof(Type), "type");
+                var interfaceTypeParameter = Expression.Parameter(typeof(Type), "interfaceType");
 
-            return (MessageHandler) decoratorConstructor.Invoke(new[] { handler, message, _type, interfaceType });            
+                var decoratorTypeDefinition = typeof(MessageHandlerDecorator<>);
+                var decoratorType = decoratorTypeDefinition.MakeGenericType(messageTypeOfInterface);
+                var decoratorConstructorParameters = new[] { interfaceType, messageTypeOfInterface, typeof(Type), typeof(Type) };
+                var decoratorConstructor = decoratorType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, decoratorConstructorParameters, null);
+                var newDecoratorExpression = Expression.New(decoratorConstructor, handlerOfExpectedType, messageOfExpectedType, typeParameter, interfaceTypeParameter);                
+                var newMessageHandlerExpression = Expression.Lambda<Func<object, object, Type, Type, MessageHandler>>(
+                    Expression.Convert(newDecoratorExpression, typeof(MessageHandler)),
+                    handlerParameter,
+                    messageParameter,
+                    typeParameter,
+                    interfaceTypeParameter);
+
+                return newMessageHandlerExpression.Compile();                
+            }).Invoke(factory.Resolve(_type), message, _type, interfaceType);                                   
         }
 
         private static bool IsAcceptedSource(MessageSources sources, MessageSources source) =>
