@@ -26,21 +26,21 @@ namespace Kingo.Messaging
         /// <summary>
         /// Indicates a message originates from the <see cref="IMicroProcessorContext.OutputStream" />.
         /// </summary>
-        OutputStream = 4,
+        OutputStream = 4,        
 
         /// <summary>
-        /// Indicates a message originates from the <see cref="IMicroProcessorContext.MetadataStream" />.
+        /// Represents all sources that are defined as input sources (input-stream and query).
         /// </summary>
-        MetadataStream = 8,
+        Input = InputStream | Query,        
 
         /// <summary>
-        /// Represents all streams (input, output and metadata stream).
+        /// Represents all sources that are streams (input- and output-streams).
         /// </summary>
-        AnyStream = InputStream | OutputStream | MetadataStream,
+        AllStreams = InputStream | OutputStream,
 
         /// <summary>
         /// Represents all sources.
         /// </summary>
-        All = Query | AnyStream
+        All = Query | AllStreams
     }
 }

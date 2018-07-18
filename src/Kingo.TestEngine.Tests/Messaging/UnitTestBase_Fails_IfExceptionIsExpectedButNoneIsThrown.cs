@@ -9,10 +9,8 @@ namespace Kingo.Messaging
         protected override object WhenMessageIsHandled() =>
             new object();
 
-        protected override IMessageHandler<object> CreateMessageHandler()
-        {
-            return MessageHandler<object>.FromDelegate((message, context) => { });
-        }
+        protected override IMessageHandler<object> CreateMessageHandler() =>
+            MessageHandlerDecorator<object>.Decorate((message, context) => { });
 
         [TestMethod]
         [ExpectedException(typeof(MetaAssertFailedException))]

@@ -16,12 +16,11 @@ namespace Kingo.Messaging
         #region [====== NullContext ======]
 
         private sealed class NullContext : IMicroProcessorContext
-        {
-            private readonly IEventStream _nullStream = new NullStream();
-
+        {            
             public NullContext()
             {
-                StackTrace = new EmpyStackTrace();                                               
+                StackTrace = new EmpyStackTrace();   
+                OutputStream = new NullStream();
             }
 
             public IPrincipal Principal =>
@@ -38,11 +37,10 @@ namespace Kingo.Messaging
             public IUnitOfWorkController UnitOfWork =>
                 UnitOfWorkController.None;
 
-            public IEventStream OutputStream =>
-                _nullStream;
-
-            public IEventStream MetadataStream =>
-                _nullStream;
+            public IEventStream OutputStream
+            {
+                get;
+            }
 
             public CancellationToken Token =>
                 CancellationToken.None;                        
@@ -53,6 +51,9 @@ namespace Kingo.Messaging
 
         private sealed class EmpyStackTrace : EmptyList<MessageInfo>, IMessageStackTrace
         {
+            public MessageSources CurrentSource =>
+                MessageSources.None;
+
             MessageInfo IMessageStackTrace.Current =>
                 null;
 
@@ -68,10 +69,8 @@ namespace Kingo.Messaging
             public override IEnumerator<object> GetEnumerator() =>
                 Enumerable.Empty<object>().GetEnumerator();
 
-            public void Publish<TEvent>(TEvent message)
-            {                
+            public void Publish<TEvent>(TEvent message) =>
                 throw NewPublishNotSupportedException(typeof(TEvent));
-            }            
 
             private static Exception NewPublishNotSupportedException(Type messageType)
             {
@@ -83,20 +82,15 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== IMicroProcessorContext ======]
-        
-        private readonly MessageStackTrace _stackTrace;        
-        private readonly UnitOfWorkController _unitOfWorkController;        
-        private readonly CancellationToken _token;                
+        #region [====== IMicroProcessorContext ======]                              
 
-        internal MicroProcessorContext(IPrincipal principal, CancellationToken? token, MessageStackTrace stackTrace = null)
+        internal MicroProcessorContext(IPrincipal principal, CancellationToken? token, MessageStackTrace stackTrace)
         {
             Principal = principal;
             ClaimsProvider = new ClaimsProvider(principal);
-
-            _stackTrace = stackTrace ?? new MessageStackTrace();
-            _unitOfWorkController = new UnitOfWorkController();            
-            _token = token ?? CancellationToken.None;
+            StackTraceCore = stackTrace;
+            UnitOfWorkCore = new UnitOfWorkController();            
+            Token = token ?? CancellationToken.None;
         }
 
         /// <inheritdoc />
@@ -111,48 +105,50 @@ namespace Kingo.Messaging
             get;
         }
 
-        internal MessageHandlerContext CreateMetadataContext() =>
-            new MessageHandlerContext(Principal, _token, _stackTrace.Copy());
-
-        IMessageStackTrace IMicroProcessorContext.StackTrace =>
-            _stackTrace;
-
-        internal MessageStackTrace Messages =>
-            _stackTrace;
-
-        IUnitOfWorkController IMicroProcessorContext.UnitOfWork =>
-            _unitOfWorkController;
-
-        internal UnitOfWorkController UnitOfWork =>
-            _unitOfWorkController;        
-
         /// <inheritdoc />
-        public abstract IEventStream OutputStream
+        public IMessageStackTrace StackTrace =>
+            StackTraceCore;
+
+        internal MessageStackTrace StackTraceCore
         {
             get;
         }
 
         /// <inheritdoc />
-        public abstract IEventStream MetadataStream
+        public IUnitOfWorkController UnitOfWork =>
+            UnitOfWorkCore;
+
+        internal UnitOfWorkController UnitOfWorkCore
         {
             get;
-        }        
+        }
 
         /// <inheritdoc />
-        public CancellationToken Token =>
-            _token;        
+        public IEventStream OutputStream =>
+            OutputStreamCore;
+        
+        internal abstract EventStream OutputStreamCore
+        {
+            get;
+        }
+
+        /// <inheritdoc />
+        public CancellationToken Token
+        {
+            get;
+        }
 
         /// <inheritdoc />
         protected override void DisposeManagedResources()
         {            
-            _unitOfWorkController.Dispose();
+            UnitOfWorkCore.Dispose();
 
             base.DisposeManagedResources();
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            _stackTrace.ToString();        
+            StackTraceCore.ToString();        
 
         #endregion               
 

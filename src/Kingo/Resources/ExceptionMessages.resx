@@ -162,12 +162,6 @@
   <data name="DateTimeSpan_TimeSpanZeroNotAllowed" xml:space="preserve">
     <value>'{0}' is not allowed to be zero.</value>
   </data>
-  <data name="DomainModelException_CommandFailed" xml:space="preserve">
-    <value>Command '{0}' failed.</value>
-  </data>
-  <data name="DomainModelException_EventFailed" xml:space="preserve">
-    <value>An error occurred while processing event '{0}'.</value>
-  </data>
   <data name="ErrorLevel_InvalidErrorLevel" xml:space="preserve">
     <value>ErrorLevel must be 0 or higher: {0}.</value>
   </data>
@@ -180,15 +174,6 @@
   <data name="ExpressionExtensions_UnsupportedExpression" xml:space="preserve">
     <value>Specified expression is not supported: '{0}'.</value>
   </data>
-  <data name="HandleInputStreamAsyncMethod_CommandHandlerException" xml:space="preserve">
-    <value>An error occurred while processing command of type '{0}'. See inner exception for details.</value>
-  </data>
-  <data name="HandleInputStreamAsyncMethod_InvalidUnitOfWorkScopeOption" xml:space="preserve">
-    <value>Invalid {0} specified: '{1}'.</value>
-  </data>
-  <data name="HandleStreamAsyncMethod_EventHandlerException" xml:space="preserve">
-    <value>An error occurred while processing event of type '{0}'. See inner exception for details.</value>
-  </data>
   <data name="Identifier_EmptyIdentifier" xml:space="preserve">
     <value>Cannot create an empty identifier.</value>
   </data>
@@ -197,9 +182,6 @@
   </data>
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
     <value>An error occurred while processing a message. See inner exception for details.</value>
-  </data>
-  <data name="MessageHandlerContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
-    <value>Cannot publish messages to the output stream while handling a metadata message.</value>
   </data>
   <data name="MessageHandlerFactoryStub_CannotResolveMessageHandler" xml:space="preserve">
     <value>Cannot create instance of type '{0}' because no MessageHandlerFactory has been defined for this processor. Please override method '{1}.{2}' to create and return a custom {3}.</value>
@@ -242,6 +224,9 @@
   </data>
   <data name="QueryContext_NullOutputStream_PublishNotAllowed" xml:space="preserve">
     <value>Cannot publish messages to the output stream while executing a query.</value>
+  </data>
+  <data name="Query_InvalidResult" xml:space="preserve">
+    <value>The specified result ({0}) could not be converted to an instance of type '{1}'.</value>
   </data>
   <data name="ReadOnlyList_IndexOutOfRange" xml:space="preserve">
     <value>There is no element at index '{0}' (Count = {1}).</value>

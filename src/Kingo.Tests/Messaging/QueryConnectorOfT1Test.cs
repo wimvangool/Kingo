@@ -14,11 +14,10 @@ namespace Kingo.Messaging
             var query = new QuerySpy<object>();
             var connector = CreateConnector(query, new MicroProcessorFilterSpy());
 
-            var result = await connector.ExecuteAsync(MicroProcessorContext.None);
+            var result = await connector.InvokeAsync(CreateProcessorContext());
 
             Assert.IsNotNull(result);
-            Assert.IsNull(result.Message);
-            Assert.AreEqual(0, result.MetadataStream.Count);
+            Assert.IsNull(result.Value);            
 
             query.AssertExecuteCountIs(1);
         }
@@ -30,11 +29,10 @@ namespace Kingo.Messaging
             var connectorA = CreateConnector(query, new MicroProcessorFilterSpy());
             var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
-            var result = await connectorB.ExecuteAsync(MicroProcessorContext.None);
+            var result = await connectorB.InvokeAsync(CreateProcessorContext());
 
             Assert.IsNotNull(result);
-            Assert.IsNull(result.Message);
-            Assert.AreEqual(0, result.MetadataStream.Count);
+            Assert.IsNull(result.Value);            
 
             query.AssertExecuteCountIs(1);
         }
@@ -61,10 +59,13 @@ namespace Kingo.Messaging
         private static IPrincipal Principal =>
             Thread.CurrentPrincipal;
 
-        private static QueryPipelineConnector<TMessageOut> CreateConnector<TMessageOut>(IQuery<TMessageOut> query, IMicroProcessorFilter filter) =>
-            CreateConnector(new QueryDecorator<TMessageOut>(new QueryContext(Principal), query), filter);
+        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(IQuery<TMessageOut> query, IMicroProcessorFilter filter) =>
+            CreateConnector(new QueryDecorator<TMessageOut>(query), filter);
 
-        private static QueryPipelineConnector<TMessageOut> CreateConnector<TMessageOut>(Query<TMessageOut> query, IMicroProcessorFilter filter) =>
-            new QueryPipelineConnector<TMessageOut>(query, filter);
+        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(Query<TMessageOut> query, IMicroProcessorFilter filter) =>
+            new QueryConnector<TMessageOut>(query, filter);
+
+        private static MicroProcessorContext CreateProcessorContext() =>
+            new QueryContext(Principal);
     }
 }

@@ -31,17 +31,17 @@ namespace Kingo.Messaging
             get;
         }
 
-        protected override async Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore()
+        protected override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryCore()
         {
-            Context.Messages.Push(MessageInfo.FromQuery(_message));
+            Context.StackTraceCore.Push(MessageInfo.FromQuery(_message));
 
             try
             {
-                return await Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(Context, _query)).ExecuteAsync(_message, Context);
+                return await Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(_query, _message)).InvokeAsync(Context);
             }
             finally
             {
-                Context.Messages.Pop();
+                Context.StackTraceCore.Pop();
             }
         }            
 

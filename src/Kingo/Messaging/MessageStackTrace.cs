@@ -7,27 +7,26 @@ namespace Kingo.Messaging
 {
     internal sealed class MessageStackTrace : IMessageStackTrace
     {
-        private ImmutableStack<MessageInfo> _messages;
+        private readonly MessageSources _defaultSource;
+        private readonly Stack<MessageInfo> _messages;
 
-        public MessageStackTrace() :
-            this(ImmutableStack<MessageInfo>.Empty) { }
-
-        private MessageStackTrace(ImmutableStack<MessageInfo> messages)
+        public MessageStackTrace(MessageSources defaultSource)
         {
-            _messages = messages;
+            _defaultSource = defaultSource;
+            _messages = new Stack<MessageInfo>();    
         }
 
-        public MessageStackTrace Copy() =>
-            new MessageStackTrace(_messages);
+        public MessageSources CurrentSource =>
+            Current?.Source ?? _defaultSource;
 
         public MessageInfo Current =>
-            _messages.IsEmpty ? null : _messages.Peek();
+            IsEmpty ? null : _messages.Peek();
 
         public bool IsEmpty =>
-            _messages.IsEmpty;
+            _messages.Count == 0;
 
         public int Count =>
-            _messages.Count();
+            _messages.Count;
 
         public MessageInfo this[int index] =>
             _messages.ElementAt(index);
@@ -39,10 +38,10 @@ namespace Kingo.Messaging
             GetEnumerator();        
 
         public void Push(MessageInfo message) =>
-            _messages = _messages.Push(message);
+            _messages.Push(message);
 
         public void Pop() =>
-            _messages = _messages.Pop();
+            _messages.Pop();
 
         public override string ToString() =>
             string.Join(" -> ", _messages.Reverse());

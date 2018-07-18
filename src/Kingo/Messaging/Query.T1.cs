@@ -1,70 +1,55 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Resources;
 using Kingo.Threading;
 
 namespace Kingo.Messaging
 {
     /// <summary>
-    /// Represents a <see cref="IQuery{T}" /> instance that is able to provide access to its own attributes.
+    /// Represents a query as part of the <see cref="MicroProcessor" />'s pipeline.
     /// </summary>
     /// <typeparam name="TMessageOut">Type of the response that is returned by this query.</typeparam>
-    public abstract class Query<TMessageOut> : MessageHandlerOrQuery, IQuery<TMessageOut>
-    {        
-        internal Query(ITypeAttributeProvider typeAttributeProvider, IMethodAttributeProvider methodAttributeProvider) :
-            base(typeAttributeProvider, methodAttributeProvider) { }
-
-        async Task<TMessageOut> IQuery<TMessageOut>.ExecuteAsync(IMicroProcessorContext context) =>
-            (await ExecuteAsync(context)).Message;
-
-        /// <inheritdoc />
-        public abstract Task<ExecuteAsyncResult<TMessageOut>> ExecuteAsync(IMicroProcessorContext context);
-
-        #region [====== Delegate wrapping ======]
-
-        private sealed class QueryDelegate<T> : IQuery<T>
+    public abstract class Query<TMessageOut> : MessageHandlerOrQuery<TMessageOut>
+    {
+        /// <summary>
+        /// Creates and returns a result that can be returned by the pipeline without invoking the actual query.
+        /// This method is typically used to return cached values.
+        /// </summary>        
+        /// <param name="result">Message that represents the cached result.</param>
+        /// <returns>A result that can be returned from the query pipeline.</returns> 
+        /// <exception cref="ArgumentException">
+        /// <paramref name="result"/> could not be cast to <typeparamref name="TMessageOut"/>.
+        /// </exception>
+        public InvokeAsyncResult<TMessageOut> Yield(object result)
         {
-            private readonly Func<IMicroProcessorContext, Task<T>> _query;
-
-            public QueryDelegate(Func<IMicroProcessorContext, Task<T>> query)
+            try
             {
-                _query = query;
+                return Yield((TMessageOut) result);
             }
-
-            public Task<T> ExecuteAsync(IMicroProcessorContext context) =>
-             _query.Invoke(context);
+            catch (NullReferenceException)
+            {
+                throw NewInvalidResultException(result);
+            }
+            catch (InvalidCastException)
+            {
+                throw NewInvalidResultException(result);
+            }
         }
 
         /// <summary>
-        /// Wraps the specified delegate into a <see cref="IQuery{T}" /> instance.
-        /// </summary>
-        /// <param name="query">The delegate to wrap.</param>
-        /// <returns>
-        /// <c>null</c> if <paramref name="query"/> is <c>null</c>; otherwise, a <see cref="IQuery{T}"/> instance
-        /// that wraps the specified <paramref name="query"/>.
-        /// </returns>
-        public static IQuery<TMessageOut> FromDelegate(Func<IMicroProcessorContext, TMessageOut> query)
+        /// Creates and returns a result that can be returned by the pipeline without invoking the actual query.
+        /// This method is typically used to return cached values.
+        /// </summary>        
+        /// <param name="result">Message that represents the cached result.</param>
+        /// <returns>A result that can be returned from the query pipeline.</returns>        
+        public InvokeAsyncResult<TMessageOut> Yield(TMessageOut result = default(TMessageOut)) =>
+            new ExecuteAsyncResult<TMessageOut>(result);
+
+        private static Exception NewInvalidResultException(object result)
         {
-            if (query == null)
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
-            return FromDelegate(context =>
-            {
-                return AsyncMethod.RunSynchronously(() => query.Invoke(context));
-            });
+            var messageFormat = ExceptionMessages.Query_InvalidResult;
+            var message = string.Format(messageFormat, result, typeof(TMessageOut).FriendlyName());
+            return new ArgumentException(message, nameof(result));
         }
-
-        /// <summary>
-        /// Wraps the specified delegate into a <see cref="IQuery{T}" /> instance.
-        /// </summary>
-        /// <param name="query">The delegate to wrap.</param>
-        /// <returns>
-        /// <c>null</c> if <paramref name="query"/> is <c>null</c>; otherwise, a <see cref="IQuery{T}"/> instance
-        /// that wraps the specified <paramref name="query"/>.
-        /// </returns>
-        public static IQuery<TMessageOut> FromDelegate(Func<IMicroProcessorContext, Task<TMessageOut>> query) =>
-             query == null ? null : new QueryDelegate<TMessageOut>(query);
-
-        #endregion
     }
 }

@@ -15,27 +15,7 @@ namespace Kingo.Messaging
         public void Setup()
         {
             _processor = new MicroProcessorSpy();
-        }
-
-        #region [====== Run Tests ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Run_Throws_IfCommandIsNull()
-        {
-            _processor.Run(null);
-        }
-
-        [TestMethod]
-        public void Run_RunsCommandInExpectedContext_IfCommandIsNotNull()
-        {
-            Assert.AreEqual(0, _processor.Run(context =>
-            {
-                Assert.AreEqual($"RunCommand [Name = {nameof(Run_RunsCommandInExpectedContext_IfCommandIsNotNull)}] (InputStream)", context.StackTrace.ToString());
-            }).Count);
-        }
-
-        #endregion
+        }        
 
         #region [====== Commands & Events (Input/Output Tests) ======]
 
@@ -215,24 +195,7 @@ namespace Kingo.Messaging
 
             public Task HandleAsync(EventB message, IMicroProcessorContext context) =>
                 _implementation.HandleAsync(message, context, GetType());
-        }
-
-        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.MetadataStream)]
-        private sealed class MetadataEventHandlerAB : IMessageHandler<EventA>, IMessageHandler<EventB>
-        {
-            private readonly IMessageHandlerImplementation _implementation;
-
-            public MetadataEventHandlerAB(IMessageHandlerImplementation implementation)
-            {
-                _implementation = implementation;
-            }
-
-            public Task HandleAsync(EventA message, IMicroProcessorContext context) =>
-                _implementation.HandleAsync(message, context, GetType());
-
-            public Task HandleAsync(EventB message, IMicroProcessorContext context) =>
-                _implementation.HandleAsync(message, context, GetType());
-        }
+        }        
 
         [TestMethod]
         public async Task HandleAsyncStream_WillInvokeHandlers_IfAllHandlersAreRegistered_And_StreamContainsOneCommand()
@@ -356,104 +319,7 @@ namespace Kingo.Messaging
             _processor.Register<ExternalMessageHandler>();
 
             AssertStream(await _processor.HandleAsync(someCommand), eventA);
-        }
-
-        [TestMethod]
-        public async Task HandleStreamAsync_WillInvokeRegisteredMetadataMessageHandler_IfFirstHandlerPublishesMetadataMessages()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();
-            var unitOfWork = new UnitOfWorkSpy(false);
-
-            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
-            {
-                AssertMessageStack(context.StackTrace, message, someCommand);
-
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-                context.MetadataStream.Publish(eventA);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                AssertMessageStack(context.StackTrace, message, someCommand, eventA);
-
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-            });
-
-            AssertIsEmpty(await _processor.HandleAsync(someCommand));
-
-            unitOfWork.AssertRequiresFlushCountIs(2);
-            unitOfWork.AssertFlushCountIs(0);
-        }
-
-        [TestMethod]
-        public async Task HandleStreamAsync_WillInvokeRegisteredMetadataMessageHandler_IfMetadataHandlerPublishesMetadataMessagesItself()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();
-            var eventB = new EventB();
-            var unitOfWork = new UnitOfWorkSpy(false);
-
-            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
-            {
-                AssertMessageStack(context.StackTrace, message, someCommand);
-
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-                context.MetadataStream.Publish(eventA);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                AssertMessageStack(context.StackTrace, message, someCommand, eventA);
-
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-                context.MetadataStream.Publish(eventB);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventB>(async (message, context) =>
-            {
-                AssertMessageStack(context.StackTrace, message, someCommand, eventA, eventB);
-
-                await context.UnitOfWork.EnlistAsync(unitOfWork);                
-            });
-
-            AssertIsEmpty(await _processor.HandleAsync(someCommand));
-
-            unitOfWork.AssertRequiresFlushCountIs(2);
-            unitOfWork.AssertFlushCountIs(0);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public void HandleStreamAsync_Throws_IfMetadataHandlerAttemptsToPublishOutputMessage()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();            
-
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
-            {
-                AssertMessageStack(context.StackTrace, message, someCommand);
-                
-                context.MetadataStream.Publish(eventA);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-            {
-                AssertMessageStack(context.StackTrace, message, someCommand, eventA);
-                
-                context.OutputStream.Publish(new object());
-            });
-
-            try
-            {
-                _processor.Handle(someCommand);
-            }
-            catch (InternalServerErrorException exception)
-            {
-                Assert.IsInstanceOfType(exception.InnerException, typeof(InvalidOperationException));
-                throw;
-            }            
-        }
+        }                       
 
         #endregion
 
@@ -760,99 +626,14 @@ namespace Kingo.Messaging
                 unitOfWork.AssertRequiresFlushCountIs(0);
                 unitOfWork.AssertFlushCountIs(0);
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task HandleStreamAsync_ThrowsInternalServerErrorException_IfMetadataHandlerThrowsInternalProcessorException()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();
-            var internalException = new SomeInternalProcessorException();
-            var unitOfWorkA = new UnitOfWorkSpy(true);
-            var unitOfWorkB = new UnitOfWorkSpy(true);
-
-            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWorkA);
-
-                context.MetadataStream.Publish(eventA);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWorkB);
-
-                throw internalException;
-            });
-
-            try
-            {
-                await _processor.HandleAsync(someCommand);
-            }
-            catch (InternalServerErrorException exception)
-            {                
-                Assert.AreSame(internalException, exception.InnerException);
-                throw;
-            }
-            finally
-            {
-                unitOfWorkA.AssertRequiresFlushCountIs(0);
-                unitOfWorkA.AssertFlushCountIs(0);
-
-                unitOfWorkB.AssertRequiresFlushCountIs(0);
-                unitOfWorkB.AssertFlushCountIs(0);
-            }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task HandleStreamAsync_ThrowsInternalServerErrorException_IfMetadataHandlerThrowsRandomException()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();
-            var randomException = new Exception();
-            var unitOfWorkA = new UnitOfWorkSpy(true);
-            var unitOfWorkB = new UnitOfWorkSpy(true);
-
-            _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWorkA);
-                context.MetadataStream.Publish(eventA);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWorkB);
-
-                throw randomException;
-            });
-
-            try
-            {
-                await _processor.HandleAsync(someCommand);
-            }
-            catch (InternalServerErrorException exception)
-            {                
-                Assert.AreSame(randomException, exception.InnerException);
-                throw;
-            }
-            finally
-            {
-                unitOfWorkA.AssertRequiresFlushCountIs(0);
-                unitOfWorkA.AssertFlushCountIs(0);
-
-                unitOfWorkB.AssertRequiresFlushCountIs(0);
-                unitOfWorkB.AssertFlushCountIs(0);
-            }
-        }
+        }               
 
         [TestMethod]
         [ExpectedException(typeof(ConflictException))]
         public async Task HandleStreamAsync_ThrowsConflictException_IfMessageIsCommand_And_UnitOfWorkThrowsConcurrencyException()
         {
             var someCommand = new SomeCommand();
-            var concurrencyException = new ConcurrencyException();
+            var concurrencyException = new Domain.ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
             _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
@@ -910,7 +691,7 @@ namespace Kingo.Messaging
         public async Task HandleStreamAsync_ThrowsInternalServerErrorException_IfMessageIsEvent_And_UnitOfWorkThrowsConcurrencyException()
         {
             var eventA = new EventA();
-            var concurrencyException = new ConcurrencyException();
+            var concurrencyException = new Domain.ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
             _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
@@ -932,42 +713,7 @@ namespace Kingo.Messaging
                 unitOfWork.AssertRequiresFlushCountIs(1);
                 unitOfWork.AssertFlushCountIs(1);
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task HandleStreamAsync_ThrowsInternalServerErrorException_IfMessageIsMetadataEvent_And_UnitOfWorkThrowsConcurrencyException()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();
-            var concurrencyException = new ConcurrencyException();
-            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
-
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
-            {
-                context.MetadataStream.Publish(eventA);
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-            });
-
-            try
-            {
-                await _processor.HandleAsync(someCommand);
-            }
-            catch (InternalServerErrorException exception)
-            {
-                Assert.AreSame(concurrencyException, exception.InnerException);
-                throw;
-            }
-            finally
-            {
-                unitOfWork.AssertRequiresFlushCountIs(1);
-                unitOfWork.AssertFlushCountIs(1);
-            }
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(TaskCanceledException))]
@@ -1093,76 +839,7 @@ namespace Kingo.Messaging
                     throw;
                 }
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TaskCanceledException))]
-        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_TokenSource()
-        {
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                var someCommand = new SomeCommand();
-                var eventA = new EventA();
-
-                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                });
-
-                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-                {
-                    tokenSource.Cancel();
-                });
-
-                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
-
-                try
-                {
-                    await handleTask;
-                }
-                catch (TaskCanceledException exception)
-                {
-                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
-                    Assert.IsTrue(handleTask.IsCanceled);
-                    throw;
-                }
-            }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(TaskCanceledException))]
-        public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_Token()
-        {
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                var someCommand = new SomeCommand();
-                var eventA = new EventA();
-
-                _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                });
-
-                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-                {
-                    tokenSource.Cancel();
-                    context.Token.ThrowIfCancellationRequested();
-                });
-
-                var handleTask = _processor.HandleAsync(someCommand, tokenSource.Token);
-
-                try
-                {
-                    await handleTask;
-                }
-                catch (TaskCanceledException exception)
-                {
-                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
-                    Assert.IsTrue(handleTask.IsCanceled);
-                    throw;
-                }
-            }
-        }        
+        }                     
 
         #endregion
 
@@ -1189,7 +866,7 @@ namespace Kingo.Messaging
 
             Assert.AreSame(await _processor.ExecuteAsync(context =>
             {
-                Assert.AreEqual(MessageSources.Query, context.StackTrace.Current.Source);
+                Assert.AreEqual(MessageSources.Query, context.StackTrace.CurrentSource);
                 Assert.AreEqual(1, context.StackTrace.Count);
                 return messageOut;
             }), messageOut);
@@ -1209,29 +886,7 @@ namespace Kingo.Messaging
 
             unitOfWork.AssertRequiresFlushCountIs(1);
             unitOfWork.AssertFlushCountIs(1);
-        }
-
-        [TestMethod]
-        public async Task ExecuteAsync_1_ReturnsResultOfQuery_IfUnitOfWorkIsEnlistedInsideMetadataContext()
-        {
-            var unitOfWork = new UnitOfWorkSpy(true);
-            var eventA = new EventA();
-            var messageOut = new object();
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {                
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-            });
-
-            Assert.AreSame(await _processor.ExecuteAsync(context =>
-            {
-                context.MetadataStream.Publish(eventA);
-                return messageOut;
-            }), messageOut);
-
-            unitOfWork.AssertRequiresFlushCountIs(1);
-            unitOfWork.AssertFlushCountIs(1);
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(BadRequestException))]
@@ -1276,7 +931,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(InternalServerErrorException))]
         public async Task ExecuteAsync_1_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsConcurrencyException()
         {
-            var concurrencyException = new ConcurrencyException();
+            var concurrencyException = new Domain.ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
             try
@@ -1324,40 +979,7 @@ namespace Kingo.Messaging
                 unitOfWork.AssertRequiresFlushCountIs(1);
                 unitOfWork.AssertFlushCountIs(1);
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_1_ThrowsInternalServerErrorException_IfMetadataEventIsPublished_And_UnitOfWorkThrowsConcurrencyException()
-        {
-            var eventA = new EventA();
-            var concurrencyException = new ConcurrencyException();
-            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-            });
-
-            try
-            {
-                await _processor.ExecuteAsync(context =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                    return new object();
-                });
-            }
-            catch (InternalServerErrorException exception)
-            {                
-                Assert.AreSame(concurrencyException, exception.InnerException);
-                throw;
-            }
-            finally
-            {
-                unitOfWork.AssertRequiresFlushCountIs(1);
-                unitOfWork.AssertFlushCountIs(1);
-            }
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(OperationCanceledException))]
@@ -1408,72 +1030,7 @@ namespace Kingo.Messaging
                     throw;
                 }
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
-        public async Task ExecuteAsync_1_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_TokenSource()
-        {
-            using (var tokenSource = new CancellationTokenSource())
-            {                
-                var eventA = new EventA();                
-
-                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-                {
-                    tokenSource.Cancel();
-                });
-
-                var handleTask = _processor.ExecuteAsync(context =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                    return new object();
-                }, tokenSource.Token);
-
-                try
-                {
-                    await handleTask;
-                }
-                catch (OperationCanceledException exception)
-                {
-                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
-                    Assert.IsTrue(handleTask.IsCanceled);
-                    throw;
-                }
-            }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
-        public async Task ExecuteAsync_1_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_Token()
-        {
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                var eventA = new EventA();
-
-                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-                {
-                    tokenSource.Cancel();
-                    context.Token.ThrowIfCancellationRequested();
-                });
-
-                var handleTask = _processor.ExecuteAsync(context =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                    return new object();
-                }, tokenSource.Token);
-
-                try
-                {
-                    await handleTask;
-                }
-                catch (OperationCanceledException exception)
-                {
-                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
-                    Assert.IsTrue(handleTask.IsCanceled);
-                    throw;
-                }
-            }
-        }
+        }                
 
         #endregion
 
@@ -1534,29 +1091,7 @@ namespace Kingo.Messaging
 
             unitOfWork.AssertRequiresFlushCountIs(1);
             unitOfWork.AssertFlushCountIs(1);
-        }
-
-        [TestMethod]
-        public async Task ExecuteAsync_2_ReturnsResultOfQuery_IfUnitOfWorkIsEnlistedInsideMetadataContext()
-        {
-            var unitOfWork = new UnitOfWorkSpy(true);
-            var eventA = new EventA();
-            var messageOut = new object();
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-            });
-
-            Assert.AreSame(await _processor.ExecuteAsync(new object(), (message, context) =>
-            {
-                context.MetadataStream.Publish(eventA);
-                return messageOut;
-            }), messageOut);
-
-            unitOfWork.AssertRequiresFlushCountIs(1);
-            unitOfWork.AssertFlushCountIs(1);
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(BadRequestException))]
@@ -1607,7 +1142,7 @@ namespace Kingo.Messaging
         public async Task ExecuteAsync_2_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsConcurrencyException()
         {
             var messageIn = new object();
-            var concurrencyException = new ConcurrencyException();
+            var concurrencyException = new Domain.ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
             try
@@ -1656,41 +1191,7 @@ namespace Kingo.Messaging
                 unitOfWork.AssertRequiresFlushCountIs(1);
                 unitOfWork.AssertFlushCountIs(1);
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_2_ThrowsInternalServerErrorException_IfMetadataEventIsPublished_And_UnitOfWorkThrowsConcurrencyException()
-        {
-            var messageIn = new object();
-            var eventA = new EventA();
-            var concurrencyException = new ConcurrencyException();
-            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
-
-            _processor.Implement<MetadataEventHandlerAB>().AsAsync<EventA>(async (message, context) =>
-            {
-                await context.UnitOfWork.EnlistAsync(unitOfWork);
-            });
-
-            try
-            {
-                await _processor.ExecuteAsync(messageIn, (message, context) =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                    return new object();
-                });
-            }
-            catch (InternalServerErrorException exception)
-            {                
-                Assert.AreSame(concurrencyException, exception.InnerException);
-                throw;
-            }
-            finally
-            {
-                unitOfWork.AssertRequiresFlushCountIs(1);
-                unitOfWork.AssertFlushCountIs(1);
-            }
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(OperationCanceledException))]
@@ -1743,143 +1244,9 @@ namespace Kingo.Messaging
                     throw;
                 }
             }
-        }
+        }                
 
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
-        public async Task ExecuteAsync_2_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_TokenSource()
-        {
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                var messageIn = new object();
-                var eventA = new EventA();
-
-                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-                {
-                    tokenSource.Cancel();
-                });
-
-                var handleTask = _processor.ExecuteAsync(messageIn, (message, context) =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                    return new object();
-                }, tokenSource.Token);
-
-                try
-                {
-                    await handleTask;
-                }
-                catch (OperationCanceledException exception)
-                {
-                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
-                    Assert.IsTrue(handleTask.IsCanceled);
-                    throw;
-                }
-            }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
-        public async Task ExecuteAsync_2_ThrowsOperationCanceledException_IfOperationIsCanceledInsideMetadataHandler_Through_Token()
-        {
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                var messageIn = new object();
-                var eventA = new EventA();
-
-                _processor.Implement<MetadataEventHandlerAB>().As<EventA>((message, context) =>
-                {
-                    tokenSource.Cancel();
-                    context.Token.ThrowIfCancellationRequested();
-                });
-
-                var handleTask = _processor.ExecuteAsync(messageIn, (message, context) =>
-                {
-                    context.MetadataStream.Publish(eventA);
-                    return new object();
-                }, tokenSource.Token);
-
-                try
-                {
-                    await handleTask;
-                }
-                catch (OperationCanceledException exception)
-                {
-                    Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
-                    Assert.IsTrue(handleTask.IsCanceled);
-                    throw;
-                }
-            }
-        }
-
-        #endregion
-
-        #region [====== Metadata in the face of Exceptions ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(UnprocessableEntityException))]
-        public async Task HandleAsync_StillHandlesMetadataStream_IfCommandHandlerThrowsException()
-        {
-            var someCommand = new SomeCommand();
-            var eventA = new EventA();
-            var remainingPublishCount = 3;
-
-            _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
-            {
-                context.MetadataStream.Publish(eventA);
-
-                throw new IllegalOperationException("Test");
-            });
-
-            _processor.Implement<MetadataEventHandlerAB>(4).As<EventA>((message, context) =>
-            {
-                if (Interlocked.Decrement(ref remainingPublishCount) > 0)
-                {
-                    context.MetadataStream.Publish(message);
-                }
-            });
-
-            try
-            {
-                await _processor.HandleAsync(someCommand);
-            }
-            finally
-            {
-                Assert.AreEqual(0, remainingPublishCount);
-            }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_StillHandlesMetadataStream_IfQueryThrowsException()
-        {            
-            var eventA = new EventA();
-            var remainingPublishCount = 3;
-            Func<IMicroProcessorContext, object> query = context =>
-            {
-                context.MetadataStream.Publish(eventA);
-                throw new Exception("Test");
-            };
-
-            _processor.Implement<MetadataEventHandlerAB>(4).As<EventA>((message, context) =>
-            {
-                if (Interlocked.Decrement(ref remainingPublishCount) > 0)
-                {
-                    context.MetadataStream.Publish(message);
-                }
-            });
-
-            try
-            {
-                await _processor.ExecuteAsync(query);
-            }
-            finally
-            {
-                Assert.AreEqual(0, remainingPublishCount);
-            }
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== Pipeline ======]        
 
@@ -1894,19 +1261,19 @@ namespace Kingo.Messaging
                 _afterHandleAsync = afterHandleAsync;
             }
 
-            public override async Task<HandleAsyncResult> InvokeMessageHandlerAsync<TMessage>(MessageHandler<TMessage> handler, TMessage message, IMicroProcessorContext context)
+            public override async Task<InvokeAsyncResult<IMessageStream>> InvokeMessageHandlerAsync(MessageHandler handler, MicroProcessorContext context)
             {
-                if (context.StackTrace.Current.Source == MessageSources.InputStream)
+                if (context.StackTrace.CurrentSource == MessageSources.InputStream)
                 {
                     if (_afterHandleAsync)
                     {
-                        var result = await base.InvokeMessageHandlerAsync(handler, message, context);
+                        var result = await base.InvokeMessageHandlerAsync(handler,context);
                         context.OutputStream.Publish(_event);
                         return result;
                     }                    
                     context.OutputStream.Publish(_event);                    
                 }
-                return await base.InvokeMessageHandlerAsync(handler, message, context);
+                return await base.InvokeMessageHandlerAsync(handler, context);
             }
         }                
 

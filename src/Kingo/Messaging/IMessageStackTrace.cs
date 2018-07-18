@@ -8,7 +8,17 @@ namespace Kingo.Messaging
     public interface IMessageStackTrace : IReadOnlyList<MessageInfo>
     {
         /// <summary>
-        /// Returns the current message, or <c>null</c> if there is no current message.
+        /// Returns the source of the message that is currently on top of the stack. If <see cref="Current"/> is <c>null</c>,
+        /// this property can return <see cref="MessageSources.None"/>, <see cref="MessageSources.InputStream" /> or <see cref="MessageSources.Query"/>,
+        /// depending on whether the processor is doing nothing or is invoking a message handler or query that has no message-argument.
+        /// </summary>
+        MessageSources CurrentSource
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Returns the current message that is being handled and is on top of this stack. 
         /// </summary>
         MessageInfo Current
         {

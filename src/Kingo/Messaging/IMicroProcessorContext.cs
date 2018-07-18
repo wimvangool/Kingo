@@ -47,16 +47,7 @@ namespace Kingo.Messaging
         IEventStream OutputStream
         {
             get;
-        }
-
-        /// <summary>
-        /// Represents the stream of events that contain metadata about the application's behavior. All metadata events will be handled
-        /// on separate threads by <see cref="IMessageHandler{T}" /> classes that accept message of source <see cref="MessageSources.MetadataStream" />.
-        /// </summary>
-        IEventStream MetadataStream
-        {
-            get;
-        }
+        }        
 
         /// <summary>
         /// Returns the <see cref="CancellationToken"/> that was passed to the <see cref="IMicroProcessor" />.

@@ -11,55 +11,24 @@ namespace Kingo.Messaging
 
         private sealed class NullOutputStream : NullEventStream
         {           
-            public override void Publish<TEvent>(TEvent message)
-            {
+            public override void Publish<TEvent>(TEvent message) =>
                 throw NewPublishNotAllowedException();
-            }
 
             private static Exception NewPublishNotAllowedException() =>
                 new InvalidOperationException(ExceptionMessages.QueryContext_NullOutputStream_PublishNotAllowed);
         }
 
-        #endregion
-
-        #region [====== ExecuteAsyncResultImplementation ======]
-
-        private sealed class ExecuteAsyncResultImplementation<TMessageOut> : ExecuteAsyncResult<TMessageOut>
-        {
-            private readonly QueryContext _context; 
-
-            public ExecuteAsyncResultImplementation(TMessageOut message, IMessageStream metadataStream, QueryContext context) :
-                base(message, metadataStream)
-            {
-                _context = context;
-            }
-
-            internal override void Commit()
-            {
-                _context._outputStream = new NullOutputStream();
-                _context._metadataStream = new EventStreamImplementation();
-            }
-        }
-
-        #endregion
-
-        private EventStream _outputStream;
-        private EventStream _metadataStream;
+        #endregion                
 
         public QueryContext(IPrincipal principal, CancellationToken? token = null) :
-            base(principal, token)
+            base(principal, token, new MessageStackTrace(MessageSources.Query))
         {           
-            _outputStream = new NullOutputStream();
-            _metadataStream = new EventStreamImplementation();
+            OutputStreamCore = new NullOutputStream();            
         }        
 
-        public override IEventStream OutputStream =>
-            _outputStream;
-
-        public override IEventStream MetadataStream =>
-            _metadataStream;       
-
-        public ExecuteAsyncResult<TMessageOut> CreateExecuteAsyncResult<TMessageOut>(TMessageOut message) =>
-            new ExecuteAsyncResultImplementation<TMessageOut>(message, _metadataStream, this);               
+        internal override EventStream OutputStreamCore
+        {
+            get;
+        }       
     }
 }

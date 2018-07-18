@@ -38,44 +38,19 @@ namespace Kingo.Messaging
         {            
             using (var scope = MicroProcessorContext.CreateScope(Context))
             {
-                var messageOut = await InvokeQueryAndHandleMetadataEvents();
+                var messageOut = await InvokeQuery();
                 await scope.CompleteAsync();
                 return messageOut;
             }            
-        }
+        }             
 
-        private async Task<TMessageOut> InvokeQueryAndHandleMetadataEvents()
-        {
-            var result = Context.CreateExecuteAsyncResult(default(TMessageOut));
-
-            try
-            {
-                result = await InvokeQuery();
-                result.Commit();
-            }
-            catch
-            {
-                result = Context.CreateExecuteAsyncResult(default(TMessageOut));
-                result.Commit();
-                throw;
-            }
-            finally
-            {
-                if (result.MetadataStream.Count > 0)
-                {
-                    await HandleMetadataStreamAsyncMethod.Invoke(Processor, Context, result.MetadataStream);
-                }
-            }            
-            return result.Message;
-        }
-
-        private async Task<ExecuteAsyncResult<TMessageOut>> InvokeQuery()
+        private async Task<TMessageOut> InvokeQuery()
         {
             Context.Token.ThrowIfCancellationRequested();
 
             try
             {
-                return await InvokeQueryCore();
+                return (await InvokeQueryCore()).Value;
             }
             catch (InternalProcessorException exception)
             {
@@ -87,7 +62,7 @@ namespace Kingo.Messaging
             }
         }
 
-        protected abstract Task<ExecuteAsyncResult<TMessageOut>> InvokeQueryCore();
+        protected abstract Task<InvokeAsyncResult<TMessageOut>> InvokeQueryCore();
 
         protected abstract BadRequestException NewBadRequestException(InternalProcessorException exception, string message);
 

@@ -125,18 +125,18 @@ namespace Kingo.Messaging
         IEnumerator IEnumerable.GetEnumerator() =>
             GetEnumerator();
 
-        #region [====== MessageHandler<TMessage> ======]
+        #region [====== MessageHandler ======]
 
-        internal MessageHandler<TMessage> Build<TMessage>(MessageHandler<TMessage> handler) =>
+        internal MessageHandler Build(MessageHandler handler) =>
             Build(handler, AddNextLevelFilters(handler));
 
-        private static MessageHandler<TMessage> Build<TMessage>(MessageHandler<TMessage> handler, IEnumerable<MicroProcessorFilterAttribute> filters)
+        private static MessageHandler Build(MessageHandler handler, IEnumerable<MicroProcessorFilterAttribute> filters)
         {
             var pipeline = handler;
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new MessageHandlerPipelineConnector<TMessage>(pipeline, filter.BuildFilterPipeline());
+                pipeline = new MessageHandlerConnector(pipeline, filter);
             }
             return pipeline;
         }
@@ -154,30 +154,12 @@ namespace Kingo.Messaging
 
             foreach (var filter in filters.Reverse())
             {
-                pipeline = new QueryPipelineConnector<TMessageOut>(pipeline, filter.BuildFilterPipeline());
+                pipeline = new QueryConnector<TMessageOut>(pipeline, filter);
             }
             return pipeline;
         }
 
-        #endregion
-
-        #region [====== Query<TMessageIn, TMessageOut> ======]
-
-        internal Query<TMessageIn, TMessageOut> Build<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query) =>
-            Build(query, AddNextLevelFilters(query));
-
-        private static Query<TMessageIn, TMessageOut> Build<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, IEnumerable<MicroProcessorFilterAttribute> filters)
-        {
-            Query<TMessageIn, TMessageOut> pipeline = query;
-
-            foreach (var filter in filters.Reverse())
-            {
-                pipeline = new QueryPipelineConnector<TMessageIn, TMessageOut>(pipeline, filter.BuildFilterPipeline());
-            }
-            return pipeline;
-        }
-
-        #endregion
+        #endregion       
 
         private MicroProcessorPipeline AddNextLevelFilters<TMessageHandlerOrQuery>(TMessageHandlerOrQuery messageHandlerOrQuery) where TMessageHandlerOrQuery : ITypeAttributeProvider, IMethodAttributeProvider =>
             AddClassLevelFilters(messageHandlerOrQuery).AddMethodLevelFilters(messageHandlerOrQuery);

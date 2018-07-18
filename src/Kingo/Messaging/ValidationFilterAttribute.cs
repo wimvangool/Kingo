@@ -5,11 +5,15 @@
     /// </summary>
     public abstract class ValidationFilterAttribute : MicroProcessorFilterAttribute
     {
-        internal override void Accept(IMicroProcessorFilterAttributeVisitor visitor) =>
-            visitor.Visit(this);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValidationFilterAttribute" /> class.
+        /// </summary>
+        protected ValidationFilterAttribute()
+        {
+            Sources = MessageSources.Input;
+        }
 
-        /// <inheritdoc />
-        protected override FilterPipeline CreateFilterPipeline() =>
-            base.CreateFilterPipeline().Add(filter => new RequiresMessageSourceFilter(filter, MessageSources.InputStream | MessageSources.Query));
+        internal override void Accept(IMicroProcessorFilterAttributeVisitor visitor) =>
+            visitor.Visit(this);        
     }
 }

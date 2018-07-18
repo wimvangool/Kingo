@@ -13,7 +13,7 @@ namespace Kingo.Messaging
 
         protected override IMessageHandler<object> CreateMessageHandler()
         {
-            return MessageHandler<object>.FromDelegate((message, context) =>
+            return MessageHandlerDecorator<object>.Decorate((message, context) =>
             {
                 context.OutputStream.Publish(_event);
             });

@@ -19,7 +19,7 @@ namespace Kingo.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ExceptionMessages {
@@ -196,24 +196,6 @@ namespace Kingo.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command &apos;{0}&apos; failed..
-        /// </summary>
-        internal static string DomainModelException_CommandFailed {
-            get {
-                return ResourceManager.GetString("DomainModelException_CommandFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while processing event &apos;{0}&apos;..
-        /// </summary>
-        internal static string DomainModelException_EventFailed {
-            get {
-                return ResourceManager.GetString("DomainModelException_EventFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ErrorLevel must be 0 or higher: {0}..
         /// </summary>
         internal static string ErrorLevel_InvalidErrorLevel {
@@ -246,33 +228,6 @@ namespace Kingo.Resources {
         internal static string ExpressionExtensions_UnsupportedExpression {
             get {
                 return ResourceManager.GetString("ExpressionExtensions_UnsupportedExpression", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while processing command of type &apos;{0}&apos;. See inner exception for details..
-        /// </summary>
-        internal static string HandleInputStreamAsyncMethod_CommandHandlerException {
-            get {
-                return ResourceManager.GetString("HandleInputStreamAsyncMethod_CommandHandlerException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid {0} specified: &apos;{1}&apos;..
-        /// </summary>
-        internal static string HandleInputStreamAsyncMethod_InvalidUnitOfWorkScopeOption {
-            get {
-                return ResourceManager.GetString("HandleInputStreamAsyncMethod_InvalidUnitOfWorkScopeOption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while processing event of type &apos;{0}&apos;. See inner exception for details..
-        /// </summary>
-        internal static string HandleStreamAsyncMethod_EventHandlerException {
-            get {
-                return ResourceManager.GetString("HandleStreamAsyncMethod_EventHandlerException", resourceCulture);
             }
         }
         
@@ -318,15 +273,6 @@ namespace Kingo.Resources {
         internal static string Message_ValidatorAlreadyRegisterd {
             get {
                 return ResourceManager.GetString("Message_ValidatorAlreadyRegisterd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot publish messages to the output stream while handling a metadata message..
-        /// </summary>
-        internal static string MessageHandlerContext_NullOutputStream_PublishNotAllowed {
-            get {
-                return ResourceManager.GetString("MessageHandlerContext_NullOutputStream_PublishNotAllowed", resourceCulture);
             }
         }
         
@@ -426,6 +372,15 @@ namespace Kingo.Resources {
         internal static string NullStream_PublishNotSupported {
             get {
                 return ResourceManager.GetString("NullStream_PublishNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified result ({0}) could not be converted to an instance of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Query_InvalidResult {
+            get {
+                return ResourceManager.GetString("Query_InvalidResult", resourceCulture);
             }
         }
         

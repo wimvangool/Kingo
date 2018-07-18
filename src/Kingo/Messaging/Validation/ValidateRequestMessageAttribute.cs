@@ -36,7 +36,7 @@ namespace Kingo.Messaging.Validation
         /// <exception cref="InvalidRequestException">
         /// The specified message is invalid.
         /// </exception>
-        protected override async Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
+        protected override async Task<InvokeAsyncResult<TResult>> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, MicroProcessorContext context)
         {
             var messageToValidate = context.StackTrace.Current.Message;
             if (messageToValidate != null)

@@ -5,7 +5,7 @@ namespace Kingo.Messaging
 {
     /// <summary>
     /// This exception is thrown by a <see cref="IMicroProcessor" /> when a command failed to execute because because the operation was illegal.
-    /// This type semantically maps to HTTP response code <c>422</c>.
+    /// This type semantically maps to HTTP response code <c>422</c> (unprocessable entity).
     /// </summary>
     [Serializable]
     public class UnprocessableEntityException : BadRequestException

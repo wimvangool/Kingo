@@ -12,9 +12,9 @@ namespace Kingo.Messaging
 
         protected override IMessageHandler<object> CreateMessageHandler()
         {
-            return MessageHandler<object>.FromDelegate((message, context) =>
+            return MessageHandlerDecorator<object>.Decorate((message, context) =>
             {
-                throw new IllegalOperationException("Test");
+                throw new BusinessRuleException("Test");
             });
         }
 

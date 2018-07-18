@@ -14,9 +14,9 @@ namespace Kingo.Messaging
 
         protected override IMessageHandler<object> CreateMessageHandler()
         {
-            return MessageHandler<object>.FromDelegate((message, context) =>
+            return MessageHandlerDecorator<object>.Decorate((message, context) =>
             {
-                throw new IllegalOperationException(_Message);
+                throw new BusinessRuleException(_Message);
             });
         }
 
@@ -27,7 +27,7 @@ namespace Kingo.Messaging
             {
                 await Result.IsExceptionOfTypeAsync<InternalServerErrorException>(exception =>
                 {
-                    AssertInnerExceptionIsOfType<IllegalOperationException>(exception, innerException =>
+                    AssertInnerExceptionIsOfType<BusinessRuleException>(exception, innerException =>
                     {
                         Assert.AreEqual(_Message, innerException.Message);
                     });

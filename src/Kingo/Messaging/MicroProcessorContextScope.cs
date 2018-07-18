@@ -13,7 +13,7 @@ namespace Kingo.Messaging
         }             
 
         public Task CompleteAsync() =>
-            _scope.Value.UnitOfWork.CompleteAsync();
+            _scope.Value.UnitOfWorkCore.CompleteAsync();
 
         protected override void DisposeManagedResources()
         {

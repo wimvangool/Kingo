@@ -20,7 +20,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static IMessageStream Append<TMessage>(this IMessageStream stream, TMessage message, Action<TMessage, IMicroProcessorContext> handler) =>
-            stream.Append(message, MessageHandler<TMessage>.FromDelegate(handler));
+            stream.Append(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
 
         /// <summary>
         /// Appends the specified <paramref name="message"/> to this stream and associates it with the specified <paramref name="handler"/>.
@@ -33,7 +33,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static IMessageStream Append<TMessage>(this IMessageStream stream, TMessage message, Func<TMessage, IMicroProcessorContext, Task> handler) =>
-            stream.Append(message, MessageHandler<TMessage>.FromDelegate(handler));
+            stream.Append(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
 
         /// <summary>
         /// Combines all specified <paramref name="streams"/> into one stream. All streams will be appended in order.

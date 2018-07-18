@@ -155,3 +155,4 @@ $RECYCLE.BIN/
 *.nupkg
 *.nuspec
 /output/PushPackages.bat
+/src/.vs/Kingo/v15/Server/sqlite3

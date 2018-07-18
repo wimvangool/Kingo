@@ -45,14 +45,14 @@ namespace Kingo.Messaging
         #region [====== Resolve ======]                            
 
         /// <inheritdoc />
-        internal IEnumerable<MessageHandler<TMessage>> ResolveMessageHandlers<TMessage>(MessageHandlerContext context, TMessage message)
+        internal IEnumerable<MessageHandler> ResolveMessageHandlers<TMessage>(MessageSources source, TMessage message)
         {
             if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
             return from handlerClass in _messageHandlers
-                   let handlers = handlerClass.CreateInstancesInEveryRoleFor(this, context, message)
+                   let handlers = handlerClass.CreateInstancesInEveryRoleFor(this, source, message)
                    from handler in handlers
                    select handler;
         }

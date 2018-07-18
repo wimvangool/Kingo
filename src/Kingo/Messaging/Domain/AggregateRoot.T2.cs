@@ -404,7 +404,7 @@ namespace Kingo.Messaging.Domain
         {
             var messageFormat = ExceptionMessages.AggregateRoot_AggregateRemovedException;
             var message = string.Format(messageFormat, aggregateType.FriendlyName(), eventType.FriendlyName());
-            return new IllegalOperationException(message);
+            return new BusinessRuleException(message);
         }
 
         #endregion

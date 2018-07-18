@@ -32,7 +32,7 @@ namespace Kingo.Messaging.Authorization
         }        
 
         /// <inheritdoc />
-        protected override Task<TResult> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, IMicroProcessorContext context)
+        protected override Task<InvokeAsyncResult<TResult>> InvokeMessageHandlerOrQueryAsync<TResult>(MessageHandlerOrQuery<TResult> handlerOrQuery, MicroProcessorContext context)
         {
             foreach (var requiredRole in Roles)
             {

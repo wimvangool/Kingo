@@ -7,37 +7,19 @@ using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
-    internal sealed class HandleInputStreamAsyncMethod : HandleStreamAsyncMethod
+    internal sealed class HandleInputStreamAsyncMethod : MicroProcessorMethod<MessageHandlerContext>, IMessageHandler
     {
         public static async Task<IMessageStream> Invoke(MicroProcessor processor, IMessageStream inputStream, CancellationToken? token)
         {
-            var message = inputStream[0];
-
-            try
+            if (inputStream == null)
             {
-                return await Invoke(processor, inputStream, new MessageHandlerContext(processor.Principal, token));
+                throw new ArgumentNullException(nameof(inputStream));
             }
-            catch (OperationCanceledException)
-            {                
-                throw;
-            }
-            catch (ExternalProcessorException)
-            {                
-                throw;
-            }            
-            catch (ConcurrencyException exception)
+            if (inputStream.Count == 0)
             {
-                // Only commands should promote concurrency-exceptions to conflict-exceptions.
-                if (processor.IsCommand(message))
-                {
-                    throw exception.AsBadRequestException(exception.Message);
-                }
-                throw exception.AsInternalServerErrorException(exception.Message);
+                return MessageStream.Empty;
             }
-            catch (Exception exception)
-            {                
-                throw InternalServerErrorException.FromInnerException(exception);
-            }
+            return await Invoke(processor, inputStream, new MessageHandlerContext(processor.Principal, token));            
         }
 
         private static async Task<IMessageStream> Invoke(MicroProcessor processor, IMessageStream inputStream, MessageHandlerContext context)
@@ -46,30 +28,18 @@ namespace Kingo.Messaging
             {
                 var method = new HandleInputStreamAsyncMethod(processor, context);
 
-                try
-                {
-                    await inputStream.HandleMessagesWithAsync(method);
-                }
-                finally
-                {
-                    await Task.WhenAll(method._handleMetadataStreamMethods);
-                }                
+                await inputStream.HandleMessagesWithAsync(method);
                 await scope.CompleteAsync();
 
-                return method._outputStream;
+                return method.OutputStream;
             }
         }
-
-        private readonly List<Task> _handleMetadataStreamMethods;        
-        private IMessageStream _outputStream;
 
         private HandleInputStreamAsyncMethod(MicroProcessor processor, MessageHandlerContext context)
         {
             Processor = processor;
-            Context = context;           
-
-            _handleMetadataStreamMethods = new List<Task>();    
-            _outputStream = MessageStream.Empty;
+            Context = context;            
+            OutputStream = MessageStream.Empty;
         }
 
         protected override MicroProcessor Processor
@@ -80,65 +50,102 @@ namespace Kingo.Messaging
         protected override MessageHandlerContext Context
         {
             get;
-        }             
+        }
 
-        protected override async Task HandleAsyncCore<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
+        private IMessageStream OutputStream
         {
+            get;
+            set;
+        }
+
+        public async Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
+        {
+            Context.Token.ThrowIfCancellationRequested();
+            Context.StackTraceCore.Push(CreateMessageInfo(message));
+
             // Every event that is published to the context's OutputStream is added to the final output stream.
-            if (Context.Messages.Current.Source == MessageSources.OutputStream)
+            if (Context.StackTraceCore.CurrentSource == MessageSources.OutputStream)
             {
-                _outputStream = _outputStream.Append(message);
+                OutputStream = OutputStream.Append(message);
             }
             try
             {
-                await base.HandleAsyncCore(message, handler);
+                await HandleAsyncCore(message, handler);
             }
             catch (OperationCanceledException)
             {
                 throw;
             }
             catch (ExternalProcessorException)
-            {                
+            {
                 throw;
-            }            
+            }
             catch (InternalProcessorException exception)
-            {                                      
+            {
+                // Only commands should be converted to BadRequestExceptions if an InternalProcessorException occurs.
                 if (IsCommand(message))
                 {
-                    throw NewCommandHandlerException(message, exception);
+                    throw exception.AsBadRequestException(exception.Message);
                 }
-                throw NewEventHandlerException(message, exception);
+                throw exception.AsInternalServerErrorException(exception.Message);
             }
             catch (Exception exception)
-            {                
+            {
                 throw InternalServerErrorException.FromInnerException(exception);
-            }            
+            }
+            finally
+            {
+                Context.StackTraceCore.Pop();
+                Context.Token.ThrowIfCancellationRequested();
+            }
         }
 
-        private bool IsCommand(object message) =>
-            Context.Messages.Current.Source == MessageSources.InputStream && Processor.IsCommand(message);
+        private MessageInfo CreateMessageInfo(object message) =>
+            Context.StackTraceCore.IsEmpty ? MessageInfo.FromInputStream(message) : MessageInfo.FromOutputStream(message);
 
-        private static BadRequestException NewCommandHandlerException(object command, InternalProcessorException exception)
+        private async Task HandleAsyncCore<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
         {
-            var messageFormat = ExceptionMessages.HandleInputStreamAsyncMethod_CommandHandlerException;
-            var message = string.Format(messageFormat, command.GetType().FriendlyName());
-            return exception.AsBadRequestException(message);
-        }                      
-
-        protected override MessageInfo CreateMessageInfo(object message) =>
-            Context.Messages.IsEmpty ? MessageInfo.FromInputStream(message) : MessageInfo.FromOutputStream(message);        
-
-        protected override async Task HandleStreamsAsync(IMessageStream metadataStream, IMessageStream outputStream)
-        {            
-            if (metadataStream.Count > 0)
-            {                
-                // The metadata stream is handled 'out-of-band' in order to optimize the performance.
-                _handleMetadataStreamMethods.Add(HandleMetadataStreamAsyncMethod.Invoke(Processor, Context, metadataStream));
+            // If a specific handler to handle the message was specified, that handler is used.
+            // If not, then the MessageHandlerFactory is used to instantiate a set of handlers.
+            // If the factory cannot find any appropriate handlers, the message is ignored.
+            if (handler == null)
+            {
+                foreach (var resolvedHandler in Processor.MessageHandlerFactory.ResolveMessageHandlers(Context.StackTraceCore.CurrentSource, message))
+                {
+                    await InvokeMessageHandlerAsync(resolvedHandler);
+                }
             }
+            else
+            {
+                await InvokeMessageHandlerAsync(new MessageHandlerDecorator<TMessage>(handler, message));
+            }
+        }
+
+        private async Task InvokeMessageHandlerAsync(MessageHandler handler)
+        {
+            // Every message handler potentially yields a new stream of events, which is immediately handled by the processor
+            // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
+            // sub-tree of events is handled before the next event in the stream.
+            var outputStream = await InvokeMessageHandlerAsyncCore(handler);
             if (outputStream.Count > 0)
             {
                 await outputStream.HandleMessagesWithAsync(this);
             }
-        }                                
+        }            
+        
+        private async Task<IMessageStream> InvokeMessageHandlerAsyncCore(MessageHandler handler)
+        {
+            try
+            {
+                return (await Processor.Pipeline.Build(handler).InvokeAsync(Context)).Value;
+            }
+            finally
+            {
+                Context.Reset();
+            }    
+        }
+
+        private bool IsCommand(object message) =>
+            Context.StackTraceCore.CurrentSource == MessageSources.InputStream && Processor.IsCommand(message);        
     }
 }

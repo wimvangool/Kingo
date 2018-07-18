@@ -7,19 +7,13 @@ namespace Kingo.Messaging
     /// to its own attributes.
     /// </summary>
     public abstract class MessageHandlerOrQuery : ITypeAttributeProvider, IMethodAttributeProvider
-    {
-        internal MessageHandlerOrQuery(ITypeAttributeProvider typeAttributeProvider, IMethodAttributeProvider methodAttributeProvider)
-        {
-            TypeAttributeProvider = typeAttributeProvider;
-            MethodAttributeProvider = methodAttributeProvider;
-        }
-
+    {        
         #region [====== ITypeAttributeProvider ======]
 
         /// <summary>
         /// Returns the provider that is used to access all attributes declared on the <see cref="IMessageHandler{T}" />.
         /// </summary>
-        protected ITypeAttributeProvider TypeAttributeProvider
+        protected abstract ITypeAttributeProvider TypeAttributeProvider
         {
             get;
         }
@@ -39,7 +33,7 @@ namespace Kingo.Messaging
         /// <summary>
         /// Returns the provider that is used to access all attributes declared on the <see cref="IMessageHandler{T}.HandleAsync(T, IMicroProcessorContext)" /> method.
         /// </summary>
-        protected IMethodAttributeProvider MethodAttributeProvider
+        protected abstract IMethodAttributeProvider MethodAttributeProvider
         {
             get;
         }

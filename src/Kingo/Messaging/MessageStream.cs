@@ -95,7 +95,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static IMessageStream CreateStream<TMessage>(TMessage message, Action<TMessage, IMicroProcessorContext> handler) =>
-            CreateStream(message, MessageHandler<TMessage>.FromDelegate(handler));
+            CreateStream(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
 
         /// <summary>
         /// Creates and returns a new stream while adding the specified <paramref name="message"/> to this stream
@@ -108,7 +108,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static IMessageStream CreateStream<TMessage>(TMessage message, Func<TMessage, IMicroProcessorContext, Task> handler) =>
-            CreateStream(message, MessageHandler<TMessage>.FromDelegate(handler));
+            CreateStream(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
 
         /// <summary>
         /// Creates and returns a new stream while adding the specified <paramref name="message"/> to this stream

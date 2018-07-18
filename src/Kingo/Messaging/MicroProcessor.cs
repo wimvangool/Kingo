@@ -66,18 +66,8 @@ namespace Kingo.Messaging
             SchemaMap.None;
 
         /// <inheritdoc />
-        public virtual Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)
-        {
-            if (inputStream == null)
-            {
-                throw new ArgumentNullException(nameof(inputStream));
-            }
-            if (inputStream.Count == 0)
-            {
-                return AsyncMethod.Value(MessageStream.Empty);
-            }
-            return HandleInputStreamAsyncMethod.Invoke(this, inputStream, token);
-        }
+        public virtual Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null) =>
+            HandleInputStreamAsyncMethod.Invoke(this, inputStream, token);
 
         /// <summary>
         /// Handles the specified <paramref name="metadataStream"/> by invoking the specified <paramref name="handler"/>.

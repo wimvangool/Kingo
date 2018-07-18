@@ -13,13 +13,12 @@ namespace Kingo.Messaging
         {
             var message = new object();
             var query = new QuerySpy<object, object>();
-            var connector = CreateConnector(query, new MicroProcessorFilterSpy());
+            var connector = CreateConnector(query, message, new MicroProcessorFilterSpy());
 
-            var result = await connector.ExecuteAsync(message, MicroProcessorContext.None);
+            var result = await connector.InvokeAsync(CreateProcessorContext());
 
             Assert.IsNotNull(result);
-            Assert.IsNull(result.Message);
-            Assert.AreEqual(0, result.MetadataStream.Count);
+            Assert.IsNull(result.Value);            
 
             query.AssertExecuteCountIs(1);
             query.AssertMessageReceived(0, message);
@@ -30,14 +29,13 @@ namespace Kingo.Messaging
         {
             var message = new object();
             var query = new QuerySpy<object, object>();
-            var connectorA = CreateConnector(query, new MicroProcessorFilterSpy());
+            var connectorA = CreateConnector(query, message, new MicroProcessorFilterSpy());
             var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
-            var result = await connectorB.ExecuteAsync(message, MicroProcessorContext.None);
+            var result = await connectorB.InvokeAsync(CreateProcessorContext());
 
             Assert.IsNotNull(result);
-            Assert.IsNull(result.Message);
-            Assert.AreEqual(0, result.MetadataStream.Count);
+            Assert.IsNull(result.Value);            
 
             query.AssertExecuteCountIs(1);
             query.AssertMessageReceived(0, message);
@@ -46,8 +44,9 @@ namespace Kingo.Messaging
         [TestMethod]
         public void ToString_ReturnsExpectedValue_IfOnlyOnePipelineIsUsed()
         {
+            var message = new object();
             var query = new QuerySpy<object, object>();
-            var connector = CreateConnector(query, new MicroProcessorFilterSpy());
+            var connector = CreateConnector(query, message, new MicroProcessorFilterSpy());
 
             Assert.AreEqual("MicroProcessorFilterSpy | QuerySpy<Object, Object>", connector.ToString());
         }
@@ -55,20 +54,21 @@ namespace Kingo.Messaging
         [TestMethod]
         public void ToString_ReturnsExpectedValue_IfManyPipelinesAreUsed()
         {
+            var message = new object();
             var query = new QuerySpy<object, object>();
-            var connectorA = CreateConnector(query, new MicroProcessorFilterSpy());
+            var connectorA = CreateConnector(query, message, new MicroProcessorFilterSpy());
             var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
             Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | QuerySpy<Object, Object>", connectorB.ToString());
-        }
+        }        
 
-        private static IPrincipal Principal =>
-            Thread.CurrentPrincipal;
+        private static QueryConnector<TMessageOut> CreateConnector<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message, IMicroProcessorFilter filter) =>
+            CreateConnector(new QueryDecorator<TMessageIn, TMessageOut>(query, message), filter);
 
-        private static QueryPipelineConnector<TMessageIn, TMessageOut> CreateConnector<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, IMicroProcessorFilter filter) =>
-            CreateConnector(new QueryDecorator<TMessageIn, TMessageOut>(new QueryContext(Principal), query), filter);
+        private static QueryConnector<TMessageOut> CreateConnector<TMessageOut>(Query<TMessageOut> query, IMicroProcessorFilter filter) =>
+            new QueryConnector<TMessageOut>(query, filter);
 
-        private static QueryPipelineConnector<TMessageIn, TMessageOut> CreateConnector<TMessageIn, TMessageOut>(Query<TMessageIn, TMessageOut> query, IMicroProcessorFilter filter) =>
-            new QueryPipelineConnector<TMessageIn, TMessageOut>(query, filter);
+        private static MicroProcessorContext CreateProcessorContext() =>
+            new QueryContext(Thread.CurrentPrincipal);
     }
 }

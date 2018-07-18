@@ -5,7 +5,7 @@ namespace Kingo.Messaging
 {
     /// <summary>
     /// This exception is thrown by a <see cref="IMicroProcessor" /> when a command or query failed because a concurreny
-    /// exception occurred while saving all changes. This type semantically maps to HTTP response code <c>409</c>.
+    /// exception occurred while saving all changes. This type semantically maps to HTTP response code <c>409</c> (conflict).
     /// </summary>
     [Serializable]
     public class ConflictException : BadRequestException

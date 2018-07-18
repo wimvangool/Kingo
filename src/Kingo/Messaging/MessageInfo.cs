@@ -49,18 +49,7 @@ namespace Kingo.Messaging
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         public static MessageInfo FromOutputStream(object message) =>
-            FromStream(message, MessageSources.OutputStream);
-
-        /// <summary>
-        /// Creates and returns a new <see cref="MessageInfo" /> for a message that originates from the <see cref="IMicroProcessorContext.MetadataStream" />
-        /// </summary>
-        /// <param name="message">A message.</param>
-        /// <returns>A new <see cref="MessageInfo" /> instance.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        public static MessageInfo FromMetadataStream(object message) =>
-            FromStream(message, MessageSources.MetadataStream);
+            FromStream(message, MessageSources.OutputStream);        
 
         private static MessageInfo FromStream(object message, MessageSources source) =>
             new MessageInfo(message ?? throw new ArgumentNullException(nameof(message)), source);
@@ -85,7 +74,7 @@ namespace Kingo.Messaging
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{Message} ({Source})";
+            $"[{Source}] {Message}";
 
         #endregion
 

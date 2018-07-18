@@ -12,13 +12,12 @@ namespace Kingo.Messaging
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var connector = CreateConnector(handler, new MicroProcessorFilterSpy());
+            var connector = CreateConnector(handler, message, new MicroProcessorFilterSpy());
 
-            var result = await connector.HandleAsync(message, MicroProcessorContext.None);
+            var result = await connector.InvokeAsync(CreateProcessorContext());
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.OutputStream.Count);
-            Assert.AreEqual(0, result.MetadataStream.Count);
+            Assert.AreEqual(0, result.Value.Count);            
 
             handler.AssertHandleCountIs(1);
             handler.AssertMessageReceived(0, message);
@@ -29,14 +28,13 @@ namespace Kingo.Messaging
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var connectorA = CreateConnector(handler, new MicroProcessorFilterSpy());
+            var connectorA = CreateConnector(handler, message, new MicroProcessorFilterSpy());
             var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
-            var result = await connectorB.HandleAsync(message, MicroProcessorContext.None);
+            var result = await connectorB.InvokeAsync(CreateProcessorContext());
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.OutputStream.Count);
-            Assert.AreEqual(0, result.MetadataStream.Count);
+            Assert.AreEqual(0, result.Value.Count);            
 
             handler.AssertHandleCountIs(1);
             handler.AssertMessageReceived(0, message);
@@ -45,8 +43,9 @@ namespace Kingo.Messaging
         [TestMethod]
         public void ToString_ReturnsExpectedValue_IfOnlyOnePipelineIsUsed()
         {
+            var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var connector = CreateConnector(handler, new MicroProcessorFilterSpy());
+            var connector = CreateConnector(handler, message, new MicroProcessorFilterSpy());
 
             Assert.AreEqual("MicroProcessorFilterSpy | MessageHandlerSpy<Object>", connector.ToString());
         }
@@ -54,17 +53,21 @@ namespace Kingo.Messaging
         [TestMethod]
         public void ToString_ReturnsExpectedValue_IfManyPipelinesAreUsed()
         {
+            var message = new object();
             var handler = new MessageHandlerSpy<object>();                      
-            var connectorA = CreateConnector(handler, new MicroProcessorFilterSpy());
+            var connectorA = CreateConnector(handler, message, new MicroProcessorFilterSpy());
             var connectorB = CreateConnector(connectorA, new MicroProcessorFilterSpy());
 
             Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | MessageHandlerSpy<Object>", connectorB.ToString());
         }
 
-        private static MessageHandlerPipelineConnector<TMessage> CreateConnector<TMessage>(IMessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
-            CreateConnector(new MessageHandlerDecorator<TMessage>(new MessageHandlerContext(Thread.CurrentPrincipal), handler), filter);
+        private static MessageHandlerConnector CreateConnector<TMessage>(IMessageHandler<TMessage> handler, TMessage message, IMicroProcessorFilter filter) =>
+            CreateConnector(new MessageHandlerDecorator<TMessage>(handler, message), filter);
 
-        private static MessageHandlerPipelineConnector<TMessage> CreateConnector<TMessage>(MessageHandler<TMessage> handler, IMicroProcessorFilter filter) =>
-            new MessageHandlerPipelineConnector<TMessage>(handler, filter);
+        private static MessageHandlerConnector CreateConnector(MessageHandler handler, IMicroProcessorFilter filter) =>
+            new MessageHandlerConnector(handler, filter);
+
+        private static MicroProcessorContext CreateProcessorContext() =>
+            new MessageHandlerContext(Thread.CurrentPrincipal);
     }
 }

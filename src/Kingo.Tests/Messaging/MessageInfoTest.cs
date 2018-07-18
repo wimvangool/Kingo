@@ -44,26 +44,7 @@ namespace Kingo.Messaging
             Assert.AreSame(message, messageInfo.Message);
             Assert.AreEqual(MessageSources.OutputStream, messageInfo.Source);
             Assert.AreEqual("System.Object (OutputStream)", messageInfo.ToString());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void FromMetadataStream_Throws_IfMessageIsNull()
-        {
-            MessageInfo.FromMetadataStream(null);
-        }
-
-        [TestMethod]
-        public void FromMetadataStream_ReturnsExpectedInstance_IsMessageIsNotNull()
-        {
-            var message = new object();
-            var messageInfo = MessageInfo.FromMetadataStream(message);
-
-            Assert.IsNotNull(messageInfo);
-            Assert.AreSame(message, messageInfo.Message);
-            Assert.AreEqual(MessageSources.MetadataStream, messageInfo.Source);
-            Assert.AreEqual("System.Object (MetadataStream)", messageInfo.ToString());
-        }
+        }               
 
         #endregion
 

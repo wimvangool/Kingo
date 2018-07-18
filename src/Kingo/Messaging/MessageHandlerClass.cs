@@ -64,9 +64,9 @@ namespace Kingo.Messaging
             return this;
         }
 
-        internal IEnumerable<MessageHandler<TMessage>> CreateInstancesInEveryRoleFor<TMessage>(MessageHandlerFactory factory, MessageHandlerContext context, TMessage message)
+        internal IEnumerable<MessageHandler> CreateInstancesInEveryRoleFor<TMessage>(MessageHandlerFactory factory, MessageSources source, TMessage message)
         {
-            if (IsAcceptedSource(_configuration.Sources, context.Messages.Current.Source))
+            if (IsAcceptedSource(_configuration.Sources, source))
             {
                 // This LINQ construct first selects all message handler interface definitions that are compatible with
                 // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -79,12 +79,12 @@ namespace Kingo.Messaging
                 return from interfaceType in _interfaces
                        let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                        where messageTypeOfInterface.IsInstanceOfType(message)
-                       select CreateMessageHandlerInstanceFor<TMessage>(factory, context, interfaceType, messageTypeOfInterface);
+                       select CreateMessageHandlerInstance(factory, message, interfaceType, messageTypeOfInterface);
             }
-            return Enumerable.Empty<MessageHandler<TMessage>>();
+            return Enumerable.Empty<MessageHandler>();
         }        
 
-        private MessageHandler<TMessage> CreateMessageHandlerInstanceFor<TMessage>(MessageHandlerFactory factory, MessageHandlerContext context, Type interfaceType, Type messageTypeOfInterface)
+        private MessageHandler CreateMessageHandlerInstance<TMessage>(MessageHandlerFactory factory, TMessage message, Type interfaceType, Type messageTypeOfInterface)
         {
             // In order to support message handlers with contravariant IMessageHandler<TMessage>-implementations, the resolved instance is wrapped
             // inside an Instance<TActual> where TActual is the type of the generic type parameter of the specified interface. This ensures that
@@ -106,14 +106,14 @@ namespace Kingo.Messaging
             // - var objectHandler = new Instance<object>(handler);
             // - var stringHandler = (IMessageHandler<string>) objectHandler;
             //
-            // - return new MessageHandlerDecorator<string>(stringHandler, typeof(ObjectHandler), typeof(IMessageHandler<object>));
+            // - return new MessageHandlerDecorator<string>(stringHandler, message, typeof(ObjectHandler), typeof(IMessageHandler<object>));
             var handler = factory.Resolve(_type);
             var instanceTypeDefinition = typeof(Instance<>);
             var instanceType = instanceTypeDefinition.MakeGenericType(messageTypeOfInterface);
             var instanceConstructor = instanceType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { interfaceType }, null);
             var instance = (IMessageHandler<TMessage>) instanceConstructor.Invoke(new[] { handler });
 
-            return new MessageHandlerDecorator<TMessage>(context, instance, _type, interfaceType);
+            return new MessageHandlerDecorator<TMessage>(instance, message, _type, interfaceType);
         }
 
         private static bool IsAcceptedSource(MessageSources sources, MessageSources source) =>

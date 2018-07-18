@@ -29,10 +29,7 @@ namespace Kingo.Messaging
             Current.UnitOfWork;
 
         public IEventStream OutputStream =>
-            Current.OutputStream;
-
-        public IEventStream MetadataStream =>
-            Current.MetadataStream;        
+            Current.OutputStream;             
 
         public CancellationToken Token =>
             Current.Token;        
