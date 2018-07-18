@@ -11,24 +11,7 @@ namespace Kingo.Messaging
     /// Represents a class that is registered as a <see cref="IMessageHandler{T}" />.
     /// </summary>
     public sealed class MessageHandlerClass
-    {
-        #region [====== Instance ======]
-
-        private sealed class Instance<TMessage> : IMessageHandler<TMessage>
-        {
-            private readonly IMessageHandler<TMessage> _handler;
-
-            public Instance(IMessageHandler<TMessage> handler)
-            {
-                _handler = handler;
-            }
-
-            public Task HandleAsync(TMessage message, IMicroProcessorContext context) =>
-                _handler.HandleAsync(message, context);
-        }
-
-        #endregion
-        
+    {                
         private readonly Type _type;
         private readonly Type[] _interfaces;
         private readonly IMessageHandlerConfiguration _configuration;
@@ -38,25 +21,7 @@ namespace Kingo.Messaging
             _type = type;
             _interfaces = interfaces;
             _configuration = configuration;
-        }
-
-        /// <summary>
-        /// Returns the type of this message handler class.
-        /// </summary>
-        public Type Type =>
-            _type;
-
-        /// <summary>
-        /// Returns all <see cref="IMessageHandler{T}" /> interface types that are implemented by this class.
-        /// </summary>
-        public IEnumerable<Type> Interfaces =>
-            _interfaces;
-
-        /// <summary>
-        /// Returns the configuration of this message handler class.
-        /// </summary>
-        public IMessageHandlerConfiguration Configuration =>
-            _configuration;
+        }        
 
         private MessageHandlerClass RegisterIn(MessageHandlerFactory factory)
         {
@@ -108,12 +73,12 @@ namespace Kingo.Messaging
             //
             // - return new MessageHandlerDecorator<string>(stringHandler, message, typeof(ObjectHandler), typeof(IMessageHandler<object>));
             var handler = factory.Resolve(_type);
-            var instanceTypeDefinition = typeof(Instance<>);
-            var instanceType = instanceTypeDefinition.MakeGenericType(messageTypeOfInterface);
-            var instanceConstructor = instanceType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { interfaceType }, null);
-            var instance = (IMessageHandler<TMessage>) instanceConstructor.Invoke(new[] { handler });
+            var decoratorTypeDefinition = typeof(MessageHandlerDecorator<>);
+            var decoratorType = decoratorTypeDefinition.MakeGenericType(messageTypeOfInterface);
+            var decoratorConstructorParameters = new [] { interfaceType, messageTypeOfInterface, typeof(Type), typeof(Type) };
+            var decoratorConstructor = decoratorType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, decoratorConstructorParameters, null);
 
-            return new MessageHandlerDecorator<TMessage>(instance, message, _type, interfaceType);
+            return (MessageHandler) decoratorConstructor.Invoke(new[] { handler, message, _type, interfaceType });            
         }
 
         private static bool IsAcceptedSource(MessageSources sources, MessageSources source) =>

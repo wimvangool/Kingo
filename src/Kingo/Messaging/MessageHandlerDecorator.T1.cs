@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Kingo.Threading;
 
 namespace Kingo.Messaging
@@ -18,6 +19,7 @@ namespace Kingo.Messaging
         internal MessageHandlerDecorator(IMessageHandler<TMessage> handler, TMessage message) :
             this(handler, message, new TypeAttributeProvider(handler.GetType()), Messaging.MethodAttributeProvider.FromMessageHandler(handler)) { }
 
+        [UsedImplicitly]
         internal MessageHandlerDecorator(IMessageHandler<TMessage> handler, TMessage message, Type handlerType, Type interfaceType) :
             this(handler, message, new TypeAttributeProvider(handlerType), Messaging.MethodAttributeProvider.FromMessageHandler(handlerType, interfaceType)) { }
 
