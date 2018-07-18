@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Kingo.Resources;
-using Kingo.Threading;
 
 namespace Kingo.Messaging
 {

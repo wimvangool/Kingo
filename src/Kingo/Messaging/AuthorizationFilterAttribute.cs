@@ -1,6 +1,4 @@
-﻿using Kingo.Messaging.Authorization;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     /// <summary>
     /// Serves as a base class for all filters that are designed to authorize the request and/or message that is being processed.

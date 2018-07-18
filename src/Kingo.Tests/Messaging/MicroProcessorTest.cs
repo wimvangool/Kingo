@@ -633,7 +633,7 @@ namespace Kingo.Messaging
         public async Task HandleStreamAsync_ThrowsConflictException_IfMessageIsCommand_And_UnitOfWorkThrowsConcurrencyException()
         {
             var someCommand = new SomeCommand();
-            var concurrencyException = new Domain.ConcurrencyException();
+            var concurrencyException = new ConcurrencyException();
             var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
 
             _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>

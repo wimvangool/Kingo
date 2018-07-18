@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Messaging.Domain;
-using Kingo.Resources;
 
 namespace Kingo.Messaging
 {
@@ -19,7 +17,34 @@ namespace Kingo.Messaging
             {
                 return MessageStream.Empty;
             }
-            return await Invoke(processor, inputStream, new MessageHandlerContext(processor.Principal, token));            
+            try
+            {
+                return await Invoke(processor, inputStream, new MessageHandlerContext(processor.Principal, token));
+            }
+            catch (ConcurrencyException exception)
+            {
+                if (inputStream.Count == 1 && processor.IsCommand(inputStream[0]))
+                {
+                    throw exception.AsBadRequestException(exception.Message);
+                }
+                throw exception.AsInternalServerErrorException(exception.Message);
+            }
+            catch (InternalProcessorException exception)
+            {
+                throw exception.AsInternalServerErrorException(exception.Message);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (ExternalProcessorException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw InternalServerErrorException.FromInnerException(exception);
+            }            
         }
 
         private static async Task<IMessageStream> Invoke(MicroProcessor processor, IMessageStream inputStream, MessageHandlerContext context)
@@ -30,7 +55,7 @@ namespace Kingo.Messaging
 
                 await inputStream.HandleMessagesWithAsync(method);
                 await scope.CompleteAsync();
-
+               
                 return method.OutputStream;
             }
         }
@@ -71,15 +96,7 @@ namespace Kingo.Messaging
             try
             {
                 await HandleAsyncCore(message, handler);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (ExternalProcessorException)
-            {
-                throw;
-            }
+            }            
             catch (InternalProcessorException exception)
             {
                 // Only commands should be converted to BadRequestExceptions if an InternalProcessorException occurs.
@@ -88,6 +105,14 @@ namespace Kingo.Messaging
                     throw exception.AsBadRequestException(exception.Message);
                 }
                 throw exception.AsInternalServerErrorException(exception.Message);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (ExternalProcessorException)
+            {
+                throw;
             }
             catch (Exception exception)
             {

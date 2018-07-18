@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a message handler as part of the <see cref="MicroProcessor" />'s pipeline.

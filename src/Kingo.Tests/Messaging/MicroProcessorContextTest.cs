@@ -69,7 +69,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void MessageStack_ContainsExpectedMessage_IfOneMessageIsPushed()
         {
-            const string expectedStringValue = "System.Object (InputStream)";
+            const string expectedStringValue = "[InputStream] System.Object";
 
             var context = new MessageHandlerContext(Principal);
             var message = new object();
@@ -94,7 +94,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public void MessageStack_ContainsExpectedMessages_IfTwoMessagesArePushed()
         {
-            const string expectedStringValue = "System.Object (InputStream) -> 10 (OutputStream)";
+            const string expectedStringValue = "[InputStream] System.Object -> [OutputStream] 10";
 
             var context = new MessageHandlerContext(Principal);
             var messageA = new object();

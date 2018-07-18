@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     internal class MicroProcessorFilterSpy : ProcessingFilterAttribute { }
 }
