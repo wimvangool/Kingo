@@ -19,7 +19,7 @@ namespace Kingo.Messaging
         internal MessageHandlerDecorator(IMessageHandler<TMessage> handler, TMessage message) :
             this(handler, message, new TypeAttributeProvider(handler.GetType()), Messaging.MethodAttributeProvider.FromMessageHandler(handler)) { }
 
-        [UsedImplicitly]
+        [UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
         internal MessageHandlerDecorator(IMessageHandler<TMessage> handler, TMessage message, Type handlerType, Type interfaceType) :
             this(handler, message, new TypeAttributeProvider(handlerType), Messaging.MethodAttributeProvider.FromMessageHandler(handlerType, interfaceType)) { }
 

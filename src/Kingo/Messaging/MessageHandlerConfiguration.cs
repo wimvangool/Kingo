@@ -20,18 +20,18 @@ namespace Kingo.Messaging
         public MessageHandlerConfiguration(InstanceLifetime lifetime)
         {
             Lifetime = lifetime;
-            Sources = MessageSources.InputStream;
+            OperationTypes = MicroProcessorOperationTypes.InputStream;
         }
 
         /// <summary>
         /// Initializes a new instance of a <see cref="MessageHandlerConfiguration" /> structure.
         /// </summary>
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
-        /// <param name="sources">Specifies which source(s) the message is accepted from.</param>
-        public MessageHandlerConfiguration(InstanceLifetime lifetime, MessageSources sources)
+        /// <param name="sources">Specifies during which operation types this handler should be used (input-stream, output-stream or both).</param>
+        public MessageHandlerConfiguration(InstanceLifetime lifetime, MicroProcessorOperationTypes sources)
         {
             Lifetime = lifetime;
-            Sources = sources;
+            OperationTypes = sources;
         }
 
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public MessageSources Sources
+        public MicroProcessorOperationTypes OperationTypes
         {
             get;
         }
@@ -73,12 +73,12 @@ namespace Kingo.Messaging
         /// <c>true</c> if <paramref name="other"/> has the same value as this instance; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(MessageHandlerConfiguration other) =>
-            Lifetime.Equals(other.Lifetime) && Sources.Equals(other.Sources);
+            Lifetime.Equals(other.Lifetime) && OperationTypes.Equals(other.OperationTypes);
 
         /// <summary>Returns the hash code for this instance.</summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode() =>
-            Lifetime.GetHashCode() ^ Sources.GetHashCode();
+            Lifetime.GetHashCode() ^ OperationTypes.GetHashCode();
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace Kingo.Messaging
         /// <summary>Converts this value to its equivalent string-representation.</summary>
         /// <returns>The string-representation of this value.</returns>
         public override string ToString() =>
-            $"[{Sources}, {Lifetime}]";
+            $"[{OperationTypes}, {Lifetime}]";
 
         #endregion
 

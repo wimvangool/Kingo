@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Kingo.Threading;
+﻿using Kingo.Threading;
 
 namespace Kingo.Messaging
 {
@@ -10,10 +9,10 @@ namespace Kingo.Messaging
         public MicroProcessorContextScope(ContextScope<MicroProcessorContext> scope)
         {
             _scope = scope;
-        }             
+        }
 
-        public Task CompleteAsync() =>
-            _scope.Value.UnitOfWorkCore.CompleteAsync();
+        public MicroProcessorContext Context =>
+            _scope.Value;
 
         protected override void DisposeManagedResources()
         {

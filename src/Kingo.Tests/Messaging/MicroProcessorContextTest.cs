@@ -15,9 +15,9 @@ namespace Kingo.Messaging
         [TestMethod]
         public void Token_IsNone_IfSpecifiedTokenIsNull()
         {
-            using (CreateScope(new MessageHandlerContext(Principal)))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                Assert.AreEqual(CancellationToken.None, CurrentContext.Token);
+                Assert.AreEqual(CancellationToken.None, scope.Context.Token);
             }
         }
 
@@ -26,9 +26,9 @@ namespace Kingo.Messaging
         {
             var token = new CancellationToken();
 
-            using (CreateScope(new MessageHandlerContext(Principal, token)))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal, token)))
             {
-                Assert.AreEqual(token, CurrentContext.Token);
+                Assert.AreEqual(token, scope.Context.Token);
             }
         }
 
@@ -40,9 +40,9 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MessageStackIndexer_Throws_IfIndexIsNegative()
         {
-            using (CreateScope(new MessageHandlerContext(Principal)))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                CurrentContext.StackTrace[-1].IgnoreValue();
+                scope.Context.StackTrace[-1].IgnoreValue();
             }
         }
 
@@ -50,9 +50,9 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MessageStackIndexer_Throws_IfIndexIsZero_And_NoMessageHasBeenPushed()
         {
-            using (CreateScope(new MessageHandlerContext(Principal)))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                CurrentContext.StackTrace[0].IgnoreValue();
+                scope.Context.StackTrace[0].IgnoreValue();
             }
         }
 
@@ -60,9 +60,9 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MessageStackIndexer_Throws_IfIndexIsGreaterThanZero()
         {
-            using (CreateScope(new MessageHandlerContext(Principal)))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                CurrentContext.StackTrace[1].IgnoreValue();
+                scope.Context.StackTrace[1].IgnoreValue();
             }
         }
 
@@ -74,20 +74,20 @@ namespace Kingo.Messaging
             var context = new MessageHandlerContext(Principal);
             var message = new object();
 
-            using (CreateScope(context))
+            using (var scope = CreateScope(context))
             {
-                context.StackTraceCore.Push(MessageInfo.FromInputStream(message));
+                context.StackTraceCore.Push(new MicroProcessorOperation(MicroProcessorOperationTypes.InputStream, message));
 
-                Assert.IsNotNull(CurrentContext.StackTrace);
-                Assert.AreEqual(1, CurrentContext.StackTrace.Count);
-                Assert.AreEqual(1, CurrentContext.StackTrace.Count());
+                Assert.IsNotNull(scope.Context.StackTrace);
+                Assert.AreEqual(1, scope.Context.StackTrace.Count);
+                Assert.AreEqual(1, scope.Context.StackTrace.Count());
 
-                Assert.IsNotNull(CurrentContext.StackTrace.Current);
-                Assert.AreSame(message, CurrentContext.StackTrace.Current.Message);
-                Assert.AreSame(message, CurrentContext.StackTrace[0].Message);
+                Assert.IsNotNull(scope.Context.StackTrace.CurrentOperation);
+                Assert.AreSame(message, scope.Context.StackTrace.CurrentOperation.Message);
+                Assert.AreSame(message, scope.Context.StackTrace[0].Message);
 
-                Assert.AreEqual(expectedStringValue, CurrentContext.StackTrace.ToString());
-                Assert.AreEqual(expectedStringValue, CurrentContext.ToString());                                
+                Assert.AreEqual(expectedStringValue, scope.Context.StackTrace.ToString());
+                Assert.AreEqual(expectedStringValue, scope.Context.ToString());                                
             }
         }
 
@@ -100,22 +100,22 @@ namespace Kingo.Messaging
             var messageA = new object();
             int messageB = 10;
 
-            using (CreateScope(context))
+            using (var scope = CreateScope(context))
             {
-                context.StackTraceCore.Push(MessageInfo.FromInputStream(messageA));
-                context.StackTraceCore.Push(MessageInfo.FromOutputStream(messageB));
+                context.StackTraceCore.Push(new MicroProcessorOperation(MicroProcessorOperationTypes.InputStream, messageA));
+                context.StackTraceCore.Push(new MicroProcessorOperation(MicroProcessorOperationTypes.OutputStream, messageB));
 
-                Assert.IsNotNull(CurrentContext.StackTrace);
-                Assert.AreEqual(2, CurrentContext.StackTrace.Count);
-                Assert.AreEqual(2, CurrentContext.StackTrace.Count());
+                Assert.IsNotNull(scope.Context.StackTrace);
+                Assert.AreEqual(2, scope.Context.StackTrace.Count);
+                Assert.AreEqual(2, scope.Context.StackTrace.Count());
 
-                Assert.IsNotNull(CurrentContext.StackTrace.Current);
-                Assert.AreEqual(messageB, CurrentContext.StackTrace.Current.Message);
-                Assert.AreEqual(messageB, CurrentContext.StackTrace[0].Message);
-                Assert.AreSame(messageA, CurrentContext.StackTrace[1].Message);
+                Assert.IsNotNull(scope.Context.StackTrace.CurrentOperation);
+                Assert.AreEqual(messageB, scope.Context.StackTrace.CurrentOperation.Message);
+                Assert.AreEqual(messageB, scope.Context.StackTrace[0].Message);
+                Assert.AreSame(messageA, scope.Context.StackTrace[1].Message);
 
-                Assert.AreEqual(expectedStringValue, CurrentContext.StackTrace.ToString());
-                Assert.AreEqual(expectedStringValue, CurrentContext.ToString());
+                Assert.AreEqual(expectedStringValue, scope.Context.StackTrace.ToString());
+                Assert.AreEqual(expectedStringValue, scope.Context.ToString());
             }
         }
 
@@ -127,9 +127,9 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(ArgumentNullException))]
         public void EnlistAsync_Throws_IfUnitOfWorkIsNull()
         {
-            using (CreateScope(new MessageHandlerContext(Principal)))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                CurrentContext.UnitOfWork.EnlistAsync(null);
+                scope.Context.UnitOfWork.EnlistAsync(null);
             }
         }
 
@@ -138,41 +138,13 @@ namespace Kingo.Messaging
         {
             var unitOfWork = new UnitOfWorkSpy(false);
 
-            using (CreateScope(new MessageHandlerContext(Principal)))
+            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
+                await scope.Context.UnitOfWork.EnlistAsync(unitOfWork);
             }
             unitOfWork.AssertRequiresFlushCountIs(0);
             unitOfWork.AssertFlushCountIs(0);
-        }
-
-        [TestMethod]
-        public async Task EnlistAsync_DoesNotFlushUnitOfWork_IfContextIsAlreadyFlushing_And_UnitOfWorkDoesNotRequireFlush()
-        {
-            var unitOfWork = new UnitOfWorkSpy(false);
-
-            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
-            {
-                await scope.CompleteAsync();
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
-            }
-            unitOfWork.AssertRequiresFlushCountIs(1);
-            unitOfWork.AssertFlushCountIs(0);
-        }
-
-        [TestMethod]
-        public async Task EnlistAsync_FlushesUnitOfWork_IfContextIsAlreadyFlushing_And_UnitOfWorkRequiresFlush()
-        {
-            var unitOfWork = new UnitOfWorkSpy(true);
-
-            using (var scope = CreateScope(new MessageHandlerContext(Principal)))
-            {
-                await scope.CompleteAsync();
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
-            }
-            unitOfWork.AssertRequiresFlushCountIs(1);
-            unitOfWork.AssertFlushCountIs(1);
-        }
+        }               
 
         [TestMethod]
         public async Task EnlistAsync_FlushesUnitOfWorkOnlyOnce_IfUnitOfWorkIsEnlistedTwice_And_ResourceIdsAreEqual()
@@ -181,9 +153,9 @@ namespace Kingo.Messaging
 
             using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
-                await scope.CompleteAsync();                
+                await scope.Context.UnitOfWork.EnlistAsync(unitOfWork);
+                await scope.Context.UnitOfWork.EnlistAsync(unitOfWork);
+                await scope.Context.UnitOfWork.FlushAsync();
             }
             unitOfWork.AssertRequiresFlushCountIs(1);
             unitOfWork.AssertFlushCountIs(1);
@@ -196,9 +168,9 @@ namespace Kingo.Messaging
 
             using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork, new object());
-                await scope.CompleteAsync();
+                await scope.Context.UnitOfWork.EnlistAsync(unitOfWork);
+                await scope.Context.UnitOfWork.EnlistAsync(unitOfWork, new object());
+                await scope.Context.UnitOfWork.FlushAsync();
             }
             unitOfWork.AssertRequiresFlushCountIs(2);
             unitOfWork.AssertFlushCountIs(2);
@@ -206,44 +178,43 @@ namespace Kingo.Messaging
 
         #endregion
 
-        #region [====== CompleteAsync ======]
+        #region [====== FlushAsync ======]
 
         [TestMethod]
-        public async Task CompleteAsync_DoesNotFlushUnitOfWork_IfUnitOfWorkDoesNotRequireFlush()
+        public async Task FlushAsync_DoesNotFlushUnitOfWork_IfUnitOfWorkDoesNotRequireFlush()
         {
             var unitOfWork = new UnitOfWorkSpy(false);
 
             using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
-                await scope.CompleteAsync();
+                await scope.Context.UnitOfWork.EnlistAsync(unitOfWork);
+                await scope.Context.UnitOfWork.FlushAsync();
             }
             unitOfWork.AssertRequiresFlushCountIs(1);
             unitOfWork.AssertFlushCountIs(0);
         }
 
         [TestMethod]
-        public async Task CompleteAsync_FlushesUnitOfWork_IfUnitOfWorkRequiresFlush()
+        public async Task FlushAsync_FlushesUnitOfWork_IfUnitOfWorkRequiresFlush()
         {
             var unitOfWork = new UnitOfWorkSpy(true);
 
             using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                await CurrentContext.UnitOfWork.EnlistAsync(unitOfWork);
-                await scope.CompleteAsync();
+                await scope.Context.UnitOfWork.EnlistAsync(unitOfWork);
+                await scope.Context.UnitOfWork.FlushAsync();
             }
             unitOfWork.AssertRequiresFlushCountIs(1);
             unitOfWork.AssertFlushCountIs(1);
         }        
 
-        [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public async Task CompleteAsync_DoesNothing_IfCalledMoreThanOnce()
+        [TestMethod]        
+        public async Task FlushAsync_DoesNothing_IfCalledMoreThanOnce()
         {
             using (var scope = CreateScope(new MessageHandlerContext(Principal)))
             {
-                await scope.CompleteAsync();
-                await scope.CompleteAsync();
+                await scope.Context.UnitOfWork.FlushAsync();
+                await scope.Context.UnitOfWork.FlushAsync();
             }
         }
 
@@ -254,14 +225,11 @@ namespace Kingo.Messaging
         {
             using (CreateScope(new MessageHandlerContext(Principal))) { }
 
-            Assert.AreEqual(0, CurrentContext.StackTrace.Count);
+            Assert.IsTrue(MicroProcessorContext.Current.StackTrace.IsEmpty);
         }        
 
         private static IPrincipal Principal =>
-            Thread.CurrentPrincipal;
-
-        private static IMicroProcessorContext CurrentContext =>
-            MicroProcessorContext.Current;
+            Thread.CurrentPrincipal;        
 
         private static MicroProcessorContextScope CreateScope(MicroProcessorContext context) =>
             MicroProcessorContext.CreateScope(context);

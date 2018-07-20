@@ -7,18 +7,14 @@ namespace Kingo.Messaging
     internal sealed class ExecuteQueryAsyncMethod<TMessageIn, TMessageOut> : ExecuteAsyncMethod<TMessageOut>
     {
         public static Task<TMessageOut> Invoke(MicroProcessor processor, IQuery<TMessageIn, TMessageOut> query, TMessageIn message, CancellationToken? token) =>
-            Invoke(new ExecuteQueryAsyncMethod<TMessageIn, TMessageOut>(processor, new QueryContext(processor.Principal, token), query, message));
-
-        private readonly IQuery<TMessageIn, TMessageOut> _query;
-        private readonly TMessageIn _message;
+            Invoke(new ExecuteQueryAsyncMethod<TMessageIn, TMessageOut>(processor, new QueryContext(processor.Principal, token), query, message));        
 
         private ExecuteQueryAsyncMethod(MicroProcessor processor, QueryContext context, IQuery<TMessageIn, TMessageOut> query, TMessageIn message)
         {
             Processor = processor;
             Context = context;            
-
-            _query = query;
-            _message = message;
+            Query = query;
+            Message = message;
         }
 
         protected override MicroProcessor Processor
@@ -31,13 +27,23 @@ namespace Kingo.Messaging
             get;
         }
 
+        private IQuery<TMessageIn, TMessageOut> Query
+        {
+            get;
+        }
+
+        private TMessageIn Message
+        {
+            get;
+        }
+
         protected override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryCore()
         {
-            Context.StackTraceCore.Push(MessageInfo.FromQuery(_message));
+            Context.StackTraceCore.Push(MicroProcessorOperationTypes.Query, Message);
 
             try
             {
-                return await Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(_query, _message)).InvokeAsync(Context);
+                return await Processor.Pipeline.Build(new QueryDecorator<TMessageIn, TMessageOut>(Query, Message)).InvokeAsync(Context);
             }
             finally
             {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Resources;
 using Kingo.Threading;
@@ -64,10 +63,8 @@ namespace Kingo.Messaging
                 set => throw NewCacheNotSupportedException();
             }
 
-            public void Remove(string key)
-            {
+            public void Remove(string key) =>
                 throw NewCacheNotSupportedException();
-            }
 
             private static Exception NewCacheNotSupportedException() =>
                 new InvalidOperationException(ExceptionMessages.NullCache_CacheNotSupported);
@@ -96,10 +93,7 @@ namespace Kingo.Messaging
             _controller.RequiresFlush();
         
         public Task FlushAsync() =>
-            _controller.FlushAsync();
-
-        internal Task CompleteAsync() =>
-            Interlocked.Exchange(ref _controller, new NullController(_cache)).FlushAsync();        
+            _controller.FlushAsync();               
 
         protected override void DisposeManagedResources()
         {

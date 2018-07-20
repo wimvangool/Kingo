@@ -22,7 +22,10 @@ namespace Kingo.Messaging
         public IClaimsProvider ClaimsProvider =>
             Current.ClaimsProvider;
 
-        public IMessageStackTrace StackTrace =>
+        public MicroProcessorOperationTypes OperationType =>
+            Current.OperationType;
+
+        public IStackTrace StackTrace =>
             Current.StackTrace;
 
         public IUnitOfWorkController UnitOfWork =>

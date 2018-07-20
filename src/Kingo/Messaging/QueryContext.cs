@@ -21,10 +21,13 @@ namespace Kingo.Messaging
         #endregion                
 
         public QueryContext(IPrincipal principal, CancellationToken? token = null) :
-            base(principal, token, new MessageStackTrace(MessageSources.Query))
+            base(principal, token, new StackTrace())
         {           
             OutputStreamCore = new NullOutputStream();            
-        }        
+        }
+
+        public override IUnitOfWorkController UnitOfWork =>
+            UnitOfWorkController.None;
 
         internal override EventStream OutputStreamCore
         {

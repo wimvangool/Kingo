@@ -24,10 +24,10 @@ namespace Kingo.Messaging
         /// Initializes a new instance of the <see cref="MessageHandlerAttribute" /> class.
         /// </summary>
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
-        /// <param name="sources">Specifies which source(s) the message is accepted from.</param>
-        public MessageHandlerAttribute(InstanceLifetime lifetime, MessageSources sources)
+        /// <param name="operationTypes">Specifies during which operation types this handler should be used (input-stream, output-stream or both).</param>
+        public MessageHandlerAttribute(InstanceLifetime lifetime, MicroProcessorOperationTypes operationTypes)
         {
-            _configuration = new MessageHandlerConfiguration(lifetime, sources);
+            _configuration = new MessageHandlerConfiguration(lifetime, operationTypes);
         }
 
         /// <summary>
@@ -37,10 +37,10 @@ namespace Kingo.Messaging
             _configuration.Lifetime;
 
         /// <summary>
-        /// Specifies which source(s) the message is accepted from.
+        /// Specifies during which operation types this handler should be used (input-stream, output-stream or both).
         /// </summary>
-        public MessageSources Sources =>
-            _configuration.Sources;
+        public MicroProcessorOperationTypes OperationTypes =>
+            _configuration.OperationTypes;
 
         /// <inheritdoc />
         public override string ToString() =>

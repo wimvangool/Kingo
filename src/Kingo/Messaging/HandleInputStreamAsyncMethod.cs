@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.Messaging.Domain;
 
 namespace Kingo.Messaging
 {
@@ -17,45 +16,15 @@ namespace Kingo.Messaging
             {
                 return MessageStream.Empty;
             }
-            try
-            {
-                return await Invoke(processor, inputStream, new MessageHandlerContext(processor.Principal, token));
-            }
-            catch (ConcurrencyException exception)
-            {
-                if (inputStream.Count == 1 && processor.IsCommand(inputStream[0]))
-                {
-                    throw exception.AsBadRequestException(exception.Message);
-                }
-                throw exception.AsInternalServerErrorException(exception.Message);
-            }
-            catch (InternalProcessorException exception)
-            {
-                throw exception.AsInternalServerErrorException(exception.Message);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (ExternalProcessorException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                throw InternalServerErrorException.FromInnerException(exception);
-            }            
+            return await Invoke(processor, inputStream, new MessageHandlerContext(processor.Principal, token));                      
         }
 
         private static async Task<IMessageStream> Invoke(MicroProcessor processor, IMessageStream inputStream, MessageHandlerContext context)
         {
-            using (var scope = MicroProcessorContext.CreateScope(context))
+            using (MicroProcessorContext.CreateScope(context))
             {
                 var method = new HandleInputStreamAsyncMethod(processor, context);
-
-                await inputStream.HandleMessagesWithAsync(method);
-                await scope.CompleteAsync();
-               
+                await inputStream.HandleMessagesWithAsync(method);                               
                 return method.OutputStream;
             }
         }
@@ -83,34 +52,52 @@ namespace Kingo.Messaging
             set;
         }
 
-        public async Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
+        public Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler) =>
+            HandleAsync(message, handler, Context.StackTrace.IsEmpty ? MicroProcessorOperationTypes.InputStream : MicroProcessorOperationTypes.OutputStream);
+
+        private async Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler, MicroProcessorOperationTypes operationType)
         {
             Context.Token.ThrowIfCancellationRequested();
-            Context.StackTraceCore.Push(CreateMessageInfo(message));
+            Context.StackTraceCore.Push(operationType, message);
 
-            // Every event that is published to the context's OutputStream is added to the final output stream.
-            if (Context.StackTraceCore.CurrentSource == MessageSources.OutputStream)
-            {
-                OutputStream = OutputStream.Append(message);
+            try
+            {                
+                if (operationType == MicroProcessorOperationTypes.InputStream)
+                {
+                    await HandleInputMessageAsync(message, handler);
+                }
+                else if (operationType == MicroProcessorOperationTypes.OutputStream)
+                {
+                    await HandleOutputMessageAsync(message, handler);
+                }
             }
+            finally
+            {
+                Context.StackTraceCore.Pop();
+            }
+        }
+
+        private async Task HandleInputMessageAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
+        {
             try
             {
-                await HandleAsyncCore(message, handler);
-            }            
+                await HandleMessageAsync(message, handler);
+                await Context.UnitOfWorkCore.FlushAsync();
+            }
             catch (InternalProcessorException exception)
             {
                 // Only commands should be converted to BadRequestExceptions if an InternalProcessorException occurs.
-                if (IsCommand(message))
+                if (Processor.IsCommand(message))
                 {
                     throw exception.AsBadRequestException(exception.Message);
                 }
                 throw exception.AsInternalServerErrorException(exception.Message);
-            }
-            catch (OperationCanceledException)
+            }            
+            catch (ExternalProcessorException)
             {
                 throw;
             }
-            catch (ExternalProcessorException)
+            catch (OperationCanceledException)
             {
                 throw;
             }
@@ -120,22 +107,36 @@ namespace Kingo.Messaging
             }
             finally
             {
-                Context.StackTraceCore.Pop();
                 Context.Token.ThrowIfCancellationRequested();
             }
-        }
+        }       
 
-        private MessageInfo CreateMessageInfo(object message) =>
-            Context.StackTraceCore.IsEmpty ? MessageInfo.FromInputStream(message) : MessageInfo.FromOutputStream(message);
+        private async Task HandleOutputMessageAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
+        {
+            OutputStream = OutputStream.Append(message);
 
-        private async Task HandleAsyncCore<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
+            try
+            {
+                await HandleMessageAsync(message, handler);
+            }
+            catch (InternalProcessorException exception)
+            {
+                throw exception.AsInternalServerErrorException(exception.Message);
+            }
+            finally
+            {
+                Context.Token.ThrowIfCancellationRequested();
+            }
+        }            
+
+        private async Task HandleMessageAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
         {
             // If a specific handler to handle the message was specified, that handler is used.
             // If not, then the MessageHandlerFactory is used to instantiate a set of handlers.
             // If the factory cannot find any appropriate handlers, the message is ignored.
             if (handler == null)
             {
-                foreach (var resolvedHandler in Processor.MessageHandlerFactory.ResolveMessageHandlers(Context.StackTraceCore.CurrentSource, message))
+                foreach (var resolvedHandler in Processor.MessageHandlerFactory.ResolveMessageHandlers(Context.OperationType, message))
                 {
                     await InvokeMessageHandlerAsync(resolvedHandler);
                 }
@@ -168,9 +169,6 @@ namespace Kingo.Messaging
             {
                 Context.Reset();
             }    
-        }
-
-        private bool IsCommand(object message) =>
-            Context.StackTraceCore.CurrentSource == MessageSources.InputStream && Processor.IsCommand(message);        
+        }               
     }
 }

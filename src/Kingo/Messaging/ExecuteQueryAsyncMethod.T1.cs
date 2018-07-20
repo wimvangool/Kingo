@@ -7,16 +7,13 @@ namespace Kingo.Messaging
     internal sealed class ExecuteQueryAsyncMethod<TMessageOut> : ExecuteAsyncMethod<TMessageOut>
     {
         public static Task<TMessageOut> Invoke(MicroProcessor processor, IQuery<TMessageOut> query, CancellationToken? token) =>
-            Invoke(new ExecuteQueryAsyncMethod<TMessageOut>(processor, new QueryContext(processor.Principal, token), query));
-
-        private readonly IQuery<TMessageOut> _query;
+            Invoke(new ExecuteQueryAsyncMethod<TMessageOut>(processor, new QueryContext(processor.Principal, token), query));        
 
         private ExecuteQueryAsyncMethod(MicroProcessor processor, QueryContext context, IQuery<TMessageOut> query)
         {
             Processor = processor;
             Context = context;            
-
-            _query = query;
+            Query = query;
         }
 
         protected override MicroProcessor Processor
@@ -29,19 +26,25 @@ namespace Kingo.Messaging
             get;
         }
 
-        protected override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryCore()
+        private IQuery<TMessageOut> Query
         {
-            Context.StackTraceCore.Push(MessageInfo.FromQuery());
+            get;
+        }
+
+        protected override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryCore()
+        {           
+            Context.StackTraceCore.Push(MicroProcessorOperationTypes.Query, null);
 
             try
             {
-                return await Processor.Pipeline.Build(new QueryDecorator<TMessageOut>(_query)).InvokeAsync(Context);
+                return await Processor.Pipeline.Build(new QueryDecorator<TMessageOut>(Query)).InvokeAsync(Context);
             }
             finally
             {
-                Context.StackTraceCore.Pop();
+                Context.StackTraceCore.Pop();                
             }
-        }            
+        }
+            
 
         protected override BadRequestException NewBadRequestException(InternalProcessorException exception, string message) =>
             exception.AsBadRequestException(message);

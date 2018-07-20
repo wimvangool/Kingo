@@ -107,7 +107,7 @@ namespace Kingo.Messaging
 
         private sealed class EventC { }
 
-        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.InputStream | MessageSources.OutputStream)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MicroProcessorOperationTypes.InputStream | MicroProcessorOperationTypes.OutputStream)]
         private sealed class SomeCommandHandler : IMessageHandler<SomeCommand>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -121,7 +121,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.All)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MicroProcessorOperationTypes.All)]
         private sealed class EventHandlerAB : IMessageHandler<EventA>, IMessageHandler<EventB>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -138,7 +138,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.All)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MicroProcessorOperationTypes.All)]
         private sealed class EventHandlerC : IMessageHandler<EventC>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -152,7 +152,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.All)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MicroProcessorOperationTypes.All)]
         private sealed class ObjectHandler : IMessageHandler<object>, IMessageHandler<string>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -169,7 +169,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.InputStream)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MicroProcessorOperationTypes.InputStream)]
         private sealed class ExternalMessageHandler : IMessageHandler<EventA>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -183,7 +183,7 @@ namespace Kingo.Messaging
                 _implementation.HandleAsync(message, context, GetType());
         }
 
-        [MessageHandler(InstanceLifetime.PerUnitOfWork, MessageSources.OutputStream)]
+        [MessageHandler(InstanceLifetime.PerUnitOfWork, MicroProcessorOperationTypes.OutputStream)]
         private sealed class InternalMessageHandler : IMessageHandler<EventB>
         {
             private readonly IMessageHandlerImplementation _implementation;
@@ -562,8 +562,7 @@ namespace Kingo.Messaging
             {
                 await context.UnitOfWork.EnlistAsync(unitOfWork);
 
-                context.OutputStream.Publish(eventA);
-                
+                context.OutputStream.Publish(eventA);                
             });
 
             _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
@@ -866,7 +865,7 @@ namespace Kingo.Messaging
 
             Assert.AreSame(await _processor.ExecuteAsync(context =>
             {
-                Assert.AreEqual(MessageSources.Query, context.StackTrace.CurrentSource);
+                Assert.AreEqual(MicroProcessorOperationTypes.Query, context.StackTrace.CurrentOperation.Type);
                 Assert.AreEqual(1, context.StackTrace.Count);
                 return messageOut;
             }), messageOut);
@@ -925,34 +924,7 @@ namespace Kingo.Messaging
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_1_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsConcurrencyException()
-        {
-            var concurrencyException = new Domain.ConcurrencyException();
-            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
-
-            try
-            {
-                await _processor.ExecuteAsync(async context =>
-                {
-                    await context.UnitOfWork.EnlistAsync(unitOfWork);
-                    return new object();
-                });
-            }
-            catch (InternalServerErrorException exception)
-            {                
-                Assert.AreSame(concurrencyException, exception.InnerException);
-                throw;
-            }
-            finally
-            {
-                unitOfWork.AssertRequiresFlushCountIs(1);
-                unitOfWork.AssertFlushCountIs(1);
-            }
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
@@ -1135,35 +1107,7 @@ namespace Kingo.Messaging
                 Assert.AreSame(randomException, exception.InnerException);
                 throw;
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InternalServerErrorException))]
-        public async Task ExecuteAsync_2_ThrowsInternalServerErrorException_IfUnitOfWorkThrowsConcurrencyException()
-        {
-            var messageIn = new object();
-            var concurrencyException = new Domain.ConcurrencyException();
-            var unitOfWork = new UnitOfWorkSpy(true, concurrencyException);
-
-            try
-            {
-                await _processor.ExecuteAsync(messageIn, async (message, context) =>
-                {
-                    await context.UnitOfWork.EnlistAsync(unitOfWork);
-                    return new object();
-                });
-            }
-            catch (InternalServerErrorException exception)
-            {                
-                Assert.AreSame(concurrencyException, exception.InnerException);
-                throw;
-            }
-            finally
-            {
-                unitOfWork.AssertRequiresFlushCountIs(1);
-                unitOfWork.AssertFlushCountIs(1);
-            }
-        }
+        }       
 
         [TestMethod]
         [ExpectedException(typeof(InternalServerErrorException))]
@@ -1263,7 +1207,7 @@ namespace Kingo.Messaging
 
             public override async Task<InvokeAsyncResult<IMessageStream>> InvokeMessageHandlerAsync(MessageHandler handler, MicroProcessorContext context)
             {
-                if (context.StackTrace.CurrentSource == MessageSources.InputStream)
+                if (context.StackTrace.CurrentOperation.Type == MicroProcessorOperationTypes.InputStream)
                 {
                     if (_afterHandleAsync)
                     {
@@ -1351,7 +1295,7 @@ namespace Kingo.Messaging
             }
         }
 
-        private static void AssertMessageStack(IMessageStackTrace stackTrace, object message, params object[] expectedMessages)
+        private static void AssertMessageStack(IStackTrace stackTrace, object message, params object[] expectedMessages)
         {
             Assert.AreEqual(expectedMessages.Length, stackTrace.Count);
             var index = expectedMessages.Length - 1;

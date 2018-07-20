@@ -134,7 +134,7 @@ namespace Kingo.Messaging
         /// <param name="pipeline">The pipeline to configure.</param>
         /// <returns>The configured pipeline.</returns>
         protected virtual MicroProcessorPipeline BuildPipeline(MicroProcessorPipeline pipeline) =>
-            pipeline;
+            pipeline;       
 
         #endregion
     }

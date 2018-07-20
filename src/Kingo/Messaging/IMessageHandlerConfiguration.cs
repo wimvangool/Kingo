@@ -14,9 +14,9 @@
         }
 
         /// <summary>
-        /// Specifies which source(s) the message is accepted from.
+        /// Specifies during which operation types this handler should be used (input-stream, output-stream or both).
         /// </summary>
-        MessageSources Sources
+        MicroProcessorOperationTypes OperationTypes
         {
             get;
         }

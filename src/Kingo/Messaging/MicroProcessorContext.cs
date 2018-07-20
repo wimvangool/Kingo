@@ -29,7 +29,10 @@ namespace Kingo.Messaging
             public IClaimsProvider ClaimsProvider =>
                 new ClaimsProvider(Principal);
 
-            public IMessageStackTrace StackTrace
+            public MicroProcessorOperationTypes OperationType =>
+                MicroProcessorOperationTypes.None;
+
+            public IStackTrace StackTrace
             {
                 get;
             }
@@ -49,12 +52,15 @@ namespace Kingo.Messaging
                 string.Empty;
         }        
 
-        private sealed class EmpyStackTrace : EmptyList<MessageInfo>, IMessageStackTrace
+        private sealed class EmpyStackTrace : EmptyList<MicroProcessorOperation>, IStackTrace
         {
-            public MessageSources CurrentSource =>
-                MessageSources.None;
+            public MicroProcessorOperationTypes CurrentSource =>
+                MicroProcessorOperationTypes.None;
 
-            MessageInfo IMessageStackTrace.Current =>
+            public bool IsEmpty =>
+                true;
+
+            MicroProcessorOperation IStackTrace.CurrentOperation =>
                 null;
 
             public override string ToString() =>
@@ -84,12 +90,11 @@ namespace Kingo.Messaging
 
         #region [====== IMicroProcessorContext ======]                              
 
-        internal MicroProcessorContext(IPrincipal principal, CancellationToken? token, MessageStackTrace stackTrace)
+        internal MicroProcessorContext(IPrincipal principal, CancellationToken? token, StackTrace stackTrace)
         {
             Principal = principal;
             ClaimsProvider = new ClaimsProvider(principal);
-            StackTraceCore = stackTrace;
-            UnitOfWorkCore = new UnitOfWorkController();            
+            StackTraceCore = stackTrace;            
             Token = token ?? CancellationToken.None;
         }
 
@@ -106,22 +111,23 @@ namespace Kingo.Messaging
         }
 
         /// <inheritdoc />
-        public IMessageStackTrace StackTrace =>
+        public MicroProcessorOperationTypes OperationType =>
+            StackTrace.IsEmpty ? MicroProcessorOperationTypes.None : StackTrace.CurrentOperation.Type;
+
+        /// <inheritdoc />
+        public IStackTrace StackTrace =>
             StackTraceCore;
 
-        internal MessageStackTrace StackTraceCore
+        internal StackTrace StackTraceCore
         {
             get;
         }
 
         /// <inheritdoc />
-        public IUnitOfWorkController UnitOfWork =>
-            UnitOfWorkCore;
-
-        internal UnitOfWorkController UnitOfWorkCore
+        public abstract IUnitOfWorkController UnitOfWork
         {
             get;
-        }
+        }        
 
         /// <inheritdoc />
         public IEventStream OutputStream =>
@@ -136,15 +142,7 @@ namespace Kingo.Messaging
         public CancellationToken Token
         {
             get;
-        }
-
-        /// <inheritdoc />
-        protected override void DisposeManagedResources()
-        {            
-            UnitOfWorkCore.Dispose();
-
-            base.DisposeManagedResources();
-        }
+        }        
 
         /// <inheritdoc />
         public override string ToString() =>

@@ -25,9 +25,17 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
+        /// Returns the type of operation that is currently being performed by this processor.
+        /// </summary>
+        MicroProcessorOperationTypes OperationType
+        {
+            get;
+        }
+
+        /// <summary>
         /// Returns the logical call-stack, containing information about the messages that are currently being handled or executed by the processor.
         /// </summary>
-        IMessageStackTrace StackTrace
+        IStackTrace StackTrace
         {
             get;
         }
@@ -41,8 +49,7 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Represents the stream of events that is published during a unit of work. All output event will be handled by
-        /// <see cref="IMessageHandler{T}" /> classes that accept message of source <see cref="MessageSources.OutputStream" />.
+        /// Represents the stream of events that is published during a unit of work.
         /// </summary>
         IEventStream OutputStream
         {

@@ -145,7 +145,7 @@
     <Compile Include="Messaging\MessageHandlerFactoryStub.cs" />
     <Compile Include="Messaging\MessageHandlerOrQuery.cs" />
     <Compile Include="Messaging\MessageHandlerOrQuery.T1.cs" />
-    <Compile Include="Messaging\MessageStackTrace.cs" />
+    <Compile Include="Messaging\StackTrace.cs" />
     <Compile Include="Messaging\HandleAsyncResult.cs" />
     <Compile Include="Messaging\MicroProcessor.cs" />
     <Compile Include="Messaging\MicroProcessorExtensions.cs" />
@@ -164,7 +164,7 @@
     <Compile Include="Messaging\TypeAttributeProvider.cs" />
     <Compile Include="Messaging\ITypeAttributeProvider.cs" />
     <Compile Include="Messaging\IMethodAttributeProvider.cs" />
-    <Compile Include="Messaging\MessageInfo.cs" />
+    <Compile Include="Messaging\MicroProcessorOperation.cs" />
     <Compile Include="Messaging\MethodAttributeProvider.cs" />
     <Compile Include="Messaging\MicroProcessorContextRelay.cs" />
     <Compile Include="Messaging\UnauthorizedRequestException.cs" />
@@ -178,7 +178,7 @@
     <Compile Include="Messaging\BusinessRuleException.cs" />
     <Compile Include="Messaging\BadRequestException.cs" />
     <Compile Include="Messaging\IMessageHandler.T1.cs" />
-    <Compile Include="Messaging\IMessageStackTrace.cs" />
+    <Compile Include="Messaging\IStackTrace.cs" />
     <Compile Include="Messaging\IMicroProcessor.cs" />
     <Compile Include="Messaging\IMicroProcessorContext.cs" />
     <Compile Include="Messaging\EmptyMessageStream.cs" />
@@ -187,7 +187,7 @@
     <Compile Include="Messaging\IQuery.T1.cs" />
     <Compile Include="Messaging\IQuery.T2.cs" />
     <Compile Include="Messaging\IUnitOfWork.cs" />
-    <Compile Include="Messaging\MessageSources.cs" />
+    <Compile Include="Messaging\MicroProcessorOperationTypes.cs" />
     <Compile Include="Messaging\MessageStreamExtensions.cs" />
     <Compile Include="Messaging\MicroProcessorContext.cs" />
     <Compile Include="Messaging\MessageStream.cs" />

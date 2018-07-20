@@ -10,7 +10,7 @@
         /// </summary>
         protected ValidationFilterAttribute()
         {
-            Sources = MessageSources.Input;
+            OperationTypes = MicroProcessorOperationTypes.Input;
         }
 
         internal override void Accept(IMicroProcessorFilterAttributeVisitor visitor) =>

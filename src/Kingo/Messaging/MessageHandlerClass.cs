@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
@@ -32,9 +31,9 @@ namespace Kingo.Messaging
             return this;
         }
 
-        internal IEnumerable<MessageHandler> CreateInstancesInEveryRoleFor<TMessage>(MessageHandlerFactory factory, MessageSources source, TMessage message)
+        internal IEnumerable<MessageHandler> CreateInstancesInEveryRoleFor<TMessage>(MessageHandlerFactory factory, MicroProcessorOperationTypes operationType, TMessage message)
         {
-            if (IsAcceptedSource(_configuration.Sources, source))
+            if (IsSupportedOperationType(_configuration.OperationTypes, operationType))
             {
                 // This LINQ construct first selects all message handler interface definitions that are compatible with
                 // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -96,8 +95,8 @@ namespace Kingo.Messaging
             }).Invoke(factory.Resolve(_type), message, _type, interfaceType);                                   
         }
 
-        private static bool IsAcceptedSource(MessageSources sources, MessageSources source) =>
-             (sources & source) == source;
+        private static bool IsSupportedOperationType(MicroProcessorOperationTypes supportedTypes, MicroProcessorOperationTypes type) =>
+             supportedTypes.HasFlag(type);
 
         /// <inheritdoc />
         public override string ToString() =>

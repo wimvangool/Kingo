@@ -36,11 +36,9 @@ namespace Kingo.Messaging
 
         private async Task<TMessageOut> InvokeCore()
         {            
-            using (var scope = MicroProcessorContext.CreateScope(Context))
+            using (MicroProcessorContext.CreateScope(Context))
             {
-                var messageOut = await InvokeQuery();
-                await scope.CompleteAsync();
-                return messageOut;
+                return await InvokeQuery();                
             }            
         }             
 

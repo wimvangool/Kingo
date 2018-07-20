@@ -14,13 +14,13 @@ namespace Kingo.Messaging
         /// </summary>
         protected MicroProcessorFilterAttribute()
         {
-            Sources = MessageSources.All;
+            OperationTypes = MicroProcessorOperationTypes.All;
         }
 
         /// <summary>                 
         /// Indicates for which message sources this filter will be used.
         /// </summary>
-        public MessageSources Sources
+        public MicroProcessorOperationTypes OperationTypes
         {
             get;
             set;
@@ -28,7 +28,7 @@ namespace Kingo.Messaging
 
         /// <inheritdoc />
         public virtual bool IsEnabled(IMicroProcessorContext context) =>
-            Sources.HasFlag(context.StackTrace.CurrentSource);
+            OperationTypes.HasFlag(context.OperationType);                    
 
         internal abstract void Accept(IMicroProcessorFilterAttributeVisitor visitor);
 

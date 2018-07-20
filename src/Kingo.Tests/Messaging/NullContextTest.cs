@@ -25,7 +25,7 @@ namespace Kingo.Messaging
         {                        
             Assert.IsNotNull(Context.StackTrace);
             Assert.AreEqual(0, Context.StackTrace.Count);
-            Assert.IsNull(Context.StackTrace.Current);
+            Assert.IsNull(Context.StackTrace.CurrentOperation);
             Assert.IsFalse(Context.StackTrace.Any());
             Assert.AreEqual(string.Empty, Context.StackTrace.ToString());
         }
