@@ -9,6 +9,72 @@ namespace Kingo.Messaging
     /// </summary>
     public sealed class HandleInputStreamMethod : MicroProcessorMethod<IMessageStream>, IMessageHandler
     {
+        #region [====== HandleMessageMethod ======]
+
+        private sealed class HandleMessageMethod<TMessage> : HandleMessageMethod
+        {
+            private readonly HandleInputStreamMethod _inputStreamMethod;
+            private readonly TMessage _message;
+            private readonly IMessageHandler<TMessage> _handler;
+
+            public HandleMessageMethod(HandleInputStreamMethod inputStreamMethod, TMessage message, IMessageHandler<TMessage> handler)
+            {
+                _inputStreamMethod = inputStreamMethod;
+                _message = message;
+                _handler = handler;
+            }
+
+            private MicroProcessor Processor =>
+                _inputStreamMethod._processor;
+
+            public override MicroProcessorContext Context =>
+                _inputStreamMethod._context;
+
+            public override async Task InvokeAsync()
+            {
+                // If a specific handler to handle the message was specified, that handler is used.
+                // If not, then the MessageHandlerFactory is used to instantiate a set of handlers.
+                // If the factory cannot find any appropriate handlers, the message is ignored.
+                if (_handler == null)
+                {
+                    foreach (var resolvedHandler in Processor.MessageHandlerFactory.ResolveMessageHandlers(Context.OperationType, _message))
+                    {
+                        await InvokeMessageHandlerAsync(resolvedHandler);
+                    }
+                }
+                else
+                {
+                    await InvokeMessageHandlerAsync(new MessageHandlerDecorator<TMessage>(_handler, _message));
+                }
+            }
+
+            private async Task InvokeMessageHandlerAsync(MessageHandler handler)
+            {
+                // Every message handler potentially yields a new stream of events, which is immediately handled by the processor
+                // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
+                // sub-tree of events is handled before the next event in the stream.
+                var outputStream = await InvokeMessageHandlerAsyncCore(handler);
+                if (outputStream.Count > 0)
+                {
+                    await outputStream.HandleMessagesWithAsync(_inputStreamMethod);
+                }
+            }
+
+            private async Task<IMessageStream> InvokeMessageHandlerAsyncCore(MessageHandler handler)
+            {
+                try
+                {
+                    return (await Processor.Pipeline.Build(handler).InvokeAsync(Context)).Value;
+                }
+                finally
+                {
+                    _inputStreamMethod._context.Reset();
+                }
+            }
+        }
+
+        #endregion
+
         private readonly MicroProcessor _processor;
         private readonly MessageHandlerContext _context;
         private readonly IMessageStream _inputStream;
@@ -135,46 +201,7 @@ namespace Kingo.Messaging
             }
         }            
 
-        private async Task HandleMessageAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler)
-        {
-            // If a specific handler to handle the message was specified, that handler is used.
-            // If not, then the MessageHandlerFactory is used to instantiate a set of handlers.
-            // If the factory cannot find any appropriate handlers, the message is ignored.
-            if (handler == null)
-            {
-                foreach (var resolvedHandler in _processor.MessageHandlerFactory.ResolveMessageHandlers(_context.OperationType, message))
-                {
-                    await InvokeMessageHandlerAsync(resolvedHandler);
-                }
-            }
-            else
-            {
-                await InvokeMessageHandlerAsync(new MessageHandlerDecorator<TMessage>(handler, message));
-            }
-        }
-
-        private async Task InvokeMessageHandlerAsync(MessageHandler handler)
-        {
-            // Every message handler potentially yields a new stream of events, which is immediately handled by the processor
-            // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
-            // sub-tree of events is handled before the next event in the stream.
-            var outputStream = await InvokeMessageHandlerAsyncCore(handler);
-            if (outputStream.Count > 0)
-            {
-                await outputStream.HandleMessagesWithAsync(this);
-            }
-        }            
-        
-        private async Task<IMessageStream> InvokeMessageHandlerAsyncCore(MessageHandler handler)
-        {
-            try
-            {
-                return (await _processor.Pipeline.Build(handler).InvokeAsync(_context)).Value;
-            }
-            finally
-            {
-                _context.Reset();
-            }    
-        }               
+        private Task HandleMessageAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler) =>
+            _processor.HandleMessageAsync(new HandleMessageMethod<TMessage>(this, message, handler));                     
     }
 }

@@ -9,6 +9,7 @@
         {                        
             Type = type;
             Message = message;
+            MessageAttributeProvider = Message == null ? TypeAttributeProvider.None : new TypeAttributeProvider(message.GetType());
         }        
 
         /// <summary>
@@ -25,7 +26,15 @@
         public object Message
         {
             get;
-        }        
+        }    
+        
+        /// <summary>
+        /// Returns the attribute-provider for the <see cref="Message"/> of this operation.
+        /// </summary>
+        public ITypeAttributeProvider MessageAttributeProvider
+        {
+            get;
+        }
 
         /// <inheritdoc />
         public override string ToString() =>

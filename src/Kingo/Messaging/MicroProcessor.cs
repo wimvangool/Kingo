@@ -147,6 +147,17 @@ namespace Kingo.Messaging
             InvokeAsync(method);
 
         /// <summary>
+        /// Handles a single message by invoking the specified <paramref name="method"/>.
+        /// </summary>
+        /// <param name="method">The method to invoke for handling the message.</param>
+        /// <returns>The task carrying out the operation.</returns>       
+        /// <exception cref="ExternalProcessorException">
+        /// Something went wrong while handling the message.
+        /// </exception>
+        protected internal virtual Task HandleMessageAsync(HandleMessageMethod method) =>
+            method.InvokeAsync();
+
+        /// <summary>
         /// Executes a query by invoking the specified <paramref name="method" />.
         /// </summary>        
         /// <param name="method">The method to invoke for executing the query.</param>

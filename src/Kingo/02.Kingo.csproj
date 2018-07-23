@@ -123,6 +123,7 @@
     <Compile Include="Messaging\ExecuteQueryMethodImplementation.T1.cs" />
     <Compile Include="Messaging\ExecuteQueryMethodImplementation.T2.cs" />
     <Compile Include="Messaging\HandleInputStreamMethod.cs" />
+    <Compile Include="Messaging\HandleMessageMethod.cs" />
     <Compile Include="Messaging\IClaimsProvider.cs" />
     <Compile Include="Messaging\IEventStream.cs" />
     <Compile Include="Messaging\IMicroProcessorFilter.cs" />
