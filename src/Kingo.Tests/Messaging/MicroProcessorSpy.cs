@@ -49,33 +49,26 @@ namespace Kingo.Messaging
                 .Register(_messageHandlers);
         }                    
 
-        public override Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)
+        protected override async Task<IMessageStream> HandleInputStreamAsync(HandleInputStreamMethod method)
         {
-            if (inputStream == null)
-            {
-                throw new ArgumentNullException(nameof(inputStream));
-            }
-            return AsyncMethod.RunSynchronously(async () =>
-            {
-                var performFinalAssert = true;
+            var performFinalAssert = true;
 
-                try
+            try
+            {
+                return await base.HandleInputStreamAsync(method);
+            }
+            catch
+            {
+                performFinalAssert = false;
+                throw;
+            }
+            finally
+            {
+                if (performFinalAssert)
                 {
-                    return await base.HandleStreamAsync(inputStream, token);
-                }        
-                catch
-                {
-                    performFinalAssert = false;
-                    throw;
-                }        
-                finally
-                {
-                    if (performFinalAssert)
-                    {
-                        _implementationSequence.AssertNoMoreInvocationsExpected();
-                    }                    
+                    _implementationSequence.AssertNoMoreInvocationsExpected();
                 }
-            }, token);                       
+            }
         }
 
         public void Add(MicroProcessorFilterAttribute filter) =>

@@ -65,19 +65,18 @@ namespace Kingo.Messaging
             SchemaMap.None;
 
         /// <inheritdoc />
-        public virtual Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null) =>
-            HandleInputStreamAsyncMethod.Invoke(this, inputStream, token);
-
-        /// <summary>
-        /// Handles the specified <paramref name="metadataStream"/> by invoking the specified <paramref name="handler"/>.
-        /// This method can be used to perform all necessary operations before and/or after handling a stream of metadata events,
-        /// such as creating or exitting a specific transaction scope.
-        /// </summary>
-        /// <param name="metadataStream">The stream to handler.</param>
-        /// <param name="handler">The handler to invoke.</param>
-        /// <returns>A task representing the operation.</returns>
-        protected internal virtual Task HandleMetadataStreamAsync(IMessageStream metadataStream, Func<IMessageStream, Task> handler) =>
-            handler.Invoke(metadataStream);
+        public Task<IMessageStream> HandleStreamAsync(IMessageStream inputStream, CancellationToken? token = null)
+        {
+            if (inputStream == null)
+            {
+                throw new ArgumentNullException(nameof(inputStream));
+            }
+            if (inputStream.Count == 0)
+            {
+                return Task.FromResult(MessageStream.Empty);
+            }
+            return HandleInputStreamAsync(new HandleInputStreamMethod(this, token, inputStream));
+        }        
 
         /// <summary>
         /// Determines whether or not the specified message is a Command. By default,
@@ -104,7 +103,7 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            return ExecuteQueryAsyncMethod<TMessageOut>.Invoke(this, query, token);
+            return ExecuteQueryAsync(new ExecuteQueryMethodImplementation<TMessageOut>(this, token, query));
         }
 
         /// <inheritdoc />
@@ -118,7 +117,7 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            return ExecuteQueryAsyncMethod<TMessageIn, TMessageOut>.Invoke(this, query, message, token);
+            return ExecuteQueryAsync(new ExecuteQueryMethodImplementation<TMessageIn, TMessageOut>(this, token, query, message));
         }
 
         #endregion
@@ -126,7 +125,7 @@ namespace Kingo.Messaging
         #region [====== MicroProcessorPipeline ======]
 
         internal MicroProcessorPipeline Pipeline =>
-            _pipeline.Value;       
+            _pipeline.Value;
 
         /// <summary>
         /// When overridden, this method can be used to add global filters and configuration to the pipeline of this processor.
@@ -134,7 +133,40 @@ namespace Kingo.Messaging
         /// <param name="pipeline">The pipeline to configure.</param>
         /// <returns>The configured pipeline.</returns>
         protected virtual MicroProcessorPipeline BuildPipeline(MicroProcessorPipeline pipeline) =>
-            pipeline;       
+            pipeline;
+
+        /// <summary>
+        /// Handles an input-stream by invoking the specified <paramref name="method"/>.
+        /// </summary>
+        /// <param name="method">The method to invoke for handling the input-stream.</param>
+        /// <returns>All events that were published while handling the input-stream.</returns>
+        /// <exception cref="ExternalProcessorException">
+        /// Something went wrong while handling the input-stream.
+        /// </exception>
+        protected virtual Task<IMessageStream> HandleInputStreamAsync(HandleInputStreamMethod method) =>
+            InvokeAsync(method);
+
+        /// <summary>
+        /// Executes a query by invoking the specified <paramref name="method" />.
+        /// </summary>        
+        /// <param name="method">The method to invoke for executing the query.</param>
+        /// <returns>The result of the query.</returns>
+        /// <exception cref="ExternalProcessorException">
+        /// Something went wrong while executing the query.
+        /// </exception>
+        protected virtual Task<TMessageOut> ExecuteQueryAsync<TMessageOut>(ExecuteQueryMethod<TMessageOut> method) =>
+            InvokeAsync(method);
+
+        /// <summary>
+        /// Handles an input-stream or executed a query by invoking the specified <paramref name="method"/>.
+        /// </summary>       
+        /// <param name="method">The method to invoke for performing the operation.</param>
+        /// <returns>The result of the specified <paramref name="method"/>.</returns>
+        /// <exception cref="ExternalProcessorException">
+        /// Something went wrong while handling the input-stream or executing the query.
+        /// </exception>
+        protected virtual Task<TResult> InvokeAsync<TResult>(MicroProcessorMethod<TResult> method) =>
+            method.InvokeAsync();
 
         #endregion
     }

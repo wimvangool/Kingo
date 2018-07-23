@@ -5,13 +5,13 @@ using System.Linq;
 namespace Kingo.Messaging
 {
     internal sealed class StackTrace : IStackTrace
-    {        
+    {
         private readonly Stack<MicroProcessorOperation> _messages;
 
         public StackTrace()
-        {            
-            _messages = new Stack<MicroProcessorOperation>();    
-        }        
+        {
+            _messages = new Stack<MicroProcessorOperation>();
+        }
 
         public MicroProcessorOperation CurrentOperation =>
             IsEmpty ? null : _messages.Peek();
@@ -29,8 +29,8 @@ namespace Kingo.Messaging
             _messages.AsEnumerable().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
-            GetEnumerator();  
-        
+            GetEnumerator();
+
         public void Push(MicroProcessorOperationTypes operationType, object message) =>
             Push(new MicroProcessorOperation(operationType, message));
 

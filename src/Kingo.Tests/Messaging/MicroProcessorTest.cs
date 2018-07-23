@@ -715,7 +715,7 @@ namespace Kingo.Messaging
         }        
 
         [TestMethod]
-        [ExpectedException(typeof(TaskCanceledException))]
+        [ExpectedException(typeof(OperationCanceledException))]
         public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideCommandHandler_Through_TokenSource()
         {
             using (var tokenSource = new CancellationTokenSource())            
@@ -733,7 +733,7 @@ namespace Kingo.Messaging
                 {
                     await handleTask;
                 }
-                catch (TaskCanceledException exception)
+                catch (OperationCanceledException exception)
                 {
                     Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
                     Assert.IsTrue(handleTask.IsCanceled);
@@ -743,7 +743,7 @@ namespace Kingo.Messaging
         }
 
         [TestMethod]
-        [ExpectedException(typeof(TaskCanceledException))]
+        [ExpectedException(typeof(OperationCanceledException))]
         public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideCommandHandler_Through_Token()
         {
             using (var tokenSource = new CancellationTokenSource())
@@ -762,7 +762,7 @@ namespace Kingo.Messaging
                 {
                     await handleTask;
                 }
-                catch (TaskCanceledException exception)
+                catch (OperationCanceledException exception)
                 {
                     Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
                     Assert.IsTrue(handleTask.IsCanceled);
@@ -772,7 +772,7 @@ namespace Kingo.Messaging
         }
 
         [TestMethod]
-        [ExpectedException(typeof(TaskCanceledException))]
+        [ExpectedException(typeof(OperationCanceledException))]
         public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideEventHandler_Through_TokenSource()
         {
             using (var tokenSource = new CancellationTokenSource())
@@ -796,7 +796,7 @@ namespace Kingo.Messaging
                 {
                     await handleTask;
                 }
-                catch (TaskCanceledException exception)
+                catch (OperationCanceledException exception)
                 {
                     Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
                     Assert.IsTrue(handleTask.IsCanceled);
@@ -806,7 +806,7 @@ namespace Kingo.Messaging
         }
 
         [TestMethod]
-        [ExpectedException(typeof(TaskCanceledException))]
+        [ExpectedException(typeof(OperationCanceledException))]
         public async Task HandleStreamAsync_ThrowsOperationCanceledException_IfOperationIsCanceledInsideEventHandler_Through_Token()
         {
             using (var tokenSource = new CancellationTokenSource())
@@ -831,7 +831,7 @@ namespace Kingo.Messaging
                 {
                     await handleTask;
                 }
-                catch (TaskCanceledException exception)
+                catch (OperationCanceledException exception)
                 {
                     Assert.AreEqual(tokenSource.Token, exception.CancellationToken);
                     Assert.IsTrue(handleTask.IsCanceled);
