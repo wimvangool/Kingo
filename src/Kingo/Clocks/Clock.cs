@@ -62,13 +62,22 @@ namespace Kingo.Clocks
         /// Sets the current clock that is accessible by the current thread through <see cref="Current" />
         /// only as long as the scope is active.
         /// </summary>
-        /// <param name="utcDateAndTimeFactory">The delegate that is used to obtain the UTC date and time.</param>
+        /// <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
         /// <returns>The scope that is to be disposed when ended.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="utcDateAndTimeFactory"/> is <c>null</c>.
+        /// <paramref name="timeFactory"/> is <c>null</c>.
         /// </exception>                       
-        public static IDisposable OverrideThreadLocal(Func<DateTimeOffset> utcDateAndTimeFactory) =>
-            _Context.OverrideThreadLocal(new DelegateClock(utcDateAndTimeFactory));
+        public static IDisposable OverrideThreadLocal(Func<DateTimeOffset> timeFactory) =>
+            _Context.OverrideThreadLocal(new DelegateClock(timeFactory));
+
+        /// <summary>
+        /// Sets the current clock that is accessible by the current thread through <see cref="Current" />
+        /// only as long as the scope is active.
+        /// </summary>
+        /// <param name="startTime">The time that will serve as the start time of the scope.</param>
+        /// <returns>The scope that is to be disposed when ended.</returns>
+        public static IDisposable OverrideThreadLocal(DateTimeOffset startTime) =>
+            OverrideThreadLocal(StopwatchClock.StartNew(startTime));
 
         /// <summary>
         /// Sets the current clock that is accessible by the current thread through <see cref="Current" />
@@ -79,29 +88,35 @@ namespace Kingo.Clocks
         /// <exception cref="ArgumentNullException">
         /// <paramref name="clock"/> is <c>null</c>.
         /// </exception>        
-        public static IDisposable OverrideThreadLocal(IClock clock)
-        {
-            if (clock == null)
-            {
-                throw new ArgumentNullException(nameof(clock));
-            }
-            return _Context.OverrideThreadLocal(clock);
-        }
+        public static IDisposable OverrideThreadLocal(IClock clock) =>
+            _Context.OverrideThreadLocal(clock ?? throw new ArgumentNullException(nameof(clock)));
 
         /// <summary>
         /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
         /// through <see cref="Current" /> as long as the scope is active.
         /// </summary>
-        /// <param name="utcDateAndTimeFactory">The delegate that is used to obtain the UTC date and time.</param>
+        /// <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
         /// <returns>The scope that is to be disposed when ended.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="utcDateAndTimeFactory"/> is <c>null</c>.
+        /// <paramref name="timeFactory"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="InvalidOperationException">
         /// The call is made inside a thread local scope.
         /// </exception>
-        public static IDisposable OverrideAsyncLocal(Func<DateTimeOffset> utcDateAndTimeFactory) =>
-            _Context.OverrideAsyncLocal(new DelegateClock(utcDateAndTimeFactory));
+        public static IDisposable OverrideAsyncLocal(Func<DateTimeOffset> timeFactory) =>
+            _Context.OverrideAsyncLocal(new DelegateClock(timeFactory));
+
+        /// <summary>
+        /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
+        /// through <see cref="Current" /> as long as the scope is active.
+        /// </summary>
+        /// <param name="startTime">The time that will serve as the start time of the scope.</param>
+        /// <returns>The scope that is to be disposed when ended.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// The call is made inside a thread local scope.
+        /// </exception>
+        public static IDisposable OverrideAsyncLocal(DateTimeOffset startTime) =>
+            OverrideThreadLocal(StopwatchClock.StartNew(startTime));
 
         /// <summary>
         /// Sets the current value that is accessible by all threads that share the same <see cref="LogicalCallContext" />
@@ -115,29 +130,35 @@ namespace Kingo.Clocks
         /// <exception cref="InvalidOperationException">
         /// The call is made inside a thread local scope.
         /// </exception>
-        public static IDisposable OverrideAsyncLocal(IClock clock)
-        {
-            if (clock == null)
-            {
-                throw new ArgumentNullException(nameof(clock));
-            }
-            return _Context.OverrideAsyncLocal(clock);
-        }
+        public static IDisposable OverrideAsyncLocal(IClock clock) =>
+            _Context.OverrideAsyncLocal(clock ?? throw new ArgumentNullException(nameof(clock)));
 
         /// <summary>
         /// Sets the current value that is accessible by all threads
         /// through <see cref="Current" /> as long as the scope is active.
         /// </summary>
-        /// <param name="utcDateAndTimeFactory">The delegate that is used to obtain the UTC date and time.</param>
+        /// <param name="timeFactory">The delegate that is used to obtain the UTC date and time.</param>
         /// <returns>The scope that is to be disposed when ended.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="utcDateAndTimeFactory"/> is <c>null</c>.
+        /// <paramref name="timeFactory"/> is <c>null</c>.
         /// </exception>        
         /// <exception cref="InvalidOperationException">
         /// The call is made inside an async local or thread local scope.
         /// </exception>      
-        public static IDisposable Override(Func<DateTimeOffset> utcDateAndTimeFactory) =>
-            _Context.Override(new DelegateClock(utcDateAndTimeFactory));
+        public static IDisposable Override(Func<DateTimeOffset> timeFactory) =>
+            _Context.Override(new DelegateClock(timeFactory));
+
+        /// <summary>
+        /// Sets the current value that is accessible by all threads
+        /// through <see cref="Current" /> as long as the scope is active.
+        /// </summary>
+        /// <param name="startTime">The time that will serve as the start time of the scope.</param>
+        /// <returns>The scope that is to be disposed when ended.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// The call is made inside an async local or thread local scope.
+        /// </exception> 
+        public static IDisposable Override(DateTimeOffset startTime) =>
+            _Context.Override(StopwatchClock.StartNew(startTime));
 
         /// <summary>
         /// Sets the current value that is accessible by all threads
@@ -151,14 +172,8 @@ namespace Kingo.Clocks
         /// <exception cref="InvalidOperationException">
         /// The call is made inside an async local or thread local scope.
         /// </exception>      
-        public static IDisposable Override(IClock clock)
-        {
-            if (clock == null)
-            {
-                throw new ArgumentNullException(nameof(clock));
-            }
-            return _Context.Override(clock);
-        }           
+        public static IDisposable Override(IClock clock) =>
+            _Context.Override(clock ?? throw new ArgumentNullException(nameof(clock)));
 
         #endregion
     }
