@@ -130,7 +130,7 @@ namespace Kingo.Messaging
         }        
 
         /// <inheritdoc />
-        public IEventStream OutputStream =>
+        IEventStream IMicroProcessorContext.OutputStream =>
             OutputStreamCore;
         
         internal abstract EventStream OutputStreamCore
