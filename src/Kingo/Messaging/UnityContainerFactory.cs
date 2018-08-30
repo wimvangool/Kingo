@@ -2,11 +2,8 @@
 using Microsoft.Practices.Unity;
 
 namespace Kingo.Messaging
-{    
-    /// <summary>
-    /// Provides an implementation of the <see cref="MessageHandlerFactory" /> by using a I<see cref="UnityContainer" />.
-    /// </summary>
-    public sealed class UnityContainerFactory : MessageHandlerFactory
+{        
+    internal sealed class UnityContainerFactory : MessageHandlerFactory
     {
         #region [====== PerUnitOfWorkLifetimeManager ======]
         
@@ -32,29 +29,17 @@ namespace Kingo.Messaging
                 Cache.Remove(_key);
 
             private static IUnitOfWorkCache Cache =>
-                MicroProcessorContext.Current.UnitOfWork.Cache;
+                MicroProcessorContext.Current.UnitOfWork.Cache;            
         }
 
-        #endregion        
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnityContainerFactory" /> class.
-        /// </summary>
-        /// <param name="container">
-        /// Container that will be used by this factory. If <c>null</c>, this factory will create a new container.
-        /// </param>
-        public UnityContainerFactory(IUnityContainer container = null)
+        #endregion
+
+        private readonly IUnityContainer _container;
+               
+        public UnityContainerFactory()
         {            
-            Container = container ?? new UnityContainer();            
-        }        
-
-        /// <summary>
-        /// Returns the container that is used by this factory to register and resolve message handlers.
-        /// </summary>
-        public IUnityContainer Container
-        {
-            get;
-        }
+            _container = new UnityContainer();            
+        }                
 
         #region [====== Type Registration ======]
 
@@ -67,11 +52,11 @@ namespace Kingo.Messaging
             }
             if (from == null)
             {
-                Container.RegisterType(to, new TransientLifetimeManager());
+                _container.RegisterType(to, new TransientLifetimeManager());
             }
             else
             {
-                Container.RegisterType(from, to);    
+                _container.RegisterType(from, to);    
             }
             return this;        
         }       
@@ -83,11 +68,11 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException(nameof(to));
             }            
-            Container.RegisterType(to, new PerUnitOfWorkLifetimeManager());
+            _container.RegisterType(to, new PerUnitOfWorkLifetimeManager());
 
             if (from != null)
             {
-                Container.RegisterType(from, to);
+                _container.RegisterType(from, to);
             }
             return this;
         }        
@@ -99,11 +84,11 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException(nameof(to));
             }
-            Container.RegisterType(to, new ContainerControlledLifetimeManager());
+            _container.RegisterType(to, new ContainerControlledLifetimeManager());
 
             if (from != null)
             {
-                Container.RegisterType(from, to);
+                _container.RegisterType(from, to);
             }
             return this;
         }
@@ -117,18 +102,17 @@ namespace Kingo.Messaging
             }
             if (from == null)
             {
-                Container.RegisterInstance(to.GetType(), to);
+                _container.RegisterInstance(to.GetType(), to);
             }
             else
             {
-                Container.RegisterInstance(from, to);    
+                _container.RegisterInstance(from, to);    
             }
             return this;      
         }
-
-        /// <inheritdoc />
-        protected override object Resolve(Type type) =>
-            Container.Resolve(type);
+        
+        protected internal override object Resolve(Type type) =>
+            _container.Resolve(type);
 
         #endregion
     }

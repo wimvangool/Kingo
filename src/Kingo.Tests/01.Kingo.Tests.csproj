@@ -144,10 +144,6 @@
     <Compile Include="TypeSetTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kingo.Unity\03.Kingo.Unity.csproj">
-      <Project>{326b8f71-69da-4857-9ffa-698164fe12db}</Project>
-      <Name>03.Kingo.Unity</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kingo\02.Kingo.csproj">
       <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
       <Name>02.Kingo</Name>

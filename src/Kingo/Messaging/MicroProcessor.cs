@@ -54,7 +54,7 @@ namespace Kingo.Messaging
         /// </summary>        
         /// <returns>A new <see cref="MessageHandlerFactory" /> to be used by this processor.</returns>
         protected internal virtual MessageHandlerFactory BuildMessageHandlerFactory() =>
-            new MessageHandlerFactoryStub();
+            new UnityContainerFactory();
 
         /// <summary>
         /// Builds and returns a <see cref="ISchemaMap" /> that will be registered as a dependency and can be used by repositories
