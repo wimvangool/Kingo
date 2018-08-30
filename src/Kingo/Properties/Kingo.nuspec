@@ -27,15 +27,9 @@
     <tags>
       Kingo
       MicroProcessor
-      CQRS
-      "Command Query Reponsibility Segregation"
-      DDD
-      "Domain-Driven Design"
-      EventStore
-      "Event-Sourcing"
-      EDA
-      "Event-Driven Architecture"
-      Messaging
+      CQRS     
+      DDD    
+      EDA           
     </tags>
 
     <frameworkAssemblies>

@@ -265,7 +265,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF $(ConfigurationName) == Release (
+    <PostBuildEvent>IF $(ConfigurationName) == Release (    
+    "$(SolutionDir)packages\ILMerge.2.14.1208\tools\ilmerge.exe" /lib:"$(TargetDir.TrimEnd('\'))" /internalize /keyfile:"$(SolutionDir)Kingo.snk" /ndebug /out:"$(TargetDir)Kingo.dll" Kingo.dll Microsoft.Practices.ServiceLocation.dll Microsoft.Practices.Unity.dll
     "$(SolutionDir)BuildNuGetPackage.bat" "$(ProjectPath)" "$(SolutionDir)..\output"
 )</PostBuildEvent>
   </PropertyGroup>
