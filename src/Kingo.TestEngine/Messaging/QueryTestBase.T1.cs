@@ -53,6 +53,7 @@ namespace Kingo.Messaging
 
         #endregion
 
+        /// <inheritdoc />
         protected override IQueryTestResult<TMessageOut> ThenResult() =>
             new QueryTestResult(this);
 
