@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -21,10 +21,7 @@ namespace Kingo.Messaging
         }
 
         public IUnitOfWorkCache Cache =>
-            _cache;     
-
-        public void Enlist(IUnitOfWork unitOfWork, object resourceId) =>
-            EnlistAsync(unitOfWork, resourceId).Await();
+            _cache;             
 
         public Task EnlistAsync(IUnitOfWork unitOfWork, object resourceId)
         {
@@ -32,14 +29,12 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException(nameof(unitOfWork));
             }
-            return AsyncMethod.RunSynchronously(() => EnlistUnitOfWork(unitOfWork, resourceId ?? _NullResourceId));            
+            return Run(() => EnlistUnitOfWork(unitOfWork, resourceId ?? _NullResourceId));            
         }
 
         private void EnlistUnitOfWork(IUnitOfWork unitOfWork, object resourceId)
-        {
-            List<IUnitOfWork> resourceGroup;
-
-            if (_resourceGroups.TryGetValue(resourceId, out resourceGroup))
+        {            
+            if (_resourceGroups.TryGetValue(resourceId, out var resourceGroup))
             {
                 if (resourceGroup.Contains(unitOfWork))
                 {

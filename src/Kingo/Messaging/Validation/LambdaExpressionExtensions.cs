@@ -22,9 +22,7 @@ namespace Kingo.Messaging.Validation
         /// </exception>
         public static Identifier ExtractMemberName(this LambdaExpression expression)
         {
-            Identifier memberName;
-
-            if (TryExtractMemberName(expression, out memberName))
+            if (TryExtractMemberName(expression, out var memberName))
             {
                 return memberName;
             }
@@ -50,7 +48,6 @@ namespace Kingo.Messaging.Validation
                 throw new ArgumentNullException(nameof(expression));
             }            
             var bodyExpression = expression.Body;
-            MemberExpression memberExpression;
 
             var unaryExpression = bodyExpression as UnaryExpression;
             if (unaryExpression != null)
@@ -62,7 +59,7 @@ namespace Kingo.Messaging.Validation
                 }
                 bodyExpression = unaryExpression;
             }            
-            if (TryCastToMemberExpression(bodyExpression, out memberExpression))
+            if (TryCastToMemberExpression(bodyExpression, out var memberExpression))
             {
                 memberName = Identifier.Parse(memberExpression.Member.Name);
                 return true;
@@ -78,7 +75,7 @@ namespace Kingo.Messaging.Validation
         {
             var messageFormat = ExceptionMessages.ExpressionExtensions_UnsupportedExpression;
             var message = string.Format(messageFormat, expression.NodeType);
-            return new ArgumentException(message, "expression");
+            return new ArgumentException(message, nameof(expression));
         }  
     }
 }

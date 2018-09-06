@@ -75,7 +75,7 @@ namespace Kingo.Messaging
         /// <inheritdoc />
         public Claim FindClaim(string type, Func<IEnumerable<Claim>, Claim> filter = null)
         {
-            if (TryFindClaim(type, out Claim claim, filter))
+            if (TryFindClaim(type, out var claim, filter))
             {
                 return claim;
             }

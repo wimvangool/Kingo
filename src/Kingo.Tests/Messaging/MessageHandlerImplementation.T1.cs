@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -35,7 +36,7 @@ namespace Kingo.Messaging
         {
             Assert.AreSame(MessageHandlerType, messageHandlerType, $"Expected invocation of handler '{MessageHandlerType.FriendlyName()}' but was '{messageHandlerType.FriendlyName()}'.");            
 
-            return AsyncMethod.RunSynchronously(() => _implementation?.Invoke(message, context), context.Token);
+            return Run(() => _implementation?.Invoke(message, context), context.Token);
         }
     }
 }

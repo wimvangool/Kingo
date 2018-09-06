@@ -48,9 +48,8 @@ namespace Kingo.Messaging.Validation
             }            
             var constraint = CreateMemberConstraint(instance);
             var member = _memberFactory.CreateMember(instance);
-            Member<TValueOut> transformedMember;
 
-            return constraint.IsNotSatisfiedBy(member, reader, out transformedMember);
+            return constraint.IsNotSatisfiedBy(member, reader, out _);
         }
 
         private IMemberConstraint<TValueIn, TValueOut> CreateMemberConstraint(T instance) =>

@@ -155,9 +155,7 @@ namespace Kingo.Messaging.Validation
                 {
                     return IsMultiDimensionalArrayIndexer(expression);
                 }
-                PropertyInfo indexer;
-
-                if (IsIndexerCandidate(expression) && TryGetIndexer(expression.Object, expression.Arguments, out indexer))
+                if (IsIndexerCandidate(expression) && TryGetIndexer(expression.Object, expression.Arguments, out var indexer))
                 {
                     // Here we try to match, e.g., 'get_Item' with 'Item', to ensure
                     // the specified method is actually an indexer instead of a regular method
@@ -187,6 +185,6 @@ namespace Kingo.Messaging.Validation
              Expression.Parameter(parameterType, CreateValueParameterName());
 
         private static string CreateValueParameterName() =>
-             string.Format("x_{0:N}", Guid.NewGuid());
+            $"x_{Guid.NewGuid():N}";
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -24,7 +24,7 @@ namespace Kingo.Messaging
         }
 
         public Task HandleMessagesWithAsync(IMessageHandler handler) =>
-            AsyncMethod.Void;               
+            NoValue;               
 
         #endregion
     }

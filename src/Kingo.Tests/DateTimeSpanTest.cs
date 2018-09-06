@@ -525,10 +525,8 @@ namespace Kingo
         }
 
         private static DateTimeSpan AssertIntersection(DateTimeSpan left, DateTimeSpan right)
-        {
-            DateTimeSpan intersection;
-
-            Assert.IsTrue(left.TryGetIntersection(right, out intersection));
+        {            
+            Assert.IsTrue(left.TryGetIntersection(right, out var intersection));
             Assert.AreEqual(intersection, right.GetIntersection(left));
 
             return intersection;

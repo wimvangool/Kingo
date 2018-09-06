@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Threading
 {
@@ -14,7 +15,7 @@ namespace Kingo.Threading
         {
             var returnValue = Clock.Current.UtcDateAndTime().Millisecond;
             var resultX = Task.Run(() => returnValue).Result;
-            var resultY = AsyncMethod.RunSynchronously(() => returnValue).Result;
+            var resultY = RunSynchronously(() => returnValue).Result;
 
             Assert.AreEqual(returnValue, resultX);
             Assert.AreEqual(returnValue, resultY);
@@ -38,7 +39,7 @@ namespace Kingo.Threading
 
             try
             {
-                AsyncMethod.RunSynchronously(() => { throw exception; }).Wait();
+                Run(() => { throw exception; }).Wait();
             }
             catch (AggregateException e)
             {
@@ -58,7 +59,7 @@ namespace Kingo.Threading
         {
             var returnValue = Clock.Current.UtcDateAndTime().Millisecond;
             var resultX = await Task.Run(() => returnValue);
-            var resultY = await AsyncMethod.RunSynchronously(() => returnValue);
+            var resultY = await RunSynchronously(() => returnValue);
 
             Assert.AreEqual(returnValue, resultX);
             Assert.AreEqual(returnValue, resultY);
@@ -82,7 +83,7 @@ namespace Kingo.Threading
 
             try
             {
-                await AsyncMethod.RunSynchronously(() => { throw exception; });
+                await Run(() => { throw exception; });
             }
             catch (Exception e)
             {
@@ -98,7 +99,7 @@ namespace Kingo.Threading
         {
             var exception = new Exception();
             var taskX = Task.Run(() => { throw exception; });
-            var taskY = AsyncMethod.RunSynchronously(() => { throw exception; });           
+            var taskY = Run(() => { throw exception; });           
 
             try
             {
@@ -120,7 +121,7 @@ namespace Kingo.Threading
                 tokenSource.Cancel();
 
                 var taskX = Task.Run(() => tokenSource.Token.ThrowIfCancellationRequested(), tokenSource.Token);
-                var taskY = AsyncMethod.RunSynchronously(() => tokenSource.Token.ThrowIfCancellationRequested(), tokenSource.Token);
+                var taskY = Run(() => tokenSource.Token.ThrowIfCancellationRequested(), tokenSource.Token);
 
                 try
                 {

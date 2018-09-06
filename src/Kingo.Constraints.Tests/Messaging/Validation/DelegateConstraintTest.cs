@@ -115,9 +115,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsTrue_IfDelegateReturnsFalse()
         {
             var constraint = new DelegateConstraint<object>(value => false);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
             Assert.AreEqual("Value (<null>) is not valid.", errorMessage.ToString());            
         }
@@ -126,9 +125,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsFalse_IfDelegateReturnsTrue()
         {
             var constraint = new DelegateConstraint<object>(value => true);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);
         }
 
@@ -136,9 +134,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsTrue_IfDelegateReturnsTrue_And_ConstraintIsInverted()
         {
             var constraint = new DelegateConstraint<object>(value => true).Invert();
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
             Assert.AreEqual("Value (<null>) is not valid.", errorMessage.ToString()); 
         }
@@ -147,9 +144,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsFalse_IfDelegateReturnsFalse_And_ConstraintIsInverted()
         {
             var constraint = new DelegateConstraint<object>(value => false).Invert();
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);
         }
 
@@ -157,9 +153,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsExpectedErrorMessage_IfErrorMessageArgumentIsNotNull()
         {
             var constraint = new DelegateConstraint<object>(value => false, new { Other = 6 }).WithErrorMessage("{constraint.Other}");
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
             Assert.AreEqual("6", errorMessage.ToString()); 
         }

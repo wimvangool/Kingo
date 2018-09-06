@@ -225,22 +225,18 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         public void IsNotSatisfiedBy_DefaultsToDefaultMember_IfMemberIsNotSpecifiedAsArgumentForErrorMessage_And_ValueIsNull()
         {
-            IErrorMessageBuilder errorMessage;
-
             var constraint = new IsEqualToConstraint<string>("Some value").WithErrorMessage(_MemberErrorMessage);
             
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.AreEqual("| Value | Value | System.String | <null> |", errorMessage.ToString());
         }
 
         [TestMethod]
         public void IsNotSatisfiedBy_DefaultsToDefaultMember_IfMemberIsNotSpecifiedAsArgumentForErrorMessage_And_ValueIsNotNull()
         {
-            IErrorMessageBuilder errorMessage;
-
             var constraint = new IsEqualToConstraint<int>(0).WithErrorMessage(_MemberErrorMessage);
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(1, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(1, out var errorMessage));
             Assert.AreEqual("| Value | Value | System.Int32 | 1 |", errorMessage.ToString());
         }
 

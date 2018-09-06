@@ -149,64 +149,50 @@ namespace Kingo.Messaging.Validation
 
         [TestMethod]        
         public void TryParse_ReturnsFalse_IfValueIsNull()
-        {
-            Identifier identifier;
-
-            Assert.IsFalse(Identifier.TryParse(null, out identifier));
+        {           
+            Assert.IsFalse(Identifier.TryParse(null, out var identifier));
             Assert.IsNull(identifier);
         }
 
         [TestMethod]        
         public void TryParse_ReturnsFalse_IfValueIsEmpty()
-        {
-            Identifier identifier;
-
-            Assert.IsFalse(Identifier.TryParse(string.Empty, out identifier));
+        {            
+            Assert.IsFalse(Identifier.TryParse(string.Empty, out var identifier));
             Assert.IsNull(identifier);
         }
 
         [TestMethod]        
         public void TryParse_ReturnsFalse_IfValueIsWhiteSpaceOnly()
-        {
-            Identifier identifier;
-
-            Assert.IsFalse(Identifier.TryParse("    ", out identifier));
+        {            
+            Assert.IsFalse(Identifier.TryParse("    ", out var identifier));
             Assert.IsNull(identifier);
         }
 
         [TestMethod]        
         public void TryParse_ReturnsFalse_IfValueStartsWithDigit()
-        {
-            Identifier identifier;
-
-            Assert.IsFalse(Identifier.TryParse("8abc", out identifier));
+        {            
+            Assert.IsFalse(Identifier.TryParse("8abc", out var identifier));
             Assert.IsNull(identifier);
         }
 
         [TestMethod]        
         public void TryParse_ReturnsFalse_IfValueContainsIllegalCharacters()
-        {
-            Identifier identifier;
-
-            Assert.IsFalse(Identifier.TryParse("abcde!@#$", out identifier));
+        {            
+            Assert.IsFalse(Identifier.TryParse("abcde!@#$", out var identifier));
             Assert.IsNull(identifier);
         }
 
         [TestMethod]
         public void TryParse_ReturnsTrue_IfValueStartsWithUnderscore()
-        {
-            Identifier identifier;
-
-            Assert.IsTrue(Identifier.TryParse("_abcd1234", out identifier));
+        {            
+            Assert.IsTrue(Identifier.TryParse("_abcd1234", out var identifier));
             Assert.IsNotNull(identifier);
         }
 
         [TestMethod]
         public void TryParse_ReturnsTrue_IfValueStartsWithLetter()
-        {
-            Identifier identifier;
-
-            Assert.IsTrue(Identifier.TryParse("abcd1234", out identifier));
+        {            
+            Assert.IsTrue(Identifier.TryParse("abcd1234", out var identifier));
             Assert.IsNotNull(identifier);
         }
 

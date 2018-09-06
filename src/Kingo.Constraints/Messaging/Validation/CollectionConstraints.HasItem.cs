@@ -176,9 +176,7 @@ namespace Kingo.Messaging.Validation
 
         internal static PropertyInfo GetIndexer(Type type, IEnumerable<Type> arguments)
         {
-            PropertyInfo indexer;
-
-            if (CollectionConstraints.TryGetIndexer(type, arguments, out indexer))
+            if (CollectionConstraints.TryGetIndexer(type, arguments, out var indexer))
             {
                 return indexer;
             }

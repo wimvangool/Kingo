@@ -35,34 +35,31 @@ namespace Kingo.Messaging.Validation
              _memberFactory.Invoke(instance);
 
         internal MemberFactory<T, TValueOut> CreateChildMember<TValueOut>(Func<T, IMemberConstraint<TValue, TValueOut>> memberConstraintFactory)
-        {
-            Func<T, Member<TValueOut>> memberFactory = instance =>
+        {            
+            return new MemberFactory<T, TValueOut>(instance =>
             {
                 var member = CreateMember(instance);
                 var memberConstraint = memberConstraintFactory.Invoke(instance);
                 var exceptionFactory = new MemberExceptionFactory();
-                Member<TValueOut> transformedMember;
 
-                if (memberConstraint.IsNotSatisfiedBy(member, exceptionFactory, out transformedMember))
+                if (memberConstraint.IsNotSatisfiedBy(member, exceptionFactory, out var transformedMember))
                 {
                     throw exceptionFactory.CreateException();
                 }
-                return transformedMember;               
-            };
-            return new MemberFactory<T, TValueOut>(memberFactory);
+                return transformedMember;
+            });
         }
 
         internal MemberFactory<TValue, TResult> Transform<TResult>(Func<TValue, TResult> fieldOrProperty, Identifier fieldOrPropertyName, Func<T> valueProvider)
-        {
-            Func<TValue, Member<TResult>> memberFactory = instance =>
+        {            
+            return new MemberFactory<TValue, TResult>(instance =>
             {
                 var value = valueProvider.Invoke();
                 var member = _memberFactory.Invoke(value);
                 var fieldOrPropertyValue = fieldOrProperty.Invoke(member.Value);
 
                 return member.Transform(fieldOrPropertyValue, fieldOrPropertyName);
-            };
-            return new MemberFactory<TValue, TResult>(memberFactory);
+            });
         }
     }
 }

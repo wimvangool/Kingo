@@ -72,9 +72,7 @@ namespace Kingo.Messaging.Validation
         {
             get
             {
-                string errorMessage;
-
-                if (_memberErrors.TryGetValue(columnName, out errorMessage))
+                if (_memberErrors.TryGetValue(columnName, out var errorMessage))
                 {
                     return errorMessage;
                 }

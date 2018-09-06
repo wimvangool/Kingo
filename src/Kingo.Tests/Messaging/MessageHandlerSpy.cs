@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -23,7 +23,7 @@ namespace Kingo.Messaging
             {
                 throw new ArgumentNullException(nameof(message));
             }
-            return AsyncMethod.RunSynchronously(() =>
+            return Run(() =>
             {
                 _messages.Add(message);
                 _handlers.Add(handler);                

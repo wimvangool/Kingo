@@ -25,13 +25,13 @@ namespace Kingo.Threading
         /// <exception cref="ArgumentNullException">
         /// <paramref name="asyncFunc"/> is <c>null</c>.
         /// </exception>
-        public static Task RunSynchronously(Func<Task> asyncFunc, CancellationToken? token = null)
+        public static Task Run(Func<Task> asyncFunc, CancellationToken? token = null)
         {
             if (asyncFunc == null)
             {
                 throw new ArgumentNullException(nameof(asyncFunc));
             }
-            return RunSynchronously(() => asyncFunc.Invoke().Await(), token);
+            return Run(() => asyncFunc.Invoke().Await(), token);
         }
 
         /// <summary>
@@ -48,15 +48,13 @@ namespace Kingo.Threading
         /// <exception cref="ArgumentNullException">
         /// <paramref name="action"/> is <c>null</c>.
         /// </exception>
-        public static Task RunSynchronously(Action action, CancellationToken? token = null)
+        public static Task Run(Action action, CancellationToken? token = null)
         {
             if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
-            }
-            Task canceledTask;
-
-            if (TryGetCanceledTask(token, out canceledTask))
+            }            
+            if (TryGetCanceledTask(token, out var canceledTask))
             {
                 return canceledTask;
             }
@@ -76,32 +74,8 @@ namespace Kingo.Threading
             {
                 return Throw(exception);
             }
-            return Void;
-        }
-
-        /// <summary>
-        /// Executes the specified asynchronous <paramref name="asyncFunc"/> synchronously and
-        /// returns a completed <see cref="Task" /> while encapsulation any exceptions
-        /// that might be thrown.
-        /// </summary>
-        /// <typeparam name="TResult">Type of the result of the delegate.</typeparam>        
-        /// <param name="asyncFunc">The delegate to invoke.</param>
-        /// <param name="token">
-        /// If specified, this token is checked before and after <paramref name="asyncFunc"/> is executed,
-        /// and a cancelled task is returned if cancellation has been requested.
-        /// </param>
-        /// <returns>A completed <see cref="Task" />.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="asyncFunc"/> is <c>null</c>.
-        /// </exception>
-        public static Task<TResult> RunSynchronously<TResult>(Func<Task<TResult>> asyncFunc, CancellationToken? token = null)
-        {
-            if (asyncFunc == null)
-            {
-                throw new ArgumentNullException(nameof(asyncFunc));
-            }
-            return RunSynchronously(() => asyncFunc.Invoke().Await(), token);
-        }
+            return NoValue;
+        }        
 
         /// <summary>
         /// Executes the specified <paramref name="func"/> synchronously and
@@ -146,7 +120,7 @@ namespace Kingo.Threading
             {
                 return Throw<TResult>(exception);
             }           
-        }        
+        }
 
         #endregion
 
@@ -156,7 +130,7 @@ namespace Kingo.Threading
         /// Represents a completed <see cref="Task" /> that can be returned
         /// from a synchronous method with an asynchronous signature.
         /// </summary>
-        public static readonly Task Void = Task.FromResult(new object());
+        public static readonly Task NoValue = Task.CompletedTask;
 
         /// <summary>
         /// Creates and returns a completed <see cref="Task{T}" /> that can be returned

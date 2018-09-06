@@ -19,9 +19,7 @@ namespace Kingo.Messaging
         {
             get
             {
-                object item;
-
-                if (_items.TryGetValue(key, out item))
+                if (_items.TryGetValue(key, out var item))
                 {
                     return item;
                 }
@@ -41,9 +39,7 @@ namespace Kingo.Messaging
 
         public void Remove(string key)
         {
-            object item;
-
-            if (_items.TryGetValue(key, out item) && _items.Remove(key))
+            if (_items.TryGetValue(key, out var item) && _items.Remove(key))
             {
                 _removedItems.Add(item);                
             }            

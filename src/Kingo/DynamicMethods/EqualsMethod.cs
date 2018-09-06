@@ -437,9 +437,7 @@ namespace Kingo.DynamicMethods
         {
             foreach (var key in left.Keys)
             {
-                TValue value;
-
-                if (!right.TryGetValue(key, out value) || !Equals(left[key], value))
+                if (!right.TryGetValue(key, out var value) || !Equals(left[key], value))
                 {
                     return false;
                 }

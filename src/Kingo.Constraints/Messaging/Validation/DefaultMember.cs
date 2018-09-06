@@ -36,9 +36,7 @@ namespace Kingo.Messaging.Validation
         {
             if (_value == null)
             {
-                Type interfaceType;
-
-                if (TryGetImplementedConstraintInterface(_failedConstraint.GetType(), out interfaceType))
+                if (TryGetImplementedConstraintInterface(_failedConstraint.GetType(), out var interfaceType))
                 {
                     return interfaceType.GetGenericArguments()[0];
                 }

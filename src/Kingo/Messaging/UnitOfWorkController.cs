@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kingo.Resources;
-using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -31,7 +31,7 @@ namespace Kingo.Messaging
                 {
                     return unitOfWork.FlushAsync();
                 }
-                return AsyncMethod.Void;
+                return NoValue;
             }
 
             public bool RequiresFlush() =>

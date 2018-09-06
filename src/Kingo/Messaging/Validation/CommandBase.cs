@@ -67,16 +67,14 @@ namespace Kingo.Messaging.Validation
                 return _errorInfo;
             }
             private set =>
-             SetValue(ref _errorInfo, value, nameof(ErrorInfo));
+                SetValue(ref _errorInfo, value, nameof(ErrorInfo));
         }
 
         string IDataErrorInfo.this[string columnName]
         {
             get
-            {                
-                string errorMessage;
-
-                if (ErrorInfo.MemberErrors.TryGetValue(columnName, out errorMessage))
+            {
+                if (ErrorInfo.MemberErrors.TryGetValue(columnName, out var errorMessage))
                 {
                     return errorMessage;
                 }

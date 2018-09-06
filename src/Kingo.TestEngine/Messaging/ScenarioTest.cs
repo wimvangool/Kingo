@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Kingo.Resources;
-using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -105,7 +105,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <returns>A task representing the operation.</returns>
         protected virtual Task TearDownAsync() =>
-            AsyncMethod.Void;
+            NoValue;
 
         #endregion
 
@@ -143,10 +143,8 @@ namespace Kingo.Messaging
             if (exception.InnerException == null)
             {
                 throw NewInnerExceptionNotFoundException(typeof(TException), exception.GetType());
-            }
-            TException innerException;
-
-            if (TryGetInnerException(exception, out innerException))
+            }            
+            if (TryGetInnerException(exception, out TException innerException))
             {
                 assertCallback?.Invoke(innerException);
                 return;

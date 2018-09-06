@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -10,7 +10,7 @@ namespace Kingo.Messaging
 
         public Task<TMessageOut> ExecuteAsync(IMicroProcessorContext context)
         {
-            return AsyncMethod.RunSynchronously(() =>
+            return RunSynchronously(() =>
             {
                 _executeCount++;
 

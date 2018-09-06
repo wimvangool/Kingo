@@ -66,30 +66,27 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfClassDoesNotHaveAnyAttributesAtAll()
         {
-            var provider = new TypeAttributeProvider(typeof(NoAttributeClass));
-            AllowOneAttribute attribute;
+            var provider = new TypeAttributeProvider(typeof(NoAttributeClass));            
 
-            Assert.IsFalse(provider.TryGetTypeAttributeOfType(out attribute));
+            Assert.IsFalse(provider.TryGetTypeAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfClassDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));
-            AllowManyAttribute attribute;
+            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));            
 
-            Assert.IsFalse(provider.TryGetTypeAttributeOfType(out attribute));
+            Assert.IsFalse(provider.TryGetTypeAttributeOfType(out AllowManyAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfClassHasExactlyOneAttributesOfTheSpecifiedConcreteType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));
-            AllowOneAttribute attribute;
+            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));            
 
-            Assert.IsTrue(provider.TryGetTypeAttributeOfType(out attribute));
+            Assert.IsTrue(provider.TryGetTypeAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -97,10 +94,9 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfClassHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
         {
-            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));
-            IHasValue attribute;
+            var provider = new TypeAttributeProvider(typeof(OneAttributeClass));            
 
-            Assert.IsTrue(provider.TryGetTypeAttributeOfType(out attribute));
+            Assert.IsTrue(provider.TryGetTypeAttributeOfType(out IHasValue attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -109,10 +105,9 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(InvalidOperationException))]
         public void TryGetTypeAttributeOfType_Throws_IfClassHasManyAttributesOfTheSpecifiedType()
         {
-            var provider = new TypeAttributeProvider(typeof(ManyAttributesClass));
-            AllowManyAttribute attribute;
+            var provider = new TypeAttributeProvider(typeof(ManyAttributesClass));             
 
-            provider.TryGetTypeAttributeOfType(out attribute);
+            provider.TryGetTypeAttributeOfType(out AllowManyAttribute attribute);
         }
 
         #endregion

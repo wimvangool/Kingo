@@ -19,10 +19,7 @@
 
         public bool IsNotSatisfiedBy(Member<TValueIn> member, IErrorMessageCollection reader, out Member<TValueOut> transformedMember)
         {
-            IErrorMessageBuilder errorMessage;
-            TValueOut valueOut;
-
-            if (_constraint.IsNotSatisfiedBy(member.Value, out errorMessage, out valueOut))
+            if (_constraint.IsNotSatisfiedBy(member.Value, out var errorMessage, out var valueOut))
             {
                 errorMessage.Put(ErrorMessageBuilder.MemberIdentifier, member);
                 member.WriteErrorMessageTo(reader, errorMessage);

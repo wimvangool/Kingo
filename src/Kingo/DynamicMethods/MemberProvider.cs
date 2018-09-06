@@ -41,9 +41,7 @@ namespace Kingo.DynamicMethods
 
         public static MemberProvider For(Type type)
         {
-            MemberProvider memberProvider;
-
-            if (CustomMemberProvider.HasCustomFilter(type, out memberProvider))
+            if (CustomMemberProvider.HasCustomFilter(type, out var memberProvider))
             {
                 return memberProvider;
             }

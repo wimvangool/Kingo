@@ -154,23 +154,15 @@ namespace Kingo.Messaging.Validation
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
         /// <inheritdoc />
-        public virtual bool IsSatisfiedBy(TValueIn value)
-        {
-            TValueOut valueOut;
-
-            return IsSatisfiedBy(value, out valueOut);
-        }
+        public virtual bool IsSatisfiedBy(TValueIn value) =>
+            IsSatisfiedBy(value, out _);
 
         /// <inheritdoc />
         public abstract bool IsSatisfiedBy(TValueIn valueIn, out TValueOut valueOut);
 
         /// <inheritdoc />
-        public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessageBuilder errorMessage)
-        {
-            TValueOut valueOut;
-
-            return IsNotSatisfiedBy(value, out errorMessage, out valueOut);            
-        }
+        public bool IsNotSatisfiedBy(TValueIn value, out IErrorMessageBuilder errorMessage) =>
+            IsNotSatisfiedBy(value, out errorMessage, out _);
 
         /// <inheritdoc />
         public virtual bool IsNotSatisfiedBy(TValueIn valueIn, out IErrorMessageBuilder errorMessage, out TValueOut valueOut)

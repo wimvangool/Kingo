@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -29,7 +29,7 @@ namespace Kingo.Messaging
 
         public Task FlushAsync()
         {
-            return AsyncMethod.RunSynchronously(() =>
+            return Run(() =>
             {
                 _flushCount++;
 

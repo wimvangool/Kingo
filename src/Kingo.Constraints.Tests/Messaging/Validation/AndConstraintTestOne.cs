@@ -139,9 +139,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsFalse_IfLeftAndRightConstraintAreSatisfied()
         {
             var constraint = CreateAndConstraint(true, true);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);
         }
 
@@ -149,9 +148,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsTrue_IfLeftConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, true);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("left", "x");
@@ -163,9 +161,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsTrue_IfRightConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, false);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("right", "y");
@@ -177,9 +174,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsTrue_IfLeftAndRightConstraintAreNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, false);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("left", "x");
@@ -195,9 +191,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsTrue_IfLeftAndRightConstraintAreSatisfied_And_IsInverted()
         {
             var constraint = CreateAndConstraint(true, true).Invert(ParentErrorMessage);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("parent", "x");
@@ -209,9 +204,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsFalse_IfLeftConstraintIsNotSatisfied_And_IsInverted()
         {
             var constraint = CreateAndConstraint(false, true).Invert();
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);            
         }
 
@@ -219,9 +213,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsFalse_IfRightConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, false).Invert();
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);  
         }
 
@@ -229,9 +222,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy_ReturnsFalse_IfLeftAndRightConstraintAreNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, false).Invert();
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);  
         }
 
@@ -243,9 +235,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy3_ReturnsFalse_IfLeftAndMiddleAndRightConstraintAreSatisfied()
         {
             var constraint = CreateAndConstraint(true, true, true);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);
         }
 
@@ -253,9 +244,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy3_ReturnsTrue_IfLeftConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, true, true);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("left", "x");
@@ -267,9 +257,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy3_ReturnsTrue_IfMiddleConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, false, true);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("middle", "y");
@@ -281,9 +270,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy3_ReturnsTrue_IfRightConstraintIsNotSatisfied()
         {
             var constraint = CreateAndConstraint(true, true, false);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("right", "z");
@@ -295,9 +283,8 @@ namespace Kingo.Messaging.Validation
         public void IsNotSatisfiedBy3_ReturnsTrue_IfLeftAndMiddleAndRightConstraintAreNotSatisfied()
         {
             var constraint = CreateAndConstraint(false, false, false);
-            IErrorMessageBuilder errorMessage;
 
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("left", "x");

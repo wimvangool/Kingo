@@ -56,9 +56,7 @@ namespace Kingo.Messaging.Validation
             {
                 return message.Validate(HaltOnFirstError);
             }
-            IRequestMessageValidator validator;
-
-            if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out validator))
+            if (RequestMessageBase.TryGetMessageValidator(messageToValidate.GetType(), out var validator))
             {
                 return validator.Validate(messageToValidate, HaltOnFirstError);
             }

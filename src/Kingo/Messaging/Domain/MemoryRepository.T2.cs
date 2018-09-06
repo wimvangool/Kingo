@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging.Domain
 {
@@ -75,7 +75,7 @@ namespace Kingo.Messaging.Domain
         /// <inheritdoc />
         protected internal override Task<AggregateDataSet<TKey>> SelectByIdAsync(TKey id)
         {
-            return AsyncMethod.RunSynchronously(() =>
+            return RunSynchronously(() =>
             {
                 if (_aggregates.TryGetValue(id, out AggregateDataSet<TKey> aggregate))
                 {
@@ -96,7 +96,7 @@ namespace Kingo.Messaging.Domain
         /// <inheritdoc />
         protected internal override Task FlushAsync(IChangeSet<TKey> changeSet)
         {
-            return AsyncMethod.RunSynchronously(() =>
+            return Run(() =>
             {
                 foreach (var data in changeSet.AggregatesToInsert)
                 {

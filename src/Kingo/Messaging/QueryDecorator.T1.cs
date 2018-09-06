@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -68,7 +68,7 @@ namespace Kingo.Messaging
             }
             return Decorate(context =>
             {
-                return AsyncMethod.RunSynchronously(() => query.Invoke(context));
+                return RunSynchronously(() => query.Invoke(context));
             });
         }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {    
@@ -50,7 +50,7 @@ namespace Kingo.Messaging
         }
         
         public Task HandleMessagesWithAsync(IMessageHandler handler) =>
-            handler == null ? AsyncMethod.Void : handler.HandleAsync(_message, _handler);
+            handler == null ? NoValue : handler.HandleAsync(_message, _handler);
 
         #endregion
     }

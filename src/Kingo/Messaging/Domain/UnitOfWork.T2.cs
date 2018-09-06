@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kingo.Resources;
 using Kingo.Threading;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging.Domain
 {
@@ -94,10 +95,10 @@ namespace Kingo.Messaging.Domain
                 _id;
 
             protected override Task<bool> EnterAsync() =>
-                AsyncMethod.Value(false);
+                Value(false);
 
             protected override Task ExitAsync() =>
-                AsyncMethod.Void;
+                NoValue;
 
             public override void AddToChangeSet(ChangeSet<TKey> changeSet) { }
 
@@ -164,7 +165,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task<bool> EnterAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return RunSynchronously(() =>
                 {
                     _aggregate.EventPublished += HandleEventPublished;
                     return false;
@@ -173,7 +174,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task ExitAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return Run(() =>
                 {
                     _aggregate.EventPublished -= HandleEventPublished;
                 });
@@ -194,11 +195,11 @@ namespace Kingo.Messaging.Domain
             }               
 
             public override Task<TAggregate> GetByIdAsync() =>
-                AsyncMethod.Value(_aggregate);
+                Value(_aggregate);
 
             public override Task<bool> AddAsync(TAggregate aggregate)
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return RunSynchronously(() =>
                 {
                     if (ReferenceEquals(_aggregate, aggregate))
                     {
@@ -236,7 +237,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task<bool> EnterAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return RunSynchronously(() =>
                 {
                     foreach (var @event in _aggregate.FlushEvents())
                     {
@@ -251,7 +252,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task ExitAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return Run(() =>
                 {
                     _aggregate.EventPublished -= HandleEventPublished;
                 });   
@@ -273,11 +274,11 @@ namespace Kingo.Messaging.Domain
             }                
 
             public override Task<TAggregate> GetByIdAsync() =>
-                AsyncMethod.Value(_aggregate);
+                Value(_aggregate);
 
             public override Task<bool> AddAsync(TAggregate aggregate)
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return RunSynchronously(() =>
                 {
                     if (ReferenceEquals(_aggregate, aggregate))
                     {
@@ -315,7 +316,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task<bool> EnterAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return RunSynchronously(() =>
                 {
                     _aggregate.EventPublished += HandleEventPublished;
                     return true;
@@ -324,7 +325,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task ExitAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return Run(() =>
                 {
                     _aggregate.EventPublished -= HandleEventPublished;
                 });
@@ -346,11 +347,11 @@ namespace Kingo.Messaging.Domain
             }                
 
             public override Task<TAggregate> GetByIdAsync() =>
-                AsyncMethod.Value(_aggregate);
+                Value(_aggregate);
 
             public override Task<bool> AddAsync(TAggregate aggregate)
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return RunSynchronously(() =>
                 {
                     if (ReferenceEquals(_aggregate, aggregate))
                     {
@@ -390,7 +391,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task<bool> EnterAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return RunSynchronously(() =>
                 {
                     _aggregate.EventPublished += HandleEventPublished;
                     _aggregate.NotifyRemoved();
@@ -400,7 +401,7 @@ namespace Kingo.Messaging.Domain
 
             protected override Task ExitAsync()
             {
-                return AsyncMethod.RunSynchronously(() =>
+                return Run(() =>
                 {
                     _aggregate.EventPublished -= HandleEventPublished;
                 });  
@@ -435,7 +436,7 @@ namespace Kingo.Messaging.Domain
              throw NewDuplicateKeyException(AggregateId);
 
             public override Task<bool> RemoveByIdAsync() =>
-                AsyncMethod.Value(false);
+                Value(false);
 
             private static Exception NewAggregateRemovedException(TKey aggregateId)
             {

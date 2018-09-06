@@ -68,18 +68,12 @@ namespace Kingo.Messaging.Validation
 
         #region [====== IsSatisfiedBy & IsNotSatisfiedBy ======]
 
-        public bool IsSatisfiedBy(TValueIn value)
-        {
-            TValueOut valueOut;
-
-            return IsSatisfiedBy(value, out valueOut);
-        }
+        public bool IsSatisfiedBy(TValueIn value) =>
+            IsSatisfiedBy(value, out _);
 
         public bool IsSatisfiedBy(TValueIn valueIn, out TValueOut valueOut)
         {
-            TValueMiddle valueMiddle;
-
-            if (_leftConstraint.IsSatisfiedBy(valueIn, out valueMiddle))
+            if (_leftConstraint.IsSatisfiedBy(valueIn, out var valueMiddle))
             {
                 return _rightConstraint.IsSatisfiedBy(valueMiddle, out valueOut);
             }

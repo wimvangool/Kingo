@@ -236,45 +236,35 @@ namespace Kingo
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetEqualityOperator_Throws_IfTypeIsNull()
-        {
-            Func<object, object, bool> equalityOperator;
-
-            TypeExtensions.TryGetEqualityOperator(null, out equalityOperator);
+        {            
+            TypeExtensions.TryGetEqualityOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetEqualityOperator_ReturnsFalse_IfTypeIsOpenGenericType()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> equalityOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetEqualityOperator(out equalityOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetEqualityOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> equalityOperator));
             Assert.IsNull(equalityOperator);
         }
 
         [TestMethod]
         public void TryGetEqualityOperator_ReturnsFalse_IfEqualityOperatorIsNotDefinedWithinType()
-        {
-            Func<EmptyStruct, EmptyStruct, bool> equalityOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetEqualityOperator(out equalityOperator));
+        {            
+            Assert.IsFalse(typeof(EmptyStruct).TryGetEqualityOperator(out Func<EmptyStruct, EmptyStruct, bool>  equalityOperator));
             Assert.IsNull(equalityOperator);
         }
 
         [TestMethod]
         public void TryGetEqualityOperator_ReturnsFalse_IfEqualityOperatorIsDefined_But_ArgumentsDoNotMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> equalityOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetEqualityOperator(out equalityOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetEqualityOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool>  equalityOperator));
             Assert.IsNull(equalityOperator);
         }
 
         [TestMethod]
         public void TryGetEqualityOperator_ReturnsTrue_IfEqualityOperatorIsDefined_And_ArgumentsMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> equalityOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetEqualityOperator(out equalityOperator));
+        {            
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetEqualityOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool>  equalityOperator));
             Assert.IsNotNull(equalityOperator);
 
             Assert.IsTrue(equalityOperator.Invoke(_Instance, _Instance));
@@ -288,45 +278,35 @@ namespace Kingo
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetInequalityOperator_Throws_IfTypeIsNull()
-        {
-            Func<object, object, bool> inequalityOperator;
-
-            TypeExtensions.TryGetInequalityOperator(null, out inequalityOperator);
+        {            
+            TypeExtensions.TryGetInequalityOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetInequalityOperator_ReturnsFalse_IfTypeIsOpenGenericType()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> inequalityOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetInequalityOperator(out inequalityOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetInequalityOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> inequalityOperator));
             Assert.IsNull(inequalityOperator);
         }
 
         [TestMethod]
         public void TryGetInequalityOperator_ReturnsFalse_IfInequalityOperatorIsNotDefinedWithinType()
-        {
-            Func<EmptyStruct, EmptyStruct, bool> inequalityOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetInequalityOperator(out inequalityOperator));
+        {            
+            Assert.IsFalse(typeof(EmptyStruct).TryGetInequalityOperator(out Func<EmptyStruct, EmptyStruct, bool>  inequalityOperator));
             Assert.IsNull(inequalityOperator);
         }
 
         [TestMethod]
         public void TryGetInequalityOperator_ReturnsFalse_IfInequalityOperatorIsDefined_But_ArgumentsDoNotMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> inequalityOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetInequalityOperator(out inequalityOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetInequalityOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool>  inequalityOperator));
             Assert.IsNull(inequalityOperator);
         }
 
         [TestMethod]
         public void TryGetInequalityOperator_ReturnsTrue_IfInequalityOperatorIsDefined_And_ArgumentsMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> inequalityOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetInequalityOperator(out inequalityOperator));
+        {            
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetInequalityOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool>  inequalityOperator));
             Assert.IsNotNull(inequalityOperator);
 
             Assert.IsTrue(inequalityOperator.Invoke(_Instance, _Instance));
@@ -340,45 +320,35 @@ namespace Kingo
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetLessThanOperator_Throws_IfTypeIsNull()
-        {
-            Func<object, object, bool> lessThanOrEqualOperator;
-
-            TypeExtensions.TryGetLessThanOperator(null, out lessThanOrEqualOperator);
+        {            
+            TypeExtensions.TryGetLessThanOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetLessThanOperator_ReturnsFalse_IfTypeIsOpenGenericType()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetLessThanOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetLessThanOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool>  lessThanOrEqualOperator));
             Assert.IsNull(lessThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetLessThanOperator_ReturnsFalse_IfLessThanOperatorIsNotDefinedWithinType()
-        {
-            Func<EmptyStruct, EmptyStruct, bool> lessThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetLessThanOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(EmptyStruct).TryGetLessThanOperator(out Func<EmptyStruct, EmptyStruct, bool>  lessThanOrEqualOperator));
             Assert.IsNull(lessThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetLessThanOperator_ReturnsFalse_IfLessThanOperatorIsDefined_But_ArgumentsDoNotMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLessThanOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLessThanOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool>  lessThanOrEqualOperator));
             Assert.IsNull(lessThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetLessThanOperator_ReturnsTrue_IfLessThanOperatorIsDefined_And_ArgumentsMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLessThanOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLessThanOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator));
             Assert.IsNotNull(lessThanOrEqualOperator);
 
             Assert.IsTrue(lessThanOrEqualOperator.Invoke(_Instance, _Instance));
@@ -392,45 +362,35 @@ namespace Kingo
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetLessThanOrEqualOperator_Throws_IfTypeIsNull()
-        {
-            Func<object, object, bool> lessThanOrEqualOperator;
-
-            TypeExtensions.TryGetLessThanOrEqualOperator(null, out lessThanOrEqualOperator);
+        {           
+            TypeExtensions.TryGetLessThanOrEqualOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetLessThanOrEqualOperator_ReturnsFalse_IfTypeIsOpenGenericType()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetLessThanOrEqualOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetLessThanOrEqualOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator));
             Assert.IsNull(lessThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetLessThanOrEqualOperator_ReturnsFalse_IfLessThanOrEqualOperatorIsNotDefinedWithinType()
-        {
-            Func<EmptyStruct, EmptyStruct, bool> lessThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetLessThanOrEqualOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(EmptyStruct).TryGetLessThanOrEqualOperator(out Func<EmptyStruct, EmptyStruct, bool> lessThanOrEqualOperator));
             Assert.IsNull(lessThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetLessThanOrEqualOperator_ReturnsFalse_IfLessThanOrEqualOperatorIsDefined_But_ArgumentsDoNotMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLessThanOrEqualOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLessThanOrEqualOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator));
             Assert.IsNull(lessThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetLessThanOrEqualOperator_ReturnsTrue_IfLessThanOrEqualOperatorIsDefined_And_ArgumentsMatch()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLessThanOrEqualOperator(out lessThanOrEqualOperator));
+        {            
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLessThanOrEqualOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> lessThanOrEqualOperator));
             Assert.IsNotNull(lessThanOrEqualOperator);
 
             Assert.IsTrue(lessThanOrEqualOperator.Invoke(_Instance, _Instance));
@@ -444,45 +404,35 @@ namespace Kingo
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetGreaterThanOperator_Throws_IfTypeIsNull()
-        {
-            Func<object, object, bool> greaterThanOrEqualOperator;
-
-            TypeExtensions.TryGetGreaterThanOperator(null, out greaterThanOrEqualOperator);
+        {            
+            TypeExtensions.TryGetGreaterThanOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOperator_ReturnsFalse_IfTypeIsOpenGenericType()
-        {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetGreaterThanOperator(out greaterThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetGreaterThanOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator));
             Assert.IsNull(greaterThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOperator_ReturnsFalse_IfGreaterThanOperatorIsNotDefinedWithinType()
-        {
-            Func<EmptyStruct, EmptyStruct, bool> greaterThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetGreaterThanOperator(out greaterThanOrEqualOperator));
+        {            
+            Assert.IsFalse(typeof(EmptyStruct).TryGetGreaterThanOperator(out Func<EmptyStruct, EmptyStruct, bool> greaterThanOrEqualOperator));
             Assert.IsNull(greaterThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOperator_ReturnsFalse_IfGreaterThanOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetGreaterThanOperator(out greaterThanOrEqualOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetGreaterThanOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator));
             Assert.IsNull(greaterThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOperator_ReturnsTrue_IfGreaterThanOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetGreaterThanOperator(out greaterThanOrEqualOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetGreaterThanOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator));
             Assert.IsNotNull(greaterThanOrEqualOperator);
 
             Assert.IsTrue(greaterThanOrEqualOperator.Invoke(_Instance, _Instance));
@@ -497,44 +447,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetGreaterThanOrEqualOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> greaterThanOrEqualOperator;
-
-            TypeExtensions.TryGetGreaterThanOrEqualOperator(null, out greaterThanOrEqualOperator);
+            TypeExtensions.TryGetGreaterThanOrEqualOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOrEqualOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetGreaterThanOrEqualOperator(out greaterThanOrEqualOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetGreaterThanOrEqualOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator));
             Assert.IsNull(greaterThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOrEqualOperator_ReturnsFalse_IfGreaterThanOrEqualOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> greaterThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetGreaterThanOrEqualOperator(out greaterThanOrEqualOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetGreaterThanOrEqualOperator(out Func<EmptyStruct, EmptyStruct, bool> greaterThanOrEqualOperator));
             Assert.IsNull(greaterThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOrEqualOperator_ReturnsFalse_IfGreaterThanOrEqualOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetGreaterThanOrEqualOperator(out greaterThanOrEqualOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetGreaterThanOrEqualOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator));
             Assert.IsNull(greaterThanOrEqualOperator);
         }
 
         [TestMethod]
         public void TryGetGreaterThanOrEqualOperator_ReturnsTrue_IfGreaterThanOrEqualOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetGreaterThanOrEqualOperator(out greaterThanOrEqualOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetGreaterThanOrEqualOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> greaterThanOrEqualOperator));
             Assert.IsNotNull(greaterThanOrEqualOperator);
 
             Assert.IsTrue(greaterThanOrEqualOperator.Invoke(_Instance, _Instance));
@@ -549,44 +489,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetAdditionOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> additionOperator;
-
-            TypeExtensions.TryGetAdditionOperator(null, out additionOperator);
+            TypeExtensions.TryGetAdditionOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetAdditionOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> additionOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetAdditionOperator(out additionOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetAdditionOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> additionOperator));
             Assert.IsNull(additionOperator);
         }
 
         [TestMethod]
         public void TryGetAdditionOperator_ReturnsFalse_IfAdditionOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> additionOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetAdditionOperator(out additionOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetAdditionOperator(out Func<EmptyStruct, EmptyStruct, bool> additionOperator));
             Assert.IsNull(additionOperator);
         }
 
         [TestMethod]
         public void TryGetAdditionOperator_ReturnsFalse_IfAdditionOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> additionOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetAdditionOperator(out additionOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetAdditionOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> additionOperator));
             Assert.IsNull(additionOperator);
         }
 
         [TestMethod]
         public void TryGetAdditionOperator_ReturnsTrue_IfAdditionOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> additionOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetAdditionOperator(out additionOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetAdditionOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> additionOperator));
             Assert.IsNotNull(additionOperator);
 
             additionOperator.Invoke(_Instance, _Instance);
@@ -602,44 +532,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetSubtractionOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> subtractionOperator;
-
-            TypeExtensions.TryGetSubtractionOperator(null, out subtractionOperator);
+            TypeExtensions.TryGetSubtractionOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetSubtractionOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> subtractionOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetSubtractionOperator(out subtractionOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetSubtractionOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> subtractionOperator));
             Assert.IsNull(subtractionOperator);
         }
 
         [TestMethod]
         public void TryGetSubtractionOperator_ReturnsFalse_IfSubtractionOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> subtractionOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetSubtractionOperator(out subtractionOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetSubtractionOperator(out Func<EmptyStruct, EmptyStruct, bool> subtractionOperator));
             Assert.IsNull(subtractionOperator);
         }
 
         [TestMethod]
         public void TryGetSubtractionOperator_ReturnsFalse_IfSubtractionOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> subtractionOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetSubtractionOperator(out subtractionOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetSubtractionOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> subtractionOperator));
             Assert.IsNull(subtractionOperator);
         }
 
         [TestMethod]
         public void TryGetSubtractionOperator_ReturnsTrue_IfSubtractionOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> subtractionOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetSubtractionOperator(out subtractionOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetSubtractionOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> subtractionOperator));
             Assert.IsNotNull(subtractionOperator);
 
             subtractionOperator.Invoke(_Instance, _Instance);
@@ -655,44 +575,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetMultiplyOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> multiplyOperator;
-
-            TypeExtensions.TryGetMultiplyOperator(null, out multiplyOperator);
+            TypeExtensions.TryGetMultiplyOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetMultiplyOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> multiplyOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetMultiplyOperator(out multiplyOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetMultiplyOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> multiplyOperator));
             Assert.IsNull(multiplyOperator);
         }
 
         [TestMethod]
         public void TryGetMultiplyOperator_ReturnsFalse_IfMultiplyOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> multiplyOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetMultiplyOperator(out multiplyOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetMultiplyOperator(out Func<EmptyStruct, EmptyStruct, bool> multiplyOperator));
             Assert.IsNull(multiplyOperator);
         }
 
         [TestMethod]
         public void TryGetMultiplyOperator_ReturnsFalse_IfMultiplyOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> multiplyOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetMultiplyOperator(out multiplyOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetMultiplyOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> multiplyOperator));
             Assert.IsNull(multiplyOperator);
         }
 
         [TestMethod]
         public void TryGetMultiplyOperator_ReturnsTrue_IfMultiplyOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> multiplyOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetMultiplyOperator(out multiplyOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetMultiplyOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> multiplyOperator));
             Assert.IsNotNull(multiplyOperator);
 
             multiplyOperator.Invoke(_Instance, _Instance);
@@ -708,44 +618,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetDivisionOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> divisionOperator;
-
-            TypeExtensions.TryGetDivisionOperator(null, out divisionOperator);
+            TypeExtensions.TryGetDivisionOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetDivisionOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> divisionOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetDivisionOperator(out divisionOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetDivisionOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> divisionOperator));
             Assert.IsNull(divisionOperator);
         }
 
         [TestMethod]
         public void TryGetDivisionOperator_ReturnsFalse_IfDivisionOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> divisionOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetDivisionOperator(out divisionOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetDivisionOperator(out Func<EmptyStruct, EmptyStruct, bool> divisionOperator));
             Assert.IsNull(divisionOperator);
         }
 
         [TestMethod]
         public void TryGetDivisionOperator_ReturnsFalse_IfDivisionOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> divisionOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetDivisionOperator(out divisionOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetDivisionOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> divisionOperator));
             Assert.IsNull(divisionOperator);
         }
 
         [TestMethod]
         public void TryGetDivisionOperator_ReturnsTrue_IfDivisionOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> divisionOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetDivisionOperator(out divisionOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetDivisionOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> divisionOperator));
             Assert.IsNotNull(divisionOperator);
 
             divisionOperator.Invoke(_Instance, _Instance);
@@ -761,44 +661,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetModulusOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> modulusOperator;
-
-            TypeExtensions.TryGetModulusOperator(null, out modulusOperator);
+            TypeExtensions.TryGetModulusOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetModulusOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> modulusOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetModulusOperator(out modulusOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetModulusOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> modulusOperator));
             Assert.IsNull(modulusOperator);
         }
 
         [TestMethod]
         public void TryGetModulusOperator_ReturnsFalse_IfModulusOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> modulusOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetModulusOperator(out modulusOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetModulusOperator(out Func<EmptyStruct, EmptyStruct, bool> modulusOperator));
             Assert.IsNull(modulusOperator);
         }
 
         [TestMethod]
         public void TryGetModulusOperator_ReturnsFalse_IfModulusOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> modulusOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetModulusOperator(out modulusOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetModulusOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> modulusOperator));
             Assert.IsNull(modulusOperator);
         }
 
         [TestMethod]
         public void TryGetModulusOperator_ReturnsTrue_IfModulusOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> modulusOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetModulusOperator(out modulusOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetModulusOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> modulusOperator));
             Assert.IsNotNull(modulusOperator);
 
             modulusOperator.Invoke(_Instance, _Instance);
@@ -814,44 +704,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetExclusiveOrOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> exclusiveOrOperator;
-
-            TypeExtensions.TryGetExclusiveOrOperator(null, out exclusiveOrOperator);
+            TypeExtensions.TryGetExclusiveOrOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetExclusiveOrOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> exclusiveOrOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetExclusiveOrOperator(out exclusiveOrOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetExclusiveOrOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> exclusiveOrOperator));
             Assert.IsNull(exclusiveOrOperator);
         }
 
         [TestMethod]
         public void TryGetExclusiveOrOperator_ReturnsFalse_IfExclusiveOrOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> exclusiveOrOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetExclusiveOrOperator(out exclusiveOrOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetExclusiveOrOperator(out Func<EmptyStruct, EmptyStruct, bool> exclusiveOrOperator));
             Assert.IsNull(exclusiveOrOperator);
         }
 
         [TestMethod]
         public void TryGetExclusiveOrOperator_ReturnsFalse_IfExclusiveOrOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> exclusiveOrOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetExclusiveOrOperator(out exclusiveOrOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetExclusiveOrOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> exclusiveOrOperator));
             Assert.IsNull(exclusiveOrOperator);
         }
 
         [TestMethod]
         public void TryGetExclusiveOrOperator_ReturnsTrue_IfExclusiveOrOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> exclusiveOrOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetExclusiveOrOperator(out exclusiveOrOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetExclusiveOrOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> exclusiveOrOperator));
             Assert.IsNotNull(exclusiveOrOperator);
 
             exclusiveOrOperator.Invoke(_Instance, _Instance);
@@ -867,44 +747,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetBitwiseAndOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> bitwiseAndOperator;
-
-            TypeExtensions.TryGetBitwiseAndOperator(null, out bitwiseAndOperator);
+            TypeExtensions.TryGetBitwiseAndOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetBitwiseAndOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseAndOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetBitwiseAndOperator(out bitwiseAndOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetBitwiseAndOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseAndOperator));
             Assert.IsNull(bitwiseAndOperator);
         }
 
         [TestMethod]
         public void TryGetBitwiseAndOperator_ReturnsFalse_IfBitwiseAndOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> bitwiseAndOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetBitwiseAndOperator(out bitwiseAndOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetBitwiseAndOperator(out Func<EmptyStruct, EmptyStruct, bool> bitwiseAndOperator));
             Assert.IsNull(bitwiseAndOperator);
         }
 
         [TestMethod]
         public void TryGetBitwiseAndOperator_ReturnsFalse_IfBitwiseAndOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseAndOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetBitwiseAndOperator(out bitwiseAndOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetBitwiseAndOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseAndOperator));
             Assert.IsNull(bitwiseAndOperator);
         }
 
         [TestMethod]
         public void TryGetBitwiseAndOperator_ReturnsTrue_IfBitwiseAndOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> bitwiseAndOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetBitwiseAndOperator(out bitwiseAndOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetBitwiseAndOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> bitwiseAndOperator));
             Assert.IsNotNull(bitwiseAndOperator);
 
             bitwiseAndOperator.Invoke(_Instance, _Instance);
@@ -920,44 +790,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetBitwiseOrOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object, bool> bitwiseOrOperator;
-
-            TypeExtensions.TryGetBitwiseOrOperator(null, out bitwiseOrOperator);
+            TypeExtensions.TryGetBitwiseOrOperator(null, out Func<object, object, bool> _);
         }
 
         [TestMethod]
         public void TryGetBitwiseOrOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseOrOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetBitwiseOrOperator(out bitwiseOrOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetBitwiseOrOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseOrOperator));
             Assert.IsNull(bitwiseOrOperator);
         }
 
         [TestMethod]
         public void TryGetBitwiseOrOperator_ReturnsFalse_IfBitwiseOrOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct, bool> bitwiseOrOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetBitwiseOrOperator(out bitwiseOrOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetBitwiseOrOperator(out Func<EmptyStruct, EmptyStruct, bool> bitwiseOrOperator));
             Assert.IsNull(bitwiseOrOperator);
         }
 
         [TestMethod]
         public void TryGetBitwiseOrOperator_ReturnsFalse_IfBitwiseOrOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseOrOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetBitwiseOrOperator(out bitwiseOrOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetBitwiseOrOperator(out Func<GenericStruct<int>, GenericStruct<int>, bool> bitwiseOrOperator));
             Assert.IsNull(bitwiseOrOperator);
         }
 
         [TestMethod]
         public void TryGetBitwiseOrOperator_ReturnsTrue_IfBitwiseOrOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> bitwiseOrOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetBitwiseOrOperator(out bitwiseOrOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetBitwiseOrOperator(out Func<GenericStruct<int>, GenericStruct<int>, GenericStruct<int>> bitwiseOrOperator));
             Assert.IsNotNull(bitwiseOrOperator);
 
             bitwiseOrOperator.Invoke(_Instance, _Instance);
@@ -973,44 +833,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetLeftShiftOperator_Throws_IfTypeIsNull()
         {
-            Func<object, int, bool> leftShiftOperator;
-
-            TypeExtensions.TryGetLeftShiftOperator(null, out leftShiftOperator);
+            TypeExtensions.TryGetLeftShiftOperator(null, out Func<object, int, bool> _);
         }
 
         [TestMethod]
         public void TryGetLeftShiftOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, int, bool> leftShiftOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetLeftShiftOperator(out leftShiftOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetLeftShiftOperator(out Func<GenericStruct<int>, int, bool> leftShiftOperator));
             Assert.IsNull(leftShiftOperator);
         }
 
         [TestMethod]
         public void TryGetLeftShiftOperator_ReturnsFalse_IfLeftShiftOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, int, bool> leftShiftOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetLeftShiftOperator(out leftShiftOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetLeftShiftOperator(out Func<EmptyStruct, int, bool> leftShiftOperator));
             Assert.IsNull(leftShiftOperator);
         }
 
         [TestMethod]
         public void TryGetLeftShiftOperator_ReturnsFalse_IfLeftShiftOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, int, bool> leftShiftOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLeftShiftOperator(out leftShiftOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLeftShiftOperator(out Func<GenericStruct<int>, int, bool> leftShiftOperator));
             Assert.IsNull(leftShiftOperator);
         }
 
         [TestMethod]
         public void TryGetLeftShiftOperator_ReturnsTrue_IfLeftShiftOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, int, GenericStruct<int>> leftShiftOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLeftShiftOperator(out leftShiftOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLeftShiftOperator(out Func<GenericStruct<int>, int, GenericStruct<int>> leftShiftOperator));
             Assert.IsNotNull(leftShiftOperator);
 
             leftShiftOperator.Invoke(_Instance, 0);
@@ -1026,44 +876,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetRightShiftOperator_Throws_IfTypeIsNull()
         {
-            Func<object, int, bool> rightShiftOperator;
-
-            TypeExtensions.TryGetRightShiftOperator(null, out rightShiftOperator);
+            TypeExtensions.TryGetRightShiftOperator(null, out Func<object, int, bool> _);
         }
 
         [TestMethod]
         public void TryGetRightShiftOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, int, bool> rightShiftOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetRightShiftOperator(out rightShiftOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetRightShiftOperator(out Func<GenericStruct<int>, int, bool> rightShiftOperator));
             Assert.IsNull(rightShiftOperator);
         }
 
         [TestMethod]
         public void TryGetRightShiftOperator_ReturnsFalse_IfRightShiftOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, int, bool> rightShiftOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetRightShiftOperator(out rightShiftOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetRightShiftOperator(out Func<EmptyStruct, int, bool> rightShiftOperator));
             Assert.IsNull(rightShiftOperator);
         }
 
         [TestMethod]
         public void TryGetRightShiftOperator_ReturnsFalse_IfRightShiftOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, int, bool> rightShiftOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetRightShiftOperator(out rightShiftOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetRightShiftOperator(out Func<GenericStruct<int>, int, bool> rightShiftOperator));
             Assert.IsNull(rightShiftOperator);
         }
 
         [TestMethod]
         public void TryGetRightShiftOperator_ReturnsTrue_IfRightShiftOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, int, GenericStruct<int>> rightShiftOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetRightShiftOperator(out rightShiftOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetRightShiftOperator(out Func<GenericStruct<int>, int, GenericStruct<int>> rightShiftOperator));
             Assert.IsNotNull(rightShiftOperator);
 
             rightShiftOperator.Invoke(_Instance, 0);
@@ -1079,44 +919,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetUnaryPlusOperator_Throws_IfTypeIsNull()
         {
-            Func<object, bool> unaryPlusOperator;
-
-            TypeExtensions.TryGetUnaryPlusOperator(null, out unaryPlusOperator);
+            TypeExtensions.TryGetUnaryPlusOperator(null, out Func<object, bool> _);
         }
 
         [TestMethod]
         public void TryGetUnaryPlusOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> unaryPlusOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetUnaryPlusOperator(out unaryPlusOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetUnaryPlusOperator(out Func<GenericStruct<int>, GenericStruct<int>> unaryPlusOperator));
             Assert.IsNull(unaryPlusOperator);
         }
 
         [TestMethod]
         public void TryGetUnaryPlusOperator_ReturnsFalse_IfUnaryPlusOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct> unaryPlusOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetUnaryPlusOperator(out unaryPlusOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetUnaryPlusOperator(out Func<EmptyStruct, EmptyStruct> unaryPlusOperator));
             Assert.IsNull(unaryPlusOperator);
         }
 
         [TestMethod]
         public void TryGetUnaryPlusOperator_ReturnsFalse_IfUnaryPlusOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, bool> unaryPlusOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetUnaryPlusOperator(out unaryPlusOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetUnaryPlusOperator(out Func<GenericStruct<int>, bool> unaryPlusOperator));
             Assert.IsNull(unaryPlusOperator);
         }
 
         [TestMethod]
         public void TryGetUnaryPlusOperator_ReturnsTrue_IfUnaryPlusOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> unaryPlusOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetUnaryPlusOperator(out unaryPlusOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetUnaryPlusOperator(out Func<GenericStruct<int>, GenericStruct<int>> unaryPlusOperator));
             Assert.IsNotNull(unaryPlusOperator);
 
             unaryPlusOperator.Invoke(_Instance);
@@ -1132,44 +962,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetUnaryNegationOperator_Throws_IfTypeIsNull()
         {
-            Func<object, bool> unaryNegationOperator;
-
-            TypeExtensions.TryGetUnaryNegationOperator(null, out unaryNegationOperator);
+            TypeExtensions.TryGetUnaryNegationOperator(null, out Func<object, bool> _);
         }
 
         [TestMethod]
         public void TryGetUnaryNegationOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> unaryNegationOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetUnaryNegationOperator(out unaryNegationOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetUnaryNegationOperator(out Func<GenericStruct<int>, GenericStruct<int>> unaryNegationOperator));
             Assert.IsNull(unaryNegationOperator);
         }
 
         [TestMethod]
         public void TryGetUnaryNegationOperator_ReturnsFalse_IfUnaryNegationOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct> unaryNegationOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetUnaryNegationOperator(out unaryNegationOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetUnaryNegationOperator(out Func<EmptyStruct, EmptyStruct> unaryNegationOperator));
             Assert.IsNull(unaryNegationOperator);
         }
 
         [TestMethod]
         public void TryGetUnaryNegationOperator_ReturnsFalse_IfUnaryNegationOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, bool> unaryNegationOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetUnaryNegationOperator(out unaryNegationOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetUnaryNegationOperator(out Func<GenericStruct<int>, bool> unaryNegationOperator));
             Assert.IsNull(unaryNegationOperator);
         }
 
         [TestMethod]
         public void TryGetUnaryNegationOperator_ReturnsTrue_IfUnaryNegationOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> unaryNegationOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetUnaryNegationOperator(out unaryNegationOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetUnaryNegationOperator(out Func<GenericStruct<int>, GenericStruct<int>> unaryNegationOperator));
             Assert.IsNotNull(unaryNegationOperator);
 
             unaryNegationOperator.Invoke(_Instance);
@@ -1185,44 +1005,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetLogicalNotOperator_Throws_IfTypeIsNull()
         {
-            Func<object, bool> logicalNotOperator;
-
-            TypeExtensions.TryGetLogicalNotOperator(null, out logicalNotOperator);
+            TypeExtensions.TryGetLogicalNotOperator(null, out Func<object, bool> _);
         }
 
         [TestMethod]
         public void TryGetLogicalNotOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> logicalNotOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetLogicalNotOperator(out logicalNotOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetLogicalNotOperator(out Func<GenericStruct<int>, GenericStruct<int>> logicalNotOperator));
             Assert.IsNull(logicalNotOperator);
         }
 
         [TestMethod]
         public void TryGetLogicalNotOperator_ReturnsFalse_IfLogicalNotOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct> logicalNotOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetLogicalNotOperator(out logicalNotOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetLogicalNotOperator(out Func<EmptyStruct, EmptyStruct> logicalNotOperator));
             Assert.IsNull(logicalNotOperator);
         }
 
         [TestMethod]
         public void TryGetLogicalNotOperator_ReturnsFalse_IfLogicalNotOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, bool> logicalNotOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLogicalNotOperator(out logicalNotOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetLogicalNotOperator(out Func<GenericStruct<int>, bool> logicalNotOperator));
             Assert.IsNull(logicalNotOperator);
         }
 
         [TestMethod]
         public void TryGetLogicalNotOperator_ReturnsTrue_IfLogicalNotOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> logicalNotOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLogicalNotOperator(out logicalNotOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetLogicalNotOperator(out Func<GenericStruct<int>, GenericStruct<int>> logicalNotOperator));
             Assert.IsNotNull(logicalNotOperator);
 
             logicalNotOperator.Invoke(_Instance);
@@ -1238,44 +1048,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetOnesComplementOperator_Throws_IfTypeIsNull()
         {
-            Func<object, bool> onesComplementOperator;
-
-            TypeExtensions.TryGetOnesComplementOperator(null, out onesComplementOperator);
+            TypeExtensions.TryGetOnesComplementOperator(null, out Func<object, bool> _);
         }
 
         [TestMethod]
         public void TryGetOnesComplementOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> onesComplementOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetOnesComplementOperator(out onesComplementOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetOnesComplementOperator(out Func<GenericStruct<int>, GenericStruct<int>> onesComplementOperator));
             Assert.IsNull(onesComplementOperator);
         }
 
         [TestMethod]
         public void TryGetOnesComplementOperator_ReturnsFalse_IfOnesComplementOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, EmptyStruct> onesComplementOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetOnesComplementOperator(out onesComplementOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetOnesComplementOperator(out Func<EmptyStruct, EmptyStruct> onesComplementOperator));
             Assert.IsNull(onesComplementOperator);
         }
 
         [TestMethod]
         public void TryGetOnesComplementOperator_ReturnsFalse_IfOnesComplementOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, bool> onesComplementOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetOnesComplementOperator(out onesComplementOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetOnesComplementOperator(out Func<GenericStruct<int>, bool> onesComplementOperator));
             Assert.IsNull(onesComplementOperator);
         }
 
         [TestMethod]
         public void TryGetOnesComplementOperator_ReturnsTrue_IfOnesComplementOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, GenericStruct<int>> onesComplementOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetOnesComplementOperator(out onesComplementOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetOnesComplementOperator(out Func<GenericStruct<int>, GenericStruct<int>> onesComplementOperator));
             Assert.IsNotNull(onesComplementOperator);
 
             onesComplementOperator.Invoke(_Instance);
@@ -1291,44 +1091,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetTrueOperator_Throws_IfTypeIsNull()
         {
-            Func<object, bool> trueOperator;
-
-            TypeExtensions.TryGetTrueOperator(null, out trueOperator);
+            TypeExtensions.TryGetTrueOperator(null, out Func<object, bool> _);
         }
 
         [TestMethod]
         public void TryGetTrueOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, bool> trueOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetTrueOperator(out trueOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetTrueOperator(out Func<GenericStruct<int>, bool> trueOperator));
             Assert.IsNull(trueOperator);
         }
 
         [TestMethod]
         public void TryGetTrueOperator_ReturnsFalse_IfTrueOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, bool> trueOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetTrueOperator(out trueOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetTrueOperator(out Func<EmptyStruct, bool> trueOperator));
             Assert.IsNull(trueOperator);
         }
 
         [TestMethod]
         public void TryGetTrueOperator_ReturnsFalse_IfTrueOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, bool> trueOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetTrueOperator(out trueOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetTrueOperator(out Func<GenericStruct<int>, bool> trueOperator));
             Assert.IsNull(trueOperator);
         }
 
         [TestMethod]
         public void TryGetTrueOperator_ReturnsTrue_IfTrueOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, bool> trueOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetTrueOperator(out trueOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetTrueOperator(out Func<GenericStruct<int>, bool> trueOperator));
             Assert.IsNotNull(trueOperator);
 
             trueOperator.Invoke(_Instance);
@@ -1344,44 +1134,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetFalseOperator_Throws_IfTypeIsNull()
         {
-            Func<object, bool> falseOperator;
-
-            TypeExtensions.TryGetFalseOperator(null, out falseOperator);
+            TypeExtensions.TryGetFalseOperator(null, out Func<object, bool> _);
         }
 
         [TestMethod]
         public void TryGetFalseOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, bool> falseOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetFalseOperator(out falseOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetFalseOperator(out Func<GenericStruct<int>, bool> falseOperator));
             Assert.IsNull(falseOperator);
         }
 
         [TestMethod]
         public void TryGetFalseOperator_ReturnsFalse_IfFalseOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, bool> falseOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetFalseOperator(out falseOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetFalseOperator(out Func<EmptyStruct, bool> falseOperator));
             Assert.IsNull(falseOperator);
         }
 
         [TestMethod]
         public void TryGetFalseOperator_ReturnsFalse_IfFalseOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, bool> falseOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetFalseOperator(out falseOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetFalseOperator(out Func<GenericStruct<int>, bool> falseOperator));
             Assert.IsNull(falseOperator);
         }
 
         [TestMethod]
         public void TryGetFalseOperator_ReturnsTrue_IfFalseOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, bool> falseOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetFalseOperator(out falseOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetFalseOperator(out Func<GenericStruct<int>, bool> falseOperator));
             Assert.IsNotNull(falseOperator);
 
             falseOperator.Invoke(_Instance);
@@ -1397,44 +1177,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetImplicitOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object> implicitOperator;
-
-            TypeExtensions.TryGetImplicitOperator(null, out implicitOperator);
+            TypeExtensions.TryGetImplicitOperator(null, out Func<object, object> _);
         }
 
         [TestMethod]
         public void TryGetImplicitOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<GenericStruct<int>, int> implicitOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetImplicitOperator(out implicitOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetImplicitOperator(out Func<GenericStruct<int>, int> implicitOperator));
             Assert.IsNull(implicitOperator);
         }
 
         [TestMethod]
         public void TryGetImplicitOperator_ReturnsFalse_IfImplicitOperatorIsNotDefinedWithinType()
         {
-            Func<EmptyStruct, int> implicitOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetImplicitOperator(out implicitOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetImplicitOperator(out Func<EmptyStruct, int> implicitOperator));
             Assert.IsNull(implicitOperator);
         }
 
         [TestMethod]
         public void TryGetImplicitOperator_ReturnsFalse_IfImplicitOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<GenericStruct<int>, bool> implicitOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetImplicitOperator(out implicitOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetImplicitOperator(out Func<GenericStruct<int>, bool> implicitOperator));
             Assert.IsNull(implicitOperator);
         }
 
         [TestMethod]
         public void TryGetImplicitOperator_ReturnsTrue_IfImplicitOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<GenericStruct<int>, int> implicitOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetImplicitOperator(out implicitOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetImplicitOperator(out Func<GenericStruct<int>, int> implicitOperator));
             Assert.IsNotNull(implicitOperator);
 
             implicitOperator.Invoke(_Instance);
@@ -1450,44 +1220,34 @@ namespace Kingo
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetExplicitOperator_Throws_IfTypeIsNull()
         {
-            Func<object, object> explicitOperator;
-
-            TypeExtensions.TryGetExplicitOperator(null, out explicitOperator);
+            TypeExtensions.TryGetExplicitOperator(null, out Func<object, object> _);
         }
 
         [TestMethod]
         public void TryGetExplicitOperator_ReturnsFalse_IfTypeIsOpenGenericType()
         {
-            Func<int, GenericStruct<int>> explicitOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<>).TryGetExplicitOperator(out explicitOperator));
+            Assert.IsFalse(typeof(GenericStruct<>).TryGetExplicitOperator(out Func<int, GenericStruct<int>> explicitOperator));
             Assert.IsNull(explicitOperator);
         }
 
         [TestMethod]
         public void TryGetExplicitOperator_ReturnsFalse_IfExplicitOperatorIsNotDefinedWithinType()
         {
-            Func<int, EmptyStruct> explicitOperator;
-
-            Assert.IsFalse(typeof(EmptyStruct).TryGetExplicitOperator(out explicitOperator));
+            Assert.IsFalse(typeof(EmptyStruct).TryGetExplicitOperator(out Func<int, EmptyStruct> explicitOperator));
             Assert.IsNull(explicitOperator);
         }
 
         [TestMethod]
         public void TryGetExplicitOperator_ReturnsFalse_IfExplicitOperatorIsDefined_But_ArgumentsDoNotMatch()
         {
-            Func<bool, GenericStruct<int>> explicitOperator;
-
-            Assert.IsFalse(typeof(GenericStruct<long>).TryGetExplicitOperator(out explicitOperator));
+            Assert.IsFalse(typeof(GenericStruct<long>).TryGetExplicitOperator(out Func<bool, GenericStruct<int>> explicitOperator));
             Assert.IsNull(explicitOperator);
         }
 
         [TestMethod]
         public void TryGetExplicitOperator_ReturnsTrue_IfExplicitOperatorIsDefined_And_ArgumentsMatch()
         {
-            Func<int, GenericStruct<int>> explicitOperator;
-
-            Assert.IsTrue(typeof(GenericStruct<int>).TryGetExplicitOperator(out explicitOperator));
+            Assert.IsTrue(typeof(GenericStruct<int>).TryGetExplicitOperator(out Func<int, GenericStruct<int>> explicitOperator));
             Assert.IsNotNull(explicitOperator);
 
             explicitOperator.Invoke(0);

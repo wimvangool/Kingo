@@ -29,10 +29,9 @@ namespace Kingo.Messaging.Validation
         public void Any_ReturnsNullConstraint_IfNoConstraintsAreSpecified()
         {            
             var orConstraint = Constraint.Any(new IConstraint<object>[0]);
-            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(orConstraint.IsSatisfiedBy(null));
-            Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);  
         }
 
@@ -41,10 +40,9 @@ namespace Kingo.Messaging.Validation
         {            
             var constraint = NewConstraint(true);
             var orConstraint = Constraint.Any(constraint);
-            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(orConstraint.IsSatisfiedBy(null));
-            Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);            
         }
 
@@ -53,10 +51,9 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = NewConstraint(false);
             var orConstraint = Constraint.Any(constraint).WithErrorMessage(ParentErrorMessage);
-            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(orConstraint.IsSatisfiedBy(null));
-            Assert.IsTrue(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(orConstraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("parent", "x");
@@ -73,10 +70,9 @@ namespace Kingo.Messaging.Validation
             constraints[randomIndex] = NewConstraint(true);
 
             var orConstraint = Constraint.Any(constraints);
-            IErrorMessageBuilder errorMessage;
 
             Assert.IsTrue(orConstraint.IsSatisfiedBy(null));
-            Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsFalse(orConstraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNull(errorMessage);    
         }
 
@@ -85,10 +81,9 @@ namespace Kingo.Messaging.Validation
         {
             var constraints = CreateConstraintArray(false);            
             var orConstraint = Constraint.Any(constraints).WithErrorMessage(ParentErrorMessage);
-            IErrorMessageBuilder errorMessage;
 
             Assert.IsFalse(orConstraint.IsSatisfiedBy(null));
-            Assert.IsTrue(orConstraint.IsNotSatisfiedBy(null, out errorMessage));
+            Assert.IsTrue(orConstraint.IsNotSatisfiedBy(null, out var errorMessage));
             Assert.IsNotNull(errorMessage);
 
             errorMessage.Put("parent", "x");

@@ -16,9 +16,7 @@
 
         public bool IsNotSatisfiedBy(Member<TValueIn> member, IErrorMessageCollection reader, out Member<TValueOut> transformedMember)
         {
-            Member<TMiddle> middleMember;
-
-            if (_leftConstraint.IsNotSatisfiedBy(member, reader, out middleMember))
+            if (_leftConstraint.IsNotSatisfiedBy(member, reader, out var middleMember))
             {
                 transformedMember = null;
                 return true;

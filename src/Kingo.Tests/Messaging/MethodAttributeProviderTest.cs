@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Kingo.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -54,14 +54,14 @@ namespace Kingo.Messaging
         private sealed class NoAttributeHandler : IMessageHandler<object>
         {
             Task IMessageHandler<object>.HandleAsync(object message, IMicroProcessorContext context) =>
-                AsyncMethod.Void;
+                NoValue;
         }
 
         private sealed class OneAttributeHandler : IMessageHandler<object>
         {
             [AllowOne(1)]
             public Task HandleAsync(object message, IMicroProcessorContext context) =>
-                AsyncMethod.Void;
+                NoValue;
         }
 
         private sealed class ManyAttributesHandler : IMessageHandler<object>
@@ -70,7 +70,7 @@ namespace Kingo.Messaging
             [AllowMany(3)]
             [AllowMany(4)]
             public Task HandleAsync(object message, IMicroProcessorContext context) =>
-                AsyncMethod.Void;
+                NoValue;
         }
 
         #endregion
@@ -80,14 +80,14 @@ namespace Kingo.Messaging
         private sealed class NoAttributeQuery1 : IQuery<object>
         {
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                AsyncMethod.Value(new object());
+                Value(new object());
         }
 
         private sealed class OneAttributeQuery1 : IQuery<object>
         {
             [AllowOne(1)]
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                AsyncMethod.Value(new object());
+                Value(new object());
         }
 
         private sealed class ManyAttributesQuery1 : IQuery<object>
@@ -96,7 +96,7 @@ namespace Kingo.Messaging
             [AllowMany(3)]
             [AllowMany(4)]
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                AsyncMethod.Value(new object());
+                Value(new object());
         }
 
         #endregion
@@ -106,14 +106,14 @@ namespace Kingo.Messaging
         private sealed class NoAttributeQuery2 : IQuery<object, object>
         {
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                AsyncMethod.Value(new object());
+                Value(new object());
         }
 
         private sealed class OneAttributeQuery2 : IQuery<object, object>
         {
             [AllowOne(1)]
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                AsyncMethod.Value(new object());
+                Value(new object());
         }
 
         private sealed class ManyAttributesQuery2 : IQuery<object, object>
@@ -122,7 +122,7 @@ namespace Kingo.Messaging
             [AllowMany(3)]
             [AllowMany(4)]
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                AsyncMethod.Value(new object());
+                Value(new object());
         }
 
         #endregion
@@ -132,30 +132,27 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsMessageHandler_And_MethodDoesNotHaveAnyAttributesAtAll()
         {
-            var provider = MethodAttributeProvider.FromMessageHandler(new NoAttributeHandler());
-            AllowOneAttribute attribute;
+            var provider = MethodAttributeProvider.FromMessageHandler(new NoAttributeHandler());             
 
-            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsMessageHandler_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
-            var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());
-            AllowManyAttribute attribute;
+            var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());             
 
-            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out AllowManyAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsMessageHandler_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
         {
-            var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());
-            AllowOneAttribute attribute;
+            var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());            
 
-            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -163,10 +160,9 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsMessageHandler_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
         {
-            var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());
-            IHasValue attribute;
+            var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());            
 
-            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out IHasValue attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -175,10 +171,9 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(InvalidOperationException))]
         public void TryGetTypeAttributeOfType_Throws_IfTypeIsMessageHandler_And_MethodHasManyAttributesOfTheSpecifiedType()
         {
-            var provider = MethodAttributeProvider.FromMessageHandler(new ManyAttributesHandler());
-            AllowManyAttribute attribute;
+            var provider = MethodAttributeProvider.FromMessageHandler(new ManyAttributesHandler());             
 
-            provider.TryGetMethodAttributeOfType(out attribute);
+            provider.TryGetMethodAttributeOfType(out AllowManyAttribute attribute);
         }
 
         #endregion
@@ -244,30 +239,27 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsQuery2_And_MethodDoesNotHaveAnyAttributesAtAll()
         {
-            var provider = MethodAttributeProvider.FromQuery(new NoAttributeQuery2());
-            AllowOneAttribute attribute;
+            var provider = MethodAttributeProvider.FromQuery(new NoAttributeQuery2());            
 
-            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsQuery2_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
-            var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());
-            AllowManyAttribute attribute;
+            var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());            
 
-            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsFalse(provider.TryGetMethodAttributeOfType(out AllowManyAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsQuery2_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
         {
-            var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());
-            AllowOneAttribute attribute;
+            var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());            
 
-            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out AllowOneAttribute attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -275,10 +267,9 @@ namespace Kingo.Messaging
         [TestMethod]
         public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsQuery2_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
         {
-            var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());
-            IHasValue attribute;
+            var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());            
 
-            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out attribute));
+            Assert.IsTrue(provider.TryGetMethodAttributeOfType(out IHasValue attribute));
             Assert.IsNotNull(attribute);
             Assert.AreEqual(1, attribute.Value);
         }
@@ -287,10 +278,9 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(InvalidOperationException))]
         public void TryGetTypeAttributeOfType_Throws_IfTypeIsQuery2_And_MethodHasManyAttributesOfTheSpecifiedType()
         {
-            var provider = MethodAttributeProvider.FromQuery(new ManyAttributesQuery2());
-            AllowManyAttribute attribute;
+            var provider = MethodAttributeProvider.FromQuery(new ManyAttributesQuery2());            
 
-            provider.TryGetMethodAttributeOfType(out attribute);
+            provider.TryGetMethodAttributeOfType(out AllowManyAttribute attribute);
         }
 
         #endregion

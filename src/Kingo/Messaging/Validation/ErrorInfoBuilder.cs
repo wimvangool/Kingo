@@ -65,9 +65,7 @@ namespace Kingo.Messaging.Validation
             {
                 return _instanceErrors;             
             }
-            SortedErrorMessageList errorList;
-
-            if (!_memberErrors.TryGetValue(memberName, out errorList))
+            if (!_memberErrors.TryGetValue(memberName, out var errorList))
             {
                 _memberErrors.Add(memberName, errorList = new SortedErrorMessageList());
             }

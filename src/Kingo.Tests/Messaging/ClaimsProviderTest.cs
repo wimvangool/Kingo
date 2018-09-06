@@ -93,76 +93,69 @@ namespace Kingo.Messaging
         {
             var provider = CreateProvider();
 
-            provider.TryFindClaim(null, out Claim claim);
+            provider.TryFindClaim(null, out var claim);
         }
 
         [TestMethod]
         public void TryFindClaim_ReturnsFalse_IfPrincipalIsNoClaimsPrincipal()
         {
-            var provider = new ClaimsProvider(Thread.CurrentPrincipal);
-            Claim claim;
+            var provider = new ClaimsProvider(Thread.CurrentPrincipal);            
 
-            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out claim));
+            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out var claim));
             Assert.IsNull(claim);
         }
 
         [TestMethod]
         public void TryFindClaim_ReturnsFalse_IfPrincipalHasNoClaims()
         {
-            var provider = CreateProvider();
-            Claim claim;
+            var provider = CreateProvider();            
 
-            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out claim));
+            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out var claim));
             Assert.IsNull(claim);
         }
 
         [TestMethod]
         public void TryFindClaim_ReturnsFalse_IfPrincipalHasNoClaimOfSpecifiedType()
         {
-            var provider = CreateProvider(_ClaimB_OfType_Int);
-            Claim claim;
+            var provider = CreateProvider(_ClaimB_OfType_Int);           
 
-            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out claim));
+            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out var claim));
             Assert.IsNull(claim);
         }
 
         [TestMethod]
         public void TryFindClaim_ReturnsFalse_IfPrincipalHasOneClaimOfSpecifiedType_But_ClaimDoesNotSatisfyPredicate()
         {
-            var provider = CreateProvider(_ClaimA, _ClaimB_OfType_Int, _ClaimB_OfType_Single);
-            Claim claim;
+            var provider = CreateProvider(_ClaimA, _ClaimB_OfType_Int, _ClaimB_OfType_Single);            
 
-            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out claim, claims => null));
+            Assert.IsFalse(provider.TryFindClaim(_ClaimA.Type, out var claim, claims => null));
             Assert.IsNull(claim);
         }
 
         [TestMethod]
         public void TryFindClaim_ReturnsTrue_IfPrincipalHasOneClaimOfSpecifiedType()
         {
-            var provider = CreateProvider(_ClaimA);
-            Claim claim;
+            var provider = CreateProvider(_ClaimA);            
 
-            Assert.IsTrue(provider.TryFindClaim(_ClaimA.Type, out claim));
+            Assert.IsTrue(provider.TryFindClaim(_ClaimA.Type, out var claim));
             Assert.IsNotNull(claim);
         }
 
         [TestMethod]
         public void TryFindClaim_ReturnsTrue_IfPrincipalHasManyClaimsOfSpecifiedType()
         {
-            var provider = CreateProvider(_ClaimA, _ClaimB_OfType_Int, _ClaimB_OfType_Single);
-            Claim claim;
+            var provider = CreateProvider(_ClaimA, _ClaimB_OfType_Int, _ClaimB_OfType_Single);            
 
-            Assert.IsTrue(provider.TryFindClaim(_ClaimB_OfType_Int.Type, out claim));
+            Assert.IsTrue(provider.TryFindClaim(_ClaimB_OfType_Int.Type, out var claim));
             Assert.IsNotNull(claim);
         }
 
         [TestMethod]
         public void TryFindClaim_ReturnsTrue_IfPrincipalHasManyClaimsOfSpecifiedType_And_AtLeastOneSatisfiesThePredicate()
         {
-            var provider = CreateProvider(_ClaimA, _ClaimB_OfType_Int, _ClaimB_OfType_Single);            
-            Claim claim;
+            var provider = CreateProvider(_ClaimA, _ClaimB_OfType_Int, _ClaimB_OfType_Single);                        
 
-            Assert.IsTrue(provider.TryFindClaim(_ClaimB_OfType_Int.Type, out claim, c => c.ValueType == _ValueTypeSingle));
+            Assert.IsTrue(provider.TryFindClaim(_ClaimB_OfType_Int.Type, out var claim, c => c.ValueType == _ValueTypeSingle));
             Assert.IsNotNull(claim);
         }
 

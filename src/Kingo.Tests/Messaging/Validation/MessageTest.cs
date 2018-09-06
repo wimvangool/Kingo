@@ -92,28 +92,23 @@ namespace Kingo.Messaging.Validation
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TryGetValidator_Throws_IfMessageTypeIsNull()
-        {
-            IRequestMessageValidator validator;
-
-            RequestMessageBase.TryGetMessageValidator(null, out validator);
+        {            
+            RequestMessageBase.TryGetMessageValidator(null, out IRequestMessageValidator validator);
         }
 
         [TestMethod]
         public void TryGetValidator_ReturnsFalse_IfNoValidatorHasBeenRegisteredForSpecifiedMessageType()
-        {
-            IRequestMessageValidator validator;
-
-            Assert.IsFalse(RequestMessageBase.TryGetMessageValidator(typeof(MessageWithoutValidator), out validator));
+        {            
+            Assert.IsFalse(RequestMessageBase.TryGetMessageValidator(typeof(MessageWithoutValidator), out IRequestMessageValidator validator));
             Assert.IsNull(validator);
         }
 
         [TestMethod]
         public void TryGetValidator_ReturnsTrue_IfValidatorHasBeenRegisteredForTheSpecifiedMessageType()
         {
-            Assert.IsTrue(new MessageWithValidator(0, Enumerable.Empty<int>()).Validate().HasErrors);
-            IRequestMessageValidator validator;
+            Assert.IsTrue(new MessageWithValidator(0, Enumerable.Empty<int>()).Validate().HasErrors);            
 
-            Assert.IsTrue(RequestMessageBase.TryGetMessageValidator(typeof(MessageWithValidator), out validator));
+            Assert.IsTrue(RequestMessageBase.TryGetMessageValidator(typeof(MessageWithValidator), out IRequestMessageValidator validator));
             Assert.IsNotNull(validator);
             Assert.AreEqual("DelegateValidator<MessageWithValidator>", validator.ToString());
         }

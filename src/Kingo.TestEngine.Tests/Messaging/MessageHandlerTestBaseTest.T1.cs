@@ -28,7 +28,7 @@ namespace Kingo.Messaging
         [TestMethod]
         public virtual Task ThenAsync()
         {
-            return RunSynchronously(() =>
+            return Run(() =>
             {
                 Assert.IsTrue(_setupWasInvoked, "Setup did not run.");
                 Assert.IsTrue(_tearDownWasInvoked, "TearDown did not run.");

@@ -87,10 +87,8 @@ namespace Kingo.Messaging.Validation
                 if (assertCallback == null)
                 {
                     throw new ArgumentNullException(nameof(assertCallback));
-                }
-                string errorMessage;
-
-                if (_errorInfo.MemberErrors.TryGetValue(memberName, out errorMessage))
+                }                
+                if (_errorInfo.MemberErrors.TryGetValue(memberName, out var errorMessage))
                 {
                     assertCallback.Invoke(errorMessage);
                     return this;

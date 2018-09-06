@@ -24,9 +24,8 @@ namespace Kingo.Messaging.Validation
         {            
             var constraint = CreateConstraint(true, true);
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
         }
 
@@ -35,9 +34,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, true);
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.IsNull(valueOut);
         }
 
@@ -46,9 +44,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(true, false);
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.IsNull(valueOut);
         }
 
@@ -57,9 +54,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, false);
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.IsNull(valueOut);
         }
 
@@ -72,9 +68,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(true, true).Invert().MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsFalse(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.IsNull(valueOut);
         }
 
@@ -83,9 +78,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, true).Invert().MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
         }
 
@@ -94,9 +88,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(true, false).Invert().MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
         }
 
@@ -105,9 +98,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, false).Invert().MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out valueOut));
+            Assert.IsTrue(constraint.IsSatisfiedBy(valueIn, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
         }
 
@@ -120,11 +112,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(true, true);
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;            
-
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
             Assert.IsNull(errorMessage);
         }
@@ -134,11 +123,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, true);
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;
-
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
@@ -152,11 +138,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(true, false);
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;
-
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
@@ -170,11 +153,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, false);
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;
-
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
@@ -192,11 +172,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(true, true).Invert(ParentErrorMessage).MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;
-
-            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsTrue(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.IsNull(valueOut);
             Assert.IsNotNull(errorMessage);
 
@@ -210,11 +187,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, true).Invert().MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;
-
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
             Assert.IsNull(errorMessage);            
         }
@@ -224,11 +198,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(true, false).Invert().MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;
-
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
             Assert.IsNull(errorMessage);  
         }
@@ -238,11 +209,8 @@ namespace Kingo.Messaging.Validation
         {
             var constraint = CreateConstraint(false, false).Invert().MapInputToOutput();
             var valueIn = new object();
-            object valueOut;
 
-            IErrorMessageBuilder errorMessage;
-
-            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out errorMessage, out valueOut));
+            Assert.IsFalse(constraint.IsNotSatisfiedBy(valueIn, out var errorMessage, out var valueOut));
             Assert.AreSame(valueIn, valueOut);
             Assert.IsNull(errorMessage); 
         }

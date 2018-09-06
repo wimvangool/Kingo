@@ -111,9 +111,7 @@ namespace Kingo.Messaging
 
             foreach (var type in types.Distinct())
             {
-                MessageHandlerClass handler;
-
-                if (TryRegisterIn(factory, type, out handler))
+                if (TryRegisterIn(factory, type, out var handler))
                 {
                     messageHandlers.Add(handler);
                 }
@@ -140,9 +138,7 @@ namespace Kingo.Messaging
 
         private static IMessageHandlerConfiguration DetermineMessageHandlerConfigurationOf(Type type)
         {
-            IMessageHandlerConfiguration configuration;
-
-            if (TryGetMessageHandlerAttribute(type, out configuration))
+            if (TryGetMessageHandlerAttribute(type, out var configuration))
             {
                 return configuration;
             }
