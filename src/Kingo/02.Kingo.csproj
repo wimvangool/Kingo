@@ -109,11 +109,10 @@
     <Compile Include="Messaging\Domain\AggregateRoot.T2.cs" />
     <Compile Include="Messaging\Domain\DuplicateKeyException.cs" />
     <Compile Include="Messaging\Domain\Event.T2.cs" />
+    <Compile Include="Messaging\Domain\EventPublishedEventArgs.cs" />
     <Compile Include="Messaging\Domain\IAggregateDataObject.T2.cs" />
     <Compile Include="Messaging\Domain\IAggregateRootFactory.cs" />
     <Compile Include="Messaging\Domain\IEvent.T2.cs" />
-    <Compile Include="Messaging\Domain\EventPublishedEventArgs.cs" />
-    <Compile Include="Messaging\Domain\EventPublishedEventArgs.T1.cs" />
     <Compile Include="Messaging\Domain\IAggregateRoot.cs" />
     <Compile Include="Messaging\Domain\IAggregateRoot.T1.cs" />
     <Compile Include="Messaging\Domain\IChangeSet.T1.cs" />
@@ -125,8 +124,8 @@
     <Compile Include="Messaging\Domain\Repository.T2.cs" />
     <Compile Include="Messaging\Domain\UnitOfWork.T2.cs" />
     <Compile Include="Messaging\Domain\Snapshot.T2.cs" />
+    <Compile Include="Messaging\EventBus.cs" />
     <Compile Include="Messaging\EventStream.cs" />
-    <Compile Include="Messaging\EventStreamImplementation.cs" />
     <Compile Include="Messaging\ExceptionHandlingFilterAttribute.cs" />
     <Compile Include="Messaging\ExecuteQueryMethod.T1.cs" />
     <Compile Include="Messaging\ExecuteAsyncResult.T1.cs" />
@@ -135,7 +134,7 @@
     <Compile Include="Messaging\HandleInputStreamMethod.cs" />
     <Compile Include="Messaging\HandleMessageMethod.cs" />
     <Compile Include="Messaging\IClaimsProvider.cs" />
-    <Compile Include="Messaging\IEventStream.cs" />
+    <Compile Include="Messaging\IEventBus.cs" />
     <Compile Include="Messaging\IMicroProcessorFilter.cs" />
     <Compile Include="Messaging\InternalProcessorException.cs" />
     <Compile Include="Messaging\InvokeAsyncResult.T1.cs" />

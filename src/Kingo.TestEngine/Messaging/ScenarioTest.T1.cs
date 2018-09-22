@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kingo.Messaging
+﻿namespace Kingo.Messaging
 {
     /// <summary>
     /// Represents a scenario that follows the Behavior Driven Development (BDD) style, which is characterized

@@ -41,7 +41,7 @@ namespace Kingo.Messaging
         [ExpectedException(typeof(InvalidOperationException))]
         public void EventStream_Publish_Throws_ForAnyItem()
         {
-            Context.OutputStream.Publish(new object());
+            Context.EventBus.Publish(new object());
         }
 
         [TestMethod]

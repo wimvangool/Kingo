@@ -20,7 +20,7 @@ namespace Kingo.Messaging
             public NullContext()
             {
                 StackTrace = new EmpyStackTrace();   
-                OutputStream = new NullStream();
+                EventBus = new NullStream();
             }
 
             public IPrincipal Principal =>
@@ -40,7 +40,7 @@ namespace Kingo.Messaging
             public IUnitOfWorkController UnitOfWork =>
                 UnitOfWorkController.None;
 
-            public IEventStream OutputStream
+            public IEventBus EventBus
             {
                 get;
             }
@@ -67,7 +67,7 @@ namespace Kingo.Messaging
                 string.Empty;
         }
 
-        private sealed class NullStream : ReadOnlyList<object>, IEventStream
+        private sealed class NullStream : ReadOnlyList<object>, IEventBus
         {
             public override int Count =>
                 0;
@@ -130,10 +130,10 @@ namespace Kingo.Messaging
         }        
 
         /// <inheritdoc />
-        IEventStream IMicroProcessorContext.OutputStream =>
-            OutputStreamCore;
+        IEventBus IMicroProcessorContext.EventBus =>
+            EventBus;
         
-        internal abstract EventStream OutputStreamCore
+        internal abstract EventBus EventBus
         {
             get;
         }

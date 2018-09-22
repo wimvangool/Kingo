@@ -3,17 +3,28 @@
 namespace Kingo.Messaging.Domain
 {
     /// <summary>
-    /// Represents the argument of the <see cref="IAggregateRoot.EventPublished" /> event.
+    /// Contains the event that was published by an <see cref="IAggregateRoot" />.
     /// </summary>
-    public abstract class EventPublishedEventArgs : EventArgs
+    public sealed class EventPublishedEventArgs : EventArgs
     {
         /// <summary>
-        /// Publishes the events that was published by the aggregate to the specified <paramref name="stream"/>.
+        /// Initializes a new instance of the <see cref="EventPublishedEventArgs" /> class.
         /// </summary>
-        /// <param name="stream">The stream to publish to event to.</param>
+        /// <param name="event">The event that was published.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="stream"/> is <c>null</c>.
+        /// <paramref name="@event"/> is <c>null</c>.
         /// </exception>
-        public abstract IEvent WriteEventTo(IEventStream stream);
+        public EventPublishedEventArgs(IEvent @event)
+        {            
+            Event = @event ?? throw new ArgumentNullException(nameof(@event));
+        }
+
+        /// <summary>
+        /// The event that was published.
+        /// </summary>
+        public IEvent Event
+        {
+            get;
+        }
     }
 }

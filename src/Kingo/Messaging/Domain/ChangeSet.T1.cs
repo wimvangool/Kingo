@@ -18,7 +18,7 @@ namespace Kingo.Messaging.Domain
             _storeEvents = serializationStrategy.UsesEvents();
             _aggregatesToInsert = new List<AggregateDataSet<TKey>>();
             _aggregatesToUpdate = new List<AggregateDataSet<TKey>>();
-            _aggregatesToDelete = new List<TKey>();            
+            _aggregatesToDelete = new List<TKey>();                
         }                
             
         public IReadOnlyCollection<AggregateDataSet<TKey>> AggregatesToInsert =>
@@ -28,16 +28,16 @@ namespace Kingo.Messaging.Domain
             _aggregatesToUpdate;
 
         public IReadOnlyCollection<TKey> AggregatesToDelete =>
-            _aggregatesToDelete;
+            _aggregatesToDelete;       
 
         public void AddAggregateToInsert(IAggregateRoot<TKey> aggregate) =>
-            AddAggregateToInsert(aggregate, aggregate.FlushEvents());
+            AddAggregateTo(_aggregatesToInsert, aggregate);
 
-        public void AddAggregateToInsert(IAggregateRoot<TKey> aggregate, IEnumerable<IEvent> events) =>
-            _aggregatesToInsert.Add(ToDataSet(aggregate, events));
+        public void AddAggregateToUpdate(IAggregateRoot<TKey> aggregate) =>
+            AddAggregateTo(_aggregatesToUpdate, aggregate);
 
-        public void AddAggregateToUpdate(IAggregateRoot<TKey> aggregate, IEnumerable<IEvent> events) =>
-            _aggregatesToUpdate.Add(ToDataSet(aggregate, events));
+        private void AddAggregateTo(ICollection<AggregateDataSet<TKey>> aggregates, IAggregateRoot<TKey> aggregate) =>
+            aggregates.Add(ToDataSet(aggregate, aggregate.Commit()));       
 
         private AggregateDataSet<TKey> ToDataSet(IAggregateRoot<TKey> aggregate, IEnumerable<IEvent> events) =>
             new AggregateDataSet<TKey>(aggregate.Id, _storeSnapshots ? aggregate.TakeSnapshot() : null, _storeEvents ? events : null);

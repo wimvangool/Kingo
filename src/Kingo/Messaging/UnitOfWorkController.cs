@@ -75,7 +75,7 @@ namespace Kingo.Messaging
         public static readonly IUnitOfWorkController None = new NullController(new NullCache());       
 
         private readonly UnitOfWorkCache _cache;
-        private IUnitOfWorkController _controller;
+        private readonly IUnitOfWorkController _controller;
 
         internal UnitOfWorkController()
         {

@@ -109,7 +109,7 @@ namespace Kingo.Messaging.Domain
 
         /// <summary>
         /// Returns the resource identifier of this repository. This identifier is used to determine
-        /// which <see cref="IUnitOfWork" /> implementations can be flushed in parrallel (different id's) and which must
+        /// which <see cref="IUnitOfWork" /> implementations can be flushed in parallel (different id's) and which must
         /// be flushed sequentially (equal id's).
         /// </summary>
         protected internal virtual object ResourceId =>
@@ -135,8 +135,8 @@ namespace Kingo.Messaging.Domain
         /// <exception cref="ConcurrencyException">
         /// A concurrency exception occurred.
         /// </exception>
-        protected async Task FlushAsync(bool keepAggregatesInMemory) =>
-            await Interlocked.Exchange(ref _unitOfWork, await _unitOfWork.CommitAsync(keepAggregatesInMemory)).FlushAsync();
+        protected Task FlushAsync(bool keepAggregatesInMemory) =>
+            Interlocked.Exchange(ref _unitOfWork, _unitOfWork.Commit(keepAggregatesInMemory)).FlushAsync();        
 
         /// <summary>
         /// Flushes all changes made in this session to the data store by inserting, updating and/or deleting several aggregates.

@@ -71,7 +71,7 @@ namespace Kingo.Messaging
             }
             return Decorate((message, context) =>
             {
-                return RunSynchronously(() => query.Invoke(message, context));
+                return Run(() => query.Invoke(message, context));
             });
         }
 

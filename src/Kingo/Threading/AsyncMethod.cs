@@ -9,11 +9,11 @@ namespace Kingo.Threading
     /// </summary>
     public static class AsyncMethod
     {
-        #region [====== RunSynchronously ======]
+        #region [====== Run ======]
 
         /// <summary>
         /// Executes the specified asynchronous <paramref name="asyncFunc"/> synchronously and
-        /// returns a completed <see cref="Task" /> while encapsulation any exceptions
+        /// returns a completed <see cref="Task" /> while encapsulating any exceptions
         /// that might be thrown.
         /// </summary>        
         /// <param name="asyncFunc">The delegate to invoke.</param>
@@ -92,15 +92,13 @@ namespace Kingo.Threading
         /// <exception cref="ArgumentNullException">
         /// <paramref name="func"/> is <c>null</c>.
         /// </exception>
-        public static Task<TResult> RunSynchronously<TResult>(Func<TResult> func, CancellationToken? token = null)
+        public static Task<TResult> Run<TResult>(Func<TResult> func, CancellationToken? token = null)
         {
             if (func == null)
             {
                 throw new ArgumentNullException(nameof(func));
             }
-            Task<TResult> canceledTask;
-
-            if (TryGetCanceledTask(token, out canceledTask))
+            if (TryGetCanceledTask(token, out Task<TResult> canceledTask))
             {
                 return canceledTask;
             }

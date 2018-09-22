@@ -16,7 +16,7 @@ namespace Kingo.Messaging
 
         public Task<TMessageOut> ExecuteAsync(TMessageIn message, IMicroProcessorContext context)
         {
-            return RunSynchronously(() =>
+            return Run(() =>
             {
                 _messages.Add(message);
 

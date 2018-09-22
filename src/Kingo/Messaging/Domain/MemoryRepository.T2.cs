@@ -62,8 +62,13 @@ namespace Kingo.Messaging.Domain
             _aggregates.Count;
 
         /// <inheritdoc />
-        public IEnumerator<TAggregate> GetEnumerator() =>
-            _aggregates.Values.Select(aggregate => aggregate.RestoreAggregate<TAggregate>()).GetEnumerator();
+        public IEnumerator<TAggregate> GetEnumerator()
+        {
+            foreach (var key in _aggregates.Keys)
+            {
+                yield return GetByIdAsync(key).Await();
+            }
+        }
 
         IEnumerator IEnumerable.GetEnumerator() =>
             GetEnumerator();
@@ -73,17 +78,14 @@ namespace Kingo.Messaging.Domain
         #region [====== Read Operations ======]
 
         /// <inheritdoc />
-        protected internal override Task<AggregateDataSet<TKey>> SelectByIdAsync(TKey id)
+        protected internal override Task<AggregateDataSet<TKey>> SelectByIdAsync(TKey id) => Run(() =>
         {
-            return RunSynchronously(() =>
+            if (_aggregates.TryGetValue(id, out var aggregate))
             {
-                if (_aggregates.TryGetValue(id, out AggregateDataSet<TKey> aggregate))
-                {
-                    return aggregate;
-                }
-                return null;
-            });
-        }            
+                return aggregate;
+            }
+            return null;
+        });
 
         #endregion
 
@@ -94,24 +96,21 @@ namespace Kingo.Messaging.Domain
             FlushAsync(false);
 
         /// <inheritdoc />
-        protected internal override Task FlushAsync(IChangeSet<TKey> changeSet)
+        protected internal override Task FlushAsync(IChangeSet<TKey> changeSet) => Run(() =>
         {
-            return Run(() =>
+            foreach (var data in changeSet.AggregatesToInsert)
             {
-                foreach (var data in changeSet.AggregatesToInsert)
-                {
-                    Insert(data);
-                }
-                foreach (var data in changeSet.AggregatesToUpdate)
-                {
-                    Update(data);
-                }
-                foreach (var id in changeSet.AggregatesToDelete)
-                {
-                    Delete(id);
-                }
-            });
-        }
+                Insert(data);
+            }
+            foreach (var data in changeSet.AggregatesToUpdate)
+            {
+                Update(data);
+            }
+            foreach (var id in changeSet.AggregatesToDelete)
+            {
+                Delete(id);
+            }
+        });
 
         private void Insert(AggregateDataSet<TKey> data) =>
             _aggregates.Add(data.Id, data);

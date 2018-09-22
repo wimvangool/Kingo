@@ -15,7 +15,7 @@ namespace Kingo.Messaging
         {
             return MessageHandlerDecorator<object>.Decorate((message, context) =>
             {
-                context.OutputStream.Publish(_event);
+                context.EventBus.Publish(_event);
             });
         }
 

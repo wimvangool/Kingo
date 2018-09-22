@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Kingo.Clocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -69,18 +68,19 @@ namespace Kingo.Messaging.Domain
             var aggregate = new AggregateRootWithoutEventHandlers();
             var newValue = RandomValue();
             IAggregateRoot<Guid> aggregateRoot = aggregate;
-            EventPublishedEventArgs<ValueChangedEvent> eventArgs = null;
+            ValueChangedEvent @event = null;
 
-            aggregateRoot.EventPublished += (s, e) => eventArgs = e as EventPublishedEventArgs<ValueChangedEvent>;
+            aggregateRoot.EventPublished += (s, e) => @event = e.Event as ValueChangedEvent;
             aggregate.ChangeValue(newValue);
 
-            Assert.IsNotNull(eventArgs);
-            Assert.AreEqual(aggregateRoot.Id, eventArgs.Event.Id);
-            Assert.AreEqual(2, eventArgs.Event.Version);
-            Assert.AreEqual(newValue, eventArgs.Event.NewValue);
+            Assert.IsNotNull(@event);
+            Assert.AreEqual(aggregateRoot.Id, @event.Id);
+            Assert.AreEqual(2, @event.Version);
+            Assert.AreEqual(newValue, @event.NewValue);
 
-            Assert.IsTrue(aggregateRoot.HasPendingEvents);
-            Assert.AreSame(eventArgs.Event, aggregateRoot.FlushEvents().ElementAt(1));
+            var events = aggregateRoot.Commit();
+            Assert.AreEqual(2, events.Count);
+            Assert.AreSame(@event, events[1]);
         }
 
         [TestMethod]
@@ -89,45 +89,20 @@ namespace Kingo.Messaging.Domain
             var aggregate = new AggregateRootWithEventHandlers();
             var newValue = RandomValue();
             IAggregateRoot<Guid> aggregateRoot = aggregate;
-            EventPublishedEventArgs<ValueChangedEvent> eventArgs = null;
+            ValueChangedEvent @event = null;
 
-            aggregateRoot.EventPublished += (s, e) => eventArgs = e as EventPublishedEventArgs<ValueChangedEvent>;
+            aggregateRoot.EventPublished += (s, e) => @event = e.Event as ValueChangedEvent;
             aggregate.ChangeValue(newValue);
 
-            Assert.IsNotNull(eventArgs);
-            Assert.AreEqual(aggregateRoot.Id, eventArgs.Event.Id);
-            Assert.AreEqual(2, eventArgs.Event.Version);
-            Assert.AreEqual(newValue, eventArgs.Event.NewValue);
+            Assert.IsNotNull(@event);
+            Assert.AreEqual(aggregateRoot.Id, @event.Id);
+            Assert.AreEqual(2, @event.Version);
+            Assert.AreEqual(newValue, @event.NewValue);
 
-            Assert.IsTrue(aggregateRoot.HasPendingEvents);
-            Assert.AreSame(eventArgs.Event, aggregateRoot.FlushEvents().ElementAt(1));
-        }
-
-        [TestMethod]
-        public void ChangeValue_DoesNotAddEventToInternalEventBuffer_IfEventIsHandledByEventPublishedHandler()
-        {
-            var aggregate = new AggregateRootWithEventHandlers(new SnapshotMock(true));
-            var newValue = RandomValue();
-            IAggregateRoot<Guid> aggregateRoot = aggregate;
-            EventPublishedEventArgs<ValueChangedEvent> eventArgs = null;
-
-            aggregateRoot.EventPublished += (s, e) =>
-            {
-                eventArgs = e as EventPublishedEventArgs<ValueChangedEvent>;
-                eventArgs.WriteEventTo(new EventStreamImplementation());
-
-                Assert.IsTrue(eventArgs.HasBeenPublished);
-            };
-            aggregate.ChangeValue(newValue);
-
-            Assert.IsNotNull(eventArgs);
-            Assert.AreEqual(aggregateRoot.Id, eventArgs.Event.Id);
-            Assert.AreEqual(1, eventArgs.Event.Version);
-            Assert.AreEqual(newValue, eventArgs.Event.NewValue);
-
-            Assert.IsFalse(aggregateRoot.HasPendingEvents);
-            Assert.AreEqual(0, aggregateRoot.FlushEvents().Count());
-        }
+            var events = aggregateRoot.Commit();
+            Assert.AreEqual(2, events.Count);
+            Assert.AreSame(@event, events[1]);
+        }        
 
         #endregion
 
@@ -377,9 +352,8 @@ namespace Kingo.Messaging.Domain
             });
 
             IAggregateRoot restoredAggregate = aggregateDataSet.RestoreAggregate<AggregateRootWithEventHandlers>();
-
-            Assert.IsFalse(restoredAggregate.HasPendingEvents);
-            Assert.AreEqual(0, restoredAggregate.FlushEvents().Count());
+            
+            Assert.AreEqual(0, restoredAggregate.Commit().Count);            
         }
 
         [TestMethod]
@@ -390,11 +364,9 @@ namespace Kingo.Messaging.Domain
             IAggregateRoot<Guid> aggregateRoot = aggregate;            
             
             aggregate.ChangeValue(newValue);            
-
-            Assert.IsTrue(aggregateRoot.HasPendingEvents);
-            Assert.AreEqual(2, aggregateRoot.FlushEvents().Count());
-            Assert.IsFalse(aggregateRoot.HasPendingEvents);
-            Assert.AreEqual(0, aggregateRoot.FlushEvents().Count());
+            
+            Assert.AreEqual(2, aggregateRoot.Commit().Count);            
+            Assert.AreEqual(0, aggregateRoot.Commit().Count);
         }
 
         #endregion

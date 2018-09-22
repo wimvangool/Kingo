@@ -18,7 +18,7 @@ namespace Kingo.Messaging.Domain
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// This aggregate does not recognise one of the events.
+        /// This aggregate does not recognize one of the events.
         /// </exception>
         void LoadFromHistory(IEnumerable<IEvent> events);
 
@@ -30,26 +30,30 @@ namespace Kingo.Messaging.Domain
 
         #endregion
 
-        #region [====== EventPublished & FlushEvents() ======]
+        #region [====== EventPublished & Commit ======]
 
         /// <summary>
-        /// This event is raised each time this aggregate publishes a new event.
+        /// This event is raised when a new event is published on this bus.
         /// </summary>
         event EventHandler<EventPublishedEventArgs> EventPublished;
 
         /// <summary>
-        /// Indicates whether or not this aggregate has published any events that haven't been flushed yet.
+        /// Returns all events that have been published by this aggregate since the last commit.
         /// </summary>
-        bool HasPendingEvents
+        IReadOnlyList<IEvent> Events
         {
             get;
         }
 
         /// <summary>
-        /// Returns all events that were published by this aggregate since it was instantiated or retrieved from a data store
-        /// and empties the aggregate's internal event buffer.
+        /// Commits all changes and returns all events that were published since the last commit.
         /// </summary>
-        IEnumerable<IEvent> FlushEvents();
+        /// <returns></returns>
+        IReadOnlyList<IEvent> Commit();
+
+        #endregion
+
+        #region [====== NotifyRemoved ======]
 
         /// <summary>
         /// Notifies the aggregate that it was removed from the repository. This method can be used
@@ -58,6 +62,6 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         void NotifyRemoved();
 
-        #endregion        
+        #endregion
     }
 }

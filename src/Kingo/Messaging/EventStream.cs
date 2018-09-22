@@ -1,24 +1,33 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Kingo.Messaging
-{    
-    internal abstract class EventStream : ReadOnlyList<object>, IMessageStream, IEventStream
-    {                
-        #region [====== IMessageStream ======]                         
+{
+    internal class EventStream : EventBus
+    {
+        private IMessageStream _stream;
 
-        public IMessageStream Append<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null) =>
-            AppendStream(MessageStream.CreateStream(message, handler));
+        public EventStream()
+        {
+            _stream = MessageStream.Empty;
+        }
 
-        public abstract IMessageStream AppendStream(IMessageStream stream);
+        public override int Count =>
+            _stream.Count;
 
-        public abstract Task HandleMessagesWithAsync(IMessageHandler handler);
+        public override IEnumerator<object> GetEnumerator() =>
+            _stream.GetEnumerator();
 
-        #endregion
+        public override IMessageStream AppendStream(IMessageStream stream) =>
+            _stream.AppendStream(stream);
 
-        #region [====== IEventStream ======]
+        public override Task HandleMessagesWithAsync(IMessageHandler handler) =>
+            _stream.HandleMessagesWithAsync(handler);
 
-        public abstract void Publish<TEvent>(TEvent message);       
+        public override void Publish<TEvent>(TEvent message) =>
+            _stream = _stream.Append(message);
 
-        #endregion
+        public override string ToString() =>
+            _stream.ToString();
     }
 }

@@ -98,7 +98,7 @@ namespace Kingo.Messaging.Validation
 
             AssertContains(_processor.Handle(new SomeCommand(true), (message, context) =>
             {
-                context.OutputStream.Publish(someEvent);
+                context.EventBus.Publish(someEvent);
             }), someEvent);
         }
 
@@ -129,7 +129,7 @@ namespace Kingo.Messaging.Validation
 
             AssertContains(_processor.Handle(new SomeEvent(true), (message, context) =>
             {
-                context.OutputStream.Publish(someEvent);
+                context.EventBus.Publish(someEvent);
             }), someEvent);
         }
 
@@ -160,7 +160,7 @@ namespace Kingo.Messaging.Validation
 
             AssertContains(_processor.Handle(new object(), (message, context) =>
             {
-                context.OutputStream.Publish(someEvent);
+                context.EventBus.Publish(someEvent);
             }), someEvent);
         }
 
@@ -175,7 +175,7 @@ namespace Kingo.Messaging.Validation
 
                 AssertContains(_processor.Handle(new ExternalEvent(), (message, context) =>
                 {
-                    context.OutputStream.Publish(someEvent);
+                    context.EventBus.Publish(someEvent);
                 }), someEvent);
             }            
         }

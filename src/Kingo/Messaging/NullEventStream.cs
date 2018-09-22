@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Kingo.Messaging
 {
-    internal abstract class NullEventStream : EventStream
+    internal abstract class NullEventStream : EventBus
     {
         private readonly IMessageStream _emptyStream;
 

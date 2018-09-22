@@ -10,7 +10,7 @@ namespace Kingo.Messaging
 
         public Task<TMessageOut> ExecuteAsync(IMicroProcessorContext context)
         {
-            return RunSynchronously(() =>
+            return Run(() =>
             {
                 _executeCount++;
 

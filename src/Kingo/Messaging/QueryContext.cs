@@ -23,13 +23,13 @@ namespace Kingo.Messaging
         public QueryContext(IPrincipal principal, CancellationToken? token = null) :
             base(principal, token, new StackTrace())
         {           
-            OutputStreamCore = new NullOutputStream();            
+            EventBus = new NullOutputStream();            
         }
 
         public override IUnitOfWorkController UnitOfWork =>
             UnitOfWorkController.None;
 
-        internal override EventStream OutputStreamCore
+        internal override EventBus EventBus
         {
             get;
         }       

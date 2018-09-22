@@ -12,6 +12,6 @@
         /// <param name="context">Context of the <see cref="IMicroProcessor" />.</param>        
         /// <returns>A result containing all events that were published.</returns>
         public InvokeAsyncResult<IMessageStream> Yield(MicroProcessorContext context) =>
-            new HandleAsyncResult(context.OutputStreamCore);
+            new HandleAsyncResult(context.EventBus);
     }
 }

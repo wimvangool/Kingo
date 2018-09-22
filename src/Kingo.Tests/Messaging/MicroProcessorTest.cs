@@ -65,7 +65,7 @@ namespace Kingo.Messaging
             {
                 Assert.AreSame(messageIn, message);
 
-                context.OutputStream.Publish(messageOut);
+                context.EventBus.Publish(messageOut);
 
             }), messageOut);           
         }
@@ -83,13 +83,13 @@ namespace Kingo.Messaging
             {
                 Assert.AreSame(messageInA, message);
 
-                context.OutputStream.Publish(messageOutA);
+                context.EventBus.Publish(messageOutA);
 
             }).Append(messageInB, (message, context) =>
             {
                 Assert.AreSame(messageInB, message);
 
-                context.OutputStream.Publish(messageOutB);
+                context.EventBus.Publish(messageOutB);
             });
             
             AssertStream(await _processor.HandleStreamAsync(streamIn), messageOutA, messageOutB);            
@@ -212,8 +212,8 @@ namespace Kingo.Messaging
                 AssertMessageStack(context.StackTrace, message, someCommand);
 
                 await context.UnitOfWork.EnlistAsync(unitOfWork);
-                context.OutputStream.Publish(eventA);
-                context.OutputStream.Publish(eventB);
+                context.EventBus.Publish(eventA);
+                context.EventBus.Publish(eventB);
             });
 
             _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
@@ -221,7 +221,7 @@ namespace Kingo.Messaging
                 AssertMessageStack(context.StackTrace, message, someCommand, eventA);
 
                 await context.UnitOfWork.EnlistAsync(unitOfWork);
-                context.OutputStream.Publish(eventC);
+                context.EventBus.Publish(eventC);
             });
 
             _processor.Implement<EventHandlerC>().As<EventC>((message, context) =>
@@ -252,21 +252,21 @@ namespace Kingo.Messaging
             {
                 AssertMessageStack(context.StackTrace, message, someCommand);
 
-                context.OutputStream.Publish(eventA);
+                context.EventBus.Publish(eventA);
             });
 
             _processor.Implement<ObjectHandler>().As<EventA>((message, context) =>
             {
                 AssertMessageStack(context.StackTrace, message, someCommand, eventA);
 
-                context.OutputStream.Publish(eventB);
+                context.EventBus.Publish(eventB);
             });
 
             _processor.Implement<ObjectHandler>().As<EventB>((message, context) =>
             {
                 AssertMessageStack(context.StackTrace, message, someCommand, eventA, eventB);
 
-                context.OutputStream.Publish(eventC);
+                context.EventBus.Publish(eventC);
             });
 
             _processor.Implement<ObjectHandler>().As<EventC>((message, context) =>
@@ -313,7 +313,7 @@ namespace Kingo.Messaging
             {
                 AssertMessageStack(context.StackTrace, message, someCommand);
 
-                context.OutputStream.Publish(eventA);
+                context.EventBus.Publish(eventA);
             });
 
             _processor.Register<ExternalMessageHandler>();
@@ -562,7 +562,7 @@ namespace Kingo.Messaging
             {
                 await context.UnitOfWork.EnlistAsync(unitOfWork);
 
-                context.OutputStream.Publish(eventA);                
+                context.EventBus.Publish(eventA);                
             });
 
             _processor.Implement<EventHandlerAB>().AsAsync<EventA>(async (message, context) =>
@@ -601,7 +601,7 @@ namespace Kingo.Messaging
             {
                 await context.UnitOfWork.EnlistAsync(unitOfWork);
 
-                context.OutputStream.Publish(someCommand);
+                context.EventBus.Publish(someCommand);
             });
 
             _processor.Implement<SomeCommandHandler>().AsAsync<SomeCommand>(async (message, context) =>
@@ -782,7 +782,7 @@ namespace Kingo.Messaging
 
                 _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
                 {
-                    context.OutputStream.Publish(eventA);
+                    context.EventBus.Publish(eventA);
                 });
 
                 _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>
@@ -816,7 +816,7 @@ namespace Kingo.Messaging
 
                 _processor.Implement<SomeCommandHandler>().As<SomeCommand>((message, context) =>
                 {
-                    context.OutputStream.Publish(eventA);
+                    context.EventBus.Publish(eventA);
                 });
 
                 _processor.Implement<EventHandlerAB>().As<EventA>((message, context) =>

@@ -49,9 +49,9 @@ namespace Kingo.Messaging
         }
 
         /// <summary>
-        /// Represents the stream of events that is published during a unit of work.
+        /// The event bus that can be used to publish events during the current unit of work.
         /// </summary>
-        IEventStream OutputStream
+        IEventBus EventBus
         {
             get;
         }        

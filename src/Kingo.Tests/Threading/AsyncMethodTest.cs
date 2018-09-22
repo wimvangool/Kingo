@@ -15,7 +15,7 @@ namespace Kingo.Threading
         {
             var returnValue = Clock.Current.UtcDateAndTime().Millisecond;
             var resultX = Task.Run(() => returnValue).Result;
-            var resultY = RunSynchronously(() => returnValue).Result;
+            var resultY = Run(() => returnValue).Result;
 
             Assert.AreEqual(returnValue, resultX);
             Assert.AreEqual(returnValue, resultY);
@@ -59,7 +59,7 @@ namespace Kingo.Threading
         {
             var returnValue = Clock.Current.UtcDateAndTime().Millisecond;
             var resultX = await Task.Run(() => returnValue);
-            var resultY = await RunSynchronously(() => returnValue);
+            var resultY = await Run(() => returnValue);
 
             Assert.AreEqual(returnValue, resultX);
             Assert.AreEqual(returnValue, resultY);

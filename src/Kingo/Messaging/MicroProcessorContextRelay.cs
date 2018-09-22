@@ -31,8 +31,8 @@ namespace Kingo.Messaging
         public IUnitOfWorkController UnitOfWork =>
             Current.UnitOfWork;
 
-        public IEventStream OutputStream =>
-            Current.OutputStream;             
+        public IEventBus EventBus =>
+            Current.EventBus;             
 
         public CancellationToken Token =>
             Current.Token;        

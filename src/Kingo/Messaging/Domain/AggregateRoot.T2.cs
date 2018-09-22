@@ -17,33 +17,38 @@ namespace Kingo.Messaging.Domain
     {        
         private readonly TKey _id;
         private TVersion _version;
-        private List<IEvent> _pendingEvents;
+
+        private List<IEvent> _events;
         private bool _wasRemovedFromRepository;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
-        /// </summary>
-        /// <param name="data">The event that defines the creation of this aggregate.</param>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data" /> is <c>null</c>.
-        /// </exception>
-        protected AggregateRoot(IAggregateDataObject<TKey, TVersion> data)
-        {
-            if (data == null)
+        private AggregateRoot(IAggregateDataObject<TKey, TVersion> snapshotOrEvent)
+        {                        
+            if (snapshotOrEvent == null)
             {
-                throw new ArgumentNullException(nameof(data));
-            }
-            _id = data.Id;
-            _version = data.Version;
-            _pendingEvents = new List<IEvent>();            
+                throw new ArgumentNullException(nameof(snapshotOrEvent));
+            }            
+            _id = snapshotOrEvent.Id;
+            _version = snapshotOrEvent.Version;    
+            _events = new List<IEvent>();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
-        /// </summary>
+        /// </summary>        
+        /// <param name="snapshot">The event that defines the creation of this aggregate.</param>       
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="snapshot" /> is <c>null</c>.
+        /// </exception>
+        protected AggregateRoot(ISnapshot<TKey, TVersion> snapshot) :
+            this(snapshot as IAggregateDataObject<TKey, TVersion>) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
+        /// </summary>        
         /// <param name="event">The event that defines the creation of this aggregate.</param>  
         /// <param name="isNewAggregate">
-        /// Indicates whether or not this aggregate is a new aggregate and the event must be published.
+        /// Indicates whether or not this aggregate is a new aggregate. If <c>true</c>, the specified
+        /// <paramref name="event"/> is immediately added to the event buffer of this aggregate.
         /// </param>     
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event" /> is <c>null</c>.
@@ -53,16 +58,13 @@ namespace Kingo.Messaging.Domain
         {
             if (isNewAggregate)
             {
-                _pendingEvents.Add(@event);
+                _events.Add(@event);
             }
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{GetType().FriendlyName()} [Id = {Id}, Version = {Version}, Events = {PublishedEventCount}]";
-
-        private int PublishedEventCount =>
-            _pendingEvents?.Count ?? 0;
+            $"{GetType().FriendlyName()} [Id = {Id}, Version = {Version}, Events = {_events.Count}]";        
 
         #region [====== Id & Version ======]
 
@@ -112,7 +114,7 @@ namespace Kingo.Messaging.Domain
         #region [====== EventHandlers ======]  
 
         /// <summary>
-        /// Represents a collection of event handler degelates that are used by an <see cref="AggregateRoot{T, S}" /> to
+        /// Represents a collection of event handler delegates that are used by an <see cref="AggregateRoot{T, S}" /> to
         /// apply specific events to itself.
         /// </summary>        
         protected sealed class EventHandlerCollection            
@@ -125,6 +127,9 @@ namespace Kingo.Messaging.Domain
                 _eventHandlers = new Dictionary<Type, Action<object>>();
                 _aggregate = aggregate;
             }
+
+            public bool IsEmpty =>
+                _eventHandlers.Count == 0;
 
             /// <inheritdoc />
             public override string ToString() =>
@@ -192,7 +197,7 @@ namespace Kingo.Messaging.Domain
             }
 
             private IEnumerable<IEvent<TKey, TVersion>> SelectEventsToApply(IEnumerable<IEvent> events) =>
-                from @event in events.Select(Convert)
+                from @event in events.WhereNotNull().Select(Convert)
                 where MustApply(@event)
                 select @event;
 
@@ -200,7 +205,7 @@ namespace Kingo.Messaging.Domain
             {
                 try
                 {
-                    return (IEvent<TKey, TVersion>)@event;
+                    return (IEvent<TKey, TVersion>) @event;
                 }
                 catch (InvalidCastException)
                 {
@@ -212,21 +217,14 @@ namespace Kingo.Messaging.Domain
                 @event.Id.Equals(_aggregate.Id) && @event.Version.CompareTo(_aggregate.Version) > 0;                      
 
             internal bool Apply(IEvent<TKey, TVersion> @event)
-            {
-                if (_eventHandlers.TryGetValue(@event.GetType(), out Action<object> eventHandler))
+            {                
+                if (_eventHandlers.TryGetValue(@event.GetType(), out var eventHandler))
                 {
                     eventHandler.Invoke(@event);
                     return true;
                 }
                 return false;
-            }                        
-
-            private static Exception NewMissingEventHandlerException(Type eventType)
-            {
-                var messageFormat = ExceptionMessages.AggregateRoot_MissingEventHandlerException;
-                var message = string.Format(messageFormat, eventType.FriendlyName());
-                return new ArgumentException(message);
-            }
+            }                                    
 
             private static Exception NewEventConversionException(Type sourceType, Type targetType, string updateToLatestVersionMethodName)
             {
@@ -276,7 +274,7 @@ namespace Kingo.Messaging.Domain
         /// <paramref name="events"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// This aggregate does not recognise one of the events.
+        /// This aggregate does not recognize one of the events.
         /// </exception>
         protected virtual void LoadFromHistory(IEnumerable<IEvent> events) =>
             EventHandlers.ApplyOld(events);
@@ -303,83 +301,76 @@ namespace Kingo.Messaging.Domain
 
         #endregion
 
-        #region [====== Publish & FlushEvents ======]              
+        #region [====== Publish ======]  
+
+        private EventHandler<EventPublishedEventArgs> _eventPublished;
+
+        event EventHandler<EventPublishedEventArgs> IAggregateRoot.EventPublished
+        {
+            add => _eventPublished += value;
+            remove => _eventPublished -= value;
+        }               
+
+        /// <summary>
+        /// Updates the version of this aggregate and raises the <see cref="_eventPublished"/> event.
+        /// </summary>        
+        /// <param name="event">The event that was published.</param>
+        protected virtual void OnEventPublished<TEvent>(TEvent @event) where TEvent : IEvent<TKey, TVersion>
+        {
+            Version = @event.Version;
+
+            _events.Add(@event);
+            _eventPublished.Raise(this, new EventPublishedEventArgs(@event));
+        }
+
+        IReadOnlyList<IEvent> IAggregateRoot.Events =>
+            _events;
 
         /// <summary>
         /// Publishes the specified <paramref name="event"/> and updates the version of this aggregate.
         /// </summary>
         /// <typeparam name="TEvent">Type of the published event.</typeparam>
-        /// <param name="event">The event to publish.</param>
+        /// <param name="event">The event to publish.</param>        
+        /// <exception cref="BusinessRuleException">
+        /// This aggregate has already been removed from the repository and therefore does not allow any further changes.
+        /// </exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
         protected void Publish<TEvent>(TEvent @event) where TEvent : IEvent<TKey, TVersion>
         {
+            if (_wasRemovedFromRepository)
+            {
+                throw NewAggregateRemovedException(GetType(), @event?.GetType());
+            }
             if (@event == null)
             {
                 throw new ArgumentNullException(nameof(@event));
             }
-            if (_wasRemovedFromRepository)
-            {
-                throw NewAggregateRemovedException(GetType(), @event.GetType());
-            }            
             @event.Id = Id;
-            @event.Version = Version = NextVersion();
+            @event.Version = NextVersion();
 
-            EventHandlers.Apply(@event);
-
-            if (OnEventPublished(new EventPublishedEventArgs<TEvent>(@event)))
+            if (EventHandlers.Apply(@event) || EventHandlers.IsEmpty)
             {
+                OnEventPublished(@event);
                 return;
             }
-            _pendingEvents.Add(@event);
+            throw NewMissingEventHandlerException(@event.GetType());                                  
         }
 
-        event EventHandler<EventPublishedEventArgs> IAggregateRoot.EventPublished
+        IReadOnlyList<IEvent> IAggregateRoot.Commit() =>
+            Interlocked.Exchange(ref _events, new List<IEvent>());
+
+        private static Exception NewMissingEventHandlerException(Type eventType)
         {
-            add => EventPublished += value;
-            remove => EventPublished -= value;
+            var messageFormat = ExceptionMessages.AggregateRoot_MissingEventHandlerException;
+            var message = string.Format(messageFormat, eventType.FriendlyName());
+            return new ArgumentException(message);
         }
 
-        /// <summary>
-        /// This event is raised each time this aggregate publishes a new event.
-        /// </summary>
-        protected EventHandler<EventPublishedEventArgs> EventPublished;
+        #endregion
 
-        /// <summary>
-        /// Applies the published event to this aggregate, if and only if an event handler has been registered for this event,
-        /// and raises the <see cref="EventPublished" /> event. When you override this method, make sure you call the base
-        /// class implementation.
-        /// </summary>
-        /// <typeparam name="TEvent">Type of the event that was published.</typeparam>
-        /// <param name="e">Argument of the </param>
-        /// <returns>
-        /// <c>true</c> if the event has been handled by a listener; otherwise <c>false</c>.
-        /// </returns>
-        protected virtual bool OnEventPublished<TEvent>(EventPublishedEventArgs<TEvent> e) where TEvent : IEvent<TKey, TVersion>
-        {                                   
-            EventPublished.Raise(this, e);
-            return e.HasBeenPublished;            
-        }
-
-        bool IAggregateRoot.HasPendingEvents =>
-            HasPublishedEvents;
-
-        /// <summary>
-        /// Indicates whether or not this aggregate has published any events that haven't been flushed yet.
-        /// </summary>
-        protected bool HasPublishedEvents =>
-            _pendingEvents.Count > 0;
-
-        IEnumerable<IEvent> IAggregateRoot.FlushEvents() =>
-            FlushEvents();
-
-        /// <summary>
-        /// Returns all events that were published by this aggregate since it was instantiated or retrieved from a data store
-        /// and empties the aggregate's internal event buffer.
-        /// </summary>
-        protected virtual IEnumerable<IEvent> FlushEvents() =>
-            Interlocked.Exchange(ref _pendingEvents, new List<IEvent>());
+        #region [====== NotifyRemoved ======]
 
         void IAggregateRoot.NotifyRemoved()
         {
@@ -403,7 +394,7 @@ namespace Kingo.Messaging.Domain
         private static Exception NewAggregateRemovedException(Type aggregateType, Type eventType)
         {
             var messageFormat = ExceptionMessages.AggregateRoot_AggregateRemovedException;
-            var message = string.Format(messageFormat, aggregateType.FriendlyName(), eventType.FriendlyName());
+            var message = string.Format(messageFormat, aggregateType.FriendlyName(), eventType?.FriendlyName());
             return new BusinessRuleException(message);
         }
 
