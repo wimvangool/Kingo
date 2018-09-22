@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -54,14 +53,14 @@ namespace Kingo.Messaging
         private sealed class NoAttributeHandler : IMessageHandler<object>
         {
             Task IMessageHandler<object>.HandleAsync(object message, IMicroProcessorContext context) =>
-                NoValue;
+                Task.CompletedTask;
         }
 
         private sealed class OneAttributeHandler : IMessageHandler<object>
         {
             [AllowOne(1)]
             public Task HandleAsync(object message, IMicroProcessorContext context) =>
-                NoValue;
+                Task.CompletedTask;
         }
 
         private sealed class ManyAttributesHandler : IMessageHandler<object>
@@ -70,7 +69,7 @@ namespace Kingo.Messaging
             [AllowMany(3)]
             [AllowMany(4)]
             public Task HandleAsync(object message, IMicroProcessorContext context) =>
-                NoValue;
+                Task.CompletedTask;
         }
 
         #endregion
@@ -80,14 +79,14 @@ namespace Kingo.Messaging
         private sealed class NoAttributeQuery1 : IQuery<object>
         {
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
         }
 
         private sealed class OneAttributeQuery1 : IQuery<object>
         {
             [AllowOne(1)]
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
         }
 
         private sealed class ManyAttributesQuery1 : IQuery<object>
@@ -96,7 +95,7 @@ namespace Kingo.Messaging
             [AllowMany(3)]
             [AllowMany(4)]
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
         }
 
         #endregion
@@ -106,14 +105,14 @@ namespace Kingo.Messaging
         private sealed class NoAttributeQuery2 : IQuery<object, object>
         {
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
         }
 
         private sealed class OneAttributeQuery2 : IQuery<object, object>
         {
             [AllowOne(1)]
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
         }
 
         private sealed class ManyAttributesQuery2 : IQuery<object, object>
@@ -122,7 +121,7 @@ namespace Kingo.Messaging
             [AllowMany(3)]
             [AllowMany(4)]
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
         }
 
         #endregion

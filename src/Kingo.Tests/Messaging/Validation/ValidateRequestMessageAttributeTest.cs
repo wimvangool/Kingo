@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging.Validation
 {
@@ -241,10 +240,10 @@ namespace Kingo.Messaging.Validation
         private sealed class SomeQuery : IQuery<object>, IQuery<object, object>
         {
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
 
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                Value(message);
+                Task.FromResult(message);
         }
 
         [TestMethod]

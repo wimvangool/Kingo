@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -14,8 +13,8 @@ namespace Kingo.Messaging
             _messages = new List<TMessage>();
         }
 
-        public Task HandleAsync(TMessage message, IMicroProcessorContext context) =>
-            Run(() => _messages.Add(message));
+        public async Task HandleAsync(TMessage message, IMicroProcessorContext context) =>
+            _messages.Add(message);
 
         public void AssertHandleCountIs(int count) =>
             Assert.AreEqual(count, _messages.Count);

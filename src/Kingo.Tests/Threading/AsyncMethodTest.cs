@@ -11,7 +11,7 @@ namespace Kingo.Threading
     public sealed class AsyncMethodTest
     {
         [TestMethod]
-        public void RunSynchronously_BehavesExactlyAsRunTask_IfNoExceptionIsThrown_And_TaskIsBlockWaited()
+        public void Run_BehavesExactlyAsRunTask_IfNoExceptionIsThrown_And_TaskIsBlockWaited()
         {
             var returnValue = Clock.Current.UtcDateAndTime().Millisecond;
             var resultX = Task.Run(() => returnValue).Result;
@@ -22,7 +22,7 @@ namespace Kingo.Threading
         }
 
         [TestMethod]
-        public void RunSynchronously_BehavesExactlyAsRunTask_IfExceptionIsThrown_And_TaskIsBlockWaited()
+        public void Run_BehavesExactlyAsRunTask_IfExceptionIsThrown_And_TaskIsBlockWaited()
         {
             var exception = new Exception();
             AggregateException exceptionX = null;
@@ -55,7 +55,7 @@ namespace Kingo.Threading
         }
 
         [TestMethod]
-        public async Task RunSynchronously_BehavesExactlyAsRunTask_IfNoExceptionIsThrown_And_TaskIsAwaited()
+        public async Task Run_BehavesExactlyAsRunTask_IfNoExceptionIsThrown_And_TaskIsAwaited()
         {
             var returnValue = Clock.Current.UtcDateAndTime().Millisecond;
             var resultX = await Task.Run(() => returnValue);
@@ -66,7 +66,7 @@ namespace Kingo.Threading
         }
 
         [TestMethod]
-        public async Task RunSynchronously_BehavesExactlyAsRunTask_IfExceptionIsThrown_And_TaskIsAwaited()
+        public async Task Run_BehavesExactlyAsRunTask_IfExceptionIsThrown_And_TaskIsAwaited()
         {
             var exception = new Exception();
             Exception exceptionX = null;
@@ -95,7 +95,7 @@ namespace Kingo.Threading
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public async Task RunSynchronously_BehavesExactlyAsRunTask_IfMultipleExceptionsAreThrown_And_TaskIsAwaited()
+        public async Task Run_BehavesExactlyAsRunTask_IfMultipleExceptionsAreThrown_And_TaskIsAwaited()
         {
             var exception = new Exception();
             var taskX = Task.Run(() => { throw exception; });
@@ -114,7 +114,7 @@ namespace Kingo.Threading
 
         [TestMethod]
         [ExpectedException(typeof(AggregateException))]
-        public void RunSunchronously_BehavesExactlyAsRunTask_IfTaskIsCanceled()
+        public void Run_BehavesExactlyAsRunTask_IfTaskIsCanceled()
         {
             using (var tokenSource = new CancellationTokenSource())
             {
@@ -138,6 +138,6 @@ namespace Kingo.Threading
                     throw;
                 }
             }
-        }
+        }                   
     }
 }

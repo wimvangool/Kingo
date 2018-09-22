@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging.Authorization
 {
@@ -13,21 +12,21 @@ namespace Kingo.Messaging.Authorization
         {
             [RequiresRoles(_RequiredRole)]
             public Task HandleAsync(object message, IMicroProcessorContext context) =>
-                NoValue;
+                Task.CompletedTask;
         }
 
         private sealed class QueryOne : IQuery<object>
         {
             [RequiresRoles(_RequiredRole)]
             public Task<object> ExecuteAsync(IMicroProcessorContext context) =>
-                Value(new object());
+                Task.FromResult(new object());
         }
 
         private sealed class QueryTwo : IQuery<object, object>
         {
             [RequiresRoles(_RequiredRole)]
             public Task<object> ExecuteAsync(object message, IMicroProcessorContext context) =>
-                Value(message);
+                Task.FromResult(message);
         }
 
         private MicroProcessor _processor;

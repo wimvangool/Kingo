@@ -181,7 +181,7 @@ namespace Kingo.Messaging.Domain
             }               
 
             public override Task<TAggregate> GetByIdAsync() =>
-                Value(Aggregate);
+                Task.FromResult(Aggregate);
 
             public override Task<bool> AddAsync(TAggregate aggregate) => Run(() =>
             {
@@ -227,7 +227,7 @@ namespace Kingo.Messaging.Domain
             }                
 
             public override Task<TAggregate> GetByIdAsync() =>
-                Value(Aggregate);
+                Task.FromResult(Aggregate);
 
             public override Task<bool> AddAsync(TAggregate aggregate) => Run(() =>
             {
@@ -238,11 +238,11 @@ namespace Kingo.Messaging.Domain
                 throw NewDuplicateKeyException(AggregateId);
             });
 
-            public override Task<bool> RemoveByIdAsync() => Run(() =>
+            public override async Task<bool> RemoveByIdAsync()
             {
                 MoveToState(new RemovedState(UnitOfWork, Aggregate, true));
                 return true;
-            });                
+            }                
         }
 
         private sealed class ModifiedState : NonNullState
@@ -263,22 +263,22 @@ namespace Kingo.Messaging.Domain
             }                
 
             public override Task<TAggregate> GetByIdAsync() =>
-                Value(Aggregate);
+                Task.FromResult(Aggregate);
 
-            public override Task<bool> AddAsync(TAggregate aggregate) => Run(() =>
+            public override async Task<bool> AddAsync(TAggregate aggregate)
             {
                 if (ReferenceEquals(Aggregate, aggregate))
                 {
                     return false;
                 }
                 throw NewDuplicateKeyException(AggregateId);
-            });
+            }
 
-            public override Task<bool> RemoveByIdAsync() => Run(() =>
+            public override async Task<bool> RemoveByIdAsync()
             {
                 MoveToState(new RemovedState(UnitOfWork, Aggregate, false));
                 return true;
-            });
+            }
         }
 
         private sealed class RemovedState : NonNullState
@@ -324,7 +324,7 @@ namespace Kingo.Messaging.Domain
                 throw NewDuplicateKeyException(AggregateId);
 
             public override Task<bool> RemoveByIdAsync() =>
-                Value(false);
+                Task.FromResult(false);
 
             private static Exception NewAggregateRemovedException(TKey aggregateId)
             {

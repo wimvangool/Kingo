@@ -96,7 +96,7 @@ namespace Kingo.Messaging.Domain
             FlushAsync(false);
 
         /// <inheritdoc />
-        protected internal override Task FlushAsync(IChangeSet<TKey> changeSet) => Run(() =>
+        protected internal override async Task FlushAsync(IChangeSet<TKey> changeSet)
         {
             foreach (var data in changeSet.AggregatesToInsert)
             {
@@ -110,7 +110,7 @@ namespace Kingo.Messaging.Domain
             {
                 Delete(id);
             }
-        });
+        }
 
         private void Insert(AggregateDataSet<TKey> data) =>
             _aggregates.Add(data.Id, data);

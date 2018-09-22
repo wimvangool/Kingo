@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Kingo.Resources;
-using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging
 {
@@ -105,7 +104,7 @@ namespace Kingo.Messaging
         /// </summary>
         /// <returns>A task representing the operation.</returns>
         protected virtual Task TearDownAsync() =>
-            NoValue;
+            Task.CompletedTask;
 
         #endregion
 

@@ -74,7 +74,7 @@ namespace Kingo.Threading
             {
                 return Throw(exception);
             }
-            return NoValue;
+            return Task.CompletedTask;
         }        
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Kingo.Threading
             }
             try
             {
-                return Value(func.Invoke());
+                return Task.FromResult(func.Invoke());
             }
             catch (OperationCanceledException exception)
             {
@@ -119,26 +119,6 @@ namespace Kingo.Threading
                 return Throw<TResult>(exception);
             }           
         }
-
-        #endregion
-
-        #region [====== Return Values ======]
-
-        /// <summary>
-        /// Represents a completed <see cref="Task" /> that can be returned
-        /// from a synchronous method with an asynchronous signature.
-        /// </summary>
-        public static readonly Task NoValue = Task.CompletedTask;
-
-        /// <summary>
-        /// Creates and returns a completed <see cref="Task{T}" /> that can be returned
-        /// from a synchronous method with an asynchronous signature.
-        /// </summary>
-        /// <typeparam name="TResult">Type of the result to return.</typeparam>
-        /// <param name="returnValue">The result to return.</param>
-        /// <returns>A completed <see cref="Task{T}" />.</returns>
-        public static Task<TResult> Value<TResult>(TResult returnValue) =>
-            Task.FromResult(returnValue);
 
         #endregion
 
