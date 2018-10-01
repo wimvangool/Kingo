@@ -128,6 +128,9 @@ namespace Kingo.Messaging.Domain
                 _aggregate = aggregate;
             }
 
+            /// <summary>
+            /// Indicates whether or not any handlers were registered with this collection.
+            /// </summary>
             public bool IsEmpty =>
                 _eventHandlers.Count == 0;
 

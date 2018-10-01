@@ -12,7 +12,7 @@ namespace Kingo.Messaging.Domain
         /// </summary>
         /// <param name="event">The event that was published.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="@event"/> is <c>null</c>.
+        /// <paramref name="event"/> is <c>null</c>.
         /// </exception>
         public EventPublishedEventArgs(IEvent @event)
         {            
