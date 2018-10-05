@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kingo.Resources;
 using static Kingo.Threading.AsyncMethod;
 
 namespace Kingo.Messaging.Domain

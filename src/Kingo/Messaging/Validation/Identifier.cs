@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Kingo.Resources;
 
 namespace Kingo.Messaging.Validation
 {

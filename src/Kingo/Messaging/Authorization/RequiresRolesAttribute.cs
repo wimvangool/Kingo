@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Kingo.Resources;
 
 namespace Kingo.Messaging.Authorization
 {

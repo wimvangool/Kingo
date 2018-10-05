@@ -59,6 +59,7 @@ namespace Kingo.Messaging.Validation
         private ErrorInfo Validate(ValidationContext validationContext)
         {
             var validationResults = new List<ValidationResult>();
+
             var isValid = Validator.TryValidateObject(validationContext.ObjectInstance, validationContext, validationResults, true);
             if (isValid)
             {

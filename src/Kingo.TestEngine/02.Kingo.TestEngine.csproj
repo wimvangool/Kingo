@@ -70,7 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.project.cs" />
     <Compile Include="Messaging\ScenarioTest.T1.cs" />
     <Compile Include="Messaging\MessageHandlerTestBase.T1.cs" />
-    <Compile Include="Resources\ExceptionMessages.Designer.cs">
+    <Compile Include="ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
@@ -84,7 +84,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\ExceptionMessages.resx">
+    <EmbeddedResource Include="ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -95,6 +95,7 @@
     </None>
     <None Include="Properties\Kingo.TestEngine.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF $(ConfigurationName) == Release (

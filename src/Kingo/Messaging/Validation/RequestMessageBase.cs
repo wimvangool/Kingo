@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Kingo.Resources;
 
 namespace Kingo.Messaging.Validation
 {

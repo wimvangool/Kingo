@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
-using Kingo.Resources;
 using Kingo.Threading;
 
 namespace Kingo.Messaging

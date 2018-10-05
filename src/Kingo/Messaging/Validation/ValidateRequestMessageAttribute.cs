@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.Resources;
 
 namespace Kingo.Messaging.Validation
 {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
-using Kingo.Resources;
 
 namespace Kingo.Messaging
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using Kingo.Resources;
 
 namespace Kingo
 {
