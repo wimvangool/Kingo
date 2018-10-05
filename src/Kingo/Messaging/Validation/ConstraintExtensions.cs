@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Kingo.Messaging.Validation
 {
+    /// <summary>
+    /// Contains extension methods for <see cref="IConstraint"/> instances.
+    /// </summary>
     public static class ConstraintExtensions
     {
         #region [====== Logical Operations ======]
