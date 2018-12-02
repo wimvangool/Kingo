@@ -8,17 +8,7 @@ namespace Kingo.Messaging
         #region [====== NullController ======]
 
         private sealed class NullController : IUnitOfWorkController
-        {            
-            public NullController(IUnitOfWorkCache cache)
-            {
-                Cache = cache;
-            }
-
-            public IUnitOfWorkCache Cache
-            {
-                get;
-            }           
-
+        {                                  
             public Task EnlistAsync(IUnitOfWork unitOfWork, object resourceId = null)
             {
                 if (unitOfWork == null)
@@ -44,45 +34,18 @@ namespace Kingo.Messaging
                 var message = string.Format(messageFormat, methodName);
                 return new NotSupportedException(message);
             }
-        }
-
-        private sealed class NullCache : IUnitOfWorkCache
-        {
-            public object this[string key]
-            {
-                get
-                {
-                    if (key == null)
-                    {
-                        throw new ArgumentNullException(nameof(key));
-                    }
-                    return null;
-                }
-                set => throw NewCacheNotSupportedException();
-            }
-
-            public void Remove(string key) =>
-                throw NewCacheNotSupportedException();
-
-            private static Exception NewCacheNotSupportedException() =>
-                new InvalidOperationException(ExceptionMessages.NullCache_CacheNotSupported);
-        }
+        }       
 
         #endregion 
         
-        public static readonly IUnitOfWorkController None = new NullController(new NullCache());       
-
-        private readonly UnitOfWorkCache _cache;
+        public static readonly IUnitOfWorkController None = new NullController();       
+        
         private readonly IUnitOfWorkController _controller;
 
         internal UnitOfWorkController()
-        {
-            _cache = new UnitOfWorkCache();
-            _controller = new UnitOfWorkControllerImplementation(_cache);
-        }
-        
-        public IUnitOfWorkCache Cache =>
-            _cache;        
+        {            
+            _controller = new UnitOfWorkControllerImplementation();
+        }                     
 
         public Task EnlistAsync(IUnitOfWork unitOfWork, object resourceId = null) =>
             _controller.EnlistAsync(unitOfWork, resourceId);
@@ -91,13 +54,6 @@ namespace Kingo.Messaging
             _controller.RequiresFlush();
         
         public Task FlushAsync() =>
-            _controller.FlushAsync();               
-
-        protected override void DisposeManagedResources()
-        {
-            _cache.Dispose();
-
-            base.DisposeManagedResources();
-        }
+            _controller.FlushAsync();                       
     }
 }

@@ -8,17 +8,7 @@ namespace Kingo.Messaging
     /// to schedule them for a flush at a later point in time.
     /// </summary>
     public interface IUnitOfWorkController : IUnitOfWork
-    {
-        /// <summary>
-        /// Returns the cache that is associated with this unit of work. This cache can be used to store dependendies
-        /// and other data of which the lifetime is bound to this unit of work. Any <see cref="IDisposable" /> values will
-        /// automatically be disposed as soon as this unit of work is completed.
-        /// </summary>
-        IUnitOfWorkCache Cache
-        {
-            get;
-        }        
-
+    {               
         /// <summary>
         /// Enlists the specified <paramref name="unitOfWork"/> with the context asynchronously so that it can be flushed at the appropriate time.
         /// Note that this operation may flush the specified <paramref name="unitOfWork"/> immediately.

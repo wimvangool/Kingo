@@ -10,18 +10,13 @@ namespace Kingo.Messaging
     internal sealed class UnitOfWorkControllerImplementation : IUnitOfWorkController
     {        
         private static readonly object _NullResourceId = new object();
-
-        private readonly IUnitOfWorkCache _cache;
+        
         private Dictionary<object, List<IUnitOfWork>> _resourceGroups;
 
-        public UnitOfWorkControllerImplementation(IUnitOfWorkCache cache)
-        {
-            _cache = cache;
+        public UnitOfWorkControllerImplementation()
+        {            
             _resourceGroups = new Dictionary<object, List<IUnitOfWork>>();
-        }
-
-        public IUnitOfWorkCache Cache =>
-            _cache;             
+        }                
 
         public Task EnlistAsync(IUnitOfWork unitOfWork, object resourceId)
         {

@@ -54,7 +54,7 @@ namespace Kingo.Messaging
         /// </summary>        
         /// <returns>A new <see cref="MessageHandlerFactory" /> to be used by this processor.</returns>
         protected internal virtual MessageHandlerFactory BuildMessageHandlerFactory() =>
-            new UnityContainerFactory();
+            throw new NotImplementedException();
 
         /// <summary>
         /// Builds and returns a <see cref="ISchemaMap" /> that will be registered as a dependency and can be used by repositories
@@ -169,7 +169,7 @@ namespace Kingo.Messaging
             InvokeAsync(method);
 
         /// <summary>
-        /// Handles an input-stream or executed a query by invoking the specified <paramref name="method"/>.
+        /// Handles an input-stream or executes a query by invoking the specified <paramref name="method"/>.
         /// </summary>       
         /// <param name="method">The method to invoke for performing the operation.</param>
         /// <returns>The result of the specified <paramref name="method"/>.</returns>

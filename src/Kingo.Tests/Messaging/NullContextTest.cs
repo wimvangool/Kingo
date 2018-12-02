@@ -42,34 +42,7 @@ namespace Kingo.Messaging
         public void EventStream_Publish_Throws_ForAnyItem()
         {
             Context.EventBus.Publish(new object());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Cache_GetItem_Throws_IfKeyIsNull()
-        {
-            Context.UnitOfWork.Cache[null].IgnoreValue();
-        }
-
-        [TestMethod]        
-        public void Cache_GetItem_ReturnsNull_ForAnyKey()
-        {
-            Assert.IsNull(Context.UnitOfWork.Cache[Guid.NewGuid().ToString()]);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Cache_SetItem_Throws_ForAnyKey()
-        {
-            Context.UnitOfWork.Cache[Guid.NewGuid().ToString()] = new object();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Cache_Remove_Throws_ForAnyKey()
-        {
-            Context.UnitOfWork.Cache.Remove(Guid.NewGuid().ToString());
-        }
+        }        
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]

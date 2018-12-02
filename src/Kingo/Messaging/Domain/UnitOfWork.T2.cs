@@ -192,14 +192,14 @@ namespace Kingo.Messaging.Domain
             });                            
 
             public override Task<bool> RemoveByIdAsync() => Run(() =>
-            {
+            {                
                 MoveToState(new RemovedState(UnitOfWork, Aggregate, false));
                 return true;
             });
         }
 
         private sealed class AddedState : NonNullState
-        {                        
+        {
             public AddedState(UnitOfWork<TKey, TAggregate> unitOfWork, TAggregate aggregate) :
                 base(unitOfWork, true, aggregate) { }
 
@@ -223,7 +223,7 @@ namespace Kingo.Messaging.Domain
                     return new UnmodifiedState(unitOfWork, Aggregate);
                 }
                 return new NullState(unitOfWork, AggregateId);
-            }                
+            }
 
             public override Task<TAggregate> GetByIdAsync() =>
                 Task.FromResult(Aggregate);
@@ -237,11 +237,11 @@ namespace Kingo.Messaging.Domain
                 throw NewDuplicateKeyException(AggregateId);
             });
 
-            public override async Task<bool> RemoveByIdAsync()
+            public override Task<bool> RemoveByIdAsync() => Run(() =>
             {
                 MoveToState(new RemovedState(UnitOfWork, Aggregate, true));
                 return true;
-            }                
+            });             
         }
 
         private sealed class ModifiedState : NonNullState
@@ -264,20 +264,20 @@ namespace Kingo.Messaging.Domain
             public override Task<TAggregate> GetByIdAsync() =>
                 Task.FromResult(Aggregate);
 
-            public override async Task<bool> AddAsync(TAggregate aggregate)
+            public override Task<bool> AddAsync(TAggregate aggregate) => Run(() =>
             {
                 if (ReferenceEquals(Aggregate, aggregate))
                 {
                     return false;
                 }
                 throw NewDuplicateKeyException(AggregateId);
-            }
+            });
 
-            public override async Task<bool> RemoveByIdAsync()
+            public override Task<bool> RemoveByIdAsync() => Run(() =>
             {
                 MoveToState(new RemovedState(UnitOfWork, Aggregate, false));
                 return true;
-            }
+            });
         }
 
         private sealed class RemovedState : NonNullState

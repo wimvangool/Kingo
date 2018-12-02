@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Kingo.Threading;
 
 namespace Kingo.Messaging
 {    
@@ -79,10 +80,7 @@ namespace Kingo.Messaging
             {
                 return null;
             }
-            return Decorate(async (message, context) =>
-            {
-                handler.Invoke(message, context);
-            });
+            return Decorate((message, context) => AsyncMethod.Run(() => handler.Invoke(message, context)));
         }
 
         /// <summary>

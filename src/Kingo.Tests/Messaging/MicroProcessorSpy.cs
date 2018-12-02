@@ -36,7 +36,7 @@ namespace Kingo.Messaging
 
         protected internal override MessageHandlerFactory BuildMessageHandlerFactory()
         {
-            MessageHandlerFactory factory = new UnityContainerFactory();
+            MessageHandlerFactory factory = null;//new UnityContainerFactory();
 
             foreach (var dependency in _dependencies)
             {

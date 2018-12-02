@@ -42,8 +42,7 @@ namespace Kingo.Messaging
             $"{_messageHandlers.Count} MessageHandler(s) Registered";
 
         #region [====== Resolve ======]                            
-
-        /// <inheritdoc />
+        
         internal IEnumerable<MessageHandler> ResolveMessageHandlers<TMessage>(MicroProcessorOperationTypes operationType, TMessage message)
         {
             if (message == null)

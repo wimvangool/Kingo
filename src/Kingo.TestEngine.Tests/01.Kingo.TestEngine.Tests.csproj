@@ -1,126 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4FE972F0-2046-4039-9461-45D0B7E6229F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Kingo</RootNamespace>
+    <IsPackable>false</IsPackable>
     <AssemblyName>Kingo.TestEngine.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>CS1998</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>CS1998</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
     <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Sources\Kingo\src\Kingo.snk</AssemblyOriginatorKeyFile>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
+    <Compile Include="..\AssemblyInfo.solution.cs" Link="Properties\AssemblyInfo.solution.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
-      <Visible>False</Visible>
-    </CodeAnalysisDependentAssemblyPaths>
+    <None Include="..\Kingo.snk" Link="Properties\Kingo.snk" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="..\AssemblyInfo.solution.cs">
-      <Link>Properties\AssemblyInfo.solution.cs</Link>
-    </Compile>
-    <Compile Include="Messaging\MetaAssertFailedException.cs" />
-    <Compile Include="Messaging\QueryTestBaseTest.T1.cs" />
-    <Compile Include="Messaging\QueryTestBase_Succeeds_IfCorrectResponseIsExpected.cs" />
-    <Compile Include="Messaging\QueryTestBase_Fails_IfAssertResponseCallbackFails.cs" />
-    <Compile Include="Messaging\QueryTestBase_Fails_IfAssertResponseCallbackIsNull.cs" />
-    <Compile Include="Messaging\QueryTestBase_Fails_IfExceptionIsExpectedButAssertCallbackForInnerExceptionFails.cs" />
-    <Compile Include="Messaging\QueryTestBase_Fails_IfExceptionIsExpectedButExceptionForInnerExceptionIsNull.cs" />
-    <Compile Include="Messaging\QueryTestBase_Fails_IfExceptionIsExpectedButAssertCallbackFails.cs" />
-    <Compile Include="Messaging\QueryTestBase_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown.cs" />
-    <Compile Include="Messaging\QueryTestBase_Fails_IfExceptionIsExpectedButNoneIsThrown.cs" />
-    <Compile Include="Messaging\Validation\RequestMessageTestBaseTest.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBaseTest.T1.cs" />
-    <Compile Include="Messaging\QueryTestBase_Succeeds_IfCorrectExceptionAndInnerExceptionAreExpected.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Succeeds_IfStreamIsCorrectlyVerified.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfAssertEventCallbackFails.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfAssertEventCallbackIsNull.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfExceptionIsExpectedButExceptionForInnerExceptionIsNull.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfExceptionIsExpectedButAssertCallbackFails.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfExceptionIsExpectedButDifferentTypeIsThrown.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfExceptionIsExpectedButNoneIsThrown.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfExpectedEventCountDoesNotMatchActualEventCount.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfExpectedEventCountIsInvalid.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfAssertEventStreamIsNull.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfAssertEventIndexIsOutOfRange.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Fails_IfAssertEventIndexIsNegative.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Succeeds_IfCorrectExceptionAndInnerExceptionAreExpected.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Succeeds_IfCorrectExceptionIsExpected.cs" />
-    <Compile Include="Messaging\MessageHandlerTestBase_Succeeds_IfStreamIsCorrectlyAssumedEmpty.cs" />
-    <Compile Include="Properties\AssemblyInfo.project.cs" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj">
-      <Project>{FA31C09F-6319-484B-96EC-88BF3C3FDB81}</Project>
-      <Name>02.Kingo.TestEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kingo\02.Kingo.csproj">
-      <Project>{c2f7d41b-e748-4ec4-8ad4-0a7e25d7cdc0}</Project>
-      <Name>02.Kingo</Name>
-    </ProjectReference>
+
+  <ItemGroup>    
+    <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Kingo.snk">
-      <Link>Properties\Kingo.snk</Link>
-    </None>
-    <None Include="Properties\packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
