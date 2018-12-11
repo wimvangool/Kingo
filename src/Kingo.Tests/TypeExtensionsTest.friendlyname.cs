@@ -35,7 +35,7 @@ namespace Kingo
         [TestMethod]
         public void FriendlyName_ReturnsExpectedName_IfTypeIsGenericTypeDefinition_And_TypeHasOneGenericTypeParameter_And_UseFullNamesIsTrue()
         {
-            Assert.AreEqual("Kingo.Messaging.IMessageHandler<TMessage>", typeof(IMessageHandler<>).FriendlyName(true));
+            Assert.AreEqual("Kingo.MicroServices.IMessageHandler<TMessage>", typeof(IMessageHandler<>).FriendlyName(true));
         }
 
         [TestMethod]
@@ -59,7 +59,7 @@ namespace Kingo
         [TestMethod]
         public void FriendlyName_ReturnsExpectedName_IfTypeIsGenericType_And_TypeHasOneGenericTypeParameter_And_UseFullNamesIsTrue()
         {
-            Assert.AreEqual("Kingo.Messaging.IMessageHandler<System.Int32>", typeof(IMessageHandler<int>).FriendlyName(true));
+            Assert.AreEqual("Kingo.MicroServices.IMessageHandler<System.Int32>", typeof(IMessageHandler<int>).FriendlyName(true));
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace Kingo
         [TestMethod]
         public void FriendlyName_ReturnsExpectedName_IfTypeIsNestedGenericType_And_TypeHasOneGenericTypeParameter_And_UseFullNamesIsTrue()
         {
-            Assert.AreEqual("Kingo.Messaging.IMessageHandler<System.Collections.Generic.KeyValuePair<System.Object, System.Int16>>", typeof(IMessageHandler<KeyValuePair<object, short>>).FriendlyName(true));
+            Assert.AreEqual("Kingo.MicroServices.IMessageHandler<System.Collections.Generic.KeyValuePair<System.Object, System.Int16>>", typeof(IMessageHandler<KeyValuePair<object, short>>).FriendlyName(true));
         }
     }
 }

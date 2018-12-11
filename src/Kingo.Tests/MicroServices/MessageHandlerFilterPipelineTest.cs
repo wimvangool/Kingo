@@ -47,6 +47,7 @@ namespace Kingo.MicroServices
             var handler = new MessageHandlerSpy<object>();            
             var pipeline = CreateFilterPipeline(handler, message, new MicroProcessorFilterSpy());
 
+            Assert.AreEqual("HandleAsync(Object, MessageHandlerContext)", pipeline.Method.ToString());
             Assert.AreEqual("MicroProcessorFilterSpy | MessageHandlerSpy<Object>", pipeline.ToString());
         }
 
@@ -58,6 +59,7 @@ namespace Kingo.MicroServices
             var pipelineA = CreateFilterPipeline(handler, message, new MicroProcessorFilterSpy());
             var pipelineB = CreateFilterPipeline(pipelineA, new MicroProcessorFilterSpy());
 
+            Assert.AreEqual("HandleAsync(Object, MessageHandlerContext)", pipelineB.Method.ToString());
             Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | MessageHandlerSpy<Object>", pipelineB.ToString());
         }
 

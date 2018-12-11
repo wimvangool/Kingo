@@ -18,14 +18,17 @@ namespace Kingo.MicroServices
         /// Optional handler that will be used to handle the message.
         /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
         /// </param>
-        /// <param name="token">Optional token that can be used to cancel the operation.</param>         
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
+        /// </returns> 
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception> 
-        Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null);
+        Task<int> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.

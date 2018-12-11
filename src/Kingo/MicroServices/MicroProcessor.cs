@@ -67,11 +67,14 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Command & Events ======]                           
+        #region [====== HandleAsync ======]                           
 
         /// <inheritdoc />
-        public async Task HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null) =>
+        public async Task<int> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null)
+        {
             await PublishAsync(await InvokeAsync(new HandleMessageMethod<TMessage>(this, message, handler, token)));
+            return 0;
+        }            
 
         /// <summary>
         /// Publishes the specified <paramref name="events"/> to the <see cref="ServiceBus" />.
@@ -96,7 +99,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Queries ======]
+        #region [====== ExecuteAsync ======]
 
         /// <inheritdoc />
         public Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken? token = null) =>

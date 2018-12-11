@@ -47,6 +47,9 @@ namespace Kingo.MicroServices
                 await _handler.HandleAsync(_message, _context);
                 return new HandleAsyncResult(_context.EventBus);
             }
+
+            public override string ToString() =>
+                $"{nameof(_handler.HandleAsync)}({typeof(TMessage).FriendlyName()}, {nameof(MessageHandlerContext)})";
         }
 
         #endregion
@@ -66,6 +69,10 @@ namespace Kingo.MicroServices
             _attributeProvider = typeAttributeProvider;
             _method = new HandleAsyncMethod(handler, message, context, methodAttributeProvider);
         }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            Type.FriendlyName();
 
         #region [====== IAttributeProvider<Type> ======]
 
@@ -90,10 +97,8 @@ namespace Kingo.MicroServices
             _method.Context;
 
         /// <inheritdoc />
-        public override MessageHandlerOrQueryMethod<MessageStream> Method
-        {
-            get;
-        }        
+        public override MessageHandlerOrQueryMethod<MessageStream> Method =>
+            _method;                        
 
         #endregion        
 

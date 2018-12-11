@@ -43,32 +43,28 @@ namespace Kingo.MicroServices
 
         #region [====== Empty - Append & Concat ======]
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void EmptyStream_Append_Throws_IfMessageIsNull()
+        [TestMethod]        
+        public void EmptyStream_Append_ReturnsSelf_IfMessageIsNull()
         {
-            MessageStream.Empty.Append(null as object);
+            Assert.AreEqual(MessageStream.Empty.Append(null as object).Count, 0);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void EmptyStream_Append_Throws_IfMessageCollectionIsNull()
+        [TestMethod]        
+        public void EmptyStream_Append_ReturnsSelf_IfMessageCollectionIsNull()
         {
-            MessageStream.Empty.Append(null as IEnumerable<object>);
+            Assert.AreEqual(MessageStream.Empty.Append(null as IEnumerable<object>).Count, 0);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]        
         public void EmptyStream_Append_Throws_IfMessageArrayIsNull()
         {
-            MessageStream.Empty.Append(null);
+            Assert.AreEqual(MessageStream.Empty.Append(null).Count, 0);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void EmptyStream_Concat_Throws_IfStreamIsNull()
+        [TestMethod]        
+        public void EmptyStream_Concat_ReturnsSelf_IfStreamIsNull()
         {
-            MessageStream.Empty.Concat(null as MessageStream);
+            Assert.AreEqual(MessageStream.Empty.Concat(null as MessageStream).Count, 0);
         }
 
         [TestMethod]
@@ -104,11 +100,13 @@ namespace Kingo.MicroServices
 
         #region [====== Append & Concat ======]
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Append_Throws_IfMessageIsNull()
+        [TestMethod]        
+        public void Append_ReturnsSelf_IfMessageIsNull()
         {
-            CreateStream().Append(null);
+            var streamA = CreateStream();
+            var streamB = streamA.Append(null);
+
+            Assert.AreSame(streamA, streamB);            
         }        
 
         [TestMethod]

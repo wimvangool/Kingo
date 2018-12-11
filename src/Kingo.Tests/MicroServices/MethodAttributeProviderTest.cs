@@ -129,7 +129,7 @@ namespace Kingo.MicroServices
         #region [====== TryGetAttributeOfType - MessageHandlers ======]
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsMessageHandler_And_MethodDoesNotHaveAnyAttributesAtAll()
+        public void TryGetAttributeOfType_ReturnsFalse_IfTypeIsMessageHandler_And_MethodDoesNotHaveAnyAttributesAtAll()
         {
             var provider = MethodAttributeProvider.FromMessageHandler(new NoAttributeHandler());             
 
@@ -138,7 +138,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsMessageHandler_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
+        public void TryGetAttributeOfType_ReturnsFalse_IfTypeIsMessageHandler_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
             var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());             
 
@@ -147,7 +147,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsMessageHandler_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
+        public void TryGetAttributeOfType_ReturnsTrue_IfTypeIsMessageHandler_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
         {
             var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());            
 
@@ -157,7 +157,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsMessageHandler_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
+        public void TryGetAttributeOfType_ReturnsTrue_IfTypeIsMessageHandler_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
         {
             var provider = MethodAttributeProvider.FromMessageHandler(new OneAttributeHandler());            
 
@@ -168,7 +168,7 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void TryGetTypeAttributeOfType_Throws_IfTypeIsMessageHandler_And_MethodHasManyAttributesOfTheSpecifiedType()
+        public void TryGetAttributeOfType_Throws_IfTypeIsMessageHandler_And_MethodHasManyAttributesOfTheSpecifiedType()
         {
             var provider = MethodAttributeProvider.FromMessageHandler(new ManyAttributesHandler());             
 
@@ -180,7 +180,7 @@ namespace Kingo.MicroServices
         #region [====== TryGetAttributeOfType - Queries (1) ======]
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsQuery1_And_MethodDoesNotHaveAnyAttributesAtAll()
+        public void TryGetAttributeOfType_ReturnsFalse_IfTypeIsQuery1_And_MethodDoesNotHaveAnyAttributesAtAll()
         {
             var provider = MethodAttributeProvider.FromQuery(new NoAttributeQuery1());            
 
@@ -189,16 +189,16 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsQuery1_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
+        public void TryGetAttributeOfType_ReturnsFalse_IfTypeIsQuery1_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
             var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery1());            
 
-            Assert.IsFalse(provider.TryGetAttributeOfType(out AllowOneAttribute attribute));
+            Assert.IsFalse(provider.TryGetAttributeOfType(out AllowManyAttribute attribute));
             Assert.IsNull(attribute);
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsQuery1_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
+        public void TryGetAttributeOfType_ReturnsTrue_IfTypeIsQuery1_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
         {
             var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery1());            
 
@@ -208,7 +208,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsQuery1_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
+        public void TryGetAttributeOfType_ReturnsTrue_IfTypeIsQuery1_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
         {
             var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery1());            
 
@@ -219,7 +219,7 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void TryGetTypeAttributeOfType_Throws_IfTypeIsQuery1_And_MethodHasManyAttributesOfTheSpecifiedType()
+        public void TryGetAttributeOfType_Throws_IfTypeIsQuery1_And_MethodHasManyAttributesOfTheSpecifiedType()
         {
             var provider = MethodAttributeProvider.FromQuery(new ManyAttributesQuery1());            
 
@@ -231,7 +231,7 @@ namespace Kingo.MicroServices
         #region [====== TryGetAttributeOfType - Queries (2) ======]
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsQuery2_And_MethodDoesNotHaveAnyAttributesAtAll()
+        public void TryGetAttributeOfType_ReturnsFalse_IfTypeIsQuery2_And_MethodDoesNotHaveAnyAttributesAtAll()
         {
             var provider = MethodAttributeProvider.FromQuery(new NoAttributeQuery2());            
 
@@ -240,7 +240,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsFalse_IfTypeIsQuery2_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
+        public void TryGetAttributeOfType_ReturnsFalse_IfTypeIsQuery2_And_MethodDoesNotHaveAnyAttributesOfTheSpecifiedType()
         {
             var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());            
 
@@ -249,7 +249,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsQuery2_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
+        public void TryGetAttributeOfType_ReturnsTrue_IfTypeIsQuery2_And_MethodHasExactlyOneAttributesOfTheSpecifiedConcreteType()
         {
             var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());            
 
@@ -259,7 +259,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public void TryGetTypeAttributeOfType_ReturnsTrue_IfTypeIsQuery2_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
+        public void TryGetAttributeOfType_ReturnsTrue_IfTypeIsQuery2_And_MethodHasExactlyOneAttributesOfTheSpecifiedInterfaceType()
         {
             var provider = MethodAttributeProvider.FromQuery(new OneAttributeQuery2());            
 
@@ -270,7 +270,7 @@ namespace Kingo.MicroServices
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void TryGetTypeAttributeOfType_Throws_IfTypeIsQuery2_And_MethodHasManyAttributesOfTheSpecifiedType()
+        public void TryGetAttributeOfType_Throws_IfTypeIsQuery2_And_MethodHasManyAttributesOfTheSpecifiedType()
         {
             var provider = MethodAttributeProvider.FromQuery(new ManyAttributesQuery2());            
 

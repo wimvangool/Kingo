@@ -41,6 +41,9 @@ namespace Kingo.MicroServices
 
             public override async Task<InvokeAsyncResult<TMessageOut>> InvokeAsync() =>
                 new ExecuteAsyncResult<TMessageOut>(await _query.ExecuteAsync(_context));
+
+            public override string ToString() =>
+                $"{nameof(_query.ExecuteAsync)}({nameof(QueryContext)})";
         }
 
         #endregion
@@ -53,6 +56,10 @@ namespace Kingo.MicroServices
             _attributeProvider = new TypeAttributeProvider(query.GetType());
             _method = new ExecuteAsyncMethod(query, context, MethodAttributeProvider.FromQuery(query));           
         }
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            Type.FriendlyName();
 
         #region [====== IAttributeProvider<Type> ======]
 

@@ -17,14 +17,17 @@ namespace Kingo.MicroServices
         /// <typeparam name="TMessage">Type of the message.</typeparam>
         /// <param name="processor">A processor.</param>
         /// <param name="message">Message to handle.</param>        
-        /// <param name="token">Optional token that can be used to cancel the operation.</param>         
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
+        /// </returns>  
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception>  
-        public static Task HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, CancellationToken? token = null) =>
+        public static Task<int> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, CancellationToken? token = null) =>
             processor.HandleAsync(message, null, token);
 
         /// <summary>
@@ -38,14 +41,17 @@ namespace Kingo.MicroServices
         /// Optional handler that will be used to handle the message.
         /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
         /// </param>
-        /// <param name="token">Optional token that can be used to cancel the operation.</param>         
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
+        /// </returns>  
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception>  
-        public static Task HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, MessageHandlerContext> handler, CancellationToken? token = null) =>
+        public static Task<int> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, MessageHandlerContext> handler, CancellationToken? token = null) =>
             processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler), token);
 
         /// <summary>
@@ -59,14 +65,17 @@ namespace Kingo.MicroServices
         /// Optional handler that will be used to handle the message.
         /// If <c>null</c>, the processor will attempt to resolve any registered handlers for the specified <paramref name="message"/>.
         /// </param> 
-        /// <param name="token">Optional token that can be used to cancel the operation.</param>          
+        /// <param name="token">Optional token that can be used to cancel the operation.</param>
+        /// <returns>
+        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
+        /// </returns>  
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception>  
-        public static Task HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, MessageHandlerContext, Task> handler, CancellationToken? token = null) =>
+        public static Task<int> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, MessageHandlerContext, Task> handler, CancellationToken? token = null) =>
             processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler), token);
 
         #endregion

@@ -47,6 +47,7 @@ namespace Kingo.MicroServices
             var query = new QuerySpy<object, object>();
             var connector = CreateFilterPipeline(query, message, new MicroProcessorFilterSpy());
 
+            Assert.AreEqual("ExecuteAsync(Object, QueryContext)", connector.Method.ToString());
             Assert.AreEqual("MicroProcessorFilterSpy | QuerySpy<Object, Object>", connector.ToString());
         }
 
@@ -58,6 +59,7 @@ namespace Kingo.MicroServices
             var connectorA = CreateFilterPipeline(query, message, new MicroProcessorFilterSpy());
             var connectorB = CreateFilterPipeline(connectorA, new MicroProcessorFilterSpy());
 
+            Assert.AreEqual("ExecuteAsync(Object, QueryContext)", connectorB.Method.ToString());
             Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | QuerySpy<Object, Object>", connectorB.ToString());
         }        
 

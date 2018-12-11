@@ -23,7 +23,7 @@ namespace Kingo.MicroServices
                 Enumerable.Empty<object>().GetEnumerator();                        
 
             public override MessageStream Concat(MessageStream stream) =>
-                stream ?? throw new ArgumentNullException(nameof(stream));
+                stream ?? this;
 
             public override Task<MessageStream> HandleWithAsync(IMessageHandler handler)
             {

@@ -20,6 +20,9 @@ namespace Kingo.MicroServices
                 _filter = filter;
             }
 
+            public IMicroProcessorFilter Filter =>
+                _filter;
+
             private MessageHandlerOrQueryMethod<TMessageOut> Method =>
                 _connector._nextQuery.Method;
 
@@ -34,6 +37,9 @@ namespace Kingo.MicroServices
 
             public override Task<InvokeAsyncResult<TMessageOut>> InvokeAsync() =>
                 _filter.InvokeQueryAsync(_connector._nextQuery);
+
+            public override string ToString() =>
+                Method.ToString();
         }
 
         #endregion
@@ -46,6 +52,9 @@ namespace Kingo.MicroServices
             _nextQuery = nextQuery;
             _method = new ExecuteAsyncMethod(this, filter);
         }
+        
+        public override string ToString() =>
+            $"{_method.Filter.GetType().FriendlyName()} | {_nextQuery}";
 
         #region [====== IAttributeProvider<Type> ======]
 

@@ -83,15 +83,15 @@ namespace Kingo.MicroServices
         {            
             using (CreateQueryContextScope())
             {
-                var operation = MessageHandlerContext.Current.Operation;
+                Assert.AreEqual("[Query]", QueryContext.Current.ToString());
+
+                var operation = QueryContext.Current.Operation;
 
                 Assert.IsNotNull(operation);
                 Assert.IsNull(operation.Message);
                 Assert.IsNull(operation.MessageType);
                 Assert.AreEqual(MicroProcessorOperationTypes.Query, operation.Type);
-
-                Assert.AreEqual(1, operation.StackTrace().Count());
-                Assert.AreEqual("[Query]", operation.ToString());
+                Assert.AreEqual(1, operation.StackTrace().Count());                
             }
         }
 
@@ -102,15 +102,15 @@ namespace Kingo.MicroServices
 
             using (CreateQueryContextScope(null, message))
             {
-                var operation = MessageHandlerContext.Current.Operation;
+                Assert.AreEqual("[Query] Object", QueryContext.Current.ToString());
+
+                var operation = QueryContext.Current.Operation;
 
                 Assert.IsNotNull(operation);
                 Assert.AreSame(message, operation.Message);
                 Assert.AreEqual(typeof(object), operation.MessageType);
                 Assert.AreEqual(MicroProcessorOperationTypes.Query, operation.Type);
-
-                Assert.AreEqual(1, operation.StackTrace().Count());
-                Assert.AreEqual("[Query] System.Object", operation.ToString());
+                Assert.AreEqual(1, operation.StackTrace().Count());                
             }
         }        
 

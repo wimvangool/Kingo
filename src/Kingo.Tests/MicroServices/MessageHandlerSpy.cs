@@ -47,7 +47,7 @@ namespace Kingo.MicroServices
 
         public void AssertAreEqual(object message, int index)
         {
-            Assert.AreSame(message, _messages[index]);
+            Assert.AreEqual(message, _messages[index]);
         }
 
         public void VerifyGenericTypeInvocations()
