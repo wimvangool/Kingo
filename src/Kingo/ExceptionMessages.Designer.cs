@@ -151,6 +151,24 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string AttributeProvider_AmbiguousAttributeMatch {
+            get {
+                return ResourceManager.GetString("AttributeProvider_AmbiguousAttributeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User &apos;{0}&apos; is not authenticated..
+        /// </summary>
+        internal static string AuthorizationStageAttribute_IdentityNotAuthenticated {
+            get {
+                return ResourceManager.GetString("AuthorizationStageAttribute_IdentityNotAuthenticated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User &apos;{0}&apos; must have claim &apos;{1}&apos;..
         /// </summary>
         internal static string ClaimsProvider_ClaimNotFound {
@@ -288,9 +306,9 @@ namespace Kingo {
         /// <summary>
         ///   Looks up a localized string similar to Invalid InstanceLifetime specified: &apos;{0}&apos;..
         /// </summary>
-        internal static string MessageHandlerFactory_InvalidInstanceLifetime {
+        internal static string MessageHandlerFactoryBuilder_InvalidInstanceLifetime {
             get {
-                return ResourceManager.GetString("MessageHandlerFactory_InvalidInstanceLifetime", resourceCulture);
+                return ResourceManager.GetString("MessageHandlerFactoryBuilder_InvalidInstanceLifetime", resourceCulture);
             }
         }
         
@@ -322,15 +340,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on method &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
-        /// </summary>
-        internal static string MethodAttributeProvider_AmbiguousAttributeMatch {
-            get {
-                return ResourceManager.GetString("MethodAttributeProvider_AmbiguousAttributeMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not find implementation of method &apos;{0}.{1}({2})&apos; on type &apos;{3}&apos;..
         /// </summary>
         internal static string MethodAttributeProvider_InterfaceMethodNotFound {
@@ -351,9 +360,9 @@ namespace Kingo {
         /// <summary>
         ///   Looks up a localized string similar to Filter &apos;{0}&apos; specifies an invalid stage: {1}..
         /// </summary>
-        internal static string MicroProcessorPipeline_InvalidStage {
+        internal static string MicroProcessorPipelineFactoryBuilder_InvalidStage {
             get {
-                return ResourceManager.GetString("MicroProcessorPipeline_InvalidStage", resourceCulture);
+                return ResourceManager.GetString("MicroProcessorPipelineFactoryBuilder_InvalidStage", resourceCulture);
             }
         }
         
@@ -387,18 +396,9 @@ namespace Kingo {
         /// <summary>
         ///   Looks up a localized string similar to The specified result ({0}) could not be converted to an instance of type &apos;{1}&apos;..
         /// </summary>
-        internal static string Query_InvalidResult {
+        internal static string QueryContext_InvalidResult {
             get {
-                return ResourceManager.GetString("Query_InvalidResult", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot publish messages to the output stream while executing a query..
-        /// </summary>
-        internal static string QueryContext_NullOutputStream_PublishNotAllowed {
-            get {
-                return ResourceManager.GetString("QueryContext_NullOutputStream_PublishNotAllowed", resourceCulture);
+                return ResourceManager.GetString("QueryContext_InvalidResult", resourceCulture);
             }
         }
         
@@ -444,15 +444,6 @@ namespace Kingo {
         internal static string Repository_DuplicateKeyException_AggregateAlreadyExists {
             get {
                 return ResourceManager.GetString("Repository_DuplicateKeyException_AggregateAlreadyExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User &apos;{0}&apos; is not authenticated..
-        /// </summary>
-        internal static string RequiresAuthenticatedPrincipalFilter_PrincipalNotAuthenticated {
-            get {
-                return ResourceManager.GetString("RequiresAuthenticatedPrincipalFilter_PrincipalNotAuthenticated", resourceCulture);
             }
         }
         
@@ -534,15 +525,6 @@ namespace Kingo {
         internal static string Scope_ScopeAlreadyCompleted {
             get {
                 return ResourceManager.GetString("Scope_ScopeAlreadyCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on type &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
-        /// </summary>
-        internal static string TypeAttributeProvider_AmbiguousAttributeMatch {
-            get {
-                return ResourceManager.GetString("TypeAttributeProvider_AmbiguousAttributeMatch", resourceCulture);
             }
         }
         
