@@ -201,6 +201,6 @@ namespace Kingo.MicroServices
             MicroProcessorContext.CreateScope(context);
 
         private static MessageHandlerContext CreateMessageHandlerContext(CancellationToken? token, object message) =>
-            new MessageHandlerContext(new SimpleServiceProvider(), Thread.CurrentPrincipal, token, message ?? new object());
+            new MessageHandlerContext(new NullServiceProvider(), Thread.CurrentPrincipal, token, message ?? new object());
     }
 }

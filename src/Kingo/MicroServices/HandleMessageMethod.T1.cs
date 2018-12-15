@@ -9,14 +9,16 @@ namespace Kingo.MicroServices
         private readonly MicroProcessor _processor;
         private readonly MessageHandlerContext _context;
         private readonly TMessage _message;
-        private readonly IMessageHandler<TMessage> _handler;        
+        private readonly IMessageHandler<TMessage> _handler;
+        private readonly bool _isRootMethod;
 
         public HandleMessageMethod(MicroProcessor processor, TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token)           
         {
             _processor = processor;
             _context = new MessageHandlerContext(processor.MessageHandlerFactory, processor.Principal, token, message);
             _message = message;
-            _handler = handler;            
+            _handler = handler;
+            _isRootMethod = true;            
         }
 
         private HandleMessageMethod(MicroProcessor processor, TMessage message, MessageHandlerContext context)         
@@ -25,13 +27,28 @@ namespace Kingo.MicroServices
             _context = context.CreateContext(message);
             _message = message;
             _handler = null;
+            _isRootMethod = false;
         }        
 
-        Task<MessageStream> IMessageHandler.HandleAsync<TEvent>(TEvent message) =>
-            CreateMethod(message).InvokeAsync();
+        public int InvocationCount
+        {
+            get;
+            private set;
+        }
 
-        private MicroProcessorMethod<MessageStream> CreateMethod<TEvent>(TEvent message) =>
-            new HandleMessageMethod<TEvent>(_processor, message, _context);
+        Task<MessageStream> IMessageHandler.HandleAsync<TEvent>(TEvent message)
+        {
+            var method = new HandleMessageMethod<TEvent>(_processor, message, _context);
+
+            try
+            {
+                return method.InvokeAsync();
+            }
+            finally
+            {
+                InvocationCount += method.InvocationCount;
+            }
+        }            
 
         public override async Task<MessageStream> InvokeAsync()
         {
@@ -53,6 +70,8 @@ namespace Kingo.MicroServices
 
         private async Task<MessageStream> InvokeMessageHandlerAsync(MessageHandler handler)
         {
+            InvocationCount++;
+
             // Every message handler potentially yields a new stream of events, which is immediately handled by the processor
             // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
             // sub-tree of events is handled before the next event in the stream.
@@ -73,13 +92,17 @@ namespace Kingo.MicroServices
                 try
                 {
                     var stream = (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync()).GetValue();
-                    await _context.UnitOfWork.FlushAsync();
+
+                    if (_isRootMethod)
+                    {
+                        await _context.UnitOfWork.FlushAsync();
+                    }
                     return stream;
                 }
                 catch (MessageHandlerException exception)
                 {
                     // Only commands should be converted to BadRequestExceptions if a MessageHandlerException occurs.
-                    if (_processor.IsCommand(_message))
+                    if (_isRootMethod && _processor.IsCommand(_message))
                     {
                         throw exception.AsBadRequestException(exception.Message);
                     }

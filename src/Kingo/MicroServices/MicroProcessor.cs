@@ -70,10 +70,11 @@ namespace Kingo.MicroServices
         #region [====== HandleAsync ======]                           
 
         /// <inheritdoc />
-        public async Task<int> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null)
+        public virtual async Task<int> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null)
         {
-            await PublishAsync(await InvokeAsync(new HandleMessageMethod<TMessage>(this, message, handler, token)));
-            return 0;
+            var method = new HandleMessageMethod<TMessage>(this, message, handler, token);
+            await PublishAsync(await InvokeAsync(method));
+            return method.InvocationCount;
         }            
 
         /// <summary>
@@ -102,11 +103,11 @@ namespace Kingo.MicroServices
         #region [====== ExecuteAsync ======]
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken? token = null) =>
+        public virtual Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken? token = null) =>
             InvokeAsync(new ExecuteQueryMethod<TMessageOut>(this, token, query));
 
         /// <inheritdoc />
-        public Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null) =>
+        public virtual Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null) =>
             InvokeAsync(new ExecuteQueryMethod<TMessageIn, TMessageOut>(this, token, query, message));
 
         private static Task<TResult> InvokeAsync<TResult>(MicroProcessorMethod<TResult> method) =>

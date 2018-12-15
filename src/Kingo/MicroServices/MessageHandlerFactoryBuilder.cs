@@ -22,7 +22,7 @@ namespace Kingo.MicroServices
             _messageHandlers = Enumerable.Empty<MessageHandlerClass>();
         }
 
-        #region [====== Type Registration ======]
+        #region [====== Registration ======]             
 
         /// <summary>
         /// Registers all message handlers that are found in the assemblies that match the specified search criteria.
@@ -59,12 +59,29 @@ namespace Kingo.MicroServices
         /// The caller does not have the required permission
         /// </exception>
         public void Register(string searchPattern, string path = null, Func<Type, bool> predicate = null) =>
-            RegisterMessageHandlers(ScanTypes(searchPattern, path, predicate));
+            Register(ScanTypes(searchPattern, path, predicate));
 
         private static IEnumerable<Type> ScanTypes(string searchPattern, string path = null, Func<Type, bool> predicate = null) =>
             from type in TypeSet.Empty.Add(searchPattern, path)
             where predicate == null || predicate.Invoke(type)
             select type;
+
+        /// <summary>
+        /// Registers the specified <typeparamref name="TMessageHandler"/>, if it's a valid message handler type.
+        /// </summary>
+        /// <typeparam name="TMessageHandler">Type of message handler to register.</typeparam>
+        public void Register<TMessageHandler>() =>
+            Register(typeof(TMessageHandler));
+
+        /// <summary>
+        /// Registers the specified message handler <paramref name="types"/>, for each type that is a valid message handler type.
+        /// </summary>
+        /// <param name="types">Types to register.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> is <c>null</c>.
+        /// </exception>
+        public void Register(params Type[] types) =>
+            Register(types as IEnumerable<Type>);
 
         /// <summary>
         /// Registers all types of the specified <paramref name="types"/> that implement
@@ -73,10 +90,13 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        public void RegisterMessageHandlers(IEnumerable<Type> types) =>
+        public void Register(IEnumerable<Type> types) =>
             _messageHandlers = _messageHandlers.Concat(RegisterMessageHandlerClasses(types ?? throw new ArgumentNullException(nameof(types))));
 
-        private IEnumerable<MessageHandlerClass> RegisterMessageHandlerClasses(IEnumerable<Type> types)
+        private IEnumerable<MessageHandlerClass> RegisterMessageHandlerClasses(IEnumerable<Type> types) =>
+            RegisterMessageHandlerClassesCore(types).ToArray();
+
+        private IEnumerable<MessageHandlerClass> RegisterMessageHandlerClassesCore(IEnumerable<Type> types)
         {
             foreach (var messageHandlerClass in MessageHandlerClass.FromTypes(types))
             {
@@ -112,7 +132,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Type Registration (Per Specific Lifetime) ======]                       
+        #region [====== Registration (Per Specific Lifetime) ======]                       
 
         /// <summary>
         /// Registers the specified <paramref name="type" /> with a transient lifetime.

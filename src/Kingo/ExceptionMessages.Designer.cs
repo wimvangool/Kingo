@@ -304,6 +304,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; could not resolve message handler of type &apos;{1}&apos;..
+        /// </summary>
+        internal static string MessageHandlerClass_CouldNotResolveMessageHandler {
+            get {
+                return ResourceManager.GetString("MessageHandlerClass_CouldNotResolveMessageHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid InstanceLifetime specified: &apos;{0}&apos;..
         /// </summary>
         internal static string MessageHandlerFactoryBuilder_InvalidInstanceLifetime {

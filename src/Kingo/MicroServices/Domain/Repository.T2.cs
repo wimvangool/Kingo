@@ -117,8 +117,8 @@ namespace Kingo.MicroServices.Domain
         /// <summary>
         /// Returns the unit of work that this repository is using to enlist itself in.
         /// </summary>
-        protected virtual UnitOfWork UnitOfWork =>
-            MessageHandlerContext.Current?.UnitOfWork ?? UnitOfWork.None;
+        protected virtual IUnitOfWork UnitOfWork =>
+            MessageHandlerContext.Current?.UnitOfWork ?? MicroServices.UnitOfWork.None;
 
         /// <summary>
         /// Returns the event bus that this repository uses to publish all the aggregate's events.

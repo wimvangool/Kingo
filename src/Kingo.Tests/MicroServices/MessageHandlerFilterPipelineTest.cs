@@ -70,6 +70,6 @@ namespace Kingo.MicroServices
             new MessageHandlerFilterPipeline(handler, filter);
 
         private static MessageHandlerContext CreateMessageHandlerContext(object message) =>
-            new MessageHandlerContext(new SimpleServiceProvider(), Thread.CurrentPrincipal, null, message);
+            new MessageHandlerContext(new NullServiceProvider(), Thread.CurrentPrincipal, null, message);
     }
 }

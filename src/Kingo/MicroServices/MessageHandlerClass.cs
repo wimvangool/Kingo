@@ -85,7 +85,7 @@ namespace Kingo.MicroServices
             //
             // ...and this method is called with a TMessage of type 'string', then the code will do something along the following lines:
             //            
-            // - return new MessageHandlerDecorator<object>(Resolve<ObjectHandler>(), message, context, typeof(ObjectHandler), typeof(IMessageHandler<object>));                                    
+            // - return new MessageHandlerDecorator<object>(Resolve<ObjectHandler>(), message, context, typeof(ObjectHandler), typeof(IMessageHandler<object>));            
             return _messageHandlerFactories.GetOrAdd(interfaceType, t =>
             {
                 var handlerParameter = Expression.Parameter(typeof(object), "handler");
@@ -105,15 +105,33 @@ namespace Kingo.MicroServices
                     Expression.Convert(newDecoratorExpression, typeof(MessageHandler)),
                     handlerParameter,
                     messageParameter,
+                    contextParameter,
                     typeParameter,
                     interfaceTypeParameter);
 
                 return newMessageHandlerExpression.Compile();                
-            }).Invoke(context.ServiceProvider.GetService(Type), message, context, Type, interfaceType);                                   
+            }).Invoke(ResolveMessageHandler(context), message, context, Type, interfaceType);                                   
         }
 
         private static bool IsSupportedOperationType(MicroProcessorOperationTypes supportedTypes, MicroProcessorOperationTypes type) =>
              supportedTypes.HasFlag(type);
+
+        private object ResolveMessageHandler(MessageHandlerContext context)
+        {
+            var messageHandler = context.ServiceProvider.GetService(Type);
+            if (messageHandler == null)
+            {
+                throw NewCouldNotResolveMessageHandlerException(context.ServiceProvider.GetType(), Type);
+            }
+            return messageHandler;
+        }
+
+        private static Exception NewCouldNotResolveMessageHandlerException(Type serviceProviderType, Type messageHandlerType)
+        {
+            var messageFormat = ExceptionMessages.MessageHandlerClass_CouldNotResolveMessageHandler;
+            var message = string.Format(messageFormat, serviceProviderType.FriendlyName(), messageHandlerType.FriendlyName());
+            return new InvalidOperationException(message);
+        }
 
         #region [====== FromTypes ======]
 

@@ -11,12 +11,11 @@ namespace Kingo.MicroServices
     internal sealed class MessageHandlerFactory : IMessageHandlerFactory
     {
         #region [====== Null ======]        
-
-        public static readonly MessageHandlerFactory Null = new MessageHandlerFactory(Enumerable.Empty<MessageHandlerClass>(), new SimpleServiceProvider());
+       
+        public static readonly MessageHandlerFactory Null = new MessageHandlerFactory(Enumerable.Empty<MessageHandlerClass>(), new NullServiceProvider());
 
         #endregion
-
-        [DebuggerDisplay("Count = {_messageHandlers.Count}")]
+        
         private readonly MessageHandlerClass[] _messageHandlers;
         private readonly IServiceProvider _serviceProvider;
               

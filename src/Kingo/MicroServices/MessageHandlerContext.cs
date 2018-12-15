@@ -19,7 +19,7 @@ namespace Kingo.MicroServices
             Principal = principal;
             Token = token ?? CancellationToken.None;
             Operation = new MicroProcessorOperation(MicroProcessorOperationTypes.InputMessage, message);
-            UnitOfWork = new UnitOfWorkController();
+            UnitOfWork = new UnitOfWork();
             EventBus = new EventBus();
         }
 
@@ -29,8 +29,8 @@ namespace Kingo.MicroServices
             Principal = parent.Principal;
             Token = parent.Token;
             Operation = parent.Operation.Push(MicroProcessorOperationTypes.OutputMessage, message);
-            UnitOfWork = parent.UnitOfWork.Decorate();
-            EventBus = parent.EventBus;
+            UnitOfWork = parent.UnitOfWork;
+            EventBus = new EventBus();
         }
 
         /// <inheritdoc />
@@ -60,7 +60,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Represents the unit of work that is associated to the current operation.
         /// </summary>
-        public UnitOfWork UnitOfWork
+        public IUnitOfWork UnitOfWork
         {
             get;
         }

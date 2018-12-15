@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Threading;
 
 namespace Kingo.MicroServices
-{
-    /// <summary>
-    /// Represents a logical unit of work to which <see cref="IUnitOfWorkResourceManager">resource managers</see>
-    /// enlist themselves and which controls their flush-moment.
-    /// </summary>
-    public abstract class UnitOfWork
+{    
+    internal sealed class UnitOfWork : IUnitOfWork
     {
         #region [====== NoUnitOfWork ======]
 
-        private sealed class NoUnitOfWork : UnitOfWork
+        private sealed class NoUnitOfWork : IUnitOfWork
         {                                  
-            public override async Task EnlistAsync(IUnitOfWorkResourceManager resourceManager)
+            public async Task EnlistAsync(IUnitOfWorkResourceManager resourceManager)
             {
                 if (resourceManager == null)
                 {
@@ -25,32 +25,67 @@ namespace Kingo.MicroServices
                 }                
             }            
 
-            internal override Task FlushAsync() =>
-                Task.CompletedTask;
-
-            internal override UnitOfWork Decorate() =>
-                this;
+            public Task FlushAsync() =>
+                Task.CompletedTask;           
         }       
 
         #endregion 
+                
+        public static readonly IUnitOfWork None = new NoUnitOfWork();
+        private static readonly object _NullResourceId = new object();
+
+        private Dictionary<object, List<IUnitOfWorkResourceManager>> _resourceGroups;
+
+        public UnitOfWork()
+        {
+            _resourceGroups = new Dictionary<object, List<IUnitOfWorkResourceManager>>();
+        }
+
+        #region [====== EnlistAsync ======]
+
+        public Task EnlistAsync(IUnitOfWorkResourceManager resourceManager) =>
+            AsyncMethod.Run(() => Enlist(resourceManager));
+
+        private void Enlist(IUnitOfWorkResourceManager resourceManager)
+        {
+            if (resourceManager == null)
+            {
+                throw new ArgumentNullException(nameof(resourceManager));
+            }
+            var resourceId = resourceManager.ResourceId ?? _NullResourceId;
+
+            if (_resourceGroups.TryGetValue(resourceId, out var resourceGroup))
+            {
+                if (resourceGroup.Contains(resourceManager))
+                {
+                    return;
+                }
+                resourceGroup.Add(resourceManager);
+            }
+            else
+            {
+                _resourceGroups.Add(resourceId, new List<IUnitOfWorkResourceManager> { resourceManager });
+            }
+        }
+
+        #endregion
+
+        #region [====== FlushAsync ======]
         
-        /// <summary>
-        /// Represents a unit of work that flushes resource managers the moment they enlist.
-        /// </summary>
-        public static readonly UnitOfWork None = new NoUnitOfWork();
+        public Task FlushAsync() =>
+            FlushAsync(Interlocked.Exchange(ref _resourceGroups, new Dictionary<object, List<IUnitOfWorkResourceManager>>()).Values);
 
-        /// <summary>
-        /// Enlists the specified <paramref name="resourceManager"/> with the context so that it can be flushed at the appropriate time.
-        /// Note that this operation may flush the specified <paramref name="resourceManager"/> immediately.
-        /// </summary>
-        /// <param name="resourceManager">The resource manager to enlist.</param>        
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="resourceManager"/> is <c>null</c>.
-        /// </exception>
-        public abstract Task EnlistAsync(IUnitOfWorkResourceManager resourceManager);
+        private static Task FlushAsync(IEnumerable<List<IUnitOfWorkResourceManager>> resourceGroups) =>
+            Task.WhenAll(resourceGroups.Select(FlushAsync));
 
-        internal abstract Task FlushAsync();
+        private static async Task FlushAsync(IEnumerable<IUnitOfWorkResourceManager> resourceGroup)
+        {
+            foreach (var resourceManager in resourceGroup.Where(resource => resource.RequiresFlush()))
+            {
+                await resourceManager.FlushAsync();
+            }
+        }
 
-        internal abstract UnitOfWork Decorate();
+        #endregion     
     }
 }

@@ -70,6 +70,6 @@ namespace Kingo.MicroServices
             new QueryFilterPipeline<TMessageOut>(query, filter);
 
         private static QueryContext CreateQueryContext(object message) =>
-            new QueryContext(new SimpleServiceProvider(), Thread.CurrentPrincipal, null, message);
+            new QueryContext(new NullServiceProvider(), Thread.CurrentPrincipal, null, message);
     }
 }

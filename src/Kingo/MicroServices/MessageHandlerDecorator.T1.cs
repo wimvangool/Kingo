@@ -65,7 +65,7 @@ namespace Kingo.MicroServices
             this(handler, message, context, new TypeAttributeProvider(handlerType), MethodAttributeProvider.FromMessageHandler(handlerType, interfaceType)) { }
 
         private MessageHandlerDecorator(IMessageHandler<TMessage> handler, TMessage message, MessageHandlerContext context, TypeAttributeProvider typeAttributeProvider, MethodAttributeProvider methodAttributeProvider)
-        {
+        {           
             _attributeProvider = typeAttributeProvider;
             _method = new HandleAsyncMethod(handler, message, context, methodAttributeProvider);
         }

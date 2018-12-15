@@ -192,6 +192,9 @@
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
     <value>An error occurred while processing a message. See inner exception for details.</value>
   </data>
+  <data name="MessageHandlerClass_CouldNotResolveMessageHandler" xml:space="preserve">
+    <value>'{0}' could not resolve message handler of type '{1}'.</value>
+  </data>
   <data name="MessageHandlerFactoryBuilder_InvalidInstanceLifetime" xml:space="preserve">
     <value>Invalid InstanceLifetime specified: '{0}'.</value>
   </data>
