@@ -133,7 +133,10 @@ namespace Kingo.MicroServices
         public object Message
         {
             get;
-        }        
+        }
+
+        internal bool IsSupported(MicroProcessorOperationTypes supportedOperationTypes) =>
+            supportedOperationTypes.HasFlag(Type);
 
         /// <inheritdoc />
         public override string ToString() =>

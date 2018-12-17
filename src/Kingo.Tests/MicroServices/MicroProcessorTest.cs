@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.MicroServices.Domain;
@@ -38,7 +39,7 @@ namespace Kingo.MicroServices
         {
             public Task HandleAsync(object message, MessageHandlerContext context) =>
                 throw new MessageHandlerException();
-        }        
+        }                   
 
         #endregion
 
@@ -50,11 +51,13 @@ namespace Kingo.MicroServices
 
         private readonly MessageHandlerFactoryBuilder _messageHandlers;
         private readonly MicroProcessorPipelineFactoryBuilder _pipeline;
+        private readonly MicroServiceBusStub _serviceBus;
 
         public MicroProcessorTest()
         {
             _messageHandlers = new SimpleMessageHandlerFactoryBuilder();
             _pipeline = new MicroProcessorPipelineFactoryBuilder();
+            _serviceBus = new MicroServiceBusStub();
         }
 
         #region [====== HandleAsync - MessageHandler Invocation ======]        
@@ -81,8 +84,8 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ReturnsExpectedInvocationCount_IfMultipleHandlersAreResolvedForMessage()
         {
-            _messageHandlers.Register<ObjectHandler>();
-            _messageHandlers.Register<StringHandler>();
+            _messageHandlers.RegisterType<ObjectHandler>();
+            _messageHandlers.RegisterType<StringHandler>();
 
             Assert.AreEqual(2, await CreateProcessor().HandleAsync(string.Empty));
         }
@@ -90,7 +93,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ReturnsExpectedInvocationCount_IfOneHandlerTriggersAnotherHandler()
         {
-            _messageHandlers.Register<ObjectHandler>();
+            _messageHandlers.RegisterType<ObjectHandler>();
 
             Assert.AreEqual(2, await CreateProcessor().HandleAsync(string.Empty, (message, context) =>
             {
@@ -101,12 +104,13 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ReturnsExpectedInvocationCount_IfOneHandlerIsInvokedTwiceForSameMessage()
         {
-            _messageHandlers.Register<ObjectAndStringHandler>();
+            _messageHandlers.Register(new ObjectAndStringHandler());
+            _messageHandlers.RegisterType<ObjectAndStringHandler>();
 
-            Assert.AreEqual(2, await CreateProcessor().HandleAsync(string.Empty));
+            Assert.AreEqual(4, await CreateProcessor().HandleAsync(string.Empty));
         }
 
-        #endregion
+        #endregion        
 
         #region [====== HandleAsync - Exception Handling ======]
 
@@ -146,7 +150,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ThrowsInternalServerErrorException_IfOutputMessageHandlerThrowsMessageHandlerException_And_InputMessageIsCommand()
         {
-            _messageHandlers.Register<MessageHandlerExceptionThrower>();
+            _messageHandlers.RegisterType<MessageHandlerExceptionThrower>();
 
             var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().HandleAsync(new SomeCommand(), (command, context) =>
             {
@@ -192,7 +196,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ThrowsInternalServerErrorException_IfOutputMessageHandlerThrowsMessageHandlerException_And_InputMessageIsEvent()
         {
-            _messageHandlers.Register<MessageHandlerExceptionThrower>();
+            _messageHandlers.RegisterType<MessageHandlerExceptionThrower>();
 
             var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().HandleAsync(new object(), (message, context) =>
             {
@@ -359,36 +363,291 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== ExecuteAsync_1 - Basic Behavior ======]
+        #region [====== HandleAsync - Event Publication ======]
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteAsync_1_Throws_IfQueryIsNull()
+        public async Task HandleAsync_PublishesNoEvents_IfNoHandlerIsInvoked()
         {
-            await CreateProcessor().ExecuteAsync<object>(null);
+            await CreateProcessor().HandleAsync(new object());
+
+            Assert.AreEqual(0, _serviceBus.Count);
+        }
+
+        [TestMethod]
+        public async Task HandleAsync_PublishesExpectedEvent_IfExplicitHandlerPublishesEvent()
+        {
+            var @event = new object();
+
+            await CreateProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                context.EventBus.Publish(@event);
+            });
+
+            Assert.AreEqual(1, _serviceBus.Count);
+            Assert.AreSame(@event, _serviceBus[0]);
+        }
+
+        [TestMethod]
+        public async Task HandleAsync_PublishesExpectedEvents_IfSeveralHandlersPublishEvents()
+        {
+            var eventA = string.Empty;
+            var eventB = new object();
+
+            _messageHandlers.Register<string>((message, context) =>
+            {
+                context.EventBus.Publish(eventB);
+            });
+
+            await CreateProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                context.EventBus.Publish(eventA);
+            });
+
+            Assert.AreEqual(2, _serviceBus.Count);
+            Assert.AreSame(eventA, _serviceBus[0]);
+            Assert.AreSame(eventB, _serviceBus[1]);
+        }
+
+        [TestMethod]
+        public async Task HandleAsync_PublishesNoEvents_IfSeveralHandlersPublishEvents_But_ExceptionIsThrown()
+        {
+            var eventA = string.Empty;
+            var eventB = new object();
+
+            _messageHandlers.Register<string>((message, context) =>
+            {
+                context.EventBus.Publish(eventB);
+            });
+
+            await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                context.EventBus.Publish(eventA);
+                throw new InvalidOperationException();
+            }));
+
+            Assert.AreEqual(0, _serviceBus.Count);            
         }
 
         #endregion
 
-        #region [====== ExecuteAsync_2 - Basic Behavior ======]
+        #region [====== HandleAsync - Operation ======]
+
+        [TestMethod]
+        public async Task HandleAsync_IsInvokedWithinExpectedContext_IfInputMessageHandlerIsInvoked()
+        {
+            var command = new object();
+
+            await CreateProcessor().HandleAsync(command, (message, context) =>
+            {
+                Assert.AreSame(command, message);
+                Assert.AreSame(command, context.Operation.Message);
+                Assert.AreEqual(MicroProcessorOperationTypes.InputMessage, context.Operation.Type);
+                Assert.AreEqual(1, context.Operation.StackTrace().Count());
+            });
+        }
+
+        [TestMethod]
+        public async Task HandleAsync_IsInvokedWithinExpectedContext_IfOutputMessageHandlerIsInvoked_Depth1()
+        {
+            var @event = new object();
+
+            _messageHandlers.Register<object>((message, context) =>
+            {
+                Assert.AreSame(@event, message);
+                Assert.AreSame(@event, context.Operation.Message);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessage, context.Operation.Type);
+                Assert.AreEqual(2, context.Operation.StackTrace().Count());
+            });
+
+            await CreateProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                context.EventBus.Publish(@event);
+            });
+        }
+
+        [TestMethod]
+        public async Task HandleAsync_IsInvokedWithinExpectedContext_IfOutputMessageHandlerIsInvoked_Depth2()
+        {
+            var @event = string.Empty;
+
+            _messageHandlers.Register<int>((message, context) =>
+            {
+                context.EventBus.Publish(@event);
+            });
+
+            _messageHandlers.Register<string>((message, context) =>
+            {
+                Assert.AreSame(@event, message);
+                Assert.AreSame(@event, context.Operation.Message);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessage, context.Operation.Type);
+                Assert.AreEqual(3, context.Operation.StackTrace().Count());
+            });
+
+            Assert.AreEqual(3, await CreateProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                context.EventBus.Publish(DateTimeOffset.UtcNow.Second);
+            }));
+        }
+
+        #endregion
+
+        #region [====== ExecuteAsync1 ======]
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteAsync_2_Throws_IfQueryIsNull()
+        public async Task ExecuteAsync1_Throws_IfQueryIsNull()
+        {
+            await CreateProcessor().ExecuteAsync<object>(null);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync1_ReturnsNull_IfQueryReturnsNull()
+        {
+            Assert.IsNull(await CreateProcessor().ExecuteAsync(context => null as object));
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync1_ReturnsResponse_IfQueryReturnsResponse()
+        {
+            var response = new object();
+
+            Assert.AreSame(await CreateProcessor().ExecuteAsync(context => response), response);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync1_ThrowsBadRequestException_IfQueryThrowsBadRequestException()
+        {
+            var exceptionToThrow = new BadRequestException();
+            var exception = await Assert.ThrowsExceptionAsync<BadRequestException>(() => CreateProcessor().ExecuteAsync<object>(context =>
+            {
+                throw exceptionToThrow;
+            }));
+
+            Assert.AreSame(exceptionToThrow, exception);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync1_ThrowsInternalServerErrorException_IfQueryThrowsInternalServerErrorException()
+        {
+            var exceptionToThrow = new InternalServerErrorException();
+            var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().ExecuteAsync<object>(context =>
+            {
+                throw exceptionToThrow;
+            }));
+
+            Assert.AreSame(exceptionToThrow, exception);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync1_ThrowsInternalServerErrorException_IfQueryThrowsInvalidOperationException()
+        {
+            var exceptionToThrow = new InvalidOperationException();
+            var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().ExecuteAsync<object>(context =>
+            {
+                throw exceptionToThrow;
+            }));
+
+            Assert.AreSame(exceptionToThrow, exception.InnerException);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync1_IsInvokedWithinExpectedContext()
+        {            
+            await CreateProcessor().ExecuteAsync(context =>
+            {                
+                Assert.IsNull(context.Operation.Message);
+                Assert.AreEqual(MicroProcessorOperationTypes.Query, context.Operation.Type);
+                Assert.AreEqual(1, context.Operation.StackTrace().Count());
+                return new object();
+            });
+        }
+
+        #endregion
+
+        #region [====== ExecuteAsync2 ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async Task ExecuteAsync2_Throws_IfQueryIsNull()
         {
             await CreateProcessor().ExecuteAsync<object, object>(new object(), null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task ExecuteAsync_2_Throws_IfMessageIsNull()
+        public async Task ExecuteAsync2_Throws_IfMessageIsNull()
         {
             await CreateProcessor().ExecuteAsync<object, object>(null, (message, context) => null);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync2_ReturnsNull_IfQueryReturnsNull()
+        {
+            Assert.IsNull(await CreateProcessor().ExecuteAsync(new object(), (message, context) => null as object));
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync2_ReturnsResponse_IfQueryReturnsResponse()
+        {
+            var response = new object();
+
+            Assert.AreSame(await CreateProcessor().ExecuteAsync(new object(), (message, context) => response), response);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync2_ThrowsBadRequestException_IfQueryThrowsBadRequestException()
+        {
+            var exceptionToThrow = new BadRequestException();
+            var exception = await Assert.ThrowsExceptionAsync<BadRequestException>(() => CreateProcessor().ExecuteAsync<object, object>(new object(), (message, context) =>
+            {
+                throw exceptionToThrow;
+            }));
+
+            Assert.AreSame(exceptionToThrow, exception);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync2_ThrowsInternalServerErrorException_IfQueryThrowsInternalServerErrorException()
+        {
+            var exceptionToThrow = new InternalServerErrorException();
+            var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().ExecuteAsync<object, object>(new object(), (message, context) =>
+            {
+                throw exceptionToThrow;
+            }));
+
+            Assert.AreSame(exceptionToThrow, exception);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync2_ThrowsInternalServerErrorException_IfQueryThrowsInvalidOperationException()
+        {
+            var exceptionToThrow = new InvalidOperationException();
+            var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().ExecuteAsync<object, object>(new object(), (message, context) =>
+            {
+                throw exceptionToThrow;
+            }));
+
+            Assert.AreSame(exceptionToThrow, exception.InnerException);
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync2_IsInvokedWithinExpectedContext()
+        {
+            var request = new object();
+
+            await CreateProcessor().ExecuteAsync(request, (message, context) =>
+            {
+                Assert.AreSame(request, message);
+                Assert.AreSame(request, context.Operation.Message);
+                Assert.AreEqual(MicroProcessorOperationTypes.Query, context.Operation.Type);
+                Assert.AreEqual(1, context.Operation.StackTrace().Count());
+                return new object();
+            });
         }
 
         #endregion
 
         private MicroProcessor CreateProcessor() =>
-            new MicroProcessor(_messageHandlers.Build(), _pipeline.Build(), null);
+            new MicroProcessor(_messageHandlers.Build(), _pipeline.Build(), _serviceBus);
     }
 }

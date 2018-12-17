@@ -51,6 +51,41 @@ namespace Kingo.MicroServices
         }            
 
         public override async Task<MessageStream> InvokeAsync()
+        {            
+            try
+            {
+                var stream = await HandleMessageAsync();
+
+                if (_isRootMethod)
+                {
+                    await _context.UnitOfWork.FlushAsync();
+                }
+                return stream;
+            }
+            catch (MessageHandlerException exception)
+            {
+                // Only commands should be converted to BadRequestExceptions if a MessageHandlerException occurs.
+                if (_isRootMethod && _processor.IsCommand(_message))
+                {
+                    throw exception.AsBadRequestException(exception.Message);
+                }
+                throw exception.AsInternalServerErrorException(exception.Message);
+            }
+            catch (MicroProcessorException)
+            {
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw InternalServerErrorException.FromInnerException(exception);
+            }
+        }
+
+        private async Task<MessageStream> HandleMessageAsync()
         {
             // If a specific handler to handle the message was specified, that handler is used.
             // If not, then the MessageHandlerFactory is used to instantiate a set of handlers.
@@ -91,34 +126,7 @@ namespace Kingo.MicroServices
 
                 try
                 {
-                    var stream = (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync()).GetValue();
-
-                    if (_isRootMethod)
-                    {
-                        await _context.UnitOfWork.FlushAsync();
-                    }
-                    return stream;
-                }
-                catch (MessageHandlerException exception)
-                {
-                    // Only commands should be converted to BadRequestExceptions if a MessageHandlerException occurs.
-                    if (_isRootMethod && _processor.IsCommand(_message))
-                    {
-                        throw exception.AsBadRequestException(exception.Message);
-                    }
-                    throw exception.AsInternalServerErrorException(exception.Message);
-                }
-                catch (MicroProcessorException)
-                {
-                    throw;
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception exception)
-                {
-                    throw InternalServerErrorException.FromInnerException(exception);
+                    return (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync()).GetValue();
                 }
                 finally
                 {

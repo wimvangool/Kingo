@@ -8,13 +8,9 @@ using System.Reflection;
 namespace Kingo.MicroServices
 {    
     internal sealed class MessageHandlerClass
-    {
-        private readonly ConcurrentDictionary<Type, Func<object, object, MessageHandlerContext, Type, Type, MessageHandler>> _messageHandlerFactories;              
-
+    {        
         private MessageHandlerClass(Type type, Type[] interfaces, IMessageHandlerConfiguration configuration)
-        {
-            _messageHandlerFactories = new ConcurrentDictionary<Type, Func<object, object, MessageHandlerContext, Type, Type, MessageHandler>>();
-
+        {           
             Type = type;
             Interfaces = interfaces;
             Configuration = configuration;            
@@ -48,7 +44,7 @@ namespace Kingo.MicroServices
             {
                 throw new ArgumentNullException(nameof(context));
             }
-            if (IsSupportedOperationType(Configuration.SupportedOperationTypes, context.Operation.Type))
+            if (context.Operation.IsSupported(Configuration.SupportedOperationTypes))
             {
                 // This LINQ construct first selects all message handler interface definitions that are compatible with
                 // the specified message. Then it will dynamically create the correct message handler type for each match
@@ -62,12 +58,18 @@ namespace Kingo.MicroServices
                     from interfaceType in Interfaces
                     let messageTypeOfInterface = GetMessageTypeOf(interfaceType)
                     where messageTypeOfInterface.IsInstanceOfType(message)
-                    select CreateMessageHandlerInstance(message, context, interfaceType, messageTypeOfInterface);
+                    select CreateMessageHandler(message, context, interfaceType);
             }
             return Enumerable.Empty<MessageHandler>();
-        }        
+        }
 
-        private MessageHandler CreateMessageHandlerInstance<TMessage>(TMessage message, MessageHandlerContext context, Type interfaceType, Type messageTypeOfInterface)
+        private static readonly ConcurrentDictionary<Type, Func<object, object, MessageHandlerContext, Type, Type, MessageHandler>> _MessageHandlerFactories =
+            new ConcurrentDictionary<Type, Func<object, object, MessageHandlerContext, Type, Type, MessageHandler>>();
+
+        private MessageHandler CreateMessageHandler<TMessage>(TMessage message, MessageHandlerContext context, Type interfaceType) =>
+            _MessageHandlerFactories.GetOrAdd(interfaceType, CreateMessageHandlerFactory).Invoke(ResolveMessageHandler(context), message, context, Type, interfaceType);                                             
+        
+        private static Func<object, object, MessageHandlerContext, Type, Type, MessageHandler> CreateMessageHandlerFactory(Type interfaceType)
         {
             // In order to support message handlers with contravariant IMessageHandler<TMessage>-implementations, the resolved instance is wrapped
             // inside an Instance<TActual> where TActual is the type of the generic type parameter of the specified interface. This ensures that
@@ -85,38 +87,34 @@ namespace Kingo.MicroServices
             //
             // ...and this method is called with a TMessage of type 'string', then the code will do something along the following lines:
             //            
-            // - return new MessageHandlerDecorator<object>(Resolve<ObjectHandler>(), message, context, typeof(ObjectHandler), typeof(IMessageHandler<object>));            
-            return _messageHandlerFactories.GetOrAdd(interfaceType, t =>
-            {
-                var handlerParameter = Expression.Parameter(typeof(object), "handler");
-                var handlerOfExpectedType = Expression.Convert(handlerParameter, interfaceType);
-                var messageParameter = Expression.Parameter(typeof(object), "message");
-                var messageOfExpectedType = Expression.Convert(messageParameter, messageTypeOfInterface);
-                var contextParameter = Expression.Parameter(typeof(MessageHandlerContext), "context");
-                var typeParameter = Expression.Parameter(typeof(Type), "type");
-                var interfaceTypeParameter = Expression.Parameter(typeof(Type), "interfaceType");
+            // - return new MessageHandlerDecorator<object>(Resolve<ObjectHandler>(), message, context, typeof(ObjectHandler), typeof(IMessageHandler<object>));
+            var messageType = GetMessageTypeOf(interfaceType);
 
-                var decoratorTypeDefinition = typeof(MessageHandlerDecorator<>);
-                var decoratorType = decoratorTypeDefinition.MakeGenericType(messageTypeOfInterface);
-                var decoratorConstructorParameters = new[] { interfaceType, messageTypeOfInterface, typeof(MessageHandlerContext), typeof(Type), typeof(Type) };
-                var decoratorConstructor = decoratorType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, decoratorConstructorParameters, null);
-                var newDecoratorExpression = Expression.New(decoratorConstructor, handlerOfExpectedType, messageOfExpectedType, contextParameter, typeParameter, interfaceTypeParameter);                
-                var newMessageHandlerExpression = Expression.Lambda<Func<object, object, MessageHandlerContext, Type, Type, MessageHandler>>(
-                    Expression.Convert(newDecoratorExpression, typeof(MessageHandler)),
-                    handlerParameter,
-                    messageParameter,
-                    contextParameter,
-                    typeParameter,
-                    interfaceTypeParameter);
+            var handlerParameter = Expression.Parameter(typeof(object), "handler");
+            var handlerOfExpectedType = Expression.Convert(handlerParameter, interfaceType);
+            var messageParameter = Expression.Parameter(typeof(object), "message");
+            var messageOfExpectedType = Expression.Convert(messageParameter, messageType);
+            var contextParameter = Expression.Parameter(typeof(MessageHandlerContext), "context");
+            var typeParameter = Expression.Parameter(typeof(Type), "type");
+            var interfaceTypeParameter = Expression.Parameter(typeof(Type), "interfaceType");
 
-                return newMessageHandlerExpression.Compile();                
-            }).Invoke(ResolveMessageHandler(context), message, context, Type, interfaceType);                                   
+            var decoratorTypeDefinition = typeof(MessageHandlerDecorator<>);
+            var decoratorType = decoratorTypeDefinition.MakeGenericType(messageType);
+            var decoratorConstructorParameters = new[] { interfaceType, messageType, typeof(MessageHandlerContext), typeof(Type), typeof(Type) };
+            var decoratorConstructor = decoratorType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, decoratorConstructorParameters, null);
+            var newDecoratorExpression = Expression.New(decoratorConstructor, handlerOfExpectedType, messageOfExpectedType, contextParameter, typeParameter, interfaceTypeParameter);
+            var newMessageHandlerExpression = Expression.Lambda<Func<object, object, MessageHandlerContext, Type, Type, MessageHandler>>(
+                Expression.Convert(newDecoratorExpression, typeof(MessageHandler)),
+                handlerParameter,
+                messageParameter,
+                contextParameter,
+                typeParameter,
+                interfaceTypeParameter);
+
+            return newMessageHandlerExpression.Compile();
         }
 
-        private static bool IsSupportedOperationType(MicroProcessorOperationTypes supportedTypes, MicroProcessorOperationTypes type) =>
-             supportedTypes.HasFlag(type);
-
-        private object ResolveMessageHandler(MessageHandlerContext context)
+        private object ResolveMessageHandler(MicroProcessorContext context)
         {
             var messageHandler = context.ServiceProvider.GetService(Type);
             if (messageHandler == null)
@@ -153,7 +151,7 @@ namespace Kingo.MicroServices
             }            
         }
 
-        private static bool IsMessageHandlerClass(Type type, out MessageHandlerClass handler)
+        internal static bool IsMessageHandlerClass(Type type, out MessageHandlerClass handler)
         {
             if (type.IsAbstract || !type.IsClass || type.ContainsGenericParameters)
             {
@@ -179,7 +177,7 @@ namespace Kingo.MicroServices
             return MessageHandlerConfiguration.Default;
         }
 
-        private static bool TryGetMessageHandlerAttribute(Type classType, out IMessageHandlerConfiguration attribute)
+        internal static bool TryGetMessageHandlerAttribute(Type classType, out IMessageHandlerConfiguration attribute)
         {
             var attributes = classType.GetCustomAttributes(typeof(MessageHandlerAttribute), true);
             if (attributes.Length == 0)
@@ -210,7 +208,7 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private static Type GetMessageTypeOf(Type interfaceType) =>
+        internal static Type GetMessageTypeOf(Type interfaceType) =>
             interfaceType.GetGenericArguments()[0];
     }
 }
