@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Kingo.Threading;
 
 namespace Kingo.MicroServices
 {
@@ -36,5 +37,13 @@ namespace Kingo.MicroServices
             _events.Add(message);
             return Task.CompletedTask;
         }
+
+        private static readonly Context<MicroServiceBusStub> _Context = new Context<MicroServiceBusStub>(null);
+
+        public static MicroServiceBusStub Current =>
+            _Context.Current;
+
+        public static IDisposable CreateContext() =>
+            _Context.OverrideAsyncLocal(new MicroServiceBusStub());        
     }
 }

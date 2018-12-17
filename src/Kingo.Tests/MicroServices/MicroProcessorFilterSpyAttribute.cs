@@ -21,7 +21,10 @@ namespace Kingo.MicroServices
             return await handler.Method.InvokeAsync();
         }
 
-        public override Task<InvokeAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query) =>
-            query.Method.InvokeAsync();
+        public override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query)
+        {
+            await MicroServiceBusStub.Current.PublishAsync(Id);
+            return await query.Method.InvokeAsync();
+        }
     }
 }

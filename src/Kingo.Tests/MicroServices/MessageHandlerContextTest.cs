@@ -92,7 +92,7 @@ namespace Kingo.MicroServices
                 Assert.IsNotNull(operation);
                 Assert.AreSame(message, operation.Message);
                 Assert.AreEqual(typeof(object), operation.MessageType);
-                Assert.AreEqual(MicroProcessorOperationTypes.InputMessage, operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.InputMessageHandler, operation.Type);
 
                 Assert.AreEqual(1, operation.StackTrace().Count());                                                                
             }
@@ -114,7 +114,7 @@ namespace Kingo.MicroServices
                 Assert.IsNotNull(operationB);
                 Assert.AreEqual(messageB, operationB.Message);
                 Assert.AreEqual(typeof(int), operationB.MessageType);
-                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessage, operationB.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessageHandler, operationB.Type);
                 Assert.AreEqual(2, operationB.StackTrace().Count());                
 
                 var operationA = operationB.PreviousOperation;
@@ -122,7 +122,7 @@ namespace Kingo.MicroServices
                 Assert.IsNotNull(operationA);
                 Assert.AreSame(messageA, operationA.Message);
                 Assert.AreEqual(typeof(object), operationA.MessageType);
-                Assert.AreEqual(MicroProcessorOperationTypes.InputMessage, operationA.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.InputMessageHandler, operationA.Type);
                 Assert.AreEqual(1, operationA.StackTrace().Count());
             }
         }

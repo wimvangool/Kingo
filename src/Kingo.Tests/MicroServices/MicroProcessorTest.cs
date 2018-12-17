@@ -34,7 +34,7 @@ namespace Kingo.MicroServices
                 Task.CompletedTask;
         }
 
-        [MessageHandler(ServiceLifetime.Transient, MicroProcessorOperationTypes.OutputMessage)]
+        [MessageHandler(ServiceLifetime.Transient, MicroProcessorOperationTypes.OutputMessageHandler)]
         private sealed class MessageHandlerExceptionThrower : IMessageHandler<object>
         {
             public Task HandleAsync(object message, MessageHandlerContext context) =>
@@ -439,7 +439,7 @@ namespace Kingo.MicroServices
             {
                 Assert.AreSame(command, message);
                 Assert.AreSame(command, context.Operation.Message);
-                Assert.AreEqual(MicroProcessorOperationTypes.InputMessage, context.Operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.InputMessageHandler, context.Operation.Type);
                 Assert.AreEqual(1, context.Operation.StackTrace().Count());
             });
         }
@@ -453,7 +453,7 @@ namespace Kingo.MicroServices
             {
                 Assert.AreSame(@event, message);
                 Assert.AreSame(@event, context.Operation.Message);
-                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessage, context.Operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessageHandler, context.Operation.Type);
                 Assert.AreEqual(2, context.Operation.StackTrace().Count());
             });
 
@@ -477,7 +477,7 @@ namespace Kingo.MicroServices
             {
                 Assert.AreSame(@event, message);
                 Assert.AreSame(@event, context.Operation.Message);
-                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessage, context.Operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessageHandler, context.Operation.Type);
                 Assert.AreEqual(3, context.Operation.StackTrace().Count());
             });
 

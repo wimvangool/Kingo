@@ -6,7 +6,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Serves as a base class for all filters that can be part of the <see cref="IMicroProcessor" /> pipeline.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public abstract class MicroProcessorFilterAttribute : Attribute, IMicroProcessorFilter
     {                     
         /// <summary>

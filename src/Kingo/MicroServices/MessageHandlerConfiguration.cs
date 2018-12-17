@@ -20,7 +20,7 @@ namespace Kingo.MicroServices
         public MessageHandlerConfiguration(ServiceLifetime lifetime)
         {
             Lifetime = lifetime;
-            SupportedOperationTypes = MicroProcessorOperationTypes.InputMessage;
+            SupportedOperationTypes = MicroProcessorOperationTypes.InputMessageHandler;
         }
 
         /// <summary>
