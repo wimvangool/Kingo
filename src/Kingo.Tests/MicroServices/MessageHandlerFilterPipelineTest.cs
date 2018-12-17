@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,7 +13,7 @@ namespace Kingo.MicroServices
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var pipeline = CreateFilterPipeline(handler, message, new MicroProcessorFilterSpy());
+            var pipeline = CreateFilterPipeline(handler, message, CreateFilter());
 
             var result = await pipeline.Method.InvokeAsync();
 
@@ -28,8 +29,8 @@ namespace Kingo.MicroServices
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var pipelineA = CreateFilterPipeline(handler, message, new MicroProcessorFilterSpy());
-            var pipelineB = CreateFilterPipeline(pipelineA, new MicroProcessorFilterSpy());
+            var pipelineA = CreateFilterPipeline(handler, message, CreateFilter());
+            var pipelineB = CreateFilterPipeline(pipelineA, CreateFilter());
 
             var result = await pipelineB.Method.InvokeAsync();
 
@@ -45,10 +46,10 @@ namespace Kingo.MicroServices
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();            
-            var pipeline = CreateFilterPipeline(handler, message, new MicroProcessorFilterSpy());
+            var pipeline = CreateFilterPipeline(handler, message, CreateFilter());
 
             Assert.AreEqual("HandleAsync(Object, MessageHandlerContext)", pipeline.Method.ToString());
-            Assert.AreEqual("MicroProcessorFilterSpy | MessageHandlerSpy<Object>", pipeline.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpyAttribute | MessageHandlerSpy<Object>", pipeline.ToString());
         }
 
         [TestMethod]
@@ -56,11 +57,11 @@ namespace Kingo.MicroServices
         {
             var message = new object();
             var handler = new MessageHandlerSpy<object>();                      
-            var pipelineA = CreateFilterPipeline(handler, message, new MicroProcessorFilterSpy());
-            var pipelineB = CreateFilterPipeline(pipelineA, new MicroProcessorFilterSpy());
+            var pipelineA = CreateFilterPipeline(handler, message, CreateFilter());
+            var pipelineB = CreateFilterPipeline(pipelineA, CreateFilter());
 
             Assert.AreEqual("HandleAsync(Object, MessageHandlerContext)", pipelineB.Method.ToString());
-            Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | MessageHandlerSpy<Object>", pipelineB.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpyAttribute | MicroProcessorFilterSpy | MessageHandlerSpy<Object>", pipelineB.ToString());
         }
 
         private static MessageHandlerFilterPipeline CreateFilterPipeline<TMessage>(IMessageHandler<TMessage> handler, TMessage message, IMicroProcessorFilter filter) =>
@@ -71,5 +72,8 @@ namespace Kingo.MicroServices
 
         private static MessageHandlerContext CreateMessageHandlerContext(object message) =>
             new MessageHandlerContext(new NullServiceProvider(), Thread.CurrentPrincipal, null, message);
+
+        private static IMicroProcessorFilter CreateFilter() =>
+            new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage);
     }
 }

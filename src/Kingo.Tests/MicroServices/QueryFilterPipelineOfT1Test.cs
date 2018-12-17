@@ -12,7 +12,7 @@ namespace Kingo.MicroServices
         public async Task ExecuteAsync_InvokesEmbeddedPipelineAndQuery_IfOnlyOnePipelineIsUsed()
         {            
             var query = new QuerySpy<object>();
-            var pipeline = CreateFilterPipeline(query, new MicroProcessorFilterSpy());
+            var pipeline = CreateFilterPipeline(query, CreateFilter());
 
             var result = await pipeline.Method.InvokeAsync();
 
@@ -26,8 +26,8 @@ namespace Kingo.MicroServices
         public async Task ExecuteAsync_InvokesEmbeddedPipelinesAndQuery_IfManyPipelinesAreUsed()
         {
             var query = new QuerySpy<object>();
-            var pipelineA = CreateFilterPipeline(query, new MicroProcessorFilterSpy());
-            var pipelineB = CreateFilterPipeline(pipelineA, new MicroProcessorFilterSpy());
+            var pipelineA = CreateFilterPipeline(query, CreateFilter());
+            var pipelineB = CreateFilterPipeline(pipelineA, CreateFilter());
 
             var result = await pipelineB.Method.InvokeAsync();
 
@@ -41,21 +41,21 @@ namespace Kingo.MicroServices
         public void ToString_ReturnsExpectedValue_IfOnlyOnePipelineIsUsed()
         {
             var query = new QuerySpy<object>();
-            var pipeline = CreateFilterPipeline(query, new MicroProcessorFilterSpy());
+            var pipeline = CreateFilterPipeline(query, CreateFilter());
 
             Assert.AreEqual("ExecuteAsync(QueryContext)", pipeline.Method.ToString());
-            Assert.AreEqual("MicroProcessorFilterSpy | QuerySpy<Object>", pipeline.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpyAttribute | QuerySpy<Object>", pipeline.ToString());
         }
 
         [TestMethod]
         public void ToString_ReturnsExpectedValue_IfManyPipelinesAreUsed()
         {
             var query = new QuerySpy<object>();
-            var pipelineA = CreateFilterPipeline(query, new MicroProcessorFilterSpy());
-            var pipelineB = CreateFilterPipeline(pipelineA, new MicroProcessorFilterSpy());
+            var pipelineA = CreateFilterPipeline(query, CreateFilter());
+            var pipelineB = CreateFilterPipeline(pipelineA, CreateFilter());
 
             Assert.AreEqual("ExecuteAsync(QueryContext)", pipelineB.Method.ToString());
-            Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | QuerySpy<Object>", pipelineB.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpyAttribute | MicroProcessorFilterSpy | QuerySpy<Object>", pipelineB.ToString());
         }        
 
         private static QueryFilterPipeline<TMessageOut> CreateFilterPipeline<TMessageOut>(IQuery<TMessageOut> query, IMicroProcessorFilter filter) =>
@@ -66,5 +66,8 @@ namespace Kingo.MicroServices
 
         private static QueryContext CreateQueryContext() =>
             new QueryContext(new NullServiceProvider(), Thread.CurrentPrincipal, null);
+
+        private static IMicroProcessorFilter CreateFilter() =>
+            new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage);
     }
 }

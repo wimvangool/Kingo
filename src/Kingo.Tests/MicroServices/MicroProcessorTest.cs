@@ -49,14 +49,12 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly MessageHandlerFactoryBuilder _messageHandlers;
-        private readonly MicroProcessorPipelineFactoryBuilder _pipeline;
+        private readonly MessageHandlerFactoryBuilder _messageHandlers;        
         private readonly MicroServiceBusStub _serviceBus;
 
         public MicroProcessorTest()
         {
-            _messageHandlers = new SimpleMessageHandlerFactoryBuilder();
-            _pipeline = new MicroProcessorPipelineFactoryBuilder();
+            _messageHandlers = new SimpleMessageHandlerFactoryBuilder();            
             _serviceBus = new MicroServiceBusStub();
         }
 
@@ -489,7 +487,7 @@ namespace Kingo.MicroServices
             }));
         }
 
-        #endregion
+        #endregion        
 
         #region [====== ExecuteAsync1 ======]
 
@@ -648,6 +646,6 @@ namespace Kingo.MicroServices
         #endregion
 
         private MicroProcessor CreateProcessor() =>
-            new MicroProcessor(_messageHandlers.Build(), _pipeline.Build(), _serviceBus);
+            new MicroProcessor(_messageHandlers.Build(), null, _serviceBus);
     }
 }
