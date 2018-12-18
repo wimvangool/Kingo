@@ -52,6 +52,26 @@ namespace Kingo.MicroServices
 
         #endregion
 
+        #region [====== Principal ======]
+
+        [TestMethod]
+        public void Principal_AlwaysReferencesProcessorPrincipal_AsScopesAreCreatedAndDisposed()
+        {
+            using (CreateQueryContextScope())
+            {
+                Assert.AreSame(Thread.CurrentPrincipal, QueryContext.Current.Principal);
+
+                using (CreateQueryContextScope())
+                {
+                    Assert.AreSame(Thread.CurrentPrincipal, QueryContext.Current.Principal);
+                }
+
+                Assert.AreSame(Thread.CurrentPrincipal, QueryContext.Current.Principal);
+            }
+        }
+
+        #endregion
+
         #region [====== Token ======]
 
         [TestMethod]

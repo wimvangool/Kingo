@@ -71,6 +71,16 @@ namespace Kingo.MicroServices
                 }
                 throw exception.AsInternalServerErrorException(exception.Message);
             }
+            catch (BadRequestException exception)
+            {
+                // If a BadRequestException if thrown explicitly by user code or in the pipeline,
+                // then convert it to an internal server error if the root message is an event.
+                if (_isRootMethod && !_processor.IsCommand(_message))
+                {
+                    throw InternalServerErrorException.FromInnerException(exception);
+                }
+                throw;
+            }
             catch (MicroProcessorException)
             {
                 throw;

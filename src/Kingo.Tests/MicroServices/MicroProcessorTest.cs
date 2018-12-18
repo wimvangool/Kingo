@@ -159,6 +159,17 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
+        public async Task HandleAsync_ThrowsInternalServerErrorException_IfInputMessageHandlerThrowsBadRequestException_And_InputMessageIsCommand()
+        {
+            var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                throw new BadRequestException();
+            }));
+
+            Assert.IsInstanceOfType(exception.InnerException, typeof(BadRequestException));
+        }
+
+        [TestMethod]
         public async Task HandleAsync_ThrowsInternalServerErrorException_IfInputMessageHandlerThrowsMessageHandlerException_And_InputMessageIsEvent()
         {            
             var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().HandleAsync(new object(), (message, context) =>

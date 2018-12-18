@@ -52,6 +52,26 @@ namespace Kingo.MicroServices
 
         #endregion
 
+        #region [====== Principal ======]
+
+        [TestMethod]
+        public void Principal_AlwaysReferencesProcessorPrincipal_AsScopesAreCreatedAndDisposed()
+        {            
+            using (CreateMessageHandlerContextScope())
+            {                
+                Assert.AreSame(Thread.CurrentPrincipal, MessageHandlerContext.Current.Principal);
+
+                using (CreateMessageHandlerContextScope(MessageHandlerContext.Current.CreateContext(new object())))
+                {                    
+                    Assert.AreSame(Thread.CurrentPrincipal, MessageHandlerContext.Current.Principal);
+                }
+
+                Assert.AreSame(Thread.CurrentPrincipal, MessageHandlerContext.Current.Principal);
+            }            
+        }
+
+        #endregion
+
         #region [====== Token ======]
 
         [TestMethod]
@@ -85,7 +105,7 @@ namespace Kingo.MicroServices
 
             using (CreateMessageHandlerContextScope(null, message))
             {
-                Assert.AreEqual("[InputMessage] Object", MessageHandlerContext.Current.ToString());
+                Assert.AreEqual("[InputMessageHandler] Object", MessageHandlerContext.Current.ToString());
 
                 var operation = MessageHandlerContext.Current.Operation;
                 
@@ -107,7 +127,7 @@ namespace Kingo.MicroServices
             using (CreateMessageHandlerContextScope(null, messageA))
             using (CreateMessageHandlerContextScope(MessageHandlerContext.Current.CreateContext(messageB)))
             {
-                Assert.AreEqual("[InputMessage] Object -> [OutputMessage] Int32", MessageHandlerContext.Current.ToString());
+                Assert.AreEqual("[InputMessageHandler] Object -> [OutputMessageHandler] Int32", MessageHandlerContext.Current.ToString());
 
                 var operationB = MessageHandlerContext.Current.Operation;
 

@@ -48,7 +48,7 @@ namespace Kingo.MicroServices
             var connector = CreateFilterPipeline(query, message, CreateFilter());
 
             Assert.AreEqual("ExecuteAsync(Object, QueryContext)", connector.Method.ToString());
-            Assert.AreEqual("MicroProcessorFilterSpy | QuerySpy<Object, Object>", connector.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpyAttribute | QuerySpy<Object, Object>", connector.ToString());
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace Kingo.MicroServices
             var connectorB = CreateFilterPipeline(connectorA, CreateFilter());
 
             Assert.AreEqual("ExecuteAsync(Object, QueryContext)", connectorB.Method.ToString());
-            Assert.AreEqual("MicroProcessorFilterSpy | MicroProcessorFilterSpy | QuerySpy<Object, Object>", connectorB.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpyAttribute | MicroProcessorFilterSpyAttribute | QuerySpy<Object, Object>", connectorB.ToString());
         }        
 
         private static QueryFilterPipeline<TMessageOut> CreateFilterPipeline<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message, IMicroProcessorFilter filter) =>

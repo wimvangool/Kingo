@@ -25,15 +25,23 @@ namespace Kingo.MicroServices.Authorization
         /// <summary>
         /// A collection of roles the current principal must have in order to process a message.
         /// </summary>
-        public IEnumerable<string> ClaimTypes
+        public IReadOnlyList<string> ClaimTypes
         {
             get;
         }        
 
         /// <inheritdoc />
-        protected override Task<InvokeAsyncResult<TResult>> InvokeAsync<TResult>(IMessageHandlerOrQuery<TResult> handlerOrQuery)
+        protected override async Task<InvokeAsyncResult<TResult>> InvokeAsync<TResult>(IMessageHandlerOrQuery<TResult> handlerOrQuery)
         {
+            if (ClaimTypes.Count == 0)
+            {
+                return await base.InvokeAsync(handlerOrQuery);
+            }
             var principal = handlerOrQuery.Context.Principal;
+            if (principal == null)
+            {
+                throw NewPrincipalNotSetException(handlerOrQuery);
+            }
             if (principal.Identity.IsAuthenticated)
             {
                 foreach (var requiredClaimType in ClaimTypes)
@@ -44,9 +52,9 @@ namespace Kingo.MicroServices.Authorization
                     }
                     throw ClaimsProvider.NewClaimNotFoundException(handlerOrQuery.Context.Principal.Identity, requiredClaimType);
                 }
-                return base.InvokeAsync(handlerOrQuery);
+                return await base.InvokeAsync(handlerOrQuery);
             }
-            throw NewIdentityNotAuthenticatedException(principal.Identity);
-        }                    
+            throw NewIdentityNotAuthenticatedException(handlerOrQuery, principal.Identity);
+        }        
     }
 }

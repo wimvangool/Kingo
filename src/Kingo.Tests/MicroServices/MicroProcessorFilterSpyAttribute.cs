@@ -23,7 +23,11 @@ namespace Kingo.MicroServices
 
         public override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query)
         {
-            await MicroServiceBusStub.Current.PublishAsync(Id);
+            var serviceBus = MicroServiceBusStub.Current;
+            if (serviceBus != null)
+            {
+                await serviceBus.PublishAsync(Id);
+            }            
             return await query.Method.InvokeAsync();
         }
     }

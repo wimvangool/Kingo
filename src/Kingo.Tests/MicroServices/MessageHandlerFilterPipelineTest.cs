@@ -18,7 +18,7 @@ namespace Kingo.MicroServices
             var result = await pipeline.Method.InvokeAsync();
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.GetValue().Count);            
+            Assert.AreEqual(1, result.GetValue().Count);            
 
             handler.AssertHandleCountIs(1);
             handler.AssertMessageReceived(0, message);
@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
             var result = await pipelineB.Method.InvokeAsync();
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.GetValue().Count);            
+            Assert.AreEqual(2, result.GetValue().Count);            
 
             handler.AssertHandleCountIs(1);
             handler.AssertMessageReceived(0, message);
@@ -61,7 +61,7 @@ namespace Kingo.MicroServices
             var pipelineB = CreateFilterPipeline(pipelineA, CreateFilter());
 
             Assert.AreEqual("HandleAsync(Object, MessageHandlerContext)", pipelineB.Method.ToString());
-            Assert.AreEqual("MicroProcessorFilterSpyAttribute | MicroProcessorFilterSpy | MessageHandlerSpy<Object>", pipelineB.ToString());
+            Assert.AreEqual("MicroProcessorFilterSpyAttribute | MicroProcessorFilterSpyAttribute | MessageHandlerSpy<Object>", pipelineB.ToString());
         }
 
         private static MessageHandlerFilterPipeline CreateFilterPipeline<TMessage>(IMessageHandler<TMessage> handler, TMessage message, IMicroProcessorFilter filter) =>

@@ -160,11 +160,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User &apos;{0}&apos; is not authenticated..
+        ///   Looks up a localized string similar to Access to &apos;{0}&apos; denied: user &apos;{1}&apos; is not authenticated..
         /// </summary>
         internal static string AuthorizationStageAttribute_IdentityNotAuthenticated {
             get {
                 return ResourceManager.GetString("AuthorizationStageAttribute_IdentityNotAuthenticated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access to &apos;{0}&apos; denied: principal not set..
+        /// </summary>
+        internal static string AuthorizationStageAttribute_PrincipalNotSet {
+            get {
+                return ResourceManager.GetString("AuthorizationStageAttribute_PrincipalNotSet", resourceCulture);
             }
         }
         
