@@ -10,62 +10,118 @@ namespace Kingo.MicroServices.Domain
     /// </summary>
     /// <typeparam name="TKey">Type of the identifier of this aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of this aggregate.</typeparam>
-    public abstract class AggregateRoot<TKey, TVersion> : IAggregateRoot<TKey>
+    public abstract class AggregateRoot<TKey, TVersion> : AggregateRoot, IAggregateRoot<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-    {        
-        private readonly TKey _id;
-        private TVersion _version;
+    {
+        #region [====== EventBuffer ======]
 
-        private List<IEvent> _events;
-        private bool _wasRemovedFromRepository;
+        private sealed class EventBuffer : ReadOnlyList<ISnapshotOrEvent>
+        {
+            private readonly IEventBus _eventBus;
+            private List<ISnapshotOrEvent<TKey, TVersion>> _events;
 
-        private AggregateRoot(IAggregateDataObject<TKey, TVersion> snapshotOrEvent)
-        {                        
-            if (snapshotOrEvent == null)
+            public EventBuffer(IEventBus eventBus)
             {
-                throw new ArgumentNullException(nameof(snapshotOrEvent));
-            }            
-            _id = snapshotOrEvent.Id;
-            _version = snapshotOrEvent.Version;    
-            _events = new List<IEvent>();
+                _eventBus = eventBus;
+                _events = new List<ISnapshotOrEvent<TKey, TVersion>>();
+            }
+
+            public IEventBus EventBus =>
+                _eventBus;
+
+            public override int Count =>
+                _events.Count;
+
+            public override IEnumerator<ISnapshotOrEvent> GetEnumerator() =>
+                _events.GetEnumerator();
+
+            public void Add(ISnapshotOrEvent<TKey, TVersion> @event)
+            {
+                _events.Add(@event);
+                _eventBus?.Publish(@event);
+            }
+
+            public IReadOnlyList<ISnapshotOrEvent<TKey, TVersion>> Commit() =>
+                Interlocked.Exchange(ref _events, new List<ISnapshotOrEvent<TKey, TVersion>>());
+        }
+
+        #endregion  
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateRoot" /> class.
+        /// </summary>
+        /// <param name="parent">The parent of this aggregate (the one that is creating this instance).</param>
+        /// <param name="event">Event that is used to initialize this aggregate.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="parent"/> or <paramref name="event"/> is <c>null</c>.
+        /// </exception>
+        protected AggregateRoot(AggregateRoot parent, ISnapshotOrEvent<TKey, TVersion> @event) :
+            this(GetEventBusFrom(parent), @event, true) { }
+
+        private static IEventBus GetEventBusFrom(AggregateRoot parent)
+        {
+            if (parent == null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            return parent.EventBus;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
-        /// </summary>        
-        /// <param name="snapshot">The event that defines the creation of this aggregate.</param>       
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="snapshot" /> is <c>null</c>.
-        /// </exception>
-        protected AggregateRoot(ISnapshot<TKey, TVersion> snapshot) :
-            this(snapshot as IAggregateDataObject<TKey, TVersion>) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateRoot{T, S}" /> class.
-        /// </summary>        
-        /// <param name="event">The event that defines the creation of this aggregate.</param>  
+        /// Initializes a new instance of the <see cref="AggregateRoot" /> class.
+        /// </summary>
+        /// <param name="eventBus">Optional event-bus to which all events will be published.</param>
+        /// <param name="snapshotOrEvent">Snapshot or event that is used to initialize this aggregate.</param>
         /// <param name="isNewAggregate">
-        /// Indicates whether or not this aggregate is a new aggregate. If <c>true</c>, the specified
-        /// <paramref name="event"/> is immediately added to the event buffer of this aggregate.
-        /// </param>     
+        /// Indicates whether or not this aggregate is a new conceptual entity (and is, as such, not being
+        /// restored). If <c>true</c>, then <paramref name="snapshotOrEvent"/> must be an event that will be
+        /// immediately added to the collection of published events of this aggregate.
+        /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="event" /> is <c>null</c>.
+        /// <paramref name="snapshotOrEvent"/> is <c>null</c>.
         /// </exception>
-        protected AggregateRoot(IEvent<TKey, TVersion> @event, bool isNewAggregate) :
-            this(@event)
+        protected AggregateRoot(IEventBus eventBus, ISnapshotOrEvent<TKey, TVersion> snapshotOrEvent, bool isNewAggregate)            
         {
+            if (snapshotOrEvent == null)
+            {
+                throw new ArgumentNullException(nameof(snapshotOrEvent));
+            }
+            Id = snapshotOrEvent.Id;
+            Version = snapshotOrEvent.Version;
+            Events = CreateEventBuffer(eventBus, snapshotOrEvent, isNewAggregate);
+        }
+
+        private static EventBuffer CreateEventBuffer(IEventBus eventBus, ISnapshotOrEvent<TKey, TVersion> snapshotOrEvent, bool isNewAggregate)
+        {            
+            var eventBuffer = new EventBuffer(eventBus);
+
             if (isNewAggregate)
             {
-                _events.Add(@event);
+                eventBuffer.Add(snapshotOrEvent);
             }
+            return eventBuffer;
+        }
+
+        internal override IEventBus EventBus =>
+            Events.EventBus;
+
+        /// <inheritdoc />
+        protected override bool HasBeenModified =>
+            Events.Count > 0;
+
+        private EventBuffer Events
+        {
+            get;
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{GetType().FriendlyName()} [Id = {Id}, Version = {Version}, Events = {_events.Count}]";        
+            $"{GetType().FriendlyName()} [Events = {Events.Count}]";
 
         #region [====== Id & Version ======]
+
+        private TVersion _version;
 
         TKey IAggregateRoot<TKey>.Id =>
             Id;
@@ -73,8 +129,13 @@ namespace Kingo.MicroServices.Domain
         /// <summary>
         /// The identifier of this aggregate.
         /// </summary>
-        protected TKey Id =>
-            _id;
+        protected TKey Id
+        {
+            get;
+        }
+
+        TVersion IAggregateRoot<TKey, TVersion>.Version =>
+            Version;
 
         /// <summary>
         /// The version of this aggregate.
@@ -110,13 +171,13 @@ namespace Kingo.MicroServices.Domain
 
         #endregion
 
-        #region [====== EventHandlers ======]  
+        #region [====== Events & EventHandlers ======]
 
         /// <summary>
         /// Represents a collection of event handler delegates that are used by an <see cref="AggregateRoot{T, S}" /> to
         /// apply specific events to itself.
         /// </summary>        
-        protected sealed class EventHandlerCollection            
+        protected sealed class EventHandlerCollection
         {
             private readonly Dictionary<Type, Action<object>> _eventHandlers;
             private readonly AggregateRoot<TKey, TVersion> _aggregate;
@@ -137,8 +198,6 @@ namespace Kingo.MicroServices.Domain
             public override string ToString() =>
                 $"{ _eventHandlers.Count } handler(s) registered.";
 
-            #region [====== Register ======]
-
             /// <summary>
             /// Adds the specified <paramref name="eventHandler"/> to this collection and returns the collection
             /// where this handler has been added.
@@ -153,7 +212,7 @@ namespace Kingo.MicroServices.Domain
             /// A handler for the specified event type <typeparamref name="TEvent"/> has already been added.
             /// </exception>
             public EventHandlerCollection Register<TEvent>(Action<TEvent> eventHandler)
-                where TEvent : IEvent<TKey, TVersion>
+                where TEvent : ISnapshotOrEvent<TKey, TVersion>
             {
                 if (eventHandler == null)
                 {
@@ -161,34 +220,23 @@ namespace Kingo.MicroServices.Domain
                 }
                 try
                 {
-                    _eventHandlers.Add(typeof(TEvent), @event => eventHandler.Invoke((TEvent)@event));
+                    _eventHandlers.Add(typeof(TEvent), @event => eventHandler.Invoke((TEvent) @event));
                 }
                 catch (ArgumentException)
                 {
                     throw NewHandlerForEventTypeAlreadyRegisteredException(typeof(TEvent));
                 }
                 return this;
-            }
+            }            
 
-            private static Exception NewHandlerForEventTypeAlreadyRegisteredException(Type type)
-            {
-                var messageFormat = ExceptionMessages.AggregateRoot_HandlerForEventTypeAlreadyAdded;
-                var message = string.Format(messageFormat, type.FriendlyName());
-                return new ArgumentException(message);
-            }
-
-            #endregion
-
-            #region [====== Apply ======]            
-
-            internal void ApplyOld(IEnumerable<IEvent> events)
+            internal void ApplyOld(IEnumerable<ISnapshotOrEvent<TKey, TVersion>> events)
             {
                 if (events == null)
                 {
                     throw new ArgumentNullException(nameof(events));
                 }
-                foreach (var @event in SelectEventsToApply(events).OrderBy(e => e.Version))
-                {                    
+                foreach (var @event in SelectEventsToApply(events))
+                {
                     if (Apply(@event))
                     {
                         _aggregate.Version = @event.Version;
@@ -198,44 +246,30 @@ namespace Kingo.MicroServices.Domain
                 }
             }
 
-            private IEnumerable<IEvent<TKey, TVersion>> SelectEventsToApply(IEnumerable<IEvent> events) =>
-                from @event in events.WhereNotNull().Select(Convert)
-                where MustApply(@event)
-                select @event;
+            private IEnumerable<ISnapshotOrEvent<TKey, TVersion>> SelectEventsToApply(IEnumerable<ISnapshotOrEvent<TKey, TVersion>> events) =>
+                from @event in events.WhereNotNull()
+                where CanApply(@event)
+                select @event;            
 
-            private static IEvent<TKey, TVersion> Convert(IEvent @event)
+            private bool CanApply(ISnapshotOrEvent<TKey, TVersion> @event) =>
+                @event.Id.Equals(_aggregate.Id) && @event.Version.CompareTo(_aggregate.Version) > 0;
+
+            internal bool Apply(ISnapshotOrEvent<TKey, TVersion> @event)
             {
-                try
-                {
-                    return (IEvent<TKey, TVersion>) @event;
-                }
-                catch (InvalidCastException)
-                {
-                    throw NewEventConversionException(@event.GetType(), typeof(IEvent<TKey, TVersion>), nameof(IEvent.UpdateToLatestVersion));
-                }
-            }
-
-            private bool MustApply(IEvent<TKey, TVersion> @event) =>
-                @event.Id.Equals(_aggregate.Id) && @event.Version.CompareTo(_aggregate.Version) > 0;                      
-
-            internal bool Apply(IEvent<TKey, TVersion> @event)
-            {                
                 if (_eventHandlers.TryGetValue(@event.GetType(), out var eventHandler))
                 {
                     eventHandler.Invoke(@event);
                     return true;
                 }
                 return false;
-            }                                    
+            }
 
-            private static Exception NewEventConversionException(Type sourceType, Type targetType, string updateToLatestVersionMethodName)
+            private static Exception NewHandlerForEventTypeAlreadyRegisteredException(Type type)
             {
-                var messageFormat = ExceptionMessages.AggregateRoot_EventConversionException;
-                var message = string.Format(messageFormat, sourceType.FriendlyName(), targetType.FriendlyName(), updateToLatestVersionMethodName);
+                var messageFormat = ExceptionMessages.AggregateRoot_HandlerForEventTypeAlreadyAdded;
+                var message = string.Format(messageFormat, type.FriendlyName());
                 return new ArgumentException(message);
-            }           
-
-            #endregion
+            }            
         }
 
         private EventHandlerCollection _eventHandlers;
@@ -250,21 +284,9 @@ namespace Kingo.MicroServices.Domain
                 }
                 return _eventHandlers;
             }
-        }
+        }        
 
-        /// <summary>
-        /// Adds all event handler delegates to the specified <paramref name="eventHandlers"/> and returns the resulting collection.
-        /// </summary>
-        /// <param name="eventHandlers">A collection of event handler delegates.</param>
-        /// <returns>A completed collection of event handlers that is used by this aggregate to apply and/or replay certain events.</returns>
-        protected virtual EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers) =>
-            eventHandlers;
-
-        #endregion
-
-        #region [====== LoadFromHistory & TakeSnapshot =====]
-
-        void IAggregateRoot.LoadFromHistory(IEnumerable<IEvent> events) =>
+        void IAggregateRoot<TKey, TVersion>.LoadFromHistory(IEnumerable<ISnapshotOrEvent<TKey, TVersion>> events) =>
             LoadFromHistory(events);
 
         /// <summary>
@@ -278,10 +300,67 @@ namespace Kingo.MicroServices.Domain
         /// <exception cref="ArgumentException">
         /// This aggregate does not recognize one of the events.
         /// </exception>
-        protected virtual void LoadFromHistory(IEnumerable<IEvent> events) =>
-            EventHandlers.ApplyOld(events);
-        
-        ISnapshot IAggregateRoot.TakeSnapshot() =>
+        protected virtual void LoadFromHistory(IEnumerable<ISnapshotOrEvent<TKey, TVersion>> events) =>
+            EventHandlers.ApplyOld(events);                  
+
+        /// <summary>
+        /// Adds all event handler delegates to the specified <paramref name="eventHandlers"/> and returns the resulting collection.
+        /// </summary>
+        /// <param name="eventHandlers">A collection of event handler delegates.</param>
+        /// <returns>A completed collection of event handlers that is used by this aggregate to apply and/or replay certain events.</returns>
+        protected virtual EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers) =>
+            eventHandlers;
+
+        /// <summary>
+        /// Publishes the event that is created by the specified <paramref name="eventFactory"/> and updates the version of this aggregate.
+        /// </summary>        
+        /// <param name="eventFactory">The event to publish.</param>        
+        /// <exception cref="BusinessRuleException">
+        /// This aggregate has already been removed from the repository and therefore does not allow any further changes.
+        /// </exception>        
+        protected void Publish(Func<TKey, TVersion, ISnapshotOrEvent<TKey, TVersion>> eventFactory)  =>
+            PublishAndApply(eventFactory.Invoke(Id, NextVersion()));
+
+        private void PublishAndApply(ISnapshotOrEvent<TKey, TVersion> @event)            
+        {
+            if (EventHandlers.Apply(@event) || EventHandlers.IsEmpty)
+            {
+                Version = Publish(@event);
+                return;
+            }
+            throw NewMissingEventHandlerException(@event.GetType());
+        }
+
+        internal TVersion Publish(ISnapshotOrEvent<TKey, TVersion> @event)           
+        {
+            if (HasBeenRemoved)
+            {
+                throw NewAggregateRemovedException(GetType(), @event.GetType());
+            }
+            Events.Add(@event);
+            OnModified();
+            return @event.Version;
+        }
+
+        private static Exception NewMissingEventHandlerException(Type eventType)
+        {
+            var messageFormat = ExceptionMessages.AggregateRoot_MissingEventHandlerException;
+            var message = string.Format(messageFormat, eventType.FriendlyName());
+            return new ArgumentException(message);
+        }
+
+        private static Exception NewAggregateRemovedException(Type aggregateType, Type eventType)
+        {
+            var messageFormat = ExceptionMessages.AggregateRoot_AggregateRemovedException;
+            var message = string.Format(messageFormat, aggregateType.FriendlyName(), eventType?.FriendlyName());
+            return new BusinessRuleException(message);
+        }
+
+        #endregion
+
+        #region [====== TakeSnapshot & Commit =====]        
+
+        ISnapshotOrEvent<TKey, TVersion> IAggregateRoot<TKey, TVersion>.TakeSnapshot() =>
             TakeSnapshot();
 
         /// <summary>
@@ -291,7 +370,7 @@ namespace Kingo.MicroServices.Domain
         /// <exception cref="NotSupportedException">
         /// This aggregate does not support snapshots.
         /// </exception>
-        protected virtual ISnapshot<TKey, TVersion> TakeSnapshot() =>
+        protected virtual ISnapshotOrEvent<TKey, TVersion> TakeSnapshot() =>
             throw NewSnapshotsNotSupportedException();
 
         private Exception NewSnapshotsNotSupportedException()
@@ -301,104 +380,16 @@ namespace Kingo.MicroServices.Domain
             return new NotSupportedException(message);
         }
 
-        #endregion
-
-        #region [====== Publish ======]  
-
-        private EventHandler<EventPublishedEventArgs> _eventPublished;
-
-        event EventHandler<EventPublishedEventArgs> IAggregateRoot.EventPublished
-        {
-            add => _eventPublished += value;
-            remove => _eventPublished -= value;
-        }               
+        IReadOnlyList<ISnapshotOrEvent<TKey, TVersion>> IAggregateRoot<TKey, TVersion>.Commit() =>
+            Commit();
 
         /// <summary>
-        /// Updates the version of this aggregate and raises the <see cref="_eventPublished"/> event.
-        /// </summary>        
-        /// <param name="event">The event that was published.</param>
-        protected virtual void OnEventPublished<TEvent>(TEvent @event) where TEvent : IEvent<TKey, TVersion>
-        {
-            Version = @event.Version;
-
-            _events.Add(@event);
-            _eventPublished.Raise(this, new EventPublishedEventArgs(@event));
-        }
-
-        IReadOnlyList<IEvent> IAggregateRoot.Events =>
-            _events;
-
-        /// <summary>
-        /// Publishes the specified <paramref name="event"/> and updates the version of this aggregate.
+        /// Commits this aggregate by flushing  and returning all events that were published
+        /// since the last commit.
         /// </summary>
-        /// <typeparam name="TEvent">Type of the published event.</typeparam>
-        /// <param name="event">The event to publish.</param>        
-        /// <exception cref="BusinessRuleException">
-        /// This aggregate has already been removed from the repository and therefore does not allow any further changes.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="event"/> is <c>null</c>.
-        /// </exception>
-        protected void Publish<TEvent>(TEvent @event) where TEvent : IEvent<TKey, TVersion>
-        {
-            if (_wasRemovedFromRepository)
-            {
-                throw NewAggregateRemovedException(GetType(), @event?.GetType());
-            }
-            if (@event == null)
-            {
-                throw new ArgumentNullException(nameof(@event));
-            }
-            @event.Id = Id;
-            @event.Version = NextVersion();
-
-            if (EventHandlers.Apply(@event) || EventHandlers.IsEmpty)
-            {
-                OnEventPublished(@event);
-                return;
-            }
-            throw NewMissingEventHandlerException(@event.GetType());                                  
-        }
-
-        IReadOnlyList<IEvent> IAggregateRoot.Commit() =>
-            Interlocked.Exchange(ref _events, new List<IEvent>());
-
-        private static Exception NewMissingEventHandlerException(Type eventType)
-        {
-            var messageFormat = ExceptionMessages.AggregateRoot_MissingEventHandlerException;
-            var message = string.Format(messageFormat, eventType.FriendlyName());
-            return new ArgumentException(message);
-        }
-
-        #endregion
-
-        #region [====== NotifyRemoved ======]
-
-        void IAggregateRoot.NotifyRemoved()
-        {
-            try
-            {
-                OnRemoved();
-            }
-            finally
-            {
-                _wasRemovedFromRepository = true;
-            }
-        }
-
-        /// <summary>
-        /// This method is called when this aggregate was removed from the repository. It can be used
-        /// to publish some last-minute events representing the removal of this aggregate and the end
-        /// of its lifetime.
-        /// </summary>
-        protected virtual void OnRemoved() { }
-
-        private static Exception NewAggregateRemovedException(Type aggregateType, Type eventType)
-        {
-            var messageFormat = ExceptionMessages.AggregateRoot_AggregateRemovedException;
-            var message = string.Format(messageFormat, aggregateType.FriendlyName(), eventType?.FriendlyName());
-            return new BusinessRuleException(message);
-        }
+        /// <returns>All events that were published since the last commit.</returns>
+        protected virtual IReadOnlyList<ISnapshotOrEvent<TKey, TVersion>> Commit() =>
+            Events.Commit();
 
         #endregion
     }

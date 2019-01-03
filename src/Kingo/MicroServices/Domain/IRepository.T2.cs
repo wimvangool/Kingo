@@ -23,6 +23,17 @@ namespace Kingo.MicroServices.Domain
         Task<TAggregate> GetByIdAsync(TKey id);
 
         /// <summary>
+        /// Retrieves the aggregate with the specified <paramref name="id"/> from the repository,
+        /// or returns <c>null</c> if the aggregate was not found.
+        /// </summary>
+        /// <param name="id">Identifier of the aggregate to retrieve.</param>
+        /// <returns>
+        /// The aggregate with the specified <paramref name="id"/> or <c>null</c> if the aggregate was
+        /// not found.
+        /// </returns>
+        Task<TAggregate> GetByIdOrNullAsync(TKey id);
+
+        /// <summary>
         /// Adds the specified <paramref name="aggregate"/> to the repository.
         /// </summary>
         /// <param name="aggregate">The aggregate to add.</param>

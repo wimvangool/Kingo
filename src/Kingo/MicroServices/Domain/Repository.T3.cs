@@ -8,30 +8,26 @@ namespace Kingo.MicroServices.Domain
     /// Serves as a base-class implementation of the <see cref="IRepository{T, S}" /> interface.
     /// </summary>
     /// <typeparam name="TKey">Type of the identifier of the aggregate.</typeparam>
+    /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of the aggregate that is managed by this repository.</typeparam>
-    public abstract class Repository<TKey, TAggregate> : IRepository<TKey, TAggregate>, IUnitOfWorkResourceManager
+    public abstract class Repository<TKey, TVersion, TAggregate> : IRepository<TKey, TAggregate>, IUnitOfWorkResourceManager
         where TKey : struct, IEquatable<TKey>
-        where TAggregate : class, IAggregateRoot<TKey>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+        where TAggregate : class, IAggregateRoot<TKey, TVersion>
     {
-        private UnitOfWork<TKey, TAggregate> _unitOfWork;        
+        private readonly UnitOfWork<TKey, TVersion, TAggregate> _unitOfWork;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Repository{T, S}" /> class.
+        /// Initializes a new instance of the <see cref="Repository{T, S, R}" /> class.
         /// </summary>
         /// <param name="serializationStrategy">Specifies the serialization strategy of this repository.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="serializationStrategy" /> does not specify a valid serialization strategy.
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="serializationStrategy" /> is <c>null</c>.
         /// </exception>
-        protected Repository(AggregateSerializationStrategy serializationStrategy)
+        protected Repository(SerializationStrategy serializationStrategy)
         {
-            _unitOfWork = new UnitOfWork<TKey, TAggregate>(this, serializationStrategy);                     
-        }
-
-        /// <summary>
-        /// Specifies the serialization strategy of this repository.
-        /// </summary>
-        public AggregateSerializationStrategy SerializationStrategy =>
-            _unitOfWork.SerializationStrategy;       
+            _unitOfWork = new UnitOfWork<TKey, TVersion, TAggregate>(this, serializationStrategy);                     
+        }              
 
         /// <inheritdoc />
         public override string ToString() =>
@@ -42,6 +38,10 @@ namespace Kingo.MicroServices.Domain
         /// <inheritdoc />
         public virtual Task<TAggregate> GetByIdAsync(TKey id) =>
             _unitOfWork.GetByIdAsync(id);
+
+        /// <inheritdoc />
+        public virtual Task<TAggregate> GetByIdOrNullAsync(TKey id) =>
+            _unitOfWork.GetByIdOrNullAsync(id);
 
         /// <inheritdoc />
         public virtual async Task<bool> AddAsync(TAggregate aggregate)
@@ -63,36 +63,11 @@ namespace Kingo.MicroServices.Domain
                 return true;
             }
             return false;
-        }            
+        }
 
         #endregion
 
-        #region [====== Read Operations ======]
-
-        /// <summary>
-        /// Loads and returns an aggregate from the data store.
-        /// </summary>
-        /// <param name="id">Identifier of the aggregate to load.</param>
-        /// <returns>The aggregate that was loaded from the data store.</returns>
-        /// <exception cref="AggregateNotFoundException">
-        /// No aggregate with the specified <paramref name="id" /> was found in the data store.
-        /// </exception>
-        protected internal async Task<TAggregate> SelectByIdAndRestoreAsync(TKey id)
-        {
-            var aggregateDataSet = await SelectByIdAsync(id);
-            if (aggregateDataSet == null)
-            {
-                return null;
-            }            
-            try
-            {
-                return aggregateDataSet.RestoreAggregate<TAggregate>();
-            }
-            catch (Exception exception)
-            {
-                throw NewAggregateRestoreException(exception);
-            }            
-        }
+        #region [====== Read Operations ======]                
 
         /// <summary>
         /// Loads and returns an aggregate's data from the data store.
@@ -103,13 +78,6 @@ namespace Kingo.MicroServices.Domain
         /// </returns>
         protected internal abstract Task<AggregateDataSet<TKey>> SelectByIdAsync(TKey id);        
 
-        private static Exception NewAggregateRestoreException(Exception exception)
-        {
-            var messageFormat = ExceptionMessages.Repository_AggregateRestoreException;
-            var message = string.Format(messageFormat, typeof(TAggregate).FriendlyName());
-            return new InternalServerErrorException(message, exception);
-        }
-
         #endregion
 
         #region [====== Write Operations ======]
@@ -118,13 +86,7 @@ namespace Kingo.MicroServices.Domain
         /// Returns the unit of work that this repository is using to enlist itself in.
         /// </summary>
         protected virtual IUnitOfWork UnitOfWork =>
-            MessageHandlerContext.Current?.UnitOfWork ?? MicroServices.UnitOfWork.None;
-
-        /// <summary>
-        /// Returns the event bus that this repository uses to publish all the aggregate's events.
-        /// </summary>
-        protected internal virtual IEventBus EventBus =>
-            MessageHandlerContext.Current?.EventBus;
+            MessageHandlerContext.Current?.UnitOfWork ?? MicroServices.UnitOfWork.None;                    
 
         /// <inheritdoc />
         public virtual object ResourceId =>
@@ -132,7 +94,7 @@ namespace Kingo.MicroServices.Domain
 
         /// <inheritdoc />
         public virtual bool RequiresFlush() =>
-            _unitOfWork.RequiresFlush();
+            _unitOfWork.RequiresFlush;
 
         /// <inheritdoc />
         public virtual Task FlushAsync() =>
@@ -147,11 +109,12 @@ namespace Kingo.MicroServices.Domain
         /// are potentially faster.
         /// </param>
         /// <returns>A task representing the operation.</returns>
-        /// <exception cref="ConcurrencyException">
-        /// A concurrency exception occurred.
+        /// <exception cref="MessageHandlerException">
+        /// The data store failed to accept the changes because a data constraint was violated or because a concurrency exception
+        /// occurred.
         /// </exception>
         protected Task FlushAsync(bool keepAggregatesInMemory) =>
-            Interlocked.Exchange(ref _unitOfWork, _unitOfWork.Commit(keepAggregatesInMemory)).FlushAsync();        
+            _unitOfWork.FlushAsync(keepAggregatesInMemory);
 
         /// <summary>
         /// Flushes all changes made in this session to the data store by inserting, updating and/or deleting several aggregates.
@@ -162,7 +125,7 @@ namespace Kingo.MicroServices.Domain
         /// The data store failed to accept the changes because a data constraint was violated or because a concurrency exception
         /// occurred.
         /// </exception>
-        protected internal abstract Task FlushAsync(IChangeSet<TKey> changeSet);                        
+        protected internal abstract Task FlushAsync(IChangeSet<TKey, TVersion> changeSet);                        
 
         #endregion
     }

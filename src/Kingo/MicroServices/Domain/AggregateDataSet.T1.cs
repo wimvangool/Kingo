@@ -6,25 +6,25 @@ namespace Kingo.MicroServices.Domain
 {
     /// <summary>
     /// Contains a snapshot and a set of events that represent the state and state-changes of an aggregate.
-    /// </summary>
-    [Serializable]
-    public sealed class AggregateDataSet<TKey> : IAggregateRootFactory where TKey : struct, IEquatable<TKey>
-    {
+    /// </summary>    
+    public class AggregateDataSet<TKey>
+        where TKey : struct, IEquatable<TKey>
+    {             
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateDataSet{TKey}" /> class.
         /// </summary>
         /// <param name="id">Unique identifier of the aggregate.</param>
         /// <param name="snapshot">Snapshot of an aggregate.</param>
         /// <param name="events">A collection of events published by an aggregate.</param>        
-        public AggregateDataSet(TKey id, ISnapshot snapshot, IEnumerable<IEvent> events = null)
-        {            
+        public AggregateDataSet(TKey id, ISnapshotOrEvent snapshot, IEnumerable<ISnapshotOrEvent> events = null)
+        {
             Id = id;
             Snapshot = snapshot;
-            Events = (events ?? Enumerable.Empty<IEvent>()).ToArray();
-        }
+            Events = (events ?? Enumerable.Empty<ISnapshotOrEvent>()).ToArray();
+        }        
 
         /// <summary>
-        /// Unique identifier of the aggregate.
+        /// Identifier of the aggregate,
         /// </summary>
         public TKey Id
         {
@@ -32,75 +32,72 @@ namespace Kingo.MicroServices.Domain
         }
 
         /// <summary>
-        /// Snapshot of an aggregate.
+        /// Snapshot of the aggregate.
         /// </summary>
-        public ISnapshot Snapshot
+        public ISnapshotOrEvent Snapshot
         {
             get;
         }
 
         /// <summary>
-        /// A collection of events published by an aggregate.
+        /// Events published by the aggregate.
         /// </summary>
-        public IReadOnlyList<IEvent> Events
+        public IReadOnlyList<ISnapshotOrEvent> Events
         {
             get;
-        }
+        }                      
 
-        /// <inheritdoc />
-        public override string ToString() =>
-            AggregateRootFactory.FromDataSet(Snapshot, Events).ToString();
-
-        #region [====== Append ======]
+        #region [====== UpdateToLatestVersion ======]
 
         /// <summary>
-        /// Appends the specified <paramref name="dataSet"/> to the current dataset.
+        /// Updates this data-set to the latest version.
         /// </summary>
-        /// <param name="dataSet">A set of changes to append to the current data set.</param>
-        /// <returns>The resulting (merged) dataset.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dataSet"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// The <see cref="Id"/> of the specified <paramref name="dataSet"/> does not match the <see cref="Id"/> of this dataset.
-        /// </exception>
-        public AggregateDataSet<TKey> Append(AggregateDataSet<TKey> dataSet)
+        /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
+        /// <returns>The data-set that contains the latest versions of the snapshot and events.</returns>
+        public AggregateDataSet<TKey, TVersion> UpdateToLatestVersion<TVersion>()
+            where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         {
-            if (dataSet == null)
-            {
-                throw new ArgumentNullException(nameof(dataSet));
-            }
-            if (dataSet.Id.Equals(Id))
-            {
-                return new AggregateDataSet<TKey>(Id, dataSet.Snapshot ?? Snapshot, Events.Concat(dataSet.Events));
-            }
-            throw NewNonMatchingIdentifiersException(dataSet);
+            var snapshot = UpdateToLatestVersion<TVersion>(Snapshot);
+            var events = Events.Select(UpdateToLatestVersion<TVersion>);
+            return new AggregateDataSet<TKey, TVersion>(Id, snapshot, events);
         }
 
-        private Exception NewNonMatchingIdentifiersException(AggregateDataSet<TKey> dataSet)
+        private static ISnapshotOrEvent<TKey, TVersion> UpdateToLatestVersion<TVersion>(ISnapshotOrEvent snapshotOrEvent)
+            where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         {
-            var messageFormat = ExceptionMessages.AggregateDataSet_NonMatchingIdentifiers;
-            var message = string.Format(messageFormat, dataSet.Id, Id);
-            return new ArgumentException(message, nameof(dataSet));
+            if (snapshotOrEvent == null)
+            {
+                return null;
+            }
+            ISnapshotOrEvent latestVersion;
+
+            do
+            {
+                latestVersion = snapshotOrEvent;
+            } while ((snapshotOrEvent = snapshotOrEvent.UpdateToNextVersion()) != null);
+            
+            return Convert<TVersion>(latestVersion);
         }
 
-        #endregion
+        private static ISnapshotOrEvent<TKey, TVersion> Convert<TVersion>(ISnapshotOrEvent snapshotOrEvent)
+            where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+        {
+            try
+            {
+                return (ISnapshotOrEvent<TKey, TVersion>) snapshotOrEvent;
+            }
+            catch (InvalidCastException)
+            {
+                throw NewUnexpectedSnapshotOrEventTypeException(snapshotOrEvent, typeof(ISnapshotOrEvent<TKey, TVersion>));
+            }
+        }
 
-        #region [====== RestoreAggregate ======]
-
-        /// <inheritdoc />
-        public TAggregate RestoreAggregate<TAggregate>() where TAggregate : IAggregateRoot =>
-            UpdateToLatestVersion().RestoreAggregateCore<TAggregate>();
-
-        private TAggregate RestoreAggregateCore<TAggregate>() where TAggregate : IAggregateRoot  =>
-            AggregateRootFactory.FromDataSet(Snapshot, Events).RestoreAggregate<TAggregate>();        
-
-        /// <summary>
-        /// Updates all data (snapshots and events) to the latest version and returns the result in the form of a new data object.
-        /// </summary>
-        /// <returns>A new data object containing the latest versions of both snapshot and events.</returns>
-        public AggregateDataSet<TKey> UpdateToLatestVersion() =>
-            new AggregateDataSet<TKey>(Id, Snapshot?.UpdateToLatestVersion(), Events.Select(@event => @event.UpdateToLatestVersion()));
+        private static Exception NewUnexpectedSnapshotOrEventTypeException(ISnapshotOrEvent snapshotOrEvent, Type interfaceType)
+        {
+            var messageFormat = ExceptionMessages.AggregateDataSet_UnexpectedSnapshotOrEventType;
+            var message = string.Format(messageFormat, snapshotOrEvent.GetType().FriendlyName(), interfaceType.FriendlyName());
+            return new InvalidOperationException(message);
+        }
 
         #endregion
     }

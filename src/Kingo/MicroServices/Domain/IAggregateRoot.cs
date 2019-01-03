@@ -7,53 +7,21 @@ namespace Kingo.MicroServices.Domain
     /// When implemented by a class, represents the root of an aggregate.
     /// </summary>
     public interface IAggregateRoot
-    {
-        #region [====== LoadFromHistory & TakeSnapshot ======]
-
+    {        
+        #region [====== Modification & Removal ======]
+        
         /// <summary>
-        /// Reloads the state of this aggregate by replaying all specified <paramref name="events" />.
+        /// Indicates whether or not this aggregate has published new events since the last commit.
         /// </summary>
-        /// <param name="events">The events to replay.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="events"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// This aggregate does not recognize one of the events.
-        /// </exception>
-        void LoadFromHistory(IEnumerable<IEvent> events);
-
-        /// <summary>
-        /// Creates and returns a snapshot of the current state of this aggregate.
-        /// </summary>
-        /// <returns>A snapshot of the current state of this aggregate.</returns>
-        ISnapshot TakeSnapshot();
-
-        #endregion
-
-        #region [====== EventPublished & Commit ======]
-
-        /// <summary>
-        /// This event is raised when a new event is published on this bus.
-        /// </summary>
-        event EventHandler<EventPublishedEventArgs> EventPublished;
-
-        /// <summary>
-        /// Returns all events that have been published by this aggregate since the last commit.
-        /// </summary>
-        IReadOnlyList<IEvent> Events
+        bool HasBeenModified
         {
             get;
         }
 
         /// <summary>
-        /// Commits all changes and returns all events that were published since the last commit.
+        /// This event is raised when a new event has been published by this aggregate.
         /// </summary>
-        /// <returns></returns>
-        IReadOnlyList<IEvent> Commit();
-
-        #endregion
-
-        #region [====== NotifyRemoved ======]
+        event EventHandler Modified;                
 
         /// <summary>
         /// Notifies the aggregate that it was removed from the repository. This method can be used

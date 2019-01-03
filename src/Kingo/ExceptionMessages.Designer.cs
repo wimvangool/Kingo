@@ -61,11 +61,29 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot append specified dataset because its Id ({0}) does not match the Id of the current dataset ({1})..
+        ///   Looks up a localized string similar to Cannot restore desired aggregate of type &apos;{0}&apos;, because the data-set does not contain any snapshot or event to restore the aggregate with..
         /// </summary>
-        internal static string AggregateDataSet_NonMatchingIdentifiers {
+        internal static string AggregateDataSet_CannotRestoreAggregate {
             get {
-                return ResourceManager.GetString("AggregateDataSet_NonMatchingIdentifiers", resourceCulture);
+                return ResourceManager.GetString("AggregateDataSet_CannotRestoreAggregate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot restore the desired aggregate of type &apos;{0}&apos;, because the snapshot or event used to restore the aggregate returned an instance of type &apos;{1}&apos;, which could not be converted to the requested type..
+        /// </summary>
+        internal static string AggregateDataSet_UnexpectedAggregateType {
+            get {
+                return ResourceManager.GetString("AggregateDataSet_UnexpectedAggregateType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not update the data-set to the latest version, because the instance of type &apos;{0}&apos; does not implement the expected interface &apos;{1}&apos;..
+        /// </summary>
+        internal static string AggregateDataSet_UnexpectedSnapshotOrEventType {
+            get {
+                return ResourceManager.GetString("AggregateDataSet_UnexpectedSnapshotOrEventType", resourceCulture);
             }
         }
         
@@ -75,15 +93,6 @@ namespace Kingo {
         internal static string AggregateRoot_AggregateRemovedException {
             get {
                 return ResourceManager.GetString("AggregateRoot_AggregateRemovedException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not convert event of type &apos;{0}&apos; to an instance of type &apos;{1}&apos;. Please review the {2}() method of this event to ensure it returns the correct event type..
-        /// </summary>
-        internal static string AggregateRoot_EventConversionException {
-            get {
-                return ResourceManager.GetString("AggregateRoot_EventConversionException", resourceCulture);
             }
         }
         
@@ -120,33 +129,6 @@ namespace Kingo {
         internal static string AggregateRoot_VersionUpdateException {
             get {
                 return ResourceManager.GetString("AggregateRoot_VersionUpdateException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot restore aggregate of type &apos;{0}&apos;: required constructor &apos;{0}({1})&apos; not found..
-        /// </summary>
-        internal static string AggregateRootFactory_ConstructorNotFound {
-            get {
-                return ResourceManager.GetString("AggregateRootFactory_ConstructorNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot restore the aggregate because the dataset does not contain a snapshot or event that can be used to initialize the aggregate..
-        /// </summary>
-        internal static string AggregateRootFactory_MissingSnapshotOrCreatedEvent {
-            get {
-                return ResourceManager.GetString("AggregateRootFactory_MissingSnapshotOrCreatedEvent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot restore aggregate of type &apos;{0}&apos;: type must be a non-abstract class..
-        /// </summary>
-        internal static string AggregateRootFactory_NotInstantiableClassType {
-            get {
-                return ResourceManager.GetString("AggregateRootFactory_NotInstantiableClassType", resourceCulture);
             }
         }
         
@@ -295,6 +277,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not update aggregate of type &apos;{0}&apos; because its version in the repository ({1}) does not match the expected version ({2}) of the aggregate to be stored..
+        /// </summary>
+        internal static string MemoryRepository_ConcurrencyConflict {
+            get {
+                return ResourceManager.GetString("MemoryRepository_ConcurrencyConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
         /// </summary>
         internal static string Message_AmbiguousAttributeMatch {
@@ -439,24 +430,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; with Id &apos;{1}&apos; could not be retrieved because it was removed from the data store in this session..
-        /// </summary>
-        internal static string Repository_AggregateRemovedInSession {
-            get {
-                return ResourceManager.GetString("Repository_AggregateRemovedInSession", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while restoring aggregate of type &apos;{0}&apos;. See inner exception for details..
-        /// </summary>
-        internal static string Repository_AggregateRestoreException {
-            get {
-                return ResourceManager.GetString("Repository_AggregateRestoreException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot add aggregate of type &apos;{0}&apos; to the repository because another aggregate with Id &apos;{1}&apos; is already present in the data store..
         /// </summary>
         internal static string Repository_DuplicateKeyException_AggregateAlreadyExists {
@@ -547,11 +520,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid serialization strategy specified ({0}): strategy must support either snapshots, events or both..
+        ///   Looks up a localized string similar to Invalid number of events per snapshot specified ({0}). Value cannot be negative..
         /// </summary>
-        internal static string UnitOfWork_InvalidSerializationStrategySpecified {
+        internal static string SerializationStrategy_InvalidEventsPerSnapshot {
             get {
-                return ResourceManager.GetString("UnitOfWork_InvalidSerializationStrategySpecified", resourceCulture);
+                return ResourceManager.GetString("SerializationStrategy_InvalidEventsPerSnapshot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; cannot be used to restore an aggregate..
+        /// </summary>
+        internal static string SnapshotOrEvent_RestoreNotSupported {
+            get {
+                return ResourceManager.GetString("SnapshotOrEvent_RestoreNotSupported", resourceCulture);
             }
         }
     }

@@ -117,23 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AggregateDataSet_NonMatchingIdentifiers" xml:space="preserve">
-    <value>Cannot append specified dataset because its Id ({0}) does not match the Id of the current dataset ({1}).</value>
+  <data name="AggregateDataSet_CannotRestoreAggregate" xml:space="preserve">
+    <value>Cannot restore desired aggregate of type '{0}', because the data-set does not contain any snapshot or event to restore the aggregate with.</value>
   </data>
-  <data name="AggregateRootFactory_ConstructorNotFound" xml:space="preserve">
-    <value>Cannot restore aggregate of type '{0}': required constructor '{0}({1})' not found.</value>
+  <data name="AggregateDataSet_UnexpectedAggregateType" xml:space="preserve">
+    <value>Cannot restore the desired aggregate of type '{0}', because the snapshot or event used to restore the aggregate returned an instance of type '{1}', which could not be converted to the requested type.</value>
   </data>
-  <data name="AggregateRootFactory_MissingSnapshotOrCreatedEvent" xml:space="preserve">
-    <value>Cannot restore the aggregate because the dataset does not contain a snapshot or event that can be used to initialize the aggregate.</value>
-  </data>
-  <data name="AggregateRootFactory_NotInstantiableClassType" xml:space="preserve">
-    <value>Cannot restore aggregate of type '{0}': type must be a non-abstract class.</value>
+  <data name="AggregateDataSet_UnexpectedSnapshotOrEventType" xml:space="preserve">
+    <value>Could not update the data-set to the latest version, because the instance of type '{0}' does not implement the expected interface '{1}'.</value>
   </data>
   <data name="AggregateRoot_AggregateRemovedException" xml:space="preserve">
     <value>Aggregate of type '{0}' cannot publish event of type '{1}' because it has been removed from its repository and its lifetime has therefore ended.</value>
-  </data>
-  <data name="AggregateRoot_EventConversionException" xml:space="preserve">
-    <value>Could not convert event of type '{0}' to an instance of type '{1}'. Please review the {2}() method of this event to ensure it returns the correct event type.</value>
   </data>
   <data name="AggregateRoot_HandlerForEventTypeAlreadyAdded" xml:space="preserve">
     <value>Another handler for event of type '{0}' has already been added to this collection.</value>
@@ -195,6 +189,9 @@
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
     <value>An error occurred while processing a message. See inner exception for details.</value>
   </data>
+  <data name="MemoryRepository_ConcurrencyConflict" xml:space="preserve">
+    <value>Could not update aggregate of type '{0}' because its version in the repository ({1}) does not match the expected version ({2}) of the aggregate to be stored.</value>
+  </data>
   <data name="MessageHandlerClass_CouldNotResolveMessageHandler" xml:space="preserve">
     <value>'{0}' could not resolve message handler of type '{1}'.</value>
   </data>
@@ -243,12 +240,6 @@
   <data name="Repository_AggregateNotFound" xml:space="preserve">
     <value>Aggregate of type '{0}' with Id '{1}' was not found in the data store.</value>
   </data>
-  <data name="Repository_AggregateRemovedInSession" xml:space="preserve">
-    <value>Aggregate of type '{0}' with Id '{1}' could not be retrieved because it was removed from the data store in this session.</value>
-  </data>
-  <data name="Repository_AggregateRestoreException" xml:space="preserve">
-    <value>An error occurred while restoring aggregate of type '{0}'. See inner exception for details.</value>
-  </data>
   <data name="Repository_DuplicateKeyException_AggregateAlreadyExists" xml:space="preserve">
     <value>Cannot add aggregate of type '{0}' to the repository because another aggregate with Id '{1}' is already present in the data store.</value>
   </data>
@@ -279,7 +270,10 @@
   <data name="Scope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
   </data>
-  <data name="UnitOfWork_InvalidSerializationStrategySpecified" xml:space="preserve">
-    <value>Invalid serialization strategy specified ({0}): strategy must support either snapshots, events or both.</value>
+  <data name="SerializationStrategy_InvalidEventsPerSnapshot" xml:space="preserve">
+    <value>Invalid number of events per snapshot specified ({0}). Value cannot be negative.</value>
+  </data>
+  <data name="SnapshotOrEvent_RestoreNotSupported" xml:space="preserve">
+    <value>'{0}' cannot be used to restore an aggregate.</value>
   </data>
 </root>
