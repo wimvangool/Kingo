@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Kingo.MicroServices.Domain
 {
-    internal sealed class AddValueCommand
+    internal sealed class CreateNumberCommand
     {
-        public AddValueCommand(Guid numberId, int value)
+        public CreateNumberCommand(Guid numberId, int value)
         {
             NumberId = numberId;
             Value = value;
@@ -22,7 +22,7 @@ namespace Kingo.MicroServices.Domain
             get;
         }
 
-        public static AddValueCommand Random() =>
-            new AddValueCommand(Guid.NewGuid(), DateTimeOffset.UtcNow.Second);
+        public static CreateNumberCommand Random() =>
+            new CreateNumberCommand(Guid.NewGuid(), DateTimeOffset.UtcNow.Second);
     }
 }

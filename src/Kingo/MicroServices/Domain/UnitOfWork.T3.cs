@@ -325,7 +325,7 @@ namespace Kingo.MicroServices.Domain
             }
 
             public override Task<TAggregate> GetByIdOrNullAsync() =>
-                null;
+                Task.FromResult<TAggregate>(null);
 
             public override Task<bool> AddAsync(TAggregate aggregate) =>
                 throw NewDuplicateKeyException(AggregateId);

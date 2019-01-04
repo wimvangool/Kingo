@@ -421,7 +421,7 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; with Id &apos;{1}&apos; was not found in the data store..
+        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; with Id &apos;{1}&apos; was not found..
         /// </summary>
         internal static string Repository_AggregateNotFound {
             get {

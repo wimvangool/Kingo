@@ -238,7 +238,7 @@
     <value>There is no element at index '{0}' (Count = {1}).</value>
   </data>
   <data name="Repository_AggregateNotFound" xml:space="preserve">
-    <value>Aggregate of type '{0}' with Id '{1}' was not found in the data store.</value>
+    <value>Aggregate of type '{0}' with Id '{1}' was not found.</value>
   </data>
   <data name="Repository_DuplicateKeyException_AggregateAlreadyExists" xml:space="preserve">
     <value>Cannot add aggregate of type '{0}' to the repository because another aggregate with Id '{1}' is already present in the data store.</value>

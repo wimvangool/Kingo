@@ -28,6 +28,13 @@ namespace Kingo.MicroServices.Domain
             set;
         }
 
-        public abstract void Add(int value);             
+        public abstract void Add(int value);
+
+        protected override void OnRemoved()
+        {
+            base.OnRemoved();
+
+            Publish((id, version) => new NumberDeletedEvent(id, version));
+        }
     }
 }
