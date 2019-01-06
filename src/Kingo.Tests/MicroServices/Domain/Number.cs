@@ -11,12 +11,13 @@ namespace Kingo.MicroServices.Domain
             : base(eventBus, snapshot, false)
         {
             Value = snapshot.Value;
+            HasBeenRemoved = snapshot.HasBeenRemoved;            
         }
 
         protected Number(IEventBus eventBus, NumberCreatedEvent @event, bool isNewAggregate)
             : base(eventBus, @event, isNewAggregate)
         {
-            Value = @event.Value;
+            Value = @event.Value;            
         }
 
         protected override int NextVersion() =>
@@ -28,13 +29,18 @@ namespace Kingo.MicroServices.Domain
             set;
         }
 
+        public bool EnableSoftDelete
+        {
+            get;
+            set;
+        }
+
         public abstract void Add(int value);
 
-        protected override void OnRemoved()
-        {
-            base.OnRemoved();
-
+        protected override bool OnRemoved()
+        {            
             Publish((id, version) => new NumberDeletedEvent(id, version));
+            return !EnableSoftDelete;
         }
     }
 }

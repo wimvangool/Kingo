@@ -52,7 +52,18 @@ namespace Kingo.MicroServices.Domain
                 return true;
             }
             return false;
-        }            
+        }
+
+        /// <inheritdoc />
+        public virtual async Task<bool> RemoveAsync(TAggregate aggregate)
+        {
+            if (await _unitOfWork.RemoveAsync(aggregate))
+            {
+                await UnitOfWork.EnlistAsync(this);
+                return true;
+            }
+            return false;
+        }
 
         /// <inheritdoc />
         public virtual async Task<bool> RemoveByIdAsync(TKey id)

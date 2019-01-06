@@ -44,6 +44,8 @@ namespace Kingo.MicroServices.Domain
 
             public abstract Task<bool> AddAsync(TAggregate aggregate);
 
+            public abstract Task<bool> RemoveAsync(TAggregate aggregate);
+
             public abstract Task<bool> RemoveByIdAsync();
 
             public abstract AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory);
@@ -81,6 +83,10 @@ namespace Kingo.MicroServices.Domain
                     return null;
                 }
                 var aggregate = RestoreAggregate(dataSet);
+                if (aggregate.HasBeenRemoved)
+                {
+                    return null;
+                }
                 MoveToState(new UnmodifiedState(UnitOfWork, aggregate, dataSet.Events.Count));
                 return aggregate;
             }
@@ -94,7 +100,10 @@ namespace Kingo.MicroServices.Domain
                 }
                 MoveToState(new AddedState(UnitOfWork, aggregate));
                 return true;
-            }            
+            }
+
+            public override Task<bool> RemoveAsync(TAggregate aggregate) =>
+                Task.FromResult(false);
 
             public override async Task<bool> RemoveByIdAsync()
             {                
@@ -140,7 +149,16 @@ namespace Kingo.MicroServices.Domain
             public override void Exit() =>
                 Aggregate.Modified -= HandleAggregateModified;
 
-            protected virtual void HandleAggregateModified(object sender, EventArgs e) { }                            
+            protected virtual void HandleAggregateModified(object sender, EventArgs e) { }
+
+            public override async Task<bool> RemoveAsync(TAggregate aggregate)
+            {
+                if (ReferenceEquals(Aggregate, aggregate))
+                {
+                    return await RemoveByIdAsync();
+                }
+                return false;
+            }
         }
 
         #endregion
@@ -175,7 +193,7 @@ namespace Kingo.MicroServices.Domain
                     return false;
                 }
                 throw NewDuplicateKeyException(aggregate.Id);
-            });                            
+            });            
 
             public override Task<bool> RemoveByIdAsync() => AsyncMethod.Run(() =>
             {                
@@ -309,18 +327,33 @@ namespace Kingo.MicroServices.Domain
         private abstract class RemovedState : NonNullState
         {            
             protected RemovedState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate) :
-                base(unitOfWork, aggregate) { }           
+                base(unitOfWork, aggregate) { }
+
+            protected bool SoftDeleteAggregate =>
+                !HardDeleteAggregate;
+            
+            private bool HardDeleteAggregate
+            {
+                get;
+                set;
+            }
 
             public override void Enter()
             {
-                base.Enter();                
-                Aggregate.NotifyRemoved();
-                UnitOfWork._deleteCount++;
+                base.Enter();            
+                
+                if (HardDeleteAggregate = Aggregate.NotifyRemoved())
+                {
+                    UnitOfWork._deleteCount++;
+                }                
             }
 
             public override void Exit()
             {
-                UnitOfWork._deleteCount--;
+                if (HardDeleteAggregate)
+                {
+                    UnitOfWork._deleteCount--;
+                }
                 base.Exit();
             }
 
@@ -335,7 +368,10 @@ namespace Kingo.MicroServices.Domain
 
             public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
             {
-                changeSet.AddAggregateToDelete(Aggregate.Id);
+                if (HardDeleteAggregate)
+                {
+                    changeSet.AddAggregateToDelete(Aggregate.Id);
+                }                
                 return new NullState(UnitOfWork, Aggregate.Id);
             }
         }        
@@ -348,32 +384,40 @@ namespace Kingo.MicroServices.Domain
             public override void Enter()
             {
                 base.Enter();
-                UnitOfWork._insertCount++;
+
+                if (SoftDeleteAggregate)
+                {
+                    UnitOfWork._insertCount++;
+                }
             }
 
             public override void Exit()
             {
-                UnitOfWork._insertCount--;
+                if (SoftDeleteAggregate)
+                {
+                    UnitOfWork._insertCount--;
+                }
                 base.Exit();
             }
 
             public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
             {
-                changeSet.AddAggregateToInsert(Aggregate);
+                if (SoftDeleteAggregate)
+                {
+                    changeSet.AddAggregateToInsert(Aggregate);
+                }
                 return base.Commit(changeSet, keepAggregatesInMemory);
             }
         }
 
         private sealed class RemovedAfterUpdateState : RemovedState
-        {
-            private readonly bool _aggregateHasBeenModified;
+        {            
             private readonly TVersion _oldVersion;
             private readonly int _eventsSinceLastSnapshot;            
 
             public RemovedAfterUpdateState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate, TVersion oldVersion, int eventsSinceLastSnapshot) :
                 base(unitOfWork, aggregate)
-            {
-                _aggregateHasBeenModified = aggregate.HasBeenModified;
+            {                
                 _oldVersion = oldVersion;
                 _eventsSinceLastSnapshot = eventsSinceLastSnapshot;
             }
@@ -382,7 +426,7 @@ namespace Kingo.MicroServices.Domain
             {
                 base.Enter();
 
-                if (_aggregateHasBeenModified)
+                if (SoftDeleteAggregate)
                 {
                     UnitOfWork._updateCount++;
                 }
@@ -390,7 +434,7 @@ namespace Kingo.MicroServices.Domain
 
             public override void Exit()
             {
-                if (_aggregateHasBeenModified)
+                if (SoftDeleteAggregate)
                 {
                     UnitOfWork._updateCount--;
                 }
@@ -399,7 +443,7 @@ namespace Kingo.MicroServices.Domain
 
             public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
             {
-                if (_aggregateHasBeenModified)
+                if (SoftDeleteAggregate)
                 {
                     changeSet.AddAggregateToUpdate(Aggregate, _oldVersion, _eventsSinceLastSnapshot);
                 }                
@@ -474,6 +518,15 @@ namespace Kingo.MicroServices.Domain
 
         public Task<bool> AddAsync(TAggregate aggregate) =>
             GetAggregateState(aggregate).AddAsync(aggregate);
+
+        public async Task<bool> RemoveAsync(TAggregate aggregate)
+        {
+            if (aggregate == null)
+            {
+                return false;
+            }
+            return await GetAggregateState(aggregate.Id).RemoveAsync(aggregate);
+        }
 
         public Task<bool> RemoveByIdAsync(TKey id) =>
             GetAggregateState(id).RemoveByIdAsync();

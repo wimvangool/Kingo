@@ -16,7 +16,7 @@ namespace Kingo.MicroServices.Domain
             get;
         }
 
-        #region [====== Modification & Removal ======]
+        #region [====== Modification ======]
 
         bool IAggregateRoot.HasBeenModified =>
             HasBeenModified;
@@ -41,23 +41,31 @@ namespace Kingo.MicroServices.Domain
         /// This method is called when a new event has been published by this aggregate.
         /// </summary>        
         protected virtual void OnModified() =>
-            _modified.Raise(this);                       
-        
+            _modified.Raise(this);
+
+        #endregion
+
+        #region [====== Removal ======]
+
+        bool IAggregateRoot.HasBeenRemoved =>
+            HasBeenRemoved;
+
         /// <summary>
-        /// Indicates whether or not this aggregate has been removed from its repository and is therefore
-        /// scheduled to be deleted.
+        /// Indicates whether or not this aggregate has been removed from its repository,
+        /// either in the current session or because it was soft-deleted in a previous
+        /// session.
         /// </summary>
         protected bool HasBeenRemoved
         {
             get;
-            private set;
+            set;
         }
 
-        void IAggregateRoot.NotifyRemoved()
+        bool IAggregateRoot.NotifyRemoved()
         {
             try
             {
-                OnRemoved();
+                return OnRemoved();
             }
             finally
             {
@@ -70,7 +78,12 @@ namespace Kingo.MicroServices.Domain
         /// to publish some last-minute events representing the removal of this aggregate and the end
         /// of its lifetime.
         /// </summary>
-        protected virtual void OnRemoved() { }       
+        /// <returns>
+        /// <c>true</c> if this aggregate is to be hard-deleted from the data-store;
+        /// <c>false</c> if this aggregate is to be soft-deleted from the data-store.
+        /// </returns>
+        protected virtual bool OnRemoved() =>
+            true;
 
         #endregion
     }

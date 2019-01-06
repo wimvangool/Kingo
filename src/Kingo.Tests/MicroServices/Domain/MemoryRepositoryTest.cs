@@ -19,12 +19,16 @@ namespace Kingo.MicroServices.Domain
             _processor = new MicroProcessor(null, null, _serviceBus);
         }
 
+        #region [====== Constructor ======]
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Throws_IfSerializationStrategyIsNull()
         {
             new MemoryRepository<Guid, int, Number>(null);
         }
+
+        #endregion
 
         #region [====== GetByIdOrNullAsync ======]
 
@@ -179,6 +183,35 @@ namespace Kingo.MicroServices.Domain
                 AssertNotFoundException(exception, command.NumberId);
                 throw;
             }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(BadRequestException))]
+        public async Task GetByIdAsync_Throws_IfAggregateHasBeenSoftDeleted()
+        {
+            var command = DeleteNumberCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await repository.GetByIdAsync(command.NumberId);
+                number.EnableSoftDelete = true;
+
+                Assert.IsTrue(await repository.RemoveAsync(number));
+            });
+
+            try
+            {
+                await _processor.HandleAsync(command, async (message, context) =>
+                {
+                    await repository.GetByIdAsync(message.NumberId);
+                });
+            }
+            catch (BadRequestException exception)
+            {
+                AssertNotFoundException(exception, command.NumberId);
+                throw;
+            }            
         }
 
         private static void AssertNotFoundException(Exception exception, object aggregateId)
@@ -422,6 +455,131 @@ namespace Kingo.MicroServices.Domain
             Assert.IsNotNull(duplicateKeyException);
             Assert.AreEqual(aggregateId, duplicateKeyException.AggregateId);
             Assert.AreEqual($"Cannot add aggregate of type 'Number' to the repository because another aggregate with Id '{aggregateId}' is already present in the data store.", duplicateKeyException.Message);
+        }
+
+        #endregion
+
+        #region [====== RemoveAsync ======]
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsFalse_IfAggregateIsNull()
+        {
+            var command = DeleteNumberCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                Assert.IsFalse(await repository.RemoveAsync(null));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsFalse_IfInNullState_And_AggregateIsNotFound()
+        {
+            var command = DeleteNumberCommand.Random();
+            var repository = await CreateRepositoryAsync();
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId, 0, context.EventBus)));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsFalse_IfInNullState_And_AggregateIsFound()
+        {
+            var command = DeleteNumberCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId, 0, context.EventBus)));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsFalse_IfInUnmodifiedState_And_AggregateIsNotTheRetrievedInstance()
+        {
+            var command = DeleteNumberCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                Assert.IsNotNull(await repository.GetByIdAsync(message.NumberId));
+                Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId, 0, context.EventBus)));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsTrue_IfInUnmodifiedState_And_AggregateIsTheRetrievedInstance()
+        {
+            var command = DeleteNumberCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await repository.GetByIdAsync(message.NumberId);
+
+                Assert.IsTrue(await repository.RemoveAsync(number));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsFalse_IfInModifiedState_And_AggregateIsNotTheRetrievedInstance()
+        {
+            var command = AddValueCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await repository.GetByIdAsync(message.NumberId);
+                number.Add(message.Value);
+                Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId, 0, context.EventBus)));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsTrue_IfInModifiedState_And_AggregateIsTheRetrievedInstance()
+        {
+            var command = AddValueCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await repository.GetByIdAsync(message.NumberId);
+                number.Add(message.Value);
+                Assert.IsTrue(await repository.RemoveAsync(number));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsFalse_IfInRemovedState_And_AggregateIsNotTheRetrievedInstance()
+        {
+            var command = AddValueCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await repository.GetByIdAsync(message.NumberId);
+                
+                Assert.IsTrue(await repository.RemoveAsync(number));
+                Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId, 0, context.EventBus)));
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_ReturnsFalse_IfInRemovedState_And_AggregateIsTheRetrievedInstance()
+        {
+            var command = AddValueCommand.Random();
+            var repository = await CreateRepositoryAsync(command.NumberId);
+
+            await _processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await repository.GetByIdAsync(message.NumberId);
+
+                Assert.IsTrue(await repository.RemoveAsync(number));
+                Assert.IsFalse(await repository.RemoveAsync(number));
+            });
         }
 
         #endregion

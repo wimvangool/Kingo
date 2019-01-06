@@ -50,6 +50,16 @@ namespace Kingo.MicroServices.Domain
         Task<bool> AddAsync(TAggregate aggregate);
 
         /// <summary>
+        /// Removes the specified <paramref name="aggregate" />, if it exists in the data store.
+        /// </summary>
+        /// <param name="aggregate">The aggregate to remove.</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="aggregate"/> is not <c>null</c> and exists in the data-store;
+        /// otherwise <c>false</c>.
+        /// </returns>
+        Task<bool> RemoveAsync(TAggregate aggregate);
+
+        /// <summary>
         /// Removes the aggregate with the specified <paramref name="id"/> from the repository.
         /// </summary>
         /// <param name="id">Identifier of the aggregate to remove.</param>
