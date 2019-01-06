@@ -117,20 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AggregateDataSet_CannotRestoreAggregate" xml:space="preserve">
-    <value>Cannot restore desired aggregate of type '{0}', because the data-set does not contain any snapshot or event to restore the aggregate with.</value>
-  </data>
-  <data name="AggregateDataSet_UnexpectedAggregateType" xml:space="preserve">
-    <value>Cannot restore the desired aggregate of type '{0}', because the snapshot or event used to restore the aggregate returned an instance of type '{1}', which could not be converted to the requested type.</value>
-  </data>
-  <data name="AggregateDataSet_UnexpectedSnapshotOrEventType" xml:space="preserve">
-    <value>Could not update the data-set to the latest version, because the instance of type '{0}' does not implement the expected interface '{1}'.</value>
-  </data>
   <data name="AggregateRoot_AggregateRemovedException" xml:space="preserve">
     <value>Aggregate of type '{0}' cannot publish event of type '{1}' because it has been removed from its repository and its lifetime has therefore ended.</value>
   </data>
   <data name="AggregateRoot_HandlerForEventTypeAlreadyAdded" xml:space="preserve">
     <value>Another handler for event of type '{0}' has already been added to this collection.</value>
+  </data>
+  <data name="AggregateRoot_InvalidEventId" xml:space="preserve">
+    <value>Cannot apply event of type '{0}' because it's Id ({1}) does not match the aggregate's Id ({2}).</value>
   </data>
   <data name="AggregateRoot_MissingEventHandlerException" xml:space="preserve">
     <value>Missing event handler for event of type '{0}'.</value>
@@ -270,8 +264,17 @@
   <data name="Scope_ScopeAlreadyCompleted" xml:space="preserve">
     <value>The scope has already completed.</value>
   </data>
+  <data name="SerializationStrategy_CouldNotRestoreAggregate" xml:space="preserve">
+    <value>Could not restore aggregate of type '{0}' from the retrieved data-set. See inner exception for details.</value>
+  </data>
   <data name="SerializationStrategy_InvalidEventsPerSnapshot" xml:space="preserve">
     <value>Invalid number of events per snapshot specified ({0}). Value cannot be negative.</value>
+  </data>
+  <data name="SerializationStrategy_MissingSnapshot" xml:space="preserve">
+    <value>DataSet is missing the expected snapshot.</value>
+  </data>
+  <data name="SerializationStrategy_MissingSnapshotOrEvent" xml:space="preserve">
+    <value>DataSet is missing the expected snapshot or event to restore the aggregate. </value>
   </data>
   <data name="SnapshotOrEvent_RestoreNotSupported" xml:space="preserve">
     <value>'{0}' cannot be used to restore an aggregate.</value>

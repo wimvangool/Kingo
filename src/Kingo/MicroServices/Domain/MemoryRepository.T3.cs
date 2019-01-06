@@ -20,34 +20,34 @@ namespace Kingo.MicroServices.Domain
     {
         #region [====== DataSet ======]
 
-        private sealed class AggregateDataSet
+        private sealed class VersionedDataSet
         {
             private readonly ISnapshotOrEvent<TKey, TVersion> _snapshot;
             private readonly ISnapshotOrEvent<TKey, TVersion>[] _events;
             private readonly TVersion _version;
 
-            public AggregateDataSet(AggregateDataSet<TKey, TVersion> dataSet)
+            public VersionedDataSet(AggregateDataSet<TKey, TVersion> dataSet)
             {
                 _snapshot = dataSet.Snapshot;
                 _events = dataSet.Events.ToArray();
                 _version = dataSet.NewVersion;
             }            
 
-            private AggregateDataSet(ISnapshotOrEvent<TKey, TVersion> snapshot, IEnumerable<ISnapshotOrEvent<TKey, TVersion>> events, TVersion version)
+            private VersionedDataSet(ISnapshotOrEvent<TKey, TVersion> snapshot, IEnumerable<ISnapshotOrEvent<TKey, TVersion>> events, TVersion version)
             {
                 _snapshot = snapshot;
                 _events = events.ToArray();
                 _version = version;
             }
 
-            public AggregateDataSet<TKey> ToDataSet(TKey id) =>
-                new AggregateDataSet<TKey>(id, _snapshot, _events);
+            public AggregateDataSet ToDataSet() =>
+                new AggregateDataSet(_snapshot, _events);
 
-            public AggregateDataSet Append(AggregateDataSet<TKey, TVersion> dataSet)
+            public VersionedDataSet Append(AggregateDataSet<TKey, TVersion> dataSet)
             {
                 if (_version.Equals(dataSet.OldVersion))
                 {
-                    return new AggregateDataSet(dataSet.Snapshot ?? _snapshot, _events.Concat(dataSet.Events), dataSet.NewVersion);
+                    return new VersionedDataSet(dataSet.Snapshot ?? _snapshot, _events.Concat(dataSet.Events), dataSet.NewVersion);
                 }
                 throw NewConcurrencyException(dataSet.OldVersion, _version);
             }
@@ -62,7 +62,7 @@ namespace Kingo.MicroServices.Domain
 
         #endregion
 
-        private readonly Dictionary<TKey, AggregateDataSet> _aggregates;
+        private readonly Dictionary<TKey, VersionedDataSet> _aggregates;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryRepository{T, S, R}" /> class.
@@ -74,7 +74,7 @@ namespace Kingo.MicroServices.Domain
         public MemoryRepository(SerializationStrategy serializationStrategy) :
             base(serializationStrategy)
         {
-            _aggregates = new Dictionary<TKey, AggregateDataSet>();
+            _aggregates = new Dictionary<TKey, VersionedDataSet>();
         }        
 
         /// <inheritdoc />
@@ -104,11 +104,11 @@ namespace Kingo.MicroServices.Domain
         #region [====== Read Operations ======]
 
         /// <inheritdoc />
-        protected internal override Task<AggregateDataSet<TKey>> SelectByIdAsync(TKey id) => AsyncMethod.Run(() =>
+        protected internal override Task<AggregateDataSet> SelectByIdAsync(TKey id) => AsyncMethod.Run(() =>
         {
-            if (_aggregates.TryGetValue(id, out var dataSet))
+            if (_aggregates.TryGetValue(id, out var versionedDataSet))
             {
-                return dataSet.ToDataSet(id);
+                return versionedDataSet.ToDataSet();
             }
             return null;
         });
@@ -139,7 +139,7 @@ namespace Kingo.MicroServices.Domain
         });
 
         private void Insert(AggregateDataSet<TKey, TVersion> data) =>
-            _aggregates.Add(data.Id, new AggregateDataSet(data));            
+            _aggregates.Add(data.Id, new VersionedDataSet(data));            
 
         private void Update(AggregateDataSet<TKey, TVersion> data) =>
             _aggregates[data.Id] = _aggregates[data.Id].Append(data);            

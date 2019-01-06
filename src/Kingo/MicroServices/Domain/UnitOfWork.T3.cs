@@ -116,8 +116,8 @@ namespace Kingo.MicroServices.Domain
                 return true;
             }
 
-            private static TAggregate RestoreAggregate(AggregateDataSet<TKey> dataSet) =>
-                dataSet.UpdateToLatestVersion<TVersion>().RestoreAggregate<TAggregate>(MessageHandlerContext.Current?.EventBus);
+            private TAggregate RestoreAggregate(AggregateDataSet dataSet) =>                
+                UnitOfWork._serializationStrategy.Deserialize<TKey, TVersion, TAggregate>(dataSet, MessageHandlerContext.Current?.EventBus);
 
             public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory) =>
                 new NullState(UnitOfWork, _id);

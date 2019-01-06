@@ -235,24 +235,28 @@ namespace Kingo.MicroServices.Domain
                 {
                     throw new ArgumentNullException(nameof(events));
                 }
-                foreach (var @event in SelectEventsToApply(events))
+                foreach (var @event in events)
                 {
-                    if (Apply(@event))
+                    if (HasInvalidId(_aggregate.Id, @event.Id))
                     {
-                        _aggregate.Version = @event.Version;
-                        continue;
+                        throw NewInvalidIdException(_aggregate.Id, @event);
                     }
-                    throw NewMissingEventHandlerException(@event.GetType());
+                    if (HasNewerVersion(_aggregate.Version, @event.Version))
+                    {
+                        ApplyOld(@event);
+                    }                    
                 }
+            }            
+
+            private void ApplyOld(ISnapshotOrEvent<TKey, TVersion> @event)
+            {
+                if (Apply(@event))
+                {
+                    _aggregate.Version = @event.Version;
+                    return;
+                }
+                throw NewMissingEventHandlerException(@event.GetType());
             }
-
-            private IEnumerable<ISnapshotOrEvent<TKey, TVersion>> SelectEventsToApply(IEnumerable<ISnapshotOrEvent<TKey, TVersion>> events) =>
-                from @event in events.WhereNotNull()
-                where CanApply(@event)
-                select @event;            
-
-            private bool CanApply(ISnapshotOrEvent<TKey, TVersion> @event) =>
-                @event.Id.Equals(_aggregate.Id) && @event.Version.CompareTo(_aggregate.Version) > 0;
 
             internal bool Apply(ISnapshotOrEvent<TKey, TVersion> @event)
             {
@@ -262,6 +266,19 @@ namespace Kingo.MicroServices.Domain
                     return true;
                 }
                 return false;
+            }
+
+            private static bool HasInvalidId(TKey aggregateId, TKey eventId) =>
+                !aggregateId.Equals(eventId);
+
+            private static bool HasNewerVersion(TVersion aggregateVersion, TVersion eventVersion) =>
+                aggregateVersion.CompareTo(eventVersion) < 0;
+
+            private static Exception NewInvalidIdException(TKey aggregateId, ISnapshotOrEvent<TKey, TVersion> @event)
+            {
+                var messageFormat = ExceptionMessages.AggregateRoot_InvalidEventId;
+                var message = string.Format(messageFormat, @event.GetType().FriendlyName(), @event.Id, aggregateId);
+                return new ArgumentException(message);
             }
 
             private static Exception NewHandlerForEventTypeAlreadyRegisteredException(Type type)

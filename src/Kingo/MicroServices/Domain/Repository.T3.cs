@@ -87,7 +87,7 @@ namespace Kingo.MicroServices.Domain
         /// <returns>
         /// The data of the aggregate, or <c>null</c> if the aggregate was not found.
         /// </returns>
-        protected internal abstract Task<AggregateDataSet<TKey>> SelectByIdAsync(TKey id);        
+        protected internal abstract Task<AggregateDataSet> SelectByIdAsync(TKey id);        
 
         #endregion
 

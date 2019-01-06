@@ -8,7 +8,7 @@ namespace Kingo.MicroServices.Domain
     {
         #region [====== Snapshot ======]
 
-        private sealed class Snapshot : NumberSnapshot
+        internal sealed class Snapshot : NumberSnapshot
         {
             public Snapshot(Guid id, int version, int value, bool hasBeenRemoved)
                 : base(id, version, value, hasBeenRemoved) { }
@@ -21,7 +21,7 @@ namespace Kingo.MicroServices.Domain
 
         #region [====== CreatedEvent ======]
 
-        private sealed class CreatedEvent : NumberCreatedEvent
+        internal sealed class CreatedEvent : NumberCreatedEvent
         {
             public CreatedEvent(Guid id, int value)
                 : base(id, value) { }

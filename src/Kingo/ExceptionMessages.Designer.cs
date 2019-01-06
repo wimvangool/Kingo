@@ -61,33 +61,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot restore desired aggregate of type &apos;{0}&apos;, because the data-set does not contain any snapshot or event to restore the aggregate with..
-        /// </summary>
-        internal static string AggregateDataSet_CannotRestoreAggregate {
-            get {
-                return ResourceManager.GetString("AggregateDataSet_CannotRestoreAggregate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot restore the desired aggregate of type &apos;{0}&apos;, because the snapshot or event used to restore the aggregate returned an instance of type &apos;{1}&apos;, which could not be converted to the requested type..
-        /// </summary>
-        internal static string AggregateDataSet_UnexpectedAggregateType {
-            get {
-                return ResourceManager.GetString("AggregateDataSet_UnexpectedAggregateType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not update the data-set to the latest version, because the instance of type &apos;{0}&apos; does not implement the expected interface &apos;{1}&apos;..
-        /// </summary>
-        internal static string AggregateDataSet_UnexpectedSnapshotOrEventType {
-            get {
-                return ResourceManager.GetString("AggregateDataSet_UnexpectedSnapshotOrEventType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; cannot publish event of type &apos;{1}&apos; because it has been removed from its repository and its lifetime has therefore ended..
         /// </summary>
         internal static string AggregateRoot_AggregateRemovedException {
@@ -102,6 +75,15 @@ namespace Kingo {
         internal static string AggregateRoot_HandlerForEventTypeAlreadyAdded {
             get {
                 return ResourceManager.GetString("AggregateRoot_HandlerForEventTypeAlreadyAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot apply event of type &apos;{0}&apos; because it&apos;s Id ({1}) does not match the aggregate&apos;s Id ({2})..
+        /// </summary>
+        internal static string AggregateRoot_InvalidEventId {
+            get {
+                return ResourceManager.GetString("AggregateRoot_InvalidEventId", resourceCulture);
             }
         }
         
@@ -520,11 +502,38 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not restore aggregate of type &apos;{0}&apos; from the retrieved data-set. See inner exception for details..
+        /// </summary>
+        internal static string SerializationStrategy_CouldNotRestoreAggregate {
+            get {
+                return ResourceManager.GetString("SerializationStrategy_CouldNotRestoreAggregate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid number of events per snapshot specified ({0}). Value cannot be negative..
         /// </summary>
         internal static string SerializationStrategy_InvalidEventsPerSnapshot {
             get {
                 return ResourceManager.GetString("SerializationStrategy_InvalidEventsPerSnapshot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DataSet is missing the expected snapshot..
+        /// </summary>
+        internal static string SerializationStrategy_MissingSnapshot {
+            get {
+                return ResourceManager.GetString("SerializationStrategy_MissingSnapshot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DataSet is missing the expected snapshot or event to restore the aggregate. .
+        /// </summary>
+        internal static string SerializationStrategy_MissingSnapshotOrEvent {
+            get {
+                return ResourceManager.GetString("SerializationStrategy_MissingSnapshotOrEvent", resourceCulture);
             }
         }
         

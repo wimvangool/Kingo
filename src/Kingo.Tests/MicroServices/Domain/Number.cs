@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Kingo.MicroServices.Domain
 {
-    internal abstract class Number : AggregateRoot<Guid, int>
+    public abstract class Number : AggregateRoot<Guid, int>
     {                             
         protected Number(IEventBus eventBus, NumberSnapshot snapshot)
             : base(eventBus, snapshot, false)

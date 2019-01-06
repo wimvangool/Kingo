@@ -31,10 +31,34 @@ namespace Kingo.MicroServices.Domain
             _aggregatesToDelete;
 
         public int AddAggregateToInsert(IAggregateRoot<TKey, TVersion> aggregate) =>
-            _serializationStrategy.AddAggregateTo(_aggregatesToInsert, aggregate, null, 0);
+            AddAggregateTo(_aggregatesToInsert, aggregate, null, 0);
 
         public int AddAggregateToUpdate(IAggregateRoot<TKey, TVersion> aggregate, TVersion oldVersion, int eventsSinceLastSnapshot) =>
-            _serializationStrategy.AddAggregateTo(_aggregatesToUpdate, aggregate, oldVersion, eventsSinceLastSnapshot);
+            AddAggregateTo(_aggregatesToUpdate, aggregate, oldVersion, eventsSinceLastSnapshot);
+
+        private int AddAggregateTo(ICollection<AggregateDataSet<TKey, TVersion>> aggregatesToSave, IAggregateRoot<TKey, TVersion> aggregate, TVersion? oldVersion, int eventsSinceLastSnapshot)
+        {
+            var dataSet = _serializationStrategy.Serialize(aggregate, oldVersion, eventsSinceLastSnapshot);
+
+            try
+            {
+                // If the data-set contains a snapshot, the number or events
+                // since the last snapshot is reset to 0, since this snapshot
+                // represents the latest version of the aggregate.
+                //
+                // If not, then the remembered value is added to the new amount
+                // of events that were published.
+                if (dataSet.Snapshot == null)
+                {
+                    return dataSet.Events.Count + eventsSinceLastSnapshot;
+                }
+                return 0;
+            }
+            finally
+            {
+                aggregatesToSave.Add(dataSet);
+            }
+        }
 
         public void AddAggregateToDelete(TKey id) =>
             _aggregatesToDelete.Add(id);

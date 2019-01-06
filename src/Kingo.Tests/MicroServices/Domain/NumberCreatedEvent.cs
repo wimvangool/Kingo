@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Kingo.MicroServices.Domain
 {
-    internal abstract class NumberCreatedEvent : NumberSnapshotOrEvent
+    public abstract class NumberCreatedEvent : NumberSnapshotOrEvent
     {
         protected NumberCreatedEvent(Guid id, int value) :
             base(id, 1)
