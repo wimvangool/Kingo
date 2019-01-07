@@ -9,6 +9,7 @@ namespace Kingo.MicroServices
     {
         private readonly bool _requiresFlush;
         private readonly Exception _exceptionToThrow;
+        private readonly object _resourceId;
         private int _requiresFlushCount;
         private int _flushCount;
 
@@ -16,12 +17,20 @@ namespace Kingo.MicroServices
         {
             _requiresFlush = requiresFlush;
             _exceptionToThrow = exceptionToThrow;
+            _resourceId = null;
         }
 
-        #region [====== IUnitOfWorkResourceManager ======]
+        public UnitOfWorkResourceManagerSpy(bool requiresFlush, object resourceId)
+        {
+            _requiresFlush = requiresFlush;
+            _exceptionToThrow = null;
+            _resourceId = resourceId;
+        }
+
+        #region [====== IUnitOfWorkResourceManager ======]        
 
         public object ResourceId =>
-            null;
+            _resourceId;
 
         public bool RequiresFlush()
         {
@@ -31,7 +40,7 @@ namespace Kingo.MicroServices
         }
 
         public Task FlushAsync()
-        {
+        {            
             return AsyncMethod.Run(() =>
             {
                 _flushCount++;
@@ -45,14 +54,10 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        public void AssertRequiresFlushCountIs(int count)
-        {
-            Assert.AreEqual(count, _requiresFlushCount);            
-        }
+        public void AssertRequiresFlushCountIs(int count) =>
+            Assert.AreEqual(count, _requiresFlushCount);
 
-        public void AssertFlushCountIs(int count)
-        {
+        public void AssertFlushCountIs(int count) =>
             Assert.AreEqual(count, _flushCount);
-        }
     }
 }

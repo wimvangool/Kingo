@@ -339,6 +339,25 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
+        public async Task HandleAsync_FlushesBothResourceManagersInParrallel_IfResourceManagersHaveDifferentResourceIds()
+        {            
+            var resourceManagerA = new UnitOfWorkResourceManagerSpy(true, new object());                       
+            var resourceManagerB = new UnitOfWorkResourceManagerSpy(true, new object());            
+
+            await CreateProcessor().HandleAsync(new object(), async (message, context) =>
+            {
+                await context.UnitOfWork.EnlistAsync(resourceManagerA);
+                await context.UnitOfWork.EnlistAsync(resourceManagerB);                
+            });
+
+            resourceManagerA.AssertRequiresFlushCountIs(1);
+            resourceManagerA.AssertFlushCountIs(1);
+
+            resourceManagerB.AssertRequiresFlushCountIs(1);
+            resourceManagerB.AssertFlushCountIs(1);            
+        }
+
+        [TestMethod]
         public async Task HandleAsync_ThrowsConflictException_IfFlushAsyncThrowsConcurrencyException_And_MessageIsCommand()
         {
             var resourceManager = new UnitOfWorkResourceManagerSpy(true, new ConcurrencyException());
