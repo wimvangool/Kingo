@@ -40,7 +40,7 @@ namespace Kingo.MicroServices
                 _context;
 
             public override async Task<InvokeAsyncResult<TMessageOut>> InvokeAsync() =>
-                new ExecuteAsyncResult<TMessageOut>(await _query.ExecuteAsync(_context));
+                new ExecuteAsyncResult<TMessageOut>(await _query.ExecuteAsync(_context).ConfigureAwait(false));
 
             public override string ToString() =>
                 $"{nameof(_query.ExecuteAsync)}({nameof(QueryContext)})";

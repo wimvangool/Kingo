@@ -44,7 +44,7 @@ namespace Kingo.MicroServices.Validation
                     throw NewInvalidMessageException(requestMessage.GetType(), errorInfo);
                 }
             }
-            return await handlerOrQuery.Method.InvokeAsync();
+            return await handlerOrQuery.Method.InvokeAsync().ConfigureAwait(false);
         }                 
 
         private static InvalidRequestException NewInvalidMessageException(Type messageType, ErrorInfo errorInfo)

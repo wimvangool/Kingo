@@ -35,7 +35,7 @@ namespace Kingo.MicroServices.Authorization
         {
             if (ClaimTypes.Count == 0)
             {
-                return await base.InvokeAsync(handlerOrQuery);
+                return await base.InvokeAsync(handlerOrQuery).ConfigureAwait(false);
             }
             var principal = handlerOrQuery.Context.Principal;
             if (principal == null)
@@ -52,7 +52,7 @@ namespace Kingo.MicroServices.Authorization
                     }
                     throw ClaimsProvider.NewClaimNotFoundException(handlerOrQuery.Context.Principal.Identity, requiredClaimType);
                 }
-                return await base.InvokeAsync(handlerOrQuery);
+                return await base.InvokeAsync(handlerOrQuery).ConfigureAwait(false);
             }
             throw NewIdentityNotAuthenticatedException(handlerOrQuery, principal.Identity);
         }        

@@ -54,11 +54,11 @@ namespace Kingo.MicroServices
         {            
             try
             {
-                var stream = await HandleMessageAsync();
+                var stream = await HandleMessageAsync().ConfigureAwait(false);
 
                 if (_isRootMethod)
                 {
-                    await _context.UnitOfWork.FlushAsync();
+                    await _context.UnitOfWork.FlushAsync().ConfigureAwait(false);
                 }
                 return stream;
             }
@@ -106,11 +106,11 @@ namespace Kingo.MicroServices
 
                 foreach (var resolvedHandler in _processor.MessageHandlerFactory.ResolveMessageHandlers(_message, _context))
                 {
-                    stream = stream.Concat(await InvokeMessageHandlerAsync(resolvedHandler));
+                    stream = stream.Concat(await InvokeMessageHandlerAsync(resolvedHandler).ConfigureAwait(false));
                 }
                 return stream;
             }
-            return await InvokeMessageHandlerAsync(new MessageHandlerDecorator<TMessage>(_handler, _message, _context));
+            return await InvokeMessageHandlerAsync(new MessageHandlerDecorator<TMessage>(_handler, _message, _context)).ConfigureAwait(false);
         }
 
         private async Task<MessageStream> InvokeMessageHandlerAsync(MessageHandler handler)
@@ -120,10 +120,10 @@ namespace Kingo.MicroServices
             // Every message handler potentially yields a new stream of events, which is immediately handled by the processor
             // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
             // sub-tree of events is handled before the next event in the stream.
-            var stream = await InvokeMessageHandlerAsyncCore(handler);
+            var stream = await InvokeMessageHandlerAsyncCore(handler).ConfigureAwait(false);
             if (stream.Count > 0)
             {
-                stream = stream.Concat(await stream.HandleWithAsync(this));
+                stream = stream.Concat(await stream.HandleWithAsync(this).ConfigureAwait(false));
             }
             return stream;
         }
@@ -136,7 +136,7 @@ namespace Kingo.MicroServices
 
                 try
                 {
-                    return (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync()).GetValue();
+                    return (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync().ConfigureAwait(false)).GetValue();
                 }
                 finally
                 {

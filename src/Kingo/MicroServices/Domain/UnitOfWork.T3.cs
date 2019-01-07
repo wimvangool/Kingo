@@ -78,7 +78,7 @@ namespace Kingo.MicroServices.Domain
 
             public override async Task<TAggregate> GetByIdOrNullAsync()
             {                
-                var dataSet = await Repository.SelectByIdAsync(AggregateId);
+                var dataSet = await Repository.SelectByIdAsync(AggregateId).ConfigureAwait(false);
                 if (dataSet == null)
                 {
                     return null;
@@ -94,7 +94,7 @@ namespace Kingo.MicroServices.Domain
 
             public override async Task<bool> AddAsync(TAggregate aggregate)
             {
-                var dataSet = await Repository.SelectByIdAsync(aggregate.Id);
+                var dataSet = await Repository.SelectByIdAsync(aggregate.Id).ConfigureAwait(false);
                 if (dataSet != null)
                 {
                     throw NewDuplicateKeyException(aggregate.Id);
@@ -108,7 +108,7 @@ namespace Kingo.MicroServices.Domain
 
             public override async Task<bool> RemoveByIdAsync()
             {                
-                var dataSet = await Repository.SelectByIdAsync(AggregateId);
+                var dataSet = await Repository.SelectByIdAsync(AggregateId).ConfigureAwait(false);
                 if (dataSet == null)
                 {
                     return false;
@@ -156,7 +156,7 @@ namespace Kingo.MicroServices.Domain
             {
                 if (ReferenceEquals(Aggregate, aggregate))
                 {
-                    return await RemoveByIdAsync();
+                    return await RemoveByIdAsync().ConfigureAwait(false);
                 }
                 return false;
             }
@@ -497,7 +497,7 @@ namespace Kingo.MicroServices.Domain
 
             try
             {
-                await _repository.FlushAsync(changeSet);
+                await _repository.FlushAsync(changeSet).ConfigureAwait(false);
             }
             catch
             {
@@ -526,7 +526,7 @@ namespace Kingo.MicroServices.Domain
 
         public async Task<TAggregate> GetByIdAsync(TKey id)
         {
-            var aggregate = await GetByIdOrNullAsync(id);
+            var aggregate = await GetByIdOrNullAsync(id).ConfigureAwait(false);
             if (aggregate == null)
             {
                 throw NewAggregateNotFoundException(id);
@@ -546,7 +546,7 @@ namespace Kingo.MicroServices.Domain
             {
                 return false;
             }
-            return await GetAggregateState(aggregate.Id).RemoveAsync(aggregate);
+            return await GetAggregateState(aggregate.Id).RemoveAsync(aggregate).ConfigureAwait(false);
         }
 
         public Task<bool> RemoveByIdAsync(TKey id) =>

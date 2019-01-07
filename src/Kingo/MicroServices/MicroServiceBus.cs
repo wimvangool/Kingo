@@ -41,7 +41,7 @@ namespace Kingo.MicroServices
             }
             foreach (var message in messages.WhereNotNull())
             {
-                await PublishAsync(message);
+                await PublishAsync(message).ConfigureAwait(false);
             }
         }
 

@@ -46,9 +46,9 @@ namespace Kingo.MicroServices.Domain
         /// <inheritdoc />
         public virtual async Task<bool> AddAsync(TAggregate aggregate)
         {
-            if (await _unitOfWork.AddAsync(aggregate))
+            if (await _unitOfWork.AddAsync(aggregate).ConfigureAwait(false))
             {
-                await UnitOfWork.EnlistAsync(this);
+                await UnitOfWork.EnlistAsync(this).ConfigureAwait(false);
                 return true;
             }
             return false;
@@ -60,9 +60,9 @@ namespace Kingo.MicroServices.Domain
         /// <inheritdoc />
         public virtual async Task<bool> RemoveAsync(TAggregate aggregate)
         {
-            if (await _unitOfWork.RemoveAsync(aggregate))
+            if (await _unitOfWork.RemoveAsync(aggregate).ConfigureAwait(false))
             {
-                await UnitOfWork.EnlistAsync(this);
+                await UnitOfWork.EnlistAsync(this).ConfigureAwait(false);
                 return true;
             }
             return false;
@@ -71,9 +71,9 @@ namespace Kingo.MicroServices.Domain
         /// <inheritdoc />
         public virtual async Task<bool> RemoveByIdAsync(TKey id)
         {
-            if (await _unitOfWork.RemoveByIdAsync(id))
+            if (await _unitOfWork.RemoveByIdAsync(id).ConfigureAwait(false))
             {
-                await UnitOfWork.EnlistAsync(this);
+                await UnitOfWork.EnlistAsync(this).ConfigureAwait(false);
                 return true;
             }
             return false;

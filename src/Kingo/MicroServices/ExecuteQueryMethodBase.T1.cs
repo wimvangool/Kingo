@@ -20,7 +20,7 @@ namespace Kingo.MicroServices
 
                 try
                 {
-                    return (await InvokeAsyncCore(context)).GetValue();
+                    return (await InvokeAsyncCore(context).ConfigureAwait(false)).GetValue();
                 }
                 catch (OperationCanceledException)
                 {

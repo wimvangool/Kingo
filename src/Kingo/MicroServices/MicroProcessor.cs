@@ -73,7 +73,7 @@ namespace Kingo.MicroServices
         public virtual async Task<int> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null)
         {
             var method = new HandleMessageMethod<TMessage>(this, message, handler, token);
-            await PublishAsync(await InvokeAsync(method));
+            await PublishAsync(await InvokeAsync(method).ConfigureAwait(false)).ConfigureAwait(false);
             return method.InvocationCount;
         }            
 

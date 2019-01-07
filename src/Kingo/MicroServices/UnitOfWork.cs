@@ -21,7 +21,7 @@ namespace Kingo.MicroServices
                 }
                 if (resourceManager.RequiresFlush())
                 {
-                    await resourceManager.FlushAsync();
+                    await resourceManager.FlushAsync().ConfigureAwait(false);
                 }                
             }            
 
@@ -82,7 +82,7 @@ namespace Kingo.MicroServices
         {
             foreach (var resourceManager in resourceGroup.Where(resource => resource.RequiresFlush()))
             {
-                await resourceManager.FlushAsync();
+                await resourceManager.FlushAsync().ConfigureAwait(false);
             }
         }
 

@@ -44,7 +44,7 @@ namespace Kingo.MicroServices
 
             public override async Task<InvokeAsyncResult<MessageStream>> InvokeAsync()
             {
-                await _handler.HandleAsync(_message, _context);
+                await _handler.HandleAsync(_message, _context).ConfigureAwait(false);
                 return new HandleAsyncResult(_context.EventBus);
             }
 

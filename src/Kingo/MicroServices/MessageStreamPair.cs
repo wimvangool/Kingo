@@ -28,7 +28,7 @@ namespace Kingo.MicroServices
         #region [====== HandleWithAsync ======]
 
         public override async Task<MessageStream> HandleWithAsync(IMessageHandler handler) =>
-            (await _left.HandleWithAsync(handler)).Concat(await _right.HandleWithAsync(handler));
+            (await _left.HandleWithAsync(handler).ConfigureAwait(false)).Concat(await _right.HandleWithAsync(handler).ConfigureAwait(false));
 
         #endregion
     }
