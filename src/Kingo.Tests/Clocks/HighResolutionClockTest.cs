@@ -43,43 +43,7 @@ namespace Kingo.Clocks
                 Thread.Sleep(TimeSpan.FromMilliseconds(8));
             }
             AssertStrictlyAscending(values);
-        }        
-
-        //[TestMethod]
-        public void WriteTimestampsToFile()
-        {
-            var timestamps = new Queue<DateTimeOffset>();
-
-            using (var waitHandle = new ManualResetEventSlim())
-            using (var timer = new Timer())            
-            {
-                timer.Interval = 600;
-                timer.Elapsed += (s, e) => waitHandle.Set();
-                timer.Start();
-
-                do
-                {
-                    if (waitHandle.IsSet)
-                    {
-                        break;
-                    }
-                    timestamps.Enqueue(_clock.UtcDateAndTime());
-                }
-                while (true);
-            }
-            var fileName = string.Format(@"C:\temp\timestamps_{0}.txt", Guid.NewGuid());
-
-            using (var fileWriter = new StreamWriter(fileName))
-            {
-                Debug.WriteLine("Writing {0} timestamps to file '{1}'...", timestamps.Count, fileName);
-
-                while (timestamps.Count > 0)
-                {
-                    fileWriter.WriteLine(timestamps.Dequeue().Ticks);
-                    fileWriter.Flush();
-                }
-            }
-        }
+        }                
 
         private void WriteTimestampsTo(Queue<DateTimeOffset> values, int amount)
         {

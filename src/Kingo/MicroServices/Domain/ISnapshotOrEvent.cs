@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kingo.MicroServices.Domain
+﻿namespace Kingo.MicroServices.Domain
 {
     /// <summary>
     /// When implemented by a class, represents either a snapshot of an aggregate, or an event published by an aggregate.
