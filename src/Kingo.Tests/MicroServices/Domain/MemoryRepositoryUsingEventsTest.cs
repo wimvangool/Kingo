@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Kingo.MicroServices.Domain
 {
     [TestClass]
-    public sealed class MemoryRepositoryUsingEventsTest : MemoryRepositorySerializationTest
+    public abstract class MemoryRepositoryUsingEventsTest : MemoryRepositorySerializationTest
     {
         #region [====== Events ======]
 
@@ -86,18 +86,7 @@ namespace Kingo.MicroServices.Domain
 
         #endregion
 
-        #region [====== Read Methods ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(CouldNotRestoreAggregateException))]
-        public async Task GetByIdAsync_Throws_IfDataSetHasSnapshot()
-        {
-            var numberId = Guid.NewGuid();
-
-            Repository.Add(numberId, new AggregateDataSet(new NumberUsingEvents.Snapshot(numberId, 1, 0, false)));
-
-            await Repository.GetByIdAsync(numberId);
-        }
+        #region [====== Read Methods ======]        
 
         [TestMethod]
         [ExpectedException(typeof(CouldNotRestoreAggregateException))]
@@ -203,21 +192,12 @@ namespace Kingo.MicroServices.Domain
             Assert.IsNotNull(await Repository.GetByIdAsync(numberId));
         }
 
-        #endregion
-
-        #region [====== Write Methods ======]
-
-
-
-        #endregion
+        #endregion       
 
         private static AggregateDataSet CreateDataSet(params ISnapshotOrEvent[] events) =>
-            new AggregateDataSet(null, events);
+            new AggregateDataSet(null, events);        
 
-        protected override MemoryRepositorySerializationStub CreateRepository() =>
-            new MemoryRepositorySerializationStub(SerializationStrategy.UseEvents());
-
-        protected override Number RandomNumber(int value = 0, IEventBus eventBus = null) =>
-            NumberUsingEvents.CreateNumber(Guid.NewGuid(), value, eventBus);
+        protected override Number CreateNumber(Guid numberId, int value = 0, IEventBus eventBus = null) =>
+            NumberUsingEvents.CreateNumber(numberId, value, eventBus);
     }
 }

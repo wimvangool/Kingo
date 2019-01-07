@@ -15,7 +15,7 @@ namespace Kingo.MicroServices.Domain
         /// <summary>
         /// A collection of aggregates that must be inserted into the data store.
         /// </summary>
-        IReadOnlyCollection<AggregateDataSet<TKey, TVersion>> AggregatesToInsert
+        IReadOnlyList<AggregateDataSet<TKey, TVersion>> AggregatesToInsert
         {
             get;
         }
@@ -23,7 +23,7 @@ namespace Kingo.MicroServices.Domain
         /// <summary>
         /// A collection of aggregates that must be updated in the data store.
         /// </summary>
-        IReadOnlyCollection<AggregateDataSet<TKey, TVersion>> AggregatesToUpdate
+        IReadOnlyList<AggregateDataSet<TKey, TVersion>> AggregatesToUpdate
         {
             get;
         }
@@ -31,7 +31,7 @@ namespace Kingo.MicroServices.Domain
         /// <summary>
         /// A collection of identifiers representing the aggregates that must be deleted from the data store.
         /// </summary>
-        IReadOnlyCollection<TKey> AggregatesToDelete
+        IReadOnlyList<TKey> AggregatesToDelete
         {
             get;
         }

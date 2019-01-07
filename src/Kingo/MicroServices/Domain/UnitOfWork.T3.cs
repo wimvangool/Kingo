@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Threading;
 
@@ -282,7 +283,8 @@ namespace Kingo.MicroServices.Domain
             {
                 base.Enter();
                 UnitOfWork._updateCount++;
-            }
+                UnitOfWork.EnlistRepository();                
+            }           
 
             public override void Exit()
             {
@@ -465,6 +467,25 @@ namespace Kingo.MicroServices.Domain
             _repository = repository;
             _serializationStrategy = serializationStrategy ?? throw new ArgumentNullException(nameof(serializationStrategy));
             _aggregateStates = new Dictionary<TKey, AggregateState>();
+        }
+
+        private void EnlistRepository() =>
+            EnlistRepository(TimeSpan.FromMinutes(1), MessageHandlerContext.Current?.Token);
+
+        private void EnlistRepository(TimeSpan timeout, CancellationToken? token)
+        {
+            if (_repository.OnAggregateModifiedAsync().Await(timeout, token))
+            {
+                return;
+            }
+            throw NewEnlistTimeoutException(timeout);
+        }
+
+        private static Exception NewEnlistTimeoutException(TimeSpan timeout)
+        {
+            var messageFormat = ExceptionMessages.UnitOfWork_EnlistmentTimeout;
+            var message = string.Format(messageFormat, typeof(TAggregate).FriendlyName(), timeout);
+            return new TimeoutException(message);
         }
 
         public bool RequiresFlush =>

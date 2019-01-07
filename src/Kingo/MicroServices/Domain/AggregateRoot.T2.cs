@@ -36,6 +36,9 @@ namespace Kingo.MicroServices.Domain
             public override IEnumerator<ISnapshotOrEvent> GetEnumerator() =>
                 _events.GetEnumerator();
 
+            public override string ToString() =>
+                $"{_events.Count} event(s)";
+
             public void Add(ISnapshotOrEvent<TKey, TVersion> @event)
             {
                 _events.Add(@event);
@@ -340,6 +343,10 @@ namespace Kingo.MicroServices.Domain
 
         private void PublishAndApply(ISnapshotOrEvent<TKey, TVersion> @event)            
         {
+            if (HasBeenRemoved)
+            {
+                throw NewAggregateRemovedException(GetType(), @event.GetType());
+            }
             if (EventHandlers.Apply(@event) || EventHandlers.IsEmpty)
             {
                 Version = Publish(@event);
@@ -349,11 +356,7 @@ namespace Kingo.MicroServices.Domain
         }
 
         internal TVersion Publish(ISnapshotOrEvent<TKey, TVersion> @event)           
-        {
-            if (HasBeenRemoved)
-            {
-                throw NewAggregateRemovedException(GetType(), @event.GetType());
-            }
+        {            
             Events.Add(@event);
             OnModified();
             return @event.Version;

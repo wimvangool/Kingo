@@ -159,14 +159,78 @@ namespace Kingo.MicroServices.Domain
 
         #region [====== Write Methods ======]
 
-        
+        [TestMethod]
+        public async Task AddAsync_FlushesSnapshotToInsert()
+        {
+            var command = CreateNumberCommand.Random();
+
+            await Processor.HandleAsync(command, async (message, context) =>
+            {
+                Assert.IsTrue(await Repository.AddAsync(CreateNumber(message.NumberId, command.Value, context.EventBus)));
+            });
+
+            Repository.AssertChangeSet(0, changeSet =>
+            {
+                Assert.AreEqual(1, changeSet.AggregatesToInsert.Count);
+                AssertSnapshotOnly(changeSet.AggregatesToInsert[0], command.NumberId, 1);
+
+                Assert.AreEqual(0, changeSet.AggregatesToUpdate.Count);
+                Assert.AreEqual(0, changeSet.AggregatesToDelete.Count);
+            });
+        }
+
+        [TestMethod]
+        public async Task GetByIdAsyncAndModification_FlushesSnapshotToUpdate()
+        {
+            var command = AddValueCommand.Random();
+            await Repository.AddAsync(CreateNumber(command.NumberId));
+
+            await Processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await Repository.GetByIdAsync(message.NumberId);
+                number.Add(message.Value);
+            });
+
+            Repository.AssertChangeSet(1, changeSet =>
+            {
+                Assert.AreEqual(0, changeSet.AggregatesToInsert.Count);                
+                Assert.AreEqual(1, changeSet.AggregatesToUpdate.Count);
+                AssertSnapshotOnly(changeSet.AggregatesToUpdate[0], command.NumberId, 2);
+
+                Assert.AreEqual(0, changeSet.AggregatesToDelete.Count);
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveAsync_FlushesSnapshotToUpdate_IfDeleteIsSoftDelete()
+        {
+            var command = DeleteNumberCommand.Random();            
+            await Repository.AddAsync(CreateNumber(command.NumberId));
+
+            await Processor.HandleAsync(command, async (message, context) =>
+            {
+                var number = await Repository.GetByIdAsync(message.NumberId);
+                number.EnableSoftDelete = true;
+
+                Assert.IsTrue(await Repository.RemoveAsync(number));                
+            });
+
+            Repository.AssertChangeSet(1, changeSet =>
+            {
+                Assert.AreEqual(0, changeSet.AggregatesToInsert.Count);
+                Assert.AreEqual(1, changeSet.AggregatesToUpdate.Count);
+                AssertSnapshotOnly(changeSet.AggregatesToUpdate[0], command.NumberId, 2);
+
+                Assert.AreEqual(0, changeSet.AggregatesToDelete.Count);
+            });
+        }            
 
         #endregion
 
         protected override MemoryRepositorySerializationStub CreateRepository() =>
             new MemoryRepositorySerializationStub(SerializationStrategy.UseSnapshots());
 
-        protected override Number RandomNumber(int value = 0, IEventBus eventBus = null) =>
-            NumberUsingSnapshots.CreateNumber(Guid.NewGuid(), value, eventBus);
+        protected override Number CreateNumber(Guid numberId, int value = 0, IEventBus eventBus = null) =>
+            NumberUsingSnapshots.CreateNumber(numberId, value, eventBus);
     }
 }

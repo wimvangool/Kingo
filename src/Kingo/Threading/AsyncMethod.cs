@@ -278,9 +278,9 @@ namespace Kingo.Threading
             {
                 if (token.HasValue)
                 {
-                    return task.Wait(timeout.Milliseconds, token.Value);
+                    return task.Wait((int) timeout.TotalMilliseconds, token.Value);
                 }
-                return task.Wait(timeout.Milliseconds);
+                return task.Wait((int) timeout.TotalMilliseconds);
             }
             catch (AggregateException exception)
             {

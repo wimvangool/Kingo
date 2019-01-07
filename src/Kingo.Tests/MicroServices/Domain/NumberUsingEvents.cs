@@ -38,14 +38,21 @@ namespace Kingo.MicroServices.Domain
         private NumberUsingEvents(IEventBus eventBus, NumberCreatedEvent @event, bool isNewAggregate)
             : base(eventBus, @event, isNewAggregate) { }
 
-        protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers) =>
-            eventHandlers.Register<ValueAddedEvent>(Add);
+        protected override EventHandlerCollection RegisterEventHandlers(EventHandlerCollection eventHandlers)
+        {
+            return eventHandlers
+                .Register<ValueAddedEvent>(Handle)
+                .Register<NumberDeletedEvent>(Handle);
+        }            
 
         public override void Add(int value) =>
             Publish((id, version) => new ValueAddedEvent(id, version, Value + value));
 
-        private void Add(ValueAddedEvent @event) =>
+        private void Handle(ValueAddedEvent @event) =>
             Value = @event.Value;
+
+        private void Handle(NumberDeletedEvent @event) =>
+            HasBeenRemoved = true;
 
         protected override ISnapshotOrEvent<Guid, int> TakeSnapshot() =>
             new Snapshot(Id, Version, Value, HasBeenRemoved);

@@ -21,13 +21,13 @@ namespace Kingo.MicroServices.Domain
             _aggregatesToDelete = new List<TKey>();                
         }                
             
-        public IReadOnlyCollection<AggregateDataSet<TKey, TVersion>> AggregatesToInsert =>
+        public IReadOnlyList<AggregateDataSet<TKey, TVersion>> AggregatesToInsert =>
             _aggregatesToInsert;
 
-        public IReadOnlyCollection<AggregateDataSet<TKey, TVersion>> AggregatesToUpdate =>
+        public IReadOnlyList<AggregateDataSet<TKey, TVersion>> AggregatesToUpdate =>
             _aggregatesToUpdate;
 
-        public IReadOnlyCollection<TKey> AggregatesToDelete =>
+        public IReadOnlyList<TKey> AggregatesToDelete =>
             _aggregatesToDelete;
 
         public int AddAggregateToInsert(IAggregateRoot<TKey, TVersion> aggregate) =>

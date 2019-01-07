@@ -54,6 +54,9 @@ namespace Kingo.MicroServices.Domain
             return false;
         }
 
+        internal Task OnAggregateModifiedAsync() =>
+            UnitOfWork.EnlistAsync(this);
+
         /// <inheritdoc />
         public virtual async Task<bool> RemoveAsync(TAggregate aggregate)
         {

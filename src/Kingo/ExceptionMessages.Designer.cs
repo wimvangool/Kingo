@@ -545,5 +545,14 @@ namespace Kingo {
                 return ResourceManager.GetString("SnapshotOrEvent_RestoreNotSupported", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation to enlist to the current unit of work (as a result of modification of aggregate of type &apos;{0}&apos;), was aborted because execution time exceeded the specified timeout ({1})..
+        /// </summary>
+        internal static string UnitOfWork_EnlistmentTimeout {
+            get {
+                return ResourceManager.GetString("UnitOfWork_EnlistmentTimeout", resourceCulture);
+            }
+        }
     }
 }
