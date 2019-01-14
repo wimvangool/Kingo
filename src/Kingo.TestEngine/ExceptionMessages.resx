@@ -138,25 +138,4 @@
   <data name="RequestMessageTestBase_UnexpectedMemberError" xml:space="preserve">
     <value>The expected error for member '{0}' ({1}) does not match the actual error ({2}) based on the type of comparison specified ({3}).</value>
   </data>
-  <data name="Scenario_ExceptionAssertFailed_NoException" xml:space="preserve">
-    <value>Expected exception of type '{0}', but no exception was thrown.</value>
-  </data>
-  <data name="Scenario_ExceptionAssertFailed_OtherExceptionType" xml:space="preserve">
-    <value>Expected exception of type '{0}' but exception of type '{1}' was thrown instead. See inner exception for details.</value>
-  </data>
-  <data name="Scenario_InnerExceptionNotFound" xml:space="preserve">
-    <value>Expected inner exception of type '{0}' but exception of type '{1}' did not have an inner exception.</value>
-  </data>
-  <data name="Scenario_InnerExceptionOfDifferentType" xml:space="preserve">
-    <value>Expected inner exception op type '{0}' but it was of type '{1}'.</value>
-  </data>
-  <data name="WriteScenario_InvalidEventCount" xml:space="preserve">
-    <value>The number of expected events cannot be negative: {0}.</value>
-  </data>
-  <data name="WriteScenario_UnexpectedEventCount" xml:space="preserve">
-    <value>The number of expected events ({0}) does not match the actual amount of published events ({1}).</value>
-  </data>
-  <data name="WriteScenario_UnexpectedEventType" xml:space="preserve">
-    <value>Expected event of type '{0}' at index '{1}', but found event of type '{2}'.</value>
-  </data>
 </root>

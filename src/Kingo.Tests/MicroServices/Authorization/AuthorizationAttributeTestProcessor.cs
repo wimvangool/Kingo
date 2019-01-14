@@ -5,7 +5,7 @@ namespace Kingo.MicroServices.Authorization
     internal sealed class AuthorizationAttributeTestProcessor : MicroProcessor
     {
         public AuthorizationAttributeTestProcessor(IPrincipal principal) :
-            base(null, new MicroProcessorPipelineFactoryBuilder().Build())
+            base(null, null, new MicroProcessorPipelineFactoryBuilder().Build())
         {
             Principal = principal;
         }

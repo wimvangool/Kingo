@@ -676,6 +676,6 @@ namespace Kingo.MicroServices
         #endregion
 
         private MicroProcessor CreateProcessor() =>
-            new MicroProcessor(_messageHandlers.Build(), null, _serviceBus);
+            new MicroProcessor(_serviceBus, _messageHandlers.Build(), null);
     }
 }

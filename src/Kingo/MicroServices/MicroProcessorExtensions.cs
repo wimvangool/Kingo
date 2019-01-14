@@ -85,36 +85,36 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>   
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>   
         /// <param name="processor">A processor.</param>     
         /// <param name="query">The query to execute.</param>               
         /// <param name="token">Optional token that can be used to cancel the operation.</param>          
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TMessageOut> ExecuteAsync<TMessageOut>(this IMicroProcessor processor, Func<QueryContext, TMessageOut> query, CancellationToken? token = null) =>
-            processor.ExecuteAsync(QueryDecorator<TMessageOut>.Decorate(query), token);
+        public static Task<TResponse> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryContext, TResponse> query, CancellationToken? token = null) =>
+            processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam> 
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam> 
         /// <param name="processor">A processor.</param>       
         /// <param name="query">The query to execute.</param>               
         /// <param name="token">Optional token that can be used to cancel the operation.</param>          
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TMessageOut> ExecuteAsync<TMessageOut>(this IMicroProcessor processor, Func<QueryContext, Task<TMessageOut>> query, CancellationToken? token = null) =>
-            processor.ExecuteAsync(QueryDecorator<TMessageOut>.Decorate(query), token);
+        public static Task<TResponse> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryContext, Task<TResponse>> query, CancellationToken? token = null) =>
+            processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         #endregion        
 
@@ -123,40 +123,40 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>  
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>  
         /// <param name="processor">A processor.</param>      
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>                                
         /// <param name="token">Optional token that can be used to cancel the operation.</param>                        
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(this IMicroProcessor processor, TMessageIn message, Func<TMessageIn, QueryContext, TMessageOut> query, CancellationToken? token = null) =>
-            processor.ExecuteAsync(message, QueryDecorator<TMessageIn, TMessageOut>.Decorate(query), token);
+        public static Task<TResponse> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, TRequest message, Func<TRequest, QueryContext, TResponse> query, CancellationToken? token = null) =>
+            processor.ExecuteAsync(message, QueryDecorator<TRequest, TResponse>.Decorate(query), token);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>   
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>   
         /// <param name="processor">A processor.</param>     
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>                                 
         /// <param name="token">Optional token that can be used to cancel the operation.</param>                        
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(this IMicroProcessor processor, TMessageIn message, Func<TMessageIn, QueryContext, Task<TMessageOut>> query, CancellationToken? token = null) =>
-            processor.ExecuteAsync(message, QueryDecorator<TMessageIn, TMessageOut>.Decorate(query), token);
+        public static Task<TResponse> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, TRequest message, Func<TRequest, QueryContext, Task<TResponse>> query, CancellationToken? token = null) =>
+            processor.ExecuteAsync(message, QueryDecorator<TRequest, TResponse>.Decorate(query), token);
 
         #endregion
     }

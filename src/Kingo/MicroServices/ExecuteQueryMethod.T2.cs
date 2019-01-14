@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class ExecuteQueryMethod<TMessageIn, TMessageOut> : ExecuteQueryMethodBase<TMessageOut>
+    internal sealed class ExecuteQueryMethod<TRequest, TResponse> : ExecuteQueryMethodBase<TResponse>
     {
         private readonly MicroProcessor _processor;
         private readonly CancellationToken? _token;
-        private readonly IQuery<TMessageIn, TMessageOut> _query;
-        private readonly TMessageIn _message;
+        private readonly IQuery<TRequest, TResponse> _query;
+        private readonly TRequest _message;
 
-        public ExecuteQueryMethod(MicroProcessor processor, CancellationToken? token, IQuery<TMessageIn, TMessageOut> query, TMessageIn message)            
+        public ExecuteQueryMethod(MicroProcessor processor, CancellationToken? token, IQuery<TRequest, TResponse> query, TRequest message)            
         {
             if (ReferenceEquals(message, null))
             {
@@ -23,8 +23,8 @@ namespace Kingo.MicroServices
             _message = message;
         }        
 
-        protected override Task<InvokeAsyncResult<TMessageOut>> InvokeAsyncCore(QueryContext context) =>
-            _processor.PipelineFactory.CreatePipeline(new QueryDecorator<TMessageIn, TMessageOut>(_query, _message, context)).Method.InvokeAsync();
+        protected override Task<InvokeAsyncResult<TResponse>> InvokeAsyncCore(QueryContext context) =>
+            _processor.PipelineFactory.CreatePipeline(new QueryDecorator<TRequest, TResponse>(_query, _message, context)).Method.InvokeAsync();
 
         protected override QueryContext CreateQueryContext() =>
             new QueryContext(_processor.MessageHandlerFactory, _processor.Principal, _token, _message);

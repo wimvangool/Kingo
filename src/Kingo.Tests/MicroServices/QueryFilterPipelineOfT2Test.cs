@@ -63,11 +63,11 @@ namespace Kingo.MicroServices
             Assert.AreEqual("MicroProcessorFilterSpyAttribute | MicroProcessorFilterSpyAttribute | QuerySpy<Object, Object>", connectorB.ToString());
         }        
 
-        private static QueryFilterPipeline<TMessageOut> CreateFilterPipeline<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query, TMessageIn message, IMicroProcessorFilter filter) =>
-            CreateFilterPipeline(new QueryDecorator<TMessageIn, TMessageOut>(query, message, CreateQueryContext(message)), filter);
+        private static QueryFilterPipeline<TResponse> CreateFilterPipeline<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, IMicroProcessorFilter filter) =>
+            CreateFilterPipeline(new QueryDecorator<TRequest, TResponse>(query, message, CreateQueryContext(message)), filter);
 
-        private static QueryFilterPipeline<TMessageOut> CreateFilterPipeline<TMessageOut>(Query<TMessageOut> query, IMicroProcessorFilter filter) =>
-            new QueryFilterPipeline<TMessageOut>(query, filter);
+        private static QueryFilterPipeline<TResponse> CreateFilterPipeline<TResponse>(Query<TResponse> query, IMicroProcessorFilter filter) =>
+            new QueryFilterPipeline<TResponse>(query, filter);
 
         private static QueryContext CreateQueryContext(object message) =>
             new QueryContext(new NullServiceProvider(), Thread.CurrentPrincipal, null, message);

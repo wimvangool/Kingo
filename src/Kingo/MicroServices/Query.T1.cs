@@ -3,10 +3,10 @@
     /// <summary>
     /// Represents a query as part of the <see cref="MicroProcessor" />'s pipeline.
     /// </summary>
-    /// <typeparam name="TMessageOut">Type of the response that is returned by this query.</typeparam>
-    public abstract class Query<TMessageOut> : MessageHandlerOrQuery, IMessageHandlerOrQuery<TMessageOut>
+    /// <typeparam name="TResponse">Type of the response that is returned by this query.</typeparam>
+    public abstract class Query<TResponse> : MessageHandlerOrQuery, IMessageHandlerOrQuery<TResponse>
     {
-        MicroProcessorContext IMessageHandlerOrQuery<TMessageOut>.Context =>
+        MicroProcessorContext IMessageHandlerOrQuery<TResponse>.Context =>
             Context;        
 
         /// <summary>
@@ -18,7 +18,7 @@
         }
 
         /// <inheritdoc />
-        public abstract MessageHandlerOrQueryMethod<TMessageOut> Method
+        public abstract MessageHandlerOrQueryMethod<TResponse> Method
         {
             get;
         }               

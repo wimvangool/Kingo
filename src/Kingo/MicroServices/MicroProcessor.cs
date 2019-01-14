@@ -24,11 +24,19 @@ namespace Kingo.MicroServices
         /// Optional service bus that is used by this processor to publish all messages that were published inside the
         /// processor while handling a message.
         /// </param>        
-        public MicroProcessor(IMessageHandlerFactory messageHandlerFactory = null, IMicroProcessorPipelineFactory pipelineFactory = null, IMicroServiceBus serviceBus = null)
+        public MicroProcessor(IMicroServiceBus serviceBus = null, IMessageHandlerFactory messageHandlerFactory = null, IMicroProcessorPipelineFactory pipelineFactory = null)
         {
-            MessageHandlerFactory = messageHandlerFactory ?? MicroServices.MessageHandlerFactory.Null;
-            PipelineFactory = pipelineFactory ?? MicroProcessorPipelineFactory.Null;
             ServiceBus = serviceBus ?? MicroServiceBus.Null;
+            MessageHandlerFactory = messageHandlerFactory ?? MicroServices.MessageHandlerFactory.Null;
+            PipelineFactory = pipelineFactory ?? MicroProcessorPipelineFactory.Null;            
+        }
+
+        /// <summary>
+        /// Returns the service bus that this processor uses to publish all messages to.
+        /// </summary>
+        protected IMicroServiceBus ServiceBus
+        {
+            get;
         }
 
         /// <summary>
@@ -45,15 +53,7 @@ namespace Kingo.MicroServices
         protected internal IMicroProcessorPipelineFactory PipelineFactory
         {
             get;
-        }
-
-        /// <summary>
-        /// Returns the service bus that this processor uses to publish all messages to.
-        /// </summary>
-        protected IMicroServiceBus ServiceBus
-        {
-            get;
-        }
+        }        
 
         #region [====== Security ======]
 
@@ -103,12 +103,12 @@ namespace Kingo.MicroServices
         #region [====== ExecuteAsync ======]
 
         /// <inheritdoc />
-        public virtual Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken? token = null) =>
-            InvokeAsync(new ExecuteQueryMethod<TMessageOut>(this, token, query));
+        public virtual Task<TResponse> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
+            InvokeAsync(new ExecuteQueryMethod<TResponse>(this, token, query));
 
         /// <inheritdoc />
-        public virtual Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null) =>
-            InvokeAsync(new ExecuteQueryMethod<TMessageIn, TMessageOut>(this, token, query, message));
+        public virtual Task<TResponse> ExecuteAsync<TRequest, TResponse>(TRequest message, IQuery<TRequest, TResponse> query, CancellationToken? token = null) =>
+            InvokeAsync(new ExecuteQueryMethod<TRequest, TResponse>(this, token, query, message));
 
         private static Task<TResult> InvokeAsync<TResult>(MicroProcessorMethod<TResult> method) =>
             method.InvokeAsync();

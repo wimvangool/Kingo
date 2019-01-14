@@ -4,17 +4,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class QuerySpy<TMessageOut> : IQuery<TMessageOut>
+    internal sealed class QuerySpy<TResponse> : IQuery<TResponse>
     {
         private int _executeCount;
 
-        public Task<TMessageOut> ExecuteAsync(QueryContext context)
+        public Task<TResponse> ExecuteAsync(QueryContext context)
         {
             return AsyncMethod.Run(() =>
             {
                 _executeCount++;
 
-                return default(TMessageOut);
+                return default(TResponse);
             });
         }
 

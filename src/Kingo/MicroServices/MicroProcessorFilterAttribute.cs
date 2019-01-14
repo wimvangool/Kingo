@@ -44,7 +44,7 @@ namespace Kingo.MicroServices
             InvokeAsync(handler);
 
         /// <inheritdoc />
-        public virtual Task<InvokeAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query) =>
+        public virtual Task<InvokeAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query) =>
             InvokeAsync(query);        
 
         /// <summary>

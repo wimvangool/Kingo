@@ -13,7 +13,7 @@ namespace Kingo.MicroServices.Domain
         public MemoryRepositoryBehaviorTest()
         {
             _serviceBus = new MicroServiceBusStub();
-            _processor = new MicroProcessor(null, null, _serviceBus);
+            _processor = new MicroProcessor(_serviceBus);
         }
 
         #region [====== Constructor ======]

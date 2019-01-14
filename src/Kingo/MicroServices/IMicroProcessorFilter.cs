@@ -34,6 +34,6 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="query">The query that will be invoked by this filter (if no cached result is returned).</param>
         /// <returns>The result of the specified <paramref name="query"/> or a cached result.</returns>
-        Task<InvokeAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query);              
+        Task<InvokeAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query);              
     }
 }

@@ -1,15 +1,15 @@
 ﻿namespace Kingo.MicroServices
 {    
-    internal sealed class ExecuteAsyncResult<TMessageOut> : InvokeAsyncResult<TMessageOut>
+    internal sealed class ExecuteAsyncResult<TResponse> : InvokeAsyncResult<TResponse>
     {
-        private readonly TMessageOut _messageOut;
+        private readonly TResponse _messageOut;
 
-        public ExecuteAsyncResult(TMessageOut messageOut)
+        public ExecuteAsyncResult(TResponse messageOut)
         {
             _messageOut = messageOut;
         }
 
-        public override TMessageOut GetValue() =>
+        public override TResponse GetValue() =>
             _messageOut;
 
         /// <inheritdoc />

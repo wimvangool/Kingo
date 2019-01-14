@@ -21,11 +21,11 @@ namespace Kingo.MicroServices
                 return handler;
             }
 
-            public Query<TMessageOut> CreatePipeline<TMessageOut>(Query<TMessageOut> query)
+            public Query<TResponse> CreatePipeline<TResponse>(Query<TResponse> query)
             {
                 foreach (var filter in GetEnabledFilters(query))
                 {
-                    query = new QueryFilterPipeline<TMessageOut>(query, filter);
+                    query = new QueryFilterPipeline<TResponse>(query, filter);
                 }
                 return query;
             }

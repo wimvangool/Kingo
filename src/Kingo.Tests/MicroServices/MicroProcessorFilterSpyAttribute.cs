@@ -20,7 +20,7 @@ namespace Kingo.MicroServices
             return await handler.Method.InvokeAsync();
         }
 
-        public override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query)
+        public override async Task<InvokeAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query)
         {
             var serviceBus = MicroServiceBusStub.Current;
             if (serviceBus != null)

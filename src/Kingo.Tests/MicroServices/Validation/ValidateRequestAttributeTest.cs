@@ -206,7 +206,7 @@
 
 //        #endregion
 
-//        #region [====== Query<TMessageOut> ======]
+//        #region [====== Query<TResponse> ======]
 
 //        private sealed class SomeRequest : RequestMessageBase
 //        {

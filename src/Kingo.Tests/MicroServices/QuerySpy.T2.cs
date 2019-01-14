@@ -5,29 +5,29 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class QuerySpy<TMessageIn, TMessageOut> : IQuery<TMessageIn, TMessageOut> where TMessageIn : class
+    internal sealed class QuerySpy<TRequest, TResponse> : IQuery<TRequest, TResponse> where TRequest : class
     {
-        private readonly List<TMessageIn> _messages;
+        private readonly List<TRequest> _messages;
 
         public QuerySpy()
         {
-            _messages = new List<TMessageIn>();
+            _messages = new List<TRequest>();
         } 
 
-        public Task<TMessageOut> ExecuteAsync(TMessageIn message, QueryContext context)
+        public Task<TResponse> ExecuteAsync(TRequest message, QueryContext context)
         {
             return AsyncMethod.Run(() =>
             {
                 _messages.Add(message);
 
-                return default(TMessageOut);
+                return default(TResponse);
             });
         }
 
         public void AssertExecuteCountIs(int count) =>
             Assert.AreEqual(count, _messages.Count);
 
-        public void AssertMessageReceived(int index, TMessageIn message) =>
+        public void AssertMessageReceived(int index, TRequest message) =>
             Assert.AreSame(message, _messages[index]);
     }
 }

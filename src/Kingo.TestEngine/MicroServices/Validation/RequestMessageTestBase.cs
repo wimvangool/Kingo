@@ -5,7 +5,7 @@ namespace Kingo.MicroServices.Validation
     /// <summary>
     /// Serves as a base-class for all validation tests for a specific request message.
     /// </summary>
-    public abstract class RequestMessageTestBase : AutomatedTest
+    public abstract class RequestMessageTestBase
     {
         private const int _DefaultMemberErrorCount = 0;
 
@@ -102,38 +102,38 @@ namespace Kingo.MicroServices.Validation
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_MessageNotValid;
                 var message = string.Format(messageFormat, _errorInfo);
-                return _test.NewAssertFailedException(message);
+                return new AssertFailedException(message);
             }
 
-            private Exception NewUnexpectedErrorCountException(int expectedErrorCount, int actualErrorCount)
+            private static Exception NewUnexpectedErrorCountException(int expectedErrorCount, int actualErrorCount)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedErrorCount;
                 var message = string.Format(messageFormat, expectedErrorCount, actualErrorCount);
-                return _test.NewAssertFailedException(message);
+                return new AssertFailedException(message);
             }
 
-            private Exception NewNoInstanceErrorException() =>
-                _test.NewAssertFailedException(ExceptionMessages.RequestMessageTestBase_NoInstanceError);
+            private static Exception NewNoInstanceErrorException() =>
+                new AssertFailedException(ExceptionMessages.RequestMessageTestBase_NoInstanceError);
 
-            private Exception NewNoMemberErrorException(string memberName)
+            private static Exception NewNoMemberErrorException(string memberName)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_NoMemberError;
                 var message = string.Format(messageFormat, memberName);
-                return _test.NewAssertFailedException(message);
+                return new AssertFailedException(message);
             }
 
-            private Exception NewUnexpectedInstanceErrorException(string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
+            private static Exception NewUnexpectedInstanceErrorException(string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedInstanceError;
                 var message = string.Format(messageFormat, expectedErrorMessage, actualErrorMessage, comparison);
-                return _test.NewAssertFailedException(message);
+                return new AssertFailedException(message);
             }
 
-            private Exception NewUnexpectedMemberErrorException(string memberName, string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
+            private static Exception NewUnexpectedMemberErrorException(string memberName, string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedMemberError;
                 var message = string.Format(messageFormat, memberName, expectedErrorMessage, actualErrorMessage, comparison);
-                return _test.NewAssertFailedException(message);
+                return new AssertFailedException(message);
             }            
         }
 

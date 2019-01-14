@@ -37,11 +37,11 @@ namespace Kingo.MicroServices
         private static MethodAttributeProvider FromMessageHandler(Type handlerType, Type interfaceType, Type messageType) =>
             FromInterfaceMethod(handlerType, interfaceType, _HandleAsync, messageType, typeof(MessageHandlerContext));
 
-        public static MethodAttributeProvider FromQuery<TMessageOut>(IQuery<TMessageOut> query) =>
-            FromInterfaceMethod(query.GetType(), typeof(IQuery<TMessageOut>), _ExecuteAsync, typeof(QueryContext));
+        public static MethodAttributeProvider FromQuery<TResponse>(IQuery<TResponse> query) =>
+            FromInterfaceMethod(query.GetType(), typeof(IQuery<TResponse>), _ExecuteAsync, typeof(QueryContext));
 
-        public static MethodAttributeProvider FromQuery<TMessageIn, TMessageOut>(IQuery<TMessageIn, TMessageOut> query) =>
-            FromInterfaceMethod(query.GetType(), typeof(IQuery<TMessageIn, TMessageOut>), _ExecuteAsync, typeof(TMessageIn), typeof(QueryContext));
+        public static MethodAttributeProvider FromQuery<TRequest, TResponse>(IQuery<TRequest, TResponse> query) =>
+            FromInterfaceMethod(query.GetType(), typeof(IQuery<TRequest, TResponse>), _ExecuteAsync, typeof(TRequest), typeof(QueryContext));
 
         private static MethodAttributeProvider FromInterfaceMethod(Type type, Type interfaceType, string methodName, params Type[] methodParameters)
         {            

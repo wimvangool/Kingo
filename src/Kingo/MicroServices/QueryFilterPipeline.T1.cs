@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class QueryFilterPipeline<TMessageOut> : Query<TMessageOut>
+    internal sealed class QueryFilterPipeline<TResponse> : Query<TResponse>
     {
         #region [====== ExecuteAsyncMethod ======]
 
-        private sealed class ExecuteAsyncMethod : MessageHandlerOrQueryMethod<TMessageOut>
+        private sealed class ExecuteAsyncMethod : MessageHandlerOrQueryMethod<TResponse>
         {
-            private readonly QueryFilterPipeline<TMessageOut> _connector;
+            private readonly QueryFilterPipeline<TResponse> _connector;
             private readonly IMicroProcessorFilter _filter;
 
-            public ExecuteAsyncMethod(QueryFilterPipeline<TMessageOut> connector, IMicroProcessorFilter filter)
+            public ExecuteAsyncMethod(QueryFilterPipeline<TResponse> connector, IMicroProcessorFilter filter)
             {
                 _connector = connector;
                 _filter = filter;
@@ -23,7 +23,7 @@ namespace Kingo.MicroServices
             public IMicroProcessorFilter Filter =>
                 _filter;
 
-            private MessageHandlerOrQueryMethod<TMessageOut> Method =>
+            private MessageHandlerOrQueryMethod<TResponse> Method =>
                 _connector._nextQuery.Method;
 
             public override MethodInfo Info =>
@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
             public override IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() =>
                 Method.GetAttributesOfType<TAttribute>();
 
-            public override Task<InvokeAsyncResult<TMessageOut>> InvokeAsync() =>
+            public override Task<InvokeAsyncResult<TResponse>> InvokeAsync() =>
                 _filter.InvokeQueryAsync(_connector._nextQuery);
 
             public override string ToString() =>
@@ -44,10 +44,10 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly Query<TMessageOut> _nextQuery;
+        private readonly Query<TResponse> _nextQuery;
         private readonly ExecuteAsyncMethod _method;
 
-        public QueryFilterPipeline(Query<TMessageOut> nextQuery, IMicroProcessorFilter filter)            
+        public QueryFilterPipeline(Query<TResponse> nextQuery, IMicroProcessorFilter filter)            
         {
             _nextQuery = nextQuery;
             _method = new ExecuteAsyncMethod(this, filter);
@@ -69,12 +69,12 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== IMessageHandlerOrQuery<TMessageOut> ======]
+        #region [====== IMessageHandlerOrQuery<TResponse> ======]
 
         public override QueryContext Context =>
             _nextQuery.Context;
 
-        public override MessageHandlerOrQueryMethod<TMessageOut> Method =>
+        public override MessageHandlerOrQueryMethod<TResponse> Method =>
             _method;
 
         #endregion

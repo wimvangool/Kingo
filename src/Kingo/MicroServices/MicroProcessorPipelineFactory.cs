@@ -13,7 +13,7 @@ namespace Kingo.MicroServices
             public MessageHandler CreatePipeline(MessageHandler handler) =>
                 handler ?? throw new ArgumentNullException(nameof(handler));
 
-            public Query<TMessageOut> CreatePipeline<TMessageOut>(Query<TMessageOut> query) =>
+            public Query<TResponse> CreatePipeline<TResponse>(Query<TResponse> query) =>
                 query ?? throw new ArgumentNullException(nameof(query));
         }
 
@@ -37,7 +37,7 @@ namespace Kingo.MicroServices
             return handler;
         }
 
-        public Query<TMessageOut> CreatePipeline<TMessageOut>(Query<TMessageOut> query)
+        public Query<TResponse> CreatePipeline<TResponse>(Query<TResponse> query)
         {
             foreach (var factory in _parts)
             {

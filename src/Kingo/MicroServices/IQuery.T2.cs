@@ -5,11 +5,11 @@ namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents a query that accepts a message
-    /// and returns a result in the form of a <typeparamref name="TMessageOut"/>.
+    /// and returns a result in the form of a <typeparamref name="TResponse"/>.
     /// </summary>
-    /// <typeparam name="TMessageIn">Type of the message that is consumed by this query.</typeparam>
-    /// <typeparam name="TMessageOut">Type of the message that is returned by this query.</typeparam>
-    public interface IQuery<in TMessageIn, TMessageOut>
+    /// <typeparam name="TRequest">Type of the message that is consumed by this query.</typeparam>
+    /// <typeparam name="TResponse">Type of the message that is returned by this query.</typeparam>
+    public interface IQuery<in TRequest, TResponse>
     {
         /// <summary>
         /// Executes the query.
@@ -20,6 +20,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        Task<TMessageOut> ExecuteAsync(TMessageIn message, QueryContext context);
+        Task<TResponse> ExecuteAsync(TRequest message, QueryContext context);
     }
 }

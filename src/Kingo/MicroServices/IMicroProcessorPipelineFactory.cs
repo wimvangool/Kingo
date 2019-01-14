@@ -26,6 +26,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
-        Query<TMessageOut> CreatePipeline<TMessageOut>(Query<TMessageOut> query);
+        Query<TResponse> CreatePipeline<TResponse>(Query<TResponse> query);
     }
 }

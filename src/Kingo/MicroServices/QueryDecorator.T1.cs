@@ -9,18 +9,18 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represents a decorator of queries or query delegates that provides access to its declared attributes, if present.
     /// </summary>
-    /// <typeparam name="TMessageOut">Type of the response message.</typeparam>
-    public sealed class QueryDecorator<TMessageOut> : Query<TMessageOut>
+    /// <typeparam name="TResponse">Type of the response message.</typeparam>
+    public sealed class QueryDecorator<TResponse> : Query<TResponse>
     {
         #region [====== ExecuteAsyncMethod ======]
 
-        private sealed class ExecuteAsyncMethod : MessageHandlerOrQueryMethod<TMessageOut>
+        private sealed class ExecuteAsyncMethod : MessageHandlerOrQueryMethod<TResponse>
         {
             private readonly MethodAttributeProvider _attributeProvider;
-            private readonly IQuery<TMessageOut> _query;
+            private readonly IQuery<TResponse> _query;
             private readonly QueryContext _context;
 
-            public ExecuteAsyncMethod(IQuery<TMessageOut> query, QueryContext context, MethodAttributeProvider attributeProvider)
+            public ExecuteAsyncMethod(IQuery<TResponse> query, QueryContext context, MethodAttributeProvider attributeProvider)
             {
                 _attributeProvider = attributeProvider;
                 _query = query;
@@ -39,8 +39,8 @@ namespace Kingo.MicroServices
             public QueryContext Context =>
                 _context;
 
-            public override async Task<InvokeAsyncResult<TMessageOut>> InvokeAsync() =>
-                new ExecuteAsyncResult<TMessageOut>(await _query.ExecuteAsync(_context).ConfigureAwait(false));
+            public override async Task<InvokeAsyncResult<TResponse>> InvokeAsync() =>
+                new ExecuteAsyncResult<TResponse>(await _query.ExecuteAsync(_context).ConfigureAwait(false));
 
             public override string ToString() =>
                 $"{nameof(_query.ExecuteAsync)}({nameof(QueryContext)})";
@@ -51,7 +51,7 @@ namespace Kingo.MicroServices
         private readonly TypeAttributeProvider _attributeProvider;
         private readonly ExecuteAsyncMethod _method;
         
-        internal QueryDecorator(IQuery<TMessageOut> query, QueryContext context)
+        internal QueryDecorator(IQuery<TResponse> query, QueryContext context)
         {
             _attributeProvider = new TypeAttributeProvider(query.GetType());
             _method = new ExecuteAsyncMethod(query, context, MethodAttributeProvider.FromQuery(query));           
@@ -77,14 +77,14 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== IMessageHandlerOrQuery<TMessageOut> ======]
+        #region [====== IMessageHandlerOrQuery<TResponse> ======]
 
         /// <inheritdoc />
         public override QueryContext Context =>
             _method.Context;
 
         /// <inheritdoc />
-        public override MessageHandlerOrQueryMethod<TMessageOut> Method =>
+        public override MessageHandlerOrQueryMethod<TResponse> Method =>
             _method;
 
         #endregion
@@ -112,7 +112,7 @@ namespace Kingo.MicroServices
         /// <c>null</c> if <paramref name="query"/> is <c>null</c>; otherwise, a <see cref="IQuery{T}"/> instance
         /// that wraps the specified <paramref name="query"/>.
         /// </returns>
-        public static IQuery<TMessageOut> Decorate(Func<QueryContext, TMessageOut> query)
+        public static IQuery<TResponse> Decorate(Func<QueryContext, TResponse> query)
         {
             if (query == null)
             {
@@ -132,8 +132,8 @@ namespace Kingo.MicroServices
         /// <c>null</c> if <paramref name="query"/> is <c>null</c>; otherwise, a <see cref="IQuery{T}"/> instance
         /// that wraps the specified <paramref name="query"/>.
         /// </returns>
-        public static IQuery<TMessageOut> Decorate(Func<QueryContext, Task<TMessageOut>> query) =>
-            query == null ? null : new QueryDelegate<TMessageOut>(query);
+        public static IQuery<TResponse> Decorate(Func<QueryContext, Task<TResponse>> query) =>
+            query == null ? null : new QueryDelegate<TResponse>(query);
 
         #endregion
     }

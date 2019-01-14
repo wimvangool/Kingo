@@ -33,33 +33,33 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
         /// </summary>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param> 
         /// <param name="token">Optional token that can be used to cancel the operation.</param>                        
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        Task<TMessageOut> ExecuteAsync<TMessageOut>(IQuery<TMessageOut> query, CancellationToken? token = null);
+        Task<TResponse> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
         /// </summary>
-        /// <typeparam name="TMessageIn">Type of the message going into the query.</typeparam>
-        /// <typeparam name="TMessageOut">Type of the message returned by the query.</typeparam>        
+        /// <typeparam name="TRequest">Type of the message going into the query.</typeparam>
+        /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>        
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>                        
         /// <param name="token">Optional token that can be used to cancel the operation.</param> 
-        /// <returns>The <see cref="Task{TMessageOut}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        Task<TMessageOut> ExecuteAsync<TMessageIn, TMessageOut>(TMessageIn message, IQuery<TMessageIn, TMessageOut> query, CancellationToken? token = null);        
+        Task<TResponse> ExecuteAsync<TRequest, TResponse>(TRequest message, IQuery<TRequest, TResponse> query, CancellationToken? token = null);        
     }
 }

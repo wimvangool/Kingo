@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 
 [assembly: AssemblyTitle("Kingo.TestEngine")]
-[assembly: AssemblyDescription("Enables you to write BDD-style scenario tests for event-driven applications that are built using the Kingo framework.")]
+[assembly: AssemblyDescription("Enables you to write BDD-style test tests for event-driven applications that are built using the Kingo framework.")]
 
 [assembly: InternalsVisibleTo("Kingo.TestEngine.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

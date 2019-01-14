@@ -197,7 +197,7 @@ namespace Kingo.MicroServices
                 return await handler.Method.InvokeAsync();
             }
 
-            public override async Task<InvokeAsyncResult<TMessageOut>> InvokeQueryAsync<TMessageOut>(Query<TMessageOut> query)
+            public override async Task<InvokeAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query)
             {
                 await MicroServiceBusStub.Current.PublishAsync(_id);
                 return await query.Method.InvokeAsync();
@@ -905,6 +905,6 @@ namespace Kingo.MicroServices
         #endregion
 
         private MicroProcessor CreateProcessor() =>
-            new MicroProcessor(_messageHandlers.Build(), _pipeline.Build(), _serviceBus);
+            new MicroProcessor(_serviceBus, _messageHandlers.Build(), _pipeline.Build());
     }
 }

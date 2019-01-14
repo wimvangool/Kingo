@@ -3,16 +3,16 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {    
-    internal abstract class ExecuteQueryMethodBase<TMessageOut> : MicroProcessorMethod<TMessageOut>
+    internal abstract class ExecuteQueryMethodBase<TResponse> : MicroProcessorMethod<TResponse>
     {                   
         /// <summary>
         /// Invokes the query and returns its result.
         /// </summary>
         /// <returns>The result of the query.</returns>
-        public override Task<TMessageOut> InvokeAsync() =>
+        public override Task<TResponse> InvokeAsync() =>
             InvokeAsync(CreateQueryContext());
 
-        private async Task<TMessageOut> InvokeAsync(QueryContext context)
+        private async Task<TResponse> InvokeAsync(QueryContext context)
         {
             using (MicroProcessorContext.CreateScope(context))
             {
@@ -45,7 +45,7 @@ namespace Kingo.MicroServices
             }
         }        
 
-        protected abstract Task<InvokeAsyncResult<TMessageOut>> InvokeAsyncCore(QueryContext context);
+        protected abstract Task<InvokeAsyncResult<TResponse>> InvokeAsyncCore(QueryContext context);
 
         protected abstract QueryContext CreateQueryContext();
     }
