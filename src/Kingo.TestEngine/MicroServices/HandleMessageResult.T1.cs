@@ -1,63 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class HandleMessageResult<TEventStream> : IHandleMessageResult<TEventStream>
+    internal sealed class HandleMessageResult<TEventStream> : MicroProcessorTestResult, IHandleMessageResult<TEventStream>
         where TEventStream : EventStream
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroServices.ExceptionResult, IHandleMessageResult<TEventStream>
-        {            
-            public ExceptionResult(MicroProcessorTestRunner testRunner, Exception exception)
-            {
-                TestRunner = testRunner;
-                Exception = exception;
+        private sealed class ExceptionResult : MicroProcessorTestResult, IHandleMessageResult<TEventStream>
+        {
+            private readonly Exception _exception;
+
+            public ExceptionResult(Exception exception)
+            {                
+                _exception = exception;
             }
 
-            protected override MicroProcessorTestRunner TestRunner
-            {
-                get;
-            }
+            public override void IsExpectedException<TException>(Action<TException> assertion = null) =>
+                IsExpectedException(_exception, assertion);
 
-            protected override Exception Exception
-            {
-                get;
-            }
-
-            public void IsExpectedEventStream(int expectedEventCount, Func<EventStream, TEventStream> assertion = null)
-            {
-                throw new NotImplementedException();
-            }
+            public void IsExpectedEventStream(Func<EventStream, TEventStream> assertion) =>
+                throw NewExceptionThrownException(_exception);
         }
 
         #endregion
 
         #region [====== EventStreamResult ======]
 
-        private sealed class EventStreamResult : NoExceptionResult, IHandleMessageResult<TEventStream>
-        {
-            public EventStreamResult(MicroProcessorTestRunner testRunner, TEventStream stream)
+        private sealed class EventStreamResult : MicroProcessorTestResult, IHandleMessageResult<TEventStream>
+        {                        
+            private readonly EventStream _stream;
+            private readonly Action<TEventStream> _streamConsumer;
+
+            public EventStreamResult(EventStream stream, Action<TEventStream> streamConsumer)
             {
-                TestRunner = testRunner;
-                Stream = stream;
+                _stream = stream;
+                _streamConsumer = streamConsumer;
             }
 
-            protected override MicroProcessorTestRunner TestRunner
-            {
-                get;
-            }
+            public override void IsExpectedException<TException>(Action<TException> assertion = null) =>
+                throw NewExceptionNotThrownException(typeof(TException));
 
-            private TEventStream Stream
+            public void IsExpectedEventStream(Func<EventStream, TEventStream> assertion)
             {
-                get;
-            }
-
-            public void IsExpectedEventStream(int expectedEventCount, Func<EventStream, TEventStream> assertion = null)
-            {
-                throw new NotImplementedException();
+                if (assertion == null)
+                {
+                    throw new ArgumentNullException(nameof(assertion));
+                }
+                _streamConsumer.Invoke(assertion.Invoke(_stream));
             }            
         }
 
@@ -65,20 +55,20 @@ namespace Kingo.MicroServices
 
         private readonly IHandleMessageResult<TEventStream> _result;
 
-        public HandleMessageResult(MicroProcessorTestRunner testRunner, Exception exception)
+        public HandleMessageResult(Exception exception)
         {
-            _result = new ExceptionResult(testRunner, exception);
+            _result = new ExceptionResult(exception);
         }
 
-        public HandleMessageResult(MicroProcessorTestRunner testRunner, TEventStream stream)
+        public HandleMessageResult(EventStream stream, Action<TEventStream> streamConsumer)
         {
-            _result = new EventStreamResult(testRunner, stream);
+            _result = new EventStreamResult(stream, streamConsumer);
         }
 
-        public void IsExpectedException<TException>(Action<TException> assertion = null) where TException : Exception =>
+        public override void IsExpectedException<TException>(Action<TException> assertion = null) =>
             _result.IsExpectedException(assertion);
 
-        public void IsExpectedEventStream(int expectedEventCount, Func<EventStream, TEventStream> assertion = null) =>
-            _result.IsExpectedEventStream(expectedEventCount, assertion);       
+        public void IsExpectedEventStream(Func<EventStream, TEventStream> assertion = null) =>
+            _result.IsExpectedEventStream(assertion);       
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
@@ -9,14 +7,21 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TRequest">Type of the request of the test.</typeparam>
     /// <typeparam name="TResponse">Type of the response of the test.</typeparam>
-    public interface IExecuteQueryTest<in TRequest, TResponse> : IMicroProcessorTest<IQuery<TRequest, TResponse>>
+    public interface IExecuteQueryTest<TRequest, TResponse> : IMicroProcessorTest
     {
+        /// <summary>
+        /// Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">The processor to execute the query with.</param>
+        /// <param name="context">The context in which the test is running.</param>                
+        Task WhenAsync(IQueryProcessor<TRequest, TResponse> processor, MicroProcessorTestContext context);
+
         /// <summary>
         /// Verifies the <paramref name="result"/> of this test.
         /// </summary>
-        /// <param name="request">Request that was executed by the query.</param>
+        /// <param name="request">Request that was executed by the query.</param>        
+        /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>
-        /// <param name="result">The result of this test.</param>                
-        void Then(TRequest request, MicroProcessorTestContext context, IExecuteQueryResult<TResponse> result);
+        void Then(TRequest request, IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context);
     }
 }

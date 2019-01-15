@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Kingo.MicroServices
 {
@@ -23,22 +21,28 @@ namespace Kingo.MicroServices
             public void IsExpectedException<TException>(Action<TException> assertion = null) where TException : Exception =>
                 _result.IsExpectedException(assertion);
 
-            public void IsEmptyEventStream() =>
-                _result.IsExpectedEventStream(0, stream => stream);
+            public void IsExpectedEventStream(Action<EventStream> assertion = null)
+            {
+                _result.IsExpectedEventStream(stream =>
+                {
+                    assertion?.Invoke(stream);
+                    return stream;
+                });
+            }
         }
 
         #endregion
 
         /// <inheritdoc />
-        protected sealed override void Then(TMessage message, MicroProcessorTestContext context, IHandleMessageResult<EventStream> result) =>
-            Then(message, context, new HandleMessageResult(result));
+        protected sealed override void Then(TMessage message, IHandleMessageResult<EventStream> result, MicroProcessorTestContext context) =>
+            Then(message, new HandleMessageResult(result), context);
 
         /// <summary>
         /// Verifies the <paramref name="result"/> of this test.
         /// </summary>
-        /// <param name="message">The message that was handled by this test.</param>
+        /// <param name="message">The message that was handled by this test.</param>        
+        /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        /// <param name="result">The result of this test.</param>  
-        protected abstract void Then(TMessage message, MicroProcessorTestContext context, IHandleMessageResult result);
+        protected abstract void Then(TMessage message, IHandleMessageResult result, MicroProcessorTestContext context);
     }
 }

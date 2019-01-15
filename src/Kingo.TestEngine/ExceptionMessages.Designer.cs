@@ -61,6 +61,69 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event of type &apos;{0}&apos; not found at index &apos;{1}&apos;: the EventStream contains only {2} event(s)..
+        /// </summary>
+        internal static string EventStream_EventNotFound {
+            get {
+                return ResourceManager.GetString("EventStream_EventNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected event of type &apos;{0}&apos; at index &apos;{1}&apos;, but found event of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string EventStream_EventNotOfExpectedType {
+            get {
+                return ResourceManager.GetString("EventStream_EventNotOfExpectedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot retrieve the EventStream of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
+        /// </summary>
+        internal static string MicroProcessorTestContext_EventStreamNotFound {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestContext_EventStreamNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot save the EventStream of &apos;{0}&apos; because a previous result of this test has already been saved..
+        /// </summary>
+        internal static string MicroProcessorTestContext_TestAlreadyRun {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestContext_TestAlreadyRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an exception of type &apos;{0}&apos;, but encountered an exception of type &apos;{1}&apos; instead..
+        /// </summary>
+        internal static string MicroProcessorTestResult_ExceptionNotOfExpectedType {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestResult_ExceptionNotOfExpectedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expected exception of type &apos;{0}&apos; was not thrown..
+        /// </summary>
+        internal static string MicroProcessorTestResult_ExceptionNotThrown {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestResult_ExceptionNotThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected exception of type &apos;{0}&apos; was thrown..
+        /// </summary>
+        internal static string MicroProcessorTestResult_ExceptionThrown {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestResult_ExceptionThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1..
         /// </summary>
         internal static string RequestMessageTestBase_InvalidErrorCount {

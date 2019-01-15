@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Kingo.MicroServices
 {
@@ -13,6 +11,8 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Verifies that no events were published.
         /// </summary>
-        void IsEmptyEventStream();
+        void IsExpectedEventStream(Action<EventStream> assertion = null);
+
+
     }
 }

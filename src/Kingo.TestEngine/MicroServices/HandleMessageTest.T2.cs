@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
@@ -9,18 +7,28 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
     /// <typeparam name="TEventStream">Type of the resulting event stream.</typeparam>
-    public abstract class HandleMessageTest<TMessage, TEventStream> : MicroProcessorTest<TMessage>, IHandleMessageTest<TMessage, TEventStream>
+    public abstract class HandleMessageTest<TMessage, TEventStream> : MicroProcessorTest, IHandleMessageTest<TMessage, TEventStream>
         where TEventStream : EventStream
     {
-        void IHandleMessageTest<TMessage, TEventStream>.Then(TMessage message, MicroProcessorTestContext context, IHandleMessageResult<TEventStream> result) =>
-            Then(message, context, result);
+        Task IHandleMessageTest<TMessage, TEventStream>.WhenAsync(IMessageProcessor<TMessage> processor, MicroProcessorTestContext context) =>
+            WhenAsync(processor, context);
+
+        /// <summary>
+        /// Executes this test by handling a specific message using the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">The processor to handle the message with.</param>
+        /// <param name="context">The context in which the test is running.</param> 
+        protected abstract Task WhenAsync(IMessageProcessor<TMessage> processor, MicroProcessorTestContext context);
+
+        void IHandleMessageTest<TMessage, TEventStream>.Then(TMessage message, IHandleMessageResult<TEventStream> result, MicroProcessorTestContext context) =>
+            Then(message, result, context);
 
         /// <summary>
         /// Verifies the <paramref name="result"/> of this test.
         /// </summary>
-        /// <param name="message">The message that was handled by this test.</param>
+        /// <param name="message">The message that was handled by this test.</param>        
+        /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        /// <param name="result">The result of this test.</param>  
-        protected abstract void Then(TMessage message, MicroProcessorTestContext context, IHandleMessageResult<TEventStream> result);
+        protected abstract void Then(TMessage message, IHandleMessageResult<TEventStream> result, MicroProcessorTestContext context);
     }
 }

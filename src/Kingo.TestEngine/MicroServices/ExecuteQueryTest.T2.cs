@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
@@ -9,17 +7,27 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TRequest">Type of the request executed by the query.</typeparam>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public abstract class ExecuteQueryTest<TRequest, TResponse> : MicroProcessorTest<IQuery<TRequest, TResponse>>, IExecuteQueryTest<TRequest, TResponse>
+    public abstract class ExecuteQueryTest<TRequest, TResponse> : MicroProcessorTest, IExecuteQueryTest<TRequest, TResponse>
     {
-        void IExecuteQueryTest<TRequest, TResponse>.Then(TRequest request, MicroProcessorTestContext context, IExecuteQueryResult<TResponse> result) =>
-            Then(request, context, result);
+        Task IExecuteQueryTest<TRequest, TResponse>.WhenAsync(IQueryProcessor<TRequest, TResponse> processor, MicroProcessorTestContext context) =>
+            WhenAsync(processor, context);
+
+        /// <summary>
+        /// Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">The processor to execute the query with.</param>
+        /// <param name="context">The context in which the test is running.</param> 
+        protected abstract Task WhenAsync(IQueryProcessor<TRequest, TResponse> processor, MicroProcessorTestContext context);
+
+        void IExecuteQueryTest<TRequest, TResponse>.Then(TRequest request, IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context) =>
+            Then(request, result, context);
 
         /// <summary>
         /// Verifies the <paramref name="result"/> of this test.
         /// </summary>
-        /// <param name="request">Request that was executed by the query.</param>
-        /// <param name="context">The context in which the test is running.</param>
+        /// <param name="request">Request that was executed by the query.</param>        
         /// <param name="result">The result of this test.</param>
-        protected abstract void Then(TRequest request, MicroProcessorTestContext context, IExecuteQueryResult<TResponse> result);
+        /// <param name="context">The context in which the test is running.</param>
+        protected abstract void Then(TRequest request, IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context);
     }
 }

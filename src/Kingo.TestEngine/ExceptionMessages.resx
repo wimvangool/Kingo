@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EventStream_EventNotFound" xml:space="preserve">
+    <value>Event of type '{0}' not found at index '{1}': the EventStream contains only {2} event(s).</value>
+  </data>
+  <data name="EventStream_EventNotOfExpectedType" xml:space="preserve">
+    <value>Expected event of type '{0}' at index '{1}', but found event of type '{2}'.</value>
+  </data>
+  <data name="MicroProcessorTestContext_EventStreamNotFound" xml:space="preserve">
+    <value>Cannot retrieve the EventStream of '{0}' because its results haven't been saved in this context.</value>
+  </data>
+  <data name="MicroProcessorTestContext_TestAlreadyRun" xml:space="preserve">
+    <value>Cannot save the EventStream of '{0}' because a previous result of this test has already been saved.</value>
+  </data>
+  <data name="MicroProcessorTestResult_ExceptionNotOfExpectedType" xml:space="preserve">
+    <value>Expected an exception of type '{0}', but encountered an exception of type '{1}' instead.</value>
+  </data>
+  <data name="MicroProcessorTestResult_ExceptionNotThrown" xml:space="preserve">
+    <value>The expected exception of type '{0}' was not thrown.</value>
+  </data>
+  <data name="MicroProcessorTestResult_ExceptionThrown" xml:space="preserve">
+    <value>An unexpected exception of type '{0}' was thrown.</value>
+  </data>
   <data name="RequestMessageTestBase_InvalidErrorCount" xml:space="preserve">
     <value>The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1.</value>
   </data>

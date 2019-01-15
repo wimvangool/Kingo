@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
@@ -8,16 +6,26 @@ namespace Kingo.MicroServices
     /// Serves as a base-class for all test's that execute a query and return the resulting response.
     /// </summary>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public abstract class ExecuteQueryTest<TResponse> : MicroProcessorTest<IQuery<TResponse>>, IExecuteQueryTest<TResponse>
+    public abstract class ExecuteQueryTest<TResponse> : MicroProcessorTest, IExecuteQueryTest<TResponse>
     {
-        void IExecuteQueryTest<TResponse>.Then(MicroProcessorTestContext context, IExecuteQueryResult<TResponse> result) =>
-            Then(context, result);
+        Task IExecuteQueryTest<TResponse>.WhenAsync(IQueryProcessor<TResponse> processor, MicroProcessorTestContext context) =>
+            WhenAsync(processor, context);
+
+        /// <summary>
+        /// Executes this test by executing a specific query using the specified <paramref name="processor"/>.
+        /// </summary>
+        /// <param name="processor">The processor to execute the query with.</param>
+        /// <param name="context">The context in which the test is running.</param>    
+        protected abstract Task WhenAsync(IQueryProcessor<TResponse> processor, MicroProcessorTestContext context);
+
+        void IExecuteQueryTest<TResponse>.Then(IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context) =>
+            Then(result, context);
 
         /// <summary>
         /// Verifies the <paramref name="result"/> of this test.
         /// </summary>
         /// <param name="context">The context in which the test is running.</param>
         /// <param name="result">The result of this test.</param>
-        protected abstract void Then(MicroProcessorTestContext context, IExecuteQueryResult<TResponse> result);
+        protected abstract void Then(IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context);
     }
 }

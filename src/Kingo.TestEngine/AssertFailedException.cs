@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
-namespace Kingo.MicroServices
+namespace Kingo
 {
     /// <summary>
     /// This exception is thrown by the test-engine when an assertion fails.
