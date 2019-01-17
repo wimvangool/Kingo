@@ -1,19 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents a set of published events by a test.
+    /// Represents a set of published events.
     /// </summary>
     public class EventStream : ReadOnlyList<object>
     {
+        /// <summary>
+        /// Represents an empty event stream.
+        /// </summary>
+        public static readonly EventStream Empty = new EventStream(Enumerable.Empty<object>());
+
         private readonly object[] _events;
 
-        internal EventStream(IEnumerable<object> events)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStream" /> class.
+        /// </summary>
+        /// <param name="events">The events of this stream.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="events"/> is <c>null</c>.
+        /// </exception>
+        public EventStream(IEnumerable<object> events)
         {
-            _events = events.ToArray();
+            _events = events.WhereNotNull().ToArray();
         }
 
         /// <summary>
@@ -33,6 +46,10 @@ namespace Kingo.MicroServices
         }
 
         #region [====== ReadOnlyList ======]
+
+        /// <inheritdoc />
+        public override object this[int index] =>
+            _events[index];
 
         /// <inheritdoc />
         public override int Count =>

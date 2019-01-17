@@ -18,30 +18,22 @@ namespace Kingo
         }
 
         /// <inheritdoc />
-        public T this[int index]
+        public virtual T this[int index]
         {
             get
             {
                 if (0 <= index && index < Count)
                 {
-                    return GetItem(index);
+                    return this.ElementAt(index);
                 }
                 throw NewIndexOutOfRangeException(index, Count);
             }
         }
 
-        /// <summary>
-        /// Returns the item at the specified <paramref name="index"/>, where <paramref name="index"/> has been range-checked.
-        /// By default, this method simply iterates the list, but implementing classes can optimize this method by overriding it.
-        /// </summary>
-        /// <param name="index">Index of the item to return.</param>
-        /// <returns>The item at the specified <paramref name="index"/>.</returns>
-        protected virtual T GetItem(int index) =>
-             this.ElementAt(index);
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
 
         /// <inheritdoc />
-        public abstract IEnumerator<T> GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public abstract IEnumerator<T> GetEnumerator();        
     }
 }
