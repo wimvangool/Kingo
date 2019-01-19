@@ -3,10 +3,10 @@
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents the result of a <see cref="IHandleMessageTest{TMessage,TEventStream}"/>.
+    /// Represents the result of a <see cref="IMessageHandlerTest{TMessage,TEventStream}"/>.
     /// </summary>
     /// <typeparam name="TEventStream">Type of the event-stream produced by the test.</typeparam>
-    public interface IHandleMessageResult<in TEventStream> : IMicroProcessorTestResult
+    public interface IMessageHandlerResult<in TEventStream> : IMicroProcessorTestResult
         where TEventStream : EventStream
     {
         /// <summary>

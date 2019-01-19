@@ -6,9 +6,9 @@ namespace Kingo.MicroServices
     /// Serves as a base-class for all test's that execute a query and return the resulting response.
     /// </summary>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public abstract class ExecuteQueryTest<TResponse> : MicroProcessorTest, IExecuteQueryTest<TResponse>
+    public abstract class QueryTest<TResponse> : MicroProcessorTest, IQueryTest<TResponse>
     {
-        Task IExecuteQueryTest<TResponse>.WhenAsync(IQueryProcessor<TResponse> processor, MicroProcessorTestContext context) =>
+        Task IQueryTest<TResponse>.WhenAsync(IQueryProcessor<TResponse> processor, MicroProcessorTestContext context) =>
             WhenAsync(processor, context);
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace Kingo.MicroServices
         /// <param name="context">The context in which the test is running.</param>    
         protected abstract Task WhenAsync(IQueryProcessor<TResponse> processor, MicroProcessorTestContext context);
 
-        void IExecuteQueryTest<TResponse>.Then(IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context) =>
+        void IQueryTest<TResponse>.Then(IQueryResult<TResponse> result, MicroProcessorTestContext context) =>
             Then(result, context);
 
         /// <summary>
@@ -26,6 +26,6 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="context">The context in which the test is running.</param>
         /// <param name="result">The result of this test.</param>
-        protected abstract void Then(IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context);
+        protected abstract void Then(IQueryResult<TResponse> result, MicroProcessorTestContext context);
     }
 }

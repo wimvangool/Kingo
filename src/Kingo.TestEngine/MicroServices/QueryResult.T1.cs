@@ -2,11 +2,11 @@
 
 namespace Kingo.MicroServices
 {
-    internal sealed class ExecuteQueryResult<TResponse> : MicroProcessorTestResult, IExecuteQueryResult<TResponse>
+    internal sealed class QueryResult<TResponse> : MicroProcessorTestResult, IQueryResult<TResponse>
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroProcessorTestResult, IExecuteQueryResult<TResponse>
+        private sealed class ExceptionResult : MicroProcessorTestResult, IQueryResult<TResponse>
         {
             private readonly Exception _exception;
 
@@ -26,7 +26,7 @@ namespace Kingo.MicroServices
 
         #region [====== ResponseResult ======]
 
-        private sealed class ResponseResult : MicroProcessorTestResult, IExecuteQueryResult<TResponse>
+        private sealed class ResponseResult : MicroProcessorTestResult, IQueryResult<TResponse>
         {
             private readonly TResponse _response;
 
@@ -50,14 +50,14 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly IExecuteQueryResult<TResponse> _result;
+        private readonly IQueryResult<TResponse> _result;
 
-        public ExecuteQueryResult(Exception exception)
+        public QueryResult(Exception exception)
         {
             _result = new ExceptionResult(exception);
         }
 
-        public ExecuteQueryResult(TResponse response)
+        public QueryResult(TResponse response)
         {
             _result = new ResponseResult(response);
         }        

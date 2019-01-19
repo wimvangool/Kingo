@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that is handled by this test.</typeparam>
     /// <typeparam name="TEventStream">Type of the event-stream that is produced by this test.</typeparam>
-    public interface IHandleMessageTest<TMessage, out TEventStream> : IMicroProcessorTest
+    public interface IMessageHandlerTest<TMessage, out TEventStream> : IMicroProcessorTest
         where TEventStream : EventStream
     {
         /// <summary>
@@ -24,6 +24,6 @@ namespace Kingo.MicroServices
         /// <param name="message">The message that was handled by this test.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        void Then(TMessage message, IHandleMessageResult<TEventStream> result, MicroProcessorTestContext context);
+        void Then(TMessage message, IMessageHandlerResult<TEventStream> result, MicroProcessorTestContext context);
     }
 }

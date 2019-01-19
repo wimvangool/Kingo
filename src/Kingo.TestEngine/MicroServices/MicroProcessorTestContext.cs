@@ -71,7 +71,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentException">
         /// No event-stream produced by the specified <paramref name="test"/> was stored in this context.
         /// </exception>
-        public TEventStream GetEventStream<TMessage, TEventStream>(IHandleMessageTest<TMessage, TEventStream> test) where TEventStream : EventStream
+        public TEventStream GetEventStream<TMessage, TEventStream>(IMessageHandlerTest<TMessage, TEventStream> test) where TEventStream : EventStream
         {
             if (test == null)
             {

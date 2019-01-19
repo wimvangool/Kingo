@@ -7,7 +7,7 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TRequest">Type of the request of the test.</typeparam>
     /// <typeparam name="TResponse">Type of the response of the test.</typeparam>
-    public interface IExecuteQueryTest<TRequest, TResponse> : IMicroProcessorTest
+    public interface IQueryTest<TRequest, TResponse> : IMicroProcessorTest
     {
         /// <summary>
         /// Executes this test by executing a specific query using the specified <paramref name="processor"/>.
@@ -22,6 +22,6 @@ namespace Kingo.MicroServices
         /// <param name="request">Request that was executed by the query.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>
-        void Then(TRequest request, IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context);
+        void Then(TRequest request, IQueryResult<TResponse> result, MicroProcessorTestContext context);
     }
 }

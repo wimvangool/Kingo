@@ -5,15 +5,15 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Serves as a base-class for all test's that handle a message and return an empty stream or throw an exception.
     /// </summary>
-    public abstract class HandleMessageTest<TMessage> : HandleMessageTest<TMessage, EventStream>
+    public abstract class MessageHandlerTest<TMessage> : MessageHandlerTest<TMessage, EventStream>
     {
         #region [====== HandleMessageResult ======]
 
-        private sealed class HandleMessageResult : IHandleMessageResult
+        private sealed class HandleMessageResult : IMessageHandlerResult
         {
-            private readonly IHandleMessageResult<EventStream> _result;
+            private readonly IMessageHandlerResult<EventStream> _result;
 
-            public HandleMessageResult(IHandleMessageResult<EventStream> result)
+            public HandleMessageResult(IMessageHandlerResult<EventStream> result)
             {
                 _result = result;
             }
@@ -34,7 +34,7 @@ namespace Kingo.MicroServices
         #endregion
 
         /// <inheritdoc />
-        protected sealed override void Then(TMessage message, IHandleMessageResult<EventStream> result, MicroProcessorTestContext context) =>
+        protected sealed override void Then(TMessage message, IMessageHandlerResult<EventStream> result, MicroProcessorTestContext context) =>
             Then(message, new HandleMessageResult(result), context);
 
         /// <summary>
@@ -43,6 +43,6 @@ namespace Kingo.MicroServices
         /// <param name="message">The message that was handled by this test.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>                
-        protected abstract void Then(TMessage message, IHandleMessageResult result, MicroProcessorTestContext context);
+        protected abstract void Then(TMessage message, IMessageHandlerResult result, MicroProcessorTestContext context);
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Kingo.MicroServices
 {
-    internal sealed class HandleMessageResult<TEventStream> : MicroProcessorTestResult, IHandleMessageResult<TEventStream>
+    internal sealed class MessageHandlerResult<TEventStream> : MicroProcessorTestResult, IMessageHandlerResult<TEventStream>
         where TEventStream : EventStream
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroProcessorTestResult, IHandleMessageResult<TEventStream>
+        private sealed class ExceptionResult : MicroProcessorTestResult, IMessageHandlerResult<TEventStream>
         {
             private readonly Exception _exception;
 
@@ -27,7 +27,7 @@ namespace Kingo.MicroServices
 
         #region [====== EventStreamResult ======]
 
-        private sealed class EventStreamResult : MicroProcessorTestResult, IHandleMessageResult<TEventStream>
+        private sealed class EventStreamResult : MicroProcessorTestResult, IMessageHandlerResult<TEventStream>
         {                        
             private readonly EventStream _stream;
             private readonly Action<TEventStream> _streamConsumer;
@@ -53,14 +53,14 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        private readonly IHandleMessageResult<TEventStream> _result;
+        private readonly IMessageHandlerResult<TEventStream> _result;
 
-        public HandleMessageResult(Exception exception)
+        public MessageHandlerResult(Exception exception)
         {
             _result = new ExceptionResult(exception);
         }
 
-        public HandleMessageResult(EventStream stream, Action<TEventStream> streamConsumer)
+        public MessageHandlerResult(EventStream stream, Action<TEventStream> streamConsumer)
         {
             _result = new EventStreamResult(stream, streamConsumer);
         }

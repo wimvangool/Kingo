@@ -7,9 +7,9 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TRequest">Type of the request executed by the query.</typeparam>
     /// <typeparam name="TResponse">Type of the response returned by the query.</typeparam>
-    public abstract class ExecuteQueryTest<TRequest, TResponse> : MicroProcessorTest, IExecuteQueryTest<TRequest, TResponse>
+    public abstract class QueryTest<TRequest, TResponse> : MicroProcessorTest, IQueryTest<TRequest, TResponse>
     {
-        Task IExecuteQueryTest<TRequest, TResponse>.WhenAsync(IQueryProcessor<TRequest, TResponse> processor, MicroProcessorTestContext context) =>
+        Task IQueryTest<TRequest, TResponse>.WhenAsync(IQueryProcessor<TRequest, TResponse> processor, MicroProcessorTestContext context) =>
             WhenAsync(processor, context);
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace Kingo.MicroServices
         /// <param name="context">The context in which the test is running.</param> 
         protected abstract Task WhenAsync(IQueryProcessor<TRequest, TResponse> processor, MicroProcessorTestContext context);
 
-        void IExecuteQueryTest<TRequest, TResponse>.Then(TRequest request, IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context) =>
+        void IQueryTest<TRequest, TResponse>.Then(TRequest request, IQueryResult<TResponse> result, MicroProcessorTestContext context) =>
             Then(request, result, context);
 
         /// <summary>
@@ -28,6 +28,6 @@ namespace Kingo.MicroServices
         /// <param name="request">Request that was executed by the query.</param>        
         /// <param name="result">The result of this test.</param>
         /// <param name="context">The context in which the test is running.</param>
-        protected abstract void Then(TRequest request, IExecuteQueryResult<TResponse> result, MicroProcessorTestContext context);
+        protected abstract void Then(TRequest request, IQueryResult<TResponse> result, MicroProcessorTestContext context);
     }
 }
