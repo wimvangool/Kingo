@@ -51,7 +51,9 @@ namespace Kingo.MicroServices
         }            
 
         public override async Task<MessageStream> InvokeAsync()
-        {            
+        {
+            var scope = MicroProcessorContext.CreateScope(_context);
+
             try
             {
                 var stream = await HandleMessageAsync().ConfigureAwait(false);
@@ -93,6 +95,10 @@ namespace Kingo.MicroServices
             {
                 throw InternalServerErrorException.FromInnerException(exception);
             }
+            finally
+            {
+                scope.Dispose();
+            }
         }
 
         private async Task<MessageStream> HandleMessageAsync()
@@ -130,19 +136,16 @@ namespace Kingo.MicroServices
 
         private async Task<MessageStream> InvokeMessageHandlerAsyncCore(MessageHandler handler)
         {
-            using (MicroProcessorContext.CreateScope(_context))
+            _context.Token.ThrowIfCancellationRequested();
+
+            try
+            {
+                return (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync().ConfigureAwait(false)).GetValue();
+            }
+            finally
             {
                 _context.Token.ThrowIfCancellationRequested();
-
-                try
-                {
-                    return (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync().ConfigureAwait(false)).GetValue();
-                }
-                finally
-                {
-                    _context.Token.ThrowIfCancellationRequested();
-                }                
-            }
+            }            
         }        
     }
 }

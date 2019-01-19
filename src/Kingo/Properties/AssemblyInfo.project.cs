@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 
 [assembly: AssemblyTitle("Kingo")]
-[assembly: AssemblyDescription("A general purpose library for speeding up the development of .NET applications, especially targeting event-driven applications.")]
+[assembly: AssemblyDescription("A general purpose library for building event-driven micro-services.")]
 
 [assembly: InternalsVisibleTo("Kingo.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

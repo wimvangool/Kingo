@@ -108,6 +108,19 @@ namespace Kingo.MicroServices
             Assert.AreEqual(4, await CreateProcessor().HandleAsync(string.Empty));
         }
 
+        [TestMethod]
+        public async Task HandleAsync_HandlesMessageInsideDependencyContext()
+        {
+            Assert.IsNull(DependencyContext.Current);
+
+            Assert.AreEqual(1, await CreateProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                Assert.IsNotNull(DependencyContext.Current);
+            }));
+
+            Assert.IsNull(DependencyContext.Current);
+        }
+
         #endregion        
 
         #region [====== HandleAsync - Exception Handling ======]
@@ -590,6 +603,20 @@ namespace Kingo.MicroServices
             });
         }
 
+        [TestMethod]
+        public async Task ExecuteAsync1_ExecutesQueryInsideDependencyContext()
+        {
+            Assert.IsNull(DependencyContext.Current);
+
+            await CreateProcessor().ExecuteAsync(context =>
+            {
+                Assert.IsNotNull(DependencyContext.Current);
+                return new object();
+            });
+
+            Assert.IsNull(DependencyContext.Current);
+        }
+
         #endregion
 
         #region [====== ExecuteAsync2 ======]
@@ -671,6 +698,20 @@ namespace Kingo.MicroServices
                 Assert.AreEqual(1, context.Operation.StackTrace().Count());
                 return new object();
             });
+        }
+
+        [TestMethod]
+        public async Task ExecuteAsync2_ExecutesQueryInsideDependencyContext()
+        {
+            Assert.IsNull(DependencyContext.Current);
+
+            await CreateProcessor().ExecuteAsync(new object(), (request, context) =>
+            {
+                Assert.IsNotNull(DependencyContext.Current);
+                return new object();
+            });
+
+            Assert.IsNull(DependencyContext.Current);
         }
 
         #endregion

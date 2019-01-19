@@ -23,7 +23,7 @@ namespace Kingo.MicroServices
         public abstract IServiceProvider ServiceProvider
         {
             get;
-        }
+        }                
 
         #region [====== SecurityContext ======]
 
@@ -65,6 +65,11 @@ namespace Kingo.MicroServices
         public override string ToString() =>
             string.Join(" -> ", Operation.StackTrace());
 
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region [====== Current ======]
@@ -78,8 +83,8 @@ namespace Kingo.MicroServices
             _Context.Current;
 
         internal static IDisposable CreateScope(MicroProcessorContext context) =>
-            _Context.OverrideAsyncLocal(context);
+            DependencyContext.CreateScope(_Context.OverrideAsyncLocal(context));
 
-        #endregion
+        #endregion        
     }
 }

@@ -37,29 +37,10 @@ namespace Kingo
         /// If <paramref name="disposing"/> is <c>true</c>, this method will dispose any managed resources immediately.
         /// Otherwise, only unmanaged resources will be released.
         /// </remarks>
-        protected void Dispose(bool disposing)
-        {
-            if (IsDisposed)
-            {
-                return;
-            }
-            if (disposing)
-            {
-                DisposeManagedResources();
-            }
-            DisposeUnmanagedResources();
+        protected virtual void Dispose(bool disposing)
+        {            
             IsDisposed = true;
-        }
-
-        /// <summary>
-        /// Disposes all managed resources owned by this instance.
-        /// </summary>
-        protected virtual void DisposeManagedResources() { }
-
-        /// <summary>
-        /// Disposed all unmanaged resources own by this instance.
-        /// </summary>
-        protected virtual void DisposeUnmanagedResources() { }
+        }        
 
         /// <summary>
         /// Creates and returns a new <see cref="ObjectDisposedException" /> indicating this instance has been disposed.
