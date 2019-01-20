@@ -19,7 +19,7 @@ namespace Kingo.MicroServices
             {
                 return attribute.SupportedOperationTypes;
             }
-            return MicroProcessorOperationTypes.All;
+            return MessageHandlerConfiguration.DefaultOperationTypes;
         }
 
         public override bool TryCreateMessageHandler<TOther>(TOther message, MessageHandlerContext context, out MessageHandler handler)

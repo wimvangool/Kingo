@@ -13,7 +13,7 @@
         protected ExceptionHandlingStageAttribute() :
             base(MicroProcessorFilterStage.ExceptionHandlingStage)
         {
-            OperationTypes = MicroProcessorOperationTypes.Input;
+            OperationTypes = MicroProcessorOperationTypes.AnyInput;
         }
     }
 }

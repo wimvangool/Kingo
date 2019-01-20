@@ -141,6 +141,6 @@ namespace Kingo.MicroServices
             MicroProcessorContext.CreateScope(context);
 
         private static QueryContext CreateQueryContext(CancellationToken? token, object message = null) =>
-            new QueryContext(new NullServiceProvider(), Thread.CurrentPrincipal, token, message);
+            new QueryContext(ServiceProvider.Default, Thread.CurrentPrincipal, token, message);
     }
 }

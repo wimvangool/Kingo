@@ -1,25 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Kingo.MicroServices.Configuration;
 
 namespace Kingo.MicroServices
 {
     internal sealed class MicroProcessorPipelineFactory : IMicroProcessorPipelineFactory
-    {
-        #region [====== NullFactory ======]
-
-        private sealed class NullPipelineFactory : IMicroProcessorPipelineFactory
-        {
-            public MessageHandler CreatePipeline(MessageHandler handler) =>
-                handler ?? throw new ArgumentNullException(nameof(handler));
-
-            public Query<TResponse> CreatePipeline<TResponse>(Query<TResponse> query) =>
-                query ?? throw new ArgumentNullException(nameof(query));
-        }
-
-        public static readonly IMicroProcessorPipelineFactory Null = new NullPipelineFactory();
-
-        #endregion
+    {        
+        public static readonly IMicroProcessorPipelineFactory Null = new MicroProcessorPipelineFactoryBuilder().Build();        
 
         private readonly IMicroProcessorPipelineFactory[] _parts;
 
@@ -27,6 +14,9 @@ namespace Kingo.MicroServices
         {
             _parts = parts.Reverse().ToArray();
         }
+
+        public override string ToString() =>
+            GetType().FriendlyName();
 
         public MessageHandler CreatePipeline(MessageHandler handler)
         {

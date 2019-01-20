@@ -17,10 +17,6 @@
     <None Include="..\Kingo.snk" Link="Properties\Kingo.snk" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Unity" Version="5.8.13" />
-  </ItemGroup>
-
   <ItemGroup>    
     <ProjectReference Include="..\Kingo\02.Kingo.csproj" />
   </ItemGroup>

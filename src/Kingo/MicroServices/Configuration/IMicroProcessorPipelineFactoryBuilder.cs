@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// When implemented by a class, represents a builder of a <see cref="IMicroProcessorPipelineFactory"/>, which

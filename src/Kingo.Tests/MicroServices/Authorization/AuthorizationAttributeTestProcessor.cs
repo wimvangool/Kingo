@@ -1,4 +1,5 @@
 ﻿using System.Security.Principal;
+using Kingo.MicroServices.Configuration;
 
 namespace Kingo.MicroServices.Authorization
 {

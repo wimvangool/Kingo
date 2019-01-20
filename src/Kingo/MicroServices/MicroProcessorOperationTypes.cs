@@ -21,26 +21,26 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Represents the operation of handling an input-message (command or event).
         /// </summary>
-        InputMessageHandler = 2,
+        InputStream = 2,
 
         /// <summary>
         /// Represents the operation of handling an output-message (event).
         /// </summary>
-        OutputMessageHandler = 4,        
+        OutputStream = 4,        
 
         /// <summary>
-        /// Represents all operation types that are input-processing operations.
+        /// Represents any operation type that is an input-processing operation (command, event or query).
         /// </summary>
-        Input = InputMessageHandler | Query,        
+        AnyInput = InputStream | Query,        
 
         /// <summary>
-        /// Represents all operation types that are message-processing operations (command or event).
+        /// Represents any operation type that are message-processing operations (command or event).
         /// </summary>
-        MessageHandler = InputMessageHandler | OutputMessageHandler,
+        AnyStream = InputStream | OutputStream,
 
         /// <summary>
         /// Represents all operation types.
         /// </summary>
-        All = Query | MessageHandler
+        All = Query | AnyStream
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.MicroServices.Configuration;
 using Kingo.MicroServices.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,7 +35,7 @@ namespace Kingo.MicroServices
                 Task.CompletedTask;
         }
 
-        [MessageHandler(ServiceLifetime.Transient, MicroProcessorOperationTypes.OutputMessageHandler)]
+        [MessageHandler(ServiceLifetime.Transient, MicroProcessorOperationTypes.OutputStream)]
         private sealed class MessageHandlerExceptionThrower : IMessageHandler<object>
         {
             public Task HandleAsync(object message, MessageHandlerContext context) =>
@@ -54,7 +55,7 @@ namespace Kingo.MicroServices
 
         public MicroProcessorTest()
         {
-            _messageHandlers = new SimpleMessageHandlerFactoryBuilder();            
+            _messageHandlers = new MessageHandlerFactoryBuilder();                            
             _serviceBus = new MicroServiceBusStub();
         }
 
@@ -82,8 +83,8 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ReturnsExpectedInvocationCount_IfMultipleHandlersAreResolvedForMessage()
         {
-            _messageHandlers.RegisterType<ObjectHandler>();
-            _messageHandlers.RegisterType<StringHandler>();
+            _messageHandlers.Add<ObjectHandler>();
+            _messageHandlers.Add<StringHandler>();
 
             Assert.AreEqual(2, await CreateProcessor().HandleAsync(string.Empty));
         }
@@ -91,7 +92,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ReturnsExpectedInvocationCount_IfOneHandlerTriggersAnotherHandler()
         {
-            _messageHandlers.RegisterType<ObjectHandler>();
+            _messageHandlers.Add<ObjectHandler>();
 
             Assert.AreEqual(2, await CreateProcessor().HandleAsync(string.Empty, (message, context) =>
             {
@@ -102,24 +103,11 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ReturnsExpectedInvocationCount_IfOneHandlerIsInvokedTwiceForSameMessage()
         {
-            _messageHandlers.Register(new ObjectAndStringHandler());
-            _messageHandlers.RegisterType<ObjectAndStringHandler>();
+            _messageHandlers.Add(new ObjectAndStringHandler());
+            _messageHandlers.Add<ObjectAndStringHandler>();
 
             Assert.AreEqual(4, await CreateProcessor().HandleAsync(string.Empty));
-        }
-
-        [TestMethod]
-        public async Task HandleAsync_HandlesMessageInsideDependencyContext()
-        {
-            Assert.IsNull(DependencyContext.Current);
-
-            Assert.AreEqual(1, await CreateProcessor().HandleAsync(new object(), (message, context) =>
-            {
-                Assert.IsNotNull(DependencyContext.Current);
-            }));
-
-            Assert.IsNull(DependencyContext.Current);
-        }
+        }        
 
         #endregion        
 
@@ -161,7 +149,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ThrowsInternalServerErrorException_IfOutputMessageHandlerThrowsMessageHandlerException_And_InputMessageIsCommand()
         {
-            _messageHandlers.RegisterType<MessageHandlerExceptionThrower>();
+            _messageHandlers.Add<MessageHandlerExceptionThrower>();
 
             var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().HandleAsync(new SomeCommand(), (command, context) =>
             {
@@ -218,7 +206,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_ThrowsInternalServerErrorException_IfOutputMessageHandlerThrowsMessageHandlerException_And_InputMessageIsEvent()
         {
-            _messageHandlers.RegisterType<MessageHandlerExceptionThrower>();
+            _messageHandlers.Add<MessageHandlerExceptionThrower>();
 
             var exception = await Assert.ThrowsExceptionAsync<InternalServerErrorException>(() => CreateProcessor().HandleAsync(new object(), (message, context) =>
             {
@@ -434,10 +422,10 @@ namespace Kingo.MicroServices
             var eventA = string.Empty;
             var eventB = new object();
 
-            _messageHandlers.Register<string>((message, context) =>
+            _messageHandlers.Add<string>((message, context) =>
             {
                 context.EventBus.Publish(eventB);
-            });
+            }, MicroProcessorOperationTypes.OutputStream);
 
             await CreateProcessor().HandleAsync(new object(), (message, context) =>
             {
@@ -455,7 +443,7 @@ namespace Kingo.MicroServices
             var eventA = string.Empty;
             var eventB = new object();
 
-            _messageHandlers.Register<string>((message, context) =>
+            _messageHandlers.Add<string>((message, context) =>
             {
                 context.EventBus.Publish(eventB);
             });
@@ -482,7 +470,7 @@ namespace Kingo.MicroServices
             {
                 Assert.AreSame(command, message);
                 Assert.AreSame(command, context.Operation.Message);
-                Assert.AreEqual(MicroProcessorOperationTypes.InputMessageHandler, context.Operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.InputStream, context.Operation.Type);
                 Assert.AreEqual(1, context.Operation.StackTrace().Count());
             });
         }
@@ -492,11 +480,11 @@ namespace Kingo.MicroServices
         {
             var @event = new object();
 
-            _messageHandlers.Register<object>((message, context) =>
+            _messageHandlers.Add<object>((message, context) =>
             {
                 Assert.AreSame(@event, message);
                 Assert.AreSame(@event, context.Operation.Message);
-                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessageHandler, context.Operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputStream, context.Operation.Type);
                 Assert.AreEqual(2, context.Operation.StackTrace().Count());
             });
 
@@ -511,18 +499,18 @@ namespace Kingo.MicroServices
         {
             var @event = string.Empty;
 
-            _messageHandlers.Register<int>((message, context) =>
+            _messageHandlers.Add<int>((message, context) =>
             {
                 context.EventBus.Publish(@event);
-            });
+            }, MicroProcessorOperationTypes.OutputStream);
 
-            _messageHandlers.Register<string>((message, context) =>
+            _messageHandlers.Add<string>((message, context) =>
             {
                 Assert.AreSame(@event, message);
                 Assert.AreSame(@event, context.Operation.Message);
-                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessageHandler, context.Operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputStream, context.Operation.Type);
                 Assert.AreEqual(3, context.Operation.StackTrace().Count());
-            });
+            }, MicroProcessorOperationTypes.OutputStream);
 
             Assert.AreEqual(3, await CreateProcessor().HandleAsync(new object(), (message, context) =>
             {
@@ -601,20 +589,6 @@ namespace Kingo.MicroServices
                 Assert.AreEqual(1, context.Operation.StackTrace().Count());
                 return new object();
             });
-        }
-
-        [TestMethod]
-        public async Task ExecuteAsync1_ExecutesQueryInsideDependencyContext()
-        {
-            Assert.IsNull(DependencyContext.Current);
-
-            await CreateProcessor().ExecuteAsync(context =>
-            {
-                Assert.IsNotNull(DependencyContext.Current);
-                return new object();
-            });
-
-            Assert.IsNull(DependencyContext.Current);
         }
 
         #endregion
@@ -700,23 +674,9 @@ namespace Kingo.MicroServices
             });
         }
 
-        [TestMethod]
-        public async Task ExecuteAsync2_ExecutesQueryInsideDependencyContext()
-        {
-            Assert.IsNull(DependencyContext.Current);
-
-            await CreateProcessor().ExecuteAsync(new object(), (request, context) =>
-            {
-                Assert.IsNotNull(DependencyContext.Current);
-                return new object();
-            });
-
-            Assert.IsNull(DependencyContext.Current);
-        }
-
         #endregion
 
         private MicroProcessor CreateProcessor() =>
-            new MicroProcessor(_serviceBus, _messageHandlers.Build(), null);
+            new MicroProcessor(_serviceBus, _messageHandlers.Build());
     }
 }

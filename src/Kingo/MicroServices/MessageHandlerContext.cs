@@ -18,7 +18,7 @@ namespace Kingo.MicroServices
             ServiceProvider = serviceProvider;
             Principal = principal;
             Token = token ?? CancellationToken.None;
-            Operation = new MicroProcessorOperation(MicroProcessorOperationTypes.InputMessageHandler, message);
+            Operation = new MicroProcessorOperation(MicroProcessorOperationTypes.InputStream, message);
             UnitOfWork = new UnitOfWork();
             EventBus = new EventBus();
         }
@@ -28,7 +28,7 @@ namespace Kingo.MicroServices
             ServiceProvider = parent.ServiceProvider;
             Principal = parent.Principal;
             Token = parent.Token;
-            Operation = parent.Operation.Push(MicroProcessorOperationTypes.OutputMessageHandler, message);
+            Operation = parent.Operation.Push(MicroProcessorOperationTypes.OutputStream, message);
             UnitOfWork = parent.UnitOfWork;
             EventBus = new EventBus();
         }

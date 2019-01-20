@@ -11,7 +11,7 @@
         protected ValidationFilterAttribute() :
             base(MicroProcessorFilterStage.ValidationStage)
         {
-            OperationTypes = MicroProcessorOperationTypes.Input;
+            OperationTypes = MicroProcessorOperationTypes.AnyInput;
         }             
     }
 }

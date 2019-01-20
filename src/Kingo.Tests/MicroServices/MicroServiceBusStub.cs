@@ -9,6 +9,12 @@ namespace Kingo.MicroServices
         public void AssertEventCountIs(int count) =>
             Assert.AreEqual(count, Count, $"Unexpected number of events published: expected: {count}, but was {Count}.");
 
+        public void AssertAreSame<TEvent>(int index, TEvent @event) where TEvent : class =>
+            AssertEvent<TEvent>(index, otherEvent => Assert.AreSame(@event, otherEvent));
+
+        public void AssertAreEqual<TEvent>(int index, TEvent @event) =>
+            AssertEvent<TEvent>(index, otherEvent => Assert.AreEqual(@event, otherEvent));
+
         public void AssertEvent<TEvent>(int index, Action<TEvent> callback = null)
         {
             try

@@ -15,7 +15,7 @@ namespace Kingo.MicroServices
         public HandleMessageMethod(MicroProcessor processor, TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token)           
         {
             _processor = processor;
-            _context = new MessageHandlerContext(processor.MessageHandlerFactory, processor.Principal, token, message);
+            _context = new MessageHandlerContext(processor.ServiceProvider, processor.Principal, token, message);
             _message = message;
             _handler = handler;
             _isRootMethod = true;            
@@ -110,7 +110,7 @@ namespace Kingo.MicroServices
             {
                 var stream = MessageStream.Empty;
 
-                foreach (var resolvedHandler in _processor.MessageHandlerFactory.ResolveMessageHandlers(_message, _context))
+                foreach (var resolvedHandler in _processor.MessageHandlers.ResolveMessageHandlers(_message, _context))
                 {
                     stream = stream.Concat(await InvokeMessageHandlerAsync(resolvedHandler).ConfigureAwait(false));
                 }
@@ -140,7 +140,7 @@ namespace Kingo.MicroServices
 
             try
             {
-                return (await _processor.PipelineFactory.CreatePipeline(handler).Method.InvokeAsync().ConfigureAwait(false)).GetValue();
+                return (await _processor.Pipeline.CreatePipeline(handler).Method.InvokeAsync().ConfigureAwait(false)).GetValue();
             }
             finally
             {

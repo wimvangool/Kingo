@@ -1,37 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {        
     internal sealed class MessageHandlerFactory : IMessageHandlerFactory
-    {
-        #region [====== Null ======]        
-       
-        public static readonly MessageHandlerFactory Null = new MessageHandlerFactory(Enumerable.Empty<MessageHandlerClass>(), Enumerable.Empty<MessageHandlerInstance>(), new NullServiceProvider());
+    {                
+        public static readonly IMessageHandlerFactory Null = new MessageHandlerFactory(Enumerable.Empty<MessageHandlerClass>(), Enumerable.Empty<MessageHandlerInstance>(), new ServiceCollection());
 
-        #endregion
-        
         private readonly MessageHandlerClass[] _messageHandlerClasses;
         private readonly MessageHandlerInstance[] _messageHandlerInstances;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceCollection _services;
               
-        public MessageHandlerFactory(IEnumerable<MessageHandlerClass> messageHandlerClasses, IEnumerable<MessageHandlerInstance> messageHandlerInstances, IServiceProvider serviceProvider)
+        public MessageHandlerFactory(IEnumerable<MessageHandlerClass> messageHandlerClasses, IEnumerable<MessageHandlerInstance> messageHandlerInstances, IServiceCollection services)
         {
             _messageHandlerClasses = messageHandlerClasses.ToArray();
             _messageHandlerInstances = messageHandlerInstances.ToArray();
-            _serviceProvider = serviceProvider;
-        }        
+            _services = services;
+        }
 
-        /// <inheritdoc />
+        public IServiceProvider CreateServiceProvider() =>
+            _services.BuildServiceProvider();
+        
         public override string ToString() =>
             $"{_messageHandlerClasses.Length + _messageHandlerInstances.Length} MessageHandler(s) Registered";
 
         #region [====== Resolve ======]                            
-
-        /// <inheritdoc />
+        
         public IEnumerable<MessageHandler> ResolveMessageHandlers<TMessage>(TMessage message, MessageHandlerContext context) =>
-            ResolveMessageHandlersFromClasses(message, context).Concat(ResolveMessageHandlersFromInstances(message, context));
+            ResolveMessageHandlersFromClasses(message, context).Concat(ResolveMessageHandlersFromInstances(message, context));        
 
         private IEnumerable<MessageHandler> ResolveMessageHandlersFromClasses<TMessage>(TMessage message, MessageHandlerContext context) =>
             from handlerClass in _messageHandlerClasses
@@ -47,11 +45,8 @@ namespace Kingo.MicroServices
                     yield return handler;
                 }
             }
-        }            
+        }
 
-        public object GetService(Type serviceType) =>
-            _serviceProvider.GetService(serviceType);
-
-        #endregion        
+        #endregion             
     }
 }

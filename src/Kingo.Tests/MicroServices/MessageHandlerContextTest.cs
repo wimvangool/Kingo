@@ -104,14 +104,14 @@ namespace Kingo.MicroServices
 
             using (CreateMessageHandlerContextScope(null, message))
             {
-                Assert.AreEqual("[InputMessageHandler] Object", MessageHandlerContext.Current.ToString());
+                Assert.AreEqual("[InputStream] Object", MessageHandlerContext.Current.ToString());
 
                 var operation = MessageHandlerContext.Current.Operation;
                 
                 Assert.IsNotNull(operation);
                 Assert.AreSame(message, operation.Message);
                 Assert.AreEqual(typeof(object), operation.MessageType);
-                Assert.AreEqual(MicroProcessorOperationTypes.InputMessageHandler, operation.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.InputStream, operation.Type);
 
                 Assert.AreEqual(1, operation.StackTrace().Count());                                                                
             }
@@ -126,14 +126,14 @@ namespace Kingo.MicroServices
             using (CreateMessageHandlerContextScope(null, messageA))
             using (CreateMessageHandlerContextScope(MessageHandlerContext.Current.CreateContext(messageB)))
             {
-                Assert.AreEqual("[InputMessageHandler] Object -> [OutputMessageHandler] Int32", MessageHandlerContext.Current.ToString());
+                Assert.AreEqual("[InputStream] Object -> [OutputStream] Int32", MessageHandlerContext.Current.ToString());
 
                 var operationB = MessageHandlerContext.Current.Operation;
 
                 Assert.IsNotNull(operationB);
                 Assert.AreEqual(messageB, operationB.Message);
                 Assert.AreEqual(typeof(int), operationB.MessageType);
-                Assert.AreEqual(MicroProcessorOperationTypes.OutputMessageHandler, operationB.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.OutputStream, operationB.Type);
                 Assert.AreEqual(2, operationB.StackTrace().Count());                
 
                 var operationA = operationB.PreviousOperation;
@@ -141,7 +141,7 @@ namespace Kingo.MicroServices
                 Assert.IsNotNull(operationA);
                 Assert.AreSame(messageA, operationA.Message);
                 Assert.AreEqual(typeof(object), operationA.MessageType);
-                Assert.AreEqual(MicroProcessorOperationTypes.InputMessageHandler, operationA.Type);
+                Assert.AreEqual(MicroProcessorOperationTypes.InputStream, operationA.Type);
                 Assert.AreEqual(1, operationA.StackTrace().Count());
             }
         }
@@ -220,6 +220,6 @@ namespace Kingo.MicroServices
             MicroProcessorContext.CreateScope(context);
 
         private static MessageHandlerContext CreateMessageHandlerContext(CancellationToken? token, object message) =>
-            new MessageHandlerContext(new NullServiceProvider(), Thread.CurrentPrincipal, token, message ?? new object());
+            new MessageHandlerContext(ServiceProvider.Default, Thread.CurrentPrincipal, token, message ?? new object());
     }
 }

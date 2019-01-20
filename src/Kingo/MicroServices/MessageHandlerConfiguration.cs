@@ -8,6 +8,8 @@ namespace Kingo.MicroServices
     [Serializable]
     public struct MessageHandlerConfiguration : IEquatable<MessageHandlerConfiguration>, IMessageHandlerConfiguration
     {
+        internal static readonly MicroProcessorOperationTypes DefaultOperationTypes = MicroProcessorOperationTypes.InputStream;
+
         /// <summary>
         /// The default configuration that is applied for message handlers.
         /// </summary>
@@ -20,7 +22,7 @@ namespace Kingo.MicroServices
         public MessageHandlerConfiguration(ServiceLifetime lifetime)
         {
             Lifetime = lifetime;
-            SupportedOperationTypes = MicroProcessorOperationTypes.InputMessageHandler;
+            SupportedOperationTypes = DefaultOperationTypes;
         }
 
         /// <summary>

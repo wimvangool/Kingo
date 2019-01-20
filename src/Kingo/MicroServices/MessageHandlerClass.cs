@@ -72,7 +72,7 @@ namespace Kingo.MicroServices
         private static Func<object, object, MessageHandlerContext, Type, Type, MessageHandler> CreateMessageHandlerFactory(Type interfaceType)
         {
             // In order to support message handlers with contravariant IMessageHandler<TMessage>-implementations, the resolved instance is wrapped
-            // inside an Instance<TActual> where TActual is the type of the generic type parameter of the specified interface. This ensures that
+            // inside an MessageHandlerDecorator<TActual> where TActual is the type of the generic type parameter of the specified interface. This ensures that
             // the correct interface method of the handler is called at runtime.
             //
             // For example, suppose a message handler is declared as follows...

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Configuration
 {
     [TestClass]
     public sealed class MicroProcessorPipelineFactoryTest
@@ -118,7 +118,7 @@ namespace Kingo.MicroServices
         [MicroProcessorFilterSpy(MicroProcessorFilterStage.ExceptionHandlingStage, Id = 10, OperationTypes = MicroProcessorOperationTypes.None)]
         [MicroProcessorFilterSpy(MicroProcessorFilterStage.AuthorizationStage, Id = 11)]
         [MicroProcessorFilterSpy(MicroProcessorFilterStage.ValidationStage, Id = 12)]
-        [MicroProcessorFilterSpy(MicroProcessorFilterStage.ProcessingStage, Id = 13, OperationTypes = MicroProcessorOperationTypes.OutputMessageHandler)]
+        [MicroProcessorFilterSpy(MicroProcessorFilterStage.ProcessingStage, Id = 13, OperationTypes = MicroProcessorOperationTypes.OutputStream)]
         private sealed class QueryWithDisabledClassAndMethodFilters : IQuery<object>, IQuery<object, object>
         {
             private readonly int _id;
@@ -129,8 +129,8 @@ namespace Kingo.MicroServices
             }
 
             [MicroProcessorFilterSpy(MicroProcessorFilterStage.ExceptionHandlingStage, Id = 20)]
-            [MicroProcessorFilterSpy(MicroProcessorFilterStage.AuthorizationStage, Id = 21, OperationTypes = MicroProcessorOperationTypes.InputMessageHandler)]
-            [MicroProcessorFilterSpy(MicroProcessorFilterStage.ValidationStage, Id = 22, OperationTypes = MicroProcessorOperationTypes.MessageHandler)]
+            [MicroProcessorFilterSpy(MicroProcessorFilterStage.AuthorizationStage, Id = 21, OperationTypes = MicroProcessorOperationTypes.InputStream)]
+            [MicroProcessorFilterSpy(MicroProcessorFilterStage.ValidationStage, Id = 22, OperationTypes = MicroProcessorOperationTypes.AnyStream)]
             [MicroProcessorFilterSpy(MicroProcessorFilterStage.ProcessingStage, Id = 23)]
             public async Task<object> ExecuteAsync(QueryContext context)
             {
@@ -139,8 +139,8 @@ namespace Kingo.MicroServices
             }
 
             [MicroProcessorFilterSpy(MicroProcessorFilterStage.ExceptionHandlingStage, Id = 20)]
-            [MicroProcessorFilterSpy(MicroProcessorFilterStage.AuthorizationStage, Id = 21, OperationTypes = MicroProcessorOperationTypes.InputMessageHandler)]
-            [MicroProcessorFilterSpy(MicroProcessorFilterStage.ValidationStage, Id = 22, OperationTypes = MicroProcessorOperationTypes.MessageHandler)]
+            [MicroProcessorFilterSpy(MicroProcessorFilterStage.AuthorizationStage, Id = 21, OperationTypes = MicroProcessorOperationTypes.InputStream)]
+            [MicroProcessorFilterSpy(MicroProcessorFilterStage.ValidationStage, Id = 22, OperationTypes = MicroProcessorOperationTypes.AnyStream)]
             [MicroProcessorFilterSpy(MicroProcessorFilterStage.ProcessingStage, Id = 23)]
             public async Task<object> ExecuteAsync(object message, QueryContext context)
             {
@@ -225,7 +225,7 @@ namespace Kingo.MicroServices
 
         public MicroProcessorPipelineFactoryTest()
         {
-            _messageHandlers = new SimpleMessageHandlerFactoryBuilder();
+            _messageHandlers = new MessageHandlerFactoryBuilder();
             _pipeline = new MicroProcessorPipelineFactoryBuilder();
             _serviceBus = new MicroServiceBusStub();
         }
@@ -315,7 +315,7 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage)
             {
                 Id = 3,
-                OperationTypes = MicroProcessorOperationTypes.OutputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.OutputStream
             });
 
             await CreateProcessor().HandleAsync(new object(), (message, context) =>
@@ -349,7 +349,7 @@ namespace Kingo.MicroServices
                 Id = 3
             });
 
-            _messageHandlers.Register(new StringHandlerWithClassAndMethodFilters(4));
+            _messageHandlers.Add(new StringHandlerWithClassAndMethodFilters(4));
 
             await CreateProcessor().HandleAsync(string.Empty);
 
@@ -385,12 +385,12 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ExceptionHandlingStage)
             {
                 Id = 0,
-                OperationTypes = MicroProcessorOperationTypes.Input
+                OperationTypes = MicroProcessorOperationTypes.AnyInput
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.AuthorizationStage)
             {
                 Id = 1,
-                OperationTypes = MicroProcessorOperationTypes.OutputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.OutputStream
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ValidationStage)
             {
@@ -402,7 +402,7 @@ namespace Kingo.MicroServices
                 Id = 3
             });
 
-            _messageHandlers.Register(new StringHandlerWithDisabledClassAndMethodFilters(4));
+            _messageHandlers.Add(new StringHandlerWithDisabledClassAndMethodFilters(4));
 
             await CreateProcessor().HandleAsync(string.Empty);
 
@@ -431,7 +431,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_OnlyInvokesSelectedFilters_IfSomeFiltersAreRemoved()
         {
-            _messageHandlers.Register(new StringHandlerWithDifferentFilterTypes(5));
+            _messageHandlers.Add(new StringHandlerWithDifferentFilterTypes(5));
 
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage)
             {
@@ -451,7 +451,7 @@ namespace Kingo.MicroServices
         [TestMethod]
         public async Task HandleAsync_OnlyInvokesExplicitFilters_IfAllImplicitFiltersAreRemoved()
         {
-            _messageHandlers.Register(new StringHandlerWithDifferentFilterTypes(5));
+            _messageHandlers.Add(new StringHandlerWithDifferentFilterTypes(5));
 
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage)
             {
@@ -512,7 +512,7 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ExceptionHandlingStage)
             {
                 Id = 0,
-                OperationTypes = MicroProcessorOperationTypes.InputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.InputStream
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.AuthorizationStage)
             {
@@ -522,12 +522,12 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ValidationStage)
             {
                 Id = 2,
-                OperationTypes = MicroProcessorOperationTypes.Input
+                OperationTypes = MicroProcessorOperationTypes.AnyInput
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage)
             {
                 Id = 3,
-                OperationTypes = MicroProcessorOperationTypes.OutputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.OutputStream
             });
 
             using (MicroServiceBusStub.CreateContext())
@@ -601,12 +601,12 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ExceptionHandlingStage)
             {
                 Id = 0,
-                OperationTypes = MicroProcessorOperationTypes.Input
+                OperationTypes = MicroProcessorOperationTypes.AnyInput
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.AuthorizationStage)
             {
                 Id = 1,
-                OperationTypes = MicroProcessorOperationTypes.OutputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.OutputStream
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ValidationStage)
             {
@@ -730,7 +730,7 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ExceptionHandlingStage)
             {
                 Id = 0,
-                OperationTypes = MicroProcessorOperationTypes.InputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.InputStream
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.AuthorizationStage)
             {
@@ -740,12 +740,12 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ValidationStage)
             {
                 Id = 2,
-                OperationTypes = MicroProcessorOperationTypes.Input
+                OperationTypes = MicroProcessorOperationTypes.AnyInput
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage)
             {
                 Id = 3,
-                OperationTypes = MicroProcessorOperationTypes.OutputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.OutputStream
             });
 
             using (MicroServiceBusStub.CreateContext())
@@ -819,12 +819,12 @@ namespace Kingo.MicroServices
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ExceptionHandlingStage)
             {
                 Id = 0,
-                OperationTypes = MicroProcessorOperationTypes.Input
+                OperationTypes = MicroProcessorOperationTypes.AnyInput
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.AuthorizationStage)
             {
                 Id = 1,
-                OperationTypes = MicroProcessorOperationTypes.OutputMessageHandler
+                OperationTypes = MicroProcessorOperationTypes.OutputStream
             });
             _pipeline.Add(new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ValidationStage)
             {

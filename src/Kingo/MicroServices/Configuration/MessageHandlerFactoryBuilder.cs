@@ -4,29 +4,41 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Configuration
 {
     /// <summary>
     /// When implemented, represents a builder of <see cref="IMessageHandlerFactory"/> instances.
     /// </summary>
-    public abstract class MessageHandlerFactoryBuilder
-    {
+    public sealed class MessageHandlerFactoryBuilder : IServiceCollectionConfigurator
+    {        
         private readonly Dictionary<Type, MessageHandlerClass> _messageHandlerClasses;
         private readonly List<MessageHandlerInstance> _messageHandlerInstances;
+        private readonly IServiceCollection _services;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerFactoryBuilder" /> class.
         /// </summary>
-        protected MessageHandlerFactoryBuilder()
+        public MessageHandlerFactoryBuilder(IServiceCollection services = null)
         {
             _messageHandlerClasses = new Dictionary<Type, MessageHandlerClass>();
             _messageHandlerInstances = new List<MessageHandlerInstance>();
+            _services = services ?? new ServiceCollection();            
         }
 
         /// <inheritdoc />
         public override string ToString() =>
             $"Registered handlers: {_messageHandlerClasses.Count} class(es), {_messageHandlerInstances.Count} instances";
+
+        void IServiceCollectionConfigurator.Configure(IServiceCollection services)
+        {
+            foreach (var service in _services)
+            {
+                services.Add(service);
+            }
+            services.AddSingleton(Build());
+        }
 
         #region [====== Registration ======]
 
@@ -43,7 +55,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public void Register(object handler, MicroProcessorOperationTypes? operationTypes = null)
+        public void Add(object handler, MicroProcessorOperationTypes? operationTypes = null)
         {
             foreach (var instance in MessageHandlerInstance.FromHandler(handler, operationTypes))
             {
@@ -63,8 +75,8 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public void Register<TMessage>(Action<TMessage, MessageHandlerContext> handler, MicroProcessorOperationTypes? operationTypes = null) =>
-            Register(MessageHandlerDecorator<TMessage>.Decorate(handler), operationTypes);
+        public void Add<TMessage>(Action<TMessage, MessageHandlerContext> handler, MicroProcessorOperationTypes? operationTypes = null) =>
+            Add(MessageHandlerDecorator<TMessage>.Decorate(handler), operationTypes);
 
         /// <summary>
         /// Registers the specified <paramref name="handler" /> for the (optionally specified) <paramref name="operationTypes" />.
@@ -78,8 +90,8 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public void Register<TMessage>(Func<TMessage, MessageHandlerContext, Task> handler, MicroProcessorOperationTypes? operationTypes = null) =>
-            Register(MessageHandlerDecorator<TMessage>.Decorate(handler), operationTypes);
+        public void Add<TMessage>(Func<TMessage, MessageHandlerContext, Task> handler, MicroProcessorOperationTypes? operationTypes = null) =>
+            Add(MessageHandlerDecorator<TMessage>.Decorate(handler), operationTypes);
 
         /// <summary>
         /// Registers the specified <paramref name="handler" /> for the (optionally specified) <paramref name="operationTypes" />.
@@ -94,15 +106,15 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> is <c>null</c>.
         /// </exception>
-        public void Register<TMessage>(IMessageHandler<TMessage> handler, MicroProcessorOperationTypes? operationTypes = null) =>
+        public void Add<TMessage>(IMessageHandler<TMessage> handler, MicroProcessorOperationTypes? operationTypes = null) =>
             _messageHandlerInstances.Add(new MessageHandlerInstance<TMessage>(handler, operationTypes));
 
         /// <summary>
         /// Registers the specified <typeparamref name="TMessageHandler"/>, if it's a valid message handler type.
         /// </summary>
         /// <typeparam name="TMessageHandler">Type of message handler to register.</typeparam>
-        public void RegisterType<TMessageHandler>() =>
-            RegisterTypes(typeof(TMessageHandler));
+        public void Add<TMessageHandler>() =>
+            Add(typeof(TMessageHandler));
 
         /// <summary>
         /// Registers all message handlers that are found in the assemblies that match the specified search criteria.
@@ -119,8 +131,8 @@ namespace Kingo.MicroServices
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission
         /// </exception>
-        public void RegisterTypes(string searchPattern, Func<Type, bool> predicate) =>
-            RegisterTypes(searchPattern, null, predicate);
+        public void Add(string searchPattern, Func<Type, bool> predicate) =>
+            Add(searchPattern, null, predicate);
 
         /// <summary>
         /// Registers all message handlers that are found in the assemblies that match the specified search criteria.
@@ -138,8 +150,8 @@ namespace Kingo.MicroServices
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission
         /// </exception>
-        public void RegisterTypes(string searchPattern, string path = null, Func<Type, bool> predicate = null) =>
-            RegisterTypes(ScanTypes(searchPattern, path, predicate));
+        public void Add(string searchPattern, string path = null, Func<Type, bool> predicate = null) =>
+            Add(ScanTypes(searchPattern, path, predicate));
 
         private static IEnumerable<Type> ScanTypes(string searchPattern, string path = null, Func<Type, bool> predicate = null) =>
             from type in TypeSet.Empty.Add(searchPattern, path)
@@ -153,8 +165,8 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="types"/> is <c>null</c>.
         /// </exception>
-        public void RegisterTypes(params Type[] types) =>
-            RegisterTypes(types as IEnumerable<Type>);
+        public void Add(params Type[] types) =>
+            Add(types as IEnumerable<Type>);
 
         /// <summary>
         /// Registers all types of the specified <paramref name="types"/> that implement
@@ -163,50 +175,41 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        public void RegisterTypes(IEnumerable<Type> types)
+        public void Add(IEnumerable<Type> types)
         {
             foreach (var messageHandlerClass in MessageHandlerClass.FromTypes(types))
             {
-                Register(messageHandlerClass);
+                Add(messageHandlerClass);
             }
         }                   
 
-        private void Register(MessageHandlerClass messageHandlerClass)
+        private void Add(MessageHandlerClass messageHandlerClass)
         {
             switch (messageHandlerClass.Configuration.Lifetime)
             {
                 case ServiceLifetime.Transient:
-                    RegisterTransient(messageHandlerClass.Type);
+                    AddTransient(messageHandlerClass.Type);
                     break;
                 case ServiceLifetime.Scoped:
-                    RegisterScoped(messageHandlerClass.Type);
+                    AddScoped(messageHandlerClass.Type);
                     break;
                 case ServiceLifetime.Singleton:
-                    RegisterSingleton(messageHandlerClass.Type);
+                    AddSingleton(messageHandlerClass.Type);
                     break;
                 default:
                     throw NewInvalidLifetimeSpecifiedException(messageHandlerClass.Configuration.Lifetime);
             }
             _messageHandlerClasses[messageHandlerClass.Type] = messageHandlerClass;
-        }                       
+        }
 
-        /// <summary>
-        /// Registers the specified <paramref name="type" /> with a transient lifetime.
-        /// </summary>
-        /// <param name="type">The type to register.</param>        
-        protected abstract void RegisterTransient(Type type);
+        private void AddTransient(Type type) =>
+            _services.AddTransient(type);
 
-        /// <summary>
-        /// Registers the specified <paramref name="type" /> with a scoped lifetime.
-        /// </summary>
-        /// <param name="type">The type to register.</param>      
-        protected abstract void RegisterScoped(Type type);
+        private void AddScoped(Type type) =>
+            _services.AddScoped(type);
 
-        /// <summary>
-        /// Registers the specified <paramref name="type" /> with as a singleton.
-        /// </summary>
-        /// <param name="type">The type to register.</param>  
-        protected abstract void RegisterSingleton(Type type);
+        private void AddSingleton(Type type) =>
+            _services.AddSingleton(type);
 
         private static Exception NewInvalidLifetimeSpecifiedException(ServiceLifetime lifeTime)
         {
@@ -217,21 +220,14 @@ namespace Kingo.MicroServices
 
         #endregion
 
-        #region [====== Build ======]
+        #region [====== Build ======]        
 
         /// <summary>
         /// Builds and returns a new <see cref="IMessageHandlerFactory" />.
         /// </summary>
         /// <returns>A new <see cref="IMessageHandlerFactory" />.</returns>
-        public virtual IMessageHandlerFactory Build() =>
-            new MessageHandlerFactory(_messageHandlerClasses.Values, _messageHandlerInstances, CreateServiceProvider());
-
-        /// <summary>
-        /// Creates and returns a new <see cref="IServiceProvider" /> that can resolve all message handlers
-        /// that have been registered with this builder.
-        /// </summary>
-        /// <returns>A new service provider.</returns>
-        protected abstract IServiceProvider CreateServiceProvider();
+        public IMessageHandlerFactory Build() =>
+            new MessageHandlerFactory(_messageHandlerClasses.Values, _messageHandlerInstances, _services);       
 
         #endregion
     }

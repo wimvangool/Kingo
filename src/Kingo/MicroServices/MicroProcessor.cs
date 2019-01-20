@@ -13,10 +13,10 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
         /// </summary>
-        /// <param name="messageHandlerFactory">
+        /// <param name="messageHandlers">
         /// Optional factory that is used to create message handlers to handle a specific message.
         /// </param>
-        /// <param name="pipelineFactory">
+        /// <param name="pipeline">
         /// Optional pipeline factory that will be used by this processor to create a pipeline on top of a message handler or query
         /// right before it is invoked.
         /// </param>
@@ -24,11 +24,12 @@ namespace Kingo.MicroServices
         /// Optional service bus that is used by this processor to publish all messages that were published inside the
         /// processor while handling a message.
         /// </param>        
-        public MicroProcessor(IMicroServiceBus serviceBus = null, IMessageHandlerFactory messageHandlerFactory = null, IMicroProcessorPipelineFactory pipelineFactory = null)
+        public MicroProcessor(IMicroServiceBus serviceBus = null, IMessageHandlerFactory messageHandlers = null, IMicroProcessorPipelineFactory pipeline = null, IServiceProvider serviceProvider = null)
         {
             ServiceBus = serviceBus ?? MicroServiceBus.Null;
-            MessageHandlerFactory = messageHandlerFactory ?? MicroServices.MessageHandlerFactory.Null;
-            PipelineFactory = pipelineFactory ?? MicroProcessorPipelineFactory.Null;            
+            MessageHandlers = messageHandlers ?? MessageHandlerFactory.Null;
+            Pipeline = pipeline ?? MicroProcessorPipelineFactory.Null;
+            ServiceProvider = serviceProvider ?? MessageHandlers.CreateServiceProvider();            
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Returns the <see cref="IMessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected internal IMessageHandlerFactory MessageHandlerFactory
+        protected internal IMessageHandlerFactory MessageHandlers
         {
             get;
         }
@@ -50,10 +51,19 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Returns the <see cref="IMicroProcessorPipelineFactory"/> of this processor.
         /// </summary>
-        protected internal IMicroProcessorPipelineFactory PipelineFactory
+        protected internal IMicroProcessorPipelineFactory Pipeline
         {
             get;
-        }        
+        }    
+        
+        /// <summary>
+        /// Returns the <see cref="IServiceProvider" /> that will be used by the <see cref="MessageHandlers"/>
+        /// to resolve the message-handlers and their dependencies.
+        /// </summary>
+        protected internal IServiceProvider ServiceProvider
+        {
+            get;
+        }
 
         #region [====== Security ======]
 

@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Kingo.MicroServices
+namespace Kingo.MicroServices.Configuration
 {    
     /// <summary>
     /// Represents a builder of <see cref="IMicroProcessorPipelineFactory"/> instances to be used by a <see cref="MicroProcessor" />.
     /// </summary>
-    public sealed class MicroProcessorPipelineFactoryBuilder : IMicroProcessorPipelineFactoryBuilder
+    public sealed class MicroProcessorPipelineFactoryBuilder : IMicroProcessorPipelineFactoryBuilder, IServiceCollectionConfigurator
     {        
         private readonly MicroProcessorPipelineStageBuilder _exceptionHandlingStage;
         private readonly MicroProcessorPipelineStageBuilder _authorizationStage;
         private readonly MicroProcessorPipelineStageBuilder _validationStage;
         private readonly MicroProcessorPipelineStageBuilder _processingStage;
 
-        public MicroProcessorPipelineFactoryBuilder()
+        internal MicroProcessorPipelineFactoryBuilder()
         {
             _exceptionHandlingStage = new MicroProcessorPipelineStageBuilder(MicroProcessorFilterStage.ExceptionHandlingStage);
             _authorizationStage = new MicroProcessorPipelineStageBuilder(MicroProcessorFilterStage.AuthorizationStage);
@@ -71,11 +72,16 @@ namespace Kingo.MicroServices
             {
                 stage.RemoveAllAttributes();
             }
-        }        
+        }                       
 
-        /// <inheritdoc />
-        public IMicroProcessorPipelineFactory Build() =>
-            new MicroProcessorPipelineFactory(Stages().Select(stage => stage.Build()));                        
+        void IServiceCollectionConfigurator.Configure(IServiceCollection services) =>
+            services.AddSingleton(Build());
+
+        IMicroProcessorPipelineFactory IMicroProcessorPipelineFactoryBuilder.Build() =>
+            Build();
+
+        internal IMicroProcessorPipelineFactory Build() =>
+            new MicroProcessorPipelineFactory(Stages().Select(stage => stage.Build()));
 
         private IEnumerable<IMicroProcessorPipelineFactoryBuilder> Stages()
         {

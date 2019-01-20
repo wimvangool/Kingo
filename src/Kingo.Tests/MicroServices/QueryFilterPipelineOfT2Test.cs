@@ -70,7 +70,7 @@ namespace Kingo.MicroServices
             new QueryFilterPipeline<TResponse>(query, filter);
 
         private static QueryContext CreateQueryContext(object message) =>
-            new QueryContext(new NullServiceProvider(), Thread.CurrentPrincipal, null, message);
+            new QueryContext(ServiceProvider.Default, Thread.CurrentPrincipal, null, message);
 
         private static IMicroProcessorFilter CreateFilter() =>
             new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage);
