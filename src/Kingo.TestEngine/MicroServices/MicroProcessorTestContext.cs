@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
@@ -10,14 +11,12 @@ namespace Kingo.MicroServices
     /// When implemented by a class, represents the context in which a test executes.
     /// </summary>
     public sealed class MicroProcessorTestContext : IMicroServiceBus
-    {
-        private readonly IMicroProcessorTest _test;
+    {        
         private readonly Dictionary<IMicroProcessorTest, EventStream> _eventStreams;
         private MemoryServiceBus _serviceBus;
 
-        private MicroProcessorTestContext(IMicroProcessorTest test)
-        {            
-            _test = test ?? throw new ArgumentNullException(nameof(test));
+        private MicroProcessorTestContext()
+        {                        
             _eventStreams = new Dictionary<IMicroProcessorTest, EventStream>();
             _serviceBus = new MemoryServiceBus();
         }
@@ -131,8 +130,8 @@ namespace Kingo.MicroServices
         public static MicroProcessorTestContext Current =>
             _Context.Current;
 
-        internal static ContextScope<MicroProcessorTestContext> CreateScope(IMicroProcessorTest test) =>
-            _Context.OverrideAsyncLocal(new MicroProcessorTestContext(test));
+        internal static IDisposable CreateScope(IServiceProvider serviceProvider) =>
+            new DisposableComposite(_Context.OverrideAsyncLocal(new MicroProcessorTestContext()), serviceProvider.CreateScope());
 
         #endregion
     }

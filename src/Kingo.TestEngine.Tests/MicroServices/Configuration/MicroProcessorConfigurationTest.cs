@@ -1,0 +1,180 @@
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Kingo.MicroServices.Configuration
+{
+    [TestClass]
+    public sealed class MicroProcessorConfigurationTest
+    {
+        private readonly MicroProcessorConfiguration _configuration;
+
+        public MicroProcessorConfigurationTest()
+        {
+            _configuration = new MicroProcessorConfiguration();
+        }
+
+        #region [====== AddMicroProcessor ======]
+
+        [TestMethod]
+        public void AddMicroProcessor_ReturnsServiceConfigurator_IfInNotConfiguredState()
+        {
+            Assert.IsNotNull(_configuration.Add());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void AddMicroProcessor_Throws_IfInConfiguringState()
+        {
+            _configuration.Add();
+            _configuration.Add();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void AddMicroProcessor_Throws_IfInConfiguredState()
+        {
+            _configuration.Add();
+            _configuration.ServiceProvider();
+            _configuration.Add();
+        }
+
+        #endregion
+
+        #region [====== Configure ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Configure_Throws_IfInNotConfiguredState()
+        {
+            _configuration.Configure(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Configure_Throws_IfInConfiguringState_And_ServiceConfiguratorIsNull()
+        {
+            _configuration.Add().Configure(null);
+        }
+
+        [TestMethod]
+        public void Configure_StoresTheServiceConfigurator_IfInConfiguringState_And_ServiceConfiguratorIsNotNull()
+        {
+            _configuration.Add().Configure(services => { });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Configure_Throws_IfInConfiguringState_And_ServicesHaveAlreadyBeenConfigured()
+        {
+            _configuration.Add().Configure(services => { });            
+            _configuration.Configure(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Configure_Throws_IfInConfiguredState()
+        {
+            _configuration.Add().Configure(services => { });
+            _configuration.ServiceProvider();
+            _configuration.Configure(null);
+        }
+
+        #endregion
+
+        #region [====== ServiceProvider ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ServiceProvider_Throws_IfInNotConfiguredState()
+        {
+            _configuration.ServiceProvider();
+        }
+
+        [TestMethod]
+        public void ServiceProvider_ReturnsServiceProvider_IfInConfiguringState()
+        {
+            _configuration.Add();
+
+            Assert.IsNotNull(_configuration.ServiceProvider());            
+        }
+
+        [TestMethod]
+        public void ServiceProvider_ReturnsServiceProvider_IfInConfiguredState()
+        {
+            _configuration.Add();
+
+            Assert.IsNotNull(_configuration.ServiceProvider());
+            Assert.IsNotNull(_configuration.ServiceProvider());
+        }
+
+        #endregion
+
+        #region [====== ResolveProcessor ======]               
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ResolveProcessor_Throws_IfInNotConfiguredState()
+        {
+            _configuration.ResolveProcessor();
+        }
+
+        [TestMethod]        
+        public void ResolveProcessor_ReturnsExpectedProcessor_IfOnlyBasicProcessorHasBeenConfigured()
+        {
+            _configuration.Add();
+
+            var processor = _configuration.ResolveProcessor();
+
+            Assert.IsInstanceOfType(processor, typeof(MicroProcessor));
+        }
+
+        [TestMethod]
+        public async Task ResolveProcessor_ReturnsExpectedProcessor_IfSomeProcessorPropertiesHaveBeenConfigured()
+        {
+            var bus = new MicroServiceBusStub();
+            var @event = new object();
+
+            _configuration.Add(processor =>
+            {
+                processor.ServiceBus.Add(bus);
+            });
+
+            Assert.AreEqual(1, await _configuration.ResolveProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                context.EventBus.Publish(@event);
+            }));
+
+            bus.AssertEventCountIs(1);
+            bus.AssertAreSame(0, @event);
+        }
+
+        [TestMethod]
+        public async Task ResolveProcessor_ReturnsExpectedProcessor_IfSomeServicesHaveBeenConfigured()
+        {
+            var bus = new MicroServiceBusStub();
+            var @event = new object();
+
+            _configuration.Add<CustomProcessor>(processor =>
+            {
+                processor.ServiceBus.Add(bus);
+
+            }).Configure(services =>
+            {
+                services.AddTransient<IEventStreamProcessor, EventStreamDuplicator>();
+            });
+
+            Assert.AreEqual(1, await _configuration.ResolveProcessor().HandleAsync(new object(), (message, context) =>
+            {
+                context.EventBus.Publish(@event);
+            }));
+
+            bus.AssertEventCountIs(2);
+            bus.AssertAreSame(0, @event);
+            bus.AssertAreSame(1, @event);
+        }
+
+        #endregion
+    }
+}

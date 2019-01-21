@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
+using Kingo.MicroServices.Configuration;
 
 namespace Kingo.MicroServices
 {
@@ -34,7 +34,7 @@ namespace Kingo.MicroServices
                 HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
 
             public async Task HandleAsync(TMessage message, IMessageHandler<TMessage> handler = null) =>
-               await HandleAsync(message, handler, await _testRunner.CreateProcessorAsync().ConfigureAwait(false)).ConfigureAwait(false);
+               await HandleAsync(message, handler, _MicroProcessor.ResolveProcessor()).ConfigureAwait(false);
 
             private async Task HandleAsync(TMessage message, IMessageHandler<TMessage> handler, IMicroProcessor processor) =>
                 _test.Then(message, await HandleMessageAsync(message, handler, processor).ConfigureAwait(false), _context);
@@ -63,9 +63,9 @@ namespace Kingo.MicroServices
         /// <param name="test">The test to run.</param>        
         protected virtual async Task RunAsync<TMessage, TEventStream>(IMessageHandlerTest<TMessage, TEventStream> test) where TEventStream : EventStream
         {
-            using (var scope = MicroProcessorTestContext.CreateScope(test))
+            using (MicroProcessorTestContext.CreateScope(_MicroProcessor.ServiceProvider()))
             {
-                await RunAsync(test, scope.Value).ConfigureAwait(false);
+                await RunAsync(test, MicroProcessorTestContext.Current).ConfigureAwait(false);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Kingo.MicroServices
                 ExecuteAsync(QueryDecorator<TResponse>.Decorate(query));
 
             public async Task ExecuteAsync(IQuery<TResponse> query) =>
-                await ExecuteAsync(query, await _testRunner.CreateProcessorAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await ExecuteAsync(query, _MicroProcessor.ResolveProcessor()).ConfigureAwait(false);
 
             private async Task ExecuteAsync(IQuery<TResponse> query, IMicroProcessor processor) =>
                 _test.Then(await ExecuteQueryAsync(query, processor).ConfigureAwait(false), _context);
@@ -132,9 +132,9 @@ namespace Kingo.MicroServices
         /// <param name="test">The test to run.</param>            
         protected virtual async Task RunAsync<TResponse>(IQueryTest<TResponse> test)
         {
-            using (var scope = MicroProcessorTestContext.CreateScope(test))
+            using (MicroProcessorTestContext.CreateScope(_MicroProcessor.ServiceProvider()))
             {
-                await RunAsync(test, scope.Value).ConfigureAwait(false);
+                await RunAsync(test, MicroProcessorTestContext.Current).ConfigureAwait(false);
             }
         }
          
@@ -168,7 +168,7 @@ namespace Kingo.MicroServices
                 ExecuteAsync(request, QueryDecorator<TRequest, TResponse>.Decorate(query));
 
             public async Task ExecuteAsync(TRequest request, IQuery<TRequest, TResponse> query) =>
-                await ExecuteAsync(request, query, await _testRunner.CreateProcessorAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await ExecuteAsync(request, query, _MicroProcessor.ResolveProcessor()).ConfigureAwait(false);
 
             private async Task ExecuteAsync(TRequest request, IQuery<TRequest, TResponse> query, IMicroProcessor processor) =>
                 _test.Then(request, await ExecuteQueryAsync(request, query, processor).ConfigureAwait(false), _context);
@@ -192,45 +192,27 @@ namespace Kingo.MicroServices
         /// <param name="test">The test to run.</param>        
         protected virtual async Task RunAsync<TRequest, TResponse>(IQueryTest<TRequest, TResponse> test)
         {
-            using (var scope = MicroProcessorTestContext.CreateScope(test))
+            using (MicroProcessorTestContext.CreateScope(_MicroProcessor.ServiceProvider()))
             {
-                await RunAsync(test, scope.Value).ConfigureAwait(false);
+                await RunAsync(test, MicroProcessorTestContext.Current).ConfigureAwait(false);
             }
         }
         
         private Task RunAsync<TRequest, TResponse>(IQueryTest<TRequest, TResponse> test, MicroProcessorTestContext context) =>
             new ExecuteQueryTestRunner<TRequest, TResponse>(this, test, context).RunAsync();
 
-        #endregion       
+        #endregion
 
-        private static readonly SemaphoreSlim _ProcessorLock = new SemaphoreSlim(1);
-        private static IMicroProcessor _Processor;
+        #region [====== Services ======]
 
-        private async Task<IMicroProcessor> CreateProcessorAsync()
-        {
-            await _ProcessorLock.WaitAsync().ConfigureAwait(false);
-
-            try
-            {
-                if (_Processor == null)
-                {
-                    _Processor = CreateProcessor(MicroProcessorTestContext.ServiceBus);                    
-                }
-                return _Processor;
-            }
-            finally
-            {
-                _ProcessorLock.Release();
-            }
-        }
+        private static readonly MicroProcessorConfiguration _MicroProcessor = new MicroProcessorConfiguration();
 
         /// <summary>
-        /// Creates and returns a new <see cref="IMicroProcessor"/> that is used to run all tests and that
-        /// publishes all events to the specified <paramref name="serviceBus"/>.
+        /// Returns the processor-configuration for the <see cref="IMicroProcessor" /> that is to be used by all tests.
         /// </summary>
-        /// <param name="serviceBus">The service-bus to which all events are published.</param>
-        /// <returns>A new <see cref="IMicroProcessor"/>.</returns>
-        protected virtual IMicroProcessor CreateProcessor(IMicroServiceBus serviceBus) =>
-            new MicroProcessor(serviceBus);        
+        protected static IMicroProcessorConfiguration MicroProcessor =>
+            _MicroProcessor;
+
+        #endregion
     }
 }

@@ -25,7 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>    
-    <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj" />
+    <ProjectReference Include="..\Kingo.TestEngine\02.Kingo.TestEngine.csproj" />    
+    <ProjectReference Include="..\Kingo.Tests\01.Kingo.Tests.csproj" />
   </ItemGroup>
 
 </Project>

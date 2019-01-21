@@ -79,6 +79,33 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot invoke &apos;{0}&apos; at this point: the processor has already been configured..
+        /// </summary>
+        internal static string MicroProcessorConfiguration_ProcessorAlreadyConfigured {
+            get {
+                return ResourceManager.GetString("MicroProcessorConfiguration_ProcessorAlreadyConfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot invoke &apos;{0}&apos; at this point: the processor has not yet been configured..
+        /// </summary>
+        internal static string MicroProcessorConfiguration_ProcessorNotYetConfigured {
+            get {
+                return ResourceManager.GetString("MicroProcessorConfiguration_ProcessorNotYetConfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot invoke &apos;{0}&apos; at this point: the service collection has already been configured..
+        /// </summary>
+        internal static string MicroProcessorConfiguration_ServicesAlreadyConfigured {
+            get {
+                return ResourceManager.GetString("MicroProcessorConfiguration_ServicesAlreadyConfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot retrieve the EventStream of &apos;{0}&apos; because its results haven&apos;t been saved in this context..
         /// </summary>
         internal static string MicroProcessorTestContext_EventStreamNotFound {

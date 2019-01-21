@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class MicroServiceBusStub : MemoryServiceBus
+    public sealed class MicroServiceBusStub : MemoryServiceBus
     {                
         public void AssertEventCountIs(int count) =>
             Assert.AreEqual(count, Count, $"Unexpected number of events published: expected: {count}, but was {Count}.");

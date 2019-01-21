@@ -123,6 +123,15 @@
   <data name="EventStream_EventNotOfExpectedType" xml:space="preserve">
     <value>Expected event of type '{0}' at index '{1}', but found event of type '{2}'.</value>
   </data>
+  <data name="MicroProcessorConfiguration_ProcessorAlreadyConfigured" xml:space="preserve">
+    <value>Cannot invoke '{0}' at this point: the processor has already been configured.</value>
+  </data>
+  <data name="MicroProcessorConfiguration_ProcessorNotYetConfigured" xml:space="preserve">
+    <value>Cannot invoke '{0}' at this point: the processor has not yet been configured.</value>
+  </data>
+  <data name="MicroProcessorConfiguration_ServicesAlreadyConfigured" xml:space="preserve">
+    <value>Cannot invoke '{0}' at this point: the service collection has already been configured.</value>
+  </data>
   <data name="MicroProcessorTestContext_EventStreamNotFound" xml:space="preserve">
     <value>Cannot retrieve the EventStream of '{0}' because its results haven't been saved in this context.</value>
   </data>

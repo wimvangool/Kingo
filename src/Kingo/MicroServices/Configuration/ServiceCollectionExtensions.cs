@@ -15,10 +15,11 @@ namespace Kingo.MicroServices.Configuration
         /// <param name="processorConfiguration">
         /// Optional configuration callback that can be used to configure the specific parts of the processor.
         /// </param>
+        /// <returns>A configured services-collection.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="services"/> is <c>null</c>.
         /// </exception>
-        public static void AddMicroProcessor(this IServiceCollection services, Action<IMicroProcessorBuilder> processorConfiguration = null) =>
+        public static IServiceCollection AddMicroProcessor(this IServiceCollection services, Action<IMicroProcessorBuilder> processorConfiguration = null) =>
             services.AddMicroProcessor<MicroProcessor>(processorConfiguration);
 
         /// <summary>
@@ -29,10 +30,11 @@ namespace Kingo.MicroServices.Configuration
         /// <param name="processorConfiguration">
         /// Optional configuration callback that can be used to configure the specific parts of the processor.
         /// </param>
+        /// <returns>A configured services-collection.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="services"/> is <c>null</c>.
         /// </exception>
-        public static void AddMicroProcessor<TProcessor>(this IServiceCollection services, Action<IMicroProcessorBuilder> processorConfiguration = null) where TProcessor : class, IMicroProcessor
+        public static IServiceCollection AddMicroProcessor<TProcessor>(this IServiceCollection services, Action<IMicroProcessorBuilder> processorConfiguration = null) where TProcessor : class, IMicroProcessor
         {
             if (services == null)
             {
@@ -41,6 +43,7 @@ namespace Kingo.MicroServices.Configuration
             var builder = new MicroProcessorBuilder<TProcessor>();
             processorConfiguration?.Invoke(builder);
             builder.Configure(services);
+            return services;
         }        
     }
 }
