@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
         [AssemblyInitialize]
         public static void SetupAssembly(TestContext context)
         {
-            MicroProcessor.Add(processor =>
+            MicroProcessor.Setup(processor =>
             {
 
             }).Configure(services =>

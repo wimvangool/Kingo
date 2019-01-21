@@ -11,7 +11,7 @@ namespace Kingo.MicroServices.Configuration
     {
         #region [====== ScopedMessageHandler ======]
 
-        [MessageHandler(ServiceLifetime.Scoped, MicroProcessorOperationTypes.AnyStream)]
+        [MessageHandler(ServiceLifetime.Scoped, HandleInputMessages = true, HandleOutputMessages = true)]
         private sealed class ScopedMessageHandler : IMessageHandler<object>
         {            
             public const int TotalInvocationCount = 5;

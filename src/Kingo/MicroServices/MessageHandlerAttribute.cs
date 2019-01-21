@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class MessageHandlerAttribute : Attribute, IMessageHandlerConfiguration
     {
-        private readonly MessageHandlerConfiguration _configuration;
+        private MessageHandlerConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandlerAttribute" /> class.
@@ -17,28 +17,40 @@ namespace Kingo.MicroServices
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
         public MessageHandlerAttribute(ServiceLifetime lifetime)
         {
-            _configuration = new MessageHandlerConfiguration(lifetime);
+            _configuration = new MessageHandlerConfiguration(lifetime, MicroProcessorOperationTypes.InputStream);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MessageHandlerAttribute" /> class.
-        /// </summary>
-        /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
-        /// <param name="operationTypes">Specifies during which operation types this handler should be used (input-stream, output-stream or both).</param>
-        public MessageHandlerAttribute(ServiceLifetime lifetime, MicroProcessorOperationTypes operationTypes)
-        {
-            _configuration = new MessageHandlerConfiguration(lifetime, operationTypes);
-        }
-
-        /// <summary>
-        /// The lifetime of the <see cref="IMessageHandler{T}" />.
-        /// </summary>
+        /// <inheritdoc />
         public ServiceLifetime Lifetime =>
             _configuration.Lifetime;
 
         /// <summary>
-        /// Specifies during which operation types this handler should be used (input-stream, output-stream or both).
-        /// </summary>
+        /// Indicates whether or not the handler will respond to messages from the processor's input-stream
+        /// (messages fed to the processor directly).
+        /// </summary>        
+        public bool HandleInputMessages
+        {
+            get => HasOperationType(MicroProcessorOperationTypes.InputStream);
+            set => SetOperationType(MicroProcessorOperationTypes.InputStream, value);
+        }
+
+        /// <summary>
+        /// Indicates whether or not the handler will respond to messages from the processor's output-stream
+        /// (events published while processing other messages).
+        /// </summary>        
+        public bool HandleOutputMessages
+        {
+            get => HasOperationType(MicroProcessorOperationTypes.OutputStream);
+            set => SetOperationType(MicroProcessorOperationTypes.OutputStream, value);
+        }
+
+        private bool HasOperationType(MicroProcessorOperationTypes operationType) =>
+            SupportedOperationTypes.HasFlag(operationType);
+
+        private void SetOperationType(MicroProcessorOperationTypes operationType, bool supportsOperation) =>
+            _configuration = supportsOperation ? _configuration.Add(operationType) : _configuration.Remove(operationType);
+
+        /// <inheritdoc />
         public MicroProcessorOperationTypes SupportedOperationTypes =>
             _configuration.SupportedOperationTypes;
 

@@ -18,7 +18,7 @@ namespace Kingo.MicroServices.Configuration
                 _serviceCollection = serviceCollection;
             }
 
-            public override IServiceCollectionConfiguration Add<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
+            public override IServiceCollectionConfiguration Setup<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
             {
                 if (_serviceCollection.SwitchToState(this, new ConfiguringState<TProcessor>(_serviceCollection, processorConfigurator)))
                 {
@@ -54,7 +54,7 @@ namespace Kingo.MicroServices.Configuration
                 _serviceProvider = new Lazy<IServiceProvider>(BuildServiceProvider, LazyThreadSafetyMode.ExecutionAndPublication);
             }
 
-            public override IServiceCollectionConfiguration Add<T>(Action<IMicroProcessorBuilder> processorConfigurator = null) =>
+            public override IServiceCollectionConfiguration Setup<T>(Action<IMicroProcessorBuilder> processorConfigurator = null) =>
                 throw NewProcessorAlreadyConfiguredException();
 
             public override void Configure(Action<IServiceCollection> serviceConfigurator)
@@ -112,7 +112,7 @@ namespace Kingo.MicroServices.Configuration
                 _serviceProvider = serviceProvider;
             }
 
-            public override IServiceCollectionConfiguration Add<T>(Action<IMicroProcessorBuilder> processorConfigurator = null) =>
+            public override IServiceCollectionConfiguration Setup<T>(Action<IMicroProcessorBuilder> processorConfigurator = null) =>
                 throw NewProcessorAlreadyConfiguredException();
 
             public override void Configure(Action<IServiceCollection> serviceConfigurator) =>
@@ -131,8 +131,8 @@ namespace Kingo.MicroServices.Configuration
             _state = new NotConfiguredState(this);
         }
 
-        public override IServiceCollectionConfiguration Add<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null) =>
-            _state.Add<TProcessor>(processorConfigurator);
+        public override IServiceCollectionConfiguration Setup<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null) =>
+            _state.Setup<TProcessor>(processorConfigurator);
 
         public override void Configure(Action<IServiceCollection> serviceConfigurator) =>
             _state.Configure(serviceConfigurator);

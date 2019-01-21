@@ -13,7 +13,7 @@ namespace Kingo.MicroServices
     {
         #region [====== MessageHandlers ======]
 
-        [MessageHandler(ServiceLifetime.Transient, MicroProcessorOperationTypes.All)]
+        [MessageHandler(ServiceLifetime.Transient, HandleInputMessages = true, HandleOutputMessages = true)]
         private sealed class ObjectHandler : IMessageHandler<object>
         {
             public Task HandleAsync(object message, MessageHandlerContext context) =>
@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
                 Task.CompletedTask;
         }
 
-        [MessageHandler(ServiceLifetime.Transient, MicroProcessorOperationTypes.OutputStream)]
+        [MessageHandler(ServiceLifetime.Transient, HandleInputMessages = false, HandleOutputMessages = true)]
         private sealed class MessageHandlerExceptionThrower : IMessageHandler<object>
         {
             public Task HandleAsync(object message, MessageHandlerContext context) =>

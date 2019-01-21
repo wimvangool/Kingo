@@ -14,7 +14,7 @@ namespace Kingo.MicroServices.Configuration
         /// <param name="processorConfigurator">
         /// Optional configuration callback that can be used to configure the specific parts of the processor.
         /// </param>
-        IServiceCollectionConfiguration Add(Action<IMicroProcessorBuilder> processorConfigurator = null);
+        IServiceCollectionConfiguration Setup(Action<IMicroProcessorBuilder> processorConfigurator = null);
 
         /// <summary>
         /// Configures and registers a specific type of <see cref="IMicroProcessor" /> to use in this application or service.
@@ -23,7 +23,7 @@ namespace Kingo.MicroServices.Configuration
         /// <param name="processorConfigurator">
         /// Optional configuration callback that can be used to configure the specific parts of the processor.
         /// </param>
-        IServiceCollectionConfiguration Add<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
+        IServiceCollectionConfiguration Setup<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
             where TProcessor : class, IMicroProcessor;
     }
 }

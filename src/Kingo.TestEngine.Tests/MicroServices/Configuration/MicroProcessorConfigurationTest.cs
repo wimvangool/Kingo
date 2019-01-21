@@ -20,24 +20,24 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void AddMicroProcessor_ReturnsServiceConfigurator_IfInNotConfiguredState()
         {
-            Assert.IsNotNull(_configuration.Add());
+            Assert.IsNotNull(_configuration.Setup());
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void AddMicroProcessor_Throws_IfInConfiguringState()
         {
-            _configuration.Add();
-            _configuration.Add();
+            _configuration.Setup();
+            _configuration.Setup();
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void AddMicroProcessor_Throws_IfInConfiguredState()
         {
-            _configuration.Add();
+            _configuration.Setup();
             _configuration.ServiceProvider();
-            _configuration.Add();
+            _configuration.Setup();
         }
 
         #endregion
@@ -55,20 +55,20 @@ namespace Kingo.MicroServices.Configuration
         [ExpectedException(typeof(ArgumentNullException))]
         public void Configure_Throws_IfInConfiguringState_And_ServiceConfiguratorIsNull()
         {
-            _configuration.Add().Configure(null);
+            _configuration.Setup().Configure(null);
         }
 
         [TestMethod]
         public void Configure_StoresTheServiceConfigurator_IfInConfiguringState_And_ServiceConfiguratorIsNotNull()
         {
-            _configuration.Add().Configure(services => { });
+            _configuration.Setup().Configure(services => { });
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Configure_Throws_IfInConfiguringState_And_ServicesHaveAlreadyBeenConfigured()
         {
-            _configuration.Add().Configure(services => { });            
+            _configuration.Setup().Configure(services => { });            
             _configuration.Configure(null);
         }
 
@@ -76,7 +76,7 @@ namespace Kingo.MicroServices.Configuration
         [ExpectedException(typeof(InvalidOperationException))]
         public void Configure_Throws_IfInConfiguredState()
         {
-            _configuration.Add().Configure(services => { });
+            _configuration.Setup().Configure(services => { });
             _configuration.ServiceProvider();
             _configuration.Configure(null);
         }
@@ -95,7 +95,7 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void ServiceProvider_ReturnsServiceProvider_IfInConfiguringState()
         {
-            _configuration.Add();
+            _configuration.Setup();
 
             Assert.IsNotNull(_configuration.ServiceProvider());            
         }
@@ -103,7 +103,7 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]
         public void ServiceProvider_ReturnsServiceProvider_IfInConfiguredState()
         {
-            _configuration.Add();
+            _configuration.Setup();
 
             Assert.IsNotNull(_configuration.ServiceProvider());
             Assert.IsNotNull(_configuration.ServiceProvider());
@@ -123,7 +123,7 @@ namespace Kingo.MicroServices.Configuration
         [TestMethod]        
         public void ResolveProcessor_ReturnsExpectedProcessor_IfOnlyBasicProcessorHasBeenConfigured()
         {
-            _configuration.Add();
+            _configuration.Setup();
 
             var processor = _configuration.ResolveProcessor();
 
@@ -136,7 +136,7 @@ namespace Kingo.MicroServices.Configuration
             var bus = new MicroServiceBusStub();
             var @event = new object();
 
-            _configuration.Add(processor =>
+            _configuration.Setup(processor =>
             {
                 processor.ServiceBus.Add(bus);
             });
@@ -156,7 +156,7 @@ namespace Kingo.MicroServices.Configuration
             var bus = new MicroServiceBusStub();
             var @event = new object();
 
-            _configuration.Add<CustomProcessor>(processor =>
+            _configuration.Setup<CustomProcessor>(processor =>
             {
                 processor.ServiceBus.Add(bus);
 

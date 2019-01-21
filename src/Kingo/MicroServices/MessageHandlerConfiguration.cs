@@ -29,11 +29,11 @@ namespace Kingo.MicroServices
         /// Initializes a new instance of a <see cref="MessageHandlerConfiguration" /> structure.
         /// </summary>
         /// <param name="lifetime">The lifetime of the <see cref="IMessageHandler{T}" />.</param>
-        /// <param name="sources">Specifies during which operation types this handler should be used (input-stream, output-stream or both).</param>
-        public MessageHandlerConfiguration(ServiceLifetime lifetime, MicroProcessorOperationTypes sources)
+        /// <param name="operationTypes">Specifies during which operation types this handler should be used (input-stream, output-stream or both).</param>
+        public MessageHandlerConfiguration(ServiceLifetime lifetime, MicroProcessorOperationTypes operationTypes)
         {
             Lifetime = lifetime;
-            SupportedOperationTypes = sources;
+            SupportedOperationTypes = operationTypes;
         }
 
         /// <inheritdoc />
@@ -47,6 +47,22 @@ namespace Kingo.MicroServices
         {
             get;
         }
+
+        /// <summary>
+        /// Adds all specified <paramref name="operationTypes" /> to this configuration and returns the updated configuration.
+        /// </summary>
+        /// <param name="operationTypes">The operationTypes to add.</param>
+        /// <returns>The updated configuration.</returns>
+        public MessageHandlerConfiguration Add(MicroProcessorOperationTypes operationTypes) =>
+            new MessageHandlerConfiguration(Lifetime, SupportedOperationTypes | operationTypes);
+
+        /// <summary>
+        /// Removes all specified <paramref name="operationTypes" /> to this configuration and returns the updated configuration.
+        /// </summary>
+        /// <param name="operationTypes">The operationTypes to remove.</param>
+        /// <returns>The updated configuration.</returns>
+        public MessageHandlerConfiguration Remove(MicroProcessorOperationTypes operationTypes) =>
+            new MessageHandlerConfiguration(Lifetime, SupportedOperationTypes & ~operationTypes);
 
         #region [====== Object Identity ======]
 
