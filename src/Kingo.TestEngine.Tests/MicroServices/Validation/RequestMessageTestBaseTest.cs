@@ -236,7 +236,7 @@ namespace Kingo.MicroServices.Validation
         [ExpectedException(typeof(AssertFailedException))]
         public void AssertInstanceError_Throws_IfAssertCallbackFails()
         {
-            var exceptionToThrow = new AssertFailedException(string.Empty, null);
+            var exceptionToThrow = new AssertFailedException(string.Empty);
 
             try
             {

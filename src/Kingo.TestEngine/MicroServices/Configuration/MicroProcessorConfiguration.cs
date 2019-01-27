@@ -18,7 +18,11 @@ namespace Kingo.MicroServices.Configuration
                 _serviceCollection = serviceCollection;
             }
 
-            public override IServiceCollectionConfiguration Setup<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
+            public override IServiceCollectionConfiguration Setup<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null) =>
+                SetupProcessor<TProcessor>(processorConfigurator);
+
+            private MicroProcessorConfigurationBase SetupProcessor<TProcessor>(Action<IMicroProcessorBuilder> processorConfigurator = null)
+                where TProcessor : class, IMicroProcessor
             {
                 if (_serviceCollection.SwitchToState(this, new ConfiguringState<TProcessor>(_serviceCollection, processorConfigurator)))
                 {
@@ -31,7 +35,7 @@ namespace Kingo.MicroServices.Configuration
                 throw NewProcessorNotYetConfiguredException();
 
             public override IServiceProvider ServiceProvider() =>
-                throw NewProcessorNotYetConfiguredException();
+                SetupProcessor<MicroProcessor>().ServiceProvider();
         }
 
         #endregion

@@ -8,17 +8,7 @@ namespace Kingo.MicroServices
     /// </summary>
     /// <typeparam name="TMessage">Type of the message that can be processed.</typeparam>
     public interface IMessageProcessor<TMessage>
-    {
-        /// <summary>
-        /// Processes the specified <paramref name="message" />.
-        /// </summary>
-        /// <param name="message">The message to handle.</param>
-        /// <param name="handler">Optional handler to handle the message inside the processor.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        Task HandleAsync(TMessage message, Func<TMessage, MessageHandlerContext, Task> handler);
-
+    {        
         /// <summary>
         /// Processes the specified <paramref name="message" />.
         /// </summary>

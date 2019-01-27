@@ -79,6 +79,33 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The expected number of events cannot be negative: {0}..
+        /// </summary>
+        internal static string MessageHandlerResult_InvalidEventCountSpecified {
+            get {
+                return ResourceManager.GetString("MessageHandlerResult_InvalidEventCountSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of expected events ({0}) does not match the actual number of published events ({1})..
+        /// </summary>
+        internal static string MessageHandlerResult_UnexpectedEventCount {
+            get {
+                return ResourceManager.GetString("MessageHandlerResult_UnexpectedEventCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An exception was thrown while asserting and converting the stream of published events ({0}). See inner exception for details. .
+        /// </summary>
+        internal static string MessageHandlerResult_UnexpectedStreamContents {
+            get {
+                return ResourceManager.GetString("MessageHandlerResult_UnexpectedStreamContents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot invoke &apos;{0}&apos; at this point: the processor has already been configured..
         /// </summary>
         internal static string MicroProcessorConfiguration_ProcessorAlreadyConfigured {

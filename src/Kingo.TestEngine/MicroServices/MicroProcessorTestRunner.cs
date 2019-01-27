@@ -211,7 +211,7 @@ namespace Kingo.MicroServices
         /// Returns the processor-configuration for the <see cref="IMicroProcessor" /> that is to be used by all tests.
         /// </summary>
         protected static IMicroProcessorConfiguration MicroProcessor =>
-            _MicroProcessor;
+            _MicroProcessor;        
 
         #endregion
     }

@@ -15,17 +15,17 @@ namespace Kingo.MicroServices.Configuration
             _configuration = new MicroProcessorConfiguration();
         }
 
-        #region [====== AddMicroProcessor ======]
+        #region [====== SetupMicroProcessor ======]
 
         [TestMethod]
-        public void AddMicroProcessor_ReturnsServiceConfigurator_IfInNotConfiguredState()
+        public void SetupMicroProcessor_ReturnsServiceConfigurator_IfInNotConfiguredState()
         {
             Assert.IsNotNull(_configuration.Setup());
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void AddMicroProcessor_Throws_IfInConfiguringState()
+        public void SetupMicroProcessor_Throws_IfInConfiguringState()
         {
             _configuration.Setup();
             _configuration.Setup();
@@ -33,7 +33,7 @@ namespace Kingo.MicroServices.Configuration
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void AddMicroProcessor_Throws_IfInConfiguredState()
+        public void SetupMicroProcessor_Throws_IfInConfiguredState()
         {
             _configuration.Setup();
             _configuration.ServiceProvider();
@@ -85,11 +85,10 @@ namespace Kingo.MicroServices.Configuration
 
         #region [====== ServiceProvider ======]
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ServiceProvider_Throws_IfInNotConfiguredState()
+        [TestMethod]        
+        public void ServiceProvider_ReturnsServiceProvider_IfInNotConfiguredState()
         {
-            _configuration.ServiceProvider();
+            Assert.IsNotNull(_configuration.ServiceProvider());
         }
 
         [TestMethod]
@@ -113,11 +112,12 @@ namespace Kingo.MicroServices.Configuration
 
         #region [====== ResolveProcessor ======]               
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ResolveProcessor_Throws_IfInNotConfiguredState()
+        [TestMethod]        
+        public void ResolveProcessor_ReturnsDefaultProcessor_IfInNotConfiguredState()
         {
-            _configuration.ResolveProcessor();
+            var processor = _configuration.ResolveProcessor();
+
+            Assert.IsInstanceOfType(processor, typeof(MicroProcessor));
         }
 
         [TestMethod]        

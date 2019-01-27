@@ -123,6 +123,15 @@
   <data name="EventStream_EventNotOfExpectedType" xml:space="preserve">
     <value>Expected event of type '{0}' at index '{1}', but found event of type '{2}'.</value>
   </data>
+  <data name="MessageHandlerResult_InvalidEventCountSpecified" xml:space="preserve">
+    <value>The expected number of events cannot be negative: {0}.</value>
+  </data>
+  <data name="MessageHandlerResult_UnexpectedEventCount" xml:space="preserve">
+    <value>The number of expected events ({0}) does not match the actual number of published events ({1}).</value>
+  </data>
+  <data name="MessageHandlerResult_UnexpectedStreamContents" xml:space="preserve">
+    <value>An exception was thrown while asserting and converting the stream of published events ({0}). See inner exception for details. </value>
+  </data>
   <data name="MicroProcessorConfiguration_ProcessorAlreadyConfigured" xml:space="preserve">
     <value>Cannot invoke '{0}' at this point: the processor has already been configured.</value>
   </data>
