@@ -79,6 +79,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One or more assertions for the published events failed. See inner exception for details. .
+        /// </summary>
+        internal static string MessageHandlerResult_AssertionOfEventStreamFailed {
+            get {
+                return ResourceManager.GetString("MessageHandlerResult_AssertionOfEventStreamFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The expected number of events cannot be negative: {0}..
         /// </summary>
         internal static string MessageHandlerResult_InvalidEventCountSpecified {
@@ -93,15 +102,6 @@ namespace Kingo {
         internal static string MessageHandlerResult_UnexpectedEventCount {
             get {
                 return ResourceManager.GetString("MessageHandlerResult_UnexpectedEventCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An exception was thrown while asserting and converting the stream of published events ({0}). See inner exception for details. .
-        /// </summary>
-        internal static string MessageHandlerResult_UnexpectedStreamContents {
-            get {
-                return ResourceManager.GetString("MessageHandlerResult_UnexpectedStreamContents", resourceCulture);
             }
         }
         
@@ -151,6 +151,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One or more assertions for exception of type &apos;{0}&apos; failed. See inner exception for details..
+        /// </summary>
+        internal static string MicroProcessorTestResult_AssertionOfExceptionFailed {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestResult_AssertionOfExceptionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected an exception of type &apos;{0}&apos;, but encountered an exception of type &apos;{1}&apos; instead..
         /// </summary>
         internal static string MicroProcessorTestResult_ExceptionNotOfExpectedType {
@@ -174,6 +183,15 @@ namespace Kingo {
         internal static string MicroProcessorTestResult_ExceptionThrown {
             get {
                 return ResourceManager.GetString("MicroProcessorTestResult_ExceptionThrown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception of type &apos;{0}&apos; was expected to have an inner-exception of type &apos;{1}&apos;, but did not have any inner-exception..
+        /// </summary>
+        internal static string MicroProcessorTestResult_InnerExceptionNull {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestResult_InnerExceptionNull", resourceCulture);
             }
         }
         

@@ -25,6 +25,6 @@ namespace Kingo.MicroServices
             processor.HandleAsync(_message, _handler);
 
         protected override void Then(TMessage message, IMessageHandlerResult result, MicroProcessorTestContext context) =>
-            result.IsExpectedEventStream();
+            result.IsEventStream();
     }
 }

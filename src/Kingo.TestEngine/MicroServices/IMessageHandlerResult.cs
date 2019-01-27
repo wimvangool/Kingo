@@ -11,8 +11,9 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Verifies that no events were published.
         /// </summary>
-        void IsExpectedEventStream(Action<EventStream> assertion = null);
-
-
+        /// <param name="assertion">
+        /// Optional delegate to verify the details of all the published events.
+        /// </param>
+        void IsEventStream(Action<EventStream> assertion = null);
     }
 }

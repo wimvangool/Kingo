@@ -24,7 +24,7 @@ namespace Kingo.MicroServices
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsExpectedEventStream(stream => stream);
+                    result.IsEventStream(stream => stream);
                 });
 
             await RunAsync(test);
@@ -41,7 +41,7 @@ namespace Kingo.MicroServices
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsExpectedEventStream(stream => stream, -1);
+                    result.IsEventStream(stream => stream, -1);
                 });
 
             await RunAsync(test);
@@ -57,7 +57,7 @@ namespace Kingo.MicroServices
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsExpectedEventStream(stream => stream);
+                    result.IsEventStream(stream => stream);
                 });
 
             await RunAsync(test);
@@ -78,7 +78,7 @@ namespace Kingo.MicroServices
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsExpectedEventStream(stream => stream, 0);
+                    result.IsEventStream(stream => stream, 0);
                 });
 
             await RunAsync(test);
@@ -95,7 +95,7 @@ namespace Kingo.MicroServices
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsExpectedEventStream(stream => stream, 1);
+                    result.IsEventStream(stream => stream, 1);
                 });
 
             await RunAsync(test);
@@ -115,7 +115,7 @@ namespace Kingo.MicroServices
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsExpectedEventStream(stream =>
+                    result.IsEventStream(stream =>
                     {
                         Assert.AreSame(@event, stream[0]);
                         return stream;
@@ -140,8 +140,8 @@ namespace Kingo.MicroServices
                 })
                 .Then((message, result, testContext) =>
                 {
-                    result.IsExpectedEventStream(stream =>
-                    {
+                    result.IsEventStream(stream =>
+                    {                        
                         Assert.AreNotSame(@event, stream[0]);
                         return stream;
                     }, 1);
@@ -150,8 +150,260 @@ namespace Kingo.MicroServices
             await RunAsync(test);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfExceptionIsExpected_But_NoExceptionWasThrown()
+        {            
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) => { });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsExceptionOfType<Exception>(exception => { });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfSpecificExceptionIsExpected_But_DifferentTypeOfExceptionWasThrown()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsExceptionOfType<BusinessRuleException>(exception => { });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificExceptionIsExpected_And_ThatTypeOfExceptionWasThrown()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsExceptionOfType<InternalServerErrorException>(exception => { });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificExceptionIsExpected_And_DerivedTypeOfExceptionWasThrown()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsExceptionOfType<MicroProcessorException>(exception => { });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfSpecificExceptionIsExpected_But_AssertionOfExceptionFails()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsExceptionOfType<InternalServerErrorException>(exception =>
+                    {
+                        Assert.AreEqual(Guid.NewGuid().ToString("N"), exception.Message);
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificExceptionIsExpected_And_AssertionOfExceptionSucceeds()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result.IsExceptionOfType<InternalServerErrorException>(exception => { });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_ExceptionHasNoInnerException()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomInternalServerError();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_ExceptionHasDifferentTypeOfInnerException()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<InvalidOperationException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificInnerExceptionIsExpected_And_ExceptionHasThatTypeOfInnerException()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<BusinessRuleException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificInnerExceptionIsExpected_And_ExceptionHasDerivedTypeOfInnerException()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<MessageHandlerException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_AssertionOfInnerExceptionFails()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<BusinessRuleException>(exception =>
+                        {
+                            Assert.AreEqual(Guid.NewGuid().ToString(), exception.Message);
+                        });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificInnerExceptionIsExpected_And_AssertionOfInnerExceptionSucceeds()
+        {
+            var test = CreateMessageHandlerTest()
+                .When(async (messageProcessor, testContext) =>
+                {
+                    await messageProcessor.HandleAsync(new object(), (processor, context) =>
+                    {
+                        throw NewRandomBusinessRuleException();
+                    });
+                })
+                .Then((message, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<BusinessRuleException>(exception => { });
+                });
+
+            await RunAsync(test);
+        }
+
         private static Exception NewRandomBusinessRuleException() =>
             new BusinessRuleException(Guid.NewGuid().ToString("N"));
+
+        private static Exception NewRandomInternalServerError() =>
+            new InternalServerErrorException(Guid.NewGuid().ToString("N"));
 
         #endregion
 

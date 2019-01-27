@@ -25,6 +25,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="expectedEventCount"/> is a negative number.
         /// </exception>
-        void IsExpectedEventStream(Func<EventStream, TEventStream> assertion, int? expectedEventCount = null);
+        void IsEventStream(Func<EventStream, TEventStream> assertion, int? expectedEventCount = null);
     }
 }

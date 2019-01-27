@@ -15,7 +15,7 @@ namespace Kingo.MicroServices
                 _exception = exception;
             }
 
-            public override void IsExpectedException<TException>(Action<TException> assertion = null) =>
+            public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 IsExpectedException(_exception, assertion);
 
             public void IsExpectedResponse(Action<TResponse> assertion) =>
@@ -35,7 +35,7 @@ namespace Kingo.MicroServices
                 _response = response;
             }
 
-            public override void IsExpectedException<TException>(Action<TException> assertion = null) =>
+            public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 throw NewExceptionNotThrownException(typeof(TException));
 
             public void IsExpectedResponse(Action<TResponse> assertion)
@@ -62,8 +62,8 @@ namespace Kingo.MicroServices
             _result = new ResponseResult(response);
         }        
 
-        public override void IsExpectedException<TException>(Action<TException> assertion = null) =>
-            _result.IsExpectedException(assertion);
+        public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
+            _result.IsExceptionOfType(assertion);
 
         public void IsExpectedResponse(Action<TResponse> assertion) =>
             _result.IsExpectedResponse(assertion);

@@ -18,12 +18,12 @@ namespace Kingo.MicroServices
                 _result = result;
             }
 
-            public void IsExpectedException<TException>(Action<TException> assertion = null) where TException : Exception =>
-                _result.IsExpectedException(assertion);
+            public IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) where TException : Exception =>
+                _result.IsExceptionOfType(assertion);
 
-            public void IsExpectedEventStream(Action<EventStream> assertion = null)
+            public void IsEventStream(Action<EventStream> assertion = null)
             {
-                _result.IsExpectedEventStream(stream =>
+                _result.IsEventStream(stream =>
                 {
                     assertion?.Invoke(stream);
                     return stream;

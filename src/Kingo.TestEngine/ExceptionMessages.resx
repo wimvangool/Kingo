@@ -123,14 +123,14 @@
   <data name="EventStream_EventNotOfExpectedType" xml:space="preserve">
     <value>Expected event of type '{0}' at index '{1}', but found event of type '{2}'.</value>
   </data>
+  <data name="MessageHandlerResult_AssertionOfEventStreamFailed" xml:space="preserve">
+    <value>One or more assertions for the published events failed. See inner exception for details. </value>
+  </data>
   <data name="MessageHandlerResult_InvalidEventCountSpecified" xml:space="preserve">
     <value>The expected number of events cannot be negative: {0}.</value>
   </data>
   <data name="MessageHandlerResult_UnexpectedEventCount" xml:space="preserve">
     <value>The number of expected events ({0}) does not match the actual number of published events ({1}).</value>
-  </data>
-  <data name="MessageHandlerResult_UnexpectedStreamContents" xml:space="preserve">
-    <value>An exception was thrown while asserting and converting the stream of published events ({0}). See inner exception for details. </value>
   </data>
   <data name="MicroProcessorConfiguration_ProcessorAlreadyConfigured" xml:space="preserve">
     <value>Cannot invoke '{0}' at this point: the processor has already been configured.</value>
@@ -147,6 +147,9 @@
   <data name="MicroProcessorTestContext_TestAlreadyRun" xml:space="preserve">
     <value>Cannot save the EventStream of '{0}' because a previous result of this test has already been saved.</value>
   </data>
+  <data name="MicroProcessorTestResult_AssertionOfExceptionFailed" xml:space="preserve">
+    <value>One or more assertions for exception of type '{0}' failed. See inner exception for details.</value>
+  </data>
   <data name="MicroProcessorTestResult_ExceptionNotOfExpectedType" xml:space="preserve">
     <value>Expected an exception of type '{0}', but encountered an exception of type '{1}' instead.</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="MicroProcessorTestResult_ExceptionThrown" xml:space="preserve">
     <value>An unexpected exception of type '{0}' was thrown.</value>
+  </data>
+  <data name="MicroProcessorTestResult_InnerExceptionNull" xml:space="preserve">
+    <value>Exception of type '{0}' was expected to have an inner-exception of type '{1}', but did not have any inner-exception.</value>
   </data>
   <data name="RequestMessageTestBase_InvalidErrorCount" xml:space="preserve">
     <value>The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1.</value>
