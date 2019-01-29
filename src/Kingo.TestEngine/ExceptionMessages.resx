@@ -126,11 +126,8 @@
   <data name="MessageHandlerResult_AssertionOfEventStreamFailed" xml:space="preserve">
     <value>One or more assertions for the published events failed. See inner exception for details. </value>
   </data>
-  <data name="MessageHandlerResult_InvalidEventCountSpecified" xml:space="preserve">
-    <value>The expected number of events cannot be negative: {0}.</value>
-  </data>
-  <data name="MessageHandlerResult_UnexpectedEventCount" xml:space="preserve">
-    <value>The number of expected events ({0}) does not match the actual number of published events ({1}).</value>
+  <data name="MessageHandlerResult_StreamNotEmpty" xml:space="preserve">
+    <value>Expected an empty stream, but stream contains {0} event(s).</value>
   </data>
   <data name="MicroProcessorConfiguration_ProcessorAlreadyConfigured" xml:space="preserve">
     <value>Cannot invoke '{0}' at this point: the processor has already been configured.</value>
@@ -162,6 +159,12 @@
   <data name="MicroProcessorTestResult_InnerExceptionNull" xml:space="preserve">
     <value>Exception of type '{0}' was expected to have an inner-exception of type '{1}', but did not have any inner-exception.</value>
   </data>
+  <data name="MicroProcessorTestResult_ResultNotVerified" xml:space="preserve">
+    <value>Test failed by default because its result was not verified.</value>
+  </data>
+  <data name="NullTestResult_MissingResult" xml:space="preserve">
+    <value>Test '{0}' did not produce any result. Please verify that the processor provided as an argument to the WhenAsync-method has been used to handle a message or execute a query.</value>
+  </data>
   <data name="RequestMessageTestBase_InvalidErrorCount" xml:space="preserve">
     <value>The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1.</value>
   </data>
@@ -182,5 +185,8 @@
   </data>
   <data name="RequestMessageTestBase_UnexpectedMemberError" xml:space="preserve">
     <value>The expected error for member '{0}' ({1}) does not match the actual error ({2}) based on the type of comparison specified ({3}).</value>
+  </data>
+  <data name="UnexpectedExceptionResult_UnexpectedException" xml:space="preserve">
+    <value>Test '{0}' threw unexpected exception of type '{1}'. See inner exception for details.</value>
   </data>
 </root>

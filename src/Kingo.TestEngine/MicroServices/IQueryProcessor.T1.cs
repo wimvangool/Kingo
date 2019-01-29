@@ -8,16 +8,7 @@ namespace Kingo.MicroServices
     /// </summary>    
     /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
     public interface IQueryProcessor<TResponse>
-    {
-        /// <summary>
-        /// Executes the specified <paramref name="query"/>.
-        /// </summary>        
-        /// <param name="query">Query to execute.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="query"/> is <c>null</c>.
-        /// </exception>
-        Task ExecuteAsync(Func<QueryContext, Task<TResponse>> query);
-
+    {        
         /// <summary>
         /// Executes the specified <paramref name="query"/>.
         /// </summary>        

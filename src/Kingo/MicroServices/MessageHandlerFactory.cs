@@ -21,7 +21,7 @@ namespace Kingo.MicroServices
         }
 
         public IServiceProvider CreateServiceProvider() =>
-            _services.BuildServiceProvider();
+            _services.BuildServiceProvider(true);
         
         public override string ToString() =>
             $"{_messageHandlerClasses.Length + _messageHandlerInstances.Length} MessageHandler(s) Registered";

@@ -40,14 +40,14 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(AssertFailedException))]
+        [ExpectedException(typeof(MicroProcessorTestFailedException))]
         public void AssertEvent_Throws_IfIndexIsOutOfRange()
         {
             EventStream.Empty.AssertEvent<object>(0);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(AssertFailedException))]
+        [ExpectedException(typeof(MicroProcessorTestFailedException))]
         public void AssertEvent_Throws_IfEventIsNotOfExpectedType()
         {
             CreateEventStream(string.Empty).AssertEvent<int>(0);

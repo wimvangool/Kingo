@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
-    internal abstract class MicroProcessorTestDelegate : IMicroProcessorTest        
+    internal sealed class GivenStatementCollection
     {
         private readonly List<Func<IMessageHandlerTestProcessor, MicroProcessorTestContext, Task>> _givenStatements;
 
-        protected MicroProcessorTestDelegate()
+        public GivenStatementCollection()
         {
             _givenStatements = new List<Func<IMessageHandlerTestProcessor, MicroProcessorTestContext, Task>>();
         }
 
-        public MicroProcessorTestDelegate Given(Func<IMessageHandlerTestProcessor, MicroProcessorTestContext, Task> givenStatement)
+        public GivenStatementCollection Given(Func<IMessageHandlerTestProcessor, MicroProcessorTestContext, Task> givenStatement)
         {
             if (givenStatement == null)
             {
@@ -25,7 +23,7 @@ namespace Kingo.MicroServices
             return this;
         }            
 
-        async Task IMicroProcessorTest.GivenAsync(IMessageHandlerTestProcessor processor, MicroProcessorTestContext context)
+        public async Task GivenAsync(IMessageHandlerTestProcessor processor, MicroProcessorTestContext context)
         {
             foreach (var givenStatement in _givenStatements)
             {

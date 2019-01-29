@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Kingo
+namespace Kingo.MicroServices
 {
     /// <summary>
     /// This exception is thrown by the test-engine when an assertion fails.
     /// </summary>
     [Serializable]
-    public sealed class AssertFailedException : Exception
+    public sealed class MicroProcessorTestFailedException : Exception
     {        
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssertFailedException" /> class.
+        /// Initializes a new instance of the <see cref="MicroProcessorTestFailedException" /> class.
         /// </summary>
         /// <param name="message">The error message.</param>
         /// <param name="innerException">The cause of the exception.</param>
-        public AssertFailedException(string message, Exception innerException = null)
+        public MicroProcessorTestFailedException(string message, Exception innerException = null)
             : base(message, innerException) { }
 
-        private AssertFailedException(SerializationInfo info, StreamingContext context) :
+        private MicroProcessorTestFailedException(SerializationInfo info, StreamingContext context) :
             base(info, context) { }
     }
 }

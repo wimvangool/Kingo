@@ -6,7 +6,7 @@ namespace Kingo.MicroServices
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroProcessorTestResult, IQueryResult<TResponse>
+        private sealed class ExceptionResult : MicroProcessorTestResultBase, IQueryResult<TResponse>
         {
             private readonly Exception _exception;
 
@@ -14,6 +14,9 @@ namespace Kingo.MicroServices
             {                
                 _exception = exception;
             }
+
+            public override string ToString() =>
+                _exception.GetType().FriendlyName();
 
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 IsExpectedException(_exception, assertion);
@@ -26,7 +29,7 @@ namespace Kingo.MicroServices
 
         #region [====== ResponseResult ======]
 
-        private sealed class ResponseResult : MicroProcessorTestResult, IQueryResult<TResponse>
+        private sealed class ResponseResult : MicroProcessorTestResultBase, IQueryResult<TResponse>
         {
             private readonly TResponse _response;
 
@@ -34,6 +37,9 @@ namespace Kingo.MicroServices
             {                
                 _response = response;
             }
+
+            public override string ToString() =>
+                typeof(TResponse).FriendlyName();
 
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 throw NewExceptionNotThrownException(typeof(TException));
@@ -60,12 +66,33 @@ namespace Kingo.MicroServices
         public QueryResult(TResponse response)
         {
             _result = new ResponseResult(response);
-        }        
+        }
 
-        public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
-            _result.IsExceptionOfType(assertion);
+        public override string ToString() =>
+            _result.ToString();
 
-        public void IsExpectedResponse(Action<TResponse> assertion) =>
-            _result.IsExpectedResponse(assertion);
+        public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null)
+        {
+            try
+            {
+                return _result.IsExceptionOfType(assertion);
+            }
+            finally
+            {
+                OnVerified();
+            }
+        }            
+
+        public void IsExpectedResponse(Action<TResponse> assertion)
+        {
+            try
+            {
+                _result.IsExpectedResponse(assertion);
+            }
+            finally
+            {
+                OnVerified();
+            }
+        }            
     }
 }

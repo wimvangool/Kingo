@@ -2,7 +2,6 @@
 using System.Security.Principal;
 using System.Threading;
 using Kingo.Threading;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
@@ -84,7 +83,7 @@ namespace Kingo.MicroServices
             _Context.Current;
 
         internal static IDisposable CreateScope(MicroProcessorContext context) =>
-            new DisposableComposite(_Context.OverrideAsyncLocal(context), context.ServiceProvider.CreateScope());
+            _Context.OverrideAsyncLocal(context);
 
         #endregion        
     }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Threading;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
@@ -13,13 +12,28 @@ namespace Kingo.MicroServices
     public sealed class MicroProcessorTestContext : IMicroServiceBus
     {        
         private readonly Dictionary<IMicroProcessorTest, EventStream> _eventStreams;
+        private readonly IMicroProcessor _processor;
         private MemoryServiceBus _serviceBus;
 
-        private MicroProcessorTestContext()
+        private MicroProcessorTestContext(IMicroProcessor processor)
         {                        
             _eventStreams = new Dictionary<IMicroProcessorTest, EventStream>();
+            _processor = processor;
             _serviceBus = new MemoryServiceBus();
         }
+
+        internal IMicroProcessor Processor =>
+            _processor;
+
+        /// <summary>
+        /// The service provider that is used to resolve dependencies during test execution.
+        /// </summary>
+        public IServiceProvider ServiceProvider =>
+            _processor.ServiceProvider;
+
+        /// <inheritdoc />
+        public override string ToString() =>
+            $"{_eventStreams.Count} event stream(s) stored, {_serviceBus.Count} event(s) published";
 
         #region [====== IMicroServiceBus ======]
 
@@ -122,6 +136,24 @@ namespace Kingo.MicroServices
 
         #region [====== Current ======]
 
+        private sealed class MicroProcessorTestScope : IDisposable
+        {
+            private readonly IDisposable _contextScope;
+            private readonly IDisposable _serviceScope;
+
+            public MicroProcessorTestScope(IDisposable contextScope, IDisposable serviceScope)
+            {
+                _contextScope = contextScope;
+                _serviceScope = serviceScope;
+            }
+
+            public void Dispose()
+            {
+                _contextScope.Dispose();
+                _serviceScope.Dispose();
+            }
+        }
+
         private static readonly Context<MicroProcessorTestContext> _Context = new Context<MicroProcessorTestContext>();        
 
         /// <summary>
@@ -130,8 +162,8 @@ namespace Kingo.MicroServices
         public static MicroProcessorTestContext Current =>
             _Context.Current;
 
-        internal static IDisposable CreateScope(IServiceProvider serviceProvider) =>
-            new DisposableComposite(_Context.OverrideAsyncLocal(new MicroProcessorTestContext()), serviceProvider.CreateScope());
+        internal static IDisposable CreateScope(IMicroProcessor processor) =>
+            new MicroProcessorTestScope(_Context.OverrideAsyncLocal(new MicroProcessorTestContext(processor)), processor.CreateScope());
 
         #endregion
     }

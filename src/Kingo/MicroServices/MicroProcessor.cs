@@ -2,6 +2,8 @@
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using Kingo.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
@@ -9,7 +11,37 @@ namespace Kingo.MicroServices
     /// Represents a basic implementation of the <see cref="IMicroProcessor" /> interface.
     /// </summary>
     public class MicroProcessor : IMicroProcessor
-    {                             
+    {
+        #region [====== ServiceScope ======]
+
+        private sealed class ServiceScope : IServiceScope
+        {
+            private readonly IDisposable _contextScope;
+            private readonly IServiceScope _serviceScope;            
+
+            public ServiceScope(MicroProcessor processor, IServiceScope serviceScope)
+            {
+                _contextScope = processor._serviceProviderContext.OverrideAsyncLocal(serviceScope.ServiceProvider);
+                _serviceScope = serviceScope;                
+            }
+
+            public void Dispose()
+            {
+                _contextScope.Dispose();
+                _serviceScope.Dispose();                
+            }
+
+            public IServiceProvider ServiceProvider =>
+                _serviceScope.ServiceProvider;
+        }
+
+        #endregion
+
+        private readonly IMicroServiceBus _serviceBus;
+        private readonly IMessageHandlerFactory _messageHandlers;
+        private readonly IMicroProcessorPipelineFactory _pipeline;
+        private readonly Context<IServiceProvider> _serviceProviderContext;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
         /// </summary>
@@ -23,47 +55,55 @@ namespace Kingo.MicroServices
         /// <param name="serviceBus">
         /// Optional service bus that is used by this processor to publish all messages that were published inside the
         /// processor while handling a message.
-        /// </param>        
+        /// </param>
+        /// <param name="serviceProvider">
+        /// Optional service-provider that will be used to resolve message-handlers and their dependencies.
+        /// </param> 
         public MicroProcessor(IMicroServiceBus serviceBus = null, IMessageHandlerFactory messageHandlers = null, IMicroProcessorPipelineFactory pipeline = null, IServiceProvider serviceProvider = null)
         {
-            ServiceBus = serviceBus ?? MicroServiceBus.Null;
-            MessageHandlers = messageHandlers ?? MessageHandlerFactory.Null;
-            Pipeline = pipeline ?? MicroProcessorPipelineFactory.Null;
-            ServiceProvider = serviceProvider ?? MessageHandlers.CreateServiceProvider();            
+            _serviceBus = serviceBus ?? MicroServiceBus.Null;
+            _messageHandlers = messageHandlers ?? MessageHandlerFactory.Null;
+            _pipeline = pipeline ?? MicroProcessorPipelineFactory.Null;
+            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider ?? _messageHandlers.CreateServiceProvider());
         }
+
+        #region [====== Components ======]        
 
         /// <summary>
         /// Returns the service bus that this processor uses to publish all messages to.
         /// </summary>
-        protected IMicroServiceBus ServiceBus
-        {
-            get;
-        }
+        protected virtual IMicroServiceBus ServiceBus =>
+            _serviceBus;
 
         /// <summary>
         /// Returns the <see cref="IMessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected internal IMessageHandlerFactory MessageHandlers
-        {
-            get;
-        }
+        protected internal virtual IMessageHandlerFactory MessageHandlers =>
+            _messageHandlers;
 
         /// <summary>
         /// Returns the <see cref="IMicroProcessorPipelineFactory"/> of this processor.
         /// </summary>
-        protected internal IMicroProcessorPipelineFactory Pipeline
-        {
-            get;
-        }    
-        
+        protected internal IMicroProcessorPipelineFactory Pipeline =>
+            _pipeline;
+
+        #endregion
+
+        #region [====== ServiceProvider ======]        
+
+        /// <inheritdoc />
+        public virtual IServiceProvider ServiceProvider =>
+            _serviceProviderContext.Current;
+
         /// <summary>
-        /// Returns the <see cref="IServiceProvider" /> that will be used by the <see cref="MessageHandlers"/>
-        /// to resolve the message-handlers and their dependencies.
+        /// Creates and returns a new <see cref="IServiceScope" /> that determined the lifetime of scoped
+        /// dependencies. As a side-effect, this method updates the processor's <see cref="ServiceProvider" />
+        /// to the provider of the scope and resets it as soon as the scope is disposed.
         /// </summary>
-        protected internal IServiceProvider ServiceProvider
-        {
-            get;
-        }
+        public virtual IServiceScope CreateScope() =>
+            new ServiceScope(this, ServiceProvider.CreateScope());
+
+        #endregion
 
         #region [====== Security ======]
 

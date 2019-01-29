@@ -6,10 +6,7 @@ namespace Kingo.MicroServices
     internal sealed class MessageHandlerTestStub<TMessage> : MessageHandlerTest<TMessage>
     {
         private readonly TMessage _message;
-        private readonly IMessageHandler<TMessage> _handler;
-
-        public MessageHandlerTestStub(TMessage message, Func<TMessage, MessageHandlerContext, Task> handler) :
-            this(message, MessageHandlerDecorator<TMessage>.Decorate(handler)) { }
+        private readonly IMessageHandler<TMessage> _handler;       
 
         public MessageHandlerTestStub(TMessage message, IMessageHandler<TMessage> handler)
         {

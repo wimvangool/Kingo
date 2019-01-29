@@ -7,19 +7,22 @@ namespace Kingo.MicroServices
     {
         #region [====== ExceptionResult ======]
 
-        private sealed class ExceptionResult : MicroProcessorTestResult, IMessageHandlerResult<TEventStream>
+        private sealed class ExceptionResult : MicroProcessorTestResultBase, IMessageHandlerResult<TEventStream>
         {
-            private readonly Exception _exception;
+            private readonly Exception _exception;            
 
             public ExceptionResult(Exception exception)
             {                
                 _exception = exception;
             }
 
+            public override string ToString() =>
+                _exception.GetType().FriendlyName();
+
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 IsExpectedException(_exception, assertion);
 
-            public void IsEventStream(Func<EventStream, TEventStream> assertion, int? expectedEventCount = null) =>
+            public void IsEventStream(Func<EventStream, TEventStream> assertion) =>
                 throw NewExceptionThrownException(_exception);
         }
 
@@ -27,7 +30,7 @@ namespace Kingo.MicroServices
 
         #region [====== EventStreamResult ======]
 
-        private sealed class EventStreamResult : MicroProcessorTestResult, IMessageHandlerResult<TEventStream>
+        private sealed class EventStreamResult : MicroProcessorTestResultBase, IMessageHandlerResult<TEventStream>
         {                        
             private readonly EventStream _stream;
             private readonly Action<TEventStream> _streamConsumer;
@@ -38,49 +41,20 @@ namespace Kingo.MicroServices
                 _streamConsumer = streamConsumer;
             }
 
+            public override string ToString() =>
+                $"{nameof(EventStream)} ({_stream})";
+
             public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
                 throw NewExceptionNotThrownException(typeof(TException));
 
-            public void IsEventStream(Func<EventStream, TEventStream> assertion, int? expectedEventCount = null)
+            public void IsEventStream(Func<EventStream, TEventStream> assertion)
             {
                 if (assertion == null)
                 {
                     throw new ArgumentNullException(nameof(assertion));
                 }
-                if (TryGetExpectedEventCount(expectedEventCount, out var eventCount) && _stream.Count != eventCount)
-                {
-                    throw NewUnexpectedEventCountException(eventCount, _stream.Count);
-                }
                 _streamConsumer.Invoke(AssertAndConvert(_stream, assertion));
-            }
-
-            private static Exception NewUnexpectedEventCountException(int expectedEventCount, int actualEventCount)
-            {
-                var messageFormat = ExceptionMessages.MessageHandlerResult_UnexpectedEventCount;
-                var message = string.Format(messageFormat, expectedEventCount, actualEventCount);
-                return new AssertFailedException(message);
-            }
-
-            private static bool TryGetExpectedEventCount(int? expectedEventCount, out int eventCount)
-            {
-                if (expectedEventCount.HasValue)
-                {
-                    if ((eventCount = expectedEventCount.Value) < 0)
-                    {
-                        throw NewInvalidEventCountException(eventCount);
-                    }
-                    return true;
-                }
-                eventCount = 0;
-                return false;
-            }
-
-            private static Exception NewInvalidEventCountException(int expectedEventCount)
-            {
-                var messageFormat = ExceptionMessages.MessageHandlerResult_InvalidEventCountSpecified;
-                var message = string.Format(messageFormat, expectedEventCount);
-                return new ArgumentOutOfRangeException(nameof(expectedEventCount), message);
-            }  
+            }                                    
             
             private static TEventStream AssertAndConvert(EventStream stream, Func<EventStream, TEventStream> assertion)
             {
@@ -98,7 +72,7 @@ namespace Kingo.MicroServices
             {
                 var messageFormat = ExceptionMessages.MessageHandlerResult_AssertionOfEventStreamFailed;
                 var message = string.Format(messageFormat, typeof(TEventStream).FriendlyName());
-                throw new AssertFailedException(message, innerException);
+                throw new MicroProcessorTestFailedException(message, innerException);
             }
         }
 
@@ -116,10 +90,31 @@ namespace Kingo.MicroServices
             _result = new EventStreamResult(stream, streamConsumer);
         }
 
-        public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null) =>
-            _result.IsExceptionOfType(assertion);
+        public override string ToString() =>
+            _result.ToString();
 
-        public void IsEventStream(Func<EventStream, TEventStream> assertion, int? expectedEventCount = null) =>
-            _result.IsEventStream(assertion, expectedEventCount);       
+        public override IInnerExceptionResult IsExceptionOfType<TException>(Action<TException> assertion = null)
+        {
+            try
+            {
+                return _result.IsExceptionOfType(assertion);
+            }
+            finally
+            {
+                OnVerified();
+            }
+        }            
+
+        public void IsEventStream(Func<EventStream, TEventStream> assertion)
+        {
+            try
+            {
+                _result.IsEventStream(assertion);
+            }
+            finally
+            {
+                OnVerified();
+            }
+        }                    
     }
 }

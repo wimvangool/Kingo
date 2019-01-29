@@ -8,19 +8,7 @@ namespace Kingo.MicroServices
     /// as a means to setup another test.
     /// </summary>
     public interface IMessageHandlerTestProcessor
-    {
-        /// <summary>
-        /// Handles the specified message.
-        /// </summary>
-        /// <typeparam name="TMessage">Type of the message to handle.</typeparam>
-        /// <param name="message">The message to handle.</param>
-        /// <param name="context">The context in which the test is running.</param>
-        /// <param name="handler">Optional handler to handle the message with inside the processor.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> <paramref name="context"/> is <c>null</c>.
-        /// </exception>
-        Task HandleAsync<TMessage>(TMessage message, MicroProcessorTestContext context, Func<TMessage, MessageHandlerContext, Task> handler);
-
+    {        
         /// <summary>
         /// Handles the specified message.
         /// </summary>
@@ -43,6 +31,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="test"/> or <paramref name="context"/> is <c>null</c>.
         /// </exception>
-        Task HandleAsync<TMessage, TEventStream>(IMessageHandlerTest<TMessage, TEventStream> test, MicroProcessorTestContext context) where TEventStream : EventStream;
+        Task RunAsync<TMessage, TEventStream>(IMessageHandlerTest<TMessage, TEventStream> test, MicroProcessorTestContext context) where TEventStream : EventStream;
     }
 }

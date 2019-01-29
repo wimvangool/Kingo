@@ -1,14 +1,23 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represents a processor that can process commands, events and queries.
     /// </summary>
-    public interface IMicroProcessor
+    public interface IMicroProcessor : IServiceScopeFactory
     {
+        /// <summary>
+        /// Returns the service provider the processor uses in the current scope to resolve its dependencies.
+        /// </summary>
+        IServiceProvider ServiceProvider
+        {
+            get;
+        }
+
         /// <summary>
         /// Processes the specified message asynchronously.
         /// </summary>

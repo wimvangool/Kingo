@@ -72,7 +72,7 @@ namespace Kingo.MicroServices
         /// <exception cref="IndexOutOfRangeException">
         /// <paramref name="index"/> is negative.
         /// </exception>
-        /// <exception cref="AssertFailedException">
+        /// <exception cref="MicroProcessorTestFailedException">
         /// There is no event at the specified <paramref name="index"/>, or the event at that
         /// <paramref name="index"/> is not of type <typeparamref name="TEvent"/>.
         /// </exception>
@@ -106,14 +106,14 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.EventStream_EventNotFound;
             var message = string.Format(messageFormat, expectedType.FriendlyName(), index, eventCount);
-            return new AssertFailedException(message, innerException);
+            return new MicroProcessorTestFailedException(message, innerException);
         }
 
         private static Exception NewEventOfNotOfExpectedTypeException(Type expectedType, int index, Type actualType)
         {
             var messageFormat = ExceptionMessages.EventStream_EventNotOfExpectedType;
             var message = string.Format(messageFormat, expectedType.FriendlyName(), index, actualType.FriendlyName());
-            return new AssertFailedException(message);
+            return new MicroProcessorTestFailedException(message);
         }        
 
         /// <summary>

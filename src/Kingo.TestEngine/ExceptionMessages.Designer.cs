@@ -88,20 +88,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expected number of events cannot be negative: {0}..
+        ///   Looks up a localized string similar to Expected an empty stream, but stream contains {0} event(s)..
         /// </summary>
-        internal static string MessageHandlerResult_InvalidEventCountSpecified {
+        internal static string MessageHandlerResult_StreamNotEmpty {
             get {
-                return ResourceManager.GetString("MessageHandlerResult_InvalidEventCountSpecified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The number of expected events ({0}) does not match the actual number of published events ({1})..
-        /// </summary>
-        internal static string MessageHandlerResult_UnexpectedEventCount {
-            get {
-                return ResourceManager.GetString("MessageHandlerResult_UnexpectedEventCount", resourceCulture);
+                return ResourceManager.GetString("MessageHandlerResult_StreamNotEmpty", resourceCulture);
             }
         }
         
@@ -196,6 +187,24 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test failed by default because its result was not verified..
+        /// </summary>
+        internal static string MicroProcessorTestResult_ResultNotVerified {
+            get {
+                return ResourceManager.GetString("MicroProcessorTestResult_ResultNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test &apos;{0}&apos; did not produce any result. Please verify that the processor provided as an argument to the WhenAsync-method has been used to handle a message or execute a query..
+        /// </summary>
+        internal static string NullTestResult_MissingResult {
+            get {
+                return ResourceManager.GetString("NullTestResult_MissingResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified number of expected errors ({0}) is invalid. This number must be greater than or equal to 1..
         /// </summary>
         internal static string RequestMessageTestBase_InvalidErrorCount {
@@ -255,6 +264,15 @@ namespace Kingo {
         internal static string RequestMessageTestBase_UnexpectedMemberError {
             get {
                 return ResourceManager.GetString("RequestMessageTestBase_UnexpectedMemberError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test &apos;{0}&apos; threw unexpected exception of type &apos;{1}&apos;. See inner exception for details..
+        /// </summary>
+        internal static string UnexpectedExceptionResult_UnexpectedException {
+            get {
+                return ResourceManager.GetString("UnexpectedExceptionResult_UnexpectedException", resourceCulture);
             }
         }
     }

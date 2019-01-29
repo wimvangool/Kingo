@@ -21,6 +21,6 @@ namespace Kingo
             _DefaultProvider.Value;
 
         private static ServiceProvider CreateDefaultProvider() =>
-            new ServiceProvider(new ServiceCollection().BuildServiceProvider());
+            new ServiceProvider(new ServiceCollection().BuildServiceProvider(true));
     }
 }

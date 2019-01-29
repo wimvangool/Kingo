@@ -99,7 +99,7 @@ namespace Kingo.MicroServices.Configuration
 
                 _serviceConfigurator?.Invoke(services);
 
-                return services.BuildServiceProvider();
+                return services.BuildServiceProvider(true);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Kingo.MicroServices.Configuration
                 throw NewProcessorAlreadyConfiguredException();
 
             public override void Configure(Action<IServiceCollection> serviceConfigurator) =>
-                throw NewServicesAlreadyConfiguredException();           
+                throw NewServicesAlreadyConfiguredException();
 
             public override IServiceProvider ServiceProvider() =>
                 _serviceProvider;

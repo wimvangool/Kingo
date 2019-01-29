@@ -15,16 +15,10 @@ namespace Kingo.MicroServices
         /// <param name="assertion">
         /// Delegate to verify the details of all the published events and to create and return
         /// an event stream of type <typeparamref name="TEventStream" />.
-        /// </param>
-        /// <param name="expectedEventCount">
-        /// Optional value that, if specified, represents the expected number of events in the event-stream.        
-        /// </param>
+        /// </param>        
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assertion"/> is <c>null</c>.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="expectedEventCount"/> is a negative number.
-        /// </exception>
-        void IsEventStream(Func<EventStream, TEventStream> assertion, int? expectedEventCount = null);
+        /// </exception>        
+        void IsEventStream(Func<EventStream, TEventStream> assertion);
     }
 }
