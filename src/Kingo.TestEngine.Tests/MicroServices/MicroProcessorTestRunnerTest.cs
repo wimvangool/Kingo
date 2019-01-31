@@ -11,31 +11,37 @@ namespace Kingo.MicroServices
         #region [====== MessageHandlerTests (1) ======]
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedEventStream_And_GivenThrowsException()
+        {
+            var test = CreateMessageHandlerTest()
+                .Given((processor, context) => throw NewRandomBusinessRuleException());                
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedEventStream_And_ResultIsNotProduced()
         {
             var test = CreateMessageHandlerTest()
-                .When((messageProcessor, testContext) => Task.CompletedTask)
-                .ThenResultIsEventStream();
+                .When((messageProcessor, testContext) => Task.CompletedTask);                
 
             await RunAsync(test);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfTestUsesUntypedEventStream_And_ResultIsNotVerified()
         {
             var test = CreateMessageHandlerTest()
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.HandleAsync(new object(), (message, processor) => { });
-                });
+                .Then((message, result, testContext) => { });
 
             await RunAsync(test);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfEmptyEventStreamIsExpected_But_ResultIsException()
         {
             var test = CreateMessageHandlerTest()
@@ -45,8 +51,7 @@ namespace Kingo.MicroServices
                     {
                         throw NewRandomBusinessRuleException();
                     });
-                })
-                .ThenResultIsEventStream();
+                });                
 
             await RunAsync(test);
         }        
@@ -58,14 +63,13 @@ namespace Kingo.MicroServices
                 .When(async (messageProcessor, testContext) =>
                 {
                     await messageProcessor.HandleAsync(new object(), (processor, context) => { });
-                })
-                .ThenResultIsEventStream();
+                });                
 
             await RunAsync(test);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfEmptyEventStreamIsExpected_But_OneEventWasPublished()
         {
             var @event = new object();
@@ -86,7 +90,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfOneEventIsExpected_But_NoEventsWerePublished()
         {            
             var test = CreateMessageHandlerTest()
@@ -129,7 +133,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfOneEventIsExpected_But_DifferentEventWasPublished()
         {
             var @event = new object();
@@ -153,14 +157,10 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfExceptionIsExpected_But_NoExceptionWasThrown()
         {            
-            var test = CreateMessageHandlerTest()
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.HandleAsync(new object(), (processor, context) => { });
-                })
+            var test = CreateMessageHandlerTest()                
                 .Then((message, result, testContext) =>
                 {
                     result.IsExceptionOfType<Exception>(exception => { });
@@ -170,7 +170,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfSpecificExceptionIsExpected_But_DifferentTypeOfExceptionWasThrown()
         {
             var test = CreateMessageHandlerTest()
@@ -228,7 +228,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfSpecificExceptionIsExpected_But_AssertionOfExceptionFails()
         {
             var test = CreateMessageHandlerTest()
@@ -243,7 +243,7 @@ namespace Kingo.MicroServices
                 {
                     result.IsExceptionOfType<InternalServerErrorException>(exception =>
                     {
-                        Assert.AreEqual(Guid.NewGuid().ToString("N"), exception.Message);
+                        Assert.AreEqual(RandomMessage(), exception.Message);
                     });
                 });
 
@@ -270,8 +270,8 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_ExceptionHasNoInnerException()
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsNull()
         {
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
@@ -292,8 +292,8 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_ExceptionHasDifferentTypeOfInnerException()
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsOfOtherType()
         {
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
@@ -314,7 +314,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]        
-        public async Task RunMessageHandlerTest_Succeeds_IfSpecificInnerExceptionIsExpected_And_ExceptionHasThatTypeOfInnerException()
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfThatType()
         {
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
@@ -335,7 +335,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        public async Task RunMessageHandlerTest_Succeeds_IfSpecificInnerExceptionIsExpected_And_ExceptionHasDerivedTypeOfInnerException()
+        public async Task RunMessageHandlerTest_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfDerivedType()
         {
             var test = CreateMessageHandlerTest()
                 .When(async (messageProcessor, testContext) =>
@@ -356,7 +356,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfSpecificInnerExceptionIsExpected_But_AssertionOfInnerExceptionFails()
         {
             var test = CreateMessageHandlerTest()
@@ -402,7 +402,7 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfWhenStatementAttemptsToObtainEventStreamThatIsNotFound()
         {
             var testA = CreateMessageHandlerTest();
@@ -417,9 +417,8 @@ namespace Kingo.MicroServices
                     finally
                     {
                         await messageProcessor.HandleAsync(new object(), (processor, context) => { });
-                    }                    
-                })
-                .ThenResultIsEventStream();
+                    }
+                });                
             
             await RunAsync(testB);
         }
@@ -436,8 +435,7 @@ namespace Kingo.MicroServices
 
                         context.ServiceProvider.GetRequiredService<InvocationCounter>().Increment();
                     });
-                })
-                .ThenResultIsEventStream();
+                });
 
             var testB = CreateMessageHandlerTest()
                 .Given(async (processor, testContext) =>
@@ -450,8 +448,7 @@ namespace Kingo.MicroServices
                     {
                         context.ServiceProvider.GetRequiredService<InvocationCounter>().AssertExactly(1);
                     });
-                })
-                .ThenResultIsEventStream();
+                });                
 
             await RunAsync(testB);
         }
@@ -487,8 +484,7 @@ namespace Kingo.MicroServices
                     });
 
                     await messageProcessor.HandleAsync(new object(), (message, context) => { });
-                })
-                .ThenResultIsEventStream();
+                });                
 
             await RunAsync(testB);
         }
@@ -517,13 +513,7 @@ namespace Kingo.MicroServices
                 });
 
             await RunAsync(test);
-        }        
-
-        private static Exception NewRandomBusinessRuleException() =>
-            new BusinessRuleException(Guid.NewGuid().ToString("N"));
-
-        private static Exception NewRandomInternalServerError() =>
-            new InternalServerErrorException(Guid.NewGuid().ToString("N"));
+        }
 
         private static MessageHandlerTestDelegate CreateMessageHandlerTest() =>
             new MessageHandlerTestDelegate();
@@ -533,7 +523,10 @@ namespace Kingo.MicroServices
         #region [====== MessageHandlerTests (2) ======]
 
         private sealed class OutputStream : EventStream
-        {
+        {            
+            public OutputStream() :
+                this(Empty) { }
+
             public OutputStream(EventStream stream) :
                 base(stream) { }
 
@@ -542,25 +535,31 @@ namespace Kingo.MicroServices
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
-        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedEventStream_And_ResultIsNotProduced()
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedEventStream_And_GivenThrowsException()
         {
             var test = CreateMessageHandlerTest<OutputStream>()
-                .When((messageProcessor, testContext) => Task.CompletedTask)
-                .Then((message, result, testContext) => result.IsEventStream(stream => new OutputStream(stream)));
+                .Given((processor, context) => throw NewRandomBusinessRuleException());                
 
             await RunAsync(test);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedEventStream_And_ResultIsNotProduced()
+        {
+            var test = CreateMessageHandlerTest<OutputStream>()
+                .When((messageProcessor, testContext) => Task.CompletedTask);                
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
         public async Task RunMessageHandlerTest_Throws_IfTestUsesTypedEventStream_And_ResultIsNotVerified()
         {
             var test = CreateMessageHandlerTest<OutputStream>()
-                .When(async (messageProcessor, testContext) =>
-                {
-                    await messageProcessor.HandleAsync(new object(), (message, processor) => { });
-                });
+                .Then((message, result, testContext) => { });
 
             await RunAsync(test);
         }
@@ -601,16 +600,586 @@ namespace Kingo.MicroServices
             await RunAsync(testB);
         }
 
-        private static MessageHandlerTestDelegate<TEventStream> CreateMessageHandlerTest<TEventStream>() where TEventStream : EventStream =>
+        private static MessageHandlerTestDelegate<TEventStream> CreateMessageHandlerTest<TEventStream>() where TEventStream : EventStream, new() =>
             new MessageHandlerTestDelegate<TEventStream>();
 
         #endregion
 
         #region [====== QueryTests (1) ======]
 
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Throws_IfGivenThrowsException()
+        {
+            var test = CreateQueryTest()
+                .Given((processor, context) => throw NewRandomBusinessRuleException());                                
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Throws_IfResultIsNotProduced()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => Task.CompletedTask);                
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Throws_IfResultIsNotVerified()
+        {
+            var test = CreateQueryTest()
+                .Then((result, testContext) => { });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Throws_IfResponseExpected_But_ResultIsException()
+        {
+            var test = CreateQueryTest()
+                .When(async (queryProcessor, testContext) =>
+                {
+                    await queryProcessor.ExecuteAsync(context =>
+                    {
+                        throw NewRandomInternalServerError();
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Throws_IfSpecificResponseExpected_But_OtherResponseIsReturned()
+        {
+            var test = CreateQueryTest()
+                .Then((result, testContext) =>
+                {
+                    result.IsResponse(Assert.IsNotNull);
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunQueryTest1_Succeeds_IfSpecificResponseExpected_And_ThatResponseIsReturned()
+        {
+            var expectedResponse = new object();
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context => Task.FromResult(expectedResponse)))
+                .Then((result, testContext) =>
+                {
+                    result.IsResponse(response => Assert.AreSame(expectedResponse, response));
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Throws_IfSpecificExceptionIsExpected_But_NoExceptionWasThrown()
+        {            
+            var test = CreateQueryTest()                  
+                .Then((result, testContext) =>
+                {
+                    result.IsExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Throws_IfSpecificExceptionIsExpected_But_OtherExceptionWasThrown()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result.IsExceptionOfType<ArgumentNullException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunQueryTest1_Succeeds_IfSpecificExceptionIsExpected_And_ThatExceptionWasThrown()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result.IsExceptionOfType<InternalServerErrorException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Fails_IfSpecificExceptionIsExpected_But_AssertionOfExceptionFailed()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result.IsExceptionOfType<InternalServerErrorException>(exception =>
+                    {
+                        Assert.AreEqual(Guid.NewGuid().ToString(), exception.Message);
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest1_Succeeds_IfSpecificExceptionIsExpected_And_DerivedExceptionWasThrown()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result.IsExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Fails_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsNull()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Fails_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsOfOtherType()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomTechnicalException();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<ArgumentNullException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunQueryTest1_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfThatType()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomTechnicalException();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<InvalidOperationException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest1_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfDerivedType()
+        {
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw NewRandomTechnicalException();
+                }))
+                .Then((result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest1_Fails_IfSpecificInnerExceptionIsExpected_And_AssertionOfInnerExceptionFails()
+        {
+            var exception = NewRandomTechnicalException();
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw exception;
+                }))
+                .Then((result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>(innerException =>
+                        {
+                            Assert.AreNotSame(exception, innerException);
+                        });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]        
+        public async Task RunQueryTest1_Succeeds_IfSpecificInnerExceptionIsExpected_And_AssertionOfInnerExceptionSucceeds()
+        {
+            var exception = NewRandomTechnicalException();
+            var test = CreateQueryTest()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(context =>
+                {
+                    throw exception;
+                }))
+                .Then((result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>(innerException =>
+                        {
+                            Assert.AreSame(exception, innerException);
+                        });
+                });
+
+            await RunAsync(test);
+        }
+
+        private static QueryTestDelegate<object> CreateQueryTest() =>
+            new QueryTestDelegate<object>();
+
         #endregion
 
         #region [====== QueryTests (2) ======]
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Throws_IfGivenThrowsException()
+        {
+            var test = CreateQueryTest<object>()
+                .Given((processor, context) => throw NewRandomBusinessRuleException());
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Throws_IfResultIsNotProduced()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => Task.CompletedTask);
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Throws_IfResultIsNotVerified()
+        {
+            var test = CreateQueryTest<object>()
+                .Then((request, result, testContext) => { });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Throws_IfResponseExpected_But_ResultIsException()
+        {
+            var test = CreateQueryTest<object>()
+                .When(async (queryProcessor, testContext) =>
+                {
+                    await queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                    {
+                        throw NewRandomInternalServerError();
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Throws_IfSpecificResponseExpected_But_OtherResponseIsReturned()
+        {
+            var test = CreateQueryTest<object>()
+                .Then((request, result, testContext) =>
+                {
+                    result.IsResponse(Assert.IsNotNull);
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest2_Succeeds_IfSpecificResponseExpected_And_ThatResponseIsReturned()
+        {
+            var expectedResponse = new object();
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) => Task.FromResult(expectedResponse)))
+                .Then((request, result, testContext) =>
+                {
+                    result.IsResponse(response => Assert.AreSame(expectedResponse, response));
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Throws_IfSpecificExceptionIsExpected_But_NoExceptionWasThrown()
+        {
+            var test = CreateQueryTest<object>()
+                .Then((request, result, testContext) =>
+                {
+                    result.IsExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Throws_IfSpecificExceptionIsExpected_But_OtherExceptionWasThrown()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result.IsExceptionOfType<ArgumentNullException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest2_Succeeds_IfSpecificExceptionIsExpected_And_ThatExceptionWasThrown()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result.IsExceptionOfType<InternalServerErrorException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Fails_IfSpecificExceptionIsExpected_But_AssertionOfExceptionFailed()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result.IsExceptionOfType<InternalServerErrorException>(exception =>
+                    {
+                        Assert.AreEqual(Guid.NewGuid().ToString(), exception.Message);
+                    });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest2_Succeeds_IfSpecificExceptionIsExpected_And_DerivedExceptionWasThrown()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result.IsExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Fails_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsNull()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomInternalServerError();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Fails_IfSpecificInnerExceptionIsExpected_But_InnerExceptionIsOfOtherType()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomTechnicalException();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<ArgumentNullException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest2_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfThatType()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomTechnicalException();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<InvalidOperationException>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest2_Succeeds_IfSpecificInnerExceptionIsExpected_And_InnerExceptionIsOfDerivedType()
+        {
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw NewRandomTechnicalException();
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>();
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TestFailedException))]
+        public async Task RunQueryTest2_Fails_IfSpecificInnerExceptionIsExpected_And_AssertionOfInnerExceptionFails()
+        {
+            var exception = NewRandomTechnicalException();
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw exception;
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>(innerException =>
+                        {
+                            Assert.AreNotSame(exception, innerException);
+                        });
+                });
+
+            await RunAsync(test);
+        }
+
+        [TestMethod]
+        public async Task RunQueryTest2_Succeeds_IfSpecificInnerExceptionIsExpected_And_AssertionOfInnerExceptionSucceeds()
+        {
+            var exception = NewRandomTechnicalException();
+            var test = CreateQueryTest<object>()
+                .When((queryProcessor, testContext) => queryProcessor.ExecuteAsync(new object(), (message, context) =>
+                {
+                    throw exception;
+                }))
+                .Then((request, result, testContext) =>
+                {
+                    result
+                        .IsExceptionOfType<InternalServerErrorException>()
+                        .WithInnerExceptionOfType<Exception>(innerException =>
+                        {
+                            Assert.AreSame(exception, innerException);
+                        });
+                });
+
+            await RunAsync(test);
+        }
+
+        private static QueryTestDelegate<TRequest, object> CreateQueryTest<TRequest>() where TRequest : new() =>
+            new QueryTestDelegate<TRequest, object>();
+
+        #endregion
+
+        #region [====== Exception Factory Methods ======]
+
+        private static Exception NewRandomBusinessRuleException() =>
+            new BusinessRuleException(RandomMessage());
+
+        private static Exception NewRandomInternalServerError() =>
+            new InternalServerErrorException(RandomMessage());
+
+        private static Exception NewRandomTechnicalException() =>
+            new InvalidOperationException(RandomMessage());
+
+        private static string RandomMessage() =>
+            Guid.NewGuid().ToString("N");
 
         #endregion
 

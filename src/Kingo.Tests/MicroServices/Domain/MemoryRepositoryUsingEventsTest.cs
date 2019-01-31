@@ -192,8 +192,8 @@ namespace Kingo.MicroServices.Domain
 
         #endregion       
 
-        private static AggregateDataSet CreateDataSet(params ISnapshotOrEvent[] events) =>
-            new AggregateDataSet(null, events);        
+        private static AggregateReadSet CreateDataSet(params ISnapshotOrEvent[] events) =>
+            new AggregateReadSet(null, events);        
 
         protected override Number CreateNumber(Guid numberId, int value = 0, IEventBus eventBus = null) =>
             NumberUsingEvents.CreateNumber(numberId, value, eventBus);

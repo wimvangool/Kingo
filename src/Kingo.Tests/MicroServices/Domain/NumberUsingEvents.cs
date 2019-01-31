@@ -52,7 +52,7 @@ namespace Kingo.MicroServices.Domain
         private void Handle(NumberDeletedEvent @event) =>
             HasBeenRemoved = true;
 
-        protected override ISnapshotOrEvent<Guid, int> TakeSnapshot() =>
+        protected override NumberSnapshot TakeSnapshot() =>
             new Snapshot(Id, Version, Value, HasBeenRemoved);
 
         public static Number CreateNumber(Guid id, int value, IEventBus eventBus = null) =>

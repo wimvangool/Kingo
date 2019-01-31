@@ -31,7 +31,7 @@ namespace Kingo.MicroServices
             {
                 var messageFormat = ExceptionMessages.MicroProcessorTestResult_InnerExceptionNull;
                 var message = string.Format(messageFormat, exception.GetType(), expectedExceptionType.FriendlyName());
-                return new MicroProcessorTestFailedException(message);
+                return new TestFailedException(message);
             }
         }
 
@@ -59,21 +59,21 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.MicroProcessorTestResult_ExceptionNotOfExpectedType;
             var message = string.Format(messageFormat, expectedType.FriendlyName(), actualType.FriendlyName());
-            return new MicroProcessorTestFailedException(message);
+            return new TestFailedException(message);
         }
 
         protected static Exception NewExceptionThrownException(Exception exception)
         {
             var messageFormat = ExceptionMessages.MicroProcessorTestResult_ExceptionThrown;
             var message = string.Format(messageFormat, exception.GetType().FriendlyName());
-            return new MicroProcessorTestFailedException(message, exception);
+            return new TestFailedException(message, exception);
         }
 
         private static Exception NewAssertionOfExceptionFailedException(Type exceptionType, Exception innerException)
         {
             var messageFormat = ExceptionMessages.MicroProcessorTestResult_AssertionOfExceptionFailed;
             var message = string.Format(messageFormat, exceptionType.FriendlyName());
-            return new MicroProcessorTestFailedException(message, innerException);
+            return new TestFailedException(message, innerException);
         }
 
         #endregion
@@ -84,7 +84,7 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.MicroProcessorTestResult_ExceptionNotThrown;
             var message = string.Format(messageFormat, expectedType.FriendlyName());
-            return new MicroProcessorTestFailedException(message);
+            return new TestFailedException(message);
         }
 
         #endregion

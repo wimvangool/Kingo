@@ -10,11 +10,8 @@ namespace Kingo.MicroServices
         public MessageHandlerTestDelegate()
         {
             _givenStatements = new GivenStatementCollection();
-            _whenStatement = async (messageProcessor, testContext) =>
-            {
-                await messageProcessor.HandleAsync(new object(), (message, context) => { });
-            };
-            _thenStatement = (message, result, context) => { };
+            _whenStatement = (messageProcessor, testContext) => messageProcessor.HandleAsync(new object(), (message, context) => { });
+            _thenStatement = (message, result, context) => result.IsEventStream();
         }
 
         #region [====== Given ======]
@@ -47,10 +44,7 @@ namespace Kingo.MicroServices
 
         #region [====== Then ======]
 
-        private Action<object, IMessageHandlerResult, MicroProcessorTestContext> _thenStatement;
-
-        public MessageHandlerTestDelegate ThenResultIsEventStream() =>
-            Then((message, result, context) => result.IsEventStream());
+        private Action<object, IMessageHandlerResult, MicroProcessorTestContext> _thenStatement;        
 
         public MessageHandlerTestDelegate Then(Action<object, IMessageHandlerResult, MicroProcessorTestContext> thenStatement)
         {

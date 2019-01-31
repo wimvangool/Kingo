@@ -71,7 +71,7 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertIsValid_Throws_IfMessageIsNotValid()
         {
             AssertIsValid(new MessageToValidate(true));
@@ -110,14 +110,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertIsNotValid_Throws_IfMessageIsValid()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(), 1);
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("The number of expected validation errors (1) does not match the actual amount of validation errors (0).", exception.Message);
                 throw;
@@ -125,14 +125,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertIsNotValid_Throws_IfNumberOfExpectedValidationErrorsDoesNotMatchActualAmountOfValidationErrors()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(true), 1);
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("The number of expected validation errors (1) does not match the actual amount of validation errors (0).", exception.Message);
                 throw;
@@ -150,14 +150,14 @@ namespace Kingo.MicroServices.Validation
         #region [====== AssertInstanceError(string) ======]
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertInstanceError_Throws_IfResultDoesNotContainAnInstanceError()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(Guid.NewGuid(), 1)).AssertInstanceError();
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("An instance error was expected but the result of the validation contains no instance error.", exception.Message);
                 throw;
@@ -165,14 +165,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertInstanceError_Throws_IfInstanceErrorDoesNotMatchExpectedInstanceError()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError("Bla");
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("The expected instance error (Bla) does not match the actual instance error (Error) based on the type of comparison specified (Ordinal).", exception.Message);
                 throw;
@@ -180,14 +180,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertInstanceError_Throws_IfInstanceErrorDoesNotMatchExpectedInstanceError_BasedOnTheSpecifiedComparison()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(true)).AssertInstanceError("error");
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("The expected instance error (error) does not match the actual instance error (Error) based on the type of comparison specified (Ordinal).", exception.Message);
                 throw;
@@ -218,14 +218,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertInstanceError_Throws_IfResultDoesNotContainAnInstanceError_And_AssertCallbackIsSpecified()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(Guid.Empty, 1), 1).AssertInstanceError(errorMessage => { });
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("An instance error was expected but the result of the validation contains no instance error.", exception.Message);
                 throw;
@@ -233,10 +233,10 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertInstanceError_Throws_IfAssertCallbackFails()
         {
-            var exceptionToThrow = new MicroProcessorTestFailedException(string.Empty);
+            var exceptionToThrow = new TestFailedException(string.Empty);
 
             try
             {
@@ -245,7 +245,7 @@ namespace Kingo.MicroServices.Validation
                     throw exceptionToThrow;
                 });
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception);
                 throw;
@@ -270,14 +270,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertMemberError_Throws_IfMemberContainsNoError()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(true)).AssertMemberError("Id");
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("An error for member 'Id' was expected, but the result contains no error for this member.", exception.Message);
                 throw;
@@ -285,14 +285,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertMemberError_Throws_IfMemberErrorDoesNotMatchExpectedError()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(Guid.Empty, 1), 1).AssertMemberError("Id", "Bla");
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("The expected error for member 'Id' (Bla) does not match the actual error (Error) based on the type of comparison specified (Ordinal).", exception.Message);
                 throw;
@@ -300,14 +300,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertMemberError_Throws_IfMemberErrorDoesNotMatchExpectedError_BasedOnTheSpecifiedComparison()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(Guid.Empty, 1), 1).AssertMemberError("Id", "error");
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("The expected error for member 'Id' (error) does not match the actual error (Error) based on the type of comparison specified (Ordinal).", exception.Message);
                 throw;
@@ -338,14 +338,14 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertMemberError_Throws_IfMemberDoesNotContainError_And_AssertCallbackIsSpecified()
         {
             try
             {
                 AssertIsNotValid(new MessageToValidate(true)).AssertMemberError("Id", errorMessage => { });
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreEqual("An error for member 'Id' was expected, but the result contains no error for this member.", exception.Message);
                 throw;
@@ -353,10 +353,10 @@ namespace Kingo.MicroServices.Validation
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MicroProcessorTestFailedException))]
+        [ExpectedException(typeof(TestFailedException))]
         public void AssertMemberError_Throws_IfAssertCallbackFails()
         {
-            var exceptionToThrow = new MicroProcessorTestFailedException(string.Empty);
+            var exceptionToThrow = new TestFailedException(string.Empty);
 
             try
             {
@@ -365,7 +365,7 @@ namespace Kingo.MicroServices.Validation
                     throw exceptionToThrow;
                 });
             }
-            catch (MicroProcessorTestFailedException exception)
+            catch (TestFailedException exception)
             {
                 Assert.AreSame(exceptionToThrow, exception);
                 throw;

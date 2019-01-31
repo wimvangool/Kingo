@@ -4,8 +4,8 @@ namespace Kingo.MicroServices.Domain
 {
     public abstract class NumberSnapshot : NumberSnapshotOrEvent
     {
-        protected NumberSnapshot(Guid id, int version, int value, bool hasBeenRemoved = false)
-            : base(id, version)
+        protected NumberSnapshot(Guid id, int version, int value, bool hasBeenRemoved = false) :
+            base(id, version)
         {            
             Value = value;
             HasBeenRemoved = hasBeenRemoved;

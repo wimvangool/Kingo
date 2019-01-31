@@ -7,24 +7,25 @@ using Kingo.Threading;
 
 namespace Kingo.MicroServices.Domain
 {
-    internal sealed class UnitOfWork<TKey, TVersion, TAggregate> : IRepository<TKey, TAggregate>
+    internal sealed class UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> : IRepository<TKey, TAggregate>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
-        where TAggregate : class, IAggregateRoot<TKey, TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
+        where TSnapshot : class, ISnapshotOrEvent<TKey, TVersion>
+        where TAggregate : class, IAggregateRoot<TKey, TVersion, TSnapshot>
     {
         #region [====== AggregateState ======]
 
         private abstract class AggregateState
         {           
-            protected AggregateState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork)
+            protected AggregateState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork)
             {
                 UnitOfWork = unitOfWork;                
             }
 
-            protected Repository<TKey, TVersion, TAggregate> Repository =>
+            protected Repository<TKey, TVersion, TSnapshot, TAggregate> Repository =>
                 UnitOfWork._repository;            
              
-            protected UnitOfWork<TKey, TVersion, TAggregate> UnitOfWork
+            protected UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> UnitOfWork
             {
                 get;
             }
@@ -49,7 +50,7 @@ namespace Kingo.MicroServices.Domain
 
             public abstract Task<bool> RemoveByIdAsync();
 
-            public abstract AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory);
+            public abstract AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory);
 
             protected static Exception NewDuplicateKeyException(TKey id)
             {
@@ -67,7 +68,7 @@ namespace Kingo.MicroServices.Domain
         {            
             private readonly TKey _id;
 
-            public NullState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TKey id) :
+            public NullState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TKey id) :
                 base(unitOfWork)
             {                
                 _id = id;
@@ -117,10 +118,16 @@ namespace Kingo.MicroServices.Domain
                 return true;
             }
 
-            private TAggregate RestoreAggregate(AggregateDataSet dataSet) =>                
-                UnitOfWork._serializationStrategy.Deserialize<TKey, TVersion, TAggregate>(dataSet, MessageHandlerContext.Current?.EventBus);
+            private TAggregate RestoreAggregate(AggregateReadSet dataSet) =>
+                RestoreAggregate(dataSet, MessageHandlerContext.Current?.EventBus);
 
-            public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory) =>
+            private TAggregate RestoreAggregate(AggregateReadSet dataSet, IEventBus eventBus) =>
+                CreateSerializationStrategy().Deserialize(dataSet, eventBus);
+
+            private SerializationStrategy<TKey, TVersion, TSnapshot, TAggregate> CreateSerializationStrategy() =>
+                UnitOfWork._serializationStrategyFactory.CreateSerializationStrategy<TKey, TVersion, TSnapshot, TAggregate>();
+
+            public override AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory) =>
                 new NullState(UnitOfWork, _id);
         }
 
@@ -130,7 +137,7 @@ namespace Kingo.MicroServices.Domain
 
         private abstract class NonNullState : AggregateState
         {
-            protected NonNullState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate) :
+            protected NonNullState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TAggregate aggregate) :
                 base(unitOfWork)
             {
                 Aggregate = aggregate;
@@ -171,7 +178,7 @@ namespace Kingo.MicroServices.Domain
             private readonly TVersion _oldVersion;
             private readonly int _eventsSinceLastSnapshot;
 
-            public UnmodifiedState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate, int eventsSinceLastSnapshot) :
+            public UnmodifiedState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TAggregate aggregate, int eventsSinceLastSnapshot) :
                 base(unitOfWork, aggregate)
             {
                 _oldVersion = aggregate.Version;
@@ -202,7 +209,7 @@ namespace Kingo.MicroServices.Domain
                 return true;
             });
 
-            public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
+            public override AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory)
             {
                 if (keepAggregatesInMemory)
                 {
@@ -218,7 +225,7 @@ namespace Kingo.MicroServices.Domain
 
         private sealed class AddedState : NonNullState
         {            
-            public AddedState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate) :
+            public AddedState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TAggregate aggregate) :
                 base(unitOfWork, aggregate) { }
 
             public override void Enter()
@@ -251,7 +258,7 @@ namespace Kingo.MicroServices.Domain
                 return true;
             });
 
-            public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
+            public override AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory)
             {
                 var eventsSinceLastSnapshot = changeSet.AddAggregateToInsert(Aggregate);
 
@@ -272,7 +279,7 @@ namespace Kingo.MicroServices.Domain
             private readonly TVersion _oldVersion;
             private readonly int _eventsSinceLastSnapshot;
 
-            public ModifiedState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate, TVersion oldVersion, int eventsSinceLastSnapshot) :
+            public ModifiedState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TAggregate aggregate, TVersion oldVersion, int eventsSinceLastSnapshot) :
                 base(unitOfWork, aggregate)
             {
                 _oldVersion = oldVersion;
@@ -310,7 +317,7 @@ namespace Kingo.MicroServices.Domain
                 return true;
             });
 
-            public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
+            public override AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory)
             {
                 var eventsSinceLastSnapshot = changeSet.AddAggregateToUpdate(Aggregate, _oldVersion, _eventsSinceLastSnapshot);
 
@@ -328,7 +335,7 @@ namespace Kingo.MicroServices.Domain
 
         private abstract class RemovedState : NonNullState
         {            
-            protected RemovedState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate) :
+            protected RemovedState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TAggregate aggregate) :
                 base(unitOfWork, aggregate) { }
 
             protected bool SoftDeleteAggregate =>
@@ -368,7 +375,7 @@ namespace Kingo.MicroServices.Domain
             public override Task<bool> RemoveByIdAsync() =>
                 Task.FromResult(false);
 
-            public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
+            public override AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory)
             {
                 if (HardDeleteAggregate)
                 {
@@ -380,7 +387,7 @@ namespace Kingo.MicroServices.Domain
 
         private sealed class RemovedAfterInsertState : RemovedState
         {
-            public RemovedAfterInsertState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate) :
+            public RemovedAfterInsertState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TAggregate aggregate) :
                 base(unitOfWork, aggregate) { }
 
             public override void Enter()
@@ -402,7 +409,7 @@ namespace Kingo.MicroServices.Domain
                 base.Exit();
             }
 
-            public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
+            public override AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory)
             {
                 if (SoftDeleteAggregate)
                 {
@@ -417,7 +424,7 @@ namespace Kingo.MicroServices.Domain
             private readonly TVersion _oldVersion;
             private readonly int _eventsSinceLastSnapshot;            
 
-            public RemovedAfterUpdateState(UnitOfWork<TKey, TVersion, TAggregate> unitOfWork, TAggregate aggregate, TVersion oldVersion, int eventsSinceLastSnapshot) :
+            public RemovedAfterUpdateState(UnitOfWork<TKey, TVersion, TSnapshot, TAggregate> unitOfWork, TAggregate aggregate, TVersion oldVersion, int eventsSinceLastSnapshot) :
                 base(unitOfWork, aggregate)
             {                
                 _oldVersion = oldVersion;
@@ -443,7 +450,7 @@ namespace Kingo.MicroServices.Domain
                 base.Exit();
             }
 
-            public override AggregateState Commit(ChangeSet<TKey, TVersion> changeSet, bool keepAggregatesInMemory)
+            public override AggregateState Commit(ChangeSet<TKey, TVersion, TSnapshot> changeSet, bool keepAggregatesInMemory)
             {
                 if (SoftDeleteAggregate)
                 {
@@ -455,17 +462,17 @@ namespace Kingo.MicroServices.Domain
 
         #endregion
 
-        private readonly Repository<TKey, TVersion, TAggregate> _repository;
-        private readonly SerializationStrategy _serializationStrategy;
+        private readonly Repository<TKey, TVersion, TSnapshot, TAggregate> _repository;
+        private readonly ISerializationStrategyFactory _serializationStrategyFactory;
         private readonly Dictionary<TKey, AggregateState> _aggregateStates;
         private int _insertCount;
         private int _updateCount;
         private int _deleteCount;        
 
-        public UnitOfWork(Repository<TKey, TVersion, TAggregate> repository, SerializationStrategy serializationStrategy)
+        public UnitOfWork(Repository<TKey, TVersion, TSnapshot, TAggregate> repository, ISerializationStrategyFactory serializationStrategyFactory)
         {            
             _repository = repository;
-            _serializationStrategy = serializationStrategy ?? throw new ArgumentNullException(nameof(serializationStrategy));
+            _serializationStrategyFactory = serializationStrategyFactory;
             _aggregateStates = new Dictionary<TKey, AggregateState>();
         }
 
@@ -506,10 +513,10 @@ namespace Kingo.MicroServices.Domain
             }            
         }   
         
-        private IChangeSet<TKey, TVersion> Commit(bool keepAggregatesInMemory)
+        private IChangeSet<TKey, TVersion, TSnapshot> Commit(bool keepAggregatesInMemory)
         {
             var statesToCommit = _aggregateStates.Values.ToArray();
-            var changeSet = new ChangeSet<TKey, TVersion>(_serializationStrategy);
+            var changeSet = new ChangeSet<TKey, TVersion, TSnapshot>(_serializationStrategyFactory);
 
             foreach (var state in statesToCommit)
             {

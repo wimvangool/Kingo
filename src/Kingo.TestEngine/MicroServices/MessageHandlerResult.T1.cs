@@ -72,7 +72,7 @@ namespace Kingo.MicroServices
             {
                 var messageFormat = ExceptionMessages.MessageHandlerResult_AssertionOfEventStreamFailed;
                 var message = string.Format(messageFormat, typeof(TEventStream).FriendlyName());
-                throw new MicroProcessorTestFailedException(message, innerException);
+                throw new TestFailedException(message, innerException);
             }
         }
 

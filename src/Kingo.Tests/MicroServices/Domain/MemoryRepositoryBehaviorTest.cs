@@ -14,18 +14,7 @@ namespace Kingo.MicroServices.Domain
         {
             _serviceBus = new MicroServiceBusStub();
             _processor = new MicroProcessor(_serviceBus);
-        }
-
-        #region [====== Constructor ======]
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Constructor_Throws_IfSerializationStrategyIsNull()
-        {
-            new MemoryRepository<Guid, int, Number>(null);
-        }
-
-        #endregion
+        }        
 
         #region [====== GetByIdOrNullAsync ======]
 
@@ -739,7 +728,7 @@ namespace Kingo.MicroServices.Domain
 
         private static async Task<IRepository<Guid, Number>> CreateRepositoryAsync(params Guid[] numberIds)
         {
-            var repository = new MemoryRepository<Guid, int, Number>(SerializationStrategy.UseSnapshots());
+            var repository = new MemoryRepository<Guid, int, NumberSnapshot, Number>(SerializationStrategy.UseSnapshots());
 
             foreach (var numberId in numberIds)
             {

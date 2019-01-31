@@ -15,6 +15,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="assertion"/> is <c>null</c>.
         /// </exception>
-        void IsExpectedResponse(Action<TResponse> assertion);        
+        void IsResponse(Action<TResponse> assertion);        
     }
 }

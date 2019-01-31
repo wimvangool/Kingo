@@ -5,13 +5,13 @@ using System.Threading;
 namespace Kingo.MicroServices.Domain
 {
     /// <summary>
-    /// Serves as a base-class implementation of the <see cref="IAggregateRoot{T}" /> interface.
+    /// Serves as a base-class implementation of the <see cref="IAggregateRoot{T, S}" /> interface.
     /// </summary>
     /// <typeparam name="TKey">Type of the identifier of this aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of this aggregate.</typeparam>
     public abstract class AggregateRoot<TKey, TVersion> : AggregateRoot, IAggregateRoot<TKey, TVersion>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
     {
         #region [====== EventBuffer ======]
 
@@ -59,16 +59,7 @@ namespace Kingo.MicroServices.Domain
         /// <paramref name="parent"/> or <paramref name="event"/> is <c>null</c>.
         /// </exception>
         protected AggregateRoot(AggregateRoot parent, ISnapshotOrEvent<TKey, TVersion> @event) :
-            this(GetEventBusFrom(parent), @event, true) { }
-
-        private static IEventBus GetEventBusFrom(AggregateRoot parent)
-        {
-            if (parent == null)
-            {
-                throw new ArgumentNullException(nameof(parent));
-            }
-            return parent.EventBus;
-        }
+            this(GetEventBusFrom(parent), @event, true) { }        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateRoot" /> class.
@@ -92,6 +83,15 @@ namespace Kingo.MicroServices.Domain
             Id = snapshotOrEvent.Id;
             Version = snapshotOrEvent.Version;
             Events = CreateEventBuffer(eventBus, snapshotOrEvent, isNewAggregate);
+        }
+
+        private static IEventBus GetEventBusFrom(AggregateRoot parent)
+        {
+            if (parent == null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            return parent.EventBus;
         }
 
         private static EventBuffer CreateEventBuffer(IEventBus eventBus, ISnapshotOrEvent<TKey, TVersion> snapshotOrEvent, bool isNewAggregate)
@@ -176,7 +176,7 @@ namespace Kingo.MicroServices.Domain
         #region [====== Events & EventHandlers ======]
 
         /// <summary>
-        /// Represents a collection of event handler delegates that are used by an <see cref="AggregateRoot{T, S}" /> to
+        /// Represents a collection of event handler delegates that are used by an <see cref="AggregateRoot{T, S, R}" /> to
         /// apply specific events to itself.
         /// </summary>        
         protected sealed class EventHandlerCollection
@@ -377,27 +377,7 @@ namespace Kingo.MicroServices.Domain
 
         #endregion
 
-        #region [====== TakeSnapshot & Commit =====]        
-
-        ISnapshotOrEvent<TKey, TVersion> IAggregateRoot<TKey, TVersion>.TakeSnapshot() =>
-            TakeSnapshot();
-
-        /// <summary>
-        /// When overridden, creates and returns a snapshot of the current state of this aggregate.
-        /// </summary>
-        /// <returns>A snapshot of the current state of this aggregate.</returns>
-        /// <exception cref="NotSupportedException">
-        /// This aggregate does not support snapshots.
-        /// </exception>
-        protected virtual ISnapshotOrEvent<TKey, TVersion> TakeSnapshot() =>
-            throw NewSnapshotsNotSupportedException();
-
-        private Exception NewSnapshotsNotSupportedException()
-        {
-            var messageFormat = ExceptionMessages.AggregateRoot_SnapshotsNotSupported;
-            var message = string.Format(messageFormat, GetType().FriendlyName());
-            return new NotSupportedException(message);
-        }
+        #region [====== TakeSnapshot & Commit =====]                           
 
         IReadOnlyList<ISnapshotOrEvent<TKey, TVersion>> IAggregateRoot<TKey, TVersion>.Commit() =>
             Commit();

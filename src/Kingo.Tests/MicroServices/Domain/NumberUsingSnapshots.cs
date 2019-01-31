@@ -42,7 +42,7 @@ namespace Kingo.MicroServices.Domain
             Publish((id, version) => new ValueAddedEvent(id, version, Value));
         }
 
-        protected override ISnapshotOrEvent<Guid, int> TakeSnapshot() =>
+        protected override NumberSnapshot TakeSnapshot() =>
             new Snapshot(Id, Version, Value, HasBeenRemoved);
 
         public static Number CreateNumber(Guid id, int value, IEventBus eventBus = null) =>

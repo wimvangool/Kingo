@@ -5,7 +5,7 @@ namespace Kingo.MicroServices.Domain
 {
     /// <summary>
     /// This exception is thrown by a <see cref="Repository{TKey,TVersion,TAggregate}"/> when it fails
-    /// to restore an aggregate from a retrieved <see cref="AggregateDataSet" />.
+    /// to restore an aggregate from a retrieved <see cref="AggregateReadSet" />.
     /// </summary>
     [Serializable]
     public class CouldNotRestoreAggregateException : InternalServerErrorException
@@ -19,7 +19,7 @@ namespace Kingo.MicroServices.Domain
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dataSet"/> is c<c>null</c>.
         /// </exception>
-        public CouldNotRestoreAggregateException(AggregateDataSet dataSet, string message, Exception innerException = null) :
+        public CouldNotRestoreAggregateException(AggregateReadSet dataSet, string message, Exception innerException = null) :
             base(message, innerException)
         {
             DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
@@ -29,13 +29,13 @@ namespace Kingo.MicroServices.Domain
         protected CouldNotRestoreAggregateException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {
-            DataSet = (AggregateDataSet) info.GetValue(nameof(DataSet), typeof(AggregateDataSet));
+            DataSet = (AggregateReadSet) info.GetValue(nameof(DataSet), typeof(AggregateReadSet));
         }        
 
         /// <summary>
         /// The data-set that was retrieved.
         /// </summary>
-        public AggregateDataSet DataSet
+        public AggregateReadSet DataSet
         {
             get;            
         }

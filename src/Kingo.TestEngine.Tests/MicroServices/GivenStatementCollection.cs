@@ -13,15 +13,8 @@ namespace Kingo.MicroServices
             _givenStatements = new List<Func<IMessageHandlerTestProcessor, MicroProcessorTestContext, Task>>();
         }
 
-        public GivenStatementCollection Given(Func<IMessageHandlerTestProcessor, MicroProcessorTestContext, Task> givenStatement)
-        {
-            if (givenStatement == null)
-            {
-                throw new ArgumentNullException(nameof(givenStatement));
-            }
-            _givenStatements.Add(givenStatement);
-            return this;
-        }            
+        public void Given(Func<IMessageHandlerTestProcessor, MicroProcessorTestContext, Task> givenStatement) =>
+            _givenStatements.Add(givenStatement ?? throw new ArgumentNullException(nameof(givenStatement)));
 
         public async Task GivenAsync(IMessageHandlerTestProcessor processor, MicroProcessorTestContext context)
         {

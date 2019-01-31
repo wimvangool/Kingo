@@ -53,7 +53,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet());
+            Repository.Add(numberId, AggregateReadSet.Empty);
 
             await Repository.GetByIdAsync(numberId);
         }        
@@ -88,26 +88,26 @@ namespace Kingo.MicroServices.Domain
 
         protected abstract Number CreateNumber(Guid numberId, int value = 0, IEventBus eventBus = null);
 
-        protected static void AssertSnapshotOnly(AggregateDataSet<Guid, int> dataSet, Guid numberId, int version)
+        protected static void AssertSnapshotOnly(IAggregateWriteSet<Guid, int, NumberSnapshot> dataSet, Guid numberId, int version)
         {
             AssertSnapshot(dataSet, numberId, version);
             Assert.AreEqual(0, dataSet.Events.Count);
         }
 
-        protected static void AssertSnapshot(AggregateDataSet<Guid, int> dataSet, Guid numberId, int version)
+        protected static void AssertSnapshot(IAggregateWriteSet<Guid, int, NumberSnapshot> dataSet, Guid numberId, int version)
         {
             Assert.IsNotNull(dataSet.Snapshot);
-            Assert.AreEqual(numberId, dataSet.Snapshot.Id);
-            Assert.AreEqual(version, dataSet.Snapshot.Version);
+            Assert.AreEqual(numberId, dataSet.Snapshot.NumberId);
+            Assert.AreEqual(version, dataSet.Snapshot.NumberVersion);
         }
 
-        protected static void AssertEventsOnly(AggregateDataSet<Guid, int> dataSet, Guid numberId, params int[] versions)
+        protected static void AssertEventsOnly(IAggregateWriteSet<Guid, int, NumberSnapshot> dataSet, Guid numberId, params int[] versions)
         {
             Assert.IsNull(dataSet.Snapshot);
             AssertEvents(dataSet, numberId, versions);
         }
 
-        protected static void AssertEvents(AggregateDataSet<Guid, int> dataSet, Guid numberId, params int[] versions)
+        protected static void AssertEvents(IAggregateWriteSet<Guid, int, NumberSnapshot> dataSet, Guid numberId, params int[] versions)
         {
             Assert.AreEqual(versions.Length, dataSet.Events.Count);
 

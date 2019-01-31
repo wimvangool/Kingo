@@ -20,7 +20,7 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.UnexpectedExceptionResult_UnexpectedException;
             var message = string.Format(messageFormat, _test.GetType().FriendlyName(), _exception.GetType().FriendlyName());
-            return new MicroProcessorTestFailedException(message, _exception);
+            return new TestFailedException(message, _exception);
         }
     }
 }

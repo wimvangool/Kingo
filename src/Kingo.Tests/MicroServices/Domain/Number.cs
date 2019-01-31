@@ -2,7 +2,7 @@
 
 namespace Kingo.MicroServices.Domain
 {
-    public abstract class Number : AggregateRoot<Guid, int>
+    public abstract class Number : AggregateRoot<Guid, int, NumberSnapshot>
     {                             
         protected Number(IEventBus eventBus, NumberSnapshot snapshot)
             : base(eventBus, snapshot, false)

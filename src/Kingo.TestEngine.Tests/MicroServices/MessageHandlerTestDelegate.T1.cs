@@ -4,18 +4,15 @@ using System.Threading.Tasks;
 namespace Kingo.MicroServices
 {
     internal sealed class MessageHandlerTestDelegate<TEventStream> : MessageHandlerTest<object, TEventStream>
-        where TEventStream : EventStream
+        where TEventStream : EventStream, new()
     {
         private readonly GivenStatementCollection _givenStatements;
 
         public MessageHandlerTestDelegate()
         {
             _givenStatements = new GivenStatementCollection();
-            _whenStatement = async (messageProcessor, testContext) =>
-            {
-                await messageProcessor.HandleAsync(new object(), (message, context) => { });
-            };
-            _thenStatement = (message, result, context) => { };
+            _whenStatement = (messageProcessor, testContext) => messageProcessor.HandleAsync(new object(), (message, context) => { }); ;
+            _thenStatement = (message, result, context) => result.IsEventStream(stream => new TEventStream());
         }
 
         #region [====== Given ======]

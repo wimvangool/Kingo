@@ -97,20 +97,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Snapshots are not supported by aggregate of type &apos;{0}&apos;..
-        /// </summary>
-        internal static string AggregateRoot_SnapshotsNotSupported {
-            get {
-                return ResourceManager.GetString("AggregateRoot_SnapshotsNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The next version ({0}) must represent a newer version than the current version ({1})..
         /// </summary>
         internal static string AggregateRoot_VersionUpdateException {
             get {
                 return ResourceManager.GetString("AggregateRoot_VersionUpdateException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; does not support snapshots..
+        /// </summary>
+        internal static string AggregateRootDecorator_SnapshotsNotSupported {
+            get {
+                return ResourceManager.GetString("AggregateRootDecorator_SnapshotsNotSupported", resourceCulture);
             }
         }
         
@@ -259,11 +259,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not update aggregate of type &apos;{0}&apos; because its version in the repository ({1}) does not match the expected version ({2}) of the aggregate to be stored..
+        ///   Looks up a localized string similar to Could not update aggregate with id &apos;{0}&apos; because its version in the repository ({1}) does not match the expected version ({2}) of the aggregate to be stored. The same aggregate may have been updated by another process..
         /// </summary>
-        internal static string MemoryRepository_ConcurrencyConflict {
+        internal static string MemoryDataStore_ConcurrencyConflict {
             get {
-                return ResourceManager.GetString("MemoryRepository_ConcurrencyConflict", resourceCulture);
+                return ResourceManager.GetString("MemoryDataStore_ConcurrencyConflict", resourceCulture);
             }
         }
         

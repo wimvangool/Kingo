@@ -25,7 +25,7 @@ namespace Kingo.MicroServices
         }
 
         private static Exception NewResultNotVerifiedException() =>
-            new MicroProcessorTestFailedException(ExceptionMessages.MicroProcessorTestResult_ResultNotVerified);
+            new TestFailedException(ExceptionMessages.MicroProcessorTestResult_ResultNotVerified);
 
         #endregion
     }

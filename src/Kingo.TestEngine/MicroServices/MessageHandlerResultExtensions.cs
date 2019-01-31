@@ -11,7 +11,7 @@ namespace Kingo.MicroServices
         /// Verifies that a test produces an empty event-stream.
         /// </summary>
         /// <param name="result">The result to verify.</param>
-        /// <exception cref="MicroProcessorTestFailedException">
+        /// <exception cref="TestFailedException">
         /// The result is either not an event-stream, or the event-stream contains one or more events.
         /// </exception>
         public static void IsEmptyStream(this IMessageHandlerResult result) =>
@@ -30,7 +30,7 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.MessageHandlerResult_StreamNotEmpty;
             var message = string.Format(messageFormat, stream.Count);
-            return new MicroProcessorTestFailedException(message);
+            return new TestFailedException(message);
         }
     }
 }

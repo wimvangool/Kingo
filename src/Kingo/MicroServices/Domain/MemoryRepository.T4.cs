@@ -10,19 +10,25 @@ namespace Kingo.MicroServices.Domain
     /// Represents a repository where all aggregates are stored in memory.
     /// </summary>
     /// <typeparam name="TKey">Type of the identifier of the aggregate.</typeparam>
-    /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>    
+    /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
+    /// <typeparam name="TSnapshot">Type of snapshot of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of the aggregate that is managed by this repository.</typeparam>    
-    public class MemoryRepository<TKey, TVersion, TAggregate> : Repository<TKey, TVersion, TAggregate>, IReadOnlyCollection<TAggregate>
+    public class MemoryRepository<TKey, TVersion, TSnapshot, TAggregate> : Repository<TKey, TVersion, TSnapshot, TAggregate>, IReadOnlyCollection<TAggregate>
         where TKey : struct, IEquatable<TKey>
-        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>                
-        where TAggregate : class, IAggregateRoot<TKey, TVersion>
+        where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>        
+        where TSnapshot : class, ISnapshotOrEvent<TKey, TVersion>
+        where TAggregate : class, IAggregateRoot<TKey, TVersion, TSnapshot>
     {
         private readonly MemoryDataStore<TKey, TVersion> _dataStore;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryRepository{T, S, R}" /> class.
-        /// </summary>                      
-        public MemoryRepository()            
+        /// Initializes a new instance of the <see cref="MemoryRepository{T, S, R, U}" /> class.
+        /// </summary>              
+        /// <param name="serializationStrategy">
+        /// Specifies the serialization strategy of this repository.
+        /// </param>               
+        public MemoryRepository(SerializationStrategy serializationStrategy = null) :
+            base(serializationStrategy)
         {
             _dataStore = new MemoryDataStore<TKey, TVersion>();
         }        
@@ -54,14 +60,14 @@ namespace Kingo.MicroServices.Domain
         #region [====== Read Operations ======]
 
         /// <inheritdoc />
-        protected internal override Task<IEnumerable<ISnapshotOrEvent>> SelectByIdAsync(TKey id) =>
+        protected internal override Task<AggregateReadSet> SelectByIdAsync(TKey id) =>
             Task.FromResult(SelectById(id));
 
-        private IEnumerable<ISnapshotOrEvent> SelectById(TKey id)
+        private AggregateReadSet SelectById(TKey id)
         {
             if (_dataStore.TryGetValue(id, out var dataSet))
             {
-                return dataSet.Events;
+                return dataSet;
             }
             return null;
         }
@@ -75,7 +81,7 @@ namespace Kingo.MicroServices.Domain
             FlushAsync(false);
 
         /// <inheritdoc />
-        protected internal override Task FlushAsync(IChangeSet<TKey, TVersion> changeSet) => AsyncMethod.Run(() =>
+        protected internal override Task FlushAsync(IChangeSet<TKey, TVersion, TSnapshot> changeSet) => AsyncMethod.Run(() =>
         {
             _dataStore.Flush(changeSet);
         });        

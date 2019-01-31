@@ -102,38 +102,38 @@ namespace Kingo.MicroServices.Validation
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_MessageNotValid;
                 var message = string.Format(messageFormat, _errorInfo);
-                return new MicroProcessorTestFailedException(message);
+                return new TestFailedException(message);
             }
 
             private static Exception NewUnexpectedErrorCountException(int expectedErrorCount, int actualErrorCount)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedErrorCount;
                 var message = string.Format(messageFormat, expectedErrorCount, actualErrorCount);
-                return new MicroProcessorTestFailedException(message);
+                return new TestFailedException(message);
             }
 
             private static Exception NewNoInstanceErrorException() =>
-                new MicroProcessorTestFailedException(ExceptionMessages.RequestMessageTestBase_NoInstanceError);
+                new TestFailedException(ExceptionMessages.RequestMessageTestBase_NoInstanceError);
 
             private static Exception NewNoMemberErrorException(string memberName)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_NoMemberError;
                 var message = string.Format(messageFormat, memberName);
-                return new MicroProcessorTestFailedException(message);
+                return new TestFailedException(message);
             }
 
             private static Exception NewUnexpectedInstanceErrorException(string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedInstanceError;
                 var message = string.Format(messageFormat, expectedErrorMessage, actualErrorMessage, comparison);
-                return new MicroProcessorTestFailedException(message);
+                return new TestFailedException(message);
             }
 
             private static Exception NewUnexpectedMemberErrorException(string memberName, string expectedErrorMessage, string actualErrorMessage, StringComparison comparison)
             {
                 var messageFormat = ExceptionMessages.RequestMessageTestBase_UnexpectedMemberError;
                 var message = string.Format(messageFormat, memberName, expectedErrorMessage, actualErrorMessage, comparison);
-                return new MicroProcessorTestFailedException(message);
+                return new TestFailedException(message);
             }            
         }
 

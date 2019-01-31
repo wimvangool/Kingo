@@ -4,22 +4,22 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices.Domain
 {
-    public sealed class MemoryRepositorySerializationStub : MemoryRepository<Guid, int, Number>
+    public sealed class MemoryRepositorySerializationStub : MemoryRepository<Guid, int, NumberSnapshot, Number>
     {
-        private readonly Dictionary<Guid, AggregateDataSet> _dataSets;
-        private readonly List<IChangeSet<Guid, int>> _changeSets;
+        private readonly Dictionary<Guid, AggregateReadSet> _dataSets;
+        private readonly List<IChangeSet<Guid, int, NumberSnapshot>> _changeSets;
 
         public MemoryRepositorySerializationStub(SerializationStrategy serializationStrategy)
             : base(serializationStrategy)
         {
-            _dataSets = new Dictionary<Guid, AggregateDataSet>();
-            _changeSets = new List<IChangeSet<Guid, int>>();
+            _dataSets = new Dictionary<Guid, AggregateReadSet>();
+            _changeSets = new List<IChangeSet<Guid, int, NumberSnapshot>>();
         }
 
-        public void Add(Guid id, AggregateDataSet dataSet) =>
+        public void Add(Guid id, AggregateReadSet dataSet) =>
             _dataSets.Add(id, dataSet);
 
-        protected internal override async Task<AggregateDataSet> SelectByIdAsync(Guid id)
+        protected internal override async Task<AggregateReadSet> SelectByIdAsync(Guid id)
         {
             if (_dataSets.TryGetValue(id, out var dataSet))
             {
@@ -28,10 +28,10 @@ namespace Kingo.MicroServices.Domain
             return await base.SelectByIdAsync(id);
         }
 
-        public void AssertChangeSet(int index, Action<IChangeSet<Guid, int>> callback) =>
+        public void AssertChangeSet(int index, Action<IChangeSet<Guid, int, NumberSnapshot>> callback) =>
             callback.Invoke(_changeSets[index]);
 
-        protected internal override Task FlushAsync(IChangeSet<Guid, int> changeSet)
+        protected internal override Task FlushAsync(IChangeSet<Guid, int, NumberSnapshot> changeSet)
         {
             _changeSets.Add(changeSet);
             return base.FlushAsync(changeSet);

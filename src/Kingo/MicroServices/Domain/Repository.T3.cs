@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kingo.MicroServices.Domain
@@ -9,125 +10,103 @@ namespace Kingo.MicroServices.Domain
     /// <typeparam name="TKey">Type of the identifier of the aggregate.</typeparam>
     /// <typeparam name="TVersion">Type of the version of the aggregate.</typeparam>
     /// <typeparam name="TAggregate">Type of the aggregate that is managed by this repository.</typeparam>
-    public abstract class Repository<TKey, TVersion, TAggregate> : IRepository<TKey, TAggregate>, IUnitOfWorkResourceManager
+    public abstract class Repository<TKey, TVersion, TAggregate> : RepositoryBase<TKey, TVersion, TAggregate>
         where TKey : struct, IEquatable<TKey>
         where TVersion : struct, IEquatable<TVersion>, IComparable<TVersion>
         where TAggregate : class, IAggregateRoot<TKey, TVersion>
     {
-        private readonly UnitOfWork<TKey, TVersion, TAggregate> _unitOfWork;        
+        #region [====== AggregateRootDecoratorRepository ======]
+
+        private sealed class AggregateRootDecoratorRepository : Repository<TKey, TVersion, ISnapshotOrEvent<TKey, TVersion>, AggregateRootDecorator<TKey, TVersion, TAggregate>>
+        {
+            private readonly Repository<TKey, TVersion, TAggregate> _repository;
+
+            public AggregateRootDecoratorRepository(Repository<TKey, TVersion, TAggregate> repository) :
+                base(SerializationStrategy.UseEvents())
+            {
+                _repository = repository;
+            }            
+
+            protected internal override async Task<AggregateReadSet> SelectByIdAsync(TKey id)
+            {
+                var events = await _repository.SelectByIdAsync(id);
+                if (events == null)
+                {
+                    return null;
+                }
+                return new AggregateReadSet(events);
+            }
+
+            protected override IUnitOfWork UnitOfWork =>
+                _repository.UnitOfWork;
+
+            public override object ResourceId =>
+                _repository.ResourceId;
+
+            protected internal override Task FlushAsync(IChangeSet<TKey, TVersion, ISnapshotOrEvent<TKey, TVersion>> changeSet) =>
+                _repository.FlushAsync(new ChangeSetDecorator<TKey,TVersion, ISnapshotOrEvent<TKey, TVersion>>(changeSet));
+        }
+
+        #endregion
+
+        private readonly AggregateRootDecoratorRepository _implementation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Repository{T, S, R}" /> class.
+        /// Initializes a new instance of the <see cref="Repository{TKey, TVersion, TAggregate}" /> class.
         /// </summary>
-        /// <param name="serializationStrategy">Specifies the serialization strategy of this repository.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="serializationStrategy" /> is <c>null</c>.
-        /// </exception>
-        protected Repository(SerializationStrategy serializationStrategy)
+        protected Repository()
         {
-            _unitOfWork = new UnitOfWork<TKey, TVersion, TAggregate>(this, serializationStrategy);                     
-        }              
+            _implementation = new AggregateRootDecoratorRepository(this);
+        }
 
         /// <inheritdoc />
         public override string ToString() =>
-            _unitOfWork.ToString();
+            _implementation.ToString();
 
         #region [====== IRepository<TKey, TAggregate> ======]
 
         /// <inheritdoc />
-        public virtual Task<TAggregate> GetByIdAsync(TKey id) =>
-            _unitOfWork.GetByIdAsync(id);
+        public override async Task<TAggregate> GetByIdAsync(TKey id) =>
+            await _implementation.GetByIdAsync(id);
 
         /// <inheritdoc />
-        public virtual Task<TAggregate> GetByIdOrNullAsync(TKey id) =>
-            _unitOfWork.GetByIdOrNullAsync(id);
+        public override async Task<TAggregate> GetByIdOrNullAsync(TKey id) => 
+            await _implementation.GetByIdOrNullAsync(id);
 
         /// <inheritdoc />
-        public virtual async Task<bool> AddAsync(TAggregate aggregate)
-        {
-            if (await _unitOfWork.AddAsync(aggregate).ConfigureAwait(false))
-            {
-                await UnitOfWork.EnlistAsync(this).ConfigureAwait(false);
-                return true;
-            }
-            return false;
-        }
-
-        internal Task OnAggregateModifiedAsync() =>
-            UnitOfWork.EnlistAsync(this);
+        public override Task<bool> AddAsync(TAggregate aggregate) =>
+            _implementation.AddAsync(new AggregateRootDecorator<TKey, TVersion, TAggregate>(aggregate));
 
         /// <inheritdoc />
-        public virtual async Task<bool> RemoveAsync(TAggregate aggregate)
-        {
-            if (await _unitOfWork.RemoveAsync(aggregate).ConfigureAwait(false))
-            {
-                await UnitOfWork.EnlistAsync(this).ConfigureAwait(false);
-                return true;
-            }
-            return false;
-        }
+        public override Task<bool> RemoveAsync(TAggregate aggregate) =>
+            _implementation.RemoveAsync(new AggregateRootDecorator<TKey, TVersion, TAggregate>(aggregate));
 
         /// <inheritdoc />
-        public virtual async Task<bool> RemoveByIdAsync(TKey id)
-        {
-            if (await _unitOfWork.RemoveByIdAsync(id).ConfigureAwait(false))
-            {
-                await UnitOfWork.EnlistAsync(this).ConfigureAwait(false);
-                return true;
-            }
-            return false;
-        }
+        public override Task<bool> RemoveByIdAsync(TKey id) =>
+            _implementation.RemoveByIdAsync(id);
 
         #endregion
 
         #region [====== Read Operations ======]                
 
         /// <summary>
-        /// Loads and returns an aggregate's data from the data store.
+        /// Loads and returns an aggregate's events from the data store.
         /// </summary>
         /// <param name="id">Identifier of the aggregate to load.</param>
         /// <returns>
-        /// The data of the aggregate, or <c>null</c> if the aggregate was not found.
+        /// The events of the aggregate, or <c>null</c> if the aggregate was not found.
         /// </returns>
-        protected internal abstract Task<AggregateDataSet> SelectByIdAsync(TKey id);        
+        protected internal abstract Task<IEnumerable<ISnapshotOrEvent>> SelectByIdAsync(TKey id);
 
         #endregion
 
-        #region [====== Write Operations ======]
+        #region [====== IUnitOfWorkResourceManager ======]        
 
-        /// <summary>
-        /// Returns the unit of work that this repository is using to enlist itself in.
-        /// </summary>
-        protected virtual IUnitOfWork UnitOfWork =>
-            MessageHandlerContext.Current?.UnitOfWork ?? MicroServices.UnitOfWork.None;                    
+        public override bool RequiresFlush() =>
+            _implementation.RequiresFlush();
 
-        /// <inheritdoc />
-        public virtual object ResourceId =>
-            null;
-
-        /// <inheritdoc />
-        public virtual bool RequiresFlush() =>
-            _unitOfWork.RequiresFlush;
-
-        /// <inheritdoc />
-        public virtual Task FlushAsync() =>
-            FlushAsync(true);
-
-        /// <summary>
-        /// Flushes any pending changes to the underlying infrastructure.
-        /// </summary>
-        /// <param name="keepAggregatesInMemory">
-        /// Indicates whether or not this repository should keep all aggregates that have been retrieved, added and/or updated
-        /// in its internal cache after the flush operation has been completed, so that following read and write operations
-        /// are potentially faster.
-        /// </param>
-        /// <returns>A task representing the operation.</returns>
-        /// <exception cref="MessageHandlerException">
-        /// The data store failed to accept the changes because a data constraint was violated or because a concurrency exception
-        /// occurred.
-        /// </exception>
-        protected Task FlushAsync(bool keepAggregatesInMemory) =>
-            _unitOfWork.FlushAsync(keepAggregatesInMemory);
+        protected internal override Task FlushAsync(bool keepAggregatesInMemory) =>
+            _implementation.FlushAsync(keepAggregatesInMemory);
 
         /// <summary>
         /// Flushes all changes made in this session to the data store by inserting, updating and/or deleting several aggregates.
@@ -138,7 +117,7 @@ namespace Kingo.MicroServices.Domain
         /// The data store failed to accept the changes because a data constraint was violated or because a concurrency exception
         /// occurred.
         /// </exception>
-        protected internal abstract Task FlushAsync(IChangeSet<TKey, TVersion> changeSet);                        
+        protected internal abstract Task FlushAsync(IChangeSet<TKey, TVersion> changeSet);
 
         #endregion
     }

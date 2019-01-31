@@ -43,12 +43,15 @@ namespace Kingo.MicroServices
             }
 
             public async Task RunTestAsync()
-            {
-                await GivenAsync().ConfigureAwait(false);
-
+            {                
                 try
                 {
+                    await GivenAsync().ConfigureAwait(false);
                     await WhenAsync().ConfigureAwait(false);
+                }
+                catch (TestFailedException)
+                {
+                    throw;
                 }
                 catch (Exception exception)
                 {

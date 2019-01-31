@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AggregateRootDecorator_SnapshotsNotSupported" xml:space="preserve">
+    <value>Aggregate of type '{0}' does not support snapshots.</value>
+  </data>
   <data name="AggregateRoot_AggregateRemovedException" xml:space="preserve">
     <value>Aggregate of type '{0}' cannot publish event of type '{1}' because it has been removed from its repository and its lifetime has therefore ended.</value>
   </data>
@@ -128,9 +131,6 @@
   </data>
   <data name="AggregateRoot_MissingEventHandlerException" xml:space="preserve">
     <value>Missing event handler for event of type '{0}'.</value>
-  </data>
-  <data name="AggregateRoot_SnapshotsNotSupported" xml:space="preserve">
-    <value>Snapshots are not supported by aggregate of type '{0}'.</value>
   </data>
   <data name="AggregateRoot_VersionUpdateException" xml:space="preserve">
     <value>The next version ({0}) must represent a newer version than the current version ({1}).</value>
@@ -183,8 +183,8 @@
   <data name="InternalServerErrorException_FromException" xml:space="preserve">
     <value>An error occurred while processing a message. See inner exception for details.</value>
   </data>
-  <data name="MemoryRepository_ConcurrencyConflict" xml:space="preserve">
-    <value>Could not update aggregate of type '{0}' because its version in the repository ({1}) does not match the expected version ({2}) of the aggregate to be stored.</value>
+  <data name="MemoryDataStore_ConcurrencyConflict" xml:space="preserve">
+    <value>Could not update aggregate with id '{0}' because its version in the repository ({1}) does not match the expected version ({2}) of the aggregate to be stored. The same aggregate may have been updated by another process.</value>
   </data>
   <data name="MessageHandlerClass_CouldNotResolveMessageHandler" xml:space="preserve">
     <value>'{0}' could not resolve message handler of type '{1}'.</value>

@@ -15,7 +15,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet(new NumberUsingEvents.Snapshot(numberId, 1, 0, false)));
+            Repository.Add(numberId, new AggregateReadSet(new NumberUsingEvents.Snapshot(numberId, 1, 0, false)));
 
             await Repository.GetByIdAsync(numberId);
         }

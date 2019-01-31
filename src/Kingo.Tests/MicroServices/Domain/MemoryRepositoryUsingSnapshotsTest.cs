@@ -92,7 +92,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet(null, new ISnapshotOrEvent[]
+            Repository.Add(numberId, new AggregateReadSet(new ISnapshotOrEvent[]
             {
                 new NumberUsingSnapshots.CreatedEvent(numberId, 0)
             }));
@@ -106,7 +106,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet(new SnapshotOfIncorrectType(numberId)));
+            Repository.Add(numberId, new AggregateReadSet(new SnapshotOfIncorrectType(numberId)));
 
             await Repository.GetByIdAsync(numberId);
         }
@@ -117,7 +117,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet(new SnapshotThatCannotRestoreAggregate(numberId)));
+            Repository.Add(numberId, new AggregateReadSet(new SnapshotThatCannotRestoreAggregate(numberId)));
 
             await Repository.GetByIdAsync(numberId);
         }
@@ -128,7 +128,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet(new SnapshotThatRestoresAggregateOfWrongType(numberId)));
+            Repository.Add(numberId, new AggregateReadSet(new SnapshotThatRestoresAggregateOfWrongType(numberId)));
 
             await Repository.GetByIdAsync(numberId);
         }
@@ -138,7 +138,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet(new NumberUsingSnapshots.Snapshot(numberId, 1, 0, false)));
+            Repository.Add(numberId, new AggregateReadSet(new NumberUsingSnapshots.Snapshot(numberId, 1, 0, false)));
 
             Assert.IsNotNull(await Repository.GetByIdAsync(numberId));
         }
@@ -148,7 +148,7 @@ namespace Kingo.MicroServices.Domain
         {
             var numberId = Guid.NewGuid();
 
-            Repository.Add(numberId, new AggregateDataSet(new VeryOldSnapshot(numberId)));
+            Repository.Add(numberId, new AggregateReadSet(new VeryOldSnapshot(numberId)));
 
             Assert.IsNotNull(await Repository.GetByIdAsync(numberId));
         }

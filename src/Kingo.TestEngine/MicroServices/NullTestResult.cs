@@ -18,7 +18,7 @@ namespace Kingo.MicroServices
         {
             var messageFormat = ExceptionMessages.NullTestResult_MissingResult;
             var message = string.Format(messageFormat, _test.GetType().FriendlyName());
-            return new MicroProcessorTestFailedException(message);
+            return new TestFailedException(message);
         }
     }
 }
