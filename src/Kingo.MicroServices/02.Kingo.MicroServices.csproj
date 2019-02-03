@@ -5,7 +5,7 @@
     <RootNamespace>Kingo</RootNamespace>
     <AssemblyName>Kingo.MicroServices</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>C:\Sources\Kingo\src\Kingo.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>latest</LangVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>

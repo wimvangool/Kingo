@@ -6,7 +6,7 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>Kingo.MicroServices.TestEngine.Tests</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>C:\Sources\Kingo\src\Kingo.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 

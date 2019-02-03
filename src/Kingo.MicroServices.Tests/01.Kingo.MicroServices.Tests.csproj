@@ -6,7 +6,7 @@
     <AssemblyName>Kingo.MicroServices.Tests</AssemblyName>
     <RootNamespace>Kingo</RootNamespace>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>C:\Sources\Kingo\src\Kingo.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
