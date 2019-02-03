@@ -10,17 +10,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Kingo.snk = Kingo.snk
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo", "Kingo", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.MicroServices", "Kingo.MicroServices", "{56143727-5946-49BD-8FFC-9BFDCFA345F0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.TestEngine", "Kingo.TestEngine", "{79712E74-AD85-4236-A12E-82A5E9B65264}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kingo.MicroServices.TestEngine", "Kingo.MicroServices.TestEngine", "{79712E74-AD85-4236-A12E-82A5E9B65264}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Kingo", "Kingo\02.Kingo.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Kingo.MicroServices", "Kingo.MicroServices\02.Kingo.MicroServices.csproj", "{38B8F361-1B74-4BA5-890F-A2202C9CEA87}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Kingo.Tests", "Kingo.Tests\01.Kingo.Tests.csproj", "{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Kingo.MicroServices.Tests", "Kingo.MicroServices.Tests\01.Kingo.MicroServices.Tests.csproj", "{2F6CCD7E-59F5-46CA-BFE4-268386EF3F9D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Kingo.TestEngine", "Kingo.TestEngine\02.Kingo.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.Kingo.MicroServices.TestEngine", "Kingo.MicroServices.TestEngine\02.Kingo.MicroServices.TestEngine.csproj", "{E9203EC0-DEDF-4804-8F41-849AB36D8E20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Kingo.TestEngine.Tests", "Kingo.TestEngine.Tests\01.Kingo.TestEngine.Tests.csproj", "{C8003300-58B0-43FA-BA62-4E11EACFAD99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Kingo.MicroServices.TestEngine.Tests", "Kingo.MicroServices.TestEngine.Tests\01.Kingo.MicroServices.TestEngine.Tests.csproj", "{C8003300-58B0-43FA-BA62-4E11EACFAD99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,8 +55,8 @@ Global
 		{C8003300-58B0-43FA-BA62-4E11EACFAD99} = {79712E74-AD85-4236-A12E-82A5E9B65264}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 	GlobalSection(TestsCaseManagementSettings) = postSolution
 		CategoryFile = YellowFlare.Cqrs.vsmdi
