@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Kingo.Reflection;
+using Kingo.MicroServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices
+namespace Kingo.Reflection
 {
     [TestClass]
     public sealed class MethodAttributeProviderTest

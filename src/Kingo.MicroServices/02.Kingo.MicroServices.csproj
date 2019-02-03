@@ -8,6 +8,15 @@
     <AssemblyOriginatorKeyFile>C:\Sources\Kingo\src\Kingo.snk</AssemblyOriginatorKeyFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>latest</LangVersion>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>MicroService Event-Driven CQRS DDD SOA</PackageTags>
+    <PackageReleaseNotes>Version 4 is a completely redesigned version of the Kingo framework, re-implemented as a set of .NET Standard libaries, so that it can used in both .NET Core and .NET Framework based applications.</PackageReleaseNotes>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
+    <Authors>Wim van Gool</Authors>
+    <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>    
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
+    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
   </ItemGroup>

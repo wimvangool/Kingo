@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Kingo.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kingo.MicroServices
+namespace Kingo.Reflection
 {
     [TestClass]
     public sealed class TypeAttributeProviderTest

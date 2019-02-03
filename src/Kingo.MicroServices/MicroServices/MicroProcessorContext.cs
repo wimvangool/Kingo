@@ -9,13 +9,8 @@ namespace Kingo.MicroServices
     /// Represents the context in which a <see cref="MicroProcessor"/> operates.
     /// </summary>    
     public abstract class MicroProcessorContext
-    {
-        private readonly Lazy<ClaimsProvider> _claimsProvider;
-
-        internal MicroProcessorContext()
-        {            
-            _claimsProvider = new Lazy<ClaimsProvider>(() => new ClaimsProvider(Principal));
-        }
+    {     
+        internal MicroProcessorContext() { }
 
         /// <summary>
         /// Returns the service provider associated with this context.
@@ -25,13 +20,7 @@ namespace Kingo.MicroServices
             get;
         }                
 
-        #region [====== SecurityContext ======]
-
-        /// <summary>
-        /// Represents a <see cref="IClaimsProvider"/> that provides access to the claims of the associated <see cref="Principal"/>.
-        /// </summary>
-        public IClaimsProvider ClaimsProvider =>
-            _claimsProvider.Value;
+        #region [====== SecurityContext ======]        
 
         /// <summary>
         /// The principal that is associated to the current operation.

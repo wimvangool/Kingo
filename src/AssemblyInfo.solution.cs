@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using System.Resources;
 
-[assembly: AssemblyCompany("Wim van Gool")]
-[assembly: AssemblyProduct("Kingo Framework")]
-[assembly: AssemblyCopyright("Copyright © Wim van Gool 2018")]
+[assembly: AssemblyCompany("Kingo")]
+[assembly: AssemblyProduct("Kingo")]
+[assembly: AssemblyCopyright("Copyright © Wim van Gool 2019")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
 [assembly: AssemblyVersion("4.0")]
