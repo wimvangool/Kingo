@@ -73,13 +73,13 @@ namespace Kingo.MicroServices
         /// <summary>
         /// Returns the service bus that this processor uses to publish all messages to.
         /// </summary>
-        protected virtual IMicroServiceBus ServiceBus =>
+        protected IMicroServiceBus ServiceBus =>
             _serviceBus;
 
         /// <summary>
         /// Returns the <see cref="IMessageHandlerFactory" /> of this processor.
         /// </summary>
-        protected internal virtual IMessageHandlerFactory MessageHandlers =>
+        protected internal IMessageHandlerFactory MessageHandlers =>
             _messageHandlers;
 
         /// <summary>
