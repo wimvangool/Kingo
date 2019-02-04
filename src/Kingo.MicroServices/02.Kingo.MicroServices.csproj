@@ -12,7 +12,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>MicroService Event-Driven CQRS DDD SOA</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/128/logic.ico</PackageIconUrl>
+    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/128/logic.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
     <Authors>Wim van Gool</Authors>
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
