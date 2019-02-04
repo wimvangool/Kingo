@@ -9,6 +9,12 @@
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
     <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">4.0</Version>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
+    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/128/test.ico</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
+    <RepositoryType />
+    <PackageTags>MicroService Event-Driven BDD TDD Test</PackageTags>
+    <Company>Kingo</Company>
   </PropertyGroup>
 
   <ItemGroup>

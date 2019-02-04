@@ -11,8 +11,8 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>MicroService Event-Driven CQRS DDD SOA</PackageTags>
-    <PackageReleaseNotes>Version 4 is a completely redesigned version of the Kingo framework, re-implemented as a set of .NET Standard libaries, so that it can used in both .NET Core and .NET Framework based applications.</PackageReleaseNotes>
-    <PackageIconUrl></PackageIconUrl>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/128/logic.ico</PackageIconUrl>
     <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
     <Authors>Wim van Gool</Authors>
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
