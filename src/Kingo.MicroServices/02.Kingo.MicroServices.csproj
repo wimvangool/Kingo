@@ -8,11 +8,11 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
     <LangVersion>latest</LangVersion>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>MicroService Event-Driven CQRS DDD SOA</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/128/logic.png</PackageIconUrl>
+    <PackageIconUrl>https://github.com/wimvangool/Kingo/blob/master/images/128/logic.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
     <Authors>Wim van Gool</Authors>
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
