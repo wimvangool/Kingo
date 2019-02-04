@@ -19,6 +19,7 @@
     <Company>Kingo</Company>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">4.0</Version>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
+    <Description>A library for creating event-driven micro-services that centers around a micro-service processor that can handle commands, events and queries. Given its design, it also lends itself quite nicely to apply patterns such as CQRS and Domain-Driven Design.</Description>
   </PropertyGroup>
 
   <ItemGroup>

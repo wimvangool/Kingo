@@ -14,7 +14,9 @@
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
     <RepositoryType />
     <PackageTags>MicroService Event-Driven BDD TDD Test</PackageTags>
-    <Company>Kingo</Company>    
+    <Company>Kingo</Company>
+    <Authors>Wim van Gool</Authors>
+    <Description>A library for creating Behavioral-Driven (Given-When-Then) tests for MicroServices built with the Kingo.MicroServices package.</Description>    
   </PropertyGroup>
 
   <ItemGroup>
