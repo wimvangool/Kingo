@@ -7,8 +7,7 @@
     <AssemblyDescription>A library for building event-driven micro-services.</AssemblyDescription>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
-    <LangVersion>latest</LangVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>latest</LangVersion>    
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>MicroService Event-Driven CQRS DDD SOA</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>

@@ -14,8 +14,7 @@
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
     <RepositoryType />
     <PackageTags>MicroService Event-Driven BDD TDD Test</PackageTags>
-    <Company>Kingo</Company>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>Kingo</Company>    
   </PropertyGroup>
 
   <ItemGroup>
