@@ -7,7 +7,8 @@
     <AssemblyDescription>A library that can be used to write BDD-style tests for micro-services that are built using the Kingo.MicroServices framework.</AssemblyDescription>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
-    <VersionPrefix>4.0</VersionPrefix>
+    <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">4.0</Version>
+    <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
   </PropertyGroup>
 
   <ItemGroup>
