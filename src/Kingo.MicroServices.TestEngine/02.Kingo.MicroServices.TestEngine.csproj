@@ -4,9 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Kingo</RootNamespace>
     <AssemblyName>Kingo.MicroServices.TestEngine</AssemblyName>
+    <AssemblyDescription>A library that can be used to write BDD-style tests for micro-services that are built using the Kingo.MicroServices framework.</AssemblyDescription>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
+    <VersionPrefix>4.0.0</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>

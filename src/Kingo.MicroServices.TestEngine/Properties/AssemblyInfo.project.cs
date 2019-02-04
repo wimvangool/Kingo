@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: Guid("c6102b0a-4d14-4f2b-9ef5-0e645cc438ba")]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
-
-[assembly: AssemblyTitle("Kingo.MicroServices.TestEngine")]
-[assembly: AssemblyDescription("A library that can be used to write BDD-style tests for micro-services that are built using the Kingo.MicroServices framework.")]
 
 [assembly: InternalsVisibleTo("Kingo.MicroServices.TestEngine.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +

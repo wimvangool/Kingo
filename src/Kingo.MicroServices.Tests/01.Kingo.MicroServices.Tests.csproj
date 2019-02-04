@@ -4,10 +4,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
     <AssemblyName>Kingo.MicroServices.Tests</AssemblyName>
+    <AssemblyDescription>Contains all unit tests for the Kingo.MicroServices library.</AssemblyDescription>
     <RootNamespace>Kingo</RootNamespace>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
   </PropertyGroup>
 
   <ItemGroup>

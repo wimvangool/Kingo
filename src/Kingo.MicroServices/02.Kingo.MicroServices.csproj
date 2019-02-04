@@ -4,9 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Kingo</RootNamespace>
     <AssemblyName>Kingo.MicroServices</AssemblyName>
+    <AssemblyDescription>A library for building event-driven micro-services.</AssemblyDescription>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
     <LangVersion>latest</LangVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -16,7 +16,9 @@
     <PackageProjectUrl>https://github.com/wimvangool/Kingo</PackageProjectUrl>
     <Authors>Wim van Gool</Authors>
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
-    <RepositoryType>GitHub</RepositoryType>    
+    <RepositoryType>GitHub</RepositoryType>
+    <VersionPrefix>4.0.0</VersionPrefix>
+    <Company>Kingo</Company>
   </PropertyGroup>
 
   <ItemGroup>

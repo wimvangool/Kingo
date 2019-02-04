@@ -7,9 +7,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
 
-[assembly: AssemblyTitle("Kingo.MicroServices")]
-[assembly: AssemblyDescription("A library for building event-driven micro-services.")]
-
 [assembly: InternalsVisibleTo("Kingo.MicroServices.Tests," +
 "PublicKey=002400000480000094000000060200000024000052534" +
 "1310004000001000100033d27f9556e2293e38230218e9ca34b5e9d" +
