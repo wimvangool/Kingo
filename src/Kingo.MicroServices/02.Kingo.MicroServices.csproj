@@ -17,7 +17,7 @@
     <Authors>Wim van Gool</Authors>
     <RepositoryUrl>https://github.com/wimvangool/Kingo</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <VersionPrefix>4.0.0</VersionPrefix>
+    <VersionPrefix>4.0</VersionPrefix>
     <Company>Kingo</Company>
   </PropertyGroup>
 
