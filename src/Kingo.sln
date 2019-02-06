@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{002BBBBE-42B2-4618-B560-509798888BE6}"
 	ProjectSection(SolutionItems) = preProject
 		AssemblyInfo.solution.cs = AssemblyInfo.solution.cs
-		BuildNuGetPackage.bat = BuildNuGetPackage.bat
 		Kingo.snk = Kingo.snk
 	EndProjectSection
 EndProject
@@ -55,8 +54,8 @@ Global
 		{C8003300-58B0-43FA-BA62-4E11EACFAD99} = {79712E74-AD85-4236-A12E-82A5E9B65264}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {D10A8C2E-B769-4234-9B6C-570DA059994A}
 	EndGlobalSection
 	GlobalSection(TestsCaseManagementSettings) = postSolution
 		CategoryFile = YellowFlare.Cqrs.vsmdi
