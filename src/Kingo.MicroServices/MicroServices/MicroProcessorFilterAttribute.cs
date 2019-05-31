@@ -40,11 +40,11 @@ namespace Kingo.MicroServices
         #region [====== IMicroProcessorFilter ======]                                
 
         /// <inheritdoc /> 
-        public virtual Task<InvokeAsyncResult<MessageStream>> InvokeMessageHandlerAsync(MessageHandler handler) =>
+        public virtual Task<HandleAsyncResult> InvokeMessageHandlerAsync(MessageHandler handler) =>
             InvokeAsync(handler);
 
         /// <inheritdoc />
-        public virtual Task<InvokeAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query) =>
+        public virtual Task<ExecuteAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query) =>
             InvokeAsync(query);        
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Kingo.MicroServices
         /// <typeparam name="TResult">Type of the result of the operation.</typeparam>
         /// <param name="handlerOrQuery">A message handler or query that will perform the operation.</param>       
         /// <returns>The result of the operation.</returns>
-        protected virtual Task<InvokeAsyncResult<TResult>> InvokeAsync<TResult>(IMessageHandlerOrQuery<TResult> handlerOrQuery) =>
+        protected virtual Task<TResult> InvokeAsync<TResult>(IMessageHandlerOrQuery<TResult> handlerOrQuery) =>
             handlerOrQuery.Method.InvokeAsync();
 
         #endregion        

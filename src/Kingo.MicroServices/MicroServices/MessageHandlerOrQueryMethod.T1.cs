@@ -33,6 +33,6 @@ namespace Kingo.MicroServices
         /// Invokes the (method of) the associated message handler or query.
         /// </summary>
         /// <returns>The result of the operation.</returns>
-        public abstract Task<InvokeAsyncResult<TResult>> InvokeAsync();
+        public abstract Task<TResult> InvokeAsync();
     }
 }

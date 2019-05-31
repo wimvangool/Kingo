@@ -49,27 +49,7 @@ namespace Kingo.MicroServices
             Assert.IsNull(MicroProcessorContext.Current);
         }
 
-        #endregion
-
-        #region [====== Principal ======]
-
-        [TestMethod]
-        public void Principal_AlwaysReferencesProcessorPrincipal_AsScopesAreCreatedAndDisposed()
-        {            
-            using (CreateMessageHandlerContextScope())
-            {                
-                Assert.AreSame(Thread.CurrentPrincipal, MessageHandlerContext.Current.Principal);
-
-                using (CreateMessageHandlerContextScope(MessageHandlerContext.Current.CreateContext(new object())))
-                {                    
-                    Assert.AreSame(Thread.CurrentPrincipal, MessageHandlerContext.Current.Principal);
-                }
-
-                Assert.AreSame(Thread.CurrentPrincipal, MessageHandlerContext.Current.Principal);
-            }            
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== Token ======]
 
@@ -220,6 +200,6 @@ namespace Kingo.MicroServices
             MicroProcessorContext.CreateScope(context);
 
         private static MessageHandlerContext CreateMessageHandlerContext(CancellationToken? token, object message) =>
-            new MessageHandlerContext(ServiceProvider.Default, Thread.CurrentPrincipal, token, message ?? new object());
+            new MessageHandlerContext(ServiceProvider.Default, token, message ?? new object());
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kingo.MicroServices.Configuration;
+using Kingo.MicroServices.Endpoints;
 
 namespace Kingo.MicroServices
 {
@@ -97,15 +97,17 @@ namespace Kingo.MicroServices
 
             private async Task<MessageHandlerResult<TEventStream>> HandleMessageAsync(TMessage message, IMessageHandler<TMessage> handler, IMicroProcessor processor)
             {
+                HandleAsyncResult result;
+
                 try
                 {
-                    await processor.HandleAsync(message, handler).ConfigureAwait(false);                    
+                    result = await processor.HandleAsync(message, handler).ConfigureAwait(false);                    
                 }
                 catch (Exception exception)
                 {
                     return new MessageHandlerResult<TEventStream>(exception);
                 }
-                return new MessageHandlerResult<TEventStream>(Context.CommitEventStream(), stream =>
+                return new MessageHandlerResult<TEventStream>(new EventStream(result.Events), stream =>
                 {
                     Context.SetEventStream(Test, stream);
                 });
@@ -217,7 +219,7 @@ namespace Kingo.MicroServices
             {
                 try
                 {
-                    return new QueryResult<TResponse>(await processor.ExecuteAsync(request ,query).ConfigureAwait(false));
+                    return new QueryResult<TResponse>(await processor.ExecuteAsync(request, query).ConfigureAwait(false));
                 }
                 catch (Exception exception)
                 {

@@ -10,7 +10,7 @@ namespace Kingo.MicroServices
     {
         #region [====== ExecuteAsyncMethod ======]
 
-        private sealed class ExecuteAsyncMethod : MessageHandlerOrQueryMethod<TResponse>
+        private sealed class ExecuteAsyncMethod : MessageHandlerOrQueryMethod<ExecuteAsyncResult<TResponse>>
         {
             private readonly QueryFilterPipeline<TResponse> _connector;
             private readonly IMicroProcessorFilter _filter;
@@ -24,7 +24,7 @@ namespace Kingo.MicroServices
             public IMicroProcessorFilter Filter =>
                 _filter;
 
-            private MessageHandlerOrQueryMethod<TResponse> Method =>
+            private MessageHandlerOrQueryMethod<ExecuteAsyncResult<TResponse>> Method =>
                 _connector._nextQuery.Method;
 
             public override MethodInfo Info =>
@@ -36,7 +36,7 @@ namespace Kingo.MicroServices
             public override IEnumerable<TAttribute> GetAttributesOfType<TAttribute>() =>
                 Method.GetAttributesOfType<TAttribute>();
 
-            public override Task<InvokeAsyncResult<TResponse>> InvokeAsync() =>
+            public override Task<ExecuteAsyncResult<TResponse>> InvokeAsync() =>
                 _filter.InvokeQueryAsync(_connector._nextQuery);
 
             public override string ToString() =>
@@ -75,7 +75,7 @@ namespace Kingo.MicroServices
         public override QueryContext Context =>
             _nextQuery.Context;
 
-        public override MessageHandlerOrQueryMethod<TResponse> Method =>
+        public override MessageHandlerOrQueryMethod<ExecuteAsyncResult<TResponse>> Method =>
             _method;
 
         #endregion

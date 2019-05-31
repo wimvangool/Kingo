@@ -7,7 +7,7 @@ namespace Kingo.MicroServices
         public MicroProcessorFilterStub(MicroProcessorFilterStage stage)
             : base(stage) { }
 
-        public override async Task<InvokeAsyncResult<MessageStream>> InvokeMessageHandlerAsync(MessageHandler handler)
+        public override async Task<HandleAsyncResult> InvokeMessageHandlerAsync(MessageHandler handler)
         {
             handler.Context.EventBus.Publish(Stage);
 

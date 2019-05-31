@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class HandleMessageMethod<TMessage> : MicroProcessorMethod<MessageStream>, IMessageHandler
+    internal sealed class HandleMessageMethod<TMessage> : MicroProcessorMethod<HandleAsyncResult>, IMessageProcessor
     {        
         private readonly MicroProcessor _processor;
         private readonly MessageHandlerContext _context;
@@ -15,7 +15,7 @@ namespace Kingo.MicroServices
         public HandleMessageMethod(MicroProcessor processor, TMessage message, IMessageHandler<TMessage> handler, CancellationToken? token)           
         {
             _processor = processor;
-            _context = new MessageHandlerContext(processor.ServiceProvider, processor.Principal, token, message);
+            _context = new MessageHandlerContext(processor.ServiceProvider, token, message);
             _message = message;
             _handler = handler;
             _isRootMethod = true;            
@@ -28,29 +28,12 @@ namespace Kingo.MicroServices
             _message = message;
             _handler = null;
             _isRootMethod = false;
-        }        
-
-        public int InvocationCount
-        {
-            get;
-            private set;
         }
 
-        Task<MessageStream> IMessageHandler.HandleAsync<TEvent>(TEvent message)
-        {
-            var method = new HandleMessageMethod<TEvent>(_processor, message, _context);
+        Task<HandleAsyncResult> IMessageProcessor.HandleAsync<TEvent>(TEvent message) =>
+            new HandleMessageMethod<TEvent>(_processor, message, _context).InvokeAsync();
 
-            try
-            {
-                return method.InvokeAsync();
-            }
-            finally
-            {
-                InvocationCount += method.InvocationCount;
-            }
-        }            
-
-        public override async Task<MessageStream> InvokeAsync()
+        public override async Task<HandleAsyncResult> InvokeAsync()
         {
             var scope = MicroProcessorContext.CreateScope(_context);
 
@@ -101,46 +84,44 @@ namespace Kingo.MicroServices
             }
         }
 
-        private async Task<MessageStream> HandleMessageAsync()
+        private async Task<HandleAsyncResult> HandleMessageAsync()
         {
             // If a specific handler to handle the message was specified, that handler is used.
             // If not, then the MessageHandlerFactory is used to instantiate a set of handlers.
             // If the factory cannot find any appropriate handlers, the message is ignored.
             if (_handler == null)
             {
-                var stream = MessageStream.Empty;
+                var result = HandleAsyncResult.Empty;
 
                 foreach (var resolvedHandler in _processor.MessageHandlers.ResolveMessageHandlers(_message, _context))
                 {
-                    stream = stream.Concat(await InvokeMessageHandlerAsync(resolvedHandler).ConfigureAwait(false));
+                    result = result.Append(await InvokeMessageHandlerAsync(resolvedHandler).ConfigureAwait(false));
                 }
-                return stream;
+                return result;
             }
             return await InvokeMessageHandlerAsync(new MessageHandlerDecorator<TMessage>(_handler, _message, _context)).ConfigureAwait(false);
         }
 
-        private async Task<MessageStream> InvokeMessageHandlerAsync(MessageHandler handler)
-        {
-            InvocationCount++;
-
+        private async Task<HandleAsyncResult> InvokeMessageHandlerAsync(MessageHandler handler)
+        {            
             // Every message handler potentially yields a new stream of events, which is immediately handled by the processor
             // inside the current context. The processor uses a depth-first approach, which means that each event and its resulting
             // sub-tree of events is handled before the next event in the stream.
-            var stream = await InvokeMessageHandlerAsyncCore(handler).ConfigureAwait(false);
-            if (stream.Count > 0)
+            var result = await InvokeMessageHandlerAsyncCore(handler).ConfigureAwait(false);
+            if (result.Events.Count > 0)
             {
-                stream = stream.Concat(await stream.HandleWithAsync(this).ConfigureAwait(false));
+                result = result.Append(await result.Events.HandleWithAsync(this).ConfigureAwait(false));
             }
-            return stream;
+            return result;
         }
 
-        private async Task<MessageStream> InvokeMessageHandlerAsyncCore(MessageHandler handler)
+        private async Task<HandleAsyncResult> InvokeMessageHandlerAsyncCore(MessageHandler handler)
         {
             _context.Token.ThrowIfCancellationRequested();
 
             try
             {
-                return (await _processor.Pipeline.CreatePipeline(handler).Method.InvokeAsync().ConfigureAwait(false)).GetValue();
+                return await _processor.Pipeline.CreatePipeline(handler).Method.InvokeAsync().ConfigureAwait(false);
             }
             finally
             {

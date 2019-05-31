@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Principal;
 using System.Threading;
 
 namespace Kingo.MicroServices
@@ -9,14 +8,13 @@ namespace Kingo.MicroServices
     /// </summary>
     public sealed class MessageHandlerContext : MicroProcessorContext
     {
-        internal MessageHandlerContext(IServiceProvider serviceProvider, IPrincipal principal, CancellationToken? token, object message)           
+        internal MessageHandlerContext(IServiceProvider serviceProvider, CancellationToken? token, object message)           
         {
             if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
-            ServiceProvider = serviceProvider;
-            Principal = principal;
+            ServiceProvider = serviceProvider;            
             Token = token ?? CancellationToken.None;
             Operation = new MicroProcessorOperation(MicroProcessorOperationTypes.InputStream, message);
             UnitOfWork = new UnitOfWork();
@@ -25,8 +23,7 @@ namespace Kingo.MicroServices
 
         private MessageHandlerContext(MessageHandlerContext parent, object message)
         {
-            ServiceProvider = parent.ServiceProvider;
-            Principal = parent.Principal;
+            ServiceProvider = parent.ServiceProvider;            
             Token = parent.Token;
             Operation = parent.Operation.Push(MicroProcessorOperationTypes.OutputStream, message);
             UnitOfWork = parent.UnitOfWork;
@@ -37,13 +34,7 @@ namespace Kingo.MicroServices
         public override IServiceProvider ServiceProvider
         {
             get;
-        }
-
-        /// <inheritdoc />
-        public override IPrincipal Principal
-        {
-            get;
-        }
+        }        
 
         /// <inheritdoc />
         public override CancellationToken Token

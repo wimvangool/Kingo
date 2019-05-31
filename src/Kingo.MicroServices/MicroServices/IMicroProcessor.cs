@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When implemented by a class, represents a processor that can process commands, events and queries.
     /// </summary>
-    public interface IMicroProcessor : IServiceScopeFactory
+    public interface IMicroProcessor : IMessageProcessor, IServiceScopeFactory
     {
         /// <summary>
         /// Returns the service provider the processor uses in the current scope to resolve its dependencies.
@@ -29,7 +29,7 @@ namespace Kingo.MicroServices
         /// </param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
-        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
         /// </returns> 
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
@@ -37,7 +37,7 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception> 
-        Task<int> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null);
+        Task<HandleAsyncResult> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> and returns its result asynchronously.
@@ -45,14 +45,14 @@ namespace Kingo.MicroServices
         /// <typeparam name="TResponse">Type of the message returned by the query.</typeparam>        
         /// <param name="query">The query to execute.</param> 
         /// <param name="token">Optional token that can be used to cancel the operation.</param>                        
-        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        Task<TResponse> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
+        Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null);
 
         /// <summary>
         /// Executes the specified <paramref name="query"/> using the specified <paramref name="message"/> and returns its result asynchronously.
@@ -62,13 +62,13 @@ namespace Kingo.MicroServices
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>                        
         /// <param name="token">Optional token that can be used to cancel the operation.</param> 
-        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> or <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        Task<TResponse> ExecuteAsync<TRequest, TResponse>(TRequest message, IQuery<TRequest, TResponse> query, CancellationToken? token = null);        
+        Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TRequest, TResponse>(TRequest message, IQuery<TRequest, TResponse> query, CancellationToken? token = null);        
     }
 }

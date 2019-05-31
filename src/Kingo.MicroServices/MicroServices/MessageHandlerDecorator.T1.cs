@@ -16,7 +16,7 @@ namespace Kingo.MicroServices
     {
         #region [====== HandleAsyncMethod ======]
 
-        private sealed class HandleAsyncMethod : MessageHandlerOrQueryMethod<MessageStream>
+        private sealed class HandleAsyncMethod : MessageHandlerOrQueryMethod<HandleAsyncResult>
         {            
             private readonly MethodAttributeProvider _attributeProvider;
             private readonly IMessageHandler<TMessage> _handler;
@@ -43,10 +43,10 @@ namespace Kingo.MicroServices
             public MessageHandlerContext Context =>
                 _context;
 
-            public override async Task<InvokeAsyncResult<MessageStream>> InvokeAsync()
+            public override async Task<HandleAsyncResult> InvokeAsync()
             {
                 await _handler.HandleAsync(_message, _context).ConfigureAwait(false);
-                return new HandleAsyncResult(_context.EventBus);
+                return new HandleAsyncEventBusResult(_context.EventBus);
             }
 
             public override string ToString() =>
@@ -98,7 +98,7 @@ namespace Kingo.MicroServices
             _method.Context;
 
         /// <inheritdoc />
-        public override MessageHandlerOrQueryMethod<MessageStream> Method =>
+        public override MessageHandlerOrQueryMethod<HandleAsyncResult> Method =>
             _method;                        
 
         #endregion        
@@ -140,7 +140,7 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="handler">The delegate to wrap.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="handler"/> is <c>null</c>; otherwise, a <see cref="IMessageHandler"/> instance
+        /// <c>null</c> if <paramref name="handler"/> is <c>null</c>; otherwise, a <see cref="IMessageHandler{T}"/> instance
         /// that wraps the specified <paramref name="handler"/>.
         /// </returns>
         public static IMessageHandler<TMessage> Decorate(Func<TMessage, MessageHandlerContext, Task> handler) =>

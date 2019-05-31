@@ -64,9 +64,9 @@ namespace Kingo.MicroServices
             _result = new ExceptionResult(exception);
         }
 
-        public QueryResult(TResponse response)
+        public QueryResult(ExecuteAsyncResult<TResponse> result)
         {
-            _result = new ResponseResult(response);
+            _result = new ResponseResult(result.Response);
         }
 
         public override string ToString() =>

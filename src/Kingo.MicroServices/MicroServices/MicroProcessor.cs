@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
@@ -37,44 +36,32 @@ namespace Kingo.MicroServices
         }
 
         #endregion
-
-        private readonly IMicroServiceBus _serviceBus;
+        
         private readonly IMessageHandlerFactory _messageHandlers;
         private readonly IMicroProcessorPipelineFactory _pipeline;
         private readonly Context<IServiceProvider> _serviceProviderContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
-        /// </summary>
+        /// </summary>        
         /// <param name="messageHandlers">
         /// Optional factory that is used to create message handlers to handle a specific message.
         /// </param>
         /// <param name="pipeline">
         /// Optional pipeline factory that will be used by this processor to create a pipeline on top of a message handler or query
         /// right before it is invoked.
-        /// </param>
-        /// <param name="serviceBus">
-        /// Optional service bus that is used by this processor to publish all messages that were published inside the
-        /// processor while handling a message.
-        /// </param>
+        /// </param>        
         /// <param name="serviceProvider">
         /// Optional service-provider that will be used to resolve message-handlers and their dependencies.
         /// </param> 
-        public MicroProcessor(IMicroServiceBus serviceBus = null, IMessageHandlerFactory messageHandlers = null, IMicroProcessorPipelineFactory pipeline = null, IServiceProvider serviceProvider = null)
-        {
-            _serviceBus = serviceBus ?? MicroServiceBus.Null;
+        public MicroProcessor(IMessageHandlerFactory messageHandlers = null, IMicroProcessorPipelineFactory pipeline = null, IServiceProvider serviceProvider = null)
+        {            
             _messageHandlers = messageHandlers ?? MessageHandlerFactory.Null;
             _pipeline = pipeline ?? MicroProcessorPipelineFactory.Null;
-            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider ?? _messageHandlers.CreateServiceProvider());
+            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider ?? CreateDefaultServiceProvider());
         }
 
-        #region [====== Components ======]        
-
-        /// <summary>
-        /// Returns the service bus that this processor uses to publish all messages to.
-        /// </summary>
-        protected IMicroServiceBus ServiceBus =>
-            _serviceBus;
+        #region [====== Components ======]                
 
         /// <summary>
         /// Returns the <see cref="IMessageHandlerFactory" /> of this processor.
@@ -104,36 +91,19 @@ namespace Kingo.MicroServices
         public virtual IServiceScope CreateScope() =>
             new ServiceScope(this, ServiceProvider.CreateScope());
 
-        #endregion
+        private static IServiceProvider CreateDefaultServiceProvider() =>
+            new ServiceCollection().BuildServiceProvider(true);
 
-        #region [====== Security ======]
+        #endregion        
 
-        /// <summary>
-        /// Returns the <see cref="IPrincipal" /> this processor is currently associated with. By default, it returns
-        /// the <see cref="Thread.CurrentPrincipal">current thread's principal</see>. This property can be overridden
-        /// to return a principal from a different context.
-        /// </summary>
-        protected internal virtual IPrincipal Principal =>
-            Thread.CurrentPrincipal;
+        #region [====== HandleAsync ======]  
 
-        #endregion
-
-        #region [====== HandleAsync ======]                           
+        Task<HandleAsyncResult> IMessageProcessor.HandleAsync<TMessage>(TMessage message) =>
+            HandleAsync(message);
 
         /// <inheritdoc />
-        public virtual async Task<int> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null)
-        {
-            var method = new HandleMessageMethod<TMessage>(this, message, handler, token);
-            await PublishAsync(await InvokeAsync(method).ConfigureAwait(false)).ConfigureAwait(false);
-            return method.InvocationCount;
-        }            
-
-        /// <summary>
-        /// Publishes the specified <paramref name="events"/> to the <see cref="ServiceBus" />.
-        /// </summary>
-        /// <param name="events">The events to publish.</param>        
-        protected virtual Task PublishAsync(MessageStream events) =>
-            ServiceBus.PublishAsync(events);
+        public virtual Task<HandleAsyncResult> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null) =>
+            new HandleMessageMethod<TMessage>(this, message, handler, token).InvokeAsync();
 
         /// <summary>
         /// Determines whether or not the specified message is a Command. By default,
@@ -154,11 +124,11 @@ namespace Kingo.MicroServices
         #region [====== ExecuteAsync ======]
 
         /// <inheritdoc />
-        public virtual Task<TResponse> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
+        public virtual Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
             InvokeAsync(new ExecuteQueryMethod<TResponse>(this, token, query));
 
         /// <inheritdoc />
-        public virtual Task<TResponse> ExecuteAsync<TRequest, TResponse>(TRequest message, IQuery<TRequest, TResponse> query, CancellationToken? token = null) =>
+        public virtual Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TRequest, TResponse>(TRequest message, IQuery<TRequest, TResponse> query, CancellationToken? token = null) =>
             InvokeAsync(new ExecuteQueryMethod<TRequest, TResponse>(this, token, query, message));
 
         private static Task<TResult> InvokeAsync<TResult>(MicroProcessorMethod<TResult> method) =>

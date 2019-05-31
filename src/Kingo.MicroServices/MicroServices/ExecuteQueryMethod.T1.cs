@@ -17,10 +17,10 @@ namespace Kingo.MicroServices
             _query = query ?? throw new ArgumentNullException(nameof(query));
         }       
 
-        protected override Task<InvokeAsyncResult<TResponse>> InvokeAsyncCore(QueryContext context) =>
+        protected override Task<ExecuteAsyncResult<TResponse>> InvokeAsyncCore(QueryContext context) =>
             _processor.Pipeline.CreatePipeline(new QueryDecorator<TResponse>(_query, context)).Method.InvokeAsync();
 
         protected override QueryContext CreateQueryContext() =>
-            new QueryContext(_processor.ServiceProvider, _processor.Principal, _token);
+            new QueryContext(_processor.ServiceProvider, _token);
     }
 }

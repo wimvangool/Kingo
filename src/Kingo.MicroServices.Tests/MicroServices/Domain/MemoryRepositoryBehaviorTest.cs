@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kingo.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices.Domain
 {
     [TestClass]
     public sealed class MemoryRepositoryBehaviorTest
-    {
-        private readonly MicroServiceBusStub _serviceBus;
+    {        
         private readonly MicroProcessor _processor;        
 
         public MemoryRepositoryBehaviorTest()
-        {
-            _serviceBus = new MicroServiceBusStub();
-            _processor = new MicroProcessor(_serviceBus);
+        {            
+            _processor = new MicroProcessor();
         }        
 
         #region [====== GetByIdOrNullAsync ======]
@@ -24,12 +23,12 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync();
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsNull(await repository.GetByIdOrNullAsync(message.NumberId));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            Assert.AreEqual(0, result.Events.Count);            
         }
 
         [TestMethod]
@@ -38,12 +37,12 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsNotNull(await repository.GetByIdOrNullAsync(message.NumberId));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            Assert.AreEqual(0, result.Events.Count);
         }
 
         #endregion
@@ -77,12 +76,12 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);            
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 (await repository.GetByIdAsync(message.NumberId)).Add(message.Value);
             });
 
-            AssertValueAddedEvent(command);
+            AssertValueAddedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -91,7 +90,7 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number1 = await repository.GetByIdAsync(message.NumberId);
                 var number2 = await repository.GetByIdAsync(message.NumberId);
@@ -99,7 +98,7 @@ namespace Kingo.MicroServices.Domain
                 Assert.AreSame(number1, number2);
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            Assert.AreEqual(0, result.Events.Count);
         }
 
         [TestMethod]
@@ -108,7 +107,7 @@ namespace Kingo.MicroServices.Domain
             var command = CreateNumberCommand.Random();
             var repository = await CreateRepositoryAsync();
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number1 = CreateNewNumber(message, context);
 
@@ -119,7 +118,7 @@ namespace Kingo.MicroServices.Domain
                 Assert.AreSame(number1, number2);
             });
 
-            AssertNumberCreatedEvent(command);
+            AssertNumberCreatedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -128,7 +127,7 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number1 = await repository.GetByIdAsync(message.NumberId);
 
@@ -139,8 +138,8 @@ namespace Kingo.MicroServices.Domain
                 Assert.AreSame(number1, number2);
             });
 
-            _serviceBus.AssertEventCountIs(1);
-            _serviceBus.AssertEvent<ValueAddedEvent>(0, @event =>
+            result.Events.AssertCountIs(1);
+            result.Events.AssertElement<ValueAddedEvent>(0, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(2, @event.NumberVersion);
@@ -260,12 +259,12 @@ namespace Kingo.MicroServices.Domain
             var command = CreateNumberCommand.Random();
             var repository = await CreateRepositoryAsync();
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsTrue(await repository.AddAsync(CreateNewNumber(message, context)));
             });
             
-            AssertNumberCreatedEvent(command);
+            AssertNumberCreatedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -296,14 +295,14 @@ namespace Kingo.MicroServices.Domain
             var command = CreateNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
 
                 Assert.IsFalse(await repository.AddAsync(number));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            result.Events.AssertCountIs(0);
         }
 
         [TestMethod]
@@ -337,7 +336,7 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
 
@@ -346,7 +345,7 @@ namespace Kingo.MicroServices.Domain
                 Assert.IsFalse(await repository.AddAsync(number));
             });
 
-            AssertValueAddedEvent(command);
+            AssertValueAddedEvent(result.Events, command);
         }        
 
         [TestMethod]
@@ -378,7 +377,7 @@ namespace Kingo.MicroServices.Domain
             var command = CreateNumberCommand.Random();
             var repository = await CreateRepositoryAsync();
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = CreateNewNumber(message, context);
 
@@ -386,7 +385,7 @@ namespace Kingo.MicroServices.Domain
                 Assert.IsFalse(await repository.AddAsync(number));
             });
 
-            AssertNumberCreatedEvent(command);
+            AssertNumberCreatedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -412,10 +411,10 @@ namespace Kingo.MicroServices.Domain
             }
         }
 
-        private void AssertNumberCreatedEvent(CreateNumberCommand command)
+        private static void AssertNumberCreatedEvent(MessageStream stream, CreateNumberCommand command)
         {
-            _serviceBus.AssertEventCountIs(1);
-            _serviceBus.AssertEvent<NumberCreatedEvent>(0, @event =>
+            stream.AssertCountIs(1);
+            stream.AssertElement<NumberCreatedEvent>(0, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(1, @event.NumberVersion);
@@ -423,10 +422,10 @@ namespace Kingo.MicroServices.Domain
             });
         }
 
-        private void AssertValueAddedEvent(AddValueCommand command)
+        private static void AssertValueAddedEvent(MessageStream stream, AddValueCommand command)
         {
-            _serviceBus.AssertEventCountIs(1);
-            _serviceBus.AssertEvent<ValueAddedEvent>(0, @event =>
+            stream.AssertCountIs(1);
+            stream.AssertElement<ValueAddedEvent>(0, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(2, @event.NumberVersion);
@@ -453,12 +452,12 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsFalse(await repository.RemoveAsync(null));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            result.Events.AssertCountIs(0);
         }
 
         [TestMethod]
@@ -467,12 +466,12 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync();
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId)));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            result.Events.AssertCountIs(0);
         }
 
         [TestMethod]
@@ -481,12 +480,12 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId)));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            result.Events.AssertCountIs(0);
         }
 
         [TestMethod]
@@ -495,13 +494,13 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsNotNull(await repository.GetByIdAsync(message.NumberId));
                 Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId)));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            result.Events.AssertCountIs(0);
         }
 
         [TestMethod]
@@ -510,14 +509,14 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
 
                 Assert.IsTrue(await repository.RemoveAsync(number));
             });
 
-            AssertNumberDeletedEvent(command);
+            AssertNumberDeletedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -526,14 +525,14 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
                 number.Add(message.Value);
                 Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId)));
             });
 
-            AssertValueAddedEvent(command);
+            AssertValueAddedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -542,21 +541,21 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
                 number.Add(message.Value);
                 Assert.IsTrue(await repository.RemoveAsync(number));
             });
 
-            _serviceBus.AssertEventCountIs(2);
-            _serviceBus.AssertEvent<ValueAddedEvent>(0, @event =>
+            result.Events.AssertCountIs(2);
+            result.Events.AssertElement<ValueAddedEvent>(0, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(2, @event.NumberVersion);
                 Assert.AreEqual(command.Value, @event.Value);
             });
-            _serviceBus.AssertEvent<NumberDeletedEvent>(1, @event =>
+            result.Events.AssertElement<NumberDeletedEvent>(1, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(3, @event.NumberVersion);
@@ -569,7 +568,7 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
                 
@@ -577,7 +576,7 @@ namespace Kingo.MicroServices.Domain
                 Assert.IsFalse(await repository.RemoveAsync(CreateNewNumber(command.NumberId)));
             });
 
-            AssertNumberDeletedEvent(command);
+            AssertNumberDeletedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -586,7 +585,7 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
 
@@ -594,7 +593,7 @@ namespace Kingo.MicroServices.Domain
                 Assert.IsFalse(await repository.RemoveAsync(number));
             });
 
-            AssertNumberDeletedEvent(command);
+            AssertNumberDeletedEvent(result.Events, command);
         }
 
         #endregion
@@ -607,12 +606,12 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync();
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsFalse(await repository.RemoveByIdAsync(message.NumberId));
             });
 
-            _serviceBus.AssertEventCountIs(0);
+            result.Events.AssertCountIs(0);
         }
 
         [TestMethod]
@@ -621,12 +620,12 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsTrue(await repository.RemoveByIdAsync(message.NumberId));
             });
 
-            AssertNumberDeletedEvent(command);
+            AssertNumberDeletedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -635,13 +634,13 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsNotNull(await repository.GetByIdAsync(message.NumberId));
                 Assert.IsTrue(await repository.RemoveByIdAsync(message.NumberId));
             });
 
-            AssertNumberDeletedEvent(command);
+            AssertNumberDeletedEvent(result.Events, command);
         }
 
         [TestMethod]
@@ -650,20 +649,20 @@ namespace Kingo.MicroServices.Domain
             var command = CreateNumberCommand.Random();
             var repository = await CreateRepositoryAsync();
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsTrue(await repository.AddAsync(CreateNewNumber(message, context)));
                 Assert.IsTrue(await repository.RemoveByIdAsync(message.NumberId));
             });
 
-            _serviceBus.AssertEventCountIs(2);
-            _serviceBus.AssertEvent<NumberCreatedEvent>(0, @event =>
+            result.Events.AssertCountIs(2);
+            result.Events.AssertElement<NumberCreatedEvent>(0, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(1, @event.NumberVersion);
                 Assert.AreEqual(command.Value, @event.Value);
             });
-            _serviceBus.AssertEvent<NumberDeletedEvent>(1, @event =>
+            result.Events.AssertElement<NumberDeletedEvent>(1, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(2, @event.NumberVersion);                
@@ -676,7 +675,7 @@ namespace Kingo.MicroServices.Domain
             var command = AddValueCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 var number = await repository.GetByIdAsync(message.NumberId);
 
@@ -685,14 +684,14 @@ namespace Kingo.MicroServices.Domain
                 Assert.IsTrue(await repository.RemoveByIdAsync(message.NumberId));
             });
 
-            _serviceBus.AssertEventCountIs(2);
-            _serviceBus.AssertEvent<ValueAddedEvent>(0, @event =>
+            result.Events.AssertCountIs(2);
+            result.Events.AssertElement<ValueAddedEvent>(0, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(2, @event.NumberVersion);
                 Assert.AreEqual(command.Value, @event.Value);
             });
-            _serviceBus.AssertEvent<NumberDeletedEvent>(1, @event =>
+            result.Events.AssertElement<NumberDeletedEvent>(1, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(3, @event.NumberVersion);
@@ -705,19 +704,19 @@ namespace Kingo.MicroServices.Domain
             var command = DeleteNumberCommand.Random();
             var repository = await CreateRepositoryAsync(command.NumberId);
 
-            await _processor.HandleAsync(command, async (message, context) =>
+            var result = await _processor.HandleAsync(command, async (message, context) =>
             {
                 Assert.IsTrue(await repository.RemoveByIdAsync(message.NumberId));
                 Assert.IsFalse(await repository.RemoveByIdAsync(message.NumberId));
             });
 
-            AssertNumberDeletedEvent(command);
+            AssertNumberDeletedEvent(result.Events, command);
         }
 
-        private void AssertNumberDeletedEvent(DeleteNumberCommand command)
+        private void AssertNumberDeletedEvent(MessageStream stream, DeleteNumberCommand command)
         {
-            _serviceBus.AssertEventCountIs(1);
-            _serviceBus.AssertEvent<NumberDeletedEvent>(0, @event =>
+            stream.AssertCountIs(1);
+            stream.AssertElement<NumberDeletedEvent>(0, @event =>
             {
                 Assert.AreEqual(command.NumberId, @event.NumberId);
                 Assert.AreEqual(2, @event.NumberVersion);

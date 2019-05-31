@@ -3,9 +3,9 @@
     /// <summary>
     /// Represents a message handler as part of the <see cref="MicroProcessor" />'s pipeline.
     /// </summary>
-    public abstract class MessageHandler : MessageHandlerOrQuery, IMessageHandlerOrQuery<MessageStream>
+    public abstract class MessageHandler : MessageHandlerOrQuery, IMessageHandlerOrQuery<HandleAsyncResult>
     {
-        MicroProcessorContext IMessageHandlerOrQuery<MessageStream>.Context =>
+        MicroProcessorContext IMessageHandlerOrQuery<HandleAsyncResult>.Context =>
             Context;        
 
         /// <summary>
@@ -17,7 +17,7 @@
         }
 
         /// <inheritdoc />
-        public abstract MessageHandlerOrQueryMethod<MessageStream> Method
+        public abstract MessageHandlerOrQueryMethod<HandleAsyncResult> Method
         {
             get;
         }

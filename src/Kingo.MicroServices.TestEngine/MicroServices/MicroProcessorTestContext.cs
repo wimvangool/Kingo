@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Kingo.Reflection;
 using Kingo.Threading;
 
@@ -10,17 +8,15 @@ namespace Kingo.MicroServices
     /// <summary>
     /// When implemented by a class, represents the context in which a test executes.
     /// </summary>
-    public sealed class MicroProcessorTestContext : IMicroServiceBus
+    public sealed class MicroProcessorTestContext
     {        
         private readonly Dictionary<IMicroProcessorTest, EventStream> _eventStreams;
-        private readonly IMicroProcessor _processor;
-        private MemoryServiceBus _serviceBus;
+        private readonly IMicroProcessor _processor;        
 
         private MicroProcessorTestContext(IMicroProcessor processor)
         {                        
             _eventStreams = new Dictionary<IMicroProcessorTest, EventStream>();
-            _processor = processor;
-            _serviceBus = new MemoryServiceBus();
+            _processor = processor;            
         }
 
         internal IMicroProcessor Processor =>
@@ -34,17 +30,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_eventStreams.Count} event stream(s) stored, {_serviceBus.Count} event(s) published";
-
-        #region [====== IMicroServiceBus ======]
-
-        Task IMicroServiceBus.PublishAsync(IEnumerable<object> messages) =>
-            _serviceBus.PublishAsync(messages);
-
-        Task IMicroServiceBus.PublishAsync(object message) =>
-            _serviceBus.PublishAsync(message);
-
-        #endregion
+            $"{_eventStreams.Count} event stream(s) stored.";        
 
         #region [====== SetEventStream ======]
 
@@ -58,10 +44,7 @@ namespace Kingo.MicroServices
             {
                 throw NewTestAlreadyRunException(test, exception);
             }
-        }
-
-        internal EventStream CommitEventStream() =>
-            new EventStream(Interlocked.Exchange(ref _serviceBus, new MemoryServiceBus()));
+        }        
 
         private static Exception NewTestAlreadyRunException(object test, Exception innerException)
         {
@@ -108,32 +91,7 @@ namespace Kingo.MicroServices
             return new ArgumentException(message, nameof(test), innerException);
         }
 
-        #endregion
-
-        #region [====== ServiceBus ======]
-
-        private sealed class ServiceBusRelay : MicroServiceBus
-        {
-            public override Task PublishAsync(object message) =>
-                CurrentBus.PublishAsync(message);
-        }
-
-        internal static readonly IMicroServiceBus ServiceBus = new ServiceBusRelay();
-
-        private static IMicroServiceBus CurrentBus
-        {
-            get
-            {
-                var bus = Current;
-                if (bus == null)
-                {
-                    return MicroServiceBus.Null;
-                }
-                return bus;
-            }
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== Current ======]
 

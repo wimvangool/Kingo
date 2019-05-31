@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
-    /// Represents a handler of different types of messages.
+    /// When implemented by a class, represents a message handler that can handle a specific set of messages.
     /// </summary>
     public interface IMessageHandler
     {
         /// <summary>
-        /// Handles the specified <paramref name="message"/> asynchronously and returns a stream of events
-        /// as a result of the operation.
+        /// The message types that are supported by this message handler.
         /// </summary>
-        /// <param name="message">The message to handle.</param>           
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <c>null</c>.
-        /// </exception>
-        Task<MessageStream> HandleAsync<TMessage>(TMessage message);
+        IReadOnlyCollection<Type> MessageTypes
+        {
+            get;
+        }
+
+
+        Task HandleAsync(object message, CancellationToken token);
     }
 }

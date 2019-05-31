@@ -1,19 +1,29 @@
 ﻿namespace Kingo.MicroServices
 {    
-    internal sealed class ExecuteAsyncResult<TResponse> : InvokeAsyncResult<TResponse>
-    {
-        private readonly TResponse _messageOut;
-
-        public ExecuteAsyncResult(TResponse messageOut)
+    /// <summary>
+    /// Represents the result of executing a query by a <see cref="IMicroProcessor" />.
+    /// </summary>
+    /// <typeparam name="TResponse"></typeparam>
+    public sealed class ExecuteAsyncResult<TResponse> : IMicroProcessorOperationResult<TResponse>
+    {        
+        internal ExecuteAsyncResult(TResponse response)
         {
-            _messageOut = messageOut;
+            Response = response;
         }
 
-        public override TResponse GetValue() =>
-            _messageOut;
+        TResponse IMicroProcessorOperationResult<TResponse>.Value =>
+            Response;
+        
+        /// <summary>
+        /// The response that was returned by the query.
+        /// </summary>
+        public TResponse Response
+        {
+            get;
+        }
 
         /// <inheritdoc />
         public override string ToString() =>
-            _messageOut == null ? "null" : _messageOut.ToString();
+            Response == null ? "null" : Response.ToString();
     }
 }

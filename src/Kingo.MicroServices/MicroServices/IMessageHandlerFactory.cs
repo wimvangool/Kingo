@@ -8,15 +8,7 @@ namespace Kingo.MicroServices
     /// instances for a specific message.
     /// </summary>
     public interface IMessageHandlerFactory
-    {
-        /// <summary>
-        /// Creates and returns a new <see cref="IServiceProvider" /> that can be used to resolve all message-handlers
-        /// and their dependencies. This method can be used to obtain a <see cref="IServiceProvider"/> if no provider
-        /// was injected into the constructor of the associated <see cref="MicroProcessor" />.
-        /// </summary>
-        /// <returns>A new service-provider.</returns>
-        IServiceProvider CreateServiceProvider();
-
+    {        
         /// <summary>
         /// Resolves all message handlers for the specified <paramref name="message"/>.
         /// </summary>

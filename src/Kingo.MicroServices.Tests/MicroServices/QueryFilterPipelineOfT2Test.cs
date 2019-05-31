@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
@@ -17,7 +16,7 @@ namespace Kingo.MicroServices
             var result = await pipeline.Method.InvokeAsync();
 
             Assert.IsNotNull(result);
-            Assert.IsNull(result.GetValue());            
+            Assert.IsNull(result.Response);            
 
             query.AssertExecuteCountIs(1);
             query.AssertMessageReceived(0, message);
@@ -34,7 +33,7 @@ namespace Kingo.MicroServices
             var result = await pipelineB.Method.InvokeAsync();
 
             Assert.IsNotNull(result);
-            Assert.IsNull(result.GetValue());            
+            Assert.IsNull(result.Response);            
 
             query.AssertExecuteCountIs(1);
             query.AssertMessageReceived(0, message);
@@ -70,7 +69,7 @@ namespace Kingo.MicroServices
             new QueryFilterPipeline<TResponse>(query, filter);
 
         private static QueryContext CreateQueryContext(object message) =>
-            new QueryContext(ServiceProvider.Default, Thread.CurrentPrincipal, null, message);
+            new QueryContext(ServiceProvider.Default, null, message);
 
         private static IMicroProcessorFilter CreateFilter() =>
             new MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage.ProcessingStage);

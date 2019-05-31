@@ -19,7 +19,7 @@ namespace Kingo {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ExceptionMessages {
@@ -120,24 +120,6 @@ namespace Kingo {
         internal static string AttributeProvider_AmbiguousAttributeMatch {
             get {
                 return ResourceManager.GetString("AttributeProvider_AmbiguousAttributeMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Access to &apos;{0}&apos; denied: user &apos;{1}&apos; is not authenticated..
-        /// </summary>
-        internal static string AuthorizationStageAttribute_IdentityNotAuthenticated {
-            get {
-                return ResourceManager.GetString("AuthorizationStageAttribute_IdentityNotAuthenticated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Access to &apos;{0}&apos; denied: principal not set..
-        /// </summary>
-        internal static string AuthorizationStageAttribute_PrincipalNotSet {
-            get {
-                return ResourceManager.GetString("AuthorizationStageAttribute_PrincipalNotSet", resourceCulture);
             }
         }
         
@@ -417,24 +399,6 @@ namespace Kingo {
         internal static string Repository_DuplicateKeyException_AggregateAlreadyExists {
             get {
                 return ResourceManager.GetString("Repository_DuplicateKeyException_AggregateAlreadyExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User &apos;{0}&apos; must have claim &apos;{1}&apos;..
-        /// </summary>
-        internal static string RequiresClaimsAttribute_MissingClaim {
-            get {
-                return ResourceManager.GetString("RequiresClaimsAttribute_MissingClaim", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User &apos;{0}&apos; must be in role &apos;{1}&apos;..
-        /// </summary>
-        internal static string RequiresRoleAttribute_MissingRole {
-            get {
-                return ResourceManager.GetString("RequiresRoleAttribute_MissingRole", resourceCulture);
             }
         }
         

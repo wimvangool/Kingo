@@ -19,15 +19,15 @@ namespace Kingo.MicroServices
         /// <param name="message">Message to handle.</param>        
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
-        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
-        /// </returns>  
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception>  
-        public static Task<int> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, CancellationToken? token = null) =>
+        public static Task<HandleAsyncResult> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, CancellationToken? token = null) =>
             processor.HandleAsync(message, null, token);
 
         /// <summary>
@@ -43,15 +43,15 @@ namespace Kingo.MicroServices
         /// </param>
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
-        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
-        /// </returns>  
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
+        /// </returns> 
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception>  
-        public static Task<int> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, MessageHandlerContext> handler, CancellationToken? token = null) =>
+        public static Task<HandleAsyncResult> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Action<TMessage, MessageHandlerContext> handler, CancellationToken? token = null) =>
             processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler), token);
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Kingo.MicroServices
         /// </param> 
         /// <param name="token">Optional token that can be used to cancel the operation.</param>
         /// <returns>
-        /// The total number of message handler invocations that took place to handle the specified <paramref name="message"/>
+        /// The result of the operation, which includes all published events and the number of message handlers that were invoked.
         /// </returns>  
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
@@ -75,7 +75,7 @@ namespace Kingo.MicroServices
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while handling the message.
         /// </exception>  
-        public static Task<int> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, MessageHandlerContext, Task> handler, CancellationToken? token = null) =>
+        public static Task<HandleAsyncResult> HandleAsync<TMessage>(this IMicroProcessor processor, TMessage message, Func<TMessage, MessageHandlerContext, Task> handler, CancellationToken? token = null) =>
             processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler), token);
 
         #endregion
@@ -89,14 +89,14 @@ namespace Kingo.MicroServices
         /// <param name="processor">A processor.</param>     
         /// <param name="query">The query to execute.</param>               
         /// <param name="token">Optional token that can be used to cancel the operation.</param>          
-        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TResponse> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryContext, TResponse> query, CancellationToken? token = null) =>
+        public static Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryContext, TResponse> query, CancellationToken? token = null) =>
             processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         /// <summary>
@@ -106,14 +106,14 @@ namespace Kingo.MicroServices
         /// <param name="processor">A processor.</param>       
         /// <param name="query">The query to execute.</param>               
         /// <param name="token">Optional token that can be used to cancel the operation.</param>          
-        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TResponse> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryContext, Task<TResponse>> query, CancellationToken? token = null) =>
+        public static Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TResponse>(this IMicroProcessor processor, Func<QueryContext, Task<TResponse>> query, CancellationToken? token = null) =>
             processor.ExecuteAsync(QueryDecorator<TResponse>.Decorate(query), token);
 
         #endregion        
@@ -129,14 +129,14 @@ namespace Kingo.MicroServices
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>                                
         /// <param name="token">Optional token that can be used to cancel the operation.</param>                        
-        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TResponse> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, TRequest message, Func<TRequest, QueryContext, TResponse> query, CancellationToken? token = null) =>
+        public static Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, TRequest message, Func<TRequest, QueryContext, TResponse> query, CancellationToken? token = null) =>
             processor.ExecuteAsync(message, QueryDecorator<TRequest, TResponse>.Decorate(query), token);
 
         /// <summary>
@@ -148,14 +148,14 @@ namespace Kingo.MicroServices
         /// <param name="message">Message containing the parameters of this query.</param>
         /// <param name="query">The query to execute.</param>                                 
         /// <param name="token">Optional token that can be used to cancel the operation.</param>                        
-        /// <returns>The <see cref="Task{TResponse}" /> that is executing the <paramref name="query"/>.</returns>
+        /// <returns>The result that carries the response returned by the <paramref name="query"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> or <paramref name="query"/> is <c>null</c>.
         /// </exception>
         /// <exception cref="MicroProcessorException">
         /// Something went wrong while executing the query.
         /// </exception>  
-        public static Task<TResponse> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, TRequest message, Func<TRequest, QueryContext, Task<TResponse>> query, CancellationToken? token = null) =>
+        public static Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TRequest, TResponse>(this IMicroProcessor processor, TRequest message, Func<TRequest, QueryContext, Task<TResponse>> query, CancellationToken? token = null) =>
             processor.ExecuteAsync(message, QueryDecorator<TRequest, TResponse>.Decorate(query), token);
 
         #endregion

@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kingo.MicroServices
 {
     internal sealed class MicroProcessorFilterSpyAttribute : MicroProcessorFilterAttribute
-    {             
+    {        
         public MicroProcessorFilterSpyAttribute(MicroProcessorFilterStage stage) :
             base(stage) { }
         
@@ -13,21 +15,23 @@ namespace Kingo.MicroServices
             set;
         }
 
-        public override async Task<InvokeAsyncResult<MessageStream>> InvokeMessageHandlerAsync(MessageHandler handler)
+        public override async Task<HandleAsyncResult> InvokeMessageHandlerAsync(MessageHandler handler)
         {
-            handler.Context.EventBus.Publish(Id);
+            AddIdentifier(handler.Context);
             
+            handler.Context.EventBus.Publish(new object());
+
             return await handler.Method.InvokeAsync();
         }
 
-        public override async Task<InvokeAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query)
+        public override async Task<ExecuteAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query)
         {
-            var serviceBus = MicroServiceBusStub.Current;
-            if (serviceBus != null)
-            {
-                await serviceBus.PublishAsync(Id);
-            }            
+            AddIdentifier(query.Context);
+
             return await query.Method.InvokeAsync();
         }
+
+        private void AddIdentifier(MicroProcessorContext context) =>
+            context.ServiceProvider.GetService<ICollection<int>>()?.Add(Id);
     }
 }

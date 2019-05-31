@@ -15,7 +15,7 @@ namespace Kingo.MicroServices
             _right = right;
         }
 
-        #region [======= IReadOnlyList<object> ======]
+        #region [====== IReadOnlyList<object> ======]
 
         public override int Count =>
             _left.Count + _right.Count;
@@ -27,8 +27,8 @@ namespace Kingo.MicroServices
 
         #region [====== HandleWithAsync ======]
 
-        public override async Task<MessageStream> HandleWithAsync(IMessageHandler handler) =>
-            (await _left.HandleWithAsync(handler).ConfigureAwait(false)).Concat(await _right.HandleWithAsync(handler).ConfigureAwait(false));
+        public override async Task<HandleAsyncResult> HandleWithAsync(IMessageProcessor processor) =>
+            (await _left.HandleWithAsync(processor).ConfigureAwait(false)).Append(await _right.HandleWithAsync(processor).ConfigureAwait(false));
 
         #endregion
     }

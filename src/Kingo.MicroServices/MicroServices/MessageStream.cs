@@ -27,13 +27,13 @@ namespace Kingo.MicroServices
             public override MessageStream Concat(MessageStream stream) =>
                 stream ?? this;
 
-            public override Task<MessageStream> HandleWithAsync(IMessageHandler handler)
+            public override Task<HandleAsyncResult> HandleWithAsync(IMessageProcessor processor)
             {
-                if (handler == null)
+                if (processor == null)
                 {
-                    throw new ArgumentNullException(nameof(handler));
+                    throw new ArgumentNullException(nameof(processor));
                 }
-                return Task.FromResult(Empty);
+                return Task.FromResult(HandleAsyncResult.Empty);
             }
         }
 
@@ -189,18 +189,18 @@ namespace Kingo.MicroServices
         #region [====== HandleWith ======]
 
         /// <summary>
-        /// Handles all messages of this stream with the specified <paramref name="handler"/>
+        /// Handles all messages of this stream with the specified <paramref name="processor"/>
         /// and returns the resulting stream of events.
         /// </summary>
-        /// <param name="handler">Handler to invoke for each message in this stream.</param>
+        /// <param name="processor">Handler to invoke for each message in this stream.</param>
         /// <returns>
         /// A concatenated stream of events that is the result of processing each message with
-        /// the specified <paramref name="handler"/>.
+        /// the specified <paramref name="processor"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="handler"/> is <c>null</c>.
+        /// <paramref name="processor"/> is <c>null</c>.
         /// </exception>
-        public abstract Task<MessageStream> HandleWithAsync(IMessageHandler handler);
+        public abstract Task<HandleAsyncResult> HandleWithAsync(IMessageProcessor processor);
 
         #endregion
 

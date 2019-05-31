@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Kingo.MicroServices.Configuration;
+using Kingo.MicroServices.Endpoints;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices

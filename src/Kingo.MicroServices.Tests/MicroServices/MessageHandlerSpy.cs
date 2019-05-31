@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kingo.MicroServices
 {
-    internal sealed class MessageHandlerSpy : IMessageHandler
+    internal sealed class MessageHandlerSpy : IMessageProcessor
     {
         private readonly List<object> _messages;
         private readonly List<Type> _messageTypes;
@@ -17,7 +17,7 @@ namespace Kingo.MicroServices
             _messageTypes = new List<Type>();
         }
 
-        public Task<MessageStream> HandleAsync<TMessage>(TMessage message)
+        public Task<HandleAsyncResult> HandleAsync<TMessage>(TMessage message)
         {
             if (message == null)
             {
@@ -28,7 +28,7 @@ namespace Kingo.MicroServices
                 _messages.Add(message); 
                 _messageTypes.Add(typeof(TMessage));                
 
-                return MessageStream.Empty;
+                return HandleAsyncResult.Empty;
             });            
         }
 

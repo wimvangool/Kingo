@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Principal;
 using System.Threading;
 using Kingo.Threading;
 
@@ -18,19 +17,7 @@ namespace Kingo.MicroServices
         public abstract IServiceProvider ServiceProvider
         {
             get;
-        }                
-
-        #region [====== SecurityContext ======]        
-
-        /// <summary>
-        /// The principal that is associated to the current operation.
-        /// </summary>
-        public abstract IPrincipal Principal
-        {
-            get;
-        }        
-
-        #endregion
+        }                        
 
         #region [====== OperationContext ======]
 
@@ -52,12 +39,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public override string ToString() =>
-            string.Join(" -> ", Operation.StackTrace());
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+            string.Join(" -> ", Operation.StackTrace());        
 
         #endregion
 

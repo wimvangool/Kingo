@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Principal;
 using System.Threading;
 
 namespace Kingo.MicroServices
@@ -9,10 +8,9 @@ namespace Kingo.MicroServices
     /// </summary>
     public sealed class QueryContext : MicroProcessorContext
     {        
-        internal QueryContext(IServiceProvider serviceProvider, IPrincipal principal, CancellationToken? token, object messageIn = null)
+        internal QueryContext(IServiceProvider serviceProvider, CancellationToken? token, object messageIn = null)
         {
-            ServiceProvider = serviceProvider;
-            Principal = principal;
+            ServiceProvider = serviceProvider;            
             Token = token ?? CancellationToken.None;
             Operation = new MicroProcessorOperation(MicroProcessorOperationTypes.Query, messageIn);
         }
@@ -21,13 +19,7 @@ namespace Kingo.MicroServices
         public override IServiceProvider ServiceProvider
         {
             get;
-        }
-
-        /// <inheritdoc />
-        public override IPrincipal Principal
-        {
-            get;
-        }
+        }        
 
         /// <inheritdoc />
         public override CancellationToken Token

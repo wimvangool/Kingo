@@ -8,7 +8,7 @@ namespace Kingo.Reflection
 {
     [TestClass]
     public sealed class TypeSetTest
-    {
+    {        
         #region [====== Empty ======]
 
         [TestMethod]

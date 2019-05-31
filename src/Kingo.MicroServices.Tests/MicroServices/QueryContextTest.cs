@@ -48,27 +48,7 @@ namespace Kingo.MicroServices
             Assert.IsNull(MicroProcessorContext.Current);
         }
 
-        #endregion
-
-        #region [====== Principal ======]
-
-        [TestMethod]
-        public void Principal_AlwaysReferencesProcessorPrincipal_AsScopesAreCreatedAndDisposed()
-        {
-            using (CreateQueryContextScope())
-            {
-                Assert.AreSame(Thread.CurrentPrincipal, QueryContext.Current.Principal);
-
-                using (CreateQueryContextScope())
-                {
-                    Assert.AreSame(Thread.CurrentPrincipal, QueryContext.Current.Principal);
-                }
-
-                Assert.AreSame(Thread.CurrentPrincipal, QueryContext.Current.Principal);
-            }
-        }
-
-        #endregion
+        #endregion        
 
         #region [====== Token ======]
 
@@ -141,6 +121,6 @@ namespace Kingo.MicroServices
             MicroProcessorContext.CreateScope(context);
 
         private static QueryContext CreateQueryContext(CancellationToken? token, object message = null) =>
-            new QueryContext(ServiceProvider.Default, Thread.CurrentPrincipal, token, message);
+            new QueryContext(ServiceProvider.Default, token, message);
     }
 }

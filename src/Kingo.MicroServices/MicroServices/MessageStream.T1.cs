@@ -27,7 +27,7 @@ namespace Kingo.MicroServices
 
         #region [====== HandleWithAsync ======]
 
-        public override Task<MessageStream> HandleWithAsync(IMessageHandler handler) =>
+        public override Task<HandleAsyncResult> HandleWithAsync(IMessageProcessor handler) =>
             (handler ?? throw new ArgumentNullException(nameof(handler))).HandleAsync(_message);
 
         #endregion

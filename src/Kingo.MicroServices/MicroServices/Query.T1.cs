@@ -4,9 +4,9 @@
     /// Represents a query as part of the <see cref="MicroProcessor" />'s pipeline.
     /// </summary>
     /// <typeparam name="TResponse">Type of the response that is returned by this query.</typeparam>
-    public abstract class Query<TResponse> : MessageHandlerOrQuery, IMessageHandlerOrQuery<TResponse>
+    public abstract class Query<TResponse> : MessageHandlerOrQuery, IMessageHandlerOrQuery<ExecuteAsyncResult<TResponse>>
     {
-        MicroProcessorContext IMessageHandlerOrQuery<TResponse>.Context =>
+        MicroProcessorContext IMessageHandlerOrQuery<ExecuteAsyncResult<TResponse>>.Context =>
             Context;        
 
         /// <summary>
@@ -18,7 +18,7 @@
         }
 
         /// <inheritdoc />
-        public abstract MessageHandlerOrQueryMethod<TResponse> Method
+        public abstract MessageHandlerOrQueryMethod<ExecuteAsyncResult<TResponse>> Method
         {
             get;
         }               

@@ -135,7 +135,7 @@ namespace Kingo.Threading
         /// Initializes a new instance of the <see cref="Context{T}" /> class.
         /// </summary>
         public Context()
-            : this(default(TValue)) { }
+            : this(default) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Context{T}" /> class.

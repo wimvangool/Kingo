@@ -23,17 +23,17 @@ namespace Kingo.MicroServices
         bool IsEnabled(MicroProcessorContext context);
 
         /// <summary>
-        /// Invokes the specified <paramref name="handler" />.
+        /// Invokes the specified <paramref name="handler" /> and returns the resulting <see cref="MessageStream" />.
         /// </summary>
         /// <param name="handler">The handler that will be invoked by this filter.</param>
         /// <returns>A stream of events that represent the changes that were made by this handler.</returns> 
-        Task<InvokeAsyncResult<MessageStream>> InvokeMessageHandlerAsync(MessageHandler handler);
+        Task<HandleAsyncResult> InvokeMessageHandlerAsync(MessageHandler handler);
 
         /// <summary>
         /// Invokes the specified <paramref name="query"/> or returns a cached result.
         /// </summary>
         /// <param name="query">The query that will be invoked by this filter (if no cached result is returned).</param>
         /// <returns>The result of the specified <paramref name="query"/> or a cached result.</returns>
-        Task<InvokeAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query);              
+        Task<ExecuteAsyncResult<TResponse>> InvokeQueryAsync<TResponse>(Query<TResponse> query);              
     }
 }
