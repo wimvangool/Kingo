@@ -213,33 +213,33 @@ namespace Kingo.MicroServices.Endpoints
             }
         }                   
 
-        private void Add(MessageHandlerClass messageHandlerClass)
+        private void Add(MessageHandlerClass messageHandler)
         {
-            switch (messageHandlerClass.Configuration.Lifetime)
+            switch (messageHandler.Configuration.Lifetime)
             {
                 case ServiceLifetime.Transient:
-                    AddTransient(messageHandlerClass.Type);
+                    AddTransient(messageHandler);
                     break;
                 case ServiceLifetime.Scoped:
-                    AddScoped(messageHandlerClass.Type);
+                    AddScoped(messageHandler);
                     break;
                 case ServiceLifetime.Singleton:
-                    AddSingleton(messageHandlerClass.Type);
+                    AddSingleton(messageHandler);
                     break;
                 default:
-                    throw NewInvalidLifetimeSpecifiedException(messageHandlerClass.Configuration.Lifetime);
+                    throw NewInvalidLifetimeSpecifiedException(messageHandler.Configuration.Lifetime);
             }
-            _messageHandlerClasses[messageHandlerClass.Type] = messageHandlerClass;
+            _messageHandlerClasses[messageHandler.Type] = messageHandler;
         }
 
-        private void AddTransient(Type type) =>
-            _services.AddTransient(type);
+        private void AddTransient(MessageHandlerClass messageHandler) =>
+            _services.AddTransient(messageHandler.Type).AddTransient(messageHandler.RegistrationType);
 
-        private void AddScoped(Type type) =>
-            _services.AddScoped(type);
+        private void AddScoped(MessageHandlerClass messageHandler) =>
+            _services.AddTransient(messageHandler.Type).AddScoped(messageHandler.RegistrationType);
 
-        private void AddSingleton(Type type) =>
-            _services.AddSingleton(type);        
+        private void AddSingleton(MessageHandlerClass messageHandler) =>
+            _services.AddTransient(messageHandler.Type).AddSingleton(messageHandler.RegistrationType);        
 
         private static Exception NewInvalidLifetimeSpecifiedException(ServiceLifetime lifeTime)
         {
@@ -264,9 +264,17 @@ namespace Kingo.MicroServices.Endpoints
         private static IServiceCollection AddQueries(IEnumerable<Type> types, IServiceCollection services)
         {
             foreach (var type in types)
-            foreach (var interfaceType in type.GetInterfaces(typeof(IQuery<>), typeof(IQuery<,>)))
             {
-                services = services.AddTransient(interfaceType, type);
+                var interfaceTypes = type.GetInterfaces(typeof(IQuery<>), typeof(IQuery<,>)).ToArray();
+                if (interfaceTypes.Length == 0)
+                {
+                    continue;
+                }
+                foreach (var interfaceType in interfaceTypes)
+                {
+                    services = services.AddTransient(interfaceType, provider => provider.GetRequiredService(type));
+                }
+                services = services.AddTransient(type);
             }
             return services;
         }        
@@ -301,9 +309,13 @@ namespace Kingo.MicroServices.Endpoints
             from type in _types
             where CanBeAddedAsComponent(type)
             where predicate == null || predicate.Invoke(type)
+            where !IsAlreadyRegistered(type, _services)
             select type;
 
         private static bool CanBeAddedAsComponent(Type type) =>
             type.IsClass && !type.IsAbstract && (type.IsPublic || type.IsNestedPublic) && !type.ContainsGenericParameters;
+
+        private static bool IsAlreadyRegistered(Type type, IServiceCollection services) =>
+            services.Any(service => service.ImplementationType == type);
     }
 }

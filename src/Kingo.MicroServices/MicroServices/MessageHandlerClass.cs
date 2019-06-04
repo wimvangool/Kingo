@@ -9,15 +9,49 @@ using Kingo.Reflection;
 namespace Kingo.MicroServices
 {        
     internal sealed class MessageHandlerClass : IMessageHandlerFactory
-    {        
+    {
+        #region [====== Registration ======]
+
+        private abstract class RegistrationWrapper
+        {
+            public abstract object MessageHandler
+            {
+                get;
+            }
+
+            public override string ToString() =>
+                MessageHandler.ToString();
+        }
+
+        private sealed class RegistrationWrapper<TMessageHandler> : RegistrationWrapper where TMessageHandler : class
+        {
+            private readonly TMessageHandler _messageHandler;
+
+            public RegistrationWrapper(TMessageHandler messageHandler)
+            {
+                _messageHandler = messageHandler ?? throw new ArgumentNullException(nameof(messageHandler));
+            }
+
+            public override object MessageHandler =>
+                _messageHandler;
+        }
+
+        #endregion
+
         private MessageHandlerClass(Type type, IEnumerable<Type> interfaces, IMessageHandlerConfiguration configuration)
         {           
             Type = type;
+            RegistrationType = typeof(RegistrationWrapper<>).MakeGenericType(type);
             Interfaces = interfaces.Select(interfaceType => new MessageHandlerInterface(interfaceType)).ToArray();
             Configuration = configuration;            
-        }
+        }        
 
         public Type Type
+        {
+            get;
+        }
+
+        public Type RegistrationType
         {
             get;
         }
@@ -114,12 +148,12 @@ namespace Kingo.MicroServices
 
         private object ResolveMessageHandler(MicroProcessorContext context)
         {
-            var messageHandler = context.ServiceProvider.GetService(Type);
-            if (messageHandler == null)
+            var wrapper = context.ServiceProvider.GetService(RegistrationType) as RegistrationWrapper;
+            if (wrapper == null)
             {
                 throw NewCouldNotResolveMessageHandlerException(context.ServiceProvider.GetType(), Type);
             }
-            return messageHandler;
+            return wrapper.MessageHandler;
         }
 
         private static Exception NewCouldNotResolveMessageHandlerException(Type serviceProviderType, Type messageHandlerType)

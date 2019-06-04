@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -63,7 +62,7 @@ namespace Kingo.MicroServices.Endpoints
         {
             _components.AddQueries();
 
-            AssertRegisteredQueries(0);
+            Assert.AreEqual(1, BuildServiceCollection().Count);
         }
 
         [TestMethod]
@@ -73,41 +72,60 @@ namespace Kingo.MicroServices.Endpoints
             _components.AddTypes(typeof(NonPublicQuery), typeof(AbstractQuery), typeof(GenericQuery<>));
             _components.AddQueries();
 
-            AssertRegisteredQueries(0);
+            Assert.AreEqual(1, BuildServiceCollection().Count);
         }
 
         [TestMethod]
-        public void AddQueries_AddsExpectedQueries_IfThereAreSomeQueryTypesToAdd()
-        {            
-            _components.AddTypes(typeof(object), typeof(int));
-            _components.AddTypes(typeof(GenericQuery<object>), typeof(Query1), typeof(Query2), typeof(Query3));
+        public void AddQueries_AddsExpectedQuery_IfQueryIsClosedGenericType()
+        {                        
+            _components.AddTypes(typeof(GenericQuery<object>));
             _components.AddQueries();
 
-            AssertRegisteredQueries(5, services =>
-            {
-                AssertContainsMapping<IQuery<object>, GenericQuery<object>>(services);
-                AssertContainsMapping<IQuery<object>, Query1>(services);
-                AssertContainsMapping<IQuery<object, object>, Query2>(services);
-                AssertContainsMapping<IQuery<object>, Query3>(services);
-                AssertContainsMapping<IQuery<object, object>, Query3>(services);
-            });
+            var provider = BuildServiceProvider();
+
+            Assert.IsInstanceOfType(provider.GetRequiredService<IQuery<object>>(), typeof(GenericQuery<object>));
+            Assert.IsNotNull(provider.GetRequiredService<GenericQuery<object>>());
         }
 
-        private void AssertRegisteredQueries(int count, Action<IServiceCollection> assertCallback = null)
+        [TestMethod]
+        public void AddQueries_AddsExpectedQuery_IfQueryIsRegularTypeWithoutRequest()
         {            
-            var services = BuildServiceCollection();
+            _components.AddTypes(typeof(Query1));
+            _components.AddQueries();
 
-            // We decrement by one because the service collection always contains the IMessageHandlerFactory.
-            Assert.AreEqual(count, services.Count - 1);
+            var provider = BuildServiceProvider();
 
-            assertCallback?.Invoke(services);
+            Assert.IsInstanceOfType(provider.GetRequiredService<IQuery<object>>(), typeof(Query1));
+            Assert.IsNotNull(provider.GetRequiredService<Query1>());
         }
 
-        private static void AssertContainsMapping<TInterfaceType, TType>(IServiceCollection services) where TType : TInterfaceType =>
-            AssertContainsMapping(services, typeof(TInterfaceType), typeof(TType));
-        
-        private static void AssertContainsMapping(IServiceCollection services, Type interfaceType, Type type) =>
-            Assert.IsTrue(services.Any(service => service.ServiceType == interfaceType && service.ImplementationType == type));
+        [TestMethod]
+        public void AddQueries_AddsExpectedQuery_IfQueryIsRegularTypeWithRequest()
+        {            
+            _components.AddTypes(typeof(Query2));
+            _components.AddQueries();
+
+            var provider = BuildServiceProvider();
+
+            Assert.IsInstanceOfType(provider.GetRequiredService<IQuery<object, object>>(), typeof(Query2));
+            Assert.IsNotNull(provider.GetRequiredService<Query2>());
+        }
+
+        [TestMethod]
+        public void AddQueries_AddsExpectedQuery_IfQueryImplementsMultipleInterfaces()
+        {            
+            _components.AddTypes(typeof(Query3));
+            _components.AddQueries();
+
+            var provider = BuildServiceProvider();
+
+            Assert.IsInstanceOfType(provider.GetRequiredService<IQuery<object>>(), typeof(Query3));
+            Assert.IsInstanceOfType(provider.GetRequiredService<IQuery<object, object>>(), typeof(Query3));
+            Assert.IsNotNull(provider.GetRequiredService<Query3>());
+        }
+
+        private IServiceProvider BuildServiceProvider() =>
+            BuildServiceCollection().BuildServiceProvider();
 
         private IServiceCollection BuildServiceCollection() =>
             (_components as IServiceCollectionBuilder).BuildServiceCollection();
