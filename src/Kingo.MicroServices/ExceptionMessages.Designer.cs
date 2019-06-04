@@ -214,6 +214,15 @@ namespace Kingo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot start endpoint &apos;{0}&apos; because it has already been started. .
+        /// </summary>
+        internal static string HostedEndpoint_EndpointAlreadyStarted {
+            get {
+                return ResourceManager.GetString("HostedEndpoint_EndpointAlreadyStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot create an empty identifier..
         /// </summary>
         internal static string Identifier_EmptyIdentifier {

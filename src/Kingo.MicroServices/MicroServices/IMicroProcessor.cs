@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +20,13 @@ namespace Kingo.MicroServices
         }
 
         /// <summary>
-        /// Processes the specified message asynchronously.
+        /// Creates and returns a collection of <see cref="IMessageHandlerEndpoint">endpoints</see> for this processor,
+        /// which includes all message handlers that are configured to handle messages from the <see cref="MicroProcessorOperationTypes.InputStream" />.
+        /// </summary>
+        IEnumerable<IMessageHandlerEndpoint> CreateEndpoints();
+
+        /// <summary>
+        /// Handles the specified <paramref name="message"/>.
         /// </summary>
         /// <typeparam name="TMessage">Type of the message.</typeparam>        
         /// <param name="message">Message to handle.</param>

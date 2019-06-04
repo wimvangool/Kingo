@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Kingo.Reflection;
@@ -94,12 +95,20 @@ namespace Kingo.MicroServices
         private static IServiceProvider CreateDefaultServiceProvider() =>
             new ServiceCollection().BuildServiceProvider(true);
 
-        #endregion        
+        #endregion
+
+        #region [====== CreateEndpoints ======]
+
+        /// <inheritdoc />
+        public virtual IEnumerable<IMessageHandlerEndpoint> CreateEndpoints() =>
+            throw new NotImplementedException();
+
+        #endregion
 
         #region [====== HandleAsync ======]  
 
         Task<HandleAsyncResult> IMessageProcessor.HandleAsync<TMessage>(TMessage message) =>
-            HandleAsync(message);
+            HandleAsync(message);        
 
         /// <inheritdoc />
         public virtual Task<HandleAsyncResult> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null) =>

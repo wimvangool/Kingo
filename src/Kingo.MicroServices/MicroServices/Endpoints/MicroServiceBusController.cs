@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -11,43 +13,100 @@ namespace Kingo.MicroServices.Endpoints
     /// and dispatches those messages to a <see cref="IMicroProcessor" /> for further
     /// processing.
     /// </summary>
-    public abstract class MicroServiceBusControllerBase : IHostedService
-    {
-        private readonly List<IHostedService> _endpoints;
+    public abstract class MicroServiceBusController : HostedEndpoint
+    {        
+        private readonly IMicroProcessor _processor;
+        private IEnumerable<HostedEndpoint> _endpoints;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MicroServiceBusControllerBase" /> class.
+        /// Initializes a new instance of the <see cref="MicroServiceBusController" /> class.
         /// </summary>
-        protected MicroServiceBusControllerBase()
+        protected MicroServiceBusController(IMicroProcessor processor)
         {
-            _endpoints = new List<IHostedService>();
+            _processor = processor ?? throw new ArgumentNullException(nameof(processor));
+            _endpoints = Enumerable.Empty<HostedEndpoint>();
         }
 
-        /// <summary>
-        /// Returns the processor that will process all the messages.
-        /// </summary>
-        protected abstract IMicroProcessor Processor
+        /// <inheritdoc />
+        protected override void Dispose(bool disposing)
         {
-            get;
-        }
-
-        Task IHostedService.StartAsync(CancellationToken cancellationToken)
-        {
-            foreach (var endpoint in _endpoints)
+            if (IsDisposed)
             {
-                _endpoints.Add(endpoint);
-            }            
-            return Task.WhenAll(_endpoints.Select(endpoint => endpoint.StartAsync(cancellationToken)));
+                return;
+            }
+            if (disposing)
+            {
+                foreach (var endpoint in _endpoints)
+                {
+                    endpoint.Dispose();
+                }
+            }
+            base.Dispose(disposing);
         }
 
-        Task IHostedService.StopAsync(CancellationToken cancellationToken) =>
-            Task.WhenAll(_endpoints.Select(endpoint => endpoint.StopAsync(cancellationToken)));
+        /// <inheritdoc />
+        protected override async Task ConnectAsync(CancellationToken cancellationToken) =>
+            _endpoints = await ConnectAllEndpointsAsync(cancellationToken);
 
-        ///// <summary>
-        ///// Creates and returns a new endpoint for the specified <paramref name="messageHandler" />.        
-        ///// </summary>
-        ///// <param name="messageHandler">The message-handler for which the endpoint will be created.</param>
-        ///// <returns>A new endpoint.</returns>
-        //protected abstract IHostedService CreateEndpointFor(MessageHandlerClass messageHandler);
+        private async Task<IEnumerable<HostedEndpoint>> ConnectAllEndpointsAsync(CancellationToken cancellationToken)
+        {
+            // Upon start, the controller creates all necessary endpoints and attempts
+            // to start them. However, if cancellation is requested or an exception is thrown
+            // during the startup process, all endpoints that were already started are stopped
+            // again and the rest of the startup process is aborted.
+            var endpoints = new List<HostedEndpoint>();
+
+            foreach (var endpoint in CreateEndpointsFor(_processor))
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    await DisconnectAsync(endpoints, CancellationToken.None);
+                    return Enumerable.Empty<HostedEndpoint>();
+                }
+                try
+                {
+                    await endpoint.StartAsync(cancellationToken);
+                }
+                catch
+                {
+                    await DisconnectAsync(endpoints, CancellationToken.None);
+                    throw;
+                }
+                endpoints.Add(endpoint);
+            }
+            return endpoints;
+        }
+
+        /// <inheritdoc />
+        protected override Task DisconnectAsync(CancellationToken cancellationToken) =>
+            DisconnectAsync(Interlocked.Exchange(ref _endpoints, Enumerable.Empty<HostedEndpoint>()), cancellationToken);
+
+        private static Task DisconnectAsync(IEnumerable<HostedEndpoint> endpoints, CancellationToken cancellationToken) =>
+            Task.WhenAll(endpoints.Select(endpoint => DisconnectAsync(endpoint, cancellationToken)));
+
+        private static async Task DisconnectAsync(HostedEndpoint endpoint, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await endpoint.StopAsync(cancellationToken);
+            }
+            finally
+            {
+                endpoint.Dispose();
+            }                       
+        }
+
+        private IEnumerable<HostedEndpoint> CreateEndpointsFor(IMicroProcessor processor)
+        {
+            foreach (var messageHandler in processor.CreateEndpoints())
+            {
+                if (TryCreateEndpointFor(messageHandler, out var endpoint))
+                {
+                    yield return endpoint;
+                }
+            }
+        }
+
+        protected abstract bool TryCreateEndpointFor(IMessageHandlerEndpoint messageHandler, out HostedEndpoint endpoint);
     }
 }
