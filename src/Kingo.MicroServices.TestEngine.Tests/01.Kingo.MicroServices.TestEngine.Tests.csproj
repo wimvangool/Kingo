@@ -7,7 +7,8 @@
     <AssemblyName>Kingo.MicroServices.TestEngine.Tests</AssemblyName>
     <AssemblyDescription>Contains all unit tests for the Kingo.MicroServices.TestEngine library.</AssemblyDescription>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>    
+    <AssemblyOriginatorKeyFile>..\Kingo.snk</AssemblyOriginatorKeyFile>
+    <LangVersion>7.3</LangVersion>    
   </PropertyGroup>
 
   <ItemGroup>
