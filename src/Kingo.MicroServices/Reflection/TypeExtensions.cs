@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 
@@ -712,6 +713,73 @@ namespace Kingo.Reflection
                 .Append(", ")
                 .AppendFriendlyNameOf(typeParameters[index], useFullNames)
                 .AppendTypeParameterTail(typeParameters, useFullNames, index + 1);
+        }
+
+        #endregion
+
+        #region [====== GetInterfaces ======]        
+
+        /// <summary>
+        /// Returns all variations of the specified <paramref name="interfaceTypes" /> that are implemented by
+        /// the specified <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">Type that must implement one of the the specified <paramref name="interfaceTypes"/>.</param>
+        /// <param name="interfaceTypes">A collection of interface types. These can contain generic type definitions.</param>
+        /// <returns>
+        /// All implemented variations of the specified <paramref name="interfaceTypes" /> that are implemented
+        /// by the specified <paramref name="type"/>. If <paramref name="type"/> is not a class or value type or
+        /// <paramref name="type"/> simply doesn't implement any instance of the specified <paramref name="interfaceTypes"/>,
+        /// an empty collection is returned.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> or <paramref name="interfaceTypes"/> is <c>null</c>.
+        /// </exception>
+        public static IEnumerable<Type> GetInterfaces(this Type type, params Type[] interfaceTypes) =>
+            interfaceTypes.SelectMany(interfaceType => GetInterfaces(type, interfaceType)).Distinct();
+
+        /// <summary>
+        /// Returns all variations of the specified <paramref name="interfaceType" /> that are implemented by
+        /// the specified <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">Type that must implement the specified <paramref name="interfaceType"/>.</param>
+        /// <param name="interfaceType">An interface type. This can be a generic type definition of an interface.</param>
+        /// <returns>
+        /// All implemented variations of the specified <paramref name="interfaceType" /> that are implemented
+        /// by the specified <paramref name="type"/>. If <paramref name="type"/> is not a class or value type,
+        /// <paramref name="interfaceType"/> is not an interface type or <paramref name="type"/> simply doesn't
+        /// implement any instance of the specified <paramref name="interfaceType"/>, an empty collection is returned.
+        /// </returns>
+        public static IEnumerable<Type> GetInterfaces(this Type type, Type interfaceType)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            if (interfaceType == null)
+            {
+                throw new ArgumentNullException(nameof(interfaceType));
+            }
+            if ((type.IsClass || type.IsValueType) && interfaceType.IsInterface)
+            {
+                return
+                    from implementedInterfaceType in type.GetInterfaces()
+                    where IsInterfaceType(implementedInterfaceType, interfaceType)
+                    select implementedInterfaceType;
+            }
+            return Enumerable.Empty<Type>();
+        }
+
+        private static bool IsInterfaceType(Type implementedInterfaceType, Type interfaceType)
+        {
+            if (interfaceType == implementedInterfaceType)
+            {
+                return true;
+            }
+            if (interfaceType.IsGenericTypeDefinition && implementedInterfaceType.IsGenericType)
+            {
+                return interfaceType == implementedInterfaceType.GetGenericTypeDefinition();
+            }
+            return false;
         }
 
         #endregion

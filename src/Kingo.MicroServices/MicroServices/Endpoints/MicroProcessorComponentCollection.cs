@@ -48,13 +48,33 @@ namespace Kingo.MicroServices.Endpoints
         }
 
         internal IMessageHandlerFactory BuildMessageHandlerFactory() =>
-            new MessageHandlerFactory(_messageHandlerClasses.Values.Cast<IMessageHandlerFactory>().Concat(_messageHandlerInstances));        
+            new MessageHandlerFactory(_messageHandlerClasses.Values.Cast<IMessageHandlerFactory>().Concat(_messageHandlerInstances));
 
-        #region [====== AddAssemblies ======]
+        #region [====== AddTypes ======]
 
         /// <summary>
-        /// Adds all types defined in the assemblies that match the specified search criteria to the type-set
-        /// that is used to automatically register specific components.
+        /// Adds the specified <paramref name="types"/> to the searchable type-set.
+        /// </summary>
+        /// <param name="types">The types to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> is <c>null</c>.
+        /// </exception>
+        public void AddTypes(params Type[] types) =>
+            _types = _types.Add(types);
+
+        /// <summary>
+        /// Adds the specified <paramref name="types"/> to the searchable type-set.
+        /// </summary>
+        /// <param name="types">The types to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> is <c>null</c>.
+        /// </exception>
+        public void AddTypes(IEnumerable<Type> types) =>
+            _types = _types.Add(types);
+
+        /// <summary>
+        /// Adds all types defined in the assemblies that match the specified search criteria to the
+        /// searchable type-set.
         /// </summary>
         /// <param name="searchPattern">The pattern that is used to match specified files/assemblies.</param>
         /// <param name="path">A path pointing to a specific directory. If <c>null</c>, the <see cref="TypeSet.CurrentDirectory"/> is used.</param>
@@ -71,7 +91,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="SecurityException">
         /// The caller does not have the required permission to access the specified path or its files.
         /// </exception>
-        public void AddAssemblies(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
+        public void AddTypes(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
             _types = _types.Add(searchPattern, path, searchOption);
 
         #endregion        
@@ -228,33 +248,62 @@ namespace Kingo.MicroServices.Endpoints
             return new ArgumentOutOfRangeException(message);
         }
 
-        #endregion        
+        #endregion
+
+        #region [====== AddQueries ======]
+
+        /// <summary>
+        /// Adds all queries to the components of the processor. A query is defined as any public, non-abstract, non-generic class that
+        /// implements at least one variation of the <see cref="IQuery{TResponse}"/> or <see cref="IQuery{TRequest, TResponse}"/>
+        /// interfaces.
+        /// </summary>
+        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
+        public void AddQueries(Func<Type, bool> predicate = null) =>
+            AddComponents(AddQueries, predicate);
+
+        private static IServiceCollection AddQueries(IEnumerable<Type> types, IServiceCollection services)
+        {
+            foreach (var type in types)
+            foreach (var interfaceType in type.GetInterfaces(typeof(IQuery<>), typeof(IQuery<,>)))
+            {
+                services = services.AddTransient(interfaceType, type);
+            }
+            return services;
+        }        
+
+        #endregion
 
         #region [====== AddComponents ======]
 
         /// <summary>
-        /// Adds 
+        /// Adds a number of components by scanning and automatically registering a number of types.
         /// </summary>
-        /// <param name="serviceFactory"></param>
-        /// <param name="predicate"></param>
+        /// <param name="serviceFactory">Delegate used to scan and register the components into a <see cref="IServiceCollection"/>.</param>
+        /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="serviceFactory"/> is <c>null</c>.
+        /// </exception>
         public void AddComponents(Func<IEnumerable<Type>, IServiceCollection, IServiceCollection> serviceFactory, Func<Type, bool> predicate = null)
-        {
-            // TODO
+        {            
             if (serviceFactory == null)
             {
                 throw new ArgumentNullException(nameof(serviceFactory));
             }
-            throw new NotImplementedException();
+            foreach (var service in serviceFactory.Invoke(ScanTypes(predicate), new ServiceCollection()))
+            {
+                _services.Add(service);
+            }
         }
 
         #endregion
 
         private IEnumerable<Type> ScanTypes(Func<Type, bool> predicate = null) =>
             from type in _types
-            where (predicate == null || predicate.Invoke(type)) && !IsAlreadyRegistered(type)
+            where CanBeAddedAsComponent(type)
+            where predicate == null || predicate.Invoke(type)
             select type;
 
-        private bool IsAlreadyRegistered(Type type) =>
-            _services.Any(service => service.ServiceType == type);
+        private static bool CanBeAddedAsComponent(Type type) =>
+            type.IsClass && !type.IsAbstract && (type.IsPublic || type.IsNestedPublic) && !type.ContainsGenericParameters;
     }
 }

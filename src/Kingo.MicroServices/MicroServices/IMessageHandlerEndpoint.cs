@@ -14,15 +14,15 @@ namespace Kingo.MicroServices
         /// <summary>
         /// The type of the message handler that is used by this endpoint.
         /// </summary>
-        Type MessageHandlerType
+        Type Type
         {
             get;
         }
 
         /// <summary>
-        /// The set of message types that are supported by this endpoint.
+        /// The <see cref="IMessageHandler{TMessage}"/> interfaces that are implemented by this endpoint.
         /// </summary>
-        IReadOnlyCollection<Type> MessageTypes
+        IReadOnlyCollection<MessageHandlerInterface> Interfaces
         {
             get;
         }

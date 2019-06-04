@@ -101,7 +101,7 @@ namespace Kingo.MicroServices
 
         /// <inheritdoc />
         public virtual IEnumerable<IMessageHandlerEndpoint> CreateEndpoints() =>
-            throw new NotImplementedException();
+            throw new NotImplementedException(); // TODO
 
         #endregion
 

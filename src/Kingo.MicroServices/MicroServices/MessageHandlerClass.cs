@@ -188,21 +188,7 @@ namespace Kingo.MicroServices
         }
 
         private static Type[] GetMessageHandlerInterfaceTypesImplementedBy(Type classType) =>
-            _MessageHandlerInterfaceTypes.GetOrAdd(classType, type => GetMessageHandlerInterfaceTypesImplementedByCore(type).ToArray());
-
-        private static IEnumerable<Type> GetMessageHandlerInterfaceTypesImplementedByCore(Type classType) =>
-            from interfaceType in classType.GetInterfaces()
-            where IsMessageHandlerInterface(interfaceType)
-            select interfaceType;
-
-        private static bool IsMessageHandlerInterface(Type interfaceType)
-        {
-            if (interfaceType.IsGenericType)
-            {
-                return interfaceType.GetGenericTypeDefinition() == _MessageHandlerTypeDefinition;
-            }
-            return false;
-        }
+            _MessageHandlerInterfaceTypes.GetOrAdd(classType, type => type.GetInterfaces(_MessageHandlerTypeDefinition).ToArray());        
 
         #endregion                    
     }
