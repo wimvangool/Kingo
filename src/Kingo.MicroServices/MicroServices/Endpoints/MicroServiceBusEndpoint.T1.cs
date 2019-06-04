@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Kingo.MicroServices.Endpoints
+﻿namespace Kingo.MicroServices.Endpoints
 {
     /// <summary>
     /// When implemented, represents an endpoint that connects to a service-bus.
