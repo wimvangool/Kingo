@@ -12,14 +12,6 @@
         MicroProcessorComponentCollection Components
         {
             get;
-        }             
-
-        /// <summary>
-        /// Can be used to configure the pipeline of the processor.
-        /// </summary>
-        MicroProcessorPipelineFactoryBuilder Pipeline
-        {
-            get;
-        }
+        }                     
     }
 }

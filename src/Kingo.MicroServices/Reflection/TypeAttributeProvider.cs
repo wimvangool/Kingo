@@ -4,16 +4,16 @@ using Kingo.MicroServices;
 
 namespace Kingo.Reflection
 {
-    internal sealed class TypeAttributeProvider : IAttributeProvider<Type>
-    {
+    internal sealed class TypeAttributeProvider : ITypeAttributeProvider
+    { 
         private readonly AttributeProvider<Type> _attributeProvider;
 
-        public TypeAttributeProvider(Type target)
+        public TypeAttributeProvider(Type type)
         {           
-            _attributeProvider = new AttributeProvider<Type>(target);
+            _attributeProvider = new AttributeProvider<Type>(type);
         }
 
-        public Type Target =>
+        public Type Type =>
             _attributeProvider.Target;
 
         public bool TryGetAttributeOfType<TAttribute>(out TAttribute attribute) where TAttribute : class =>

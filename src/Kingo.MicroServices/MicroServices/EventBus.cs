@@ -1,33 +1,40 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Kingo.MicroServices
-{
-    /// <summary>
-    /// Represents a simple, in-memory <see cref="IEventBus"/> implementation.
-    /// </summary>
-    public sealed class EventBus : IEventBus
+{   
+    internal sealed class EventBus : IEventBus
     {
         private readonly List<object> _messages;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventBus" /> class.
-        /// </summary>
+      
         public EventBus()
         {
             _messages = new List<object>();
         }
 
+        #region [====== IReadOnlyList<object> ======]
+
+        public int Count =>
+            _messages.Count;
+
+        public object this[int index] =>
+            _messages[index];
+
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+
+        public IEnumerator<object> GetEnumerator() =>
+            _messages.GetEnumerator();
+
+        #endregion
+
         /// <inheritdoc />
         public void Publish(object message) =>
             _messages.Add(message ?? throw new ArgumentNullException(nameof(message)));
-
-        /// <inheritdoc />
-        public MessageStream ToStream() =>
-            MessageStream.CreateStream(_messages);
-
+        
         /// <inheritdoc />
         public override string ToString() =>
-            $"{_messages.Count} event(s)";
+            $"{_messages.Count} event(s)";                
     }
 }

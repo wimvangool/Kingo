@@ -64,7 +64,7 @@ namespace Kingo.MicroServices
             _result = new ExceptionResult(exception);
         }
 
-        public QueryResult(ExecuteAsyncResult<TResponse> result)
+        public QueryResult(QueryOperationResult<TResponse> result)
         {
             _result = new ResponseResult(result.Response);
         }

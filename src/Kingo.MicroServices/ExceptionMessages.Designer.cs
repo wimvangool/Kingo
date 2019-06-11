@@ -61,74 +61,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; cannot publish event of type &apos;{1}&apos; because it has been removed from its repository and its lifetime has therefore ended..
-        /// </summary>
-        internal static string AggregateRoot_AggregateRemovedException {
-            get {
-                return ResourceManager.GetString("AggregateRoot_AggregateRemovedException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Another handler for event of type &apos;{0}&apos; has already been added to this collection..
-        /// </summary>
-        internal static string AggregateRoot_HandlerForEventTypeAlreadyAdded {
-            get {
-                return ResourceManager.GetString("AggregateRoot_HandlerForEventTypeAlreadyAdded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot apply event of type &apos;{0}&apos; because it&apos;s Id ({1}) does not match the aggregate&apos;s Id ({2})..
-        /// </summary>
-        internal static string AggregateRoot_InvalidEventId {
-            get {
-                return ResourceManager.GetString("AggregateRoot_InvalidEventId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing event handler for event of type &apos;{0}&apos;..
-        /// </summary>
-        internal static string AggregateRoot_MissingEventHandlerException {
-            get {
-                return ResourceManager.GetString("AggregateRoot_MissingEventHandlerException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The next version ({0}) must represent a newer version than the current version ({1})..
-        /// </summary>
-        internal static string AggregateRoot_VersionUpdateException {
-            get {
-                return ResourceManager.GetString("AggregateRoot_VersionUpdateException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; does not support snapshots..
-        /// </summary>
-        internal static string AggregateRootDecorator_SnapshotsNotSupported {
-            get {
-                return ResourceManager.GetString("AggregateRootDecorator_SnapshotsNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot obtain single attribute of type &apos;{0}&apos; declared on &apos;{1}&apos; because multiple attributes are of type &apos;{0}&apos;..
         /// </summary>
         internal static string AttributeProvider_AmbiguousAttributeMatch {
             get {
                 return ResourceManager.GetString("AttributeProvider_AmbiguousAttributeMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User &apos;{0}&apos; must have claim &apos;{1}&apos;..
-        /// </summary>
-        internal static string ClaimsProvider_ClaimNotFound {
-            get {
-                return ResourceManager.GetString("ClaimsProvider_ClaimNotFound", resourceCulture);
             }
         }
         
@@ -178,33 +115,6 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ErrorLevel must be 0 or higher: {0}..
-        /// </summary>
-        internal static string ErrorLevel_InvalidErrorLevel {
-            get {
-                return ResourceManager.GetString("ErrorLevel_InvalidErrorLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The query could not be executed because of a bad request. See inner exception for details..
-        /// </summary>
-        internal static string ExecuteAsyncMethod_BadRequest {
-            get {
-                return ResourceManager.GetString("ExecuteAsyncMethod_BadRequest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while executing the query. See inner exception for details..
-        /// </summary>
-        internal static string ExecuteAsyncMethod_InternalServerError {
-            get {
-                return ResourceManager.GetString("ExecuteAsyncMethod_InternalServerError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Specified expression is not supported: &apos;{0}&apos;..
         /// </summary>
         internal static string ExpressionExtensions_UnsupportedExpression {
@@ -241,43 +151,7 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while processing a message. See inner exception for details..
-        /// </summary>
-        internal static string InternalServerErrorException_FromException {
-            get {
-                return ResourceManager.GetString("InternalServerErrorException_FromException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not update aggregate with id &apos;{0}&apos; because its version in the repository ({1}) does not match the expected version ({2}) of the aggregate to be stored. The same aggregate may have been updated by another process..
-        /// </summary>
-        internal static string MemoryDataStore_ConcurrencyConflict {
-            get {
-                return ResourceManager.GetString("MemoryDataStore_ConcurrencyConflict", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Two or more attributes declared on message &apos;{0}&apos; are assignable to &apos;{1}&apos;..
-        /// </summary>
-        internal static string Message_AmbiguousAttributeMatch {
-            get {
-                return ResourceManager.GetString("Message_AmbiguousAttributeMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Another validator for message of type &apos;{0}&apos; has already been registered..
-        /// </summary>
-        internal static string Message_ValidatorAlreadyRegisterd {
-            get {
-                return ResourceManager.GetString("Message_ValidatorAlreadyRegisterd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; could not resolve message handler of type &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Could not resolve message handler of type &apos;{0}&apos;..
         /// </summary>
         internal static string MessageHandlerClass_CouldNotResolveMessageHandler {
             get {
@@ -286,74 +160,20 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid InstanceLifetime specified: &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Could not find implementation of method &apos;{0}.{1}(...)&apos; on type &apos;{3}&apos;..
         /// </summary>
-        internal static string MessageHandlerFactoryBuilder_InvalidInstanceLifetime {
+        internal static string MessageHandlerOrQueryInterface_InterfaceMethodNotFound {
             get {
-                return ResourceManager.GetString("MessageHandlerFactoryBuilder_InvalidInstanceLifetime", resourceCulture);
+                return ResourceManager.GetString("MessageHandlerOrQueryInterface_InterfaceMethodNotFound", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot create instance of type &apos;{0}&apos; because no MessageHandlerFactory has been defined for this processor. Please override method &apos;{1}.{2}&apos; to create and return a custom {3}..
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; cannot be used as a component. The type must represent a concrete (non-abstract) type and may not contain unspecified generic parameters..
         /// </summary>
-        internal static string MessageHandlerFactoryStub_CannotResolveMessageHandler {
+        internal static string MicroProcessorComponent_UnsupportedType {
             get {
-                return ResourceManager.GetString("MessageHandlerFactoryStub_CannotResolveMessageHandler", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message of type &apos;{0}&apos; is not valid: {1}..
-        /// </summary>
-        internal static string MessageValidationPipeline_InvalidMessage {
-            get {
-                return ResourceManager.GetString("MessageValidationPipeline_InvalidMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot validate message of type &apos;{0}&apos; because this validator only supports messages of type &apos;{1}&apos;..
-        /// </summary>
-        internal static string MessageValidator_UnsupportedMessageType {
-            get {
-                return ResourceManager.GetString("MessageValidator_UnsupportedMessageType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not find implementation of method &apos;{0}.{1}({2})&apos; on type &apos;{3}&apos;..
-        /// </summary>
-        internal static string MethodAttributeProvider_InterfaceMethodNotFound {
-            get {
-                return ResourceManager.GetString("MethodAttributeProvider_InterfaceMethodNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invocation of method &apos;{0}()&apos; is not expected at this point..
-        /// </summary>
-        internal static string MicroProcessorContextState_InvalidOperation {
-            get {
-                return ResourceManager.GetString("MicroProcessorContextState_InvalidOperation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Filter &apos;{0}&apos; specifies an invalid stage: {1}..
-        /// </summary>
-        internal static string MicroProcessorPipelineFactoryBuilder_InvalidStage {
-            get {
-                return ResourceManager.GetString("MicroProcessorPipelineFactoryBuilder_InvalidStage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cache can only be used while a MicroProcessor is handling a message or executing a query..
-        /// </summary>
-        internal static string NullCache_CacheNotSupported {
-            get {
-                return ResourceManager.GetString("NullCache_CacheNotSupported", resourceCulture);
+                return ResourceManager.GetString("MicroProcessorComponent_UnsupportedType", resourceCulture);
             }
         }
         
@@ -367,83 +187,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot publish event of type &apos;{0}&apos;: events can only be published while a MicroProcessor is handling a message or executing a query..
-        /// </summary>
-        internal static string NullStream_PublishNotSupported {
-            get {
-                return ResourceManager.GetString("NullStream_PublishNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified result ({0}) could not be converted to an instance of type &apos;{1}&apos;..
-        /// </summary>
-        internal static string QueryContext_InvalidResult {
-            get {
-                return ResourceManager.GetString("QueryContext_InvalidResult", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There is no element at index &apos;{0}&apos; (Count = {1})..
         /// </summary>
         internal static string ReadOnlyList_IndexOutOfRange {
             get {
                 return ResourceManager.GetString("ReadOnlyList_IndexOutOfRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Aggregate of type &apos;{0}&apos; with Id &apos;{1}&apos; was not found..
-        /// </summary>
-        internal static string Repository_AggregateNotFound {
-            get {
-                return ResourceManager.GetString("Repository_AggregateNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot add aggregate of type &apos;{0}&apos; to the repository because another aggregate with Id &apos;{1}&apos; is already present in the data store..
-        /// </summary>
-        internal static string Repository_DuplicateKeyException_AggregateAlreadyExists {
-            get {
-                return ResourceManager.GetString("Repository_DuplicateKeyException_AggregateAlreadyExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot add mapping for type &apos;{0}&apos; because it has already been mapped..
-        /// </summary>
-        internal static string SchemaMap_TypeAlreadyMapped {
-            get {
-                return ResourceManager.GetString("SchemaMap_TypeAlreadyMapped", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot add mapping for type-id &apos;{0}&apos; because it has already been mapped..
-        /// </summary>
-        internal static string SchemaMap_TypeIdAlreadyMapped {
-            get {
-                return ResourceManager.GetString("SchemaMap_TypeIdAlreadyMapped", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type-id that corresponds to type &apos;{0}&apos; not found..
-        /// </summary>
-        internal static string SchemaMap_TypeIdNotFound {
-            get {
-                return ResourceManager.GetString("SchemaMap_TypeIdNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type that corresponds to type-id &apos;{0}&apos; not found..
-        /// </summary>
-        internal static string SchemaMap_TypeNotFound {
-            get {
-                return ResourceManager.GetString("SchemaMap_TypeNotFound", resourceCulture);
             }
         }
         
@@ -475,47 +223,11 @@ namespace Kingo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not restore aggregate of type &apos;{0}&apos; from the retrieved data-set. See inner exception for details..
+        ///   Looks up a localized string similar to Component of type &apos;{0}&apos; could not be added because it is configured with an invalid lifetime ({1})..
         /// </summary>
-        internal static string SerializationStrategy_CouldNotRestoreAggregate {
+        internal static string ServiceCollectionExtensions_InvalidComponentLifetime {
             get {
-                return ResourceManager.GetString("SerializationStrategy_CouldNotRestoreAggregate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid number of events per snapshot specified ({0}). Value cannot be negative..
-        /// </summary>
-        internal static string SerializationStrategy_InvalidEventsPerSnapshot {
-            get {
-                return ResourceManager.GetString("SerializationStrategy_InvalidEventsPerSnapshot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DataSet is missing the expected snapshot..
-        /// </summary>
-        internal static string SerializationStrategy_MissingSnapshot {
-            get {
-                return ResourceManager.GetString("SerializationStrategy_MissingSnapshot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DataSet is missing the expected snapshot or event to restore the aggregate. .
-        /// </summary>
-        internal static string SerializationStrategy_MissingSnapshotOrEvent {
-            get {
-                return ResourceManager.GetString("SerializationStrategy_MissingSnapshotOrEvent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; cannot be used to restore an aggregate..
-        /// </summary>
-        internal static string SnapshotOrEvent_RestoreNotSupported {
-            get {
-                return ResourceManager.GetString("SnapshotOrEvent_RestoreNotSupported", resourceCulture);
+                return ResourceManager.GetString("ServiceCollectionExtensions_InvalidComponentLifetime", resourceCulture);
             }
         }
         

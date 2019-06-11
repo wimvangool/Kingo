@@ -14,6 +14,6 @@ namespace Kingo.MicroServices
         /// </summary>   
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently executing the query.</param>    
         /// <returns>The result of this query.</returns>        
-        Task<TResponse> ExecuteAsync(QueryContext context);
+        Task<TResponse> ExecuteAsync(QueryOperationContext context);
     }
 }

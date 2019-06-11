@@ -4,19 +4,21 @@
     /// When implemented by a class, contains all configuration settings for a <see cref="IMessageHandler{T}" />.
     /// </summary>
     public interface IMessageHandlerConfiguration
-    {
+    {        
         /// <summary>
-        /// The lifetime of the <see cref="IMessageHandler{T}" />.
+        /// Indicates whether or not the message handler handles commands and events that are
+        /// provided to the <see cref="MicroProcessor" /> from external sources.
         /// </summary>
-        ServiceLifetime Lifetime
+        bool HandlesExternalMessages
         {
             get;
         }
 
         /// <summary>
-        /// Specifies during which operation types this handler should be used (input-stream, output-stream or both).
+        /// Indicates whether or not the message handler handles events in the same (logical)
+        /// transaction as they were published in (i.e. as part of the same logical operation).
         /// </summary>
-        MicroProcessorOperationTypes SupportedOperationTypes
+        bool HandlesInternalMessages
         {
             get;
         }

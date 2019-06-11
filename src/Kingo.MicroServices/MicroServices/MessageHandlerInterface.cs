@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
@@ -6,51 +10,34 @@ namespace Kingo.MicroServices
     /// <summary>
     /// Represent a specific, closed version of the <see cref="IMessageHandler{TMessage}"/> interface.
     /// </summary>
-    public sealed class MessageHandlerInterface : IEquatable<MessageHandlerInterface>
-    {
-        internal MessageHandlerInterface(Type interfaceType)
-        {
-            InterfaceType = interfaceType;
-        }
-
-        /// <summary>
-        /// The type of the interface.
-        /// </summary>
-        public Type InterfaceType
-        {
-            get;
-        }
+    public sealed class MessageHandlerInterface : MessageHandlerOrQueryInterface
+    {                
+        private MessageHandlerInterface(Type type) :
+            base(type)
+        {            
+            MessageType = type.GetGenericArguments()[0];
+        }        
 
         /// <summary>
         /// The message type of the message that is handled by the <see cref="IMessageHandler{TMessage}"/>.
         /// </summary>
-        public Type MessageType =>
-            InterfaceType.GetGenericArguments()[0];
-
-        /// <inheritdoc />
-        public override bool Equals(object obj) =>
-            Equals(obj as MessageHandlerInterface);
-
-        /// <inheritdoc />
-        public bool Equals(MessageHandlerInterface other)
+        public Type MessageType
         {
-            if (ReferenceEquals(null, other))
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-            return InterfaceType == other.InterfaceType;
+            get;
         }
 
-        /// <inheritdoc />
-        public override int GetHashCode() =>
-            InterfaceType.GetHashCode();
+        internal override string MethodName =>
+            "HandleAsync";        
 
-        /// <inheritdoc />
-        public override string ToString() =>
-            InterfaceType.FriendlyName();
+        #region [====== FromComponent & FromType ======]
+
+        internal static IEnumerable<MessageHandlerInterface> FromComponent(MicroProcessorComponent component) =>
+            from messageHandlerInterface in component.Type.GetInterfacesOfType(typeof(IMessageHandler<>))
+            select new MessageHandlerInterface(messageHandlerInterface);
+
+        internal static MessageHandlerInterface FromType<TMessage>() =>
+            new MessageHandlerInterface(typeof(IMessageHandler<TMessage>));
+
+        #endregion
     }
 }

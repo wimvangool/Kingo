@@ -7,7 +7,7 @@ namespace Kingo.MicroServices
     /// This type of exception is thrown when an attempted operation is not allowed by the application logic.
     /// </summary>    
     [Serializable]
-    public class BusinessRuleException : MessageHandlerException
+    public class BusinessRuleException : MessageHandlerOperationException
     {                
         /// <summary>
         /// Initializes a new instance of the <see cref="BusinessRuleException" /> class.

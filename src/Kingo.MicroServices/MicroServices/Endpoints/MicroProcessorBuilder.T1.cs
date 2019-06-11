@@ -8,19 +8,13 @@ namespace Kingo.MicroServices.Endpoints
     {        
         public MicroProcessorBuilder()
         {            
-            Components = new MicroProcessorComponentCollection();
-            Pipeline = new MicroProcessorPipelineFactoryBuilder();
+            Components = new MicroProcessorComponentCollection();            
         }
 
         public MicroProcessorComponentCollection Components
         {
             get;
-        }              
-
-        public MicroProcessorPipelineFactoryBuilder Pipeline
-        {
-            get;         
-        }
+        }                      
 
         public IServiceCollection BuildServiceCollection(IServiceCollection services = null)
         {            
@@ -28,13 +22,14 @@ namespace Kingo.MicroServices.Endpoints
             {
                 services = builder.BuildServiceCollection(services);
             }
-            return services.AddSingleton<IMicroProcessor, TProcessor>();
+            return services
+                .AddTransient<IMicroProcessor, TProcessor>(provider => provider.GetRequiredService<TProcessor>())
+                .AddTransient<TProcessor>();
         }
 
         private IEnumerable<IServiceCollectionBuilder> Builders()
         {
-            yield return Components;            
-            yield return Pipeline;
+            yield return Components;                        
         }
     }
 }

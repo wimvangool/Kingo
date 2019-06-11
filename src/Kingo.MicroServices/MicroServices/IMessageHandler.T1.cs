@@ -13,10 +13,10 @@ namespace Kingo.MicroServices
         /// </summary>
         /// <param name="message">A message.</param>        
         /// <param name="context">Context of the <see cref="IMicroProcessor" /> that is currently handling the message.</param>
-        /// <exception cref="MessageHandlerException">
-        /// Something predictable went wrong while processing the specified <paramref name="message"/>, such as
+        /// <exception cref="MessageHandlerOperationException">
+        /// Something went wrong while processing the specified <paramref name="message"/>, such as
         /// the violation of a business rule.
         /// </exception> 
-        Task HandleAsync(TMessage message, MessageHandlerContext context);
+        Task HandleAsync(TMessage message, MessageHandlerOperationContext context);
     }
 }

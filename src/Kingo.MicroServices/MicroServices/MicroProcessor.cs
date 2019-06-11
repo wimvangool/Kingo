@@ -37,46 +37,26 @@ namespace Kingo.MicroServices
         }
 
         #endregion
-        
-        private readonly IMessageHandlerFactory _messageHandlers;
-        private readonly IMicroProcessorPipelineFactory _pipeline;
+                
         private readonly Context<IServiceProvider> _serviceProviderContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessor" /> class.
-        /// </summary>        
-        /// <param name="messageHandlers">
-        /// Optional factory that is used to create message handlers to handle a specific message.
-        /// </param>
-        /// <param name="pipeline">
-        /// Optional pipeline factory that will be used by this processor to create a pipeline on top of a message handler or query
-        /// right before it is invoked.
-        /// </param>        
+        /// </summary>                     
         /// <param name="serviceProvider">
-        /// Optional service-provider that will be used to resolve message-handlers and their dependencies.
-        /// </param> 
-        public MicroProcessor(IMessageHandlerFactory messageHandlers = null, IMicroProcessorPipelineFactory pipeline = null, IServiceProvider serviceProvider = null)
-        {            
-            _messageHandlers = messageHandlers ?? MessageHandlerFactory.Null;
-            _pipeline = pipeline ?? MicroProcessorPipelineFactory.Null;
-            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider ?? CreateDefaultServiceProvider());
-        }
-
-        #region [====== Components ======]                
-
-        /// <summary>
-        /// Returns the <see cref="IMessageHandlerFactory" /> of this processor.
-        /// </summary>
-        protected internal IMessageHandlerFactory MessageHandlers =>
-            _messageHandlers;
-
-        /// <summary>
-        /// Returns the <see cref="IMicroProcessorPipelineFactory"/> of this processor.
-        /// </summary>
-        protected internal IMicroProcessorPipelineFactory Pipeline =>
-            _pipeline;
-
-        #endregion
+        /// Service-provider that will be used to resolve message-handlers, their dependencies and other components.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="serviceProvider"/> is <c>null</c>.
+        /// </exception>
+        public MicroProcessor(IServiceProvider serviceProvider)
+        {                        
+            if (serviceProvider == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProvider));
+            }
+            _serviceProviderContext = new Context<IServiceProvider>(serviceProvider);
+        }        
 
         #region [====== ServiceProvider ======]        
 
@@ -85,63 +65,58 @@ namespace Kingo.MicroServices
             _serviceProviderContext.Current;
 
         /// <summary>
-        /// Creates and returns a new <see cref="IServiceScope" /> that determined the lifetime of scoped
+        /// Creates and returns a new <see cref="IServiceScope" /> that determines the lifetime of scoped
         /// dependencies. As a side-effect, this method updates the processor's <see cref="ServiceProvider" />
         /// to the provider of the scope and resets it as soon as the scope is disposed.
         /// </summary>
         public virtual IServiceScope CreateScope() =>
             new ServiceScope(this, ServiceProvider.CreateScope());
 
-        private static IServiceProvider CreateDefaultServiceProvider() =>
-            new ServiceCollection().BuildServiceProvider(true);
+        #endregion
+
+        #region [====== ExecuteAsync (Commands & Queries) ======]          
+
+        /// <inheritdoc />
+        public Task<MessageHandlerOperationResult> ExecuteAsync<TCommand>(IMessageHandler<TCommand> messageHandler, TCommand message, CancellationToken? token = null) =>
+            ExecuteOperationAsync(new CommandHandlerOperation<TCommand>(this, messageHandler, message, token));                                    
+
+        /// <inheritdoc />
+        public Task<QueryOperationResult<TResponse>> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
+            ExecuteOperationAsync(new QueryOperationImplementation<TResponse>(this, query, token));
+
+        /// <inheritdoc />
+        public Task<QueryOperationResult<TResponse>> ExecuteAsync<TRequest, TResponse>(IQuery<TRequest, TResponse> query, TRequest message, CancellationToken? token = null) =>
+            ExecuteOperationAsync(new QueryOperationImplementation<TRequest, TResponse>(this, query, message, token));
 
         #endregion
 
-        #region [====== CreateEndpoints ======]
-
-        /// <inheritdoc />
-        public virtual IEnumerable<IMessageHandlerEndpoint> CreateEndpoints() =>
-            throw new NotImplementedException(); // TODO
-
-        #endregion
-
-        #region [====== HandleAsync ======]  
-
-        Task<HandleAsyncResult> IMessageProcessor.HandleAsync<TMessage>(TMessage message) =>
-            HandleAsync(message);        
-
-        /// <inheritdoc />
-        public virtual Task<HandleAsyncResult> HandleAsync<TMessage>(TMessage message, IMessageHandler<TMessage> handler = null, CancellationToken? token = null) =>
-            new HandleMessageMethod<TMessage>(this, message, handler, token).InvokeAsync();
+        #region [====== ExecuteAsync (Operations) ======]
 
         /// <summary>
-        /// Determines whether or not the specified message is a Command. By default,
-        /// this method returns <c>true</c> when the type-name ends with 'Command'.
+        /// Executes the specified <paramref name="operation"/> and returns its result.
+        /// </summary>        
+        /// <param name="operation">The operation to execute.</param>
+        /// <returns>The result of the operation.</returns>
+        protected virtual Task<MessageHandlerOperationResult> ExecuteOperationAsync(MessageHandlerOperation operation) =>
+            ExecuteOperationAsync<MessageHandlerOperationResult>(operation);
+
+        /// <summary>
+        /// Executes the specified <paramref name="operation"/> and returns its result.
         /// </summary>
-        /// <param name="message">The message to analyze.</param>
-        /// <returns>
-        /// <c>true</c> if the specified <paramref name="message"/> is a command; otherwise <c>false</c>.
-        /// </returns>
-        protected internal virtual bool IsCommand(object message) =>
-            NameOf(message.GetType()).EndsWith("Command");
+        /// <typeparam name="TResponse">Type of the response of the query.</typeparam>
+        /// <param name="operation">The operation to execute.</param>
+        /// <returns>The result of the operation.</returns>
+        protected virtual Task<QueryOperationResult<TResponse>> ExecuteOperationAsync<TResponse>(QueryOperation<TResponse> operation) =>
+            ExecuteOperationAsync<QueryOperationResult<TResponse>>(operation);
 
-        private static string NameOf(Type messageType) =>
-            messageType.IsGenericType ? messageType.Name.RemoveTypeParameterCount() : messageType.Name;
-
-        #endregion
-
-        #region [====== ExecuteAsync ======]
-
-        /// <inheritdoc />
-        public virtual Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TResponse>(IQuery<TResponse> query, CancellationToken? token = null) =>
-            InvokeAsync(new ExecuteQueryMethod<TResponse>(this, token, query));
-
-        /// <inheritdoc />
-        public virtual Task<ExecuteAsyncResult<TResponse>> ExecuteAsync<TRequest, TResponse>(TRequest message, IQuery<TRequest, TResponse> query, CancellationToken? token = null) =>
-            InvokeAsync(new ExecuteQueryMethod<TRequest, TResponse>(this, token, query, message));
-
-        private static Task<TResult> InvokeAsync<TResult>(MicroProcessorMethod<TResult> method) =>
-            method.InvokeAsync();
+        /// <summary>
+        /// Executes the specified <paramref name="operation"/> and returns its result.
+        /// </summary>
+        /// <typeparam name="TResult">Type of the result of the operation.</typeparam>
+        /// <param name="operation">The operation to execute.</param>
+        /// <returns>The result of the operation.</returns>
+        protected virtual Task<TResult> ExecuteOperationAsync<TResult>(MicroProcessorOperation<TResult> operation) =>
+            operation.ExecuteAsync();
 
         #endregion        
     }

@@ -6,56 +6,72 @@ using System.Reflection;
 
 namespace Kingo.MicroServices
 {
-    internal abstract class MessageHandlerInstance : IMessageHandlerFactory
+    internal abstract class MessageHandlerInstance : MessageHandler, IHandleAsyncMethodFactory
     {
-        public IEnumerable<MessageHandler> ResolveMessageHandlers<TMessage>(TMessage message, MessageHandlerContext context)
+        private readonly IMessageHandlerConfiguration _configuration;
+
+        protected MessageHandlerInstance(MicroProcessorComponent component, MessageHandlerInterface @interface, IMessageHandlerConfiguration configuration) :
+            base(component, @interface)
         {
-            if (TryCreateMessageHandler(message, context, out var messageHandler))
-            {
-                yield return messageHandler;
-            }
+            _configuration = configuration;
         }
 
-        public abstract bool TryCreateMessageHandler<TMessage>(TMessage message, MessageHandlerContext context, out MessageHandler handler);
+        public override bool HandlesExternalMessages =>
+            _configuration?.HandlesExternalMessages ?? base.HandlesExternalMessages;
 
-        public static IEnumerable<MessageHandlerInstance> FromHandler(object handler, MicroProcessorOperationTypes? operationTypes = null)
+        public override bool HandlesInternalMessages =>
+            _configuration?.HandlesInternalMessages ?? base.HandlesInternalMessages;
+
+        public IEnumerable<HandleAsyncMethod<TMessage>> CreateMethodsFor<TMessage>(MicroProcessorOperationKinds operationKind, IServiceProvider serviceProvider)
         {
-            if (handler == null)
+            if (TryCreateMethod(operationKind, out HandleAsyncMethod<TMessage> method))
             {
-                throw new ArgumentNullException(nameof(handler));
+                yield return method;
             }
-            if (MessageHandlerClass.IsMessageHandlerClass(handler.GetType(), out var messageHandlerClass))
+        }        
+
+        public abstract bool TryCreateMethod<TMessage>(MicroProcessorOperationKinds operationKind, out HandleAsyncMethod<TMessage> method);
+
+        #region [====== FromInstance ======]
+
+        private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, MessageHandlerInstance>> _InstanceFactories =
+            new ConcurrentDictionary<MessageHandlerInterface, Func<object, MessageHandlerInstance>>();
+
+        public static IEnumerable<MessageHandlerInstance> FromInstance(object instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+            if (MessageHandlerType.IsMessageHandlerComponent(instance.GetType(), out var messageHandlerClass))
             {
                 foreach (var messageHandlerInterface in messageHandlerClass.Interfaces)
                 {
-                    yield return FromHandler(handler, operationTypes, messageHandlerInterface);
+                    yield return FromInstance(instance, messageHandlerInterface);
                 }
             }
-        }
+        }        
 
-        private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, MicroProcessorOperationTypes?, MessageHandlerInstance>> _InstanceFactories =
-            new ConcurrentDictionary<MessageHandlerInterface, Func<object, MicroProcessorOperationTypes?, MessageHandlerInstance>>();
+        private static MessageHandlerInstance FromInstance(object handler, MessageHandlerInterface messageHandlerInterface) =>
+            _InstanceFactories.GetOrAdd(messageHandlerInterface, CreateInstanceFactory).Invoke(handler);
 
-        private static MessageHandlerInstance FromHandler(object handler, MicroProcessorOperationTypes? operationTypes, MessageHandlerInterface messageHandlerInterface) =>
-            _InstanceFactories.GetOrAdd(messageHandlerInterface, CreateInstanceFactory).Invoke(handler, operationTypes);
-
-        private static Func<object, MicroProcessorOperationTypes?, MessageHandlerInstance> CreateInstanceFactory(MessageHandlerInterface messageHandlerInterface)
+        private static Func<object, MessageHandlerInstance> CreateInstanceFactory(MessageHandlerInterface messageHandlerInterface)
         {            
-            var handlerParameter = Expression.Parameter(typeof(object), "handler");
-            var handlerOfExpectedType = Expression.Convert(handlerParameter, messageHandlerInterface.InterfaceType);
-            var operationTypesParameter = Expression.Parameter(typeof(MicroProcessorOperationTypes?), "operationTypes");
+            var messageHandlerParameter = Expression.Parameter(typeof(object), "messageHandler");
+            var messageHandlerOfExpectedType = Expression.Convert(messageHandlerParameter, messageHandlerInterface.Type);            
 
             var messageHandlerInstanceTypeDefinition = typeof(MessageHandlerInstance<>);
             var messageHandlerInstanceType = messageHandlerInstanceTypeDefinition.MakeGenericType(messageHandlerInterface.MessageType);
-            var messageHandlerInstanceConstructorParameters = new[] { messageHandlerInterface.InterfaceType, typeof(MicroProcessorOperationTypes?) };
+            var messageHandlerInstanceConstructorParameters = new[] { messageHandlerInterface.Type };
             var messageHandlerInstanceConstructor = messageHandlerInstanceType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, messageHandlerInstanceConstructorParameters, null);
-            var newMessageHandlerInstanceExpression = Expression.New(messageHandlerInstanceConstructor, handlerOfExpectedType, operationTypesParameter);
-            var createMessageHandlerInstanceExpression = Expression.Lambda<Func<object, MicroProcessorOperationTypes?, MessageHandlerInstance>>(
+            var newMessageHandlerInstanceExpression = Expression.New(messageHandlerInstanceConstructor, messageHandlerOfExpectedType);
+            var createMessageHandlerInstanceExpression = Expression.Lambda<Func<object, MessageHandlerInstance>>(
                 Expression.Convert(newMessageHandlerInstanceExpression, typeof(MessageHandlerInstance)),
-                handlerParameter,
-                operationTypesParameter);
+                messageHandlerParameter);
 
             return createMessageHandlerInstanceExpression.Compile();
-        }        
+        }
+
+        #endregion
     }
 }

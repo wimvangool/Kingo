@@ -716,7 +716,7 @@ namespace Kingo.Reflection
 
         #endregion
 
-        #region [====== GetInterfaces ======]        
+        #region [====== GetInterfacesOfType ======]        
 
         /// <summary>
         /// Returns all variations of the specified <paramref name="interfaceTypes" /> that are implemented by
@@ -733,8 +733,8 @@ namespace Kingo.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> or <paramref name="interfaceTypes"/> is <c>null</c>.
         /// </exception>
-        public static IEnumerable<Type> GetInterfaces(this Type type, params Type[] interfaceTypes) =>
-            interfaceTypes.SelectMany(interfaceType => GetInterfaces(type, interfaceType)).Distinct();
+        public static IEnumerable<Type> GetInterfacesOfType(this Type type, params Type[] interfaceTypes) =>
+            interfaceTypes.SelectMany(interfaceType => GetInterfacesOfType(type, interfaceType)).Distinct();
 
         /// <summary>
         /// Returns all variations of the specified <paramref name="interfaceType" /> that are implemented by
@@ -748,7 +748,7 @@ namespace Kingo.Reflection
         /// <paramref name="interfaceType"/> is not an interface type or <paramref name="type"/> simply doesn't
         /// implement any instance of the specified <paramref name="interfaceType"/>, an empty collection is returned.
         /// </returns>
-        public static IEnumerable<Type> GetInterfaces(this Type type, Type interfaceType)
+        public static IEnumerable<Type> GetInterfacesOfType(this Type type, Type interfaceType)
         {
             if (type == null)
             {

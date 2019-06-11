@@ -17,7 +17,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IMessageProcessor<TMessage> processor, TMessage message, Action<TMessage, MessageHandlerContext> handler) =>
+        public static Task HandleAsync<TMessage>(this IMessageProcessor<TMessage> processor, TMessage message, Action<TMessage, MessageHandlerOperationContext> handler) =>
             processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        public static Task HandleAsync<TMessage>(this IMessageProcessor<TMessage> processor, TMessage message, Func<TMessage, MessageHandlerContext, Task> handler) =>
+        public static Task HandleAsync<TMessage>(this IMessageProcessor<TMessage> processor, TMessage message, Func<TMessage, MessageHandlerOperationContext, Task> handler) =>
             processor.HandleAsync(message, MessageHandlerDecorator<TMessage>.Decorate(handler));
     }
 }

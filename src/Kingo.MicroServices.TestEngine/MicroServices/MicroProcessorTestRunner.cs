@@ -97,11 +97,11 @@ namespace Kingo.MicroServices
 
             private async Task<MessageHandlerResult<TEventStream>> HandleMessageAsync(TMessage message, IMessageHandler<TMessage> handler, IMicroProcessor processor)
             {
-                HandleAsyncResult result;
+                MessageHandlerOperationResult result;
 
                 try
                 {
-                    result = await processor.HandleAsync(message, handler).ConfigureAwait(false);                    
+                    result = await processor.ExecuteAsync(handler, message).ConfigureAwait(false);                    
                 }
                 catch (Exception exception)
                 {
@@ -165,7 +165,7 @@ namespace Kingo.MicroServices
             {
                 try
                 {
-                    return new QueryResult<TResponse>(await processor.ExecuteAsync(query).ConfigureAwait(false));
+                    return new QueryResult<TResponse>(await processor.ExecuteAsync<TResponse>(query).ConfigureAwait(false));
                 }
                 catch (Exception exception)
                 {
@@ -219,7 +219,7 @@ namespace Kingo.MicroServices
             {
                 try
                 {
-                    return new QueryResult<TResponse>(await processor.ExecuteAsync(request, query).ConfigureAwait(false));
+                    return new QueryResult<TResponse>(await processor.ExecuteAsync(query, request).ConfigureAwait(false));
                 }
                 catch (Exception exception)
                 {

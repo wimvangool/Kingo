@@ -134,15 +134,12 @@ namespace Kingo.MicroServices.Endpoints
         {            
             var @event = new object();
 
-            _configuration.Setup(processor =>
-            {
-                processor.Components.AddMessageHandler<object>((message, context) =>
-                {
-                    context.EventBus.Publish(@event);
-                });
-            });
+            _configuration.Setup();
 
-            var result = await _configuration.ResolveProcessor().HandleAsync(new object());
+            var result = await _configuration.ResolveProcessor().ExecuteAsync((message, context) =>
+            {
+                context.EventBus.Publish(@event);
+            }, new object());
 
             Assert.AreEqual(1, result.MessageHandlerCount);
             Assert.AreEqual(1, result.Events.Count);

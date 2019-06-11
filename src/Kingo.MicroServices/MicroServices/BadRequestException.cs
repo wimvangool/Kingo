@@ -8,7 +8,7 @@ namespace Kingo.MicroServices
     /// invalid or because the operation was illegal. This type semantically maps to HTTP response code <c>400</c>.
     /// </summary>
     [Serializable]
-    public class BadRequestException : MicroProcessorException
+    public class BadRequestException : MicroProcessorOperationException
     {              
         /// <summary>
         /// Initializes a new instance of the <see cref="BadRequestException" /> class.

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Kingo.MicroServices
 {
     /// <summary>
     /// When implemented by a class, represent a bus to which events can be published.
     /// </summary>
-    public interface IEventBus
+    public interface IEventBus : IReadOnlyList<object>
     {
         /// <summary>
         /// Publishes the specified <paramref name="message"/>.
@@ -14,12 +15,6 @@ namespace Kingo.MicroServices
         /// <exception cref="ArgumentNullException">
         /// <paramref name="message"/> is <c>null</c>.
         /// </exception>
-        void Publish(object message);
-
-        /// <summary>
-        /// Creates and returns a <see cref="MessageStream"/> that contains all events that has been published to this bus.
-        /// </summary>
-        /// <returns>A new stream.</returns>
-        MessageStream ToStream();
+        void Publish(object message);        
     }
 }

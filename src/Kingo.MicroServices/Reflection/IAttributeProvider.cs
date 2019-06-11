@@ -8,16 +8,8 @@ namespace Kingo.Reflection
     /// When implemented by a class, serves as a provider of attributes declared on class, method, parameter, field, or any other member
     /// that can be decorated with attributes.
     /// </summary>
-    public interface IAttributeProvider<out TMember> where TMember : MemberInfo
-    {
-        /// <summary>
-        /// Returns the member-info that this provider is targeting to obtain its attributes.
-        /// </summary>
-        TMember Target
-        {
-            get;
-        }
-
+    public interface IAttributeProvider
+    {        
         /// <summary>
         /// Attempts to retrieve a single attribute of type <typeparamref name="TAttribute"/> defined on the associated <see cref="Target" />.
         /// </summary>

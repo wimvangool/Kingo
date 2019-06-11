@@ -1,40 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kingo.Reflection;
 
 namespace Kingo.MicroServices
 {
     internal sealed class MessageHandlerInstance<TMessage> : MessageHandlerInstance
     {
-        private readonly IMessageHandler<TMessage> _handler;
-        private readonly MicroProcessorOperationTypes _supportedOperationTypes;
+        private readonly IMessageHandler<TMessage> _messageHandler;
 
-        public MessageHandlerInstance(IMessageHandler<TMessage> handler, MicroProcessorOperationTypes? operationTypes)
-        {           
-            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
-            _supportedOperationTypes = operationTypes ?? DetermineOperationTypes(handler.GetType());
+        public MessageHandlerInstance(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration) :
+            base(MessageHandlerType.FromInstance(messageHandler), MessageHandlerInterface.FromType<TMessage>(), configuration)
+        {
+            _messageHandler = messageHandler;
         }
 
-        private static MicroProcessorOperationTypes DetermineOperationTypes(Type messageHandlerType)
+        public override bool TryCreateMethod<TOther>(MicroProcessorOperationKinds operationKind, out HandleAsyncMethod<TOther> method)
         {
-            if (MessageHandlerClass.TryGetMessageHandlerAttribute(messageHandlerType, out var attribute))
+            if (operationKind.IsSupportedBy(GetSupportedOperations()) && _messageHandler is IMessageHandler<TOther> messageHandler)
             {
-                return attribute.SupportedOperationTypes;
-            }
-            return MessageHandlerConfiguration.DefaultOperationTypes;
-        }
-
-        public override bool TryCreateMessageHandler<TOther>(TOther message, MessageHandlerContext context, out MessageHandler handler)
-        {
-            if (context.Operation.IsSupported(_supportedOperationTypes) && message is TMessage messageOfSupportedType)
-            {
-                handler = new MessageHandlerDecorator<TMessage>(_handler, messageOfSupportedType, context);
+                method = new HandleAsyncMethod<TOther>(messageHandler, this, MessageHandlerInterface.FromType<TMessage>());
                 return true;
             }
-            handler = null;
+            method = null;
             return false;
-        }
-
-        public override string ToString() =>
-            $"{_handler.GetType().FriendlyName()} ({typeof(IMessageHandler<TMessage>).FriendlyName()}) - {_supportedOperationTypes}";
+        }        
     }
 }

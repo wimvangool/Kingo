@@ -9,7 +9,7 @@ namespace Kingo.MicroServices
     /// handling a message or executing a query correctly. This type semantically maps to HTTP response code <c>500</c>.
     /// </summary>
     [Serializable]
-    public class InternalServerErrorException : MicroProcessorException
+    public class InternalServerErrorException : MicroProcessorOperationException
     {                
         /// <summary>
         /// Initializes a new instance of the <see cref="InternalServerErrorException" /> class.
@@ -35,6 +35,6 @@ namespace Kingo.MicroServices
             500;
 
         internal static InternalServerErrorException FromInnerException(Exception innerException) =>
-            new InternalServerErrorException(ExceptionMessages.InternalServerErrorException_FromException, innerException);
+            new InternalServerErrorException(innerException.Message, innerException);
     }
 }

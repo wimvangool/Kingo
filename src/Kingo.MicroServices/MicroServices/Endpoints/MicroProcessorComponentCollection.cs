@@ -15,25 +15,25 @@ namespace Kingo.MicroServices.Endpoints
     /// </summary>
     public sealed class MicroProcessorComponentCollection : IServiceCollectionBuilder
     {        
-        private readonly Dictionary<Type, MessageHandlerClass> _messageHandlerClasses;
-        private readonly List<MessageHandlerInstance> _messageHandlerInstances;        
-        private readonly IServiceCollection _services;
-        private TypeSet _types;
+        private readonly Dictionary<Type, MessageHandlerType> _messageHandlerComponents;
+        private readonly List<MessageHandlerInstance> _messageHandlerInstances;
+        private readonly HashSet<MicroProcessorComponent> _components;
+        private readonly IServiceCollection _services;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroProcessorComponentCollection" /> class.
         /// </summary>
         public MicroProcessorComponentCollection()
         {
-            _messageHandlerClasses = new Dictionary<Type, MessageHandlerClass>();
-            _messageHandlerInstances = new List<MessageHandlerInstance>();            
-            _services = new ServiceCollection();
-            _types = TypeSet.Empty;            
+            _messageHandlerComponents = new Dictionary<Type, MessageHandlerType>();
+            _messageHandlerInstances = new List<MessageHandlerInstance>();
+            _components = new HashSet<MicroProcessorComponent>();
+            _services = new ServiceCollection();            
         }
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"Registered handlers: {_messageHandlerClasses.Count} class(es), {_messageHandlerInstances.Count} instances";
+            $"{_components.Count} types added.";
 
         IServiceCollection IServiceCollectionBuilder.BuildServiceCollection(IServiceCollection services) =>
             BuildServiceCollection(services ?? new ServiceCollection());
@@ -44,33 +44,20 @@ namespace Kingo.MicroServices.Endpoints
             {
                 services.Add(service);
             }
-            return services.AddSingleton(BuildMessageHandlerFactory());                
+            return services.AddSingleton(BuildMethodFactory());                
         }
 
-        internal IMessageHandlerFactory BuildMessageHandlerFactory() =>
-            new MessageHandlerFactory(_messageHandlerClasses.Values.Cast<IMessageHandlerFactory>().Concat(_messageHandlerInstances));
+        internal IHandleAsyncMethodFactory BuildMethodFactory() =>
+            new HandleAsyncMethodFactory(_messageHandlerComponents.Values.Cast<IHandleAsyncMethodFactory>().Concat(_messageHandlerInstances));
 
         #region [====== AddTypes ======]
 
         /// <summary>
-        /// Adds the specified <paramref name="types"/> to the searchable type-set.
+        /// Adds a type to the searchable type-set.
         /// </summary>
-        /// <param name="types">The types to add.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="types"/> is <c>null</c>.
-        /// </exception>
-        public void AddTypes(params Type[] types) =>
-            _types = _types.Add(types);
-
-        /// <summary>
-        /// Adds the specified <paramref name="types"/> to the searchable type-set.
-        /// </summary>
-        /// <param name="types">The types to add.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="types"/> is <c>null</c>.
-        /// </exception>
-        public void AddTypes(IEnumerable<Type> types) =>
-            _types = _types.Add(types);
+        /// <typeparam name="TComponent">Type to add.</typeparam>
+        public void AddType<TComponent>() =>
+            AddTypes(typeof(TComponent));
 
         /// <summary>
         /// Adds all types defined in the assemblies that match the specified search criteria to the
@@ -92,161 +79,118 @@ namespace Kingo.MicroServices.Endpoints
         /// The caller does not have the required permission to access the specified path or its files.
         /// </exception>
         public void AddTypes(string searchPattern, string path = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) =>
-            _types = _types.Add(searchPattern, path, searchOption);
+            AddTypes(TypeSet.Empty.Add(searchPattern, path, searchOption));
 
+        /// <summary>
+        /// Adds the specified <paramref name="types"/> to the searchable type-set.
+        /// </summary>
+        /// <param name="types">The types to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> is <c>null</c>.
+        /// </exception>
+        public void AddTypes(params Type[] types) =>
+            AddTypes(types as IEnumerable<Type>);
+
+        /// <summary>
+        /// Adds the specified <paramref name="types"/> to the searchable type-set.
+        /// </summary>
+        /// <param name="types">The types to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="types"/> is <c>null</c>.
+        /// </exception>
+        public void AddTypes(IEnumerable<Type> types) =>
+            _components.UnionWith(MicroProcessorComponent.FromTypes(types));
+                    
         #endregion        
 
         #region [====== AddMessageHandlers ======]
 
         /// <summary>
-        /// Adds the specified <paramref name="handler"/> as a singleton instance for every <see cref="IMessageHandler{TMessage}"/>
-        /// implementation is has. If <paramref name="handler"/> does not implement this interface, it is simply ignored.
+        /// Adds the specified <paramref name="messageHandler"/> as a singleton instance for every <see cref="IMessageHandler{TMessage}"/>
+        /// implementation is has. If <paramref name="messageHandler"/> does not implement this interface, it is simply ignored.
         /// </summary>
-        /// <param name="handler">The handler to register.</param>
-        /// <param name="operationTypes">
-        /// Optional set of operation types for which the handler will be invoked. If <c>null</c>, the operation types defined
-        /// by the <see cref="MessageHandlerAttribute" />, if declared on <paramref name="handler"/>, will be used. If not found,
-        /// the handler will be invoked by all operation types.
-        /// </param>
+        /// <param name="messageHandler">The handler to register.</param>        
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="handler"/> is <c>null</c>.
+        /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public void AddMessageHandler(object handler, MicroProcessorOperationTypes? operationTypes = null)
+        public void AddMessageHandler(object messageHandler)
         {
-            foreach (var instance in MessageHandlerInstance.FromHandler(handler, operationTypes))
+            foreach (var instance in MessageHandlerInstance.FromInstance(messageHandler))
             {
                 _messageHandlerInstances.Add(instance);
             }
         }
 
         /// <summary>
-        /// Adds the specified <paramref name="handler" /> for the (optionally specified) <paramref name="operationTypes" />.
+        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="handler"/>.</typeparam>
-        /// <param name="handler">The handler to register.</param>
-        /// <param name="operationTypes">
-        /// Optional set of operation types for which the handler will be invoked. If <c>null</c>,
-        /// the handler will be invoked by all operation types.
+        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
+        /// <param name="messageHandler">The handler to register.</param>
+        /// <param name="handlesExternalMessages">
+        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle external messages from the processor.
+        /// </param>
+        /// <param name="handlesInternalMessages">
+        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle internal messages from the processor.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="handler"/> is <c>null</c>.
+        /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerContext> handler, MicroProcessorOperationTypes? operationTypes = null) =>
-            AddMessageHandler(MessageHandlerDecorator<TMessage>.Decorate(handler), operationTypes);
+        public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, bool handlesExternalMessages, bool handlesInternalMessages) =>
+            AddMessageHandler(messageHandler, new MessageHandlerAttribute() { HandlesExternalMessages = handlesExternalMessages, HandlesInternalMessages = handlesInternalMessages });
 
         /// <summary>
-        /// Adds the specified <paramref name="handler" /> for the (optionally specified) <paramref name="operationTypes" />.
+        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="handler"/>.</typeparam>
-        /// <param name="handler">The handler to register.</param>
-        /// <param name="operationTypes">
-        /// Optional set of operation types for which the handler will be invoked. If <c>null</c>,
-        /// the handler will be invoked by all operation types.
-        /// </param>
+        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
+        /// <param name="messageHandler">The handler to register.</param>
+        /// <param name="configuration">Optional explicit configuration for the specified <paramref name="messageHandler"/>.</param> 
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="handler"/> is <c>null</c>.
+        /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerContext, Task> handler, MicroProcessorOperationTypes? operationTypes = null) =>
-            AddMessageHandler(MessageHandlerDecorator<TMessage>.Decorate(handler), operationTypes);
+        public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, IMessageHandlerConfiguration configuration = null) =>
+            AddMessageHandler(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configuration);
 
         /// <summary>
-        /// Adds the specified <paramref name="handler" /> for the (optionally specified) <paramref name="operationTypes" />.
+        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
         /// </summary>
-        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="handler"/>.</typeparam>
-        /// <param name="handler">The handler to register.</param>
-        /// <param name="operationTypes">
-        /// Optional set of operation types for which the handler will be invoked. If <c>null</c>, the operation types defined
-        /// by the <see cref="MessageHandlerAttribute" />, if declared on <paramref name="handler"/>, will be used. If not found,
-        /// the handler will be invoked by all operation types.
-        /// </param>
+        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
+        /// <param name="messageHandler">The handler to register.</param>
+        /// <param name="configuration">Optional explicit configuration for the specified <paramref name="messageHandler"/>.</param> 
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="handler"/> is <c>null</c>.
+        /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
-        public void AddMessageHandler<TMessage>(IMessageHandler<TMessage> handler, MicroProcessorOperationTypes? operationTypes = null) =>
-            _messageHandlerInstances.Add(new MessageHandlerInstance<TMessage>(handler, operationTypes));
+        public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, IMessageHandlerConfiguration configuration = null) =>
+            AddMessageHandler(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configuration);
 
         /// <summary>
-        /// Adds the specified <typeparamref name="TMessageHandler"/>, if it's a valid message handler type.
+        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
         /// </summary>
-        /// <typeparam name="TMessageHandler">Type of message handler to register.</typeparam>
-        public void AddMessageHandler<TMessageHandler>() =>
-            AddMessageHandlers(typeof(TMessageHandler));
+        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
+        /// <param name="messageHandler">The handler to register.</param>        
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> is <c>null</c>.
+        /// </exception>
+        public void AddMessageHandler<TMessage>(IMessageHandler<TMessage> messageHandler) =>
+            AddMessageHandler(messageHandler, null);
+        
+        private void AddMessageHandler<TMessage>(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration) =>
+            _messageHandlerInstances.Add(new MessageHandlerInstance<TMessage>(messageHandler, configuration));
 
         /// <summary>
         /// Adds all message handlers that are found in the assemblies that match the specified search criteria.
         /// </summary>        
-        /// <param name="predicate">Optional predicate that is used to filter specific types from the assemblies.</param>
-        /// <returns>The factory that contains all registered message handlers.</returns>               
-        /// <exception cref="IOException">
-        /// An error occurred while reading files from the specified location(s).
-        /// </exception>
-        /// <exception cref="SecurityException">
-        /// The caller does not have the required permission
-        /// </exception>
-        public void AddMessageHandlers(Func<Type, bool> predicate = null) =>
-            AddMessageHandlers(ScanTypes(predicate));
-
-        /// <summary>
-        /// Adds the specified message handler <paramref name="types"/>, for each type that is a valid message handler type.
-        /// </summary>
-        /// <param name="types">Types to register.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="types"/> is <c>null</c>.
-        /// </exception>
-        public void AddMessageHandlers(params Type[] types) =>
-            AddMessageHandlers(types as IEnumerable<Type>);
-
-        /// <summary>
-        /// Adds all types of the specified <paramref name="types"/> that implement
-        /// <see cref="IMessageHandler{T}" /> as message handlers. The exact behavior and lifetime
-        /// of these handlers will be determined by the values or their <see cref="MessageHandlerAttribute" />.
-        /// </summary>
-        /// <param name="types">Types to register.</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="types"/> is <c>null</c>.
-        /// </exception>
-        public void AddMessageHandlers(IEnumerable<Type> types)
+        /// <param name="predicate">Optional predicate that is used to filter specific types.</param>                
+        public void AddMessageHandlers(Func<MicroProcessorComponent, bool> predicate = null) =>
+            AddMessageHandlers(GetComponents(predicate));        
+        
+        private void AddMessageHandlers(IEnumerable<MicroProcessorComponent> components)
         {
-            foreach (var messageHandlerClass in MessageHandlerClass.FromTypes(types))
+            foreach (var messageHandler in MessageHandlerType.FromComponents(components))
             {
-                Add(messageHandlerClass);
+                _services.AddComponent(messageHandler, messageHandler.Interfaces.Select(@interface => @interface.Type));
+                _messageHandlerComponents[messageHandler.Type] = messageHandler;
             }
-        }                   
-
-        private void Add(MessageHandlerClass messageHandler)
-        {
-            switch (messageHandler.Configuration.Lifetime)
-            {
-                case ServiceLifetime.Transient:
-                    AddTransient(messageHandler);
-                    break;
-                case ServiceLifetime.Scoped:
-                    AddScoped(messageHandler);
-                    break;
-                case ServiceLifetime.Singleton:
-                    AddSingleton(messageHandler);
-                    break;
-                default:
-                    throw NewInvalidLifetimeSpecifiedException(messageHandler.Configuration.Lifetime);
-            }
-            _messageHandlerClasses[messageHandler.Type] = messageHandler;
-        }
-
-        private void AddTransient(MessageHandlerClass messageHandler) =>
-            _services.AddTransient(messageHandler.Type).AddTransient(messageHandler.RegistrationType);
-
-        private void AddScoped(MessageHandlerClass messageHandler) =>
-            _services.AddTransient(messageHandler.Type).AddScoped(messageHandler.RegistrationType);
-
-        private void AddSingleton(MessageHandlerClass messageHandler) =>
-            _services.AddTransient(messageHandler.Type).AddSingleton(messageHandler.RegistrationType);        
-
-        private static Exception NewInvalidLifetimeSpecifiedException(ServiceLifetime lifeTime)
-        {
-            var messageFormat = ExceptionMessages.MessageHandlerFactoryBuilder_InvalidInstanceLifetime;
-            var message = string.Format(messageFormat, lifeTime);
-            return new ArgumentOutOfRangeException(message);
-        }
+        }       
 
         #endregion
 
@@ -258,24 +202,15 @@ namespace Kingo.MicroServices.Endpoints
         /// interfaces.
         /// </summary>
         /// <param name="predicate">Optional predicate to filter specific types to scan.</param>
-        public void AddQueries(Func<Type, bool> predicate = null) =>
+        public void AddQueries(Func<MicroProcessorComponent, bool> predicate = null) =>
             AddComponents(AddQueries, predicate);
 
-        private static IServiceCollection AddQueries(IEnumerable<Type> types, IServiceCollection services)
+        private static IServiceCollection AddQueries(IEnumerable<MicroProcessorComponent> components, IServiceCollection services)
         {
-            foreach (var type in types)
+            foreach (var query in QueryType.FromComponents(components))
             {
-                var interfaceTypes = type.GetInterfaces(typeof(IQuery<>), typeof(IQuery<,>)).ToArray();
-                if (interfaceTypes.Length == 0)
-                {
-                    continue;
-                }
-                foreach (var interfaceType in interfaceTypes)
-                {
-                    services = services.AddTransient(interfaceType, provider => provider.GetRequiredService(type));
-                }
-                services = services.AddTransient(type);
-            }
+                services = services.AddComponent(query, query.Interfaces.Select(@interface => @interface.Type));
+            }            
             return services;
         }        
 
@@ -291,31 +226,23 @@ namespace Kingo.MicroServices.Endpoints
         /// <exception cref="ArgumentNullException">
         /// <paramref name="serviceFactory"/> is <c>null</c>.
         /// </exception>
-        public void AddComponents(Func<IEnumerable<Type>, IServiceCollection, IServiceCollection> serviceFactory, Func<Type, bool> predicate = null)
+        public void AddComponents(Func<IEnumerable<MicroProcessorComponent>, IServiceCollection, IServiceCollection> serviceFactory, Func<MicroProcessorComponent, bool> predicate = null)
         {            
             if (serviceFactory == null)
             {
                 throw new ArgumentNullException(nameof(serviceFactory));
             }
-            foreach (var service in serviceFactory.Invoke(ScanTypes(predicate), new ServiceCollection()))
-            {
+            foreach (var service in serviceFactory.Invoke(GetComponents(predicate), new ServiceCollection()))
+            {                
                 _services.Add(service);
             }
         }
 
+        private IEnumerable<MicroProcessorComponent> GetComponents(Func<MicroProcessorComponent, bool> predicate = null) =>
+            from component in _components
+            where predicate == null || predicate.Invoke(component)
+            select component;
+
         #endregion
-
-        private IEnumerable<Type> ScanTypes(Func<Type, bool> predicate = null) =>
-            from type in _types
-            where CanBeAddedAsComponent(type)
-            where predicate == null || predicate.Invoke(type)
-            where !IsAlreadyRegistered(type, _services)
-            select type;
-
-        private static bool CanBeAddedAsComponent(Type type) =>
-            type.IsClass && !type.IsAbstract && (type.IsPublic || type.IsNestedPublic) && !type.ContainsGenericParameters;
-
-        private static bool IsAlreadyRegistered(Type type, IServiceCollection services) =>
-            services.Any(service => service.ImplementationType == type);
     }
 }
