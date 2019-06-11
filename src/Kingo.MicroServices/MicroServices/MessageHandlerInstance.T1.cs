@@ -4,7 +4,7 @@
     {
         private readonly IMessageHandler<TMessage> _messageHandler;
 
-        public MessageHandlerInstance(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration) :
+        public MessageHandlerInstance(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration = null) :
             base(MessageHandlerType.FromInstance(messageHandler), MessageHandlerInterface.FromType<TMessage>(), configuration)
         {
             _messageHandler = messageHandler;

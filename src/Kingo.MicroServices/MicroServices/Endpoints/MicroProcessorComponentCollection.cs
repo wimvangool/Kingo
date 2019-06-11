@@ -107,7 +107,7 @@ namespace Kingo.MicroServices.Endpoints
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler"/> as a singleton instance for every <see cref="IMessageHandler{TMessage}"/>
-        /// implementation is has. If <paramref name="messageHandler"/> does not implement this interface, it is simply ignored.
+        /// implementation it has. If <paramref name="messageHandler"/> does not implement this interface, it is simply ignored.
         /// </summary>
         /// <param name="messageHandler">The handler to register.</param>        
         /// <exception cref="ArgumentNullException">
@@ -115,10 +115,17 @@ namespace Kingo.MicroServices.Endpoints
         /// </exception>
         public void AddMessageHandler(object messageHandler)
         {
-            foreach (var instance in MessageHandlerInstance.FromInstance(messageHandler))
+            var instances = MessageHandlerInstance.FromInstance(messageHandler).ToArray();
+            if (instances.Length == 0)
+            {
+                return;
+            }
+            foreach (var instance in instances)
             {
                 _messageHandlerInstances.Add(instance);
+                _services.AddTransient(instance.Interface.Type, provider => provider.GetService(instance.Type));
             }
+            _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
         }
 
         /// <summary>
@@ -136,7 +143,7 @@ namespace Kingo.MicroServices.Endpoints
         /// <paramref name="messageHandler"/> is <c>null</c>.
         /// </exception>
         public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, bool handlesExternalMessages, bool handlesInternalMessages) =>
-            AddMessageHandler(messageHandler, new MessageHandlerAttribute() { HandlesExternalMessages = handlesExternalMessages, HandlesInternalMessages = handlesInternalMessages });
+            AddMessageHandler(messageHandler, MessageHandlerAttribute.Create(handlesExternalMessages, handlesInternalMessages));
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
@@ -149,6 +156,23 @@ namespace Kingo.MicroServices.Endpoints
         /// </exception>
         public void AddMessageHandler<TMessage>(Action<TMessage, MessageHandlerOperationContext> messageHandler, IMessageHandlerConfiguration configuration = null) =>
             AddMessageHandler(MessageHandlerDecorator<TMessage>.Decorate(messageHandler), configuration);
+
+        /// <summary>
+        /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
+        /// </summary>
+        /// <typeparam name="TMessage">Type of the message that is handled by the specified <paramref name="messageHandler"/>.</typeparam>
+        /// <param name="messageHandler">The handler to register.</param>
+        /// <param name="handlesExternalMessages">
+        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle external messages from the processor.
+        /// </param>
+        /// <param name="handlesInternalMessages">
+        /// Indicates whether or not the specified <paramref name="messageHandler"/> will handle internal messages from the processor.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="messageHandler"/> is <c>null</c>.
+        /// </exception>
+        public void AddMessageHandler<TMessage>(Func<TMessage, MessageHandlerOperationContext, Task> messageHandler, bool handlesExternalMessages, bool handlesInternalMessages) =>
+            AddMessageHandler(messageHandler, MessageHandlerAttribute.Create(handlesExternalMessages, handlesInternalMessages));
 
         /// <summary>
         /// Adds the specified <paramref name="messageHandler" /> as a singleton instance.
@@ -172,9 +196,13 @@ namespace Kingo.MicroServices.Endpoints
         /// </exception>
         public void AddMessageHandler<TMessage>(IMessageHandler<TMessage> messageHandler) =>
             AddMessageHandler(messageHandler, null);
-        
-        private void AddMessageHandler<TMessage>(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration) =>
+
+        private void AddMessageHandler<TMessage>(IMessageHandler<TMessage> messageHandler, IMessageHandlerConfiguration configuration)
+        {
             _messageHandlerInstances.Add(new MessageHandlerInstance<TMessage>(messageHandler, configuration));
+            _services.AddTransient(provider => messageHandler);
+            _services.AddTransient(messageHandler.GetType(), provider => messageHandler);
+        }
 
         /// <summary>
         /// Adds all message handlers that are found in the assemblies that match the specified search criteria.

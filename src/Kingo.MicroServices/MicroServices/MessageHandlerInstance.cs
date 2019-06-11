@@ -8,13 +8,18 @@ namespace Kingo.MicroServices
 {
     internal abstract class MessageHandlerInstance : MessageHandler, IHandleAsyncMethodFactory
     {
+        private readonly MessageHandlerInterface _interface;
         private readonly IMessageHandlerConfiguration _configuration;
 
         protected MessageHandlerInstance(MicroProcessorComponent component, MessageHandlerInterface @interface, IMessageHandlerConfiguration configuration) :
             base(component, @interface)
         {
+            _interface = @interface;
             _configuration = configuration;
         }
+
+        public MessageHandlerInterface Interface =>
+            _interface;
 
         public override bool HandlesExternalMessages =>
             _configuration?.HandlesExternalMessages ?? base.HandlesExternalMessages;
@@ -37,34 +42,36 @@ namespace Kingo.MicroServices
         private static readonly ConcurrentDictionary<MessageHandlerInterface, Func<object, MessageHandlerInstance>> _InstanceFactories =
             new ConcurrentDictionary<MessageHandlerInterface, Func<object, MessageHandlerInstance>>();
 
-        public static IEnumerable<MessageHandlerInstance> FromInstance(object instance)
+        public static IEnumerable<MessageHandlerInstance> FromInstance(object messageHandler)
         {
-            if (instance == null)
+            if (messageHandler == null)
             {
-                throw new ArgumentNullException(nameof(instance));
+                throw new ArgumentNullException(nameof(messageHandler));
             }
-            if (MessageHandlerType.IsMessageHandlerComponent(instance.GetType(), out var messageHandlerClass))
+            if (MessageHandlerType.IsMessageHandlerComponent(messageHandler.GetType(), out var messageHandlerClass))
             {
-                foreach (var messageHandlerInterface in messageHandlerClass.Interfaces)
+                foreach (var @interface in messageHandlerClass.Interfaces)
                 {
-                    yield return FromInstance(instance, messageHandlerInterface);
+                    yield return FromInstance(messageHandler, @interface);
                 }
             }
         }        
 
-        private static MessageHandlerInstance FromInstance(object handler, MessageHandlerInterface messageHandlerInterface) =>
-            _InstanceFactories.GetOrAdd(messageHandlerInterface, CreateInstanceFactory).Invoke(handler);
+        private static MessageHandlerInstance FromInstance(object messageHandler, MessageHandlerInterface @interface) =>
+            _InstanceFactories.GetOrAdd(@interface, CreateInstanceFactory).Invoke(messageHandler);
 
         private static Func<object, MessageHandlerInstance> CreateInstanceFactory(MessageHandlerInterface messageHandlerInterface)
         {            
             var messageHandlerParameter = Expression.Parameter(typeof(object), "messageHandler");
-            var messageHandlerOfExpectedType = Expression.Convert(messageHandlerParameter, messageHandlerInterface.Type);            
+            var messageHandlerOfExpectedType = Expression.Convert(messageHandlerParameter, messageHandlerInterface.Type);
+            var configurationType = typeof(IMessageHandlerConfiguration);
+            var configuration = Expression.Constant(null, configurationType);
 
             var messageHandlerInstanceTypeDefinition = typeof(MessageHandlerInstance<>);
             var messageHandlerInstanceType = messageHandlerInstanceTypeDefinition.MakeGenericType(messageHandlerInterface.MessageType);
-            var messageHandlerInstanceConstructorParameters = new[] { messageHandlerInterface.Type };
+            var messageHandlerInstanceConstructorParameters = new[] { messageHandlerInterface.Type, configurationType };
             var messageHandlerInstanceConstructor = messageHandlerInstanceType.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, messageHandlerInstanceConstructorParameters, null);
-            var newMessageHandlerInstanceExpression = Expression.New(messageHandlerInstanceConstructor, messageHandlerOfExpectedType);
+            var newMessageHandlerInstanceExpression = Expression.New(messageHandlerInstanceConstructor, messageHandlerOfExpectedType, configuration);
             var createMessageHandlerInstanceExpression = Expression.Lambda<Func<object, MessageHandlerInstance>>(
                 Expression.Convert(newMessageHandlerInstanceExpression, typeof(MessageHandlerInstance)),
                 messageHandlerParameter);
